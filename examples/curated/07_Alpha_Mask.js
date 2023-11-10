@@ -8,22 +8,38 @@
  * image files, and a running <a href="https://github.com/processing/p5.js/wiki/Local-server">
  * local server</a>.</span></em></p>
  */
-let img;
-let imgMask;
-
 function preload() {
-  img = loadImage('assets/moonwalk.jpg');
-  imgMask = loadImage('assets/mask.png');
+  img = loadImage("assets/image.jpg");
+  imgMask = loadImage("assets/mask.png");
+  imgMasked = loadImage("assets/image.jpg");
 }
 
 function setup() {
-  createCanvas(720, 400);
-  img.mask(imgMask);
-  imageMode(CENTER);
+  createCanvas(1200, 400);
+  imgMasked.mask(imgMask);
+
+  //Label Alignment
+  textAlign(LEFT, TOP);
 }
 
 function draw() {
-  background(0, 102, 153);
-  image(img, width / 2, height / 2);
-  image(img, mouseX, mouseY);
+  background(255);
+  image(img, 0, 0, 400, 400);
+  image(imgMask, 400, 0, 400, 400);
+  image(imgMasked, 800, 0, 400, 400);
+
+  //Labels
+  textSize(24);
+  fill(255);
+  text("Image", 10, 10);
+  fill(0);
+  text("Mask", 410, 10);
+  text("Masked Image", 810, 10);
 }
+
+//Images from Unsplash
+
+//image.jpg -> Photo by Sergey Shmidt //https://unsplash.com/photos/koy6FlCCy5s
+
+//mask.png -> Photo by Mockup Graphics
+//https://unsplash.com/photos/_mUVHhvBYZ0
