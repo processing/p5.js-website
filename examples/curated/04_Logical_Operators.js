@@ -1,92 +1,120 @@
-/* 
- * @name Logical Operators 2
- * @arialabel Squares travel diagonally across the screen when a rectangle on the screen is pressed
+/*
+ * @name Conditions
  * @frame 400,400
- * @description contributed by <a href="https://www.rit.edu/directory/wmhics-w-michelle-harris">
-   <b>Prof WM Harris,</b></a> How
-	to create Xboxes with one global variable and create conditions with
-	boolean variables and boolean expressions by utilizing Boolean
-	operators ||, &&, and ! to do boundary checking.<br/>
-	<b>Functions</b>
-	are created for both the canvas set up as well as the creation of
-	the boxes. Background color is dependent on the location of the
-	boxes in the canvas space. When mouse button and key are pressed
-	simultaneously, the “where” text and box color changes to cyan,
-	but if the mouse button is clicked alone then the animation will
-	start. When q or Q are pressed the text “Did you type q or Q?”
-	will change to blue, else it will be purple. If the mouse is placed
-	within the orange box containing the text, “withinRect” then the
-	shape will turn pink.
+ * @description If and else statements allow a
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/block" target="_blank">block of code</a>
+ * to only run when a certain condition is true. This example only
+ * animates when the mouse is held down. This is because of the if
+ * statement on line 59. You can read more about if and else statements
+ * <a href="https://p5js.org/reference/#/p5/if-else">in the p5 reference</a>
+ * or <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/conditionals" target="_blank">on MDN</a>.
+ *
+ * Comparison operators help to form conditions by comparing two
+ * values. In this example, the hue of the circle resets to zero when
+ * the hue is at least 360 because of the if statement on line 69.
+ * You can read more about comparison operators
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators#relational_operators" target="_blank">on MDN</a>.
+ *
+ * Logical operators allow conditions to be combined.
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_AND" target="_blank">&amp;$amp;</a>
+ * checks that both conditions are true. The circle in this example
+ * has a black fill when it is toward the horizontal center of the canvas, and it
+ * has a white fill when it is not. This is because of the if statement on line
+ * 45, which checks that the circle's x position is at least 100 and also
+ * no more than 300.
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target="_blank">||</a>
+ * checks that at least one of the conditions are true. The circle reverses horizontal
+ * speed when it reaches the left or right edge of the canvas because of the if statement
+ * on line 75.
  */
+//  Position variables
+let circlePositionX = 200;
+let circlePositionY = 200;
 
+//  Speed variables
+let circleSpeedX = 2;
+let circleSpeedY = 3;
 
-//1 coordinate for everything :)
-let where = 0; //control boxes' positions
+//  Radius variable
+let circleRadius = 25;
+
+//  Hue variable
+let circleHue = 0;
 
 function setup() {
+  //  Create 400x400 canvas
   createCanvas(400, 400);
+
+  //  Cover canvas with white
+  background(255);
+
+  //  Draw ellipses using their radius
+  ellipseMode(RADIUS);
+
+  //  Use Hue Saturation Brightness for colors
+  colorMode(HSB);
+
+  //  Set stroke weight to 4 units
+  strokeWeight(4);
+
+  //  Create screen reader accessible description
+  describe(
+    "A circle starts in the center of the canvas. " +
+      "When the user holds the mouse down, the circle bounces around the canvas, " +
+      "its inside switches between black and white, " +
+      "and its outline fades between colors, leaving a rainbow trail."
+  );
 }
 
 function draw() {
-  //similar to slide 4 use of OR, ||
-  //to set bg color of canvas
-  if ((where < 0) || (where > height)) {
-    background("beige");
-  } else {
-    background("chocolate");
-  }
+  //  Set stroke color using current hue
+  stroke(circleHue, 80, 90);
 
-  //similar to slide 4 use of AND, &&
-  //to set fill color of box & text
-  if (mouseIsPressed && keyIsPressed) {
-    fill("cyan");
+  //  If circle's x position is between 100 and 300
+  if (circlePositionX >= 100 && circlePositionX <= 300) {
+    //  Set fill color to black
+    fill(0);
+
+    //  Otherwise
   } else {
+    //  Set fill color to white
     fill(255);
   }
 
-  //boxL
-  rect(where, where, 40);
+  //  Draw circle at current position
+  circle(circlePositionX, circlePositionY, circleRadius);
 
-  //boxR, pad x coordinate for size of box
-  rect(width - where - 40, where, 40);
+  //  If mouse is held down, animate the sketch
+  if (mouseIsPressed === true) {
+    //  Add speed to circle's position to make it move
+    circlePositionX = circlePositionX + circleSpeedX;
+    circlePositionY = circlePositionY + circleSpeedY;
 
-  //Move the boxes
-  where = where + 1;
-
-  //Show the value of where the boxes are
-  text("where is " + where, 150, 30);
-
-  //testing not, ! and or, || operators
-  if (!(key === "q" || key === "Q")) {
-    fill("purple");
-  } else {
-    fill("dodgerBlue");
+    //  Increase hue by 1
+    circleHue = circleHue + 1;
   }
-  //Show the current key value
-  text("Did you type a q or Q? " + key, 150, 70);
 
-  //*** Boundary checking ***
-  //Is the mouse within rect boundary?
-  //left, right, top, bottom
-  let withinRect = (mouseX >= 150) &&
-    (mouseX <= 150 + 100) &&
-    (mouseY >= 300) &&
-    (mouseY <= 300 + 40);
-  //fill color based on value of withinRect
-  if (withinRect) {
-    fill("pink");
-  } else {
-    fill("orange");
+  //  If hue has reached maximum value
+  if (circleHue >= 360) {
+    //  Reset hue to 0
+    circleHue = 0;
   }
-  //draw the rect
-  rect(150, 300, 100, 40);
-  //show withinRect value as label on rect
-  fill(0);
-  text("withinRect " + withinRect, 160, 320);
-}
 
-//boxes restart
-function mousePressed() {
-  //Reset boxes back up and above the canvas
-  where = -50;
+  //  If circle is beyond left or right edge
+  if (
+    circlePositionX < circleRadius ||
+    circlePositionX > width - circleRadius
+  ) {
+    //  Reverse horizontal speed
+    circleSpeedX = -circleSpeedX;
+  }
+
+  //  If circle is beyond top or bottom edge
+  if (
+    circlePositionY < circleRadius ||
+    circlePositionY > height - circleRadius
+  ) {
+    //  Reverse vertical speed
+    circleSpeedY = -circleSpeedY;
+  }
 }
