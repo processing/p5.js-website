@@ -1,37 +1,44 @@
 /*
  * @name Color Wheel
- * @arialabel 36 Circles in a circular arrangement cycling through different hues of the color wheel
- * @description A color wheel is an organization of color hues around a circle,
- *  which shows the relationships between primary colors, secondary colors, tertiary colors etc.
+ * @description A
+ * <a href="https://p5js.org/reference/#/p5/for" target="_blank">for loop</a>
+ * can repeat transformations. The for loop in this example initializes
+ * a variable called angle, which changes the rotation of a circle as
+ * well as its hue. Each time the loop repeats, a circle is drawn
+ * relative to the center of the canvas.  The
+ * <a href="https://p5js.org/reference/#/p5/push" target="_blank">push()</a>
+ * and <a href="https://p5js.org/reference/#/p5/pop" target="_blank">pop()</a>
+ * functions make these transformations affect only the individual circle.
  */
 function setup() {
-    createCanvas(400, 400) ;
-    colorMode(HSB);
-    
-    //setting angle mode to degrees 
-    //to aid in positioning of circles
-    angleMode(DEGREES);
+  createCanvas(400, 400);
+  background(255);
+
+  //  Use Hue Saturation Brightness colors without stroke
+  colorMode(HSB);
+  noStroke();
+
+  //  Set angle mode to use degrees
+  angleMode(DEGREES);
+  describe(
+    "Small circles, each with a different color, arranged in a circular path, displaying hues across the color spectrum."
+  );
+
+  //  Repeat for angles 0-360 at increments of 30 degrees
+  //  Changing the 30 value will change
+  //  how many circles are drawn and how close together
+  for (let angle = 0; angle < 360; angle += 30) {
+    //  Save current transformation
+    push();
+    //  Move origin to center of canvas
+    translate(width / 2, height / 2);
+    //  Rotate using current angle
+    rotate(angle);
+    //  Set fill using current angle as hue
+    fill(angle, 85, 90);
+    //  Draw a circle 150 units from origin
+    circle(150, 0, 50);
+    //  Restore canvas transformation
+    pop();
   }
-  
-  function draw() {
-    background (220)
-    noStroke();
-  
-    //loop steps through 36 times drawing 
-    //a circle with a separate hue each time
-    
-    for (let i = 0;i<36;i++){
-      
-    //determines position of circles
-      x = 200 + 100*cos(i*10);
-      y = 200 + 100*sin(i*10);
-    
-    //i * 10 allows to cover the entire hue range
-    //the first circle has a hue of 0*10 = 0
-    // last circle has has a hue of 35*10 = 350
-    // hue of 0 and 360 are identical
-      
-      fill(i*10,100,100);
-      circle(x,y,50);
-    }
-  }
+}
