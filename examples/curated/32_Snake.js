@@ -32,7 +32,7 @@ let xStart = 0;
 let yStart = 15;
 
 // Starting direction of motion
-let startDirection = "right";
+let startDirection = 'right';
 
 // Current direction of motion
 let direction = startDirection;
@@ -57,11 +57,7 @@ function setup() {
   textSize(2);
 
   describe(
-    "A reproduction of the arcade game Snake, in which a snake, " +
-      "represented by a green line on a black background, " +
-      "is controlled by the arrow keys. " +
-      "Users move the snake toward a fruit, represented by a red dot, " +
-      "but the snake must not hit the sides of the window or itself."
+    'A reproduction of the arcade game Snake, in which a snake, represented by a green line on a black background, is controlled by the arrow keys. Users move the snake toward a fruit, represented by a red dot, but the snake must not hit the sides of the window or itself.'
   );
 }
 
@@ -89,7 +85,7 @@ function showStartScreen() {
   rect(2, gridHeight / 2 - 5, gridWidth - 4, 10, 2);
   fill(255);
   text(
-    "Click to play.\nUse arrow keys to move.",
+    'Click to play.\nUse arrow keys to move.',
     gridWidth / 2,
     gridHeight / 2
   );
@@ -155,16 +151,16 @@ function updateSegments() {
 
   // Adjust the head's position based on the current direction
   switch (direction) {
-    case "right":
+    case 'right':
       head.x = head.x + 1;
       break;
-    case "up":
+    case 'up':
       head.y = head.y - 1;
       break;
-    case "left":
+    case 'left':
       head.x = head.x - 1;
       break;
-    case "down":
+    case 'down':
       head.y = head.y + 1;
       break;
   }
@@ -198,7 +194,7 @@ function gameOver() {
   rect(2, gridHeight / 2 - 5, gridWidth - 4, 10, 2);
   fill(255);
   text(
-    "Game over!\nYour score: " + score + "\nClick to play again.",
+    'Game over!\nYour score: ' + score + '\nClick to play again.',
     gridWidth / 2,
     gridHeight / 2
   );
@@ -261,23 +257,23 @@ function updateFruitCoordinates() {
 function keyPressed() {
   switch (keyCode) {
     case LEFT_ARROW:
-      if (direction !== "right") {
-        direction = "left";
+      if (direction !== 'right') {
+        direction = 'left';
       }
       break;
     case RIGHT_ARROW:
-      if (direction !== "left") {
-        direction = "right";
+      if (direction !== 'left') {
+        direction = 'right';
       }
       break;
     case UP_ARROW:
-      if (direction !== "down") {
-        direction = "up";
+      if (direction !== 'down') {
+        direction = 'up';
       }
       break;
     case DOWN_ARROW:
-      if (direction !== "up") {
-        direction = "down";
+      if (direction !== 'up') {
+        direction = 'down';
       }
       break;
   }
