@@ -59,10 +59,7 @@ function setup() {
 
   //  Create screen reader accessible description
   describe(
-    "A circle starts in the center of the canvas. " +
-      "When the user holds the mouse down, the circle bounces around the canvas, " +
-      "its inside switches between black and white, " +
-      "and its outline fades between colors, leaving a rainbow trail."
+    'A circle starts in the center of the canvas. When the user holds the mouse down, the circle bounces around the canvas, its inside switches between black and white, and its outline fades between colors, leaving a rainbow trail.'
   );
 }
 
