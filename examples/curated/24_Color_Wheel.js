@@ -21,7 +21,7 @@ function setup() {
   //  Set angle mode to use degrees
   angleMode(DEGREES);
   describe(
-    "Small circles, each with a different color, arranged in a circular path, displaying hues across the color spectrum."
+    'Small circles, each with a different color, arranged in a circular path, displaying hues across the color spectrum.'
   );
 
   //  Repeat for angles 0-360 at increments of 30 degrees
