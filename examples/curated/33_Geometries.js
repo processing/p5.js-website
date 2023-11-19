@@ -15,7 +15,7 @@
 let astronaut;
 
 function preload() {
-  astronaut = loadModel("assets/astronaut.obj");
+  astronaut = loadModel('assets/astronaut.obj');
 }
 
 function setup() {
@@ -28,9 +28,7 @@ function setup() {
   normalMaterial();
 
   describe(
-    "Eight 3D shapes: a plane, box, cylinder, cone, torus, sphere, " +
-      "ellipsoid, and a model of an astronaut. Each shape is rotating in " +
-      "all directions. The surface of the shapes are multicolored."
+    'Eight 3D shapes: a plane, box, cylinder, cone, torus, sphere, ellipsoid, and a model of an astronaut. Each shape is rotating in all directions. The surface of the shapes are multicolored.'
   );
 }
 
