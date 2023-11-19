@@ -1,36 +1,44 @@
-/*
+/**
  * @name Orbit Control
- * @arialabel Users can click on the screen and drag to move themselves around a 3D space. It consists of a white background with columns of purple cubes and green pyramids arched in curves. 
- * @description Orbit control allows you to drag and move around the world.
- */
+ * @description <a href="https://p5js.org/reference/#/p5/orbitControl" target="_blank">Orbit control</a>
+ * uses mouse or touch input to adjust camera orientation in a 3D
+ * sketch. To rotate the camera, left click and drag a mouse or swipe
+ * on a touch screen. To pan the camera, right click and drag a mouse
+ * or swipe with multiple fingers on a touch screen. To move the camera
+ * closer or further to the center of the sketch, use the scroll wheel
+ * on a mouse or pinch in/out on a touch screen.
+ *
+ * */
+
 function setup() {
   createCanvas(710, 400, WEBGL);
+  angleMode(DEGREES);
+  strokeWeight(5);
+  noFill();
+  describe(
+    'Users can click on the screen and drag to move themselves around a 3D space. It consists of a white background with columns of purple cubes and green pyramids arched in curves.'
+  );
 }
 
 function draw() {
-  background(250);
-  let radius = width * 1.5;
+  background(250, 180, 200);
 
-  //drag to move the world.
+  // Call every frame to adjust camera based on mouse/touch
   orbitControl();
 
-  normalMaterial();
-  translate(0, 0, -600);
-  for (let i = 0; i <= 12; i++) {
-    for (let j = 0; j <= 12; j++) {
+  // Rotate rings in a half circle to create a sphere of cubes
+  for (let zAngle = 0; zAngle < 180; zAngle += 30) {
+    // Rotate cubes in a full circle to create a ring of cubes
+    for (let xAngle = 0; xAngle < 360; xAngle += 30) {
       push();
-      let a = (j / 12) * PI;
-      let b = (i / 12) * PI;
-      translate(
-        sin(2 * a) * radius * sin(b),
-        (cos(b) * radius) / 2,
-        cos(2 * a) * radius * sin(b)
-      );
-      if (j % 2 === 0) {
-        cone(30, 30);
-      } else {
-        box(30, 30, 30);
-      }
+
+      // Rotate from center of sphere
+      rotateZ(zAngle);
+      rotateX(xAngle);
+
+      // Then translate down 400 units
+      translate(0, 400, 0);
+      box();
       pop();
     }
   }
