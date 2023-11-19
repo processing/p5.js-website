@@ -29,7 +29,7 @@ function setup() {
   hoursRadius = radius * 0.5;
   clockDiameter = radius * 1.7;
 
-  describe("Functioning pink clock on a grey background.");
+  describe('Functioning pink clock on a grey background.');
 }
 
 function draw() {
