@@ -28,8 +28,7 @@ function setup() {
   rectMode(CORNERS);
 
   describe(
-    "Pink rectangle on a grey background. " +
-      "A user uses their mouse to move a white circle within the pink rectangle."
+    'Pink rectangle on a grey background. A user uses their mouse to move a white circle within the pink rectangle.'
   );
 }
 
