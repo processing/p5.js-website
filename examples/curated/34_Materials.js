@@ -58,6 +58,7 @@ function setup() {
   let selectionArea = createDiv();
   selectionArea.style('background', '#f0f0f0');
   selectionArea.style('width', '400px');
+  selectionArea.style('font-family', 'sans-serif');
 
   // Create material type radio selector
   let materialTypeLabel = createElement('label', 'Material type');
