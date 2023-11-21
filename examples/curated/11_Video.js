@@ -1,30 +1,48 @@
 /*
  * @name Video
- * @arialabel Video of fingers walking 
  * @frame 710,250
  * @description Load a video with multiple formats and toggle between playing
  * and paused with a button press.
  */
+
+//Create your global variables: playing, video, and button.
+//Set playing to false so your video loads in as paused.
 let playing = false;
-let fingers;
+let video;
 let button;
 
 function setup() {
+  //Use the noCanvas() function to remove the canvas.
   noCanvas();
-  // specify multiple formats for different browsers
-  fingers = createVideo(['assets/fingers.mov', 'assets/fingers.webm']);
+
+  //Upload your video in the canvas' assets directory, and
+  //use the createVideo() function to load in your video.
+  //It's best to upload multiple video formats so your video
+  //is visible within different browsers.
+  video = createVideo(['assets/fingers.mov', 'assets/fingers.webm']);
+
+  //Create a button next to the video that says 'play.'
   button = createButton('play');
-  button.mousePressed(toggleVid); // attach button listener
+
+  //Your button will call the toggleVid() function
+  //whenever it is pressed.
+  button.mousePressed(toggleVid);
 }
 
-// plays or pauses the video depending on current state
 function toggleVid() {
-  if (playing) {
-    fingers.pause();
+  //If the video is playing, then pause the video with
+  //the pause() method and make the button's text say 'play.'
+  if (playing == true) {
+    video.pause();
     button.html('play');
+
+  //If the video is paused, then play the video with
+  //the loop() method and make the button's text say 'pause.'
   } else {
-    fingers.loop();
+    video.loop();
     button.html('pause');
   }
+
+  //Switch playing to the opposite boolean value.
   playing = !playing;
 }
