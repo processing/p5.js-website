@@ -74,6 +74,8 @@ function setup() {
     }
     endShape();
   });
+
+  describe('A red-to-blue ribbon that waves over time');
 }
 
 function draw() {
