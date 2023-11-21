@@ -1,60 +1,56 @@
 /*
- * @name Words
+ * @name Text
  * @arialabel Three columns of the words “ichi,” “ni,” “san,” and “shi” gradienting from black to white on a gray background. The first column is right aligned, the middle column is center aligned, and the left column is left aligned
- * @description The text() function is used for writing words to the screen.
- * The words can be aligned left, center, or right with the textAlign()
- * function, and like with shapes, words can be colored with fill().
+ * @description The text() function is used for inserting text into the canvas.
+ * You can change the font and text size using the loadFont() and fontSize() functions.
+ * The text can be aligned left, center, or right with the textAlign()
+ * function, and, like shapes, text can be colored with fill().
  */
+//Define your global variables: font and fontSize.
 let font,
   fontsize = 40;
 
 function preload() {
-  // Ensure the .ttf or .otf font stored in the assets directory
-  // is loaded before setup() and draw() are called
+  //Preload your font's file in the canvas' assets directory. 
+  //loadFont() accepts .ttf or .otf files.
   font = loadFont('assets/SourceSansPro-Regular.otf');
 }
 
 function setup() {
   createCanvas(710, 400);
+  background(250);
 
-  // Set text characteristics
+  //Set the text styling to your predefined font and font size.
   textFont(font);
   textSize(fontsize);
-  textAlign(CENTER, CENTER);
-}
 
-function draw() {
-  background(160);
-
-  // Align the text to the right
-  // and run drawWords() in the left third of the canvas
-  textAlign(RIGHT);
+  //Align the text to the right and run the drawWords() function
+  //to generate the left column of text.
+  textAlign(RIGHT, CENTER);
   drawWords(width * 0.25);
 
-  // Align the text in the center
-  // and run drawWords() in the middle of the canvas
-  textAlign(CENTER);
+  //Align the text to the center and run the drawWords() function
+  //to generate the middle column of text.
+  textAlign(CENTER, CENTER);
   drawWords(width * 0.5);
 
-  // Align the text to the left
-  // and run drawWords() in the right third of the canvas
-  textAlign(LEFT);
+  //Align the text to the left and run the drawWords() function
+  //to generate the left column of text.
+  textAlign(LEFT, CENTER);
   drawWords(width * 0.75);
 }
 
 function drawWords(x) {
-  // The text() function needs three parameters:
-  // the text to draw, the horizontal position,
-  // and the vertical position
-  fill(0);
+  //The drawWords() function creates four text() instances,
+  //using the x coordinate supplied by each column created 
+  //in setup().
+  fill(80);
+  
   text('ichi', x, 80);
 
-  fill(65);
   text('ni', x, 150);
 
-  fill(190);
   text('san', x, 220);
 
-  fill(255);
   text('shi', x, 290);
 }
