@@ -1,18 +1,19 @@
 /*
  * @name Drop
- * @arialabel Empty grey canvas that displays an image if it is dragged from the user’s computer to the grey canvas
- * @description Drag an image file onto the canvas to see it displayed.
+ * @description Using drop, drag an image file onto the canvas to see it displayed. [checks to make sure it's an image file, and offers feedback if its not an img file.]
  */
-
 function setup() {
-  // create canvas
-  const c = createCanvas(710, 400);
+  //Define your canvas as the image drop area.
+  let dropArea = createCanvas(710, 400);
   background(100);
-  // Add an event for when a file is dropped onto the canvas
-  c.drop(gotFile);
+
+  //Add the drop() method to the canvas. Call the gotFile 
+  //function when a file is dropped into the canvas.
+  dropArea.drop(gotFile);
 }
 
 function draw() {
+  //Add text in the center of the canvas with drop instructions.
   fill(255);
   noStroke();
   textSize(24);
@@ -22,13 +23,16 @@ function draw() {
 }
 
 function gotFile(file) {
-  // If it's an image file
+  //If the file dropped into the canvas is an image,
+  //create a variable called img to contain the image.
+  //Remove this image file from the DOM, and only
+  //draw the image within the canvas.
   if (file.type === 'image') {
-    // Create an image DOM element but don't show it
-    const img = createImg(file.data).hide();
-    // Draw the image onto the canvas
+    let img = createImg(file.data).hide();
     image(img, 0, 0, width, height);
   } else {
+    //If the file dropped into the canvas is not an image,
+    //submit 'Not an image file!' into the browser console.
     console.log('Not an image file!');
   }
 }
