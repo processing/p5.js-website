@@ -1,25 +1,27 @@
 /*
  * @name Input and Button
- * @description Input text and click the button to see it affect the the canvas. [shows in-time live updates in the canvas, shows how to tie a button and label to an input]
+ * @description Using the <a href="https://p5js.org/reference/#/p5.Element/createElement" target="_blank">createElement()</a>, 
+ * <a href="https://p5js.org/reference/#/p5/createInput" target="_blank">createInput()</a>, 
+ * and <a href="https://p5js.org/reference/#/p5.Element/createButton" target="_blank">createButton()</a> functions,
+ * you can take a string of text submitted via text input and transpose it into multiple elements within your canvas.
  */
-
-// Define your global variables: input, button, and greeting.
-let input, button, greeting;
+// Define the global variables: input, button, and greeting.
+let nameInput, button, greeting;
 
 function setup() {
   createCanvas(710, 400);
   background(255);
 
   //Use the greeting variable to ask for the person's name.
-  greeting = createElement('h2', 'what is your name?');
+  greeting = createElement('h2', 'What is your name?');
   greeting.position(20, 5);
 
-  //Create your input and button in the canvas. (Note to self: add labeling and proper a11y.)
-  input = createInput();
-  input.position(20, 65);
+  //Create the input and button in the canvas.
+  nameInput = createInput();
+  nameInput.position(20, 65);
 
   button = createButton('submit');
-  button.position(input.x + input.width, 65);
+  button.position(nameInput.x + nameInput.width, 65);
 
   //Use the mousePressed() method to call the greet() 
   //function when the button is pressed.
@@ -32,24 +34,25 @@ function greet() {
   background(255);
 
   //Connect the name variable to the input's value.
-  let name = input.value();
+  let name = nameInput.value();
 
   //Update the greeting to state the person's name.
-  greeting.html('Hello, ${name}!');
+  greeting.html(`Hello, ${name}!`);
 
   //Clear the input's value.
-  input.value('');
+  nameInput.value('');
 
   //Randomly populate the input's value 200 times
   //within the canvas.
   for (let i = 0; i < 200; i++) {
     push();
-    fill(random(255), 255, 255);
+    fill(random(0, 180));
     translate(random(width), random(height));
-
-    //no pi
-    rotate(random(2 * PI));
+    angleMode(DEGREES);
+    rotate(random(2 * 180));
     text(name, 0, 0);
     pop();
   }
+  
+  describe(`${name} repeated 200 times across a white background.`);
 }
