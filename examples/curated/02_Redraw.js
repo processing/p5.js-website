@@ -1,34 +1,75 @@
 /*
  * @name Redraw
- * @arialabel Horizontal white line across a black background that moves higher on the screen with each mouse click
- * @description The redraw() function makes draw() execute once. In this example,
- * draw() is executed once every time the mouse is clicked.
+ * @description This example demonstrates the use of 
+ * <a href="https://p5js.org/reference/#/p5/loop">loop()</a>
+ * and
+ * <a href="https://p5js.org/reference/#/p5/noLoop">noLoop()</a>
+ * to control the animation loop.
+ *
+ * Clicking the mouse toggles the animation loop.  If the animation
+ * loop is stopped, the user can press any key to advance one frame.
+ * 
+ * Advancing a single frame is accomplished by calling the
+ * <a href="https://p5js.org/reference/#/p5/redraw">redraw()</a>
+ * function, which results in a single call to the draw() function.
+ *
  */
 
-let y;
+// Position of the circle
+let x = 25;
 
-// The statements in the setup() function
-// execute once when the program begins
+// Boolean variable to indicate whether the animation loop is running
+let looping = true;
+
 function setup() {
+  // Create the canvas
   createCanvas(720, 400);
-  stroke(255);
-  noLoop();
-  y = height * 0.5;
+ 
+  // Set the color mode to hue-saturation-brightness (HSB)
+  colorMode(HSB);
+
+  // Set the text size
+  textSize(20);
 }
 
-// The statements in draw() are executed until the
-// program is stopped. Each statement is executed in
-// sequence and after the last line is read, the first
-// line is executed again.
 function draw() {
+  // Clear the background
   background(0);
-  y = y - 4;
-  if (y < 0) {
-    y = height;
-  }
-  line(0, y, width, y);
+
+  // Draw a circle, with hue determined by frameCount
+  fill(frameCount%255, 255, 255);
+  circle(x, height/2, 50);
+
+  // Advance the position
+  x += 5;
+
+  // When the circle moves past the right side of the canvas, 
+  // bring it back to the left side
+  if (x > width+25)
+    x = -25;
+
+  // Show the value of the looping variable
+  text("looping: " + looping, 25, 25);
 }
+
 
 function mousePressed() {
+  // Negate the looping variable
+  looping = !looping;
+
+  // Start/stop the animation loop
+  if (looping) {
+    loop();
+  }
+  else {
+    noLoop();
+  }
+}
+
+
+function keyPressed() {
+  // Draw one frame
   redraw();
 }
+
+
