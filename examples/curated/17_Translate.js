@@ -1,41 +1,49 @@
 /*
  * @name Translate
- * @arialabel Two squares one white one black travel horizontally across a grey background. The black square moves faster than the white
- * @description The translate() function allows objects to be
- * moved to any location within the window. The first parameter
- * sets the x-axis offset and the second parameter sets the
- * y-axis offset. This example shows how transforms accumulate.
+ * @description The 
+ * <a href="https://p5js.org/reference/#/p5/translate">translate()</a>
+ * function moves the origin of the coordinate system to the specified
+ * location.
+ *
+ * The 
+ * <a href="https://p5js.org/reference/#/p5/push">push()</a>
+ * and
+ * <a href="https://p5js.org/reference/#/p5/pop">pop()</a>
+ * functions save and restore the coordinate system, respectively.
+ *
+ * Note that in this example, rect() is called three times, drawing the
+ * rectangle at (0,0) each time in a different coordinate system.
  */
 
-let x = 0;
-let y = 0;
-let dim = 80.0;
-
 function setup() {
+  // Create the canvas
   createCanvas(720, 400);
-  noStroke();
+
+  // create screen reader accessible description
+  describe('Three rectangles drawn on the canvas, one at mouse position');
 }
 
 function draw() {
-  background(102);
-  // Animate by increasing our x value
-  x = x + 0.8;
-  // If the shape goes off the canvas, reset the position
-  if (x > width + dim) {
-    x = -dim;
-  }
+  // Clear the background
+  background(0);
 
-  // Even though our rect command draws the shape with its
-  // center at the origin, translate moves it to the new
-  // x and y position
-  translate(x, height / 2 - dim / 2);
-  fill(255);
-  rect(-dim / 2, -dim / 2, dim, dim);
+  // Draw a green rectangle in the upper left corner
+  fill(0, 255, 0);              // set color to green
+  rect(0, 0, 200, 50);          // draw at (0,0)
 
-  // Transforms accumulate. Notice how this rect moves
-  // twice as fast as the other, but it has the same
-  // parameter for the x-axis value
-  translate(x, dim);
-  fill(0);
-  rect(-dim / 2, -dim / 2, dim, dim);
+  // Draw a blue rectangle in the middle of the canvas
+  push();                       // save current coordinate system
+  translate(width/2, height/2); // translate origin to middle of canvas
+  fill(0, 0, 255);              // set color to blue
+  rect(0, 0, 200, 50);          // draw at (0,0) in new coordinate system
+  pop();                        // restore coordinate system
+
+  // Draw orange rectangle at the mouse position
+  push();                       // save current coordinate system
+  translate(mouseX, mouseY);    // translate origin to mouse position
+  fill('orange');               // set color to orange
+  rect(0, 0, 200, 50);          // draw at (0,0) in new coordinate system
+  pop();                        // restore coordinate system
 }
+
+
