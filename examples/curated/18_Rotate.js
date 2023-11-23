@@ -1,44 +1,62 @@
 /*
  * @name Rotate
- * @arialabel White square on a dark grey background rotates side to side 
- * @description Rotating a square around the Z axis.
- * To get the results you expect, send the rotate function angle
- * parameters that are values between 0 and PI*2 (TWO_PI which is
- * roughly 6.28). If you prefer to think about angles as degrees
- * (0-360), you can use the radians() method to convert your values.
- * For example: rotate(radians(90)) is identical to the statement
- * rotate(PI/2). In this example, every even numbered second a jitter
- * is added to the rotation. During odd seconds, rotation moves CW and
- * CCW at the speed determined by the last jitter value.
- */
+ * @description The
+ * <a href="https://p5js.org/reference/#/p5/rotate">rotate()</a>
+ * function rotates the current coordinate system around the current
+ * origin.
+ *
+ * Note that by default the origin is the upper left corner of the canvas.
+ * In order to rotate around the center of the canvas, we must first
+ * translate the coordinate system, and then rotate around the new origin.
+ *
+ * The 
+ * <a href="https://p5js.org/reference/#/p5/push">push()</a>
+ * and
+ * <a href="https://p5js.org/reference/#/p5/pop">pop()</a>
+ * functions save and restore the coordinate system, respectively.
+ *
+  */
 
-let angle = 0.0;
-let jitter = 0.0;
 
 function setup() {
+  // Create the canvas
   createCanvas(720, 400);
-  noStroke();
+
+  // Set angle mode to degrees
+  angleMode(DEGREES);
+
+  // Set text color, size, and alignment
   fill(255);
-  //Draw the rectangle from the center and it will also be the
-  //rotate around that center
-  rectMode(CENTER);
+  textSize(20);
+  textAlign(CENTER, CENTER);
+
+  // Set the color mode to hue-saturation-brightness (HSB)
+  colorMode(HSB);
+
+  // Create screen reader accessible description
+  describe('line segments rotated around center of canvas');
 }
+
 
 function draw() {
-  background(51);
+  // Clear the background
+  background(0);
 
-  // during even-numbered seconds (0, 2, 4, 6...) add jitter to
-  // the rotation
-  if (second() % 2 === 0) {
-    jitter = random(-0.1, 0.1);
+  // Loop through angles 0, 30, 60, 90 degrees
+  for (let angle=0; angle <= 90; angle += 30) {
+      push();                       // save current coordinate system
+
+      translate(width/2, height/2); // translate to center of canvas
+      rotate(angle);                // rotate by angle
+
+      stroke(angle+100, 255, 255);  // set hue based on angle
+      strokeWeight(5);              // set line width
+      line(0, 0, 150, 0);           // draw line along x-axis
+
+      strokeWeight(1);              // reset line width for text
+      text(""+angle, 170, 0);       // display the angle
+
+      pop();                        // restore coordinate system
   }
-  //increase the angle value using the most recent jitter value
-  angle = angle + jitter;
-  //use cosine to get a smooth CW and CCW motion when not jittering
-  let c = cos(angle);
-  //move the shape to the center of the canvas
-  translate(width / 2, height / 2);
-  //apply the final rotation
-  rotate(c);
-  rect(0, 0, 180, 180);
 }
+
