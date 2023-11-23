@@ -18,9 +18,6 @@
 // Position of the circle
 let x = 25;
 
-// Boolean variable to indicate whether the animation loop is running
-let looping = true;
-
 function setup() {
   // Create the canvas
   createCanvas(720, 400);
@@ -37,33 +34,29 @@ function draw() {
   background(0);
 
   // Draw a circle, with hue determined by frameCount
-  fill(frameCount%255, 255, 255);
+  fill(frameCount%256, 255, 255);
   circle(x, height/2, 50);
 
   // Advance the position
   x += 5;
 
-  // When the circle moves past the right side of the canvas, 
-  // bring it back to the left side
+  // Reset the circle position after it moves off the right side
   if (x > width+25)
     x = -25;
 
-  // Show the value of the looping variable
-  text("looping: " + looping, 25, 25);
+  // Show the value of isLooping()
+  text("isLooping(): " + isLooping(), 25, 25);
+
+  describe('circle at x position ' + x + ' moving to the right');
 }
 
 
 function mousePressed() {
-  // Negate the looping variable
-  looping = !looping;
-
   // Start/stop the animation loop
-  if (looping) {
-    loop();
-  }
-  else {
+  if (isLooping()) 
     noLoop();
-  }
+  else 
+    loop();
 }
 
 
