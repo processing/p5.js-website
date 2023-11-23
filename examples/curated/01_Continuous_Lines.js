@@ -40,6 +40,9 @@ function setup() {
 
   // Set color mode to hue-saturation-value (HSB)
   colorMode(HSB);
+
+  // Set screen reader accessible description
+  describe('A blank canvas where the user draws by dragging the mouse');
 }
 
 function draw() {
