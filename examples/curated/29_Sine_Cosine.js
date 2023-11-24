@@ -1,71 +1,137 @@
-let textSin, textCos;
+/*
+ * @name Sine Cosine 
+ * @description This example demonstrates the 
+ * <a href="https://en.wikipedia.org/wiki/Sine_and_cosine">sine and cosine</a> 
+ * mathematical functions.  
+ *
+ * The animation shows uniform circular motion around the unit circle
+ * (circle with radius 1).  Any angle measured from the the x-axis
+ * determines a point on the circle.  The cosine and sine of the angle
+ * are defined to be the x and y coordinates, respectively, of that
+ * point.
+ * 
+ */
+
 
 function setup() {
   createCanvas(400, 400);
   angleMode(DEGREES);
-  colorMode(HSB);
-  textAlign(LEFT, CENTER);
+  describe('Animated demonstration of the sine and cosine functions using the unit circle.');
 }
+
+
+const circleX = 200;
+const circleY = 150;
+const circleRadius = 75;
+
+const graphX = 50;
+const graphY = 300;
+const graphAmplitude = 50;
+const graphPeriod = 300;
+
 
 function draw() {
-  background(100);
+  background(0);
 
-  //Circle Path
+  // Set angle based on frameCount, and display current value
+
+  let angle = frameCount % 360;
+
+  fill(255);
+  textSize(20);
+  textAlign(LEFT, CENTER);
+  text("angle: " + angle, 25, 25);
+
+  // Draw circle and diameters
+
   noFill();
-  stroke(90);
-  circle(200, 100, 100);
-  noStroke();
-
-  //Diameters
-  stroke(90);
+  stroke(128);
   strokeWeight(3);
-  line(200, 50, 200, 150);
-  line(150, 100, 250, 100);
+  circle(circleX, circleY, 2*circleRadius);
+  line(circleX, circleY-circleRadius, circleX, circleY+circleRadius);
+  line(circleX-circleRadius, circleY, circleX+circleRadius, circleY);
+
+  // Draw moving points
+
+  let pointX = circleX + circleRadius * cos(angle);
+  let pointY = circleY - circleRadius * sin(angle);
+
+  line(circleX, circleY, pointX, pointY);
+
   noStroke();
 
-  //Black Circle
-  //X Co-ordinate Controlled by Sine
-  //Y Co-ordinate Controlled by Cosine
-  fill(0);
-  circle(200 + 50 * sin(frameCount), 100 + 50 * cos(frameCount), 10);
+  fill('white');
+  circle(pointX, pointY, 10);
 
-  //Orange Circle
-  //X Co-ordinate Controlled by Sine
-  fill(20, 100, 100);
-  circle(200 + 50 * sin(frameCount), 100, 10);
+  fill('orange');
+  circle(pointX, circleY, 10);
 
-  //Blue Circle
-  //Y Co-ordinate Controlled by Cosine
-  fill(200, 100, 100);
-  circle(200, 100 + 50 * cos(frameCount), 10);
+  fill('blue');
+  circle(circleX, pointY, 10);
 
-  //Diagram Showing Sine and Cosine Wave
+  // Draw graph
 
-  //Axes
-  stroke(90);
+  stroke('grey');
   strokeWeight(3);
-  line(200, 250, 200, 350);
-  line(0, 300, 400, 300);
-  noStroke();
+  line(graphX, graphY, graphX+300, graphY);
+  line(graphX, graphY-graphAmplitude, graphX, graphY+graphAmplitude);
+  line(graphX+graphPeriod, graphY-graphAmplitude, graphX+graphPeriod, graphY+graphAmplitude);
 
-  //Sine Wave Label
-  textSin = 300 + 50 * sin(-frameCount);
-  fill(20, 100, 100, 0.5);
-  text("X = " + " " + (200 + 50 * sin(frameCount)), 220, textSin);
+  fill('grey');
+  strokeWeight(1);
+  textAlign(CENTER, CENTER);
+  text("0", graphX, graphY+graphAmplitude+20);
+  text("360", graphX+graphPeriod, graphY+graphAmplitude+20);
+  text("1", graphX/2, graphY-graphAmplitude);
+  text("0", graphX/2, graphY);
+  text("-1", graphX/2, graphY+graphAmplitude);
 
-  //Cosine Wave Label
-  textCos = 300 + 50 * cos(-frameCount);
-  fill(200, 100, 100, 0.5);
-  text("Y = " + " " + (100 + 50 * cos(frameCount)), 220, textCos);
+  fill('orange');
+  text("cos", graphX + graphPeriod + graphX/2, graphY-graphAmplitude);
+  fill('blue');
+  text("sin", graphX + graphPeriod + graphX/2, graphY);
 
-  for (let i = 0; i <= 200; i++) {
-    let ySin = 300 + 50 * sin(-frameCount + i);
-    let yCos = 300 + 50 * cos(-frameCount + i);
-    let x = width / 2 - 1 * i;
-    fill(20, 100, 100, 0.5);
-    circle(x, ySin, 10);
+  // Draw cosine curve
 
-    fill(200, 100, 100, 0.5);
-    circle(x, yCos, 10);
+  noFill();
+  stroke('orange');
+  beginShape();
+  for (let t=0; t<=360; t++) {
+    let x = map(t, 0, 360, graphX, graphX+graphPeriod);
+    let y = graphY - graphAmplitude * cos(t);
+    vertex(x, y);
   }
+  endShape();
+
+  // Draw sine curve
+
+  noFill();
+  stroke('blue');
+  beginShape();
+  for (let t=0; t<=360; t++) {
+    let x = map(t, 0, 360, graphX, graphX+graphPeriod);
+    let y = graphY - graphAmplitude * sin(t);
+    vertex(x, y);
+  }
+  endShape();
+
+  // Draw moving line
+
+  let lineX = map(angle, 0, 360, graphX, graphX+graphPeriod);
+  stroke('grey');
+  line(lineX, graphY-graphAmplitude, lineX, graphY+graphAmplitude);
+
+  // Draw moving points on graph
+
+  let orangeY = graphY - graphAmplitude * cos(angle);
+  let blueY = graphY - graphAmplitude * sin(angle);
+
+  noStroke();
+
+  fill('orange');
+  circle(lineX, orangeY, 10);
+
+  fill('blue');
+  circle(lineX, blueY, 10);
 }
+
