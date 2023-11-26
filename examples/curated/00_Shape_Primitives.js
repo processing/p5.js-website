@@ -1,32 +1,38 @@
 /*
  * @name Shape Primitives
- * @arialabel From left to right: a grey triangle, a darker grey square, a light grey trapezoid, a white circle, a light grey triangle, and a white half circle, on a black background
- * @description The basic shape primitive functions are triangle(),
- * rect(), quad(), ellipse(), and arc(). Squares are made with rect()
- * and circles are made with ellipse(). Each of these functions requires
- * a number of parameters to determine the shape's position and size.
+ * @description This program demostrates the use of the basic shape 
+ * primitive functions
+ * <a href="https://p5js.org/reference/#/p5/rect">rect()</a>,
+ * <a href="https://p5js.org/reference/#/p5/ellipse">ellipse()</a>,
+ * <a href="https://p5js.org/reference/#/p5/circle">circle()</a>,
+ * <a href="https://p5js.org/reference/#/p5/quad">quad()</a>,
+ * <a href="https://p5js.org/reference/#/p5/arc">arc()</a>, and
+ * <a href="https://p5js.org/reference/#/p5/triangle">triangle()</a>.
  */
+
+
 function setup() {
-  // Sets the screen to be 720 pixels wide and 400 pixels high
   createCanvas(720, 400);
   background(0);
-  noStroke();
 
-  fill(204);
-  triangle(18, 18, 18, 360, 81, 360);
+  fill('red');
+  rect(20, 50, 200, 100);
 
-  fill(102);
-  rect(81, 81, 63, 63);
+  fill('yellow');
+  ellipse(360, 100, 200, 100);
 
-  fill(204);
-  quad(189, 18, 216, 18, 216, 360, 144, 360);
+  fill('lime');
+  circle(600, 100, 100);
 
-  fill(255);
-  ellipse(252, 144, 72, 72);
+  fill('aqua');
+  quad(20, 250, 70, 200, 220, 300, 170, 350);
 
-  fill(204);
-  triangle(288, 18, 351, 360, 288, 360);
+  fill('blue');
+  arc(360, 300, 200, 100, 0, PI); // compare to ellipse()
 
-  fill(255);
-  arc(479, 300, 280, 280, PI, TWO_PI);
+  fill('fuchsia');
+  triangle(550, 350, 600, 250, 650, 350);
+ 
+  describe('Six primitive shapes arranged in a grid.');
 }
+
