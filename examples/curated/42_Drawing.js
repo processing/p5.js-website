@@ -1,113 +1,148 @@
 /*
-* @name Drawing
-* @arialabel When the user clicks and drags on the light grey background, the user draws a pattern of dark grey circles connected by dark grey lines which also disappears after a bit.
-* @description Generative painting program.
-*/
+ * @name Connected Particles
+ * @description This example uses two custom
+ * <a href="https://p5js.org/reference/#/p5/class" target="_blank">classes</a>.
+ * The Particle class stores a position, velocity, and hue. It renders
+ * a circle using the current position and hue, and it updates the
+ * position using the current velocity. The Path class stores an array
+ * of objects created from the Particle class. It renders lines
+ * connecting each of the particles. When the user clicks the mouse, the
+ * sketch creates a new instance of the Path class. When the user drags
+ * the mouse, the sketch adds a new instance of the Particle class to
+ * the current path.
+ */
 
-// All the paths
+// Array of path objects, each containing an array of particles
 let paths = [];
-// Are we painting?
-let painting = false;
-// How long until the next circle
-let next = 0;
-// Where are we now and where were we?
-let current;
-let previous;
+
+// How long until the next particle
+let framesBetweenParticles = 5;
+let nextParticleFrame = 0;
+
+// Location of last created particle
+let previousParticlePosition;
+
+// How long it takes for a particle to fade out
+let particleFadeFrames = 180;
 
 function setup() {
   createCanvas(720, 400);
-  current = createVector(0,0);
-  previous = createVector(0,0);
-};
+  colorMode(HSB);
+  previousParticlePosition = createVector();
+  describe(
+    'When the user clicks and drags on the black background, the user draws a pattern of multicolored circles outlined in white and connected by white lines. The circles and lines fade out over time.'
+  );
+}
 
 function draw() {
-  background(200);
-  
-  // If it's time for a new point
-  if (millis() > next && painting) {
+  background(0);
 
-    // Grab mouse position      
-    current.x = mouseX;
-    current.y = mouseY;
-
-    // New particle's force is based on mouse movement
-    let force = p5.Vector.sub(current, previous);
-    force.mult(0.05);
-
-    // Add new particle
-    paths[paths.length - 1].add(current, force);
-    
-    // Schedule next circle
-    next = millis() + random(100);
-
-    // Store mouse values
-    previous.x = current.x;
-    previous.y = current.y;
-  }
-
-  // Draw all paths
-  for( let i = 0; i < paths.length; i++) {
-    paths[i].update();
-    paths[i].display();
+  // Update and draw all paths
+  for (let path of paths) {
+    path.update();
+    path.display();
   }
 }
 
-// Start it up
+// Create a new path when mouse is pressed
 function mousePressed() {
-  next = 0;
-  painting = true;
-  previous.x = mouseX;
-  previous.y = mouseY;
+  nextParticleFrame = frameCount;
   paths.push(new Path());
+
+  // Reset previous particle position to mouse
+  //  so that first particle in path has zero velocity
+  previousParticlePosition.set(mouseX, mouseY);
+  createParticle();
 }
 
-// Stop
-function mouseReleased() {
-  painting = false;
+// Add particles when mouse is dragged
+function mouseDragged() {
+  // If it's time for a new point
+  if (frameCount >= nextParticleFrame) {
+    createParticle();
+  }
 }
 
-// A Path is a list of particles
+function createParticle() {
+  // Grab mouse position
+  let mousePosition = createVector(mouseX, mouseY);
+
+  // New particle's velocity is based on mouse movement
+  let velocity = p5.Vector.sub(mousePosition, previousParticlePosition);
+  velocity.mult(0.05);
+
+  // Add new particle
+  let lastPath = paths[paths.length - 1];
+  lastPath.addParticle(mousePosition, velocity);
+
+  // Schedule next particle
+  nextParticleFrame = frameCount + framesBetweenParticles;
+
+  // Store mouse values
+  previousParticlePosition.set(mouseX, mouseY);
+}
+
+// Path is a list of particles
 class Path {
   constructor() {
     this.particles = [];
-    this.hue = random(100);
   }
 
-  add(position, force) {
-    // Add a new particle with a position, force, and hue
-    this.particles.push(new Particle(position, force, this.hue));
+  addParticle(position, velocity) {
+    // Add a new particle with a position, velocity, and hue
+    let particleHue = (this.particles.length * 30) % 360;
+    this.particles.push(new Particle(position, velocity, particleHue));
   }
-  
-  // Display plath
-  update() {  
-    for (let i = 0; i < this.particles.length; i++) {
-      this.particles[i].update();
+
+  // Update all particles
+  update() {
+    for (let particle of this.particles) {
+      particle.update();
     }
-  }  
-  
-  // Display plath
-  display() {    
-    // Loop through backwards
+  }
+
+  // Draw a line between two particles
+  connectParticles(particleA, particleB) {
+    let opacity = particleA.framesRemaining / particleFadeFrames;
+    stroke(255, opacity);
+    line(
+      particleA.position.x,
+      particleA.position.y,
+      particleB.position.x,
+      particleB.position.y
+    );
+  }
+
+  // Display path
+  display() {
+    // Loop through backwards so that when a particle is removed,
+    //  the index number for the next loop will match up with the
+    //  particle before the removed one
     for (let i = this.particles.length - 1; i >= 0; i--) {
-      // If we shold remove it
-      if (this.particles[i].lifespan <= 0) {
+      // Remove this particle if it has no frames remaining
+      if (this.particles[i].framesRemaining <= 0) {
         this.particles.splice(i, 1);
-      // Otherwise, display it
+        // Otherwise, display it
       } else {
-        this.particles[i].display(this.particles[i+1]);
+        this.particles[i].display();
+        // If there is a particle after this one
+        if (i < this.particles.length - 1) {
+          // Connect them with a line
+          this.connectParticles(this.particles[i], this.particles[i + 1]);
+        }
       }
     }
-  
-  }  
+  }
 }
 
-// Particles along the path
+// Particle along a path
 class Particle {
-  constructor(position, force, hue) {
-    this.position = createVector(position.x, position.y);
-    this.velocity = createVector(force.x, force.y);
+  constructor(position, velocity, hue) {
+    this.position = position.copy();
+    this.velocity = velocity.copy();
+    this.hue = hue;
     this.drag = 0.95;
-    this.lifespan = 255;
+    this.framesRemaining = particleFadeFrames;
   }
 
   update() {
@@ -116,18 +151,14 @@ class Particle {
     // Slow it down
     this.velocity.mult(this.drag);
     // Fade it out
-    this.lifespan--;
+    this.framesRemaining = this.framesRemaining - 1;
   }
 
-  // Draw particle and connect it with a line
-  // Draw a line to another
-  display(other) {
-    stroke(0, this.lifespan);
-    fill(0, this.lifespan/2);    
-    ellipse(this.position.x,this.position.y, 8, 8);    
-    // If we need to draw a line
-    if (other) {
-      line(this.position.x, this.position.y, other.position.x, other.position.y);
-    }
+  // Draw particle
+  display() {
+    let opacity = this.framesRemaining / particleFadeFrames;
+    noStroke();
+    fill(this.hue, 80, 90, opacity);
+    circle(this.position.x, this.position.y, 24);
   }
 }
