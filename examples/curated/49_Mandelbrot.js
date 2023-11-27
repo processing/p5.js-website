@@ -1,15 +1,18 @@
 /*
  * @name The Mandelbrot Set
- * @arialabel A fractal that roughly resembles a series of heart-shaped disks, to which smaller disks are attached and consists of a connected set
  * @description Simple rendering of the Mandelbrot set.
- * Based on Daniel Shiffman's <a href="https://processing.org/examples/mandelbrot.html">Mandelbrot Example</a> for Processing.
+ * Based on Daniel Shiffman's 
+ * <a href="https://processing.org/examples/mandelbrot.html">Mandelbrot Example</a> for Processing.
  */
+
 
 function setup() {
   createCanvas(710, 400);
   pixelDensity(1);
   noLoop();
+  describe('Simple rendering of the Mandelbrot set.');
 }
+
 
 function draw() {
   background(0);
@@ -24,7 +27,6 @@ function draw() {
   // Start at negative half the width and height
   const xmin = -w/2;
   const ymin = -h/2;
-
   // Make sure we can write to the pixels[] array.
   // Only need to do this once since we don't do any other drawing.
   loadPixels();
@@ -65,23 +67,24 @@ function draw() {
         n++;
       }
 
-      // We color each pixel based on how long it takes to get to infinity
-      // If we never got there, let's pick the color black
-      const pix = (i+j*width)*4;
-      const norm = map(n, 0, maxiterations, 0, 1);
-      let bright = map(sqrt(norm), 0, 1, 0, 255);
-      if (n == maxiterations) {
-        bright = 0;
-      } else {
-        // Gosh, we could make fancy colors here if we wanted
-        pixels[pix + 0] = bright;
-        pixels[pix + 1] = bright;
-        pixels[pix + 2] = bright;
-        pixels[pix + 3] = 255;
-      }
+      // Color each pixel based on how long it takes to get to infinity
+
+      const index = (i+j*width)*4;
+      const t = map(n, 0, maxiterations, 0, 1);
+
+      let c = color(0);
+      if (n < maxiterations)
+          c = lerpColor(color('blue'), color('yellow'), t);
+
+      // Copy the RGBA values from the color to the pixel
+      for (let i=0; i<4; i++)
+        pixels[index+i] = c.levels[i];
+
       x += dx;
     }
     y += dy;
   }
   updatePixels();
 }
+
+
