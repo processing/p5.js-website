@@ -1,105 +1,161 @@
-/*
+/**
  * @name Load Saved JSON
- * @arialabel When the user clicks on the screen, a small white circle appears with a label
- * @description Create a Bubble class, instantiate multiple bubbles using data from
- * a JSON file, and display results on the screen.
- * Because web browsers differ in where they save files, we do not make use of
- * saveJSON(), unlike the Processing example.<br><br>
- * Based on Daniel Shiffman's <a href="https://processing.org/examples/loadsavejson.html">LoadSaveJSON Example</a> for Processing.
- */
+ * @description
+ * <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON" target="_blank">JavaScript Object Notation, or JSON,</a>
+ * is a format for writing data in a file. While the syntax comes from
+ * JavaScript, JSON is used in many other contexts. This example  is
+ * based on Daniel Shiffman's Loading JSON Data Example for Processing
+ * written in Java. It uses a
+ * <a href="https://p5js.org/reference/#/p5/class" target="_blank">class</a>
+ * to organize data representing a bubble. When the sketch starts, it
+ * loads the data for two bubbles from a JSON file. The user can add
+ * new bubbles, download an updated JSON file, and load in a JSON file.
+ * */
 
-// Bubble class
-class Bubble {
-  constructor(x, y, diameter, name) {
-    this.x = x;
-    this.y = y;
-    this.diameter = diameter;
-    this.radius = diameter / 2;
-    this.name = name;
+// Global array to hold all bubble objects
+let bubbles;
 
-    this.over = false;
-  }
+// Store mouse press position so that a bubble can be created there
+let mousePressX = 0;
+let mousePressY = 0;
 
-  // Check if mouse is over the bubble
-  rollover(px, py) {
-    let d = dist(px, py, this.x, this.y);
-    this.over = d < this.radius;
-  }
-
-  // Display the Bubble
-  display() {
-    stroke(0);
-    strokeWeight(0.8);
-    noFill();
-    ellipse(this.x, this.y, this.diameter, this.diameter);
-    if (this.over) {
-      fill(0);
-      textAlign(CENTER);
-      text(this.name, this.x, this.y + this.radius + 20);
-    }
-  }
-}
-
-let data = {}; // Global object to hold results from the loadJSON call
-let bubbles = []; // Global array to hold all bubble objects
+// Remember whether user is currently creating a bubble
+let creatingBubble = false;
 
 // Put any asynchronous data loading in preload to complete before "setup" is run
 function preload() {
-  data = loadJSON('assets/bubbles.json');
+  // Load the JSON file and then call the loadData() function below
+  loadJSON('assets/bubbles.json', loadData);
 }
 
 // Convert saved Bubble data into Bubble Objects
-function loadData() {
-  let bubbleData = data['bubbles'];
-  for (let i = 0; i < bubbleData.length; i++) {
-    // Get each object in the array
-    let bubble = bubbleData[i];
-    // Get a position object
-    let position = bubble['position'];
+function loadData(bubblesData) {
+  bubbles = [];
+  for (let bubble of bubblesData) {
     // Get x,y from position
-    let x = position['x'];
-    let y = position['y'];
+    let x = bubble.x;
+    let y = bubble.y;
 
-    // Get diameter and label
-    let diameter = bubble['diameter'];
-    let label = bubble['label'];
+    // Get radius and name
+    let radius = bubble.radius;
+    let name = bubble.name;
 
     // Put object in array
-    bubbles.push(new Bubble(x, y, diameter, label));
-  }
-}
-
-// Create a new Bubble each time the mouse is clicked.
-function mousePressed() {
-  // Add diameter and label to bubble
-  let diameter = random(40, 80);
-  let label = 'New Label';
-
-  // Append the new JSON bubble object to the array
-  bubbles.push(new Bubble(mouseX, mouseY, diameter, label));
-
-  // Prune Bubble Count if there are too many
-  if (bubbles.length > 10) {
-    bubbles.shift(); // remove first item from array
+    bubbles.push(new Bubble(x, y, radius, name));
   }
 }
 
 function setup() {
-  createCanvas(640, 360);
-  loadData();
+  let p5Canvas = createCanvas(640, 360);
+
+  // When canvas is clicked, call saveMousePress()
+  p5Canvas.mousePressed(saveMousePress);
+
+  ellipseMode(RADIUS);
+  textSize(20);
+
+  // Add download button and call downloadBubbleData() when pressed
+  let downloadButton = createButton('Download bubble data');
+  downloadButton.mousePressed(downloadBubbleFile);
+
+  // Add load button to load downloaded data file
+  let loadButton = createFileInput(loadBubbleFile);
+
+  // Only accept files with .json extension
+  loadButton.attribute('accept', '.json');
+
+  describe(
+    'When the user clicks on the canvas, drags, and releases, a black outline circle representing a bubble appears on the white background. A prompt asks the user to name the bubble, and this name appears under the circle when the mouse hovers over it.'
+  );
 }
 
 function draw() {
   background(255);
 
   // Display all bubbles
-  for (let i = 0; i < bubbles.length; i++) {
-    bubbles[i].display();
-    bubbles[i].rollover(mouseX, mouseY);
+  for (let bubble of bubbles) {
+    bubble.display();
+  }
+
+  // Display bubble in progress
+  if (creatingBubble === true) {
+    let radius = dist(mousePressX, mousePressY, mouseX, mouseY);
+    noFill();
+    stroke(0);
+    circle(mousePressX, mousePressY, radius);
   }
 
   // Label directions at bottom
-  textAlign(LEFT);
+  textAlign(LEFT, BOTTOM);
   fill(0);
-  text('Click to add bubbles.', 10, height - 10);
+  noStroke();
+  text('Click and drag to add bubbles.', 10, height - 10);
+}
+
+// Save current mouse position to use as next bubble position
+function saveMousePress() {
+  mousePressX = mouseX;
+  mousePressY = mouseY;
+  creatingBubble = true;
+}
+
+// Add a bubble if in the process of creating one
+function mouseReleased() {
+  if (creatingBubble === true) {
+    addBubble();
+    creatingBubble = false;
+  }
+}
+
+// Create a new Bubble each time the mouse is clicked.
+function addBubble() {
+  // Add radius and label to bubble
+  let radius = dist(mousePressX, mousePressY, mouseX, mouseY);
+  let name = prompt('Enter a name for the new bubble');
+
+  // If the user pressed 'Okay' and not 'Cancel'
+  if (name !== null) {
+    // Append the new JSON bubble object to the array
+    bubbles.push(new Bubble(mousePressX, mousePressY, radius, name));
+  }
+}
+
+// Load bubble data from JSON file
+function loadBubbleFile(file) {
+  loadData(file.data);
+}
+
+// Download bubble data as JSON file
+function downloadBubbleFile() {
+  save(bubbles, 'bubbles.json');
+}
+
+// Bubble class
+class Bubble {
+  constructor(x, y, radius, name) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.name = name;
+  }
+
+  // Check if mouse is over the bubble
+  mouseOver() {
+    let mouseDistance = dist(mouseX, mouseY, this.x, this.y);
+    return mouseDistance < this.radius;
+  }
+
+  // Display the bubble
+  display() {
+    stroke(0);
+    noFill();
+    strokeWeight(4);
+    circle(this.x, this.y, this.radius);
+    if (this.mouseOver() === true) {
+      fill(0);
+      noStroke();
+      textAlign(CENTER);
+      text(this.name, this.x, this.y + this.radius + 30);
+    }
+  }
 }
