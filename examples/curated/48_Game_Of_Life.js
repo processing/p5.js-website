@@ -1,97 +1,134 @@
 /*
  * @name Game of Life
- * @arialabel Grid of white squares on a black background with some squares flickering between white and black to generate random patterns
- * @description A basic implementation of John Conway's Game of Life CA
- * (<a href="http://natureofcode.com">natureofcode.com</a>)
+ * @description The Game of Life is a cellular automaton created by
+ * mathematician John Conway. A cellular automaton is a type of
+ * simulation. In the Game of Life, a grid of cells are each either dead
+ * or alive. In this example, black squares represent living cells, and
+ * white squares represent dead cells. As the simulation runs, cells
+ * switch between being dead and alive based on a set of rules:
+ * <ol>
+ *  <li>Any live cell with fewer than two live neighbours dies.</li>
+ *  <li>Any live cell with more than three live neighbours dies.</li>
+ *  <li>Any live cell with two or three live neighbours lives, unchanged,
+ * to the next generation.</li>
+ *  <li>Any dead cell with exactly three live neighbours will come to life.</li>
+ * </ol>
+ * These rules generate complex interactions. Click the canvas to start
+ * the simulation with randomized cells. Clicking the canvas again will
+ * restart it.
  */
 
-let w;
-let columns;
-let rows;
-let board;
-let next;
+let cellSize = 20;
+let columnCount;
+let rowCount;
+let currentCells = [];
+let nextCells = [];
 
 function setup() {
   // Set simulation framerate to 10 to avoid flickering
   frameRate(10);
   createCanvas(720, 400);
-  w = 20;
+
   // Calculate columns and rows
-  columns = floor(width / w);
-  rows = floor(height / w);
-  // Wacky way to make a 2D array is JS
-  board = new Array(columns);
-  for (let i = 0; i < columns; i++) {
-    board[i] = new Array(rows);
+  columnCount = floor(width / cellSize);
+  rowCount = floor(height / cellSize);
+
+  // Set each column in current cells to an empty array
+  // This allows cells to be added to this array
+  // The index of the cell will be its row number
+  for (let column = 0; column < columnCount; column++) {
+    currentCells[column] = [];
   }
-  // Going to use multiple 2D arrays and swap them
-  next = new Array(columns);
-  for (i = 0; i < columns; i++) {
-    next[i] = new Array(rows);
+
+  // Repeat the same process for the next cells
+  for (let column = 0; column < columnCount; column++) {
+    nextCells[column] = [];
   }
-  init();
+
+  noLoop();
+  describe(
+    "Grid of squares that switch between white and black, demonstrating a simulation of John Conway's Game of Life."
+  );
 }
 
 function draw() {
-  background(255);
   generate();
-  for ( let i = 0; i < columns;i++) {
-    for ( let j = 0; j < rows;j++) {
-      if ((board[i][j] == 1)) fill(0);
-      else fill(255);
+  for (let column = 0; column < columnCount; column++) {
+    for (let row = 0; row < rowCount; row++) {
+      // Get cell value (0 or 1)
+      let cell = currentCells[column][row];
+
+      // Convert cell value to get black (0) for alive or 255 (white) for dead
+      fill((1 - cell) * 255);
       stroke(0);
-      rect(i * w, j * w, w-1, w-1);
+      rect(column * cellSize, row * cellSize, cellSize, cellSize);
     }
   }
-
 }
 
-// reset board when mouse is pressed
+// Reset board when mouse is pressed
 function mousePressed() {
-  init();
+  randomizeBoard();
+  loop();
 }
 
 // Fill board randomly
-function init() {
-  for (let i = 0; i < columns; i++) {
-    for (let j = 0; j < rows; j++) {
-      // Lining the edges with 0s
-      if (i == 0 || j == 0 || i == columns-1 || j == rows-1) board[i][j] = 0;
-      // Filling the rest randomly
-      else board[i][j] = floor(random(2));
-      next[i][j] = 0;
+function randomizeBoard() {
+  for (let column = 0; column < columnCount; column++) {
+    for (let row = 0; row < rowCount; row++) {
+      // Randomly select value of either 0 (dead) or 1 (alive)
+      currentCells[column][row] = random([0, 1]);
     }
   }
 }
 
-// The process of creating the new generation
+// Create a new generation
 function generate() {
+  // Loop through every spot in our 2D array and count living neighbors
+  for (let column = 0; column < columnCount; column++) {
+    for (let row = 0; row < rowCount; row++) {
+      // Column left of current cell
+      //  if column is at left edge, use modulus to wrap to right edge
+      let left = (column - 1 + columnCount) % columnCount;
 
-  // Loop through every spot in our 2D array and check spots neighbors
-  for (let x = 1; x < columns - 1; x++) {
-    for (let y = 1; y < rows - 1; y++) {
-      // Add up all the states in a 3x3 surrounding grid
-      let neighbors = 0;
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          neighbors += board[x+i][y+j];
-        }
-      }
+      // Column right of current cell
+      //  if column is at right edge, use modulus to wrap to left edge
+      let right = (column + 1) % columnCount;
 
-      // A little trick to subtract the current cell's state since
-      // we added it in the above loop
-      neighbors -= board[x][y];
+      // Row above current cell
+      //  if row is at top edge, use modulus to wrap to bottom edge
+      let above = (row - 1 + rowCount) % rowCount;
+
+      // Row below current cell
+      //  if row is at bottom edge, use modulus to wrap to top edge
+      let below = (row + 1) % rowCount;
+
+      // Count living neighbors surrounding current cell
+      let neighbors =
+        currentCells[left][above] +
+        currentCells[column][above] +
+        currentCells[right][above] +
+        currentCells[left][row] +
+        currentCells[right][row] +
+        currentCells[left][below] +
+        currentCells[column][below] +
+        currentCells[right][below];
+
       // Rules of Life
-      if      ((board[x][y] == 1) && (neighbors <  2)) next[x][y] = 0;           // Loneliness
-      else if ((board[x][y] == 1) && (neighbors >  3)) next[x][y] = 0;           // Overpopulation
-      else if ((board[x][y] == 0) && (neighbors == 3)) next[x][y] = 1;           // Reproduction
-      else                                             next[x][y] = board[x][y]; // Stasis
+      // 1. Any live cell with fewer than two live neighbours dies
+      // 2. Any live cell with more than three live neighbours dies
+      if (neighbors < 2 || neighbors > 3) {
+        nextCells[column][row] = 0;
+        // 4. Any dead cell with exactly three live neighbours will come to life.
+      } else if (neighbors === 3) {
+        nextCells[column][row] = 1;
+        // 3. Any live cell with two or three live neighbours lives, unchanged, to the next generation.
+      } else nextCells[column][row] = currentCells[column][row];
     }
   }
 
-  // Swap!
-  let temp = board;
-  board = next;
-  next = temp;
+  // Swap the current and next arrays for next generation
+  let temp = currentCells;
+  currentCells = nextCells;
+  nextCells = temp;
 }
-
