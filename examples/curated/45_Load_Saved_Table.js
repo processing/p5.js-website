@@ -1,111 +1,166 @@
-/*
+/**
  * @name Load Saved Table
- * @arialabel Four white circles with labels 
- * @description Create a Bubble class, instantiate multiple bubbles using data from
- * a csv file, and display results on the screen.
- * Because web browsers differ in where they save files, we do not make use of
- * saveTable(), unlike the Processing example.<br><br>
- * Based on Daniel Shiffman's <a href="https://processing.org/examples/loadsavetable.html">LoadSaveTable Example</a> for Processing.
- */
+ * @description Comma-Separated Values, or CSV is a format for writing
+ * data in a file. p5 can work with this format using a
+ * <a href="https://p5js.org/reference/#/p5.Table" target="_blank">p5.Table</a>.
+ * This example is based on Daniel Shiffman's
+ * <a href="https://processing.org/examples/loadsavetable.html" target="_blank">Loading Tabular Data</a>
+ * example for Processing. It uses a class to organize data representing
+ * a bubble. When the sketch starts, it loads the data for four bubbles
+ * from a CSV file. The user can add new bubbles, download an updated
+ * CSV file, and load in a CSV file.
+ * */
 
-// Bubble class
-class Bubble {
-  constructor(x, y, diameter, name) {
-    this.x = x;
-    this.y = y;
-    this.diameter = diameter;
-    this.radius = diameter / 2;
-    this.name = name;
+// Global object to hold results from the loadTable call
+let table;
 
-    this.over = false;
-  }
+// Global array to hold all bubble objects
+let bubbles;
 
-  // Check if mouse is over the bubble
-  rollover(px, py) {
-    let d = dist(px, py, this.x, this.y);
-    this.over = d < this.radius;
-  }
+// Store mouse press position so that a bubble can be created there
+let mousePressX = 0;
+let mousePressY = 0;
 
-  // Display the Bubble
-  display() {
-    stroke(0);
-    strokeWeight(0.8);
-    noFill();
-    ellipse(this.x, this.y, this.diameter, this.diameter);
-    if (this.over) {
-      fill(0);
-      textAlign(CENTER);
-      text(this.name, this.x, this.y + this.radius + 20);
-    }
-  }
-}
-
-let table; // Global object to hold results from the loadTable call
-let bubbles = []; // Global array to hold all bubble objects
+// Remember whether user is currently creating a bubble
+let creatingBubble = false;
 
 // Put any asynchronous data loading in preload to complete before "setup" is run
 function preload() {
-  table = loadTable("assets/bubbles.csv", "header");
+  table = loadTable('assets/bubbles.csv', 'header', loadData);
 }
 
 // Convert saved Bubble data into Bubble Objects
-function loadData() {
-  const bubbleData = table.getRows();
-  // The size of the array of Bubble objects is determined by the total number of rows in the CSV
-  const length = table.getRowCount();
-
-  for (let i = 0; i < length; i++) {
+function loadData(table) {
+  bubbles = [];
+  let tableRows = table.getRows();
+  for (let row of tableRows) {
     // Get position, diameter, name,
-    const x = bubbleData[i].getNum("x");
-    const y = bubbleData[i].getNum("y");
-    const diameter = bubbleData[i].getNum("diameter");
-    const name = bubbleData[i].getString("name");
+    let x = row.getNum('x');
+    let y = row.getNum('y');
+    let radius = row.getNum('radius');
+    let name = row.getString('name');
 
     // Put object in array
-    bubbles.push(new Bubble(x, y, diameter, name));
-  }
-}
-
-// Create a new Bubble each time the mouse is clicked.
-function mousePressed() {
-  // Create a new row
-  let row = table.addRow();
-
-  let name = "New Bubble";
-  let diameter = random(40, 80);
-
-  // Set the values of that row
-  row.setNum("x", mouseX);
-  row.setNum("y", mouseY);
-  row.setNum("diameter", diameter);
-  row.setString("name", name);
-
-  bubbles.push(new Bubble(mouseX, mouseY, diameter, name));
-
-  // If the table has more than 10 rows
-  if (table.getRowCount() > 10) {
-    // Delete the oldest row
-    table.removeRow(0);
-    bubbles.shift();
+    bubbles.push(new Bubble(x, y, radius, name));
   }
 }
 
 function setup() {
-  createCanvas(640, 360);
-  loadData();
+  let p5Canvas = createCanvas(640, 360);
+
+  // When canvas is clicked, call saveMousePress()
+  p5Canvas.mousePressed(saveMousePress);
+
+  ellipseMode(RADIUS);
+  textSize(20);
+
+  // Add download button and call downloadBubbleData() when pressed
+  let downloadButton = createButton('Download bubble data');
+  downloadButton.mousePressed(downloadBubbleFile);
+
+  // Add load button to load downloaded data file
+  let loadButton = createFileInput(loadBubbleFile);
+
+  // Only accept files with .csv extension
+  loadButton.attribute('accept', '.csv');
+
+  describe(
+    'When the user clicks on the canvas, drags, and releases, a black outline circle representing a bubble appears on the white background. A prompt asks the user to name the bubble, and this name appears under the circle when the mouse hovers over it.'
+  );
 }
 
 function draw() {
   background(255);
 
   // Display all bubbles
-  for (let i = 0; i < bubbles.length; i++) {
-    bubbles[i].display();
-    bubbles[i].rollover(mouseX, mouseY);
+  for (let bubble of bubbles) {
+    bubble.display();
+  }
+
+  // Display bubble in progress
+  if (creatingBubble === true) {
+    let radius = dist(mousePressX, mousePressY, mouseX, mouseY);
+    noFill();
+    stroke(0);
+    circle(mousePressX, mousePressY, radius);
   }
 
   // Label directions at bottom
-  textAlign(LEFT);
+  textAlign(LEFT, BOTTOM);
   fill(0);
-  text("Click to add bubbles.", 10, height - 10);
+  noStroke();
+  text('Click to add bubbles.', 10, height - 10);
+}
+
+// Save current mouse position to use as next bubble position
+function saveMousePress() {
+  mousePressX = mouseX;
+  mousePressY = mouseY;
+  creatingBubble = true;
+}
+
+// Add a bubble if in the process of creating one
+function mouseReleased() {
+  if (creatingBubble === true) {
+    addBubble();
+    creatingBubble = false;
+  }
+}
+
+// Create a new Bubble
+function addBubble() {
+  // Create a new row
+  let row = table.addRow();
+
+  // Add radius and label to bubble
+  let radius = dist(mousePressX, mousePressY, mouseX, mouseY);
+  let name = prompt('Enter a name for the new bubble');
+
+  // Set the values of that row
+  row.setNum('x', mousePressX);
+  row.setNum('y', mousePressY);
+  row.setNum('radius', radius);
+  row.setString('name', name);
+
+  bubbles.push(new Bubble(mousePressX, mousePressY, radius, name));
+}
+
+// Load bubble data from CSV file
+function loadBubbleFile(file) {
+  loadTable(file.data, 'csv', 'header', loadData);
+}
+
+// Download bubble data as CSV file
+function downloadBubbleFile() {
+  saveTable(table, 'bubbles.csv');
+}
+
+// Bubble class
+class Bubble {
+  constructor(x, y, radius, name) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.name = name;
+  }
+
+  // Check if mouse is over the bubble
+  mouseOver() {
+    let mouseDistance = dist(mouseX, mouseY, this.x, this.y);
+    return mouseDistance < this.radius;
+  }
+
+  // Display the bubble
+  display() {
+    stroke(0);
+    noFill();
+    strokeWeight(4);
+    circle(this.x, this.y, this.radius);
+    if (this.mouseOver() === true) {
+      fill(0);
+      noStroke();
+      textAlign(CENTER);
+      text(this.name, this.x, this.y + this.radius + 30);
+    }
+  }
 }
