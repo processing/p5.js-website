@@ -1,118 +1,83 @@
 /* 
  * @name DOM Form Elements
- * @arialabel Light yellow box with “checked” written with form elements such as checking boxes, sliders, and empty text input below
- * @frame 600,400
- * @description contributed by <a href="https://www.rit.edu/directory/wmhics-w-michelle-harris">
-   <b>Prof WM Harris,</b></a> <b>How </b>to use p5 DOM form elements to create a slider,
-button, checkbox, radio group, select menu, and entry field.<br/>
-Functions are created that include: the canvas
-setup, checkbox creation with text, text box with text that projects
-typed text onto canvas, slider with button, three selections which
-project a rectangle in different areas on the canvas depending on
-selection, and a drop down menu with font change.
+ * @description Using p5.js' form elements, such as <a href="https://p5js.org/reference/#/p5/createInput" target="_blank">createInput()</a>, 
+ * <a href="https://p5js.org/reference/#/p5/createSelect" target="_blank">createSelect()</a>,
+ * and <a href="https://p5js.org/reference/#/p5/createRadio" target="_blank">createRadio()</a>, you can build different ways to take information submitted through
+ * a select, input, or radio button, and update the canvas based on the information.
 */
+// Define the inputs for this form as global variables.
+let nameInput;
+let fontSelect;
+let foodRadio;
 
-/* global variables */
-//p5 DOM form elements
-let slider1;
-let button1;
-let checkbox1;
-let radio1;
-let select1;
-let entry1;
+// canvasBackground will be used to color the background.
+let canvasBackground = 255;
 
 function setup() {
-  createCanvas(200, 200);
-  background("beige");
-
-  checkbox1 = createCheckbox("Check me");
-
-  createP(); //spacer with <p> tag
-
-  createSpan("What's your name? "); //label for entry1
-  // createInput([value], [type])
-  // type: "text" (default), "number",
-  // "date", "password", "email", etc.
-  entry1 = createInput();
-  //If text in the entry field changes, call
-  //the entryCallback function.
-  entry1.changed(entryCallback);
-
-  createP(); //spacer with <p> tag
-
-  //createSlider(min, max, [value], [step])
-  slider1 = createSlider(10, 200);
-
-  button1 = createButton("Press me"); //, "pressed");
-  //Assign callback fcn for button1
-  //when user clicks mouse on it
-  button1.mouseClicked(button1Clicked);
-
-  createP(); //spacer with <p> tag
-
-  radio1 = createRadio();
-
-  //.option([value], [contentLabel])
-  //If 1 param, it's both content AND
-  //value. Values treated as strings.
-  radio1.option(1, "cranberries");
-  radio1.option(2, "almonds");
-  radio1.option(3, "gouda");
-
-  radio1.value("1"); //set init value
-
-  createP(); //spacer with <p> tag
-
-  select1 = createSelect();
-  //.option([contentValue],[value])
-  //If 1 param, it's both content AND
-  //value. Values treated as strings.
-  select1.option("Sans-serif");
-  select1.option("Serif");
-  select1.option("Fantasy");
-  //If changed, call select1Changed 
-  select1.changed(select1Changed);
+  createCanvas(720, 400);
+  
+  // Assign an input box to nameInput.
+  nameInput = createInput();
+  nameInput.position(5, 65);
+  
+  // Assign radio buttons to foodRadio.
+  foodRadio = createRadio();
+  foodRadio.position(5, 115);
+  
+  //List the radio options for foodRadio.
+  foodRadio.option("Cranberries", "Cranberries");
+  foodRadio.option("Almonds", "Almonds");
+  foodRadio.option("Gouda", "Gouda");
+  
+  //Assign a select dropdown to fontSelect.
+  fontSelect = createSelect();
+  fontSelect.position(5, 150);
+  
+  //List out the dropdown options for fontSelect.
+  fontSelect.option("Sans-serif");
+  fontSelect.option("Serif");
+  fontSelect.option("Fantasy");
+  
+  //If the fontSelect selection is changed, call the 
+  //fontChanged function.
+  fontSelect.changed(fontChanged);
 }
 
 function draw() {
-  //get value from slider 1
-  let gray = slider1.value();
-  fill(gray);
-
-  //If mouse in corner, turn on checkbox1
-  if ((mouseX < width / 3) &&
-    (mouseY < height / 3)) {
-    checkbox1.checked(true);
+  gridOutput();
+  background(canvasBackground, 250, 250);
+  
+  // Create the header for the form.
+  textSize(25);
+  text('Welcome to p5.js!', 5, 25);
+  
+  // Create the text inputs that will update with the 
+  // new user inputs.
+  textSize(20);
+  text(`What is your name? ${nameInput.value()}`, 5, 55);
+  text(`What is your favorite food? ${foodRadio.value()}`, 5, 110);
+  
+  // If the value of foodRadio changes, update the 
+  // canvas' color.
+  switch (foodRadio.value()) {
+    case "Cranberries":
+      canvasBackground = 200;
+    break;
+    case "Almonds":
+      canvasBackground = 190;
+    break;
+    case "Gouda":
+      canvasBackground = 255;
+    break;
   }
-  //Is checkbox1 checked? Say so.
-  if (checkbox1.checked()) {
-    text("CHECKED", 20, 40);
-  }
-
-  switch (radio1.value()) {
-    //radio value is always a string
-    case "1":
-      rect(0, 0, width, 50);
-      break;
-    case "2":
-      rect(0, 70, width, 50);
-      break;
-    case "3":
-      rect(0, 140, width, 50);
-      break;
-  }
+  
 }
 
-//callback fcn for button1
-function button1Clicked() {
-  //reset slider value to 200
-  slider1.value(200);
-}
-
-
-//callback fcn for select1
-function select1Changed() {
-  switch (select1.value()) {
+function fontChanged() {
+  // When the fontSelect value is changed,
+  // update the canvas' font selection to the
+  // new value.
+  switch (fontSelect.value()) {
     case "Sans-serif":
       textFont("sans-serif");
       break;
@@ -121,33 +86,6 @@ function select1Changed() {
       break;
     case "Fantasy":
       textFont("fantasy");
-      break;
-  }
-}
-
-//callback function for entry1
-function entryCallback() {
-  for (let i = 0; i < 25; i++) {
-    text(entry1.value(), random(width),
-          random(height));
-  }
-
-}
-
-function mouseClicked() {
-  console.log("button1?", button1.value());
-  console.log("checkbox1?", checkbox1.value());
-  //Update .value of either? No visible change
-  //to a button or checkbox
-  checkbox1.value("Check again");
-  button1.value("clicked?");
-}
-
-function keyTyped() {
-  switch (key) {
-    case "r":
-      //move slider1 value to 100
-      slider1.value(100);
       break;
   }
 }
