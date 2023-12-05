@@ -1,8 +1,9 @@
-/*
+/**
  * @name Color Wheel
- * @description A
+ * @description This example illustrates the appearance of different
+ * hues. It uses a
  * <a href="https://p5js.org/reference/#/p5/for" target="_blank">for loop</a>
- * can repeat transformations. The for loop in this example initializes
+ * to repeat transformations. The loop initializes
  * a variable called angle, which changes the rotation of a circle as
  * well as its hue. Each time the loop repeats, a circle is drawn
  * relative to the center of the canvas.  The
@@ -14,31 +15,52 @@ function setup() {
   createCanvas(400, 400);
   background(255);
 
-  //  Use Hue Saturation Brightness colors without stroke
+  // Use Hue Saturation Brightness colors without stroke
   colorMode(HSB);
   noStroke();
 
-  //  Set angle mode to use degrees
+  // Set angle mode to use degrees
   angleMode(DEGREES);
   describe(
     'Small circles, each with a different color, arranged in a circular path, displaying hues across the color spectrum.'
   );
 
-  //  Repeat for angles 0-360 at increments of 30 degrees
-  //  Changing the 30 value will change
-  //  how many circles are drawn and how close together
+  // Center align text
+  textAlign(CENTER, CENTER);
+
+  // Repeat for angles 0-360 at increments of 30 degrees
+  // Changing the 30 value will change
+  // how many circles are drawn and how close together
   for (let angle = 0; angle < 360; angle += 30) {
-    //  Save current transformation
+    // Save current transformation
     push();
-    //  Move origin to center of canvas
+
+    // Move origin to center of canvas
     translate(width / 2, height / 2);
-    //  Rotate using current angle
+
+    // Rotate using current angle
     rotate(angle);
-    //  Set fill using current angle as hue
+
+    // Move 150 pixels out from center
+    translate(150, 0);
+
+    // Set fill using current angle as hue
     fill(angle, 85, 90);
-    //  Draw a circle 150 units from origin
-    circle(150, 0, 50);
-    //  Restore canvas transformation
+
+    // Draw a circle at current origin (150 pixels from center)
+    circle(0, 0, 50);
+
+    // Move 50 pixels toward center
+    translate(-50, 0);
+
+    // Reverse rotation to keep text upright
+    rotate(-angle);
+
+    // Label the current angle
+    fill(0);
+    text(`${angle}°`, 0, 0);
+
+    // Restore canvas transformation
     pop();
   }
 }
