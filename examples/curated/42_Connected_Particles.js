@@ -1,4 +1,4 @@
-/*
+/**
  * @name Connected Particles
  * @description This example uses two custom
  * <a href="https://p5js.org/reference/#/p5/class" target="_blank">classes</a>.
@@ -23,14 +23,17 @@ let nextParticleFrame = 0;
 let previousParticlePosition;
 
 // How long it takes for a particle to fade out
-let particleFadeFrames = 180;
+let particleFadeFrames = 300;
 
 function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
+
+  // Start with a default vector and then use this to save the position
+  // of the last created particle
   previousParticlePosition = createVector();
   describe(
-    'When the user clicks and drags on the black background, the user draws a pattern of multicolored circles outlined in white and connected by white lines. The circles and lines fade out over time.'
+    'When the cursor drags along the black background, it draws a pattern of multicolored circles outlined in white and connected by white lines. The circles and lines fade out over time.'
   );
 }
 
@@ -116,15 +119,17 @@ class Path {
   // Display path
   display() {
     // Loop through backwards so that when a particle is removed,
-    //  the index number for the next loop will match up with the
-    //  particle before the removed one
+    // the index number for the next loop will match up with the
+    // particle before the removed one
     for (let i = this.particles.length - 1; i >= 0; i--) {
       // Remove this particle if it has no frames remaining
       if (this.particles[i].framesRemaining <= 0) {
         this.particles.splice(i, 1);
+
         // Otherwise, display it
       } else {
         this.particles[i].display();
+
         // If there is a particle after this one
         if (i < this.particles.length - 1) {
           // Connect them with a line
@@ -148,8 +153,10 @@ class Particle {
   update() {
     // Move it
     this.position.add(this.velocity);
+
     // Slow it down
     this.velocity.mult(this.drag);
+
     // Fade it out
     this.framesRemaining = this.framesRemaining - 1;
   }
