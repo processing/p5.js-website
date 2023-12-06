@@ -16,17 +16,18 @@ function preload() {
   topImg = loadImage('assets/parrot-bw.png');
 }
 function setup() {
-  describe('Black and white photograph of a parrot. The cursor, when dragged across the canvas, adds color to the photograph.');
+  describe(
+    'Black and white photograph of a parrot. The cursor, when dragged across the canvas, adds color to the photograph.'
+  );
 
-  createCanvas(600, 400);
+  createCanvas(720, 400);
 
-  // Hide the cursor and replace it with a picture of 
+  // Hide the cursor and replace it with a picture of
   // a paint brush.
   noCursor();
   cursor('assets/brush.png', 20, -10);
 
-  // Load the images on top of each other.
-  image(bottomImg, 0, 0);
+  // Load the top image (the black and white image).
   image(topImg, 0, 0);
 }
 function mouseDragged() {
