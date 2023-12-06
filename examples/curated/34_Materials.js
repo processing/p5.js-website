@@ -37,7 +37,8 @@ let venus;
 let materialType;
 
 // Color selector elements
-let colorSelectionContainer;
+let fillStrokeSelectionContainer;
+let ambientSpecularSelectionContainer;
 let fillCheckbox, strokeCheckbox, ambientCheckbox, specularCheckbox;
 let emissivePicker;
 
@@ -53,7 +54,53 @@ function preload() {
 function setup() {
   createCanvas(400, 400, WEBGL);
   angleMode(DEGREES);
+  createSelectionArea();
 
+  describe(
+    'Astronaut 3D model displayed with a user-selected material using the selectors below the canvas.'
+  );
+}
+
+function draw() {
+  background(0);
+
+  // Save canvas settings
+  push();
+
+  // Get current material type
+  let currentMaterial = materialType.value();
+
+  switch (currentMaterial) {
+    case 'color':
+      applyColorMaterial();
+      break;
+    case 'emissive':
+      applyEmissiveMaterial();
+      break;
+    case 'normal':
+      applyNormalMaterial();
+      break;
+    case 'texture':
+      applyTextureMaterial();
+      break;
+  }
+
+  // Lights
+  ambientLight(128);
+  spotLight(255, 255, 255, 0, -height / 2, 200, 0, 0.5, -1, 30);
+
+  // Astronaut
+  translate(0, -25);
+  scale(4);
+  rotateZ(180);
+  model(astronaut);
+
+  // Restore canvas settings so that only current selections
+  // are applied in next frame
+  pop();
+}
+
+function createSelectionArea() {
   // Create container for selection elements
   let selectionArea = createDiv();
   selectionArea.style('background', '#f0f0f0');
@@ -72,101 +119,50 @@ function setup() {
   materialType.selected('color');
 
   // Create selectors for material colors
-  colorSelectionContainer = createDiv();
-  colorSelectionContainer.parent(selectionArea);
+  fillStrokeSelectionContainer = createDiv();
+  fillStrokeSelectionContainer.parent(selectionArea);
+  ambientSpecularSelectionContainer = createDiv();
+  ambientSpecularSelectionContainer.parent(selectionArea);
+
   fillSelection = color(255);
-  fillCheckbox = createColorSelector('fill', fillSelection, true);
+  fillCheckbox = createColorSelector(
+    'fill',
+    fillSelection,
+    true,
+    fillStrokeSelectionContainer
+  );
   strokeSelection = color(0);
-  strokeCheckbox = createColorSelector('stroke', strokeSelection, true);
+  strokeCheckbox = createColorSelector(
+    'stroke',
+    strokeSelection,
+    true,
+    fillStrokeSelectionContainer
+  );
   ambientSelection = color(255);
-  ambientCheckbox = createColorSelector('ambient', ambientSelection, false);
+  ambientCheckbox = createColorSelector(
+    'ambient',
+    ambientSelection,
+    false,
+    ambientSpecularSelectionContainer
+  );
   specularSelection = color(255);
-  specularCheckbox = createColorSelector('specular', specularSelection, false);
+  specularCheckbox = createColorSelector(
+    'specular',
+    specularSelection,
+    false,
+    ambientSpecularSelectionContainer
+  );
 
   // Create picker for emissive material color
   emissivePicker = createColorPicker(color(255));
-
-  describe(
-    'Astronaut 3D model displayed with a user-selected material using the selectors below the canvas.'
-  );
+  emissivePicker.hide();
 }
 
-function draw() {
-  background(0);
-
-  // Save canvas settings
-  push();
-
-  // Get current material type
-  let currentMaterial = materialType.value();
-
-  if (currentMaterial === 'color') {
-    colorSelectionContainer.show();
-    emissivePicker.hide();
-
-    // Set fill using current selection
-    if (fillCheckbox.checked() === true) {
-      fill(fillSelection);
-    } else {
-      noFill();
-    }
-
-    // Set stroke using current selection
-    if (strokeCheckbox.checked() === true) {
-      stroke(strokeSelection);
-    } else {
-      noStroke();
-    }
-    if (ambientCheckbox.checked() === true) {
-      // Apply ambient material using selected color
-      ambientMaterial(ambientSelection);
-    }
-    if (specularCheckbox.checked() === true) {
-      // Apply specular material using selected color
-      specularMaterial(specularSelection);
-    }
-  } else if (currentMaterial === 'emissive') {
-    noStroke();
-    colorSelectionContainer.hide();
-    emissivePicker.show();
-
-    // Apply emissive material using selected color
-    emissiveMaterial(emissivePicker.color());
-  } else if (currentMaterial === 'normal') {
-    colorSelectionContainer.hide();
-    emissivePicker.hide();
-
-    // Apply normal material
-    normalMaterial();
-  } else if (currentMaterial) {
-    colorSelectionContainer.hide();
-    emissivePicker.hide();
-    noStroke();
-
-    // Apply texture
-    texture(venus);
-  }
-
-  // Lights
-  ambientLight(128);
-  spotLight(255, 255, 255, 0, -height / 2, 200, 0, 0.5, -1, 30);
-
-  // Astronaut
-  translate(0, -25);
-  scale(4);
-  rotateZ(180);
-  model(astronaut);
-
-  // Restore canvas settings so that only current selections
-  //  are applied in next frame
-  pop();
-}
-
-function createColorSelector(label, colorSelection, checked) {
+function createColorSelector(label, colorSelection, checked, parentElement) {
   let checkbox = createCheckbox(label);
-  checkbox.parent(colorSelectionContainer);
-
+  checkbox.parent(parentElement);
   let picker = createColorPicker(colorSelection);
+  picker.parent(parentElement);
 
   function setColor() {
     let selectedColor = picker.color();
@@ -177,7 +173,6 @@ function createColorSelector(label, colorSelection, checked) {
 
   // When picker's color is changed, set the selector color to its value
   picker.changed(setColor);
-  picker.parent(colorSelectionContainer);
 
   function setPickerVisibility() {
     if (checkbox.checked() === true) {
@@ -193,4 +188,65 @@ function createColorSelector(label, colorSelection, checked) {
   setPickerVisibility();
 
   return checkbox;
+}
+
+function applyColorMaterial() {
+  ambientSpecularSelectionContainer.show();
+  emissivePicker.hide();
+  fillStrokeSelectionContainer.show();
+  applyAmbientSpecularMaterial();
+
+  // Set fill using current selection
+  if (fillCheckbox.checked() === true) {
+    fill(fillSelection);
+  } else {
+    noFill();
+  }
+  strokeCheckbox.show();
+
+  // Set stroke using current selection
+  if (strokeCheckbox.checked() === true) {
+    stroke(strokeSelection);
+  } else {
+    noStroke();
+  }
+}
+
+function applyEmissiveMaterial() {
+  noStroke();
+  ambientSpecularSelectionContainer.hide();
+  fillStrokeSelectionContainer.hide();
+  emissivePicker.show();
+
+  // Apply emissive material using selected color
+  emissiveMaterial(emissivePicker.color());
+}
+
+function applyNormalMaterial() {
+  ambientSpecularSelectionContainer.hide();
+  fillStrokeSelectionContainer.hide();
+  emissivePicker.hide();
+
+  // Apply normal material
+  normalMaterial();
+}
+
+function applyTextureMaterial() {
+  ambientSpecularSelectionContainer.show();
+  emissivePicker.hide();
+  fillStrokeSelectionContainer.hide();
+  applyAmbientSpecularMaterial();
+  noStroke();
+
+  // Apply texture
+  texture(venus);
+}
+
+function applyAmbientSpecularMaterial() {
+  if (ambientCheckbox.checked() === true) {
+    ambientMaterial(ambientSelection);
+  }
+  if (specularCheckbox.checked() === true) {
+    specularMaterial(specularSelection);
+  }
 }
