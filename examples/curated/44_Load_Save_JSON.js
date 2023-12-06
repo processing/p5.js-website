@@ -1,5 +1,5 @@
 /**
- * @name Load Saved JSON
+ * @name Load and Save JSON
  * @description
  * <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON" target="_blank">JavaScript Object Notation, or JSON,</a>
  * is a format for writing data in a file. While the syntax comes from
@@ -8,7 +8,7 @@
  * written in Java. It uses a
  * <a href="https://p5js.org/reference/#/p5/class" target="_blank">class</a>
  * to organize data representing a bubble. When the sketch starts, it
- * loads the data for two bubbles from a JSON file. The user can add
+ * loads the data for two bubbles from a JSON file. The visitor can add
  * new bubbles, download an updated JSON file, and load in a JSON file.
  * */
 
@@ -19,7 +19,7 @@ let bubbles;
 let mousePressX = 0;
 let mousePressY = 0;
 
-// Remember whether user is currently creating a bubble
+// Remember whether bubble is currently being created
 let creatingBubble = false;
 
 // Put any asynchronous data loading in preload to complete before "setup" is run
@@ -65,7 +65,7 @@ function setup() {
   loadButton.attribute('accept', '.json');
 
   describe(
-    'When the user clicks on the canvas, drags, and releases, a black outline circle representing a bubble appears on the white background. A prompt asks the user to name the bubble, and this name appears under the circle when the mouse hovers over it.'
+    'When the cursor clicks on the canvas, drags, and releases, a black outline circle representing a bubble appears on the white background. A prompt asks to name the bubble, and this name appears under the circle when the cursor hovers over it.'
   );
 }
 
@@ -82,6 +82,7 @@ function draw() {
     let radius = dist(mousePressX, mousePressY, mouseX, mouseY);
     noFill();
     stroke(0);
+    strokeWeight(4);
     circle(mousePressX, mousePressY, radius);
   }
 
