@@ -1,4 +1,4 @@
-/*
+/**
  * @name Geometries
  * @description p5's
  * <a href="https://p5js.org/reference/#/p5/WEBGL" target="_blank">WEBGL</a>
@@ -38,54 +38,42 @@ function draw() {
   // Plane
   push();
   translate(-250, -100, 0);
-  rotateZ(frameCount);
-  rotateX(frameCount);
-  rotateY(frameCount);
+  rotateWithFrameCount();
   plane(70);
   pop();
 
   // Box
   push();
   translate(-75, -100, 0);
-  rotateZ(frameCount);
-  rotateX(frameCount);
-  rotateY(frameCount);
+  rotateWithFrameCount();
   box(70, 70, 70);
   pop();
 
   // Cylinder
   push();
   translate(100, -100, 0);
-  rotateZ(frameCount);
-  rotateX(frameCount);
-  rotateY(frameCount);
+  rotateWithFrameCount();
   cylinder(70, 70);
   pop();
 
   // Cone
   push();
   translate(275, -100, 0);
-  rotateZ(frameCount);
-  rotateX(frameCount);
-  rotateY(frameCount);
+  rotateWithFrameCount();
   cone(50, 70);
   pop();
 
   // Torus
   push();
   translate(-250, 100, 0);
-  rotateZ(frameCount);
-  rotateX(frameCount);
-  rotateY(frameCount);
+  rotateWithFrameCount();
   torus(50, 20);
   pop();
 
   // Sphere
   push();
   translate(-75, 100, 0);
-  rotateZ(frameCount);
-  rotateX(frameCount);
-  rotateY(frameCount);
+  rotateWithFrameCount();
 
   // Show black stroke to help visualize movement
   stroke(0);
@@ -95,19 +83,24 @@ function draw() {
   // Ellipsoid
   push();
   translate(100, 100, 0);
-  rotateZ(frameCount);
-  rotateX(frameCount);
-  rotateY(frameCount);
+  rotateWithFrameCount();
   ellipsoid(20, 40, 40);
   pop();
 
   // Astronaut
   push();
   translate(275, 100, 0);
+  rotateWithFrameCount();
+
+  // Extra rotation to start model in upright position
   rotateZ(180);
+  model(astronaut);
+  pop();
+}
+
+// Rotate 1 degree per frame along all three axes
+function rotateWithFrameCount() {
   rotateZ(frameCount);
   rotateX(frameCount);
   rotateY(frameCount);
-  model(astronaut);
-  pop();
 }
