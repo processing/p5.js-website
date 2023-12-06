@@ -1,4 +1,4 @@
-/*
+/**
  * @name Clock
  * @description The current time can be read with the
  * <a href="https://p5js.org/reference/#/p5/second" target="_blank">second()</a>,
@@ -18,7 +18,7 @@ let hoursRadius;
 let clockDiameter;
 
 function setup() {
-  createCanvas(720, 400);
+  createCanvas(710, 400);
   stroke(255);
   angleMode(DEGREES);
 
