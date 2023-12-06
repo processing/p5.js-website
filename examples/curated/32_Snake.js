@@ -1,7 +1,8 @@
-/*
- * @name Snake game
+/**
+ * @name Snake Game
  * @description This is a reproduction of a type of arcade game called
- * Snake. The first Snake game was Blockade, released in 1976, and many
+ * <a href="https://en.wikipedia.org/wiki/Snake_(video_game_genre)" target="_blank">Snake</a>.
+ * The first Snake game was Blockade, released in 1976, and many
  * games use the same structure. In Snake games, the player controls
  * the movements of a snake, represented in this example by a green
  * line. The player's goal is to collide the snake with a fruit,
@@ -42,6 +43,7 @@ let direction = startDirection;
 let segments = [];
 
 let score = 0;
+let highScore;
 
 // The fruit's position is stored as a vector
 //  in this variable
@@ -56,6 +58,10 @@ function setup() {
   textAlign(CENTER, CENTER);
   textSize(2);
 
+  // Check for saved high score in local browser storage
+  // If no score has been stored, this will be undefined
+  highScore = getItem('high score');
+
   describe(
     'A reproduction of the arcade game Snake, in which a snake, represented by a green line on a black background, is controlled by the arrow keys. Users move the snake toward a fruit, represented by a red dot, but the snake must not hit the sides of the window or itself.'
   );
@@ -63,6 +69,7 @@ function setup() {
 
 function draw() {
   background(0);
+
   // Set scale so that the game grid fills canvas
   scale(width / gridWidth, height / gridHeight);
   if (gameStarted === false) {
@@ -105,16 +112,14 @@ function startGame() {
   // Start with an empty array for segments
   segments = [];
 
-  // Start with coordinates at the starting position
-  let y = yStart;
-  let x = xStart;
+  // Start with x at the starting position and repeat until specified
+  // number of segments have been created, increasing x by 1 each time
+  for (let x = xStart; x < xStart + startingSegments; x += 1) {
+    // Create a new vector at the current position
+    let segmentPosition = createVector(x, yStart);
 
-  // Repeat until the number of segments matches the
-  //  starting number
-  while (segments.length < startingSegments) {
-    let segmentPosition = createVector(x, y);
-    segments.push(segmentPosition);
-    x = x + 1;
+    // Add it to the beginning of the array
+    segments.unshift(segmentPosition);
   }
 
   direction = startDirection;
@@ -139,15 +144,14 @@ function showSegments() {
 }
 
 function updateSegments() {
-  // Copy all segments, except the last to the previous segment.
-  // This causes each segment to appear to move in the direction of
-  //  the snake's body
-  for (let i = 0; i < segments.length - 1; i++) {
-    segments[i] = segments[i + 1].copy();
-  }
+  // Remove last segment
+  segments.pop();
 
-  // Store last segment in array as head
-  let head = segments[segments.length - 1];
+  // Copy current head of snake
+  let head = segments[0].copy();
+
+  // Insert the new snake head at the beginning of the array
+  segments.unshift(head);
 
   // Adjust the head's position based on the current direction
   switch (direction) {
@@ -167,8 +171,8 @@ function updateSegments() {
 }
 
 function checkForCollision() {
-  // Store last segment in array as head
-  let head = segments[segments.length - 1];
+  // Store first segment in array as head
+  let head = segments[0];
 
   // If snake's head...
   if (
@@ -180,10 +184,10 @@ function checkForCollision() {
     head.y >= gridHeight ||
     // hit top edge or
     head.y < 0 ||
-    // Collided with itself
+    // collided with itself
     selfColliding() === true
   ) {
-    // Show game over screen
+    // show game over screen
     gameOver();
   }
 }
@@ -191,10 +195,21 @@ function checkForCollision() {
 function gameOver() {
   noStroke();
   fill(32);
-  rect(2, gridHeight / 2 - 5, gridWidth - 4, 10, 2);
+  rect(2, gridHeight / 2 - 5, gridWidth - 4, 12, 2);
   fill(255);
+
+  // Set high score to whichever is larger: current score or previous
+  // high score
+  highScore = max(score, highScore);
+
+  // Put high score in local storage. This will be be stored in browser
+  // data, even after the user reloads the page.
+  storeItem('high score', highScore);
   text(
-    'Game over!\nYour score: ' + score + '\nClick to play again.',
+    `Game over!
+Your score: ${score}
+High score: ${highScore}
+Click to play again.`,
     gridWidth / 2,
     gridHeight / 2
   );
@@ -204,13 +219,13 @@ function gameOver() {
 
 function selfColliding() {
   // Store the last segment as head
-  let head = segments[segments.length - 1];
+  let head = segments[0];
 
-  // Store every segment except the last
-  let segmentsBeforeHead = segments.slice(0, -1);
+  // Store every segment except the first
+  let segmentsAfterHead = segments.slice(1);
 
   // Check each of the other segments
-  for (let segment of segmentsBeforeHead) {
+  for (let segment of segmentsAfterHead) {
     // If segment is in the same place as head
     if (segment.equals(head) === true) {
       return true;
@@ -220,7 +235,8 @@ function selfColliding() {
 }
 
 function checkForFruit() {
-  let head = segments[segments.length - 1];
+  // Store first segment as head
+  let head = segments[0];
 
   // If the head segment is in the same place as the fruit
   if (head.equals(fruit) === true) {
@@ -228,11 +244,11 @@ function checkForFruit() {
     score = score + 1;
 
     // Duplicate the tail segment
-    let tail = segments[0];
+    let tail = segments[segments.length - 1];
     let newSegment = tail.copy();
 
     // Put the duplicate in the beginning of the array
-    segments.unshift(newSegment);
+    segments.push(newSegment);
 
     // Reset fruit to a new location
     updateFruitCoordinates();
@@ -241,19 +257,19 @@ function checkForFruit() {
 
 function updateFruitCoordinates() {
   // Pick a random new coordinate for the fruit
-  //  and round it down using floor().
+  // and round it down using floor().
   // Because the segments move in increments of 1,
-  //  in order for the snake to hit the same position
-  //  as the fruit, the fruit's coordinates must be
-  //  integers, but random() returns a float
+  // in order for the snake to hit the same position
+  // as the fruit, the fruit's coordinates must be
+  // integers, but random() returns a float
   let x = floor(random(gridWidth));
   let y = floor(random(gridHeight));
   fruit = createVector(x, y);
 }
 
 // When an arrow key is pressed switch the snake's direction of movement,
-//  but if the snake is already moving in the opposite direction,
-//  do nothing.
+// but if the snake is already moving in the opposite direction,
+// do nothing.
 function keyPressed() {
   switch (keyCode) {
     case LEFT_ARROW:
