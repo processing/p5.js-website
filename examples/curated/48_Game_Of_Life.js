@@ -1,4 +1,4 @@
-/*
+/**
  * @name Game of Life
  * @description The Game of Life is a cellular automaton created by
  * mathematician John Conway. A cellular automaton is a type of
@@ -47,7 +47,7 @@ function setup() {
 
   noLoop();
   describe(
-    "Grid of squares that switch between white and black, demonstrating a simulation of John Conway's Game of Life."
+    "Grid of squares that switch between white and black, demonstrating a simulation of John Conway's Game of Life. When clicked, the simulation resets."
   );
 }
 
@@ -88,19 +88,19 @@ function generate() {
   for (let column = 0; column < columnCount; column++) {
     for (let row = 0; row < rowCount; row++) {
       // Column left of current cell
-      //  if column is at left edge, use modulus to wrap to right edge
+      // if column is at left edge, use modulus to wrap to right edge
       let left = (column - 1 + columnCount) % columnCount;
 
       // Column right of current cell
-      //  if column is at right edge, use modulus to wrap to left edge
+      // if column is at right edge, use modulus to wrap to left edge
       let right = (column + 1) % columnCount;
 
       // Row above current cell
-      //  if row is at top edge, use modulus to wrap to bottom edge
+      // if row is at top edge, use modulus to wrap to bottom edge
       let above = (row - 1 + rowCount) % rowCount;
 
       // Row below current cell
-      //  if row is at bottom edge, use modulus to wrap to top edge
+      // if row is at bottom edge, use modulus to wrap to top edge
       let below = (row + 1) % rowCount;
 
       // Count living neighbors surrounding current cell
