@@ -22,7 +22,7 @@ function setup() {
 
 function draw() {
   describe(
-    "Ten rainbow-colored lines in a bezier curve formation. The top anchors of the curves move with the cursor as it hovers over the black canvas."
+    'Ten rainbow-colored lines in a bezier curve formation. The top anchors of the curves move with the cursor as it hovers over the black canvas.'
   );
 
   background(5);
