@@ -3,19 +3,22 @@
  * @description A kaleidoscope is an optical instrument with two or more reflecting surfaces tilted to each other in an angle. 
  * Using the <a href="https://p5js.org/reference/#/p5/translate" target="_blank">translate()</a>, 
  * <a href="https://p5js.org/reference/#/p5/rotate" target="_blank">rotate()</a>, 
- * and <a href="https://p5js.org/reference/#/p5/scale" target="_blank">scale()</a> functions, you replicate the behavior of a kaleidoscope in a canvas. 
+ * and <a href="https://p5js.org/reference/#/p5/scale" target="_blank">scale()</a> functions, you can replicate the resulting visual 
+ * of a kaleidoscope in a canvas. 
  */
 // Define the global variables.
 // The symmetry variable will define how many reflective sections the canvas
-// is split into. 
-let symmetry = 6;   
+// is split into.
+let symmetry = 6;
 
 // The angle button will calculate the angle in which the each section is rotated.
 let angle = 360 / symmetry;
 
-function setup() { 
-  describe(`Dark grey canvas that reflects the lines drawn within it in ${symmetry} sections.`);
-  createCanvas(710, 400);
+function setup() {
+  describe(
+    `Dark grey canvas that reflects the lines drawn within it in ${symmetry} sections.`
+  );
+  createCanvas(720, 400);
   angleMode(DEGREES);
   background(50);
 }
@@ -27,23 +30,21 @@ function draw() {
 
   // If the cursor is within the limits of the canvas...
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    
-    // Translate the current position and the previous position of the 
+    // Translate the current position and the previous position of the
     // cursor to the new coordinates set with the translate() function above.
     let mx = mouseX - width / 2;
     let my = mouseY - height / 2;
     let pmx = pmouseX - width / 2;
     let pmy = pmouseY - height / 2;
-    
+
     // And, if the mouse is pressed while in the canvas...
     if (mouseIsPressed) {
-
       // For every reflective section the canvas is split into, draw the cursor's
       // coordinates while pressed...
       for (let i = 0; i < symmetry; i++) {
         rotate(angle);
         stroke(255);
-        strokeWeight(2);
+        strokeWeight(3);
         line(mx, my, pmx, pmy);
 
         // ... and also reflect the line within the symmetry sections as well.
