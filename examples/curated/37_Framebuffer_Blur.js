@@ -1,9 +1,9 @@
-/*
- * @name Blur using Framebuffer Depth
+/**
+ * @name Blur Using Framebuffer Depth
  * @description The
  * <a href="https://www.khronos.org/opengl/wiki/Shader" target="_blank">shader</a>
  * in this example uses depth information from a
- * < href="https://p5js.org/reference/#/p5.Framebuffer" target="_blank">p5.Framebuffer</a>
+ * <a href="https://p5js.org/reference/#/p5.Framebuffer" target="_blank">p5.Framebuffer</a>
  * to apply a blur. On a real camera, objects appear blurred if they
  * are closer or farther than the lens' focus. This simulates that
  * effect. First, the sketch renders five spheres to the framebuffer.
@@ -12,16 +12,23 @@
 
 // Vertex shader code
 let vertexShader = `
-precision highp float;
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
 attribute vec3 aPosition;
+// texcoords only come from p5 to vertex shader
+// so pass texcoords on to the fragment shader in a varying variable
 attribute vec2 aTexCoord;
 varying vec2 vTexCoord;
+
 void main() {
-  vec4 positionVec4 = vec4(aPosition, 1.0);
-  positionVec4.xy = positionVec4.xy * 2.0 - 1.0;
-  positionVec4.y *= -1.0;
-  gl_Position = positionVec4;
+  // transferring texcoords for the frag shader
   vTexCoord = aTexCoord;
+
+  // copy position with a fourth coordinate for projection (1.0 is normal)
+  vec4 positionVec4 = vec4(aPosition, 1.0);
+
+  gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
 }`;
 
 // Fragment shader code
@@ -116,11 +123,11 @@ function draw() {
   layer.end();
 
   // Pass color and depth information from the framebuffer
-  //  to the shader's uniforms
+  // to the shader's uniforms
   blur.setUniform('img', layer.color);
   blur.setUniform('depth', layer.depth);
 
   // Render the scene captured by framebuffer with depth of field blur
   shader(blur);
-  rect(0, 0, width, height);
+  rect(-width / 2, -height / 2, width, height);
 }
