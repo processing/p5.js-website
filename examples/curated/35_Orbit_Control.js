@@ -15,8 +15,9 @@ function setup() {
   angleMode(DEGREES);
   strokeWeight(5);
   noFill();
+  stroke(32, 8, 64);
   describe(
-    'Users can click on the screen and drag to move themselves around a 3D space. It consists of a white background with columns of purple cubes and green pyramids arched in curves.'
+    'Users can click on the screen and drag to adjust their perspective in 3D space. The space contains a sphere of dark purple cubes on a light pink background.'
   );
 }
 
