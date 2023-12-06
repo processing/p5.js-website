@@ -1,6 +1,6 @@
-/*
+/**
  * @name Constrain
- * @description This example draws a circle as the mouse position but
+ * @description This example draws a circle as the cursor's position but
  * keeps the circle within a rectangle. It does so by passing the
  * mouse's coordinates into the
  * <a href="https://p5js.org/reference/#/p5/constrain" target="_blank">constrain()</a>
@@ -14,7 +14,7 @@ let radius = 24;
 let edge = 100;
 
 // Distance between center of circle and edge of canvas
-//  when circle is at edge of rectangle
+// when circle is at edge of rectangle
 let inner = edge + radius;
 
 function setup() {
@@ -28,7 +28,7 @@ function setup() {
   rectMode(CORNERS);
 
   describe(
-    'Pink rectangle on a grey background. A user uses their mouse to move a white circle within the pink rectangle.'
+    'Pink rectangle on a grey background. The cursor moves a white circle within the pink rectangle.'
   );
 }
 
