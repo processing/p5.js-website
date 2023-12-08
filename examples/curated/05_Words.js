@@ -1,14 +1,14 @@
-/*
- * @name Text
- * @description The <a href="https://p5js.org/reference/#/p5/text" target="_blank">text()</a> function is used for inserting text into the canvas.
- * You can change the font and text size using the <a href="https://p5js.org/reference/#/p5/loadFont" target="_blank">loadFont()</a> 
- * and <a href="https://p5js.org/reference/#/p5/fontSize" target="_blank">fontSize()</a> functions.
- * The text can be aligned left, center, or right with the <a href="https://p5js.org/reference/#/p5/textAlign" target="_blank">textAlign()</a> 
- * function, and, like shapes, text can be colored with <a href="https://p5js.org/reference/#/p5/fill" target="_blank">fill()</a>.
- */
+/**
+ ** @name Words
+ ** @description The <a href="https://p5js.org/reference/#/p5/text" target="_blank">text()</a> function is used for inserting text into the canvas.
+ ** You can change the font and text size using the <a href="https://p5js.org/reference/#/p5/loadFont" target="_blank">loadFont()</a> 
+ ** and <a href="https://p5js.org/reference/#/p5/fontSize" target="_blank">fontSize()</a> functions.
+ ** The text can be aligned left, center, or right with the <a href="https://p5js.org/reference/#/p5/textAlign" target="_blank">textAlign()</a> 
+ ** function, and, like shapes, text can be colored with <a href="https://p5js.org/reference/#/p5/fill" target="_blank">fill()</a>.
+ **/
 // Define global variables: font and fontSize.
-let font,
-  fontsize = 40;
+let font;
+let fontsize = 40;
 
 function preload() {
   // Preload the font's file in the canvas' assets directory. 
