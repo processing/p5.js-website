@@ -1,75 +1,68 @@
-/* 
- * @name DOM Form Elements
- * @description Using p5.js' form elements, such as <a href="https://p5js.org/reference/#/p5/createInput" target="_blank">createInput()</a>, 
- * <a href="https://p5js.org/reference/#/p5/createSelect" target="_blank">createSelect()</a>,
- * and <a href="https://p5js.org/reference/#/p5/createRadio" target="_blank">createRadio()</a>, you can build different ways to take information submitted through
- * a select, input, or radio button, and update the canvas based on the information.
-*/
+/** 
+ ** @name DOM Form Elements
+ ** @description The <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" target="_blank">Document Object Model</a>, 
+ ** or DOM, represents the resulting structure of the web page. Using p5.js' form elements, 
+ ** such as <a href="https://p5js.org/reference/#/p5/createInput" target="_blank">createInput()</a>, 
+ ** <a href="https://p5js.org/reference/#/p5/createSelect" target="_blank">createSelect()</a>,
+ ** and <a href="https://p5js.org/reference/#/p5/createRadio" target="_blank">createRadio()</a>, you can build different ways to take information submitted through
+ ** a <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select" target="_blank">select</a>, 
+ ** <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input" target="_blank">input</a>, 
+ ** or <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio" target="_blank">radio button</a>, and update the DOM based on the information. 
+**/
 // Define the inputs for this form as global variables.
 let nameInput;
 let fontSelect;
 let foodRadio;
-
-// canvasBackground will be used to color the background.
-let canvasBackground = 255;
 
 function setup() {
   createCanvas(720, 400);
   
   // Assign an input box to nameInput.
   nameInput = createInput();
-  nameInput.position(5, 65);
+  nameInput.position(25, 115);
   
   // Assign radio buttons to foodRadio.
   foodRadio = createRadio();
-  foodRadio.position(5, 115);
+  foodRadio.position(25, 215);
   
-  //List the radio options for foodRadio.
-  foodRadio.option("Cranberries", "Cranberries");
-  foodRadio.option("Almonds", "Almonds");
-  foodRadio.option("Gouda", "Gouda");
+  // List the radio options for foodRadio, along
+  // with the background color associated with each selection.
+  foodRadio.option('#F7F5BC', 'Cranberries');
+  foodRadio.option('#B8E3FF', 'Almonds');
+  foodRadio.option('#C79A9A', 'Gouda');
   
-  //Assign a select dropdown to fontSelect.
+  // Assign a select dropdown to fontSelect.
   fontSelect = createSelect();
-  fontSelect.position(5, 150);
+  fontSelect.position(25, 300);
   
-  //List out the dropdown options for fontSelect.
-  fontSelect.option("Sans-serif");
-  fontSelect.option("Serif");
-  fontSelect.option("Fantasy");
+  // List out the dropdown options for fontSelect.
+  fontSelect.option('Sans-serif');
+  fontSelect.option('Serif');
+  fontSelect.option('Cursive');
   
-  //If the fontSelect selection is changed, call the 
-  //fontChanged function.
+  // If the fontSelect selection is changed, call the 
+  // fontChanged function.
   fontSelect.changed(fontChanged);
 }
 
 function draw() {
-  gridOutput();
-  background(canvasBackground, 250, 250);
+  describe(
+    'A form with "Welcome to p5.js!" for a header, a text input with the label "What is your name?", and a set of radio buttons with the label "What is your favorite food?", with the options of "Cranberries," "Almonds," or "Gouda." The text submitted through the input appears next to its label. The radio button selection changes the canvas background color. The select element changes the form font.'
+    );
+
+  // Set the background color to the current foodRadio value.
+  let backgroundColor = foodRadio.value();
+  background(backgroundColor);
   
   // Create the header for the form.
   textSize(25);
-  text('Welcome to p5.js!', 5, 25);
+  text('Welcome to p5.js!', 25, 50);
   
   // Create the text inputs that will update with the 
   // new user inputs.
   textSize(20);
-  text(`What is your name? ${nameInput.value()}`, 5, 55);
-  text(`What is your favorite food? ${foodRadio.value()}`, 5, 110);
-  
-  // If the value of foodRadio changes, update the 
-  // canvas' color.
-  switch (foodRadio.value()) {
-    case "Cranberries":
-      canvasBackground = 200;
-    break;
-    case "Almonds":
-      canvasBackground = 190;
-    break;
-    case "Gouda":
-      canvasBackground = 255;
-    break;
-  }
+  text(`What is your name? ${nameInput.value()}`, 25, 100);
+  text('What is your favorite food?', 25, 200);
   
 }
 
@@ -77,15 +70,6 @@ function fontChanged() {
   // When the fontSelect value is changed,
   // update the canvas' font selection to the
   // new value.
-  switch (fontSelect.value()) {
-    case "Sans-serif":
-      textFont("sans-serif");
-      break;
-    case "Serif":
-      textFont("serif");
-      break;
-    case "Fantasy":
-      textFont("fantasy");
-      break;
-  }
+  let fontSelection = fontSelect.value();
+  textFont(fontSelection);
 }
