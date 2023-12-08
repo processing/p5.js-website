@@ -1,11 +1,11 @@
-/*
- * @name Image Transparency
- * @description This program overlays one image over another by modifying the
- * alpha value of the image with the <a href="https://p5js.org/reference/#/p5/tint" target="_blank">tint()</a> 
- * function. Move the cursor left and right across the canvas to change the image's position. To run this example 
- * locally, you will need an image file, and a running 
- * <a href="https://github.com/processing/p5.js/wiki/Local-server">local server</a>.
- */
+/**
+ ** @name Image Transparency
+ ** @description This program overlays one image over another by modifying the
+ ** alpha value of the image with the <a href="https://p5js.org/reference/#/p5/tint" target="_blank">tint()</a> 
+ ** function. Move the cursor left and right across the canvas to change the image's position. To run this example 
+ ** locally, you will need an image file, and a running 
+ ** <a href="https://github.com/processing/p5.js/wiki/Local-server">local server</a>.
+ **/
 // Define the global variables: img, offset, and easing.
 // Set offset to 0 and easing to 0.05 for moving the 
 // transparent image with the cursor position.
@@ -24,6 +24,7 @@ function setup() {
 
 function draw() {
   // Display the bottom image at full opacity.
+  tint(255, 255);
   image(img, 0, 0);
 
   // Define dx as the rate at which the top image
