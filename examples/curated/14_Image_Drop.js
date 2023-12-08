@@ -16,6 +16,7 @@ function setup() {
   // Add the drop() method to the canvas. Call the gotFile 
   // function when a file is dropped into the canvas.
   dropArea.drop(gotFile);
+  noLoop();
 }
 
 function draw(){
@@ -37,7 +38,9 @@ function gotFile(file) {
   // Remove this image file from the DOM and only
   // draw the image within the canvas.
   if (file.type === 'image') {
-    let img = createImg(file.data).hide();
+    // Pass in an empty string for the alt text. This should only be done with 
+    // decorative photos.
+    let img = createImg(file.data, '').hide();
     image(img, 0, 0, width, height);
   } else {
     // If the file dropped into the canvas is not an image,
