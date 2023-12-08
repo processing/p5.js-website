@@ -1,9 +1,9 @@
-/* 
- * @name Lyric Poem
- * @description Using the <a href="https://p5js.org/reference/#/p5/floor" target="_blank">floor()</a> and 
- * <a href="https://p5js.org/reference/#/p5/random" target="_blank">random()</a> functions, you can randomly select a series 
- * of items from an array and draw them on the canvas.
-*/
+/** 
+ ** @name Lyric Poem
+ ** @description Using the <a href="https://p5js.org/reference/#/p5/floor" target="_blank">floor()</a> and 
+ ** <a href="https://p5js.org/reference/#/p5/random" target="_blank">random()</a> functions, you can randomly select a series 
+ ** of items from an array and draw them at different sizes and positions on the canvas. 
+**/
 // Define the global variables.
 // Create the lyrics array to store the available lyrics.
 let lyrics = ['Are', 'you', 'lonesome', 'tonight?', 'Do', 'you', 'miss', 'me', 'tonight?', 
@@ -22,31 +22,31 @@ let position;
 function setup() {
   describe('A random series of words from an array drawn onto the canvas.');
 
-  //Import the selected font style defined the canvas' style.css file.
-  textFont("Space Mono");
+  // Import the selected font style defined the canvas' style.css file.
+  textFont('Space Mono');
 
-  createCanvas(710, 400);
+  createCanvas(720, 400);
 
   // Set the text alignment to center and set the color mode to HSB.
   textAlign(CENTER);
-  colorMode(HSB, 255);
+  colorMode(HSB);
 
-  // Define hue as a random value between 230 and 255.
-  hue = random(230, 255);
+  // Define hue as a random value.
+  hue = random(180, 360);
 
   // Define the random starting point for selecting the lyrics in the
   // array.
   position = floor(random(0, lyrics.length - words));
 
-  background(hue, 255, 30);
-  let line = 1;
+  background(hue, 95, 25);
 
-  // Using the starting position in the array, draw as many lyrics
-  // set with the words variable in the canvas in random positions.
-  for (let i = position; i < position + words; i++) {
-    textSize(32);
-    fill(hue, 200, random(150, 255));
-    text(lyrics[i], random(30, 680), (370 / words) * line);
-    line++;
+  // Draw as many lyrics set with the words variable in the 
+  // canvas in random positions.
+  for (let i = 0; i < 20; i++) {
+    textSize(random(16, 48));
+    fill(hue, 200, random(50, 95));
+    text(random(lyrics), random(width), random(height));
   }
 }
+
+// Presley, Elvis. “Are You Lonesome Tonight?” Elvis' Golden Records, Vol. 3. RCA Records, 1960. Digital.
