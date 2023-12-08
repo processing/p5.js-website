@@ -1,12 +1,13 @@
-/*
- * @name Video Canvas
- * @description Using the <a href="https://p5js.org/reference/#/p5/createVideo" target="_blank">createVideo()</a> 
- * and <a href="https://p5js.org/reference/#/p5/image" target="_blank">image()</a> functions, you can upload a video into 
- * the canvas. Since the video capture is passed through the 
- * <a href="https://p5js.org/reference/#/p5/image" target="_blank">image()</a> constructor, you can add filters to the 
- * video capture using the <a href="https://p5js.org/reference/#/p5/filter" target="_blank">filter()</a> method. To run this example locally, 
- * you will need a running <a href="https://github.com/processing/p5.js/wiki/Local-server">local server</a>.
- */
+/**
+ ** @name Video Canvas
+ ** @description Using the <a href="https://p5js.org/reference/#/p5/createVideo" target="_blank">createVideo()</a> 
+ ** and <a href="https://p5js.org/reference/#/p5/image" target="_blank">image()</a> functions, you can upload a video into 
+ ** the canvas. Since the video capture is passed through the 
+ ** <a href="https://p5js.org/reference/#/p5/image" target="_blank">image()</a> constructor, you can add filters to the 
+ ** video capture using the <a href="https://p5js.org/reference/#/p5/filter" target="_blank">filter()</a> method. To run this example locally, 
+ ** you will need a running <a href="https://github.com/processing/p5.js/wiki/Local-server">local server</a>. 
+ ** To build a video without embedding it within the canvas, visit the <a href="https://p5js.org/examples/dom-video.html">Video</a> example.
+ **/
 // Define video and playing as global variables.
 // Set playing to false so the videos are paused when loaded into the canvas.
 let video;
@@ -37,14 +38,14 @@ function draw() {
   // Draw the first instance of the video in the canvas.
   image(video, 10, 10);
 
-  // Draw the second instance of the video, adding a grey
-  // filter to the image.
+  // Add a gray filter to the existing elements on the canvas.
   filter(GRAY);
+
+  // Draw the second instance of the video.
   image(video, 150, 150);
 }
 
 function mousePressed() {
-
   // When the canvas is clicked, check to see if the videos are
   // paused or playing. If it is playing, pause the videos.
   if (playing) {
