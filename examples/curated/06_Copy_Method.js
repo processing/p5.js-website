@@ -1,10 +1,10 @@
-/*
- * @name Copy() method
- * @frame 600,400
- * @description Using the <a href="https://p5js.org/reference/#/p5/copy" target="_blank">copy()</a> method, 
- * you can simulate coloring an image in by copying an image of the colored image on top of the black and 
- * white image wherever the cursor is dragged.
- */
+/**
+ ** @name Copy() method
+ ** @frame 600,400
+ ** @description Using the <a href="https://p5js.org/reference/#/p5/copy" target="_blank">copy()</a> method, 
+ ** you can simulate coloring an image in by copying an image of the colored image on top of the black and 
+ ** white image wherever the cursor is dragged.
+ **/
 // Define the global variables: bottomImg and topImg.
 let bottomImg, topImg;
 
