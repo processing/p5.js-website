@@ -1,11 +1,12 @@
-/*
- * @name Video
- * @frame 710,250
- * @description Using the <a href="https://p5js.org/reference/#/p5/noCanvas" target="_blank">noCanvas()</a> 
- * and <a href="https://p5js.org/reference/#/p5/createVideo" target="_blank">createVideo()</a> functions, you can upload
- * a video into the <a href="https://developer.mozilla.org/en-US/docs/Glossary/DOM" target="_blank">DOM</a> without embedding the video within a canvas.
- */
-
+/**
+ ** @name Video
+ ** @frame 710,250
+ ** @description Using the <a href="https://p5js.org/reference/#/p5/noCanvas" target="_blank">noCanvas()</a> 
+ ** and <a href="https://p5js.org/reference/#/p5/createVideo" target="_blank">createVideo()</a> functions, you can upload
+ ** a video into the <a href="https://developer.mozilla.org/en-US/docs/Glossary/DOM" target="_blank">DOM</a> without embedding the video within a canvas. 
+ ** For building a video embedded within the canvas element, 
+ ** visit the <a href="https://p5js.org/examples/dom-video-canvas.html" target="_blank">Video Canvas</a> example.
+ **/
 // Create the global variables: playing, video, and button.
 // Set playing to false so the video loads in as paused.
 let playing = false;
@@ -18,6 +19,7 @@ function setup() {
 
   // Upload the video in the canvas' assets directory, and
   // use the createVideo() function to load in the video to the code.
+  // This createVideo() function will build a p5.MediaElement class.
   // It's best to upload multiple video formats so the video
   // is visible within different browsers.
   video = createVideo(['assets/fingers.mov', 'assets/fingers.webm']);
