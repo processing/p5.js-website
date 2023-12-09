@@ -1,4 +1,4 @@
-/*
+/**
  * @name Rotate
  * @description The
  * <a href="https://p5js.org/reference/#/p5/rotate">rotate()</a>
@@ -44,19 +44,32 @@ function draw() {
 
   // Loop through angles 0, 30, 60, 90 degrees
   for (let angle=0; angle <= 90; angle += 30) {
-      push();                       // save current coordinate system
+      // Save current coordinate system
+      push();                       
 
-      translate(width/2, height/2); // translate to center of canvas
-      rotate(angle);                // rotate by angle
+      // Translate to center of canvas and rotate by angle
+      translate(width/2, height/2);
+      rotate(angle);
 
-      stroke(angle+100, 255, 255);  // set hue based on angle
-      strokeWeight(5);              // set line width
-      line(0, 0, 150, 0);           // draw line along x-axis
+      // Set color based on angle and draw line along x-axis
+      stroke(angle+100, 100, 100);
+      strokeWeight(5);
+      line(0, 0, 150, 0);
 
-      strokeWeight(1);              // reset line width for text
-      text(""+angle, 170, 0);       // display the angle
+      // Display the angle
+      strokeWeight(1);              
+      text(angle, 170, 0);
 
-      pop();                        // restore coordinate system
+      // Restore coordinate system
+      pop();                        
   }
+
+  // Draw the animated line
+  translate(width/2, height/2);
+  rotate(frameCount);
+  stroke(255);
+  strokeWeight(5);
+  line(0, 0, 150, 0);
 }
+
 
