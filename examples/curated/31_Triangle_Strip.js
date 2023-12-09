@@ -10,8 +10,8 @@
  */
 
 
-const insideRadius = 100;
-const outsideRadius = 150;
+let insideRadius = 100;
+let outsideRadius = 150;
 
 
 function setup() {
