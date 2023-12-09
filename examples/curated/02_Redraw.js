@@ -1,4 +1,4 @@
-/*
+/**
  * @name Redraw
  * @description This example demonstrates the use of 
  * <a href="https://p5js.org/reference/#/p5/loop">loop()</a>
