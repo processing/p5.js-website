@@ -1,4 +1,4 @@
-/*
+/**
  * @name Translate
  * @description The 
  * <a href="https://p5js.org/reference/#/p5/translate">translate()</a>
@@ -9,41 +9,50 @@
  * <a href="https://p5js.org/reference/#/p5/push">push()</a>
  * and
  * <a href="https://p5js.org/reference/#/p5/pop">pop()</a>
- * functions save and restore the coordinate system, respectively.
+ * functions save and restore the coordinate system and various
+ * other drawing settings, such as the fill color.
  *
- * Note that in this example, rect() is called three times, drawing the
- * rectangle at (0,0) each time in a different coordinate system.
+ * Note that in this example, we draw the shapes (rectangle and 
+ * circle) each time in a different coordinate system.
  */
 
 function setup() {
   // Create the canvas
   createCanvas(720, 400);
 
-  // create screen reader accessible description
-  describe('Three rectangles drawn on the canvas, one at mouse position');
+  // Create screen reader accessible description
+  textOutput();
 }
 
 function draw() {
   // Clear the background
   background(0);
 
-  // Draw a green rectangle in the upper left corner
-  fill(0, 255, 0);              // set color to green
-  rect(0, 0, 200, 50);          // draw at (0,0)
+  // Draw shapes (rectangle and circle) in the upper left corner
+  fill(0, 255, 0);              
+  rect(0, 0, 200, 50);          
+  circle(225, 25, 50);
 
-  // Draw a blue rectangle in the middle of the canvas
-  push();                       // save current coordinate system
-  translate(width/2, height/2); // translate origin to middle of canvas
-  fill(0, 0, 255);              // set color to blue
-  rect(0, 0, 200, 50);          // draw at (0,0) in new coordinate system
-  pop();                        // restore coordinate system
+  // Draw shapes in the middle of the canvas
 
-  // Draw orange rectangle at the mouse position
-  push();                       // save current coordinate system
-  translate(mouseX, mouseY);    // translate origin to mouse position
-  fill('orange');               // set color to orange
-  rect(0, 0, 200, 50);          // draw at (0,0) in new coordinate system
-  pop();                        // restore coordinate system
+  // Save current coordinate system and color
+  push();                       
+  // Translate origin to middle of canvas
+  translate(width/2, height/2);
+  // Set color to blue
+  fill(0, 0, 255);              
+  // Draw at (0,0) in new coordinate system
+  rect(0, 0, 200, 50);          
+  circle(225, 25, 50);
+  // Restore coordinate system and color
+  pop();                        
+
+  // Draw shapes at the mouse position
+  push();                     
+  translate(mouseX, mouseY); 
+  rect(0, 0, 200, 50);        
+  circle(225, 25, 50);
+  pop();                     
 }
 
 
