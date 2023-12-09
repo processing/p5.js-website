@@ -1,4 +1,4 @@
-/*
+/**
  * @name Scale
  * @description The 
  * <a href="https://p5js.org/reference/#/p5/scale">scale()</a>
@@ -21,7 +21,7 @@ function setup() {
   createCanvas(720, 400);
 
   // Create screen reader accessible description
-  describe('Three squares drawn on the canvas')
+  textOutput();
 }
 
 function draw() {
@@ -41,9 +41,10 @@ function draw() {
 
   // Draw green square 
   push();               // save current coordinate system
-  scale(.5);            // scale by .5
+  scale(.5, .75);       // scale by .5 in x and .75 in y
   fill('green');        // set color to green
   square(0, 0, 200);    // draw square at origin, size 200
   pop();                // restore coordinate system
 }
+
 
