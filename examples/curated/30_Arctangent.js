@@ -1,4 +1,4 @@
-/*
+/**
  * @name Arctangent
  * @description The 
  * <a href="https://p5js.org/reference/#/p5/atan2">atan2()</a>
@@ -20,7 +20,7 @@ function setup() {
   // Set angle mode so that atan2() returns angles in degrees
   angleMode(DEGREES);
 
-  describe('A demonstration of the atan2 function, with two eyes that follow the mouse.');
+  describe('Two eyes that follow the mouse.');
 }
 
 
@@ -40,27 +40,35 @@ function draw() {
   stroke(128);
   line(0, 0, mouseX, mouseY);
 
-  fill(angle, 255, 255); // angle determines hue
+  fill(angle, 255, 255);
   arc(0, 0, 100, 100, 0, angle);
 
   // Draw left eye
 
+  let leftX = 150;
+  let leftY = 200;
+  let leftAngle = atan2(mouseY - leftY, mouseX - leftX);
+
   push();
-  translate(150, 200);
+  translate(leftX, leftY);
   fill(255);
   ellipse(0, 0, 50, 50);
-  rotate(atan2(mouseY - 200, mouseX - 150));
+  rotate(leftAngle);
   fill(0);
   ellipse(12.5, 0, 25, 25);
   pop();
 
   // Draw right eye
 
+  let rightX = 250;
+  let rightY = 200;
+  let rightAngle = atan2(mouseY - rightY, mouseX - rightX)
+
   push();
-  translate(250, 200);
+  translate(rightX, rightY);
   fill(255);
   ellipse(0, 0, 50, 50);
-  rotate(atan2(mouseY - 200, mouseX - 250));
+  rotate(rightAngle);
   fill(0);
   ellipse(12.5, 0, 25, 25);
   pop();
