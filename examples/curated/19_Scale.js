@@ -41,7 +41,7 @@ function draw() {
 
   // Draw green square 
   push();               // save current coordinate system
-  scale(.5, .75);       // scale by .5 in x and .75 in y
+  scale(0.5, 0.75);       // scale by .5 in x and .75 in y
   fill('green');        // set color to green
   square(0, 0, 200);    // draw square at origin, size 200
   pop();                // restore coordinate system
