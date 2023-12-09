@@ -1,8 +1,12 @@
-/*
+/**
  * @name Triangle Strip
- * @description This example demonstrates the use of the
+ * @description This example demonstrates how to create a shape
+ * by specifying its vertices in TRIANGLE_STRIP mode, using the
+ * <a href="https://p5js.org/reference/#/p5/beginShape">beginShape()</a>,
+ * <a href="https://p5js.org/reference/#/p5/endShape">endShape()</a>,
+ * and 
  * <a href="https://p5js.org/reference/#/p5/vertex">vertex()</a>
- * function and specifying a shape in TRIANGLE_STRIP mode.  
+ * functions. 
  */
 
 
@@ -15,44 +19,48 @@ function setup() {
   angleMode(DEGREES, 360, 255, 255);
   colorMode(HSB);
 
-  describe('Rainbow triangle strip in the shape of a ring.');
+  describe('Rainbow ring made up of triangles whose vertices lie on two concentric circles.');
 }
 
 
 function draw() {
   background(0);
 
-  const centerX = width/2;
-  const centerY = height/2;
+  let centerX = width / 2;
+  let centerY = height / 2;
 
   // Set the number of points based on the mouse x position
+  let pointCount = map(mouseX, 0, width, 6, 60);
 
-  let numPoints = int(map(mouseX, 0, width, 6, 60));
+  // Round pointCount to the nearest integer
+  pointCount = round(pointCount); 
+
+  // Display the current pointCount
   fill(255);
   textSize(20);
-  text("numPoints: " + numPoints, 30, 30);
+  text(`pointCount: ${pointCount}`, 30, 30);
 
   // Draw the triangle strip by specifying points on
   // the inside circle and outside circle alternately
 
   let angle = 0;
-  let angleStep = 180.0 / numPoints;
+  let angleStep = 180.0 / pointCount;
 
   beginShape(TRIANGLE_STRIP);
-  for (let i = 0; i <= numPoints; i++) {
+  for (let i = 0; i <= pointCount; i++) {
 
     // Specify a point on the outside circle
-    let px = centerX + cos(angle) * outsideRadius;
-    let py = centerY + sin(angle) * outsideRadius;
+    let pointX = centerX + cos(angle) * outsideRadius;
+    let pointY = centerY + sin(angle) * outsideRadius;
     fill(angle, 255, 255);
-    vertex(px, py);
+    vertex(pointX, pointY);
     angle += angleStep;
 
     // Specify a point on the inside circle
-    px = centerX + cos(angle) * insideRadius;
-    py = centerY + sin(angle) * insideRadius;
+    pointX = centerX + cos(angle) * insideRadius;
+    pointY = centerY + sin(angle) * insideRadius;
     fill(angle, 255, 255);
-    vertex(px, py);
+    vertex(pointX, pointY);
     angle += angleStep;
   }
   endShape();
