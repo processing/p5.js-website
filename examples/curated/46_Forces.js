@@ -20,53 +20,61 @@ let movers = [];
 let liquid;
 
 function setup() {
-  createCanvas(640, 360);
+  createCanvas(720, 400);
   colorMode(HSB, 9, 100, 100);
-  reset();
+  initializeMovers();
 
   // Create Liquid object
   liquid = new Liquid(0, height/2, width, height/2, 0.1);
 
-  describe('9 grey balls drop from the top of the window and slow down as they reach the bottom half of the screen.');
+  describe('Nine grey balls drop from the top of the canvas and slow down as they reach the bottom half of the canvas.');
 }
 
 function draw() {
-  background(0);
+  background(20);
 
   // Draw water
   liquid.display();
 
-  for (let i = 0; i < movers.length; i++) {
+  for (let mover of movers) {
     // Check whether the mover is in the liquid
-    if (liquid.contains(movers[i])) {
+    if (liquid.contains(mover)) {
       // Calculate drag force
-      let dragForce = liquid.calculateDrag(movers[i]);
+      let dragForce = liquid.calculateDrag(mover);
       // Apply drag force to Mover
-      movers[i].applyForce(dragForce);
+      mover.applyForce(dragForce);
     }
 
     // Gravitational force is proportional to the mass
-    let gravity = createVector(0, 0.1 * movers[i].mass);
+    let gravity = createVector(0, 0.1 * mover.mass);
     // Apply gravitional force
-    movers[i].applyForce(gravity);
+    mover.applyForce(gravity);
 
     // Update and display
-    movers[i].update();
-    movers[i].display();
-    movers[i].checkEdges();
+    mover.update();
+    mover.display();
+    mover.checkEdges();
   }
 }
 
 
 function mousePressed() {
-  reset();
+  initializeMovers();
 }
 
 
-// Restart all the Mover objects randomly
-function reset() {
+
+function initializeMovers() {
+  // Calculate the spacing based on the width of the canvas
+  let xSpacing = width / 9;  
+
+  // Fill the movers array with 9 Mover objects with random masses
   for (let i = 0; i < 9; i++) {
-    movers[i] = new Mover(random(0.5, 3), 40 + i * 70, 0, color(i, 100, 100));
+    let mass = random(0.5, 3);
+    let xPosition = xSpacing * i + xSpacing / 2;
+    movers[i] = new Mover(mass, 
+        xPosition, 0, 
+        color(i, 100, 100));
   }
 }
 
