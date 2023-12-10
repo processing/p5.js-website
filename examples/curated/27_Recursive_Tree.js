@@ -16,18 +16,19 @@ function setup() {
 function draw() {
   background(0);
 
-  // Let's pick an angle 0 to 90 degrees based on the mouse position
-  let a = (mouseX / width) * 90;
-  // Convert it to radians
-  theta = radians(a);
+  // Calculate the angle based on the mouse position, maximum 90 degrees
+  let angle = (mouseX / width) * 90;
+  angle = min(angle, 90);
+  // Convert the angle to radians
+  theta = radians(angle);
   // Start the tree from the bottom of the screen
-  translate(width/2,height);
+  translate(width/2, height);
   // Draw a line 120 pixels
   stroke(0, 255, 255);
-  line(0,0,0,-120);
+  line(0, 0, 0, -120);
   // Move to the end of that line
-  translate(0,-120);
-  // Start the recursive branching!
+  translate(0, -120);
+  // Start the recursive branching
   branch(120, 0);
 
   describe('A tree drawn by recursively drawing branches.');
@@ -41,17 +42,23 @@ function branch(h, level) {
   // Each branch will be 2/3rds the size of the previous one
   h *= 0.66;
 
-  // All recursive functions must have an exit condition!!!!
-  // Here, ours is when the length of the branch is 2 pixels or less
+  // Draw if our branch length > 2, otherwise stop the recursion
   if (h > 2) {
-    push();    // Save the current state of transformation (i.e. where are we now)
-    rotate(theta);   // Rotate by theta
-    line(0, 0, 0, -h);  // Draw the branch
-    translate(0, -h); // Move to the end of the branch
-    branch(h, level+1);       // Ok, now call myself to draw two new branches!!
-    pop();     // Whenever we get back here, we "pop" in order to restore the previous matrix state
+    // Draw the right branch
+    // Save the current coordinate system
+    push();    
+    // Rotate by theta
+    rotate(theta);
+    // Draw the branch
+    line(0, 0, 0, -h);  
+    // Move to the end of the branch
+    translate(0, -h); 
+    // Call branch() recursively
+    branch(h, level+1);       
+    // Restore the saved coordinate system
+    pop();
 
-    // Repeat the same thing, only branch off to the "left" this time!
+    // Draw the left branch
     push();
     rotate(-theta);
     line(0, 0, 0, -h);
