@@ -1,15 +1,25 @@
-/*
+/**
  * @name Non Orthogonal Reflection
  * @description This example demonstrates a ball bouncing on a slanted
  * surface, implemented using vector calculations for reflection.
+ *
+ * The code makes extensive use of the 
+ * <a href="https://p5js.org/reference/#/p5.Vector">p5.Vector</a>
+ * class, including the 
+ * <a href="https://p5js.org/reference/#/p5/createVector">createVector()</a> function to create new vectors,
+ * and the vector methods
+ * <a href="https://p5js.org/reference/#/p5.Vector/add">add()</a>
+ * and
+ * <a href="https://p5js.org/reference/#/p5.Vector/dot">dot()</a>
+ * for the vector calculations.
  */
 
-// Position of left and right sides of floor
-let base1;
-let base2;
+// Declare variables for position of left and right sides of floor
+let baseLeft;
+let baseRight;
 let baseColor;
 
-// Variables related to moving ball
+// Declare variables related to moving ball
 let position;
 let velocity;
 let radius = 6;
@@ -19,10 +29,10 @@ let circleColor;
 
 function setup() {
   createCanvas(710, 400);
-  colorMode(HSB);
+  colorMode(HSB, 360, 100, 100);
 
-  base1 = createVector(0, height - 150);
-  base2 = createVector(width, height);
+  baseLeft = createVector(0, height - 150);
+  baseRight = createVector(width, height);
   setColors();
 
   // Set initial position to middle of canvas
@@ -33,27 +43,27 @@ function setup() {
   velocity.mult(speed);
 
   // Create screen reader accessible description
-  describe('A bouncing ball simulation demonstrating the use of vectors for reflection.');
+  describe('A simulation of a ball bouncing on slanted surfaces.');
 }
 
 
 function setColors() {
   // Choose random hues
-  baseColor = color(random(256), 255, 255);
-  circleColor = color(random(256), 255, 255);
+  baseColor = color(random(30, 180), 70, 70);
+  circleColor = color(random(30, 180), 90, 90);
 }
 
 
 function draw() {
 
   // Clear background, using alpha for fade effect
-  fill(0, 12);
-  noStroke();
-  rect(0, 0, width, height);
+  background(30, 50);
+  frameRate(30);
 
   // Draw the base
   fill(baseColor);
-  quad(base1.x, base1.y, base2.x, base2.y, width, height, 0, height);
+  noStroke();
+  quad(baseLeft.x, baseLeft.y, baseRight.x, baseRight.y, width, height, 0, height);
 
   // Draw the circle
   fill(circleColor);
@@ -70,10 +80,10 @@ function draw() {
 
 function handleBaseCollision() {
   // Calculate the normal vector and intercept for the base line
-  let baseDirection = p5.Vector.sub(base2, base1);
+  let baseDirection = p5.Vector.sub(baseRight, baseLeft);
   baseDirection.normalize();
   let normal = createVector(baseDirection.y, -baseDirection.x);
-  let intercept = base1.dot(normal);
+  let intercept = baseLeft.dot(normal);
 
   // Detect and handle collision with base
   if (position.dot(normal) < intercept) {
@@ -84,6 +94,7 @@ function handleBaseCollision() {
 
     // Draw the normal vector at collision point
     stroke(255);
+    strokeWeight(5);
     line(position.x, position.y,
       position.x + normal.x * 100, position.y + normal.y * 100
     );
@@ -92,18 +103,28 @@ function handleBaseCollision() {
 
 
 function handleBoundaryCollision() {
-  // Handle side bounce
+  // Handle side bounce:  
+  //
+  // If the ball has reached the left wall
+  // or the ball has reached the right wall,
+  // bounce by negating the ball's x velocity.
+  //
+  // Note: the ball's y velocity is unchanged when it hits
+  // the side wall.
+  
   if (position.x < radius || position.x > width-radius) {
     velocity.x *= -1;
   }
 
-  // Handle top bounce
+  // Handle top bounce:
+  // If the ball has reached the top, bounce by negating
+  // its y velocity.
   if (position.y < radius) {
     velocity.y *= -1;
 
     // Randomize base and colors
-    base1.y = random(height - 100, height);
-    base2.y = random(height - 100, height);
+    baseLeft.y = random(height - 100, height);
+    baseRight.y = random(height - 100, height);
     setColors();
   }
 }
