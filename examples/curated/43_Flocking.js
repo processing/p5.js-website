@@ -20,12 +20,12 @@ function setup() {
   flock = new Flock();
 
   // Add an initial set of boids into the system
-  for (let i=0; i < 100; i++) {
-    let b = new Boid(width/2, height/2);
+  for (let i = 0; i < 100; i++) {
+    let b = new Boid(width / 2, height / 2);
     flock.addBoid(b);
   }
 
-  describe('A group of bird-like objects moving across the canvas, modeling flocking behavior.');
+  describe('A group of bird-like objects, represented by triangles, moving across the canvas, modeling flocking behavior.');
 }
 
 
@@ -49,9 +49,9 @@ class Flock {
     }
 
     run() {
-      for (let i = 0; i < this.boids.length; i++) {
+      for (let boid of this.boids) {
         // Pass the entire list of boids to each boid individually
-        this.boids[i].run(this.boids);  
+        boid.run(this.boids);
       }
     }
 
@@ -68,8 +68,10 @@ class Boid {
       this.velocity = createVector(random(-1, 1), random(-1, 1));
       this.position = createVector(x, y);
       this.r = 3.0;
-      this.maxspeed = 3;    // Maximum speed
-      this.maxforce = 0.05; // Maximum steering force
+      // Maximum speed
+      this.maxspeed = 3;    
+      // Maximum steering force
+      this.maxforce = 0.05; 
       colorMode(HSB);
       this.color = color(random(256), 255, 255);
     }
@@ -143,10 +145,21 @@ class Boid {
 
     // Wraparound
     borders() {
-      if (this.position.x < -this.r)  this.position.x = width + this.r;
-      if (this.position.y < -this.r)  this.position.y = height + this.r;
-      if (this.position.x > width + this.r) this.position.x = -this.r;
-      if (this.position.y > height + this.r) this.position.y = -this.r;
+      if (this.position.x < -this.r) {
+        this.position.x = width + this.r;
+      }
+
+      if (this.position.y < -this.r) {
+        this.position.y = height + this.r;
+      }
+
+      if (this.position.x > width + this.r) {
+        this.position.x = -this.r;
+      }
+
+      if (this.position.y > height + this.r) {
+        this.position.y = -this.r;
+      }
     }
 
     // Separation
@@ -157,15 +170,17 @@ class Boid {
       let count = 0;
       // For every boid in the system, check if it's too close
       for (let i = 0; i < boids.length; i++) {
-        let d = p5.Vector.dist(this.position,boids[i].position);
+        let distanceToNeighbor = p5.Vector.dist(this.position,boids[i].position);
         // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-        if ((d > 0) && (d < desiredseparation)) {
+        if ((distanceToNeighbor > 0) && (distanceToNeighbor < desiredseparation)) {
           // Calculate vector pointing away from neighbor
           let diff = p5.Vector.sub(this.position, boids[i].position);
           diff.normalize();
-          diff.div(d);        // Weight by distance
+          // Scale by distance
+          diff.div(distanceToNeighbor);        
           steer.add(diff);
-          count++;            // Keep track of how many
+          // Keep track of how many
+          count++;            
         }
       }
       // Average -- divide by how many
