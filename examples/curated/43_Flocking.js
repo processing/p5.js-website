@@ -169,12 +169,12 @@ class Boid {
       let steer = createVector(0, 0);
       let count = 0;
       // For every boid in the system, check if it's too close
-      for (let i = 0; i < boids.length; i++) {
-        let distanceToNeighbor = p5.Vector.dist(this.position,boids[i].position);
+      for (let boid of boids) {
+        let distanceToNeighbor = p5.Vector.dist(this.position, boid.position);
         // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
         if ((distanceToNeighbor > 0) && (distanceToNeighbor < desiredseparation)) {
           // Calculate vector pointing away from neighbor
-          let diff = p5.Vector.sub(this.position, boids[i].position);
+          let diff = p5.Vector.sub(this.position, boid.position);
           diff.normalize();
           // Scale by distance
           diff.div(distanceToNeighbor);        
