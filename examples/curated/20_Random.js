@@ -1,4 +1,4 @@
-/*
+/**
  * @name Random
  * @arialabel Various shades of grey bars change patterns randomly every half a second
  * @description Random numbers create the basis of this image.
