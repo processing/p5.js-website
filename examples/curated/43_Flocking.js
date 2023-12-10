@@ -1,4 +1,4 @@
-/*
+/**
  * @name Flocking
  * @description Demonstration of flocking behavior.  
  * Full discussion of the implementation can be found in the
@@ -67,7 +67,7 @@ class Boid {
       this.acceleration = createVector(0, 0);
       this.velocity = createVector(random(-1, 1), random(-1, 1));
       this.position = createVector(x, y);
-      this.r = 3.0;
+      this.size = 3.0;
       // Maximum speed
       this.maxspeed = 3;    
       // Maximum steering force
@@ -136,29 +136,29 @@ class Boid {
       translate(this.position.x, this.position.y);
       rotate(theta);
       beginShape();
-      vertex(0, -this.r * 2);
-      vertex(-this.r, this.r * 2);
-      vertex(this.r, this.r * 2);
+      vertex(0, -this.size * 2);
+      vertex(-this.size, this.size * 2);
+      vertex(this.size, this.size * 2);
       endShape(CLOSE);
       pop();
     }
 
     // Wraparound
     borders() {
-      if (this.position.x < -this.r) {
-        this.position.x = width + this.r;
+      if (this.position.x < -this.size) {
+        this.position.x = width + this.size;
       }
 
-      if (this.position.y < -this.r) {
-        this.position.y = height + this.r;
+      if (this.position.y < -this.size) {
+        this.position.y = height + this.size;
       }
 
-      if (this.position.x > width + this.r) {
-        this.position.x = -this.r;
+      if (this.position.x > width + this.size) {
+        this.position.x = -this.size;
       }
 
-      if (this.position.y > height + this.r) {
-        this.position.y = -this.r;
+      if (this.position.y > height + this.size) {
+        this.position.y = -this.size;
       }
     }
 
