@@ -1,4 +1,4 @@
-/*
+/**
  * @name Recursive Tree
  * @description This is an example of rendering a simple tree-like structure via recursion.
  * The branching angle is calculated as a function of the horizontal mouse
@@ -31,7 +31,7 @@ function draw() {
   // Start the recursive branching
   branch(120, 0);
 
-  describe('A tree drawn by recursively drawing branches.');
+  describe('A tree drawn by recursively drawing branches, with angle determined by the user mouse position.');
 }
 
 function branch(h, level) {
