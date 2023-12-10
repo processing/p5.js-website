@@ -19,27 +19,27 @@ function draw() {
 
   // Establish a range of values on the complex plane
   // Different width values change the zoom level
-  const w = 4;
-  const h = (w * height) / width;
+  let w = 4;
+  let h = (w * height) / width;
 
   // Start at negative half the width and height
-  const xmin = -w/2;
-  const ymin = -h/2;
+  let xmin = -w/2;
+  let ymin = -h/2;
 
   // Access the pixels[] array
   loadPixels();
 
   // Set the maxium number of iterations for each point on the complex plane
-  const maxiterations = 100;
+  let maxiterations = 100;
 
   // x goes from xmin to xmax
-  const xmax = xmin + w;
+  let xmax = xmin + w;
   // y goes from ymin to ymax
-  const ymax = ymin + h;
+  let ymax = ymin + h;
 
   // Calculate amount we increment x,y for each pixel
-  const dx = (xmax - xmin) / (width);
-  const dy = (ymax - ymin) / (height);
+  let dx = (xmax - xmin) / (width);
+  let dy = (ymax - ymin) / (height);
 
   // Start y
   let y = ymin;
@@ -53,9 +53,9 @@ function draw() {
       let b = y;
       let n = 0;
       while (n < maxiterations) {
-        const aa = a * a;
-        const bb = b * b;
-        const twoab = 2.0 * a * b;
+        let aa = a * a;
+        let bb = b * b;
+        let twoab = 2.0 * a * b;
         a = aa - bb + x;
         b = twoab + y;
         // If the values are too big, stop iteration
@@ -67,8 +67,8 @@ function draw() {
 
       // Color each pixel based on how long it takes to get to infinity
 
-      const index = (i+j*width)*4;
-      const t = map(n, 0, maxiterations, 0, 1);
+      let index = (i+j*width)*4;
+      let t = map(n, 0, maxiterations, 0, 1);
 
       let c = color(0);
       if (n < maxiterations)
