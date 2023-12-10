@@ -1,8 +1,10 @@
-/*
+/**
  * @name Snowflakes
  * @description This example demonstrates the use of a particle system
  * to simulate the motion of falling snowflakes.  This program defines a
- * snowflake class, and uses an array to hold the snowflake objects.
+ * snowflake 
+ * <a href="https://p5js.org/reference/#/p5/class">class</a>, 
+ * and uses an array to hold the snowflake objects.
  */
 
 
@@ -17,19 +19,21 @@ function setup() {
 
 function draw() {
 
-  // Get the current time (and use for background color)
-  let t = millis()/1000;
-  background(128 + 128*sin(t), 0, 0);
+  background(0);
 
   // Create a random number of snowflakes each frame
   for (let i = 0; i < random(5); i++) {
-    snowflakes.push(new snowflake()); // append snowflake object to the array
+    // Add a new snowflake object to the array
+    snowflakes.push(new snowflake());
   }
 
   // Update and display each snowflake in the array
+  let currentTime = frameCount/60;
+
   for (let flake of snowflakes) {
-    flake.update(t);        // update snowflake position
-    flake.display();        // draw snowflake
+    // Update each snowflake position and display
+    flake.update(currentTime);
+    flake.display();
   }
 }
 
