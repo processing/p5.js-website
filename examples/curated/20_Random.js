@@ -1,9 +1,19 @@
 /**
  * @name Random
- * @arialabel Various shades of grey bars change patterns randomly every half a second
- * @description Random numbers create the basis of this image.
- * Each time the program is loaded the result is different.
+ * @description This example demonstrates the use of the
+ * <a href="https://p5js.org/reference/#/p5/random">random()</a>
+ * function.
+ *
+ * When the user presses the mouse button, the position and color
+ * of the circle change randomly.
  */
+
+// Declare variables for the position and color of the circle
+
+let circleX;
+let circleY;
+let circleColor;
+
 function setup() {
   createCanvas(710, 400);
 
@@ -17,19 +27,19 @@ function setup() {
 
 function setPositionAndColor() {
   // Set the position to a random value (within the canvas)
-  x = random(0, width);
-  y = random(0, height);
+  circleX = random(0, width);
+  circleY = random(0, height);
 
   // Set R, G, and B to random values in the range [100, 256)
-  c = color(random(100, 256), random(100, 256), random(100, 256));
+  circleColor = color(random(100, 256), random(100, 256), random(100, 256));
 }
 
 function draw() {
   background(10);
 
   // Draw a circle at (x,y) with color c
-  fill(c);
-  circle(x, y, 100);
+  fill(circleColor);
+  circle(circleX, circleY, 100);
 }
 
 function mousePressed() {
