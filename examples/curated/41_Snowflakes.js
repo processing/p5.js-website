@@ -14,18 +14,23 @@ let snowflakes = [];
 
 function setup() {
   createCanvas(400, 600);
+
+  angleMode(DEGREES);
+
+  // Create snowflake objects 
+  for (let i = 0; i < 300; i++) {
+    // Add a new snowflake object to the array
+    snowflakes.push(new snowflake());
+  }
+
+  // Create screen reader accessible description
+  describe('Snowflakes falling on a black background.');
 }
 
 
 function draw() {
 
   background(0);
-
-  // Create a random number of snowflakes each frame
-  for (let i = 0; i < random(5); i++) {
-    // Add a new snowflake object to the array
-    snowflakes.push(new snowflake());
-  }
 
   // Update and display each snowflake in the array
   let currentTime = frameCount/60;
@@ -44,26 +49,30 @@ class snowflake {
 
   constructor() {
       this.posX = 0;
-      this.posY = random(-50, 0);
-      this.initialangle = random(0, 2 * PI);
+      this.posY = random(-height, 0);
+      this.initialangle = random(0, 360);
       this.size = random(2, 5);
       this.radius = sqrt(random(pow(width / 2, 2)));
-      this.color = color(random(200,256), random(200,256), random(200,256));
+      this.color = color(random(200, 256), random(200, 256), random(200, 256));
   }
 
   update(time) {
+    // Define angular speed (degrees / second)
+    let angularSpeed = 35;
+
+    // Calculate the current angle
+    let angle = this.initialangle + angularSpeed * time;
+
     // x position follows a sine wave
-    let w = 0.6; // angular speed
-    let angle = w * time + this.initialangle;
     this.posX = width / 2 + this.radius * sin(angle);
 
-    // Different size snowflakes fall at slightly different y speeds
-    this.posY += pow(this.size, 0.5);
+    // Different size snowflakes fall at different y speeds
+    let ySpeed = 8 / this.size;
+    this.posY += ySpeed;
 
-    // Delete snowflake if past end of screen
+    // When snowflake reaches the bottom, move it to the top
     if (this.posY > height) {
-      let index = snowflakes.indexOf(this);
-      snowflakes.splice(index, 1);
+        this.posY = -50;
     }
   }
 
