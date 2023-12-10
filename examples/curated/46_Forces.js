@@ -4,12 +4,19 @@
  * Bodies experience gravity continuously.Bodies experience fluid 
  * resistance when in "water".
  * (<a href="http://natureofcode.com">natureofcode.com</a>)
+ *
+ * The force calculations are performed using the 
+ * <a href="https://p5js.org/reference/#/p5.Vector">p5.Vector</a>
+ * class, including the 
+ * <a href="https://p5js.org/reference/#/p5/createVector">createVector()</a>
+ * function to create vectors.
+ *
  */
 
-// Array to store the moving bodies
+// Declare array to store the moving bodies
 let movers = [];
 
-// Liquid object
+// Declare variable for the Liquid object
 let liquid;
 
 function setup() {
@@ -17,7 +24,7 @@ function setup() {
   colorMode(HSB, 9, 100, 100);
   reset();
 
-  // Create liquid object
+  // Create Liquid object
   liquid = new Liquid(0, height/2, width, height/2, 0.1);
 
   describe('9 grey balls drop from the top of the window and slow down as they reach the bottom half of the screen.');
@@ -30,7 +37,7 @@ function draw() {
   liquid.display();
 
   for (let i = 0; i < movers.length; i++) {
-    // Is the Mover in the liquid?
+    // Check whether the mover is in the liquid
     if (liquid.contains(movers[i])) {
       // Calculate drag force
       let dragForce = liquid.calculateDrag(movers[i]);
@@ -38,9 +45,9 @@ function draw() {
       movers[i].applyForce(dragForce);
     }
 
-    // Gravity is scaled by mass here!
+    // Gravitational force is proportional to the mass
     let gravity = createVector(0, 0.1 * movers[i].mass);
-    // Apply gravity
+    // Apply gravitional force
     movers[i].applyForce(gravity);
 
     // Update and display
@@ -74,7 +81,7 @@ class Liquid {
       this.c = c;
     };
 
-    // Is the Mover in the Liquid?
+    // Check whether the Mover in the Liquid
     contains(m) {
       let l = m.position;
       return (
@@ -87,18 +94,17 @@ class Liquid {
 
     // Calculate drag force
     calculateDrag(m) {
-      // Magnitude is coefficient * speed squared
+      // The drag force magnitude is coefficient * speed squared
       let speed = m.velocity.mag();
       let dragMagnitude = this.c * speed * speed;
 
-      // Direction is inverse of velocity
+      // Create the drag force vector (opposite direction of velocity)
       let dragForce = m.velocity.copy();
       dragForce.mult(-1);
 
-      // Scale according to magnitude
-      // dragForce.setMag(dragMagnitude);
-      dragForce.normalize();
-      dragForce.mult(dragMagnitude);
+      // Scale the drag force vector to the magnitude calculated above
+      dragForce.setMag(dragMagnitude);
+
       return dragForce;
     }
 
@@ -120,7 +126,7 @@ class Mover {
       this.color = c;
     }
 
-    // Newton's 2nd law: F = M * A
+    // Apply force according to Newton's 2nd law: F = M * A
     // or A = F / M
     applyForce(force) {
       let f = p5.Vector.div(force, this.mass);
@@ -128,11 +134,11 @@ class Mover {
     }
 
     update() {
-      // Velocity changes according to acceleration
+      // Change the velocity by the acceleration
       this.velocity.add(this.acceleration);
-      // position changes by velocity
+      // Change the position by the velocity
       this.position.add(this.velocity);
-      // We must clear acceleration each frame
+      // Clear the acceleration each frame
       this.acceleration.mult(0);
     }
 
@@ -143,7 +149,7 @@ class Mover {
       ellipse(this.position.x, this.position.y, this.mass * 16, this.mass * 16);
     }
 
-    // Bounce off bottom of window
+    // Make the balls bounce at the bottom
     checkEdges() {
       if (this.position.y > height - this.mass * 8) {
         // A little dampening when hitting the bottom
