@@ -1,6 +1,6 @@
-/*
+/**
  * @name The Mandelbrot Set
- * @description Simple rendering of the Mandelbrot set.
+ * @description Colorful rendering of the Mandelbrot set.
  * Based on Daniel Shiffman's 
  * <a href="https://processing.org/examples/mandelbrot.html">Mandelbrot Example</a> for Processing.
  */
@@ -10,7 +10,7 @@ function setup() {
   createCanvas(710, 400);
   pixelDensity(1);
   noLoop();
-  describe('Simple rendering of the Mandelbrot set.');
+  describe('Colorful rendering of the Mandelbrot set.');
 }
 
 
@@ -18,20 +18,18 @@ function draw() {
   background(0);
 
   // Establish a range of values on the complex plane
-  // A different range will allow us to "zoom" in or out on the fractal
-
-  // It all starts with the width, try higher or lower values
+  // Different width values change the zoom level
   const w = 4;
   const h = (w * height) / width;
 
   // Start at negative half the width and height
   const xmin = -w/2;
   const ymin = -h/2;
-  // Make sure we can write to the pixels[] array.
-  // Only need to do this once since we don't do any other drawing.
+
+  // Access the pixels[] array
   loadPixels();
 
-  // Maximum number of iterations for each point on the complex plane
+  // Set the maxium number of iterations for each point on the complex plane
   const maxiterations = 100;
 
   // x goes from xmin to xmax
@@ -50,7 +48,7 @@ function draw() {
     let x = xmin;
     for (let i = 0; i < width; i++) {
 
-      // Now we test, as we iterate z = z^2 + cm does z tend towards infinity?
+      // Test whether iteration of z = z^2 + cm diverges
       let a = x;
       let b = y;
       let n = 0;
@@ -60,9 +58,9 @@ function draw() {
         const twoab = 2.0 * a * b;
         a = aa - bb + x;
         b = twoab + y;
-        // Infinty in our finite world is simple, let's just consider it 16
+        // If the values are too big, stop iteration
         if (dist(aa, bb, 0, 0) > 16) {
-          break;  // Bail
+          break;
         }
         n++;
       }
