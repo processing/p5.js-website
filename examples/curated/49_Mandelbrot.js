@@ -1,84 +1,94 @@
-/*
+/**
  * @name The Mandelbrot Set
- * @arialabel A fractal that roughly resembles a series of heart-shaped disks, to which smaller disks are attached and consists of a connected set
- * @description Simple rendering of the Mandelbrot set.
- * Based on Daniel Shiffman's <a href="https://processing.org/examples/mandelbrot.html">Mandelbrot Example</a> for Processing.
+ * @description Colorful rendering of the Mandelbrot set.
+ * Based on Daniel Shiffman's
+ * <a href="https://processing.org/examples/mandelbrot.html">Mandelbrot Example</a> for Processing.
  */
 
 function setup() {
   createCanvas(710, 400);
   pixelDensity(1);
-  noLoop();
-}
-
-function draw() {
+  describe('Colorful rendering of the Mandelbrot set.');
   background(0);
 
   // Establish a range of values on the complex plane
-  // A different range will allow us to "zoom" in or out on the fractal
-
-  // It all starts with the width, try higher or lower values
-  const w = 4;
-  const h = (w * height) / width;
+  // Different width values change the zoom level
+  let w = 4;
+  let h = (w * height) / width;
 
   // Start at negative half the width and height
-  const xmin = -w/2;
-  const ymin = -h/2;
+  let xMin = -w / 2;
+  let yMin = -h / 2;
 
-  // Make sure we can write to the pixels[] array.
-  // Only need to do this once since we don't do any other drawing.
+  // Access the pixels[] array
   loadPixels();
 
-  // Maximum number of iterations for each point on the complex plane
-  const maxiterations = 100;
+  // Set the maximum number of iterations for each point on the complex plane
+  let maxIterations = 100;
 
-  // x goes from xmin to xmax
-  const xmax = xmin + w;
-  // y goes from ymin to ymax
-  const ymax = ymin + h;
+  // x goes from xMin to xMax
+  let xMax = xMin + w;
+
+  // y goes from yMin to yMax
+  let yMax = yMin + h;
 
   // Calculate amount we increment x,y for each pixel
-  const dx = (xmax - xmin) / (width);
-  const dy = (ymax - ymin) / (height);
+  let dx = (xMax - xMin) / width;
+  let dy = (yMax - yMin) / height;
 
   // Start y
-  let y = ymin;
-  for (let j = 0; j < height; j++) {
+  let y = yMin;
+  for (let j = 0; j < height; j += 1) {
     // Start x
-    let x = xmin;
-    for (let i = 0; i < width; i++) {
-
-      // Now we test, as we iterate z = z^2 + cm does z tend towards infinity?
+    let x = xMin;
+    for (let i = 0; i < width; i += 1) {
+      // Test whether iteration of z = z^2 + cm diverges
       let a = x;
       let b = y;
-      let n = 0;
-      while (n < maxiterations) {
-        const aa = a * a;
-        const bb = b * b;
-        const twoab = 2.0 * a * b;
-        a = aa - bb + x;
-        b = twoab + y;
-        // Infinty in our finite world is simple, let's just consider it 16
-        if (dist(aa, bb, 0, 0) > 16) {
-          break;  // Bail
+      let iterations = 0;
+      while (iterations < maxIterations) {
+        let aSquared = pow(a, 2);
+        let bSquared = pow(b, 2);
+        let twoAB = 2.0 * a * b;
+        a = aSquared - bSquared + x;
+        b = twoAB + y;
+
+        // If the values are too big, stop iteration
+        if (dist(aSquared, bSquared, 0, 0) > 16) {
+          break;
         }
-        n++;
+        iterations += 1;
       }
 
-      // We color each pixel based on how long it takes to get to infinity
-      // If we never got there, let's pick the color black
-      const pix = (i+j*width)*4;
-      const norm = map(n, 0, maxiterations, 0, 1);
-      let bright = map(sqrt(norm), 0, 1, 0, 255);
-      if (n == maxiterations) {
-        bright = 0;
-      } else {
-        // Gosh, we could make fancy colors here if we wanted
-        pixels[pix + 0] = bright;
-        pixels[pix + 1] = bright;
-        pixels[pix + 2] = bright;
-        pixels[pix + 3] = 255;
+      // Color each pixel based on how long it takes to get to infinity
+
+      let index = (i + j * width) * 4;
+
+      // Convert number of iterations to range of 0-1
+      let normalized = map(iterations, 0, maxIterations, 0, 1);
+
+      // Use square root of normalized value for color interpolation
+      let lerpAmount = sqrt(normalized);
+
+      // Set default color to black
+      let pixelColor = color(0);
+
+      // Blue
+      let startColor = color(47, 68, 159);
+
+      // Light yellow
+      let endColor = color(255, 255, 128);
+
+      // If iteration is under the maximum, interpolate a color
+      if (iterations < maxIterations) {
+        pixelColor = lerpColor(startColor, endColor, lerpAmount);
       }
+
+      // Copy the RGBA values from the color to the pixel
+      for (let i = 0; i < 4; i += 1) {
+        pixels[index + i] = pixelColor.levels[i];
+      }
+
       x += dx;
     }
     y += dy;
