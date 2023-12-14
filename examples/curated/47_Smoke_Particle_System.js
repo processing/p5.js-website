@@ -1,45 +1,46 @@
 /**
  * @name Smoke Particles
- * @description Smoke particle system demo, based on 
- * Dan Shiffman's original 
+ * @description Smoke particle system demo, based on
+ * Dan Shiffman's original
  * <a href="https://natureofcode.com/book/chapter-4-particle-systems/">example</a>
- * for Processing. 
+ * for Processing.
  *
- * The code makes use of the 
+ * The code makes use of the
  * <a href="https://p5js.org/reference/#/p5.Vector">p5.Vector</a>
- * class, including the 
+ * class, including the
  * <a href="https://p5js.org/reference/#/p5/createVector">createVector()</a>
  * function.  The various calculations for updating particles'
  * positions and velocities are performed with p5.Vector methods.
  *
- * The particle system is implemented as a 
- * <a href="https://p5js.org/reference/#/p5/class">class</a>, which contains an array of 
+ * The particle system is implemented as a
+ * <a href="https://p5js.org/reference/#/p5/class">class</a>, which contains an array of
  * objects (of class Particle).
  */
 
-
 // Declare variables for the particle system and texture
-let particle_texture;
-let particle_system;
-
+let particleTexture;
+let particleSystem;
 
 function preload() {
-  particle_texture = loadImage("assets/particle_texture.png");
+  particleTexture = loadImage('assets/particle_texture.png');
 }
 
-
 function setup() {
-
   // Set the canvas size
   createCanvas(720, 400);
   colorMode(HSB);
 
   // Initialize the particle system
-  particle_system = new ParticleSystem(0, createVector(width / 2, height - 60), particle_texture);
+  particleSystem = new ParticleSystem(
+    0,
+    createVector(width / 2, height - 60),
+    particleTexture
+  );
 
-  describe('White circle gives off smoke in the middle of the canvas, with wind force determined by the cursor position.');
+  describe(
+    'White circle gives off smoke in the middle of the canvas, with wind force determined by the cursor position.'
+  );
 }
-
 
 function draw() {
   background(20);
@@ -49,125 +50,112 @@ function draw() {
   let wind = createVector(dx, 0);
 
   // Apply the wind and run the particle system
-  particle_system.applyForce(wind);
-  particle_system.run();
-  for (let i = 0; i < 2; i++) {
-    particle_system.addParticle();
+  particleSystem.applyForce(wind);
+  particleSystem.run();
+  for (let i = 0; i < 2; i += 1) {
+    particleSystem.addParticle();
   }
 
   // Draw an arrow representing the wind force
   drawVector(wind, createVector(width / 2, 50, 0), 500);
 }
 
-
 // Display an arrow to show a vector magnitude and direction
-function drawVector(v, loc, scale){
+function drawVector(v, loc, scale) {
   push();
-  let arrowsize = 4;
+  let arrowSize = 4;
   translate(loc.x, loc.y);
   stroke(255);
   strokeWeight(3);
   rotate(v.heading());
 
-  let len = v.mag() * scale;
-  line(0, 0, len,0);
-  line(len, 0, len-arrowsize, +arrowsize / 2);
-  line(len, 0, len-arrowsize, -arrowsize / 2);
+  let length = v.mag() * scale;
+  line(0, 0, length, 0);
+  line(length, 0, length - arrowSize, +arrowSize / 2);
+  line(length, 0, length - arrowSize, -arrowSize / 2);
   pop();
 }
 
-
-/**
- * A basic particle system class
- * @param num the number of particles
- * @param v the origin of the particle system
- * @param img_ a texture for each particle in the system
- * @constructor
- */
-
 class ParticleSystem {
+  constructor(particleCount, origin, textureImage) {
+    this.particles = [];
 
-    constructor(num, v, img_) {
-      this.particles = [];
-      // Make a copy of the input vector
-      this.origin = v.copy(); 
-      this.img = img_
-      for(let i = 0; i < num; ++i){
-        this.particles.push(new Particle(this.origin, this.img));
-      }
-    }
-
-    run() {
-      // Loop through and run each particle
-      for (let i = this.particles.length - 1; i >= 0; i--) {
-        let particle = this.particles[i];
-        particle.run();
-
-        // Remove dead particles 
-        if (particle.isDead()) {
-          this.particles.splice(i, 1);
-        }
-      }
-    }
-
-    // Apply force to each particle
-    applyForce(dir) {
-      for(let i = 0; i < this.particles.length; ++i){
-        this.particles[i].applyForce(dir);
-      }
-    }
-
-    addParticle() {
+    // Make a copy of the input vector
+    this.origin = origin.copy();
+    this.img = textureImage;
+    for (let i = 0; i < particleCount; ++i) {
       this.particles.push(new Particle(this.origin, this.img));
     }
+  }
+
+  run() {
+    // Loop through and run each particle
+    for (let i = this.particles.length - 1; i >= 0; i -= 1) {
+      let particle = this.particles[i];
+      particle.run();
+
+      // Remove dead particles
+      if (particle.isDead()) {
+        this.particles.splice(i, 1);
+      }
+    }
+  }
+
+  // Apply force to each particle
+  applyForce(dir) {
+    for (let particle of this.particles) {
+      particle.applyForce(dir);
+    }
+  }
+
+  addParticle() {
+    this.particles.push(new Particle(this.origin, this.img));
+  }
 } // class ParticleSystem
 
-
 class Particle {
-    constructor(pos, img_) {
-      this.loc = pos.copy();
+  constructor(pos, imageTexture) {
+    this.loc = pos.copy();
 
-      let vx = randomGaussian() * 0.3;
-      let vy = randomGaussian() * 0.3 - 1.0;
+    let xSpeed = randomGaussian() * 0.3;
+    let ySpeed = randomGaussian() * 0.3 - 1.0;
 
-      this.vel = createVector(vx, vy);
-      this.acc = createVector();
-      this.lifespan = 100.0;
-      this.texture = img_;
-      this.color = color(frameCount%256, 255, 255);
-    }
+    this.velocity = createVector(xSpeed, ySpeed);
+    this.acceleration = createVector();
+    this.lifespan = 100.0;
+    this.texture = imageTexture;
+    this.color = color(frameCount % 256, 255, 255);
+  }
 
-    // Update and draw the particle
-    run() {
-      this.update();
-      this.render();
-    }
+  // Update and draw the particle
+  run() {
+    this.update();
+    this.render();
+  }
 
-    // Draw the particle
-    render() {
-      imageMode(CENTER);
-      tint(this.color, this.lifespan);
-      image(this.texture, this.loc.x, this.loc.y);
-    }
+  // Draw the particle
+  render() {
+    imageMode(CENTER);
+    tint(this.color, this.lifespan);
+    image(this.texture, this.loc.x, this.loc.y);
+  }
 
-    applyForce(f) {
-      // Add the force vector to the current acceleration vector
-      this.acc.add(f);
-    }
+  applyForce(f) {
+    // Add the force vector to the current acceleration vector
+    this.acceleration.add(f);
+  }
 
-    isDead() {
-      return this.lifespan <= 0.0;
-    }
+  isDead() {
+    return this.lifespan <= 0.0;
+  }
 
-    // Update the particle's position, velocity, lifespan
-    update() {
-      this.vel.add(this.acc);
-      this.loc.add(this.vel);
-      this.lifespan -= 2.5;
-      // Set the acceleration to zero
-      this.acc.mult(0);
-    }
+  // Update the particle's position, velocity, lifespan
+  update() {
+    this.velocity.add(this.acceleration);
+    this.loc.add(this.velocity);
+    this.lifespan -= 2.5;
 
+    // Set the acceleration to zero
+    this.acceleration.mult(0);
+  }
 } // class Particle
-
-
