@@ -1,65 +1,38 @@
-/*
- * @name Blur using Framebuffer Depth
- * @frame 710,400
- * @arialabel A line of five spheres rotating in front of the camera, with ones too close and too far to the camera appearing blurred
- * @description A shader that uses depth information from a p5.Framebuffer to
- * draw a scene with focal blur.
+/**
+ * @name Blur Using Framebuffer Depth
+ * @description The
+ * <a href="https://www.khronos.org/opengl/wiki/Shader" target="_blank">shader</a>
+ * in this example uses depth information from a
+ * <a href="https://p5js.org/reference/#/p5.Framebuffer" target="_blank">p5.Framebuffer</a>
+ * to apply a blur. On a real camera, objects appear blurred if they
+ * are closer or farther than the lens' focus. This simulates that
+ * effect. First, the sketch renders five spheres to the framebuffer.
+ * Then, it renders the framebuffer to the canvas using the blur shader.
  */
-let layer;
-let blur;
 
-function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
-  layer = createFramebuffer();
-  blur = createShader(vert, frag);
-  noStroke();
-}
+// Vertex shader code
+let vertexShader = `
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
 
-function draw() {
-  // Draw a scene
-  layer.begin();
-  background(255);
-  ambientLight(100);
-  directionalLight(255, 255, 255, -1, 1, -1);
-  ambientMaterial(255, 0, 0);
-  fill(255, 255, 100);
-  specularMaterial(255);
-  shininess(150);
-  
-  rotateY(millis() * 0.001);
-  for (let i = 0; i < 5; i++) {
-    push();
-    translate((i-2)*100, 0, 0);
-    sphere();
-    pop();
-  }
-  layer.end();
-  
-  // Render the scene with depth of field blur
-  shader(blur);
-  blur.setUniform('img', layer.color);
-  blur.setUniform('depth', layer.depth);
-  rect(0, 0, width, height);
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
-let vert = `
-precision highp float;
 attribute vec3 aPosition;
+// texcoords only come from p5 to vertex shader
+// so pass texcoords on to the fragment shader in a varying variable
 attribute vec2 aTexCoord;
 varying vec2 vTexCoord;
+
 void main() {
-  vec4 positionVec4 = vec4(aPosition, 1.0);
-  positionVec4.xy = positionVec4.xy * 2.0 - 1.0;
-  positionVec4.y *= -1.0;
-  gl_Position = positionVec4;
+  // transferring texcoords for the frag shader
   vTexCoord = aTexCoord;
+
+  // copy position with a fourth coordinate for projection (1.0 is normal)
+  vec4 positionVec4 = vec4(aPosition, 1.0);
+
+  gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
 }`;
 
-let frag = `
+// Fragment shader code
+let fragmentShader = `
 precision highp float;
 varying vec2 vTexCoord;
 uniform sampler2D img;
@@ -105,3 +78,56 @@ void main() {
   color /= samples;
   gl_FragColor = color;
 }`;
+
+let layer;
+let blur;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  angleMode(DEGREES);
+  noStroke();
+
+  // Create framebuffer and shader objects
+  layer = createFramebuffer();
+  blur = createShader(vertexShader, fragmentShader);
+
+  describe(
+    'A row of five spheres rotating in front of the camera. The closest and farthest spheres from the camera appear blurred.'
+  );
+}
+
+function draw() {
+  // Start drawing to framebuffer
+  layer.begin();
+  background(255);
+  ambientLight(100);
+  directionalLight(255, 255, 255, -1, 1, -1);
+  ambientMaterial(255, 0, 0);
+  fill(255, 255, 100);
+  specularMaterial(255);
+  shininess(150);
+
+  // Rotate 1° per frame
+  rotateY(frameCount);
+
+  // Place 5 spheres across canvas at equal distance
+  let sphereDistance = width / 4;
+  for (let x = -width / 2; x <= width / 2; x += sphereDistance) {
+    push();
+    translate(x, 0, 0);
+    sphere();
+    pop();
+  }
+
+  // Stop drawing to framebuffer
+  layer.end();
+
+  // Pass color and depth information from the framebuffer
+  // to the shader's uniforms
+  blur.setUniform('img', layer.color);
+  blur.setUniform('depth', layer.depth);
+
+  // Render the scene captured by framebuffer with depth of field blur
+  shader(blur);
+  plane(width, height);
+}
