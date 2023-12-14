@@ -1,18 +1,14 @@
 /**
- * @name Load and Save Table
- * @description Comma-Separated Values, or CSV is a format for writing
- * data in a file. p5 can work with this format using a
- * <a href="https://p5js.org/reference/#/p5.Table" target="_blank">p5.Table</a>.
- * This example is based on Daniel Shiffman's
- * <a href="https://processing.org/examples/loadsavetable.html" target="_blank">Loading Tabular Data</a>
- * example for Processing. It uses a class to organize data representing
- * a bubble. When the sketch starts, it loads the data for four bubbles
- * from a CSV file. The visitor can add new bubbles, download an updated
- * CSV file, and load in a CSV file.
+ * @name Load and Save Local Storage
+ * @description Browsers allow websites to store data on the visitor's
+ * device. This is called
+ * <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">local storage</a>.
+ * The <a href="https://p5js.org/reference/#/p5/getItem" target="_blank">getItem()</a>,
+ * <a href="https://p5js.org/reference/#/p5/storeItem" target="_blank">storeItem()</a>,
+ * <a href="https://p5js.org/reference/#/p5/clearStorage" target="_blank">clearStorage()</a>,
+ * and <a href="https://p5js.org/reference/#/p5/removeItem" target="_blank">removeItem()</a>
+ * functions control it.
  * */
-
-// Global object to hold results from the loadTable call
-let table;
 
 // Global array to hold all bubble objects
 let bubbles;
@@ -24,21 +20,17 @@ let mousePressY = 0;
 // Remember whether bubble is currently being created
 let creatingBubble = false;
 
-// Put any asynchronous data loading in preload to complete before "setup" is run
-function preload() {
-  table = loadTable('assets/bubbles.csv', 'header', loadData);
-}
-
 // Convert saved Bubble data into Bubble Objects
-function loadData(table) {
+function loadData(bubblesData) {
   bubbles = [];
-  let tableRows = table.getRows();
-  for (let row of tableRows) {
-    // Get position, diameter, name,
-    let x = row.getNum('x');
-    let y = row.getNum('y');
-    let radius = row.getNum('radius');
-    let name = row.getString('name');
+  for (let bubble of bubblesData) {
+    // Get x,y from position
+    let x = bubble.x;
+    let y = bubble.y;
+
+    // Get radius and name
+    let radius = bubble.radius;
+    let name = bubble.name;
 
     // Put object in array
     bubbles.push(new Bubble(x, y, radius, name));
@@ -48,21 +40,23 @@ function loadData(table) {
 function setup() {
   let p5Canvas = createCanvas(640, 360);
 
+  // Get saved data
+  let savedData = getItem('bubbles');
+
+  // If no data has been saved yet
+  if (savedData === null) {
+    // Use an empty array to start
+    loadData([]);
+  } else {
+    // Otherwise convert the data to Bubble objects
+    loadData(savedData);
+  }
+
   // When canvas is clicked, call saveMousePress()
   p5Canvas.mousePressed(saveMousePress);
 
   ellipseMode(RADIUS);
   textSize(20);
-
-  // Add download button and call downloadBubbleData() when pressed
-  let downloadButton = createButton('Download bubble data');
-  downloadButton.mousePressed(downloadBubbleFile);
-
-  // Add load button to load downloaded data file
-  let loadButton = createFileInput(loadBubbleFile);
-
-  // Only accept files with .csv extension
-  loadButton.attribute('accept', '.csv');
 
   describe(
     'When the cursor clicks on the canvas, drags, and releases, a black outline circle representing a bubble appears on the white background. A prompt asks to name the bubble, and this name appears under the circle when the cursor hovers over it.'
@@ -90,7 +84,7 @@ function draw() {
   textAlign(LEFT, BOTTOM);
   fill(0);
   noStroke();
-  text('Click to add bubbles.', 10, height - 10);
+  text('Click and drag to add bubbles.', 10, height - 10);
 }
 
 // Save current mouse position to use as next bubble position
@@ -108,32 +102,18 @@ function mouseReleased() {
   }
 }
 
-// Create a new Bubble
+// Create a new Bubble each time the mouse is clicked.
 function addBubble() {
-  // Create a new row
-  let row = table.addRow();
-
   // Add radius and label to bubble
   let radius = dist(mousePressX, mousePressY, mouseX, mouseY);
   let name = prompt('Enter a name for the new bubble');
 
-  // Set the values of that row
-  row.setNum('x', mousePressX);
-  row.setNum('y', mousePressY);
-  row.setNum('radius', radius);
-  row.setString('name', name);
-
-  bubbles.push(new Bubble(mousePressX, mousePressY, radius, name));
-}
-
-// Load bubble data from CSV file
-function loadBubbleFile(file) {
-  loadTable(file.data, 'csv', 'header', loadData);
-}
-
-// Download bubble data as CSV file
-function downloadBubbleFile() {
-  saveTable(table, 'bubbles.csv');
+  // If the user pressed 'Okay' and not 'Cancel'
+  if (name !== null) {
+    // Append the new JSON bubble object to the array
+    bubbles.push(new Bubble(mousePressX, mousePressY, radius, name));
+    storeItem('bubbles', bubbles);
+  }
 }
 
 // Bubble class
