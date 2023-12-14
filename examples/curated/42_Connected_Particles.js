@@ -53,7 +53,7 @@ function mousePressed() {
   paths.push(new Path());
 
   // Reset previous particle position to mouse
-  //  so that first particle in path has zero velocity
+  // so that first particle in path has zero velocity
   previousParticlePosition.set(mouseX, mouseY);
   createParticle();
 }
@@ -121,7 +121,7 @@ class Path {
     // Loop through backwards so that when a particle is removed,
     // the index number for the next loop will match up with the
     // particle before the removed one
-    for (let i = this.particles.length - 1; i >= 0; i--) {
+    for (let i = this.particles.length - 1; i >= 0; i -= 1) {
       // Remove this particle if it has no frames remaining
       if (this.particles[i].framesRemaining <= 0) {
         this.particles.splice(i, 1);
