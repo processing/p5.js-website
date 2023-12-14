@@ -129,5 +129,5 @@ function draw() {
 
   // Render the scene captured by framebuffer with depth of field blur
   shader(blur);
-  rect(-width / 2, -height / 2, width, height);
+  plane(width, height);
 }
