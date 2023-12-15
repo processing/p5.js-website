@@ -23,7 +23,7 @@ function setup() {
 }
 
 function deviceMoved() {
-  // When the device is moved, update the canvas' color
+  // When the device is moved, draw a circle with its position and size
   // based on the direction in which the device is moved.
 
   // Map acceleration along x axis to position along canvas width
