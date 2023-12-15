@@ -2,22 +2,20 @@
  * @name Snowflakes
  * @description This example demonstrates the use of a particle system
  * to simulate the motion of falling snowflakes.  This program defines a
- * snowflake 
- * <a href="https://p5js.org/reference/#/p5/class">class</a>, 
+ * snowflake
+ * <a href="https://p5js.org/reference/#/p5/class">class</a>,
  * and uses an array to hold the snowflake objects.
  */
 
-
 // Define array to hold snowflake objects
-let snowflakes = []; 
-
+let snowflakes = [];
 
 function setup() {
   createCanvas(400, 600);
 
   angleMode(DEGREES);
 
-  // Create snowflake objects 
+  // Create snowflake objects
   for (let i = 0; i < 300; i++) {
     // Add a new snowflake object to the array
     snowflakes.push(new snowflake());
@@ -27,13 +25,11 @@ function setup() {
   describe('Snowflakes falling on a black background.');
 }
 
-
 function draw() {
-
   background(0);
 
   // Update and display each snowflake in the array
-  let currentTime = frameCount/60;
+  let currentTime = frameCount / 60;
 
   for (let flake of snowflakes) {
     // Update each snowflake position and display
@@ -42,18 +38,16 @@ function draw() {
   }
 }
 
-
 // Define the snowflake class
 
 class snowflake {
-
   constructor() {
-      this.posX = 0;
-      this.posY = random(-height, 0);
-      this.initialangle = random(0, 360);
-      this.size = random(2, 5);
-      this.radius = sqrt(random(pow(width / 2, 2)));
-      this.color = color(random(200, 256), random(200, 256), random(200, 256));
+    this.posX = 0;
+    this.posY = random(-height, 0);
+    this.initialAngle = random(0, 360);
+    this.size = random(2, 5);
+    this.radius = sqrt(random(pow(width / 2, 2)));
+    this.color = color(random(200, 256), random(200, 256), random(200, 256));
   }
 
   update(time) {
@@ -61,7 +55,7 @@ class snowflake {
     let angularSpeed = 35;
 
     // Calculate the current angle
-    let angle = this.initialangle + angularSpeed * time;
+    let angle = this.initialAngle + angularSpeed * time;
 
     // x position follows a sine wave
     this.posX = width / 2 + this.radius * sin(angle);
@@ -72,7 +66,7 @@ class snowflake {
 
     // When snowflake reaches the bottom, move it to the top
     if (this.posY > height) {
-        this.posY = -50;
+      this.posY = -50;
     }
   }
 
@@ -82,5 +76,3 @@ class snowflake {
     ellipse(this.posX, this.posY, this.size);
   }
 }
-
-
