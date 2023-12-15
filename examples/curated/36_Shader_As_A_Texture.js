@@ -1,27 +1,38 @@
 /**
  * @name Shader as a Texture
  * @description Shaders can be applied to 2D/3D shapes as textures.
- * <br> To learn more about using shaders in p5.js:
+ *
+ * To learn more about using shaders in p5.js:
  * <a href="https://itp-xstory.github.io/p5js-shaders/">p5.js Shaders</a>
  */
 
 // vertex shader code as a string
 let vertexShader = `
- // vert file and comments from adam ferriss
- // https://github.com/aferriss/p5jsShaderExamples
- 
- // our vertex data
- attribute vec3 aPosition;
- 
- void main() {
- 
-   // copy the position data into a vec4, using 1.0 as the w component
-   vec4 positionVec4 = vec4(aPosition, 1.0);
-   positionVec4.xy = positionVec4.xy * 2.0 - 1.0;
- 
-   // send the vertex information on to the fragment shader
-   gl_Position = positionVec4;
- }
+precision highp float;
+
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
+attribute vec4 aVertexColor;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+varying vec2 vTexCoord;
+
+void main() {
+  // Apply the camera transform
+  vec4 viewModelPosition =
+    uModelViewMatrix *
+    vec4(aPosition, 1.0);
+
+  // Tell WebGL where the vertex goes
+  gl_Position =
+    uProjectionMatrix *
+    viewModelPosition;  
+
+  // Pass along data to the fragment shader
+  vTexCoord = aTexCoord;
+}
  `;
 
 // fragment shader code as a string
@@ -41,6 +52,7 @@ precision mediump float;
 uniform vec2 resolution;
 uniform float time;
 uniform vec2 mouse;
+varying vec2 vTexCoord;
 
 vec2 rotate2D (vec2 _st, float _angle) {
     _st -= 0.5;
@@ -99,7 +111,7 @@ float concentricCircles(in vec2 st, in vec2 radius, in float res, in float scale
 }
 
 void main (void) {
-    vec2 st = gl_FragCoord.xy/resolution.xy;
+    vec2 st = vTexCoord;
     vec2 mst = gl_FragCoord.xy/mouse.xy;
     float mdist= distance(vec2(1.0,1.0), mst);
     
@@ -128,32 +140,18 @@ function setup() {
   // create a shader object using the vertex shader and fragment shader strings
   theShader = createShader(vertexShader, fragmentShader);
 
-  // initialize the createGraphics layers
-  shaderTexture = createGraphics(710, 400, WEBGL);
-
-  // turn off the createGraphics layers stroke
-  shaderTexture.noStroke();
-
   describe('Sphere broken up into a square grid with a gradient in each grid.');
 }
 
 function draw() {
   background(255);
 
-  // instead of just setting the active shader we are passing it to the createGraphics layer
-  shaderTexture.shader(theShader);
-
   // send uniform values to the shader
   theShader.setUniform('resolution', [width, height]);
   theShader.setUniform('time', millis() / 1000.0);
   theShader.setUniform('mouse', [mouseX, map(mouseY, 0, height, height, 0)]);
 
-  // passing the shaderTexture layer geometry to render on
-  shaderTexture.rect(0, 0, width, height);
-
-  // pass the shader as a texture
-  texture(shaderTexture);
-
+  shader(theShader);
   // add a sphere using the texture
   translate(-150, 0, 0);
   push();
