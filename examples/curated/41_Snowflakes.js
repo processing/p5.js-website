@@ -1,64 +1,78 @@
-/*
+/**
  * @name Snowflakes
- * @arialabel White snowflakes fall in a random pattern from the top of a red background 
- * @description Particle system simulating the motion of falling snowflakes.
- * Uses an array of objects to hold the snowflake particles.
- * Contributed by Aatish Bhatia.
+ * @description This example demonstrates the use of a particle system
+ * to simulate the motion of falling snowflakes.  This program defines a
+ * snowflake
+ * <a href="https://p5js.org/reference/#/p5/class">class</a>,
+ * and uses an array to hold the snowflake objects.
  */
 
-let snowflakes = []; // array to hold snowflake objects
+// Define array to hold snowflake objects
+let snowflakes = [];
 
 function setup() {
   createCanvas(400, 600);
-  fill(240);
-  noStroke();
+
+  angleMode(DEGREES);
+
+  // Create snowflake objects
+  for (let i = 0; i < 300; i++) {
+    // Add a new snowflake object to the array
+    snowflakes.push(new snowflake());
+  }
+
+  // Create screen reader accessible description
+  describe('Snowflakes falling on a black background.');
 }
 
 function draw() {
-  background('brown');
-  let t = frameCount / 60; // update time
+  background(0);
 
-  // create a random number of snowflakes each frame
-  for (let i = 0; i < random(5); i++) {
-    snowflakes.push(new snowflake()); // append snowflake object
-  }
+  // Update and display each snowflake in the array
+  let currentTime = frameCount / 60;
 
-  // loop through snowflakes with a for..of loop
   for (let flake of snowflakes) {
-    flake.update(t); // update snowflake position
-    flake.display(); // draw snowflake
+    // Update each snowflake position and display
+    flake.update(currentTime);
+    flake.display();
   }
 }
 
-// snowflake class
-function snowflake() {
-  // initialize coordinates
-  this.posX = 0;
-  this.posY = random(-50, 0);
-  this.initialangle = random(0, 2 * PI);
-  this.size = random(2, 5);
+// Define the snowflake class
 
-  // radius of snowflake spiral
-  // chosen so the snowflakes are uniformly spread out in area
-  this.radius = sqrt(random(pow(width / 2, 2)));
+class snowflake {
+  constructor() {
+    this.posX = 0;
+    this.posY = random(-height, 0);
+    this.initialAngle = random(0, 360);
+    this.size = random(2, 5);
+    this.radius = sqrt(random(pow(width / 2, 2)));
+    this.color = color(random(200, 256), random(200, 256), random(200, 256));
+  }
 
-  this.update = function(time) {
-    // x position follows a circle
-    let w = 0.6; // angular speed
-    let angle = w * time + this.initialangle;
+  update(time) {
+    // Define angular speed (degrees / second)
+    let angularSpeed = 35;
+
+    // Calculate the current angle
+    let angle = this.initialAngle + angularSpeed * time;
+
+    // x position follows a sine wave
     this.posX = width / 2 + this.radius * sin(angle);
 
-    // different size snowflakes fall at slightly different y speeds
-    this.posY += pow(this.size, 0.5);
+    // Different size snowflakes fall at different y speeds
+    let ySpeed = 8 / this.size;
+    this.posY += ySpeed;
 
-    // delete snowflake if past end of screen
+    // When snowflake reaches the bottom, move it to the top
     if (this.posY > height) {
-      let index = snowflakes.indexOf(this);
-      snowflakes.splice(index, 1);
+      this.posY = -50;
     }
-  };
+  }
 
-  this.display = function() {
+  display() {
+    fill(this.color);
+    noStroke();
     ellipse(this.posX, this.posY, this.size);
-  };
+  }
 }
