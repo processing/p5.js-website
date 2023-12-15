@@ -1,18 +1,16 @@
 /**
- * @name Sine Cosine 
- * @description This example demonstrates the 
- * <a href="https://en.wikipedia.org/wiki/Sine_and_cosine">sine and cosine</a> 
- * mathematical functions.  
+ * @name Sine Cosine
+ * @description This example demonstrates the
+ * <a href="https://en.wikipedia.org/wiki/Sine_and_cosine">sine and cosine</a>
+ * mathematical functions.
  *
  * The animation shows uniform circular motion around the unit circle
  * (circle with radius 1).  Any angle measured from the the x-axis
  * determines a point on the circle.  The cosine and sine of the angle
  * are defined to be the x and y coordinates, respectively, of that
  * point.
- * 
+ *
  */
-
-
 
 let circleX = 200;
 let circleY = 150;
@@ -23,13 +21,13 @@ let graphY = 300;
 let graphAmplitude = 50;
 let graphPeriod = 300;
 
-
 function setup() {
   createCanvas(400, 400);
   angleMode(DEGREES);
-  describe('Animated demonstration of a point moving around the unit circle, together with the corresponding sine and cosine values moving along their graphs.');
+  describe(
+    'Animated demonstration of a point moving around the unit circle, together with the corresponding sine and cosine values moving along their graphs.'
+  );
 }
-
 
 function draw() {
   background(0);
@@ -48,7 +46,7 @@ function draw() {
   noFill();
   stroke(128);
   strokeWeight(3);
-  circle(circleX, circleY, 2*circleRadius);
+  circle(circleX, circleY, 2 * circleRadius);
   line(circleX, circleY - circleRadius, circleX, circleY + circleRadius);
   line(circleX - circleRadius, circleY, circleX + circleRadius, circleY);
 
@@ -74,23 +72,28 @@ function draw() {
 
   stroke('grey');
   strokeWeight(3);
-  line(graphX, graphY, graphX+300, graphY);
+  line(graphX, graphY, graphX + 300, graphY);
   line(graphX, graphY - graphAmplitude, graphX, graphY + graphAmplitude);
-  line(graphX + graphPeriod, graphY - graphAmplitude, graphX + graphPeriod, graphY + graphAmplitude);
+  line(
+    graphX + graphPeriod,
+    graphY - graphAmplitude,
+    graphX + graphPeriod,
+    graphY + graphAmplitude
+  );
 
   fill('grey');
   strokeWeight(1);
   textAlign(CENTER, CENTER);
   text('0', graphX, graphY + graphAmplitude + 20);
   text('360', graphX + graphPeriod, graphY + graphAmplitude + 20);
-  text('1', graphX/2, graphY - graphAmplitude);
-  text('0', graphX/2, graphY);
-  text('-1', graphX/2, graphY + graphAmplitude);
+  text('1', graphX / 2, graphY - graphAmplitude);
+  text('0', graphX / 2, graphY);
+  text('-1', graphX / 2, graphY + graphAmplitude);
 
   fill('orange');
-  text('cos', graphX + graphPeriod + graphX/2, graphY - graphAmplitude);
+  text('cos', graphX + graphPeriod + graphX / 2, graphY - graphAmplitude);
   fill('red');
-  text('sin', graphX + graphPeriod + graphX/2, graphY);
+  text('sin', graphX + graphPeriod + graphX / 2, graphY);
 
   // Draw cosine curve
 
@@ -135,5 +138,3 @@ function draw() {
   fill('red');
   circle(lineX, redY, 10);
 }
-
-
