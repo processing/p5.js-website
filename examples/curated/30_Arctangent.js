@@ -1,16 +1,10 @@
 /**
  * @name Arctangent
- * @description The 
- * <a href="https://p5js.org/reference/#/p5/atan2">atan2()</a>
- * function calcuates the angle formed by the specified point,
- * the origin, and the positive x-axis (in the direction of the
- * positive y-axis).
- *
- * Move the mouse to see the angle formed between the mouse position,
- * the origin (upper left corner), and the positive x-axis (top edge
- * of the canvas).  
- *
- * atan2() is also used to change the direction of the eyes.
+ * @description The
+ * <a href="https://p5js.org/reference/#/p5/atan2" target="_blank">atan2()</a>
+ * function calculates the angle between two positions. The angle it
+ * calculates can be used to rotate a shape toward something. In this
+ * example, the eyes rotate to look at the cursor.
  */
 
 function setup() {
@@ -20,33 +14,18 @@ function setup() {
   // Set angle mode so that atan2() returns angles in degrees
   angleMode(DEGREES);
 
-  describe('Two eyes that follow the mouse.');
+  describe('Two eyes that follow the cursor.');
 }
-
 
 function draw() {
   background(0);
-
-  // Calculate and display angle value calculated with atan2()
-
-  let angle = atan2(mouseY, mouseX);
-
-  fill(255);
-  textSize(20);
-  text("angle: " + round(angle), mouseX + 20, mouseY + 20);
-
-  // Draw line and arc to indicate the angle
-
-  stroke(128);
-  line(0, 0, mouseX, mouseY);
-
-  fill(angle, 255, 255);
-  arc(0, 0, 100, 100, 0, angle);
 
   // Draw left eye
 
   let leftX = 150;
   let leftY = 200;
+
+  // Calculate angle between left eye and mouse
   let leftAngle = atan2(mouseY - leftY, mouseX - leftX);
 
   push();
@@ -62,7 +41,9 @@ function draw() {
 
   let rightX = 250;
   let rightY = 200;
-  let rightAngle = atan2(mouseY - rightY, mouseX - rightX)
+
+  // Calculate angle between right eye and angle
+  let rightAngle = atan2(mouseY - rightY, mouseX - rightX);
 
   push();
   translate(rightX, rightY);
@@ -73,5 +54,3 @@ function draw() {
   ellipse(12.5, 0, 25, 25);
   pop();
 }
-
-
