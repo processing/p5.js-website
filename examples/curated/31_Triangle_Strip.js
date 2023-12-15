@@ -1,38 +1,64 @@
-/*
+/**
  * @name Triangle Strip
- * @arialabel A ring of white triangles form a heptagon on the grey background. When a user drags their mouse from left to right, the number of triangles increase and create a smoother, circular ring 
- * @description Example by Ira Greenberg. Generate a closed ring using the
- * vertex() function and beginShape(TRIANGLE_STRIP) mode. The outsideRadius
- * and insideRadius variables control ring's radii respectively.
+ * @description This example demonstrates how to create a shape
+ * by specifying its vertices in TRIANGLE_STRIP mode, using the
+ * <a href="https://p5js.org/reference/#/p5/beginShape">beginShape()</a>,
+ * <a href="https://p5js.org/reference/#/p5/endShape">endShape()</a>,
+ * and
+ * <a href="https://p5js.org/reference/#/p5/vertex">vertex()</a>
+ * functions.
  */
-let x;
-let y;
-let outsideRadius = 150;
+
 let insideRadius = 100;
+let outsideRadius = 150;
 
 function setup() {
   createCanvas(720, 400);
-  background(204);
-  x = width / 2;
-  y = height / 2;
+  angleMode(DEGREES, 360, 255, 255);
+  colorMode(HSB);
+
+  describe(
+    'Rainbow ring made up of triangles whose vertices lie on two concentric circles.'
+  );
 }
 
 function draw() {
-  background(204);
+  background(0);
 
-  let numPoints = int(map(mouseX, 0, width, 6, 60));
+  let centerX = width / 2;
+  let centerY = height / 2;
+
+  // Set the number of points based on the mouse x position
+  let pointCount = map(mouseX, 0, width, 6, 60);
+
+  // Round pointCount to the nearest integer
+  pointCount = round(pointCount);
+
+  // Display the current pointCount
+  fill(255);
+  textSize(20);
+  text(`pointCount: ${pointCount}`, 30, 30);
+
+  // Draw the triangle strip by specifying points on
+  // the inside circle and outside circle alternately
+
   let angle = 0;
-  let angleStep = 180.0 / numPoints;
+  let angleStep = 180.0 / pointCount;
 
   beginShape(TRIANGLE_STRIP);
-  for (let i = 0; i <= numPoints; i++) {
-    let px = x + cos(radians(angle)) * outsideRadius;
-    let py = y + sin(radians(angle)) * outsideRadius;
+  for (let i = 0; i <= pointCount; i += 1) {
+    // Specify a point on the outside circle
+    let pointX = centerX + cos(angle) * outsideRadius;
+    let pointY = centerY + sin(angle) * outsideRadius;
+    fill(angle, 255, 255);
+    vertex(pointX, pointY);
     angle += angleStep;
-    vertex(px, py);
-    px = x + cos(radians(angle)) * insideRadius;
-    py = y + sin(radians(angle)) * insideRadius;
-    vertex(px, py);
+
+    // Specify a point on the inside circle
+    pointX = centerX + cos(angle) * insideRadius;
+    pointY = centerY + sin(angle) * insideRadius;
+    fill(angle, 255, 255);
+    vertex(pointX, pointY);
     angle += angleStep;
   }
   endShape();
