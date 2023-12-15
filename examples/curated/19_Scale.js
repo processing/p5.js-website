@@ -1,11 +1,11 @@
 /**
  * @name Scale
- * @description The 
+ * @description The
  * <a href="https://p5js.org/reference/#/p5/scale">scale()</a>
  * function scales the current coordinate system by the specified
  * factor.
  *
- * The 
+ * The
  * <a href="https://p5js.org/reference/#/p5/push">push()</a>
  * and
  * <a href="https://p5js.org/reference/#/p5/pop">pop()</a>
@@ -14,7 +14,7 @@
  * In this example, a square size 200 is drawn at the origin, with
  * three different scaling factors.
  *
-  */
+ */
 
 function setup() {
   // Create the canvas
@@ -29,22 +29,41 @@ function draw() {
   background(0);
 
   // Draw blue square
-  push();               // save current coordinate system
-  scale(2);             // scale by 2
-  fill('blue');         // set color to blue
-  square(0, 0, 200);    // draw square at origin, size 200
-  pop();                // restore coordinate system
+  // Save current coordinate system
+  push();
 
-  // Draw white square 
-  fill(255);            // set color to white
-  square(0, 0, 200);    // draw square at origin, size 200
+  // Scale by 2
+  scale(2);
 
-  // Draw green square 
-  push();               // save current coordinate system
-  scale(0.5, 0.75);       // scale by .5 in x and .75 in y
-  fill('green');        // set color to green
-  square(0, 0, 200);    // draw square at origin, size 200
-  pop();                // restore coordinate system
+  // Set color to blue
+  fill(33, 89, 194);
+
+  // Draw square at origin, size 200
+  square(0, 0, 200);
+
+  // Restore coordinate system
+  pop();
+
+  // Draw white square
+  // Set color to white
+  fill(255);
+
+  // Draw square at origin, size 200
+  square(0, 0, 200);
+
+  // Draw green square
+  // Save current coordinate system
+  push();
+
+  // Scale by .5 in x and .75 in y
+  scale(0.5, 0.75);
+
+  // Set color to green
+  fill(42, 150, 60);
+
+  // Draw square at origin, size 200
+  square(0, 0, 200);
+
+  // Restore coordinate system
+  pop();
 }
-
-
