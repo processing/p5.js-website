@@ -4,24 +4,23 @@
  * by specifying its vertices in TRIANGLE_STRIP mode, using the
  * <a href="https://p5js.org/reference/#/p5/beginShape">beginShape()</a>,
  * <a href="https://p5js.org/reference/#/p5/endShape">endShape()</a>,
- * and 
+ * and
  * <a href="https://p5js.org/reference/#/p5/vertex">vertex()</a>
- * functions. 
+ * functions.
  */
-
 
 let insideRadius = 100;
 let outsideRadius = 150;
-
 
 function setup() {
   createCanvas(720, 400);
   angleMode(DEGREES, 360, 255, 255);
   colorMode(HSB);
 
-  describe('Rainbow ring made up of triangles whose vertices lie on two concentric circles.');
+  describe(
+    'Rainbow ring made up of triangles whose vertices lie on two concentric circles.'
+  );
 }
-
 
 function draw() {
   background(0);
@@ -33,7 +32,7 @@ function draw() {
   let pointCount = map(mouseX, 0, width, 6, 60);
 
   // Round pointCount to the nearest integer
-  pointCount = round(pointCount); 
+  pointCount = round(pointCount);
 
   // Display the current pointCount
   fill(255);
@@ -47,8 +46,7 @@ function draw() {
   let angleStep = 180.0 / pointCount;
 
   beginShape(TRIANGLE_STRIP);
-  for (let i = 0; i <= pointCount; i++) {
-
+  for (let i = 0; i <= pointCount; i += 1) {
     // Specify a point on the outside circle
     let pointX = centerX + cos(angle) * outsideRadius;
     let pointY = centerY + sin(angle) * outsideRadius;
@@ -65,5 +63,3 @@ function draw() {
   }
   endShape();
 }
-
-
