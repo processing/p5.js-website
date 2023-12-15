@@ -1,10 +1,10 @@
 /**
  ** @name Kaleidoscope
- ** @description A kaleidoscope is an optical instrument with two or more reflecting surfaces tilted to each other in an angle. 
- ** Using the <a href="https://p5js.org/reference/#/p5/translate" target="_blank">translate()</a>, 
- ** <a href="https://p5js.org/reference/#/p5/rotate" target="_blank">rotate()</a>, 
- ** and <a href="https://p5js.org/reference/#/p5/scale" target="_blank">scale()</a> functions, you can replicate the resulting visual 
- ** of a kaleidoscope in a canvas. 
+ ** @description A kaleidoscope is an optical instrument with two or more reflecting surfaces tilted to each other in an angle.
+ ** Using the <a href="https://p5js.org/reference/#/p5/translate" target="_blank">translate()</a>,
+ ** <a href="https://p5js.org/reference/#/p5/rotate" target="_blank">rotate()</a>,
+ ** and <a href="https://p5js.org/reference/#/p5/scale" target="_blank">scale()</a> functions, you can replicate the resulting visual
+ ** of a kaleidoscope in a canvas.
  **/
 // Define the global variables.
 // The symmetry variable will define how many reflective sections the canvas
@@ -32,25 +32,25 @@ function draw() {
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
     // Translate the current position and the previous position of the
     // cursor to the new coordinates set with the translate() function above.
-    let mx = mouseX - width / 2;
-    let my = mouseY - height / 2;
-    let pmx = pmouseX - width / 2;
-    let pmy = pmouseY - height / 2;
+    let lineStartX = mouseX - width / 2;
+    let lineStartY = mouseY - height / 2;
+    let lineEndX = pmouseX - width / 2;
+    let lineEndY = pmouseY - height / 2;
 
     // And, if the mouse is pressed while in the canvas...
-    if (mouseIsPressed) {
+    if (mouseIsPressed === true) {
       // For every reflective section the canvas is split into, draw the cursor's
       // coordinates while pressed...
       for (let i = 0; i < symmetry; i++) {
         rotate(angle);
         stroke(255);
         strokeWeight(3);
-        line(mx, my, pmx, pmy);
+        line(lineStartX, lineStartY, lineEndX, lineEndY);
 
         // ... and also reflect the line within the symmetry sections as well.
         push();
         scale(1, -1);
-        line(mx, my, pmx, pmy);
+        line(lineStartX, lineStartY, lineEndX, lineEndY);
         pop();
       }
     }
