@@ -1,5 +1,5 @@
 /**
- * @name Arctangent
+ * @name Aim
  * @description The
  * <a href="https://p5js.org/reference/#/p5/atan2" target="_blank">atan2()</a>
  * function calculates the angle between two positions. The angle it
