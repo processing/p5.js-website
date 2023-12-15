@@ -1,5 +1,5 @@
 /**
- * @name Acceleration Color
+ * @name Mobile Device Movement
  * @description The <a href="https://p5js.org/reference/#/p5/deviceMoved" target="_blank">deviceMoved()</a>
  * function runs when the mobile device displaying the sketch moves.
  * In this example, the
