@@ -76,7 +76,7 @@ function draw() {
   // Tick markers around perimeter of clock
   push();
   strokeWeight(2);
-  for (let ticks = 0; ticks < 60; ticks++) {
+  for (let ticks = 0; ticks < 60; ticks += 1) {
     point(0, -secondsRadius);
     rotate(6);
   }
