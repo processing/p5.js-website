@@ -1,23 +1,25 @@
 /**
- ** @name Words
- ** @description The <a href="https://p5js.org/reference/#/p5/text" target="_blank">text()</a> function is used for inserting text into the canvas.
- ** You can change the font and text size using the <a href="https://p5js.org/reference/#/p5/loadFont" target="_blank">loadFont()</a> 
- ** and <a href="https://p5js.org/reference/#/p5/fontSize" target="_blank">fontSize()</a> functions.
- ** The text can be aligned left, center, or right with the <a href="https://p5js.org/reference/#/p5/textAlign" target="_blank">textAlign()</a> 
- ** function, and, like shapes, text can be colored with <a href="https://p5js.org/reference/#/p5/fill" target="_blank">fill()</a>.
- **/
+ * @name Words
+ * @description The <a href="https://p5js.org/reference/#/p5/text" target="_blank">text()</a> function is used for inserting text into the canvas.
+ * You can change the font and text size using the <a href="https://p5js.org/reference/#/p5/loadFont" target="_blank">loadFont()</a>
+ * and <a href="https://p5js.org/reference/#/p5/fontSize" target="_blank">fontSize()</a> functions.
+ * The text can be aligned left, center, or right with the <a href="https://p5js.org/reference/#/p5/textAlign" target="_blank">textAlign()</a>
+ * function, and, like shapes, text can be colored with <a href="https://p5js.org/reference/#/p5/fill" target="_blank">fill()</a>.
+ */
 // Define global variables: font and fontSize.
 let font;
 let fontsize = 40;
 
 function preload() {
-  // Preload the font's file in the canvas' assets directory. 
+  // Preload the font's file in the canvas' assets directory.
   // loadFont() accepts .ttf or .otf files.
   font = loadFont('assets/SourceSansPro-Regular.otf');
 }
 
 function setup() {
-  describe('Three columns of the words “ichi,” “ni,” “san,” and “shi” on a white background. The first column is right aligned, the middle column is center aligned, and the left column is left aligned.');
+  describe(
+    'Three columns of the words “ichi,” “ni,” “san,” and “shi” on a white background. The first column is right aligned, the middle column is center aligned, and the left column is left aligned.'
+  );
 
   createCanvas(710, 400);
   background(250);
@@ -44,10 +46,10 @@ function setup() {
 
 function drawWords(x) {
   // The drawWords() function creates four text() instances,
-  // using the x coordinate supplied by each column created 
+  // using the x coordinate supplied by each column created
   // in setup().
   fill(80);
-  
+
   text('ichi', x, 80);
 
   text('ni', x, 150);
