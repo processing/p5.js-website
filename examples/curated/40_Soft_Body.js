@@ -2,19 +2,23 @@
  * @name Soft Body
  * @description Physics simulation of a soft body experiencing
  * acceleration toward the mouse position.  The shape is created
- * with curves using 
+ * with curves using
  * <a href="https://p5js.org/reference/#/p5/curveVertex">curveVertex()</a>
  * and
  * <a href="https://p5js.org/reference/#/p5/curveTightness">curveTightness()</a>.
  */
 
-
 // Declare variables for the physics calculations
-let centerX = 0.0, centerY = 0.0;
-let radius = 45, rotAngle = -90;
-let accelX = 0.0, accelY = 0.0;
-let deltaX = 0.0, deltaY = 0.0;
-let springing = 0.0009, damping = 0.98;
+let centerX = 0.0;
+let centerY = 0.0;
+let radius = 45;
+let rotAngle = -90;
+let accelX = 0.0;
+let accelY = 0.0;
+let deltaX = 0.0;
+let deltaY = 0.0;
+let springing = 0.0009;
+let damping = 0.98;
 
 // Declare variables for specifying vertex locations
 let nodes = 5;
@@ -36,7 +40,7 @@ function setup() {
   centerY = height / 2;
 
   // Initialize arrays to 0
-  for (let i = 0; i < nodes; i++){
+  for (let i = 0; i < nodes; i++) {
     nodeStartX[i] = 0;
     nodeStartY[i] = 0;
     nodeX[i] = 0;
@@ -45,7 +49,7 @@ function setup() {
   }
 
   // Initialize frequencies for corner nodes
-  for (let i = 0; i < nodes; i++){
+  for (let i = 0; i < nodes; i++) {
     frequency[i] = random(5, 12);
   }
 
@@ -64,7 +68,7 @@ function draw() {
 
 function drawShape() {
   // Calculate node starting locations
-  for (let i = 0; i < nodes; i++){
+  for (let i = 0; i < nodes; i++) {
     nodeStartX[i] = centerX + cos(rotAngle) * radius;
     nodeStartY[i] = centerY + sin(rotAngle) * radius;
     rotAngle += 360.0 / nodes;
@@ -77,7 +81,7 @@ function drawShape() {
   fill(shapeColor);
 
   beginShape();
-  for (let i = 0; i < nodes; i++){
+  for (let i = 0; i < nodes; i++) {
     curveVertex(nodeX[i], nodeY[i]);
   }
   endShape(CLOSE);
@@ -104,14 +108,12 @@ function moveShape() {
 
   // Change curve tightness based on the overall acceleration;
   // use abs() to avoid dependence on direction of acceleration
-  organicConstant = 1 - ((abs(accelX) + abs(accelY)) * 0.1);
+  organicConstant = 1 - (abs(accelX) + abs(accelY)) * 0.1;
 
   // Move nodes
-  for (let i = 0; i < nodes; i++){
+  for (let i = 0; i < nodes; i++) {
     nodeX[i] = nodeStartX[i] + sin(angle[i]) * (accelX * 2);
     nodeY[i] = nodeStartY[i] + sin(angle[i]) * (accelY * 2);
     angle[i] += frequency[i];
   }
 }
-
-
