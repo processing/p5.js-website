@@ -1,47 +1,69 @@
-/*
+/**
  * @name Scale
- * @arialabel Two squares one white and one black grow and shrink on a grey background 
- * @description Paramenters for the scale() function are values
- * specified as decimal percentages. For example, the method
- * call scale(2.0) will increase the dimension of the shape by
- * 200 percent. Objects always scale from the origin. This example
- * shows how transforms accumulate and also how scale and translate
- * interact depending on their order.
+ * @description The
+ * <a href="https://p5js.org/reference/#/p5/scale">scale()</a>
+ * function scales the current coordinate system by the specified
+ * factor.
+ *
+ * The
+ * <a href="https://p5js.org/reference/#/p5/push">push()</a>
+ * and
+ * <a href="https://p5js.org/reference/#/p5/pop">pop()</a>
+ * functions save and restore the coordinate system, respectively.
+ *
+ * In this example, a square size 200 is drawn at the origin, with
+ * three different scaling factors.
+ *
  */
 
-let a = 0.0;
-let s = 0.0;
-
 function setup() {
+  // Create the canvas
   createCanvas(720, 400);
-  noStroke();
-  //Draw all rectangles from their center as opposed to
-  // the default upper left corner
-  rectMode(CENTER);
+
+  // Create screen reader accessible description
+  textOutput();
 }
 
 function draw() {
-  background(102);
+  // Clear the background
+  background(0);
 
-  //Slowly increase 'a' and then animate 's' with
-  //a smooth cyclical motion by finding the cosine of 'a'
-  a = a + 0.04;
-  s = cos(a) * 2;
+  // Draw blue square
+  // Save current coordinate system
+  push();
 
-  //Translate our rectangle from the origin to the middle of
-  //the canvas, then scale it with 's'
-  translate(width / 2, height / 2);
-  scale(s);
-  fill(51);
-  rect(0, 0, 50, 50);
+  // Scale by 2
+  scale(2);
 
-  //Translate and scale are accumulating, so this translate
-  //moves the second rectangle further right than the first
-  //and the scale is getting doubled. Note that cosine is
-  //making 's' both negative and positive, thus it cycles
-  //from left to right.
-  translate(75, 0);
+  // Set color to blue
+  fill(33, 89, 194);
+
+  // Draw square at origin, size 200
+  square(0, 0, 200);
+
+  // Restore coordinate system
+  pop();
+
+  // Draw white square
+  // Set color to white
   fill(255);
-  scale(s);
-  rect(0, 0, 50, 50);
+
+  // Draw square at origin, size 200
+  square(0, 0, 200);
+
+  // Draw green square
+  // Save current coordinate system
+  push();
+
+  // Scale by .5 in x and .75 in y
+  scale(0.5, 0.75);
+
+  // Set color to green
+  fill(42, 150, 60);
+
+  // Draw square at origin, size 200
+  square(0, 0, 200);
+
+  // Restore coordinate system
+  pop();
 }
