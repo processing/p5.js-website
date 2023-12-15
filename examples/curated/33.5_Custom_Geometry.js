@@ -1,15 +1,17 @@
 /**
  * @name Custom Geometry
- * @description The `buildGeometry()` function store shapes into a model that can
- * be efficiently used and reused.
+ * @description The
+ * <a href="https://p5js.org/reference/#/p5/buildGeometry" target="_blank">buildGeometry()</a>
+ * function stores shapes into a 3D model that can be efficiently used and
+ * reused.
  */
 
 let snake;
 
 function setup() {
   createCanvas(700, 400, WEBGL);
+  angleMode(DEGREES);
   buildSnake();
-  
   describe('A tiled plane of snake models');
 }
 
@@ -19,35 +21,35 @@ function buildSnake() {
   if (snake) {
     freeGeometry(snake);
   }
-  
+
   snake = buildGeometry(() => {
     colorMode(HSB, 100);
     fill(random(100), 50, 100);
-    
+
     // Draw the head
     push();
     scale(1, 0.5, 1.4);
     sphere(50);
     pop();
-    
+
     // Draw eyes
     for (let mirrorX of [-1, 1]) {
       push();
       scale(mirrorX, 1, 1);
       fill('black');
-      translate(20, -20, 10)
+      translate(20, -20, 10);
       sphere(10);
       pop();
     }
     translate(0, 0, 50);
-    
+
     // Draw body
     let numSegments = ceil(random(10, 30));
     for (let segment = 0; segment < numSegments; segment++) {
-      rotateY(random(-1, 1) * PI * 0.3);
+      rotateY(random(-60, 60));
       translate(0, 0, 50);
       push();
-      rotateX(PI/2);
+      rotateX(90);
       scale(1, 1, 0.5);
       let radius = map(segment, numSegments - 5, numSegments, 50, 0, true);
       cylinder(radius, 100);
@@ -61,31 +63,31 @@ function buildSnake() {
 }
 
 function draw() {
-  // Every 4 seconds, generate a new snake
-  if (frameCount % 240 === 0) {
-    buildSnake();
-  }
-  
   background(255);
   noStroke();
   scale(1.5);
 
   // Slowly orbit around the plane of snakes
-  rotateX(PI * -0.2);
-  rotateY(frameCount * 0.01);
+  rotateX(-45);
+  rotateY(frameCount * 0.25);
 
   // Set up the material and shininess
   lights();
-  specularMaterial('white')
+  specularMaterial('white');
   shininess(100);
 
   // Tile the snake model a number of times along the ground
-  for (let x = -4; x <= 4; x++) {
-    for (let z = -4; z <= 4; z++) {
+  for (let x = -4; x <= 4; x += 1) {
+    for (let z = -4; z <= 4; z += 1) {
       push();
       translate(x * 200, 0, z * 200);
       model(snake);
       pop();
     }
   }
+}
+
+// When mouse is pressed, generate a new snake
+function mousePressed() {
+  buildSnake();
 }
