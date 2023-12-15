@@ -1,56 +1,78 @@
-/*
+/**
  * @name Recursive Tree
- * @arialabel If the user’s mouse is on the far left side of the screen, there is a white vertical line on a black background. As the user’s mouse moves right, the top of the vertical line begins to expand into branches of a tree until it curves down into a very geometric tree
- * @description Renders a simple tree-like structure via recursion.
+ * @description This is an example of rendering a simple tree-like structure via recursion.
  * The branching angle is calculated as a function of the horizontal mouse
  * location. Move the mouse left and right to change the angle.
  * Based on Daniel Shiffman's <a href="https://processing.org/examples/tree.html">Recursive Tree Example</a> for Processing.
  */
-let theta;
+
+let angle;
 
 function setup() {
   createCanvas(710, 400);
+  colorMode(HSB);
+  angleMode(DEGREES);
 }
 
 function draw() {
   background(0);
-  frameRate(30);
-  stroke(255);
-  // Let's pick an angle 0 to 90 degrees based on the mouse position
-  let a = (mouseX / width) * 90;
-  // Convert it to radians
-  theta = radians(a);
-  // Start the tree from the bottom of the screen
-  translate(width/2,height);
-  // Draw a line 120 pixels
-  line(0,0,0,-120);
-  // Move to the end of that line
-  translate(0,-120);
-  // Start the recursive branching!
-  branch(120);
 
+  // Calculate the angle based on the mouse position, maximum 90 degrees
+  angle = (mouseX / width) * 90;
+  angle = min(angle, 90);
+
+  // Start the tree from the bottom of the screen
+  translate(width / 2, height);
+
+  // Draw a line 120 pixels
+  stroke(0, 255, 255);
+  line(0, 0, 0, -120);
+
+  // Move to the end of that line
+  translate(0, -120);
+
+  // Start the recursive branching
+  branch(120, 0);
+
+  describe(
+    'A tree drawn by recursively drawing branches, with angle determined by the user mouse position.'
+  );
 }
 
-function branch(h) {
+function branch(h, level) {
+  // Set the hue based on the recursion level
+  stroke(level * 25, 255, 255);
+
   // Each branch will be 2/3rds the size of the previous one
   h *= 0.66;
 
-  // All recursive functions must have an exit condition!!!!
-  // Here, ours is when the length of the branch is 2 pixels or less
+  // Draw if our branch length > 2, otherwise stop the recursion
   if (h > 2) {
-    push();    // Save the current state of transformation (i.e. where are we now)
-    rotate(theta);   // Rotate by theta
-    line(0, 0, 0, -h);  // Draw the branch
-    translate(0, -h); // Move to the end of the branch
-    branch(h);       // Ok, now call myself to draw two new branches!!
-    pop();     // Whenever we get back here, we "pop" in order to restore the previous matrix state
-
-    // Repeat the same thing, only branch off to the "left" this time!
+    // Draw the right branch
+    // Save the current coordinate system
     push();
-    rotate(-theta);
+
+    // Rotate by angle
+    rotate(angle);
+
+    // Draw the branch
+    line(0, 0, 0, -h);
+
+    // Move to the end of the branch
+    translate(0, -h);
+
+    // Call branch() recursively
+    branch(h, level + 1);
+
+    // Restore the saved coordinate system
+    pop();
+
+    // Draw the left branch
+    push();
+    rotate(-angle);
     line(0, 0, 0, -h);
     translate(0, -h);
-    branch(h);
+    branch(h, level + 1);
     pop();
   }
 }
