@@ -1,9 +1,9 @@
 /**
- * @name Continuous Lines
+ * @name Drawing Lines
  * @description Click and drag the mouse to draw a line.
  *
  * This example demonstrates the use of several built-in
- * variables.  
+ * variables.
  * <a href="https://p5js.org/reference/#/p5/mouseX">mouseX</a>
  * and
  * <a href="https://p5js.org/reference/#/p5/mouseY">mouseY</a>
@@ -12,10 +12,10 @@
  * <a href="https://p5js.org/reference/#/p5/pmouseX">pmouseX</a>
  * and
  * <a href="https://p5js.org/reference/#/p5/pmouseY">pmouseY</a>.
- * 
- * This example also shows the use of 
+ *
+ * This example also shows the use of
  * <a href="https://p5js.org/reference/#/p5/colorMode">colorMode</a> with HSB
- * (hue-saturation-brightness), so that the first variable sets the hue.  
+ * (hue-saturation-brightness), so that the first variable sets the hue.
  *
  */
 function setup() {
@@ -35,12 +35,10 @@ function setup() {
   describe('A blank canvas where the user draws by dragging the mouse');
 }
 
-function mouseDragged()
-{
+function mouseDragged() {
   // Set the color based on the mouse position, and draw a line
   // from the previous position to the current position
-  let h = mouseX - mouseY
-  stroke(h, 90, 90);
+  let lineHue = mouseX - mouseY;
+  stroke(lineHue, 90, 90);
   line(pmouseX, pmouseY, mouseX, mouseY);
 }
-
