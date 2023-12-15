@@ -9,7 +9,6 @@
  * values set the position and size of a circle.
  * This only works for mobile devices.
  */
-// Establish the global variables: redValue, greenValue, and blueValue.
 
 function setup() {
   describe(
