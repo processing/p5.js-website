@@ -6,22 +6,20 @@
  * Based on Daniel Shiffman's <a href="https://processing.org/examples/tree.html">Recursive Tree Example</a> for Processing.
  */
 
-let theta;
+let angle;
 
 function setup() {
   createCanvas(710, 400);
   colorMode(HSB);
+  angleMode(DEGREES);
 }
 
 function draw() {
   background(0);
 
   // Calculate the angle based on the mouse position, maximum 90 degrees
-  let angle = (mouseX / width) * 90;
+  angle = (mouseX / width) * 90;
   angle = min(angle, 90);
-
-  // Convert the angle to radians
-  theta = radians(angle);
 
   // Start the tree from the bottom of the screen
   translate(width / 2, height);
@@ -54,8 +52,8 @@ function branch(h, level) {
     // Save the current coordinate system
     push();
 
-    // Rotate by theta
-    rotate(theta);
+    // Rotate by angle
+    rotate(angle);
 
     // Draw the branch
     line(0, 0, 0, -h);
@@ -71,7 +69,7 @@ function branch(h, level) {
 
     // Draw the left branch
     push();
-    rotate(-theta);
+    rotate(-angle);
     line(0, 0, 0, -h);
     translate(0, -h);
     branch(h, level + 1);
