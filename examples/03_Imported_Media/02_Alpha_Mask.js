@@ -1,26 +1,28 @@
 /**
- ** @name Alpha Mask
- ** @description Using the <a href="https://p5js.org/reference/#/p5/mask" target="_blank">mask()</a> method, 
- ** you can create a mask for an image to specify the transparency in
- ** different parts of the image. To run this example locally, you will need two
- ** image files, and a running <a href="https://github.com/processing/p5.js/wiki/Local-server">
- ** local server</a>.
- **/
+ * @name Alpha Mask
+ * @description Using the <a href="https://p5js.org/reference/#/p5/mask" target="_blank">mask()</a> method,
+ * you can create a mask for an image to specify the transparency in
+ * different parts of the image. To run this example locally, you will need two
+ * image files, and a running <a href="https://github.com/processing/p5.js/wiki/Local-server">
+ * local server</a>.
+ */
 // Preload the image assets from the canvas
 // assets directory.
 function preload() {
   // Photo by Sergey Shmidt, https://unsplash.com/photos/koy6FlCCy5s
-  img = loadImage("assets/image.jpg");
+  img = loadImage('assets/image.jpg');
 
   // Photo by Mockup Graphics, https://unsplash.com/photos/_mUVHhvBYZ0
-  imgMask = loadImage("assets/mask.png");
+  imgMask = loadImage('assets/mask.png');
 }
 
 function setup() {
-  describe('Two photos, the one on the left labeled with "Masked Image," and the one on the right labeled with "Mask."');
+  describe(
+    'Two photos, the one on the left labeled with "Masked Image," and the one on the right labeled with "Mask."'
+  );
   createCanvas(710, 400);
 
-  // Use the mask() method to apply imgMask photo as a 
+  // Use the mask() method to apply imgMask photo as a
   // mask for img.
   img.mask(imgMask);
 
@@ -33,15 +35,21 @@ function draw() {
 
   // Draw the masked image on the left, then
   // the photo used to mask on the right.
-  describeElement('Masked Image', 'A photo of yellow flowers masked by a photo of two leaves.');
+  describeElement(
+    'Masked Image',
+    'A photo of yellow flowers masked by a photo of two leaves.'
+  );
   image(img, 0, 0, 350, 350);
 
-  describeElement('Mask', 'The photo of two leaves used to mask the previous photo.');
+  describeElement(
+    'Mask',
+    'The photo of two leaves used to mask the previous photo.'
+  );
   image(imgMask, 350, 0, 350, 350);
 
   //Add labels to explain the images shown.
   textSize(24);
   fill(0);
-  text("Masked Image", 10, 10);
-  text("Mask", 360, 10);
+  text('Masked Image', 10, 10);
+  text('Mask', 360, 10);
 }

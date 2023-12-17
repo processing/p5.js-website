@@ -1,10 +1,10 @@
 /**
- ** @name Create Graphics
- ** @description The <a href="https://p5js.org/reference/#/p5/createGraphics" target="_blank">createGraphics()</a> function can be 
- ** used to create a new p5.Graphics object, which can serve as an off-screen graphics buffer within the canvas. 
- ** Off-screen buffers can have different dimensions and properties than its current display surface, even though they appear to be 
- ** existing in the same space.
- **/
+ * @name Create Graphics
+ * @description The <a href="https://p5js.org/reference/#/p5/createGraphics" target="_blank">createGraphics()</a> function can be
+ * used to create a new p5.Graphics object, which can serve as an off-screen graphics buffer within the canvas.
+ * Off-screen buffers can have different dimensions and properties than its current display surface, even though they appear to be
+ * existing in the same space.
+ */
 // Define graphic as a global variable. This variable
 // will be the offscreen buffer.
 let graphic;
