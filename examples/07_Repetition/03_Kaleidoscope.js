@@ -1,11 +1,11 @@
 /**
- ** @name Kaleidoscope
- ** @description A kaleidoscope is an optical instrument with two or more reflecting surfaces tilted to each other in an angle.
- ** Using the <a href="https://p5js.org/reference/#/p5/translate" target="_blank">translate()</a>,
- ** <a href="https://p5js.org/reference/#/p5/rotate" target="_blank">rotate()</a>,
- ** and <a href="https://p5js.org/reference/#/p5/scale" target="_blank">scale()</a> functions, you can replicate the resulting visual
- ** of a kaleidoscope in a canvas.
- **/
+ * @name Kaleidoscope
+ * @description A kaleidoscope is an optical instrument with two or more reflecting surfaces tilted to each other in an angle.
+ * Using the <a href="https://p5js.org/reference/#/p5/translate" target="_blank">translate()</a>,
+ * <a href="https://p5js.org/reference/#/p5/rotate" target="_blank">rotate()</a>,
+ * and <a href="https://p5js.org/reference/#/p5/scale" target="_blank">scale()</a> functions, you can replicate the resulting visual
+ * of a kaleidoscope in a canvas.
+ */
 // Define the global variables.
 // The symmetry variable will define how many reflective sections the canvas
 // is split into.
