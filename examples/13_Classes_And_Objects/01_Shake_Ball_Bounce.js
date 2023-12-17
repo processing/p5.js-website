@@ -1,16 +1,16 @@
 /**
- ** @name Shake Ball Bounce
- ** @description Using the <a href="https://p5js.org/reference/#/p5/class" target="_blank">class</a> property, you can create a collection of 
- ** circles that move within the canvas in response to the tilt of a mobile device. 
- ** You must open this page on a mobile device to display the sketch.
- **/
+ * @name Shake Ball Bounce
+ * @description Using the <a href="https://p5js.org/reference/#/p5/class" target="_blank">class</a> property, you can create a collection of
+ * circles that move within the canvas in response to the tilt of a mobile device.
+ * You must open this page on a mobile device to display the sketch.
+ */
 // Define the global variables.
-// The balls variable will contain all the 
+// The balls variable will contain all the
 // balls in the canvas.
 let balls = [];
 
 // The threshold variable will be used to check
-// if the mobile device has been moved enough to 
+// if the mobile device has been moved enough to
 // initiate a response.
 let threshold = 30;
 
@@ -24,7 +24,9 @@ let accChangeY = 0;
 let accChangeT = 0;
 
 function setup() {
-  describe('Twenty circles that bounce around in the canvas whenever the mobile device is tilted.');
+  describe(
+    'Twenty circles that bounce around in the canvas whenever the mobile device is tilted.'
+  );
 
   // Create a canvas that fill the entire viewport display.
   createCanvas(displayWidth, displayHeight);
@@ -49,7 +51,6 @@ function draw() {
 }
 
 function checkForShake() {
-
   // Calculate the total change for accelerationX and accelerationY.
   accChangeX = abs(accelerationX - pAccelerationX);
   accChangeY = abs(accelerationY - pAccelerationY);
@@ -57,7 +58,7 @@ function checkForShake() {
   // Calculate the overall change in the mobile device's acceleration.
   accChangeT = accChangeX + accChangeY;
 
-  // If the overall change meets or is greater than the threshold, 
+  // If the overall change meets or is greater than the threshold,
   // call the shake() and turn() methods and change the direction
   // and speed of each ball.
   if (accChangeT >= threshold) {
@@ -66,7 +67,7 @@ function checkForShake() {
       balls[i].turn();
     }
   }
-  // If the overall change doesn't meet the threshold, 
+  // If the overall change doesn't meet the threshold,
   // gradually slow down the ball movement.
   else {
     for (let i = 0; i < balls.length; i++) {
@@ -80,8 +81,8 @@ function checkForShake() {
 // Create the Ball class.
 class Ball {
   constructor() {
-    // Make each ball created have a random size, speed, and starting 
-    // placement in the canvas. 
+    // Make each ball created have a random size, speed, and starting
+    // placement in the canvas.
     this.x = random(width);
     this.y = random(height);
     this.diameter = random(10, 30);
@@ -95,7 +96,7 @@ class Ball {
     this.oyspeed = this.yspeed;
   }
 
-  // Whenever the ball's move() method is called, 
+  // Whenever the ball's move() method is called,
   // multiply its speed and direction of movement
   // and have that equal its new placement in the canvas.
   move() {
