@@ -25,7 +25,7 @@ function setup() {
   // CSS color name
   // For a list of available color names see:
   // https://www.w3.org/wiki/CSS/Properties/color/keywords
-  background("steelblue");
+  background('steelblue');
 
   // Set width of stroke to 4 units
   strokeWeight(4);
@@ -100,7 +100,7 @@ function setup() {
   // Hex string
   // This is a set of red, green, blue values
   // Encoded in base 16
-  stroke("#EFD8D8");
+  stroke('#EFD8D8');
 
   // Draw without inner color
   noFill();
