@@ -1,53 +1,65 @@
 /**
  * @name Shape Primitives
- * @description This program demostrates the use of the basic shape 
+ * @description This program demostrates the use of the basic shape
  * primitive functions
- * <a href="https://p5js.org/reference/#/p5/rect">rect()</a>,
- * <a href="https://p5js.org/reference/#/p5/ellipse">ellipse()</a>,
- * <a href="https://p5js.org/reference/#/p5/circle">circle()</a>,
- * <a href="https://p5js.org/reference/#/p5/quad">quad()</a>,
- * <a href="https://p5js.org/reference/#/p5/arc">arc()</a>, and
- * <a href="https://p5js.org/reference/#/p5/triangle">triangle()</a>.
- *
- * The program also demonstrates the use of 
- * <a href="https://p5js.org/reference/#/p5/fill">fill()</a>
- * with names for basic 
- * <a href="https://en.wikipedia.org/wiki/Web_colors">web colors</a>.
- *
+ * <a href="https://p5js.org/reference/#/p5/square" target="_blank">square()</a>,
+ * <a href="https://p5js.org/reference/#/p5/rect" target="_blank">rect()</a>,
+ * <a href="https://p5js.org/reference/#/p5/ellipse" target="_blank">ellipse()</a>,
+ * <a href="https://p5js.org/reference/#/p5/circle" target="_blank">circle()</a>,
+ * <a href="https://p5js.org/reference/#/p5/arc" target="_blank">arc()</a>,
+ * <a href="https://p5js.org/reference/#/p5/line" target="_blank">line()</a>,
+ * <a href="https://p5js.org/reference/#/p5/triangle" target="_blank">triangle()</a>,
+ * and <a href="https://p5js.org/reference/#/p5/quad" target="_blank">quad()</a>.
  */
-
 
 function setup() {
   // Create screen reader accessible description
   textOutput();
 
   createCanvas(720, 400);
+
+  // Use degrees as units for angles
+  // The arc() function uses angles
   angleMode(DEGREES);
-  background(0);
 
-  // Draw red rectangle
-  fill('red');
-  rect(20, 50, 200, 100);
+  // Draw a light gray background
+  background(220);
 
-  // Draw yellow ellipse
-  fill('yellow');
-  ellipse(360, 100, 200, 100);
+  // Draw square
+  // x, y, size
+  square(20, 20, 100);
 
-  // Draw lime circle
-  fill('lime');
-  circle(600, 100, 100);
+  // Draw rectangle on top of square
+  // This appears in front of the square because the function is called
+  // after (further down)
+  // Switching the order of square and rect will make the square appear on
+  // top of the rectangle
+  // x, y, width, height
+  rect(100, 40, 200, 100);
 
-  // Draw aqua quadrilateral
-  fill('aqua');
-  quad(20, 250, 70, 200, 220, 300, 170, 350);
+  // Draw eye shape with ellipse, circle, and arc
 
-  // Draw white arc (compare to ellipse())
-  fill('white');
-  arc(360, 300, 200, 100, 0, 180);
+  // Draw ellipse as outer eye shape
+  // x, y, width, height
+  ellipse(540, 100, 300, 100);
 
-  // Draw fuchsia triangle
-  fill('fuchsia');
-  triangle(550, 350, 600, 250, 650, 350);
+  // Draw circle as pupil
+  // x, y, diameter
+  circle(560, 100, 100);
+
+  // Draw arc (compare to ellipse()) as eyelid
+  // x, y, width, heght, start angle, stop angle, mode
+  arc(540, 100, 300, 100, 180, 360, CHORD);
+
+  // Draw line
+  // x1, y1, x2, y2
+  line(20, 200, 200, 350);
+
+  // Draw triangle
+  // x1, y1, x2, y2, x3, y3
+  triangle(250, 350, 350, 200, 450, 350);
+
+  // Draw quadrilateral
+  // x1, y1, x2, y2, x3, y3, x4, y4
+  quad(500, 250, 550, 200, 700, 300, 650, 350);
 }
-
-
