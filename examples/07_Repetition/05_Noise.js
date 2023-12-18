@@ -13,7 +13,7 @@
  */
 
 // Noise tends to look smoother with coordinates that are very close together
-// These values will be mutliplied by the x and y coordinates to make the
+// These values will be multiplied by the x and y coordinates to make the
 // resulting values very close together
 let xScale = 0.015;
 let yScale = 0.02;
