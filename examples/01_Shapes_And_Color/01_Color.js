@@ -12,7 +12,7 @@
  * <a href="https://p5js.org/reference/#/p5/noFill" target="_blank">noFill()</a>
  * turns off line color or inner color respectively.
  *
- * Colors may be represented many different ways. This examples demonstrate several options.
+ * Colors can be represented in many different ways. This examples demonstrate several options.
  */
 
 function setup() {
