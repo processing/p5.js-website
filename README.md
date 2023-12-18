@@ -1,6 +1,54 @@
-# p5.js - Example Revision Project 2023
+# p5.js Example Revision Project 2023
+
+Contributors: Amy Chen, Lance Cole, [Caleb Foss](https://githubb.com/calebfoss) (lead), [Darren Kessner](https://github.com/dkessner), [Kathryn Lichlyter](https://github.com/katlich112358)
+
+This document describes the process for revising the p5.js examples for the 2023 Sovereign Tech Fund project and outlines the structure for the new examples included in this repo.
+
+## Contents
+
+- [Review & Analysis](#review--analysis)
+- [Editing Criteria](#editing-criteria)
+- [Organizational Structure](#organizational-structure)
+- [Preview](#preview)
+
+## Review & Analysis
+
+We reviewed all 190 current examples for the base p5 library (excluding the sound library), as well as the 29 examples revised/written by Malay Vassa for GSoC: [review data](https://docs.google.com/spreadsheets/d/1HJMtTNhSRh-jJM25fSvpKvge65Ee5F93CuB75TNnfM0/edit?usp=sharing). We gathered data to inform both the curation and editing processes.
+
+To maintain wide coverage of the API while curating a smaller list of examples, we analyzed the coverage of different parts of the API: [API coverage data](https://docs.google.com/spreadsheets/d/1XbpgV2pWfUex_C9OYr6WlX_RAOE1Sl4X-4BJiwLWeiA/edit?usp=sharing).
+
+As we selected examples to edit and highlight on the new Examples page, we focused on these two priority areas:
+
+Maximize variety of demonstrations in terms of skill level, area of API, and category (typography, 3D, physics, etc.)
+Minimize revision needed for example to be accessible, clear, documented, etc.
+
+## Editing Criteria
+
+We edited the curated p5 examples and wrote additional new examples from scratch using the following criteria:
+
+- Content created follows accessibility guidelines:
+  - Content rendered on a canvas includes a screen reader accessible description (via describe(), describeElement(), gridOutput(), or textOutput())
+  - Color contrast meets WCAG AA requirements
+  - Animations meet WCAG [2.3.1](https://www.w3.org/WAI/WCAG21/Understanding/three-flashes-or-below-threshold.html) and [2.3.3](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html) requirements
+- Readability score of Grade 8 or lower following tools like Hemingway App
+- Has an image thumbnail depicting what the example creates
+- Named to clearly identify its primary focus
+- Includes an introduction paragraph that meets p5’s technical writing guidelines with links to relevant resources (within p5 reference and external like MDN)
+- Includes comments that meet [p5’s technical writing guidelines](https://docs.google.com/document/d/1aHyeh9UcKjICippuAvC9iurKfl3RQNHQaj170Ri_7hE/edit?usp=sharing) and help the reader follow the code
+- Includes minimal code beyond its primary focus
+- Is up-to-date with contemporary JS conventions/syntax and follows [p5's Code Style Guide](https://github.com/processing/p5.js/blob/main/contributor_docs/documentation_style_guide.md#code).
+  (let vs var, prototype vs class, etc.)
+- Invites remixing by avoiding unnecessary code that causes more fragility with change
 
 ## Organizational Structure
+
+The revised examples page will contain 60 examples distributed into 15 categories.
+
+The overall order of examples progresses from beginner to advanced. Someone new to p5 can start from the top and work their way down. The examples introduce a broad range of the API piece by piece. They also introduce programming concepts. Each example builds on what has been introduced so far. We conceptualized this structure as a p5 “story”.
+
+The examples directory in this repo contains a subdirectory for each category with a numbered name to maintain their order.
+
+Each category directory contains a 'More' subdirectory with additional examples related to that category. These are unedited and do not meet all out evaluation criteria. We recommend including them as an optionally revealed section for site visitors who want to explore further variety.
 
 ## Preview
 
