@@ -1,6 +1,6 @@
 /**
  * @name Shape Primitives
- * @description This program demostrates the use of the basic shape
+ * @description This program demonstrates the use of the basic shape
  * primitive functions
  * <a href="https://p5js.org/reference/#/p5/square" target="_blank">square()</a>,
  * <a href="https://p5js.org/reference/#/p5/rect" target="_blank">rect()</a>,
