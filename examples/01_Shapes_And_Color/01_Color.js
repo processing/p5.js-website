@@ -1,6 +1,6 @@
 /**
  * @name Color
- * @description This is expands on the Shape Primitives example by adding
+ * @description This expands on the Shape Primitives example by adding
  * color.
  * <a href="https://p5js.org/reference/#/p5/background" target="_blank">background()</a>
  * fills the canvas with one color,
