@@ -9,6 +9,7 @@ This document describes the process for revising the p5.js examples for the 2023
 - [Review & Analysis](#review--analysis)
 - [Editing Criteria](#editing-criteria)
 - [Organizational Structure](#organizational-structure)
+- [Suggestions for Content & Design](#suggestions-for-content--design)
 - [Preview](#preview)
 
 ## Review & Analysis
@@ -49,6 +50,16 @@ The overall order of examples progresses from beginner to advanced. Someone new 
 The examples directory in this repo contains a subdirectory for each category with a numbered name to maintain their order.
 
 Each category directory contains a 'More' subdirectory with additional examples related to that category. These are unedited and do not meet all out evaluation criteria. We recommend including them as an optionally revealed section for site visitors who want to explore further variety.
+
+## Suggestions for Content & Design
+
+We tried to avoid sketches that start animating without user interaction, as this goes against [WCAG 2.3.3](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html), and found some creative ways to do so. Some sketches do still start animating on load. We would suggest a button to completely stop the preview of the sketch, similar to the "run", "reset", and "copy" buttons currently used.
+
+The git history on the examples has been maintained, and many files include contributions going back several years. If the page for each example listed all contributors for that file, this could be a great way to highlight the community collaborative nature of p5's development.
+
+We would like to see the examples page communicate the progression from beginner to advanced to the visitor. Some introduction text at the top of the page would help, and there may be design choices that would help emphasize the progression.
+
+We discussed the possibility of a future p5 Editor widget as a replacement for the current Ace editor. Before that is developed, we recommend adding a link/button to open the current example in the p5 Editor in a new tab. This will help visitors to remix examples and save them to their p5 Editor account.
 
 ## Preview
 
