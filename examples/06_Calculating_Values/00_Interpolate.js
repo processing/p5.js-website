@@ -4,7 +4,7 @@
  * @description
  * <a href="https://developer.mozilla.org/en-US/docs/Glossary/Interpolation" target="_blank">Interpolation</a>
  * calculates a value between two other values. For example, the number 5 is
- * halfway between 0 and 10. Different types of interpolation uses
+ * halfway between 0 and 10. Different types of interpolation use
  * different rates of change between values. Linear interpolation,
  * abbreviated as lerp, uses a constant rate of change. The
  * <a href="https://p5js.org/reference/#/p5/lerp" target="_blank">lerp()</a>
@@ -29,8 +29,8 @@ function draw() {
 
   // lerp() calculates a number between two numbers at a specific increment.
   // The amt parameter is the amount to interpolate between the two values
-  // where 0.0 equal to the first point, 0.1 is very near the first point, 0.5
-  // is half-way in between, etc.
+  // where 0.0 is equal to the first point, 0.1 is very near the first point, 0.5
+  // is halfway in between, etc.
 
   // Move 5% of the way to the mouse location each frame
   x = lerp(x, mouseX, 0.05);

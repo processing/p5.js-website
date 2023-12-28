@@ -1,7 +1,8 @@
 /**
  * @name Kaleidoscope
- * @description A kaleidoscope is an optical instrument with two or more reflecting surfaces tilted to each other in an angle.
- * Using the <a href="https://p5js.org/reference/#/p5/translate" target="_blank">translate()</a>,
+ * @description A kaleidoscope is an optical instrument with two or more
+ * reflecting surfaces tilted to each other at an angle. Using the
+ * <a href="https://p5js.org/reference/#/p5/translate" target="_blank">translate()</a>,
  * <a href="https://p5js.org/reference/#/p5/rotate" target="_blank">rotate()</a>,
  * and <a href="https://p5js.org/reference/#/p5/scale" target="_blank">scale()</a> functions, you can replicate the resulting visual
  * of a kaleidoscope in a canvas.
@@ -11,7 +12,7 @@
 // is split into.
 let symmetry = 6;
 
-// The angle button will calculate the angle in which the each section is rotated.
+// The angle button will calculate the angle at which each section is rotated.
 let angle = 360 / symmetry;
 
 function setup() {
@@ -47,7 +48,7 @@ function draw() {
         strokeWeight(3);
         line(lineStartX, lineStartY, lineEndX, lineEndY);
 
-        // ... and also reflect the line within the symmetry sections as well.
+        // ... and reflect the line within the symmetry sections as well.
         push();
         scale(1, -1);
         line(lineStartX, lineStartY, lineEndX, lineEndY);

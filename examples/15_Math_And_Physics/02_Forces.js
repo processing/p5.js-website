@@ -1,7 +1,7 @@
 /**
  * @name Forces
- * @description Demonstration of multiple force acting on bodies.
- * Bodies experience gravity continuously.Bodies experience fluid
+ * @description Demonstration of multiple forces acting on bodies.
+ * Bodies experience gravity continuously. Bodies experience fluid
  * resistance when in "water".
  * (<a href="http://natureofcode.com">natureofcode.com</a>)
  *
@@ -51,7 +51,7 @@ function draw() {
     // Gravitational force is proportional to the mass
     let gravity = createVector(0, 0.1 * mover.mass);
 
-    // Apply gravitional force
+    // Apply gravitational force
     mover.applyForce(gravity);
 
     // Update and display

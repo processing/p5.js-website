@@ -9,7 +9,7 @@
  * <a href="https://p5js.org/reference/#/p5.Vector">p5.Vector</a>
  * class, including the
  * <a href="https://p5js.org/reference/#/p5/createVector">createVector()</a>
- * function.  The various calculations for updating particles'
+ * function. The various calculations for updating particles'
  * positions and velocities are performed with p5.Vector methods.
  *
  * The particle system is implemented as a

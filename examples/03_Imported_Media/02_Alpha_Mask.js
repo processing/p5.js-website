@@ -3,7 +3,7 @@
  * @description Using the <a href="https://p5js.org/reference/#/p5/mask" target="_blank">mask()</a> method,
  * you can create a mask for an image to specify the transparency in
  * different parts of the image. To run this example locally, you will need two
- * image files, and a running <a href="https://github.com/processing/p5.js/wiki/Local-server">
+ * image files and a running <a href="https://github.com/processing/p5.js/wiki/Local-server">
  * local server</a>.
  */
 // Preload the image assets from the canvas
@@ -18,7 +18,7 @@ function preload() {
 
 function setup() {
   describe(
-    'Two photos, the one on the left labeled with "Masked Image," and the one on the right labeled with "Mask."'
+    'Two photos, the one on the left labeled with "Masked Image" and the one on the right labeled with "Mask."'
   );
   createCanvas(710, 400);
 
@@ -26,7 +26,7 @@ function setup() {
   // mask for img.
   img.mask(imgMask);
 
-  //Set the alignment of the text labels.
+  // Set the alignment of the text labels.
   textAlign(LEFT, TOP);
 }
 
@@ -47,7 +47,7 @@ function draw() {
   );
   image(imgMask, 350, 0, 350, 350);
 
-  //Add labels to explain the images shown.
+  // Add labels to explain the images shown.
   textSize(24);
   fill(0);
   text('Masked Image', 10, 10);

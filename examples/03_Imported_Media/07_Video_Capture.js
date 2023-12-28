@@ -31,7 +31,7 @@ function setup() {
 }
 
 function draw() {
-  //Set the background to gray.
+  // Set the background to gray.
   background(51);
 
   // Draw the resulting video capture on the canvas

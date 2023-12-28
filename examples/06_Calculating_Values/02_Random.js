@@ -30,7 +30,7 @@ function setPositionAndColor() {
   circleX = random(0, width);
   circleY = random(0, height);
 
-  // Set R, G, and B to random values in the range [100, 256)
+  // Set R, G, and B to random values in the range (100, 256)
   circleColor = color(random(100, 256), random(100, 256), random(100, 256));
 }
 

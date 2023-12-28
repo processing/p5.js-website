@@ -16,7 +16,7 @@ function setup() {
 }
 
 function buildSnake() {
-  // If there was a previous snake, we're going to replace it,
+  // If there was a previous snake, we're going to replace it
   // so we can free its resources to save memory
   if (snake) {
     freeGeometry(snake);

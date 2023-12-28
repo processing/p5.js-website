@@ -16,7 +16,7 @@ let playing = false;
 function setup() {
   createCanvas(710, 400);
 
-  // Upload the video in the canvas' assets directory, and
+  // Upload the video in the canvas's assets directory, and
   // use the createVideo() function to load the video into the code.
   // It's best to upload multiple video formats so the video
   // is visible within different browsers.
@@ -49,11 +49,11 @@ function draw() {
 
 function mousePressed() {
   // When the canvas is clicked, check to see if the videos are
-  // paused or playing. If it is playing, pause the videos.
+  // paused or playing. If they are playing, pause the videos.
   if (playing) {
     video.pause();
   } else {
-    // If it is paused, play the videos.
+    // If they are paused, play the videos.
     video.loop();
   }
 
