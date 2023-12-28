@@ -4,7 +4,7 @@
  * Full discussion of the implementation can be found in the
  * <a href="https://natureofcode.com/book/chapter-6-autonomous-agents/">
  * Nature of Code</a>
- * book by Daniel Shiffman.  The simulation is based on the research of
+ * book by Daniel Shiffman. The simulation is based on the research of
  * <a href="http://www.red3d.com/cwr/">Craig Reynolds</a>, who
  * used the term 'boid' to represent a bird-like object.
  */
@@ -81,7 +81,7 @@ class Boid {
   }
 
   applyForce(force) {
-    // We could add mass here if we want A = F / M
+    // We could add mass here if we want: A = F / M
     this.acceleration.add(force);
   }
 
@@ -236,7 +236,7 @@ class Boid {
   }
 
   // Cohesion
-  // For the average location (i.e. center) of all nearby boids, calculate steering vector towards that location
+  // For the average location (i.e., center) of all nearby boids, calculate steering vector towards that location
   cohesion(boids) {
     let neighborDistance = 50;
     let sum = createVector(0, 0); // Start with empty vector to accumulate all locations

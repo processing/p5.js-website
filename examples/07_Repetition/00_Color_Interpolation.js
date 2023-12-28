@@ -3,7 +3,7 @@
  * @description
  * <a href="https://developer.mozilla.org/en-US/docs/Glossary/Interpolation" target="_blank">Interpolation</a>
  * calculates a value between two other values. For example, the number 5 is
- * halfway between 0 and 10. Different types of interpolation uses
+ * halfway between 0 and 10. Different types of interpolation use
  * different rates of change between values. Linear interpolation,
  * abbreviated as lerp, uses a constant rate of change. The
  * <a href="https://p5js.org/reference/#/p5/lerp" target="_blank">lerp()</a>
@@ -38,11 +38,11 @@ function setup() {
   let stripeHeight = height / stripeCount;
 
   // Start at top of canvas,
-  //  repeat until at the bottom
-  //  move down by stripeHeight each time,
+  // repeat until at the bottom
+  // move down by stripeHeight each time,
   for (let y = 0; y < height; y += stripeHeight) {
     // Convert y position to number between
-    //  0 (top of canvas) and 1 (bottom of canvas)
+    // 0 (top of canvas) and 1 (bottom of canvas)
     let fadeAmount = y / height;
 
     // Interpolate color

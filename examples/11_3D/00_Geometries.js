@@ -24,7 +24,7 @@ function setup() {
   angleMode(DEGREES);
 
   // Use a normal material, which uses color to illustrate
-  //  what direction each face of the geometry is pointing
+  // what direction each face of the geometry is pointing
   normalMaterial();
 
   describe(

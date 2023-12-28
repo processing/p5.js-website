@@ -28,7 +28,7 @@ function setup() {
   // Set width of the lines
   strokeWeight(10);
 
-  // Set color mode to hue-saturation-value (HSB)
+  // Set color mode to hue-saturation-brightness (HSB)
   colorMode(HSB);
 
   // Set screen reader accessible description

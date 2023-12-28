@@ -34,7 +34,7 @@ function setup() {
 }
 
 function greet() {
-  // Refresh the canvas background to clear of any
+  // Refresh the canvas background to clear any
   // previous inputs.
   background(255);
 

@@ -1,14 +1,14 @@
 /**
  * @name DOM Form Elements
  * @description The <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" target="_blank">Document Object Model</a>,
- * or DOM, represents the resulting structure of the web page. Using p5.js' form elements,
+ * or DOM, represents the resulting structure of the web page. Using p5.js's form elements,
  * such as <a href="https://p5js.org/reference/#/p5/createInput" target="_blank">createInput()</a>,
  * <a href="https://p5js.org/reference/#/p5/createSelect" target="_blank">createSelect()</a>,
  * and <a href="https://p5js.org/reference/#/p5/createRadio" target="_blank">createRadio()</a>, you can build different ways to take information submitted through
  * a <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select" target="_blank">select</a>,
  * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input" target="_blank">input</a>,
- * or <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio" target="_blank">radio button</a>, and update the DOM based on the information.
- **/
+ * or <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio" target="_blank">radio button</a> and update the DOM based on the information.
+ */
 // Define the inputs for this form as global variables.
 let nameInput;
 let fontSelect;
@@ -67,7 +67,7 @@ function draw() {
 
 function fontChanged() {
   // When the fontSelect value is changed,
-  // update the canvas' font selection to the
+  // update the canvas's font selection to the
   // new value.
   let fontSelection = fontSelect.value();
   textFont(fontSelection);

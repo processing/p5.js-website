@@ -24,7 +24,7 @@ function setup() {
   // Get the last saved high score
   highScore = getItem('high score');
 
-  // If not score was saved, start with a value of 0
+  // If no score was saved, start with a value of 0
   if (highScore === null) {
     highScore = 0;
   }
