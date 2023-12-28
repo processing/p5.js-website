@@ -26,7 +26,7 @@ void main() {
   // on the texture coordinates.
   position.y += 20.0 * sin(time * 0.01 + position.y * 0.1);
 
-  // Apply the any transformations that have been set in p5
+  // Apply the transformations that have been set in p5
   vec4 viewModelPosition = uModelViewMatrix * vec4(position, 1.0);
 
   // Tell WebGL where the vertex should be drawn
@@ -53,21 +53,21 @@ let ribbon;
 function setup() {
   createCanvas(700, 400, WEBGL);
   wiggleShader = createShader(vertSrc, fragSrc);
-  
+
   let startColor = color('#F55');
   let endColor = color('#55F');
   ribbon = buildGeometry(() => {
     noStroke();
-    
+
     // Draw a ribbon of vertices
     beginShape(QUAD_STRIP);
     let numPoints = 50;
     for (let currentPoint = 0; currentPoint < numPoints; currentPoint++) {
-      let x = map(currentPoint, 0, numPoints-1, -width/3, width/3);
-      let y = map(currentPoint, 0, numPoints-1, -height/3, height/3);
-      
+      let x = map(currentPoint, 0, numPoints - 1, -width / 3, width / 3);
+      let y = map(currentPoint, 0, numPoints - 1, -height / 3, height / 3);
+
       // Change color from red to blue along the ribbon
-      fill(lerpColor(startColor, endColor, currentPoint / (numPoints-1)));
+      fill(lerpColor(startColor, endColor, currentPoint / (numPoints - 1)));
       for (let z of [-50, 50]) {
         vertex(x, y, z);
       }
@@ -81,16 +81,16 @@ function setup() {
 function draw() {
   background(255);
   noStroke();
-  
+
   rotateX(PI * 0.1);
-  
+
   // Use the vertex shader we made. Try commenting out this line to see what
   // the ribbon looks like when we don't move it with the shader!
   shader(wiggleShader);
-  
-  // Pass the shader the current time so it can animate
+
+  // Pass the shader the current time so it can animate.
   wiggleShader.setUniform('time', millis());
-  
+
   // Draw the ribbon. The shader will distort and animate it.
   model(ribbon);
 }

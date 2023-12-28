@@ -17,7 +17,7 @@ function setup() {
   // Use the noCanvas() function to remove the canvas.
   noCanvas();
 
-  // Upload the video in the canvas' assets directory, and
+  // Upload the video in the canvas's assets directory, and
   // use the createVideo() function to load in the video to the code.
   // This createVideo() function will build a p5.MediaElement class.
   // It's best to upload multiple video formats so the video

@@ -5,7 +5,7 @@
  * in this example uses depth information from a
  * <a href="https://p5js.org/reference/#/p5.Framebuffer" target="_blank">p5.Framebuffer</a>
  * to apply a blur. On a real camera, objects appear blurred if they
- * are closer or farther than the lens' focus. This simulates that
+ * are closer or farther than the lens's focus. This simulates that
  * effect. First, the sketch renders five spheres to the framebuffer.
  * Then, it renders the framebuffer to the canvas using the blur shader.
  */

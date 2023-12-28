@@ -1,12 +1,12 @@
 /**
- * @name Sine Cosine
+ * @name Sine and Cosine
  * @description This example demonstrates the
  * <a href="https://en.wikipedia.org/wiki/Sine_and_cosine">sine and cosine</a>
  * mathematical functions.
  *
  * The animation shows uniform circular motion around the unit circle
- * (circle with radius 1).  Any angle measured from the the x-axis
- * determines a point on the circle.  The cosine and sine of the angle
+ * (circle with radius 1). Any angle measured from the the x-axis
+ * determines a point on the circle. The cosine and sine of the angle
  * are defined to be the x and y coordinates, respectively, of that
  * point.
  *

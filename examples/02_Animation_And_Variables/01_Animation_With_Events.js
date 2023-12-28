@@ -6,7 +6,7 @@
  * <a href="https://p5js.org/reference/#/p5/noLoop">noLoop()</a>
  * to pause and resume the animation.
  *
- * Clicking the mouse toggles the animation loop.  If the animation
+ * Clicking the mouse toggles the animation loop. If the animation
  * loop is stopped, the user can press any key to advance one frame.
  * Note: the user must click to set the focus on the canvas for
  * key presses to be registered.

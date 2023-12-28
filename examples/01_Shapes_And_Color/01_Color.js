@@ -10,9 +10,9 @@
  * sets the color for the inside of shapes.
  * <a href="https://p5js.org/reference/#/p5/noFill" target="_blank">noStroke()</a> and
  * <a href="https://p5js.org/reference/#/p5/noFill" target="_blank">noFill()</a>
- * turns off line color or inner color respectively.
+ * turn off line color and inner color, respectively.
  *
- * Colors can be represented in many different ways. This examples demonstrate several options.
+ * Colors can be represented in many different ways. This example demonstrates several options.
  */
 
 function setup() {
@@ -23,7 +23,7 @@ function setup() {
   angleMode(DEGREES);
 
   // CSS color name
-  // For a list of available color names see:
+  // For a list of available color names, see:
   // https://www.w3.org/wiki/CSS/Properties/color/keywords
   background('steelblue');
 
@@ -43,8 +43,8 @@ function setup() {
   // Dark red
   stroke(100, 20, 20);
 
-  // The rectangle uses the last set fill color
-  // which is light blue set before drawing the square
+  // The rectangle uses the last set fill color,
+  // which is light blue, set before drawing the square
   rect(100, 40, 200, 100);
 
   // Hue, saturation, and brightness values

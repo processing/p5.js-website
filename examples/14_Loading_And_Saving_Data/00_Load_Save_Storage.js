@@ -102,7 +102,7 @@ function mouseReleased() {
   }
 }
 
-// Create a new Bubble each time the mouse is clicked.
+// Create a new bubble each time the mouse is clicked.
 function addBubble() {
   // Add radius and label to bubble
   let radius = dist(mousePressX, mousePressY, mouseX, mouseY);

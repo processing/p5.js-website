@@ -2,8 +2,8 @@
  * @name Game of Life
  * @description The Game of Life is a cellular automaton created by
  * mathematician John Conway. A cellular automaton is a type of
- * simulation. In the Game of Life, a grid of cells are each either dead
- * or alive. In this example, black squares represent living cells, and
+ * simulation. In the Game of Life, there is a grid of cells in which each cell is either dead
+ * or alive. In this example, black squares represent living cells and
  * white squares represent dead cells. As the simulation runs, cells
  * switch between being dead and alive based on a set of rules:
  * <ol>
@@ -58,7 +58,7 @@ function draw() {
       // Get cell value (0 or 1)
       let cell = currentCells[column][row];
 
-      // Convert cell value to get black (0) for alive or 255 (white) for dead
+      // Convert cell value to get black (0) for alive or white (255 (white) for dead
       fill((1 - cell) * 255);
       stroke(0);
       rect(column * cellSize, row * cellSize, cellSize, cellSize);
@@ -104,7 +104,7 @@ function generate() {
       let below = (row + 1) % rowCount;
 
       // Count living neighbors surrounding current cell
-      let neighbors =
+      let neighbours =
         currentCells[left][above] +
         currentCells[column][above] +
         currentCells[right][above] +
@@ -117,10 +117,10 @@ function generate() {
       // Rules of Life
       // 1. Any live cell with fewer than two live neighbours dies
       // 2. Any live cell with more than three live neighbours dies
-      if (neighbors < 2 || neighbors > 3) {
+      if (neighbours < 2 || neighbours > 3) {
         nextCells[column][row] = 0;
         // 4. Any dead cell with exactly three live neighbours will come to life.
-      } else if (neighbors === 3) {
+      } else if (neighbours === 3) {
         nextCells[column][row] = 1;
         // 3. Any live cell with two or three live neighbours lives, unchanged, to the next generation.
       } else nextCells[column][row] = currentCells[column][row];

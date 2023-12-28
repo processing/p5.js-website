@@ -28,7 +28,7 @@ function setup() {
     'Twenty circles that bounce around in the canvas whenever the mobile device is tilted.'
   );
 
-  // Create a canvas that fill the entire viewport display.
+  // Create a canvas that fills the entire viewport display.
   createCanvas(displayWidth, displayHeight);
 
   // Create 20 instances of the Ball class.

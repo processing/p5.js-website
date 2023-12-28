@@ -1,9 +1,9 @@
 /**
  * @name Snowflakes
  * @description This example demonstrates the use of a particle system
- * to simulate the motion of falling snowflakes.  This program defines a
+ * to simulate the motion of falling snowflakes. This program defines a
  * snowflake
- * <a href="https://p5js.org/reference/#/p5/class">class</a>,
+ * <a href="https://p5js.org/reference/#/p5/class">class</a>
  * and uses an array to hold the snowflake objects.
  */
 

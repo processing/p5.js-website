@@ -1,13 +1,13 @@
 /**
  * @name Load and Save JSON
  * @description
- * <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON" target="_blank">JavaScript Object Notation, or JSON,</a>
+ * <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON" target="_blank">JavaScript Object Notation, or JSON</a>,
  * is a format for writing data in a file. While the syntax comes from
  * JavaScript, JSON is used in many other contexts. This example  is
  * based on Daniel Shiffman's Loading JSON Data Example for Processing
  * written in Java. It uses a
  * <a href="https://p5js.org/reference/#/p5/class" target="_blank">class</a>
- * to organize data representing a bubble. When the sketch starts, it
+ * to organize data for a bubble. When the sketch starts, it
  * loads the data for two bubbles from a JSON file. The visitor can add
  * new bubbles, download an updated JSON file, and load in a JSON file.
  * */
@@ -28,7 +28,7 @@ function preload() {
   loadJSON('assets/bubbles.json', loadData);
 }
 
-// Convert saved Bubble data into Bubble Objects
+// Convert saved bubble data into Bubble Objects
 function loadData(bubblesData) {
   bubbles = [];
   for (let bubble of bubblesData) {
@@ -108,7 +108,7 @@ function mouseReleased() {
   }
 }
 
-// Create a new Bubble each time the mouse is clicked.
+// Create a new bubble each time the mouse is clicked.
 function addBubble() {
   // Add radius and label to bubble
   let radius = dist(mousePressX, mousePressY, mouseX, mouseY);

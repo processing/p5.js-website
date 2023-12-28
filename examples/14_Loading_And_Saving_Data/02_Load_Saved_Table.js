@@ -1,6 +1,6 @@
 /**
  * @name Load and Save Table
- * @description Comma-Separated Values, or CSV is a format for writing
+ * @description Comma-Separated Values, or CSV, is a format for writing
  * data in a file. p5 can work with this format using a
  * <a href="https://p5js.org/reference/#/p5.Table" target="_blank">p5.Table</a>.
  * This example is based on Daniel Shiffman's
@@ -29,7 +29,7 @@ function preload() {
   table = loadTable('assets/bubbles.csv', 'header', loadData);
 }
 
-// Convert saved Bubble data into Bubble Objects
+// Convert saved Bbubble data into Bubble Objects
 function loadData(table) {
   bubbles = [];
   let tableRows = table.getRows();
@@ -108,7 +108,7 @@ function mouseReleased() {
   }
 }
 
-// Create a new Bubble
+// Create a new Bbubble
 function addBubble() {
   // Create a new row
   let row = table.addRow();

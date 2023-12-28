@@ -3,7 +3,7 @@
  * @frame 400,400
  * @description If and else statements allow a
  * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/block" target="_blank">block of code</a>
- * to only run when a certain condition is true. This example only
+ * to run only when a certain condition is true. This example only
  * animates when the mouse is held down. This is because of the if
  * statement on line 59. You can read more about if and else statements
  * <a href="https://p5js.org/reference/#/p5/if-else">in the p5 reference</a>
@@ -23,7 +23,7 @@
  * 45, which checks that the circle's x position is at least 100 and also
  * no more than 300.
  * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target="_blank">||</a>
- * checks that at least one of the conditions are true. The circle reverses horizontal
+ * checks that at least one of the conditions is true. The circle reverses horizontal
  * speed when it reaches the left or right edge of the canvas because of the if statement
  * on line 75.
  */

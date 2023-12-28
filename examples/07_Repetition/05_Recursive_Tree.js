@@ -43,7 +43,7 @@ function branch(h, level) {
   // Set the hue based on the recursion level
   stroke(level * 25, 255, 255);
 
-  // Each branch will be 2/3rds the size of the previous one
+  // Each branch will be 2/3 the size of the previous one
   h *= 0.66;
 
   // Draw if our branch length > 2, otherwise stop the recursion

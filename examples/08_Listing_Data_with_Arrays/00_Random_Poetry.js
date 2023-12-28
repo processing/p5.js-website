@@ -112,7 +112,7 @@ function setup() {
     'A random series of words related to p5.js scattered onto the canvas.'
   );
 
-  // Import the selected font style defined the canvas' style.css file.
+  // Import the selected font style defined in the canvas's style.css file.
   textFont('Space Mono');
 
   createCanvas(720, 400);
@@ -130,7 +130,7 @@ function setup() {
 
   background(hue, 95, 25);
 
-  // Draw as many words set with the words variable in the
+  // Draw as many words as set with the words variable in the
   // canvas in random positions.
   for (let i = 0; i < 20; i++) {
     textSize(random(16, 48));

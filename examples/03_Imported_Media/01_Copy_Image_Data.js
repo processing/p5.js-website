@@ -2,7 +2,7 @@
  * @name Copy Image Data
  * @frame 600,400
  * @description Using the <a href="https://p5js.org/reference/#/p5/copy" target="_blank">copy()</a> method,
- * you can simulate coloring an image in by copying an image of the colored image on top of the black and
+ * you can simulate coloring an image in by copying an image of the colored image on top of the black-and-
  * white image wherever the cursor is dragged.
  */
 
@@ -10,7 +10,7 @@
 let bottomImg, topImg;
 
 function preload() {
-  // Preload the images from the canvas' assets directory.
+  // Preload the images from the canvas's assets directory.
   // The bottomImg is the photograph with color,
   // and the topImg is the black-and-white photograph.
   bottomImg = loadImage('assets/parrot-color.png');
@@ -18,17 +18,17 @@ function preload() {
 }
 function setup() {
   describe(
-    'Black and white photograph of a parrot. The cursor, when dragged across the canvas, adds color to the photograph.'
+    'Black-and-white photograph of a parrot. The cursor, when dragged across the canvas, adds color to the photograph.'
   );
 
   createCanvas(720, 400);
 
   // Hide the cursor and replace it with a picture of
-  // a paint brush.
+  // a paintbrush.
   noCursor();
   cursor('assets/brush.png', 20, -10);
 
-  // Load the top image (the black and white image).
+  // Load the top image (the black-and-white image).
   image(topImg, 0, 0);
 }
 function mouseDragged() {

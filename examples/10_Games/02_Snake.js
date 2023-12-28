@@ -38,15 +38,15 @@ let startDirection = 'right';
 // Current direction of motion
 let direction = startDirection;
 
-// The snake is divided small segments,
-//  stored as vectors in this array
+// The snake is divided into small segments,
+// stored as vectors in this array
 let segments = [];
 
 let score = 0;
 let highScore;
 
 // The fruit's position is stored as a vector
-//  in this variable
+// in this variable
 let fruit;
 
 function setup() {
@@ -76,7 +76,7 @@ function draw() {
     showStartScreen();
   } else {
     // Shift over so that snake and fruit are still on screen
-    //  when their coordinates are 0
+    // when their coordinates are 0
     translate(0.5, 0.5);
     showFruit();
     showSegments();
@@ -267,7 +267,7 @@ function updateFruitCoordinates() {
   fruit = createVector(x, y);
 }
 
-// When an arrow key is pressed switch the snake's direction of movement,
+// When an arrow key is pressed, switch the snake's direction of movement,
 // but if the snake is already moving in the opposite direction,
 // do nothing.
 function keyPressed() {
