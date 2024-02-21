@@ -10,4 +10,8 @@ export default defineConfig({
     }),
     mdx(),
   ],
+  trailingSlash: "always",
+  build: {
+    format: "directory",
+  },
 });
