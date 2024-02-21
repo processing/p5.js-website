@@ -15,6 +15,8 @@ if (shouldSkipCompress) {
   console.log("WILL SKIP COMPRESS BUILD STEP");
 }
 
+import tailwind from "@astrojs/tailwind";
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://p5js.org',
