@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
+import compress from "astro-compress";
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,6 +10,7 @@ export default defineConfig({
       compat: true,
     }),
     mdx(),
+    compress(),
   ],
   trailingSlash: "always",
   build: {
