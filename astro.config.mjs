@@ -3,6 +3,8 @@ import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
 import compress from "astro-compress";
 
+import tailwind from "@astrojs/tailwind";
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -10,6 +12,7 @@ export default defineConfig({
       compat: true,
     }),
     mdx(),
+    tailwind(),
     compress(),
   ],
   trailingSlash: "always",
