@@ -56,7 +56,7 @@ async function saveMDX(mdxDocs) {
         continue;
       }
       console.log(mdxDoc.savePath, mdxDoc.name);
-      await fs.mkdir(mdxDoc.savePath, { recursive: true }, function (err) {
+      await fs.mkdir(mdxDoc.savePath, { recursive: true }, (err) => {
         if (err) {
           console.error(`Error creating directory: ${err}`);
         }
@@ -64,7 +64,7 @@ async function saveMDX(mdxDocs) {
       await fs.writeFile(
         `${mdxDoc.savePath}/index.mdx`,
         mdxDoc.mdx.toString(),
-        function (err) {
+        (err) => {
           if (err) {
             console.error(`Error saving MDX: ${err}`);
           }
