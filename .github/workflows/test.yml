@@ -6,29 +6,30 @@ permissions:
   contents: read
 
 jobs:
-  setup:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
       - name: Install dependencies
         run: npm ci
-
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       - name: Lint
         run: npm run test
   lint:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
       - name: Lint
         run: npm run lint
   typecheck:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
       - name: Typecheck
         run: npm run check
