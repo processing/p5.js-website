@@ -4,12 +4,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "preact",
-    "prettier",
-  ],
+  extends: ["eslint:recommended", "preact", "prettier"],
   overrides: [
     {
       env: {
@@ -19,6 +14,10 @@ module.exports = {
       parserOptions: {
         sourceType: "script",
       },
+    },
+    {
+      files: ["*.ts", "*.tsx"],
+      extends: ["plugin:@typescript-eslint/recommended"],
     },
   ],
   parser: "@typescript-eslint/parser",
