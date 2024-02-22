@@ -26,5 +26,8 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["@typescript-eslint", "prettier"],
-  rules: { "jest/no-deprecated-functions": 0 },
+  rules: {
+    "jest/no-deprecated-functions": 0,
+    "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+  },
 };

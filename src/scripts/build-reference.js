@@ -111,7 +111,7 @@ async function runYuidocCommand() {
   console.log("Running yuidoc command...");
   try {
     await new Promise((resolve, reject) => {
-      exec("yuidoc -p", (error, stdout, stderr) => {
+      exec("yuidoc -p", (error, _stdout, _stderr) => {
         if (error) {
           console.error(`Error running yuidoc command: ${error}`);
           reject();
@@ -313,7 +313,7 @@ function addClassMethodPreviewsToClassDocs(doc, path) {
   if (!classMethodPreviews[doc.class]) {
     classMethodPreviews[doc.class] = {};
   }
-  const classMethodPath = "../" + modulePathTree.classes[doc.class][doc.name];
+  const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
   classMethodPreviews[doc.class][doc.name] = {
     description: doc.description,
     path: classMethodPath,
