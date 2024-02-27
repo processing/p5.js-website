@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const tutorials = await getCollection("tutorials");
+  return tutorials.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<h1>{entry.data.title}</h1>
+<Content />
+
+<h2>Related references</h2>
+<ul>
+  {entry.data.related_references?.map((relRef) => <li>{relRef}</li>)}
+</ul>
