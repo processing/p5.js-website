@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const pastEvents = await getCollection("past-events");
+  return pastEvents.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<h1>{entry.data.title}</h1>
+
+{
+  entry.data.featured_image ? (
+    <img
+      src={entry.data.featured_image.url}
+      alt={entry.data.featured_image.alt_text}
+    />
+  ) : null
+}
+
+<Content />
+
+## Related Past Events
+
+<ul>
+  {/* TODO: make this into a proper link */}
+  {entry.data.related_past_events?.map((relEx) => <li>{relEx.slug}</li>)}
+</ul>
