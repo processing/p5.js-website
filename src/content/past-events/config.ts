@@ -5,12 +5,12 @@ export const pastEventsCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    featured_image: z
+    featuredImage: z
       .object({
         url: z.string().url(),
-        alt_text: z.string(),
+        altText: z.string(),
       })
       .optional(),
-    related_past_events: z.array(reference("past-events")).optional(),
+    relatedPastEvents: z.array(reference("past-events")).optional(),
   }),
 });
