@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const sketches = await getCollection("sketches");
+  return sketches.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<h1>{entry.data.title}</h1>
+
+<Content />
+
+## Related Sketches
+
+<ul>
+  {/* TODO: make this into a proper link */}
+  {entry.data.relatedSketches?.map((relEx) => <li>{relEx.slug}</li>)}
+</ul>
