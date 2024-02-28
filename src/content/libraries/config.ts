@@ -1,4 +1,5 @@
 import { z, defineCollection } from "astro:content";
+import { author, image } from "../shared";
 
 export const librariesCollection = defineCollection({
   type: "data",
@@ -6,13 +7,7 @@ export const librariesCollection = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     url: z.string().url().optional(),
-    featuredImage: z.object({
-      url: z.string().url(),
-      altText: z.string(),
-    }),
-    author: z.object({
-      name: z.string(),
-      url: z.string().url().optional(),
-    }),
+    featuredImage: image(),
+    author: author(),
   }),
 });

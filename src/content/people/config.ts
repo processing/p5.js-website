@@ -1,14 +1,12 @@
 import { z, defineCollection } from "astro:content";
+import { image } from "../shared";
 
 export const peopleCollection = defineCollection({
   type: "data",
   schema: z.object({
     name: z.string(),
     url: z.string().url().optional(),
-    description: z.string().optional(),
-    image: z.object({
-      url: z.string().url(),
-      altText: z.string(),
-    }),
+    blurb: z.string().optional(),
+    image: image(),
   }),
 });
