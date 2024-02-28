@@ -4,22 +4,24 @@ import { getCollection } from "astro:content";
 export async function getStaticPaths() {
   const sketches = await getCollection("sketches");
   return sketches.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { title, author, embed, license, relatedSketches } = entry.data;
 ---
 
-<h1>{entry.data.title}</h1>
+<h1>{title}</h1>
 
-<Content />
+<iframe src={embed.url} width={embed.width} height={embed.height}></iframe>
+
+By {author.name}, licensed as {license.name}
 
 ## Related Sketches
 
 <ul>
   {/* TODO: make this into a proper link */}
-  {entry.data.relatedSketches?.map((relEx) => <li>{relEx.slug}</li>)}
+  {relatedSketches?.map((relEx) => <li>{relEx.id}</li>)}
 </ul>
