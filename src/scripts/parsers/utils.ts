@@ -18,6 +18,15 @@ export const cloneLibraryRepo = async (
   const hasRecentRepo = repoExists && (await fileModifiedSince(localSavePath));
 
   if (!hasRecentRepo) {
+    console.log("Preparing to clone repository...");
+
+    // If the directory exists but the repo is not recent, delete it first
+    if (repoExists) {
+      console.log(`Deleting old repository at ${localSavePath}...`);
+      await fs.rm(localSavePath, { recursive: true, force: true });
+      console.log("Old repository deleted.");
+    }
+
     console.log("Cloning repository ...");
     try {
       await git.clone(repoUrl, localSavePath, [
