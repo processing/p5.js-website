@@ -1,7 +1,7 @@
 import { z, defineCollection } from "astro:content";
 import { image } from "../shared";
 
-export const tutorialCollection = defineCollection({
+export const tutorialsCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
