@@ -5,7 +5,7 @@ export const librariesCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    url: z.string().url(),
+    url: z.string().url().optional(),
     featuredImage: z.object({
       url: z.string().url(),
       altText: z.string(),
