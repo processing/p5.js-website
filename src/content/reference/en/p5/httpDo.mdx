@@ -1,0 +1,81 @@
+---
+layout: '@layouts/reference/SingleReferenceLayout.astro'
+title: httpDo
+module: IO
+submodule: Input
+file: src/io/files.js
+description: >
+  <p>Method for executing an HTTP request. If data type is not specified,
+
+  p5 will try to guess based on the URL, defaulting to text.<br><br>
+
+  For more advanced use, you may also pass in the path as the first argument
+
+  and a object as the second argument, the signature follows the one specified
+
+  in the Fetch API specification.
+
+  This method is suitable for fetching files up to size of 64MB when "GET" is
+  used.</p>
+line: 907
+itemtype: method
+class: p5
+example:
+  - |-
+
+    <div>
+    <code>
+    // Examples use USGS Earthquake API:
+    // https://earthquake.usgs.gov/fdsnws/event/1/#methods
+
+    // displays an animation of all USGS earthquakes
+    let earthquakes;
+    let eqFeatureIndex = 0;
+
+    function preload() {
+      let url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson';
+      httpDo(
+        url,
+        {
+          method: 'GET',
+          // Other Request options, like special headers for apis
+          headers: { authorization: 'Bearer secretKey' }
+        },
+        function(res) {
+          earthquakes = res;
+        }
+      );
+    }
+
+    function draw() {
+      // wait until the data is loaded
+      if (!earthquakes || !earthquakes.features[eqFeatureIndex]) {
+        return;
+      }
+      clear();
+
+      let feature = earthquakes.features[eqFeatureIndex];
+      let mag = feature.properties.mag;
+      let rad = mag / 11 * ((width + height) / 2);
+      fill(255, 0, 0, 100);
+      ellipse(width / 2 + random(-2, 2), height / 2 + random(-2, 2), rad, rad);
+
+      if (eqFeatureIndex >= earthquakes.features.length) {
+        eqFeatureIndex = 0;
+      } else {
+        eqFeatureIndex += 1;
+      }
+    }
+    </code>
+    </div>
+return:
+  description: |-
+    A promise that resolves with the data when the operation
+                      completes successfully or rejects with the error after
+                      one occurs.
+  type: Promise
+chainable: false
+---
+
+
+# httpDo

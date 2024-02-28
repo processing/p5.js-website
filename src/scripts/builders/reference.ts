@@ -4,7 +4,7 @@ import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import { parseLibrary } from "../parsers/reference";
 
-const prefix = `./src/pages/en/reference`;
+const prefix = `./src/content/reference/en/`;
 
 const classMethodPreviews = {};
 
@@ -31,7 +31,10 @@ export const buildReference = async () => {
 
   // Build the reference file differently
   const indexMdx = getIndexMdx();
-  await fs.writeFile(`./src/pages/en/reference/index.mdx`, indexMdx.toString());
+  await fs.writeFile(
+    `./src/content/reference/en/index.mdx`,
+    indexMdx.toString(),
+  );
 
   console.log("Done building reference docs!");
 };

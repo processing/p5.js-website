@@ -1,0 +1,90 @@
+---
+layout: '@layouts/reference/SingleReferenceLayout.astro'
+title: httpPost
+module: IO
+submodule: Input
+file: src/io/files.js
+description: >
+  <p>Method for executing an HTTP POST request. If data type is not specified,
+
+  p5 will try to guess based on the URL, defaulting to text. This is equivalent
+  to
+
+  calling <code>httpDo(path, 'POST')</code>.</p>
+line: 817
+itemtype: method
+class: p5
+example:
+  - >-
+
+    <div>
+
+    <code>
+
+    // Examples use jsonplaceholder.typicode.com for a Mock Data API
+
+
+    let url = 'https://jsonplaceholder.typicode.com/posts';
+
+    let postData = { userId: 1, title: 'p5 Clicked!', body: 'p5.js is very
+    cool.' };
+
+
+    function setup() {
+      createCanvas(100, 100);
+      background(200);
+    }
+
+
+    function mousePressed() {
+      httpPost(url, 'json', postData, function(result) {
+        strokeWeight(2);
+        text(result.body, mouseX, mouseY);
+      });
+    }
+
+    </code>
+
+    </div>
+
+
+    <div><code>
+
+    let url = 'ttps://invalidURL'; // A bad URL that will cause errors
+
+    let postData = { title: 'p5 Clicked!', body: 'p5.js is very cool.' };
+
+
+    function setup() {
+      createCanvas(100, 100);
+      background(200);
+    }
+
+
+    function mousePressed() {
+      httpPost(
+        url,
+        'json',
+        postData,
+        function(result) {
+          // ... won't be called
+        },
+        function(error) {
+          strokeWeight(2);
+          text(error.toString(), mouseX, mouseY);
+        }
+      );
+    }
+
+    </code></div>
+return:
+  description: |-
+    A promise that resolves with the data when the operation
+                      completes successfully or rejects with the error after
+                      one occurs.
+  type: Promise
+chainable: false
+---
+
+
+# httpPost
