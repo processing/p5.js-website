@@ -1,11 +1,14 @@
 import { z, defineCollection } from "astro:content";
 import { image } from "../shared";
 
+const categories = ["getting-started", "webgl"] as const;
+
 export const tutorialsCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
+    category: z.enum(categories),
     featuredImage: image().optional(),
     relatedExamples: z.array(z.string()).optional(),
     // related_examples: z.array(reference("examples")).optional(),
