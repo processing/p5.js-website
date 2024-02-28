@@ -5,7 +5,7 @@ export const sketchesCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    featuredImage: z
+    thumbnailImage: z
       .object({
         url: z.string().url(),
         altText: z.string(),
