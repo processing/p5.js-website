@@ -4,9 +4,9 @@ import { author, image } from "../shared";
 export const librariesCollection = defineCollection({
   type: "data",
   schema: z.object({
-    title: z.string(),
+    name: z.string(),
     description: z.string().optional(),
-    url: z.string().url().optional(),
+    url: z.string().url(),
     featuredImage: image(),
     author: author(),
   }),
