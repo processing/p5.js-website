@@ -13,7 +13,6 @@ const yuidocOutputPath = path.join(__dirname, "out", "data.json");
 
 /**
  * Main function to clone the p5.js library and save the YUIDoc output to a file
- * @returns Promise<ParsedLibraryReference | null>
  */
 export const parseLibrary =
   async (): Promise<ParsedLibraryReference | null> => {
@@ -24,7 +23,7 @@ export const parseLibrary =
 
 /**
  * Gets the parsed YUIDoc output from the saved file and parses it as JSON
- * @returns Promise<ParsedLibraryReference | null> the parsed YUIDoc output
+ * returns the parsed YUIDoc output
  */
 const getYuidocOutput = async (): Promise<ParsedLibraryReference | null> => {
   const outputFilePath = path.join(yuidocOutputPath, "data.json");
@@ -41,7 +40,6 @@ const getYuidocOutput = async (): Promise<ParsedLibraryReference | null> => {
 
 /**
  * Parses the p5.js library using YUIDoc and captures the output
- * @returns void
  */
 export const saveYuidocOutput = async () => {
   console.log("Running YUIDoc command and capturing output...");
@@ -62,5 +60,3 @@ export const saveYuidocOutput = async () => {
     throw err;
   }
 };
-
-parseLibrary();

@@ -39,7 +39,7 @@ interface Param {
   optional?: boolean;
 }
 
-export interface LibraryReferenceClassDefinition {
+export interface ReferenceClassDefinition {
   name: string;
   shortname: string;
   classitems: Param[];
@@ -59,8 +59,8 @@ export interface LibraryReferenceClassDefinition {
   chainable?: number;
 }
 
-export interface LibraryReferenceClass {
-  [className: string]: LibraryReferenceClassDefinition;
+export interface ReferenceClass {
+  [className: string]: ReferenceClassDefinition;
 }
 
 interface BaseClassItem {
@@ -73,6 +73,7 @@ interface BaseClassItem {
   module: string;
   submodule: string;
   alt?: string;
+  example?: string[];
 }
 
 interface Chainable {
@@ -91,9 +92,7 @@ interface Return {
   type: string;
 }
 
-export interface LibraryReferenceMethodClassItem
-  extends BaseClassItem,
-    Chainable {
+export interface ReferenceClassItemMethod extends BaseClassItem, Chainable {
   params?: Param[];
   return?: Return;
   example?: string[];
@@ -107,13 +106,13 @@ interface MethodOverload {
   chainable?: number;
 }
 
-export interface LibraryReferenceProperyClassItem extends BaseClassItem {
+export interface ReferenceClassItemProperty extends BaseClassItem {
   type: string;
 }
 
-export type LibraryReferenceClassItem =
-  | LibraryReferenceMethodClassItem
-  | LibraryReferenceProperyClassItem;
+export type ReferenceClassItem =
+  | ReferenceClassItemMethod
+  | ReferenceClassItemProperty;
 
 export interface ParsedConsts {
   [key: string]: string[];
@@ -123,7 +122,7 @@ export interface ParsedLibraryReference {
   project: Project;
   files: Record<string, FileDetail>;
   modules: Modules;
-  classes: LibraryReferenceClass;
-  classitems: LibraryReferenceClassItem[];
+  classes: ReferenceClass;
+  classitems: ReferenceClassItem[];
   consts: ParsedConsts;
 }

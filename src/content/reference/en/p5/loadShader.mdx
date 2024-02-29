@@ -19,8 +19,36 @@ description: >
   in the <a href="#/p5/createShader">createShader example</a>.</p>
 
   <p>Note, shaders can only be used in WEBGL mode.</p>
-isConstructor: false
 line: 12
+isConstructor: false
+itemtype: method
+alt: 'zooming Mandelbrot set. a colorful, infinitely detailed fractal.'
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let mandel;
+    function preload() {
+      // load the shader definitions from files
+      mandel = loadShader('assets/shader.vert', 'assets/shader.frag');
+    }
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      // use the shader
+      shader(mandel);
+      noStroke();
+      mandel.setUniform('p', [-0.74364388703, 0.13182590421]);
+      describe('zooming Mandelbrot set. a colorful, infinitely detailed fractal.');
+    }
+
+    function draw() {
+      mandel.setUniform('r', 1.5 * exp(-6.5 * (1 + sin(millis() / 2000))));
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+    </code>
+    </div>
+class: p5
 params:
   - name: vertFilename
     description: |
@@ -47,34 +75,6 @@ params:
       argument.</p>
     type: Function
     optional: true
-itemtype: method
-alt: 'zooming Mandelbrot set. a colorful, infinitely detailed fractal.'
-class: p5
-example:
-  - |-
-
-    <div modernizr='webgl'>
-    <code>
-    let mandel;
-    function preload() {
-      // load the shader definitions from files
-      mandel = loadShader('assets/shader.vert', 'assets/shader.frag');
-    }
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-      // use the shader
-      shader(mandel);
-      noStroke();
-      mandel.setUniform('p', [-0.74364388703, 0.13182590421]);
-      describe('zooming Mandelbrot set. a colorful, infinitely detailed fractal.');
-    }
-
-    function draw() {
-      mandel.setUniform('r', 1.5 * exp(-6.5 * (1 + sin(millis() / 2000))));
-      quad(-1, -1, 1, -1, 1, 1, -1, 1);
-    }
-    </code>
-    </div>
 return:
   description: |-
     a shader object created from the provided

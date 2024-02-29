@@ -4,10 +4,10 @@ import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import { parseLibrary } from "../parsers/reference";
 import type {
-  LibraryReferenceClassDefinition,
-  LibraryReferenceClassItem,
-  LibraryReferenceMethodClassItem,
-  LibraryReferenceProperyClassItem,
+  ReferenceClassDefinition,
+  ReferenceClassItem,
+  ReferenceClassItemMethod,
+  ReferenceClassItemProperty,
 } from "../../../types/parsers.interface";
 import type {
   ReferenceClassMethodPreviews,
@@ -15,11 +15,18 @@ import type {
   ReferenceModulePathTree,
 } from "../../../types/builders.interface";
 
+/* Base path for the content directory */
 const prefix = "./src/content/reference/en/";
+
+/* Object to store class method previews, for transfer from the method records to the class records */
 const memberMethodPreviews: ReferenceClassMethodPreviews = {};
+
+/* Object to store the module path tree, needed for indicating relationships between records */
 const modulePathTree = { modules: {}, classes: {} } as ReferenceModulePathTree;
 
+/* Main function to build the reference docs, runs automatically with Node execution */
 export const buildReference = async () => {
+  // Gets the JSON output from parsing
   const parsedOutput = await parseLibrary();
   if (!parsedOutput) {
     console.error("Unable to build reference docs to error in parsing!");
@@ -29,13 +36,13 @@ export const buildReference = async () => {
     ...(await convertDocsToMDX(Object.values(parsedOutput.classitems))),
     ...(await convertDocsToMDX(Object.values(parsedOutput.classes))),
   ];
+  // Save the MDX files to the file system
   await saveMDX(mdxDocs);
   console.log("Done building reference docs!");
 };
 
-const getModulePath = (
-  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
-) => {
+/* Determines the path to save the MDX file based on the module */
+const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
   if (!doc || !doc.name) return;
 
   let docClass: string;
@@ -48,59 +55,81 @@ const getModulePath = (
   return `${prefix}/${docClass}/`;
 };
 
+/* Adds the doc to the module path tree */
 const addDocToModulePathTree = (
-  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+  doc: ReferenceClassDefinition | ReferenceClassItem,
   path: string,
 ) => {
   if (!doc || !doc.name || !path) return;
 
+  // Remove prefix from path
   const modulePath = `${path.replace("./src/pages/en/reference/", "")}${doc.name}`;
 
-  // Type guard to check if 'doc' is LibraryReferenceClassItem
+  // Use a type guard to check if the 'doc' is a LibraryReferenceClassItem.
+  // This check allows us to handle class items differently from class definitions.
   if ("class" in doc) {
+    // Determine the treePath, which decides whether the doc belongs to the 'classes'
+    // or 'modules' category based on its 'class' property. If the class is not 'p5',
+    // it's categorized under 'classes'; otherwise, it falls under 'modules'.
     const treePath = doc.class && doc.class !== "p5" ? "classes" : "modules";
+    // The subPath is constructed based on the module and submodule information.
+    // If a submodule exists, it's appended to the module name; otherwise, just the module name is used.
     const subPath = doc.submodule
       ? `${doc.module}.${doc.submodule}`
       : doc.module;
 
-    if (!modulePathTree[treePath][subPath])
+    // If the treePath doesn't exist, initialize it.
+    if (!modulePathTree[treePath][subPath]) {
       modulePathTree[treePath][subPath] = {};
+    }
+    // Add the doc to the modulePathTree under the appropriate treePath and subPath,
+    // using the doc's name as the key and the constructed modulePath as the value.
     modulePathTree[treePath][subPath][doc.name] = modulePath;
   } else {
+    // If the doc is not a class item, it's handled here.
+    // We default to adding it under the 'modules' category.
     const treePath = "modules";
     const subPath = doc.module;
 
-    if (!modulePathTree[treePath][subPath])
+    // Similar to above, initialize the subPath if needed.
+    if (!modulePathTree[treePath][subPath]) {
       modulePathTree[treePath][subPath] = {};
+    }
+
+    // Add the module to the modulePathTree.
     modulePathTree[treePath][subPath][doc.name] = modulePath;
   }
 };
 
+/* Type guards to check the type of the doc */
 function isClassDefinition(
-  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
-): doc is LibraryReferenceClassDefinition {
+  doc: ReferenceClassDefinition | ReferenceClassItem,
+): doc is ReferenceClassDefinition {
   return doc && "is_constructor" in doc;
 }
 
 function isMethodClassItem(
-  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
-): doc is LibraryReferenceMethodClassItem {
+  doc: ReferenceClassDefinition | ReferenceClassItem,
+): doc is ReferenceClassItemMethod {
   return doc && "itemtype" in doc && doc.itemtype === "method";
 }
 
 function isPropertyClassItem(
-  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
-): doc is LibraryReferenceProperyClassItem {
-  return doc && "itemtype" in doc && doc.itemtype === "method";
+  doc: ReferenceClassDefinition | ReferenceClassItem,
+): doc is ReferenceClassItemProperty {
+  return doc && "itemtype" in doc && doc.itemtype === "property";
 }
 
+/* Converts a single doc to MDX */
 const convertToMDX = async (
-  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+  doc: ReferenceClassDefinition | ReferenceClassItem,
 ) => {
   if (!doc || !doc.name || !doc.file) return;
 
+  // Some names contain characters that need to be sanitized for MDX
   const sanitizeName = (name: string) =>
     name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
   let frontMatterArgs = {
     title: sanitizeName(doc.name),
     module: doc.module,
@@ -108,21 +137,21 @@ const convertToMDX = async (
     file: doc.file.replace(/.*p5\.js\/(.*)/, "$1"),
     description: doc.description ?? "",
     line: doc.line,
-    ...memberMethodPreviews[doc.name],
-  };
+  } as Record<string, unknown>;
 
+  // Add specific frontmatter based on the type of doc
   if (isMethodClassItem(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
-      ...getMethodFrontmatter(doc),
       ...getClassItemFrontmatter(doc),
+      ...getMethodFrontmatter(doc),
     };
-    addClassMethodPreviewsToClassDocs(doc);
+    // addMemberMethodPreviewsToClassDocs(doc);
   } else if (isPropertyClassItem(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
-      ...getPropertyFrontmatter(doc),
       ...getClassItemFrontmatter(doc),
+      ...getPropertyFrontmatter(doc),
     };
   } else if (isClassDefinition(doc)) {
     frontMatterArgs = {
@@ -131,7 +160,7 @@ const convertToMDX = async (
     };
   }
 
-  // Filter out undefined values
+  // Filter out undefined values as these will cause errors when stringifying the frontmatter
   frontMatterArgs = Object.entries(frontMatterArgs).reduce(
     (acc: Record<string, unknown>, [key, value]) => {
       if (value !== undefined) acc[key] = value;
@@ -141,9 +170,13 @@ const convertToMDX = async (
   );
 
   try {
+    // Convert the frontmatter to a string
     const frontmatter = matter.stringify("", frontMatterArgs);
+    // Stores the body of the MDX file
     const markdownContent = `# ${sanitizeName(doc.name)}\n`;
+    // Convert the markdown content to MDX
     const mdxContent = remark().use(remarkMDX).processSync(markdownContent);
+    // Return the full MDX file as a string
     return `${frontmatter}\n${mdxContent.toString()}`;
   } catch (err) {
     console.error(`Error converting ${doc.name} to MDX: ${err}`);
@@ -151,7 +184,7 @@ const convertToMDX = async (
   }
 };
 
-const getMethodFrontmatter = (doc: LibraryReferenceMethodClassItem) => {
+const getMethodFrontmatter = (doc: ReferenceClassItemMethod) => {
   const { params, return: returns, example, overloads, itemtype } = doc;
   return {
     params,
@@ -163,16 +196,18 @@ const getMethodFrontmatter = (doc: LibraryReferenceMethodClassItem) => {
   };
 };
 
-const getClassItemFrontmatter = (doc: LibraryReferenceClassItem) => {
-  const { itemtype, alt } = doc;
+const getClassItemFrontmatter = (doc: ReferenceClassItem) => {
+  const { itemtype, alt, example } = doc;
   return {
+    isConstructor: false,
     itemtype,
     alt,
+    example,
     class: doc.class,
   };
 };
 
-const getPropertyFrontmatter = (doc: LibraryReferenceProperyClassItem) => {
+const getPropertyFrontmatter = (doc: ReferenceClassItemProperty) => {
   const { type, itemtype, alt } = doc;
   return {
     type,
@@ -181,7 +216,7 @@ const getPropertyFrontmatter = (doc: LibraryReferenceProperyClassItem) => {
   };
 };
 
-const getClassFrontmatter = (doc: LibraryReferenceClassDefinition) => {
+const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
   const { description, module, submodule, params, example } = doc;
   return {
     description,
@@ -195,9 +230,8 @@ const getClassFrontmatter = (doc: LibraryReferenceClassDefinition) => {
   };
 };
 
-const addClassMethodPreviewsToClassDocs = (
-  doc: LibraryReferenceMethodClassItem,
-) => {
+/* Adds class method previews to the class docs */
+const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
   if (!memberMethodPreviews[doc.class]) {
     memberMethodPreviews[doc.class] = {};
   }
@@ -208,8 +242,9 @@ const addClassMethodPreviewsToClassDocs = (
   };
 };
 
+/* Converts all docs to MDX */
 const convertDocsToMDX = async (
-  docs: LibraryReferenceClassDefinition[] | LibraryReferenceClassItem[],
+  docs: ReferenceClassDefinition[] | ReferenceClassItem[],
 ): Promise<ReferenceMDXDoc[] | []> => {
   try {
     return (
@@ -218,10 +253,9 @@ const convertDocsToMDX = async (
           const mdx = await convertToMDX(doc);
 
           const savePath = getModulePath(doc);
+          // If the savePath is undefined, the doc is skipped
+          // This will often happen with inline comments that don't define necessary properties
           if (!savePath) {
-            console.warn(
-              `No save path can be generated for ${doc.file} at line${doc.line}!`,
-            );
             return;
           }
 
@@ -236,7 +270,9 @@ const convertDocsToMDX = async (
   }
 };
 
+/* Saves the MDX files to the file system */
 const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
+  if (!mdxDocs || mdxDocs.length === 0) return;
   console.log("Saving MDX...");
   for (const { mdx, savePath, name } of mdxDocs) {
     try {
