@@ -2,7 +2,12 @@ import { readdir, cp } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import YAML from "yaml";
-import { cloneLibraryRepo, readFile, writeFile } from "./utils";
+import {
+  cloneLibraryRepo,
+  fullPathFromDirent,
+  readFile,
+  writeFile,
+} from "./utils";
 import type { Dirent } from "fs";
 
 /// The absolute path to the folder this file is in
@@ -59,8 +64,6 @@ const moveAssetsFolder = async (dirPath: string) => {
     recursive: true,
   });
 };
-
-const fullPathFromDirent = (d: Dirent) => path.join(d.path, d.name);
 
 /**
  * Moves a list of files or a folder of files to a new location,

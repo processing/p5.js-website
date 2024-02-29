@@ -1,6 +1,7 @@
 import simpleGit from "simple-git";
 import fs from "fs/promises";
 import path from "path";
+import type { Dirent } from "fs";
 
 /**
  * Clone the library repo if it doesn't exist or if it's not recent
@@ -145,3 +146,13 @@ export const fixAbsolutePathInPreprocessor = async (localSavePath: string) => {
 /* Some names contain characters that need to be sanitized for pathing, MDX, etc. */
 export const sanitizeName = (name: string) =>
   name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/**
+ * Returns the full path for a
+ * [Dirent object](https://nodejs.org/api/fs.html#class-fsdirent)
+ *
+ * @param dirent
+ * @returns full path to the entry
+ */
+export const fullPathFromDirent = (dirent: Dirent) =>
+  path.join(dirent.path, dirent.name);
