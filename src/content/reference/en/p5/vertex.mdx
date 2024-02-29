@@ -1,0 +1,196 @@
+---
+title: vertex
+module: Shape
+submodule: Vertex
+file: src/core/shape/vertex.js
+description: >
+  <p>All shapes are constructed by connecting a series of vertices. <a
+  href="#/p5/vertex">vertex()</a>
+
+  is used to specify the vertex coordinates for points, lines, triangles,
+
+  quads, and polygons. It is used exclusively within the <a
+  href="#/p5/beginShape">beginShape()</a> and
+
+  <a href="#/p5/endShape">endShape()</a> functions.</p>
+line: 930
+isConstructor: false
+itemtype: method
+alt: |-
+  4 black points in a square shape in middle-right of canvas.
+  4 points making a diamond shape.
+  8 points making a star.
+  8 points making 4 lines.
+  A rotating 3D shape with a hollow section in the middle.
+example:
+  - |-
+
+    <div>
+    <code>
+    strokeWeight(3);
+    beginShape(POINTS);
+    vertex(30, 20);
+    vertex(85, 20);
+    vertex(85, 75);
+    vertex(30, 75);
+    endShape();
+    </code>
+    </div>
+
+    <div>
+    <code>
+    createCanvas(100, 100, WEBGL);
+    background(240, 240, 240);
+    fill(237, 34, 93);
+    noStroke();
+    beginShape();
+    vertex(0, 35);
+    vertex(35, 0);
+    vertex(0, -35);
+    vertex(-35, 0);
+    endShape();
+    </code>
+    </div>
+
+    <div>
+    <code>
+    createCanvas(100, 100, WEBGL);
+    background(240, 240, 240);
+    fill(237, 34, 93);
+    noStroke();
+    beginShape();
+    vertex(-10, 10);
+    vertex(0, 35);
+    vertex(10, 10);
+    vertex(35, 0);
+    vertex(10, -8);
+    vertex(0, -35);
+    vertex(-10, -8);
+    vertex(-35, 0);
+    endShape();
+    </code>
+    </div>
+
+    <div>
+    <code>
+    strokeWeight(3);
+    stroke(237, 34, 93);
+    beginShape(LINES);
+    vertex(10, 35);
+    vertex(90, 35);
+    vertex(10, 65);
+    vertex(90, 65);
+    vertex(35, 10);
+    vertex(35, 90);
+    vertex(65, 10);
+    vertex(65, 90);
+    endShape();
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click to change the number of sides.
+    // In WebGL mode, custom shapes will only
+    // display hollow fill sections when
+    // all calls to vertex() use the same z-value.
+
+    let sides = 3;
+    let angle, px, py;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      setAttributes('antialias', true);
+      fill(237, 34, 93);
+      strokeWeight(3);
+    }
+
+    function draw() {
+      background(200);
+      rotateX(frameCount * 0.01);
+      rotateZ(frameCount * 0.01);
+      ngon(sides, 0, 0, 80);
+    }
+
+    function mouseClicked() {
+      if (sides > 6) {
+        sides = 3;
+      } else {
+        sides++;
+      }
+    }
+
+    function ngon(n, x, y, d) {
+      beginShape(TESS);
+      for (let i = 0; i < n + 1; i++) {
+        angle = TWO_PI / n * i;
+        px = x + sin(angle) * d / 2;
+        py = y - cos(angle) * d / 2;
+        vertex(px, py, 0);
+      }
+      for (let i = 0; i < n + 1; i++) {
+        angle = TWO_PI / n * i;
+        px = x + sin(angle) * d / 4;
+        py = y - cos(angle) * d / 4;
+        vertex(px, py, 0);
+      }
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 930
+    params:
+      - name: x
+        description: |
+          <p>x-coordinate of the vertex</p>
+        type: Number
+      - name: 'y'
+        description: |
+          <p>y-coordinate of the vertex</p>
+        type: Number
+    chainable: 1
+  - line: 1061
+    params:
+      - name: x
+        description: ''
+        type: Number
+      - name: 'y'
+        description: ''
+        type: Number
+      - name: z
+        description: |
+          <p>z-coordinate of the vertex.
+                                Defaults to 0 if not specified.</p>
+        type: Number
+        optional: true
+    chainable: 1
+  - line: 1069
+    params:
+      - name: x
+        description: ''
+        type: Number
+      - name: 'y'
+        description: ''
+        type: Number
+      - name: z
+        description: ''
+        type: Number
+        optional: true
+      - name: u
+        description: |
+          <p>the vertex's texture u-coordinate</p>
+        type: Number
+        optional: true
+      - name: v
+        description: |
+          <p>the vertex's texture v-coordinate</p>
+        type: Number
+        optional: true
+    chainable: 1
+chainable: true
+---
+
+
+# vertex

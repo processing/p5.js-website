@@ -1,0 +1,91 @@
+---
+title: beginGeometry
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/3d_primitives.js
+description: >
+  <p>Starts creating a new p5.Geometry. Subsequent shapes drawn will be added
+
+  to the geometry and then returned when
+
+  <a href="#/p5/endGeometry">endGeometry()</a> is called. One can also use
+
+  <a href="#/p5/buildGeometry">buildGeometry()</a> to pass a function that
+
+  draws shapes.</p>
+
+  <p>If you need to draw complex shapes every frame which don't change over
+  time,
+
+  combining them upfront with <code>beginGeometry()</code> and
+  <code>endGeometry()</code> and then
+
+  drawing that will run faster than repeatedly drawing the individual
+  pieces.</p>
+line: 13
+isConstructor: false
+itemtype: method
+alt: 'A series of different flat, curved, and 3D shapes floating in space.'
+example:
+  - |-
+
+    <div>
+    <code>
+    let shapes;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      makeShapes();
+    }
+
+    function makeShapes() {
+      beginGeometry();
+      scale(0.18);
+
+      push();
+      translate(100, -50);
+      scale(0.5);
+      rotateX(PI/4);
+      cone();
+      pop();
+      cone();
+
+      beginShape();
+      vertex(-20, -50);
+      quadraticVertex(
+        -40, -70,
+        0, -60
+      );
+      endShape();
+
+      beginShape(TRIANGLE_STRIP);
+      for (let y = 20; y <= 60; y += 10) {
+        for (let x of [20, 60]) {
+          vertex(x, y);
+        }
+      }
+      endShape();
+
+      beginShape();
+      vertex(-100, -120);
+      vertex(-120, -110);
+      vertex(-105, -100);
+      endShape();
+
+      shapes = endGeometry();
+    }
+
+    function draw() {
+      background(255);
+      lights();
+      orbitControl();
+      model(shapes);
+    }
+    </code>
+    </div>
+class: p5
+chainable: false
+---
+
+
+# beginGeometry

@@ -1,0 +1,68 @@
+---
+title: removeCue
+module: DOM
+submodule: DOM
+file: src/dom/dom.js
+description: |
+  <p>Remove a callback based on its ID.</p>
+line: 4756
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let lavenderID;
+    let isRemoved = false;
+
+    function setup() {
+      // Create a p5.MediaElement using createAudio().
+      let beat = createAudio('assets/beat.mp3');
+      // Play the beat in a loop.
+      beat.loop();
+
+      // Schedule a few events.
+      beat.addCue(0, changeBackground, 'red');
+      beat.addCue(2, changeBackground, 'deeppink');
+      beat.addCue(4, changeBackground, 'orchid');
+
+      // Record the ID of the "lavender" callback.
+      lavenderID = beat.addCue(6, changeBackground, 'lavender');
+
+      describe('The text "Double-click to remove lavender." written on a red square. The color changes every 2 seconds while the audio plays. The lavender option is removed when the user double-clicks the square.');
+    }
+
+    function draw() {
+      if (isRemoved === false) {
+        text('Double-click to remove lavender.', 10, 10, 80, 80);
+      } else {
+        text('No more lavender.', 10, 10, 80, 80);
+      }
+    }
+
+    function changeBackground(c) {
+      background(c);
+    }
+
+    // Remove the lavender color-change cue
+    // when the user double-clicks.
+    function doubleClicked() {
+      if (isRemoved === false) {
+        beat.removeCue(lavenderID);
+        isRemoved = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.MediaElement
+params:
+  - name: id
+    description: |
+      <p>ID of the cue, created by <code>media.addCue()</code>.</p>
+    type: Number
+chainable: false
+---
+
+
+# removeCue

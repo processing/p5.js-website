@@ -3,6 +3,7 @@ import { pastEventsCollection } from "./past-events/config";
 import { librariesCollection } from "./libraries/config";
 import { peopleCollection } from "./people/config";
 import { sketchesCollection } from "./sketches/config";
+import { referenceCollection } from "./reference/config";
 
 export const collections = {
   tutorials: tutorialsCollection,
@@ -10,4 +11,5 @@ export const collections = {
   libraries: librariesCollection,
   people: peopleCollection,
   sketches: sketchesCollection,
+  reference: referenceCollection,
 };

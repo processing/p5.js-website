@@ -1,0 +1,175 @@
+---
+title: loadJSON
+module: IO
+submodule: Input
+file: src/io/files.js
+description: |
+  <p>Loads a JSON file from a file or a URL, and returns an Object.
+  Note that even if the JSON file contains an Array, an Object will be
+  returned with index numbers as keys.</p>
+  <p>This method is asynchronous, meaning it may not finish before the next
+  line in your sketch is executed. JSONP is supported via a polyfill and you
+  can pass in as the second argument an object with definitions of the json
+  callback following the syntax specified <a href="https://github.com/camsong/
+  fetch-jsonp">here</a>.</p>
+  <p>This method is suitable for fetching files up to size of 64MB.</p>
+line: 17
+isConstructor: false
+itemtype: method
+example:
+  - >-
+
+
+    Calling <a href="#/p5/loadJSON">loadJSON()</a> inside <a
+    href="#/p5/preload">preload()</a> guarantees to complete the
+
+    operation before <a href="#/p5/setup">setup()</a> and <a
+    href="#/p5/draw">draw()</a> are called.
+
+
+    <div><code>
+
+    // Examples use USGS Earthquake API:
+
+    //   https://earthquake.usgs.gov/fdsnws/event/1/#methods
+
+    let earthquakes;
+
+    function preload() {
+      // Get the most recent earthquake in the database
+      let url =
+       'https://earthquake.usgs.gov/earthquakes/feed/v1.0/' +
+        'summary/all_day.geojson';
+      earthquakes = loadJSON(url);
+    }
+
+
+    function setup() {
+      noLoop();
+    }
+
+
+    function draw() {
+      background(200);
+      // Get the magnitude and name of the earthquake out of the loaded JSON
+      let earthquakeMag = earthquakes.features[0].properties.mag;
+      let earthquakeName = earthquakes.features[0].properties.place;
+      ellipse(width / 2, height / 2, earthquakeMag * 10, earthquakeMag * 10);
+      textAlign(CENTER);
+      text(earthquakeName, 0, height - 30, width, 30);
+      describe(`50×50 ellipse that changes from black to white
+        depending on the current humidity`);
+    }
+
+    </code></div>
+
+
+    Outside of preload(), you may supply a callback function to handle the
+
+    object:
+
+    <div><code>
+
+    function setup() {
+      noLoop();
+      let url =
+       'https://earthquake.usgs.gov/earthquakes/feed/v1.0/' +
+        'summary/all_day.geojson';
+      loadJSON(url, drawEarthquake);
+    }
+
+
+    function draw() {
+      background(200);
+      describe(`50×50 ellipse that changes from black to white
+        depending on the current humidity`);
+    }
+
+
+    function drawEarthquake(earthquakes) {
+      // Get the magnitude and name of the earthquake out of the loaded JSON
+      let earthquakeMag = earthquakes.features[0].properties.mag;
+      let earthquakeName = earthquakes.features[0].properties.place;
+      ellipse(width / 2, height / 2, earthquakeMag * 10, earthquakeMag * 10);
+      textAlign(CENTER);
+      text(earthquakeName, 0, height - 30, width, 30);
+    }
+
+    </code></div>
+class: p5
+return:
+  description: JSON data
+  type: Object|Array
+overloads:
+  - line: 17
+    params:
+      - name: path
+        description: |
+          <p>name of the file or url to load</p>
+        type: String
+      - name: jsonpOptions
+        description: |
+          <p>options object for jsonp related settings</p>
+        type: Object
+        optional: true
+      - name: datatype
+        description: |
+          <p>"json" or "jsonp"</p>
+        type: String
+        optional: true
+      - name: callback
+        description: |
+          <p>function to be executed after
+                                             <a href="#/p5/loadJSON">loadJSON()</a> completes, data is passed
+                                             in as first argument</p>
+        type: Function
+        optional: true
+      - name: errorCallback
+        description: |
+          <p>function to be executed if
+                                             there is an error, response is passed
+                                             in as first argument</p>
+        type: Function
+        optional: true
+    return:
+      description: JSON data
+      type: Object|Array
+  - line: 101
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: datatype
+        description: ''
+        type: String
+      - name: callback
+        description: ''
+        type: Function
+        optional: true
+      - name: errorCallback
+        description: ''
+        type: Function
+        optional: true
+    return:
+      description: ''
+      type: Object|Array
+  - line: 109
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: callback
+        description: ''
+        type: Function
+      - name: errorCallback
+        description: ''
+        type: Function
+        optional: true
+    return:
+      description: ''
+      type: Object|Array
+chainable: false
+---
+
+
+# loadJSON

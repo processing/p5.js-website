@@ -1,0 +1,78 @@
+---
+title: userStartAudio
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |-
+  <p>It is not only a good practice to give users control over starting
+  audio. This policy is enforced by many web browsers, including iOS and
+  <a href="https://goo.gl/7K7WLu" title="Google Chrome's autoplay
+  policy">Google Chrome</a>, which create the Web Audio API's
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext"
+  title="Audio Context @ MDN">Audio Context</a>
+  in a suspended state.</p>
+
+  <p>In these browser-specific policies, sound will not play until a user
+  interaction event (i.e. <code>mousePressed()</code>) explicitly resumes
+  the AudioContext, or starts an audio node. This can be accomplished by
+  calling <code>start()</code> on a <code>p5.Oscillator</code>,
+  <code> play()</code> on a <code>p5.SoundFile</code>, or simply
+  <code>userStartAudio()</code>.</p>
+
+  <p><code>userStartAudio()</code> starts the AudioContext on a user
+  gesture. The default behavior will enable audio on any
+  mouseUp or touchEnd event. It can also be placed in a specific
+  interaction function, such as <code>mousePressed()</code> as in the
+  example below. This method utilizes
+  <a href="https://github.com/tambien/StartAudioContext">StartAudioContext
+  </a>, a library by Yotam Mann (MIT Licence, 2016).</p>
+line: 198
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div><code>
+    function setup() {
+      // mimics the autoplay policy
+      getAudioContext().suspend();
+
+      let mySynth = new p5.MonoSynth();
+
+      // This won't play until the context has resumed
+      mySynth.play('A6');
+    }
+    function draw() {
+      background(220);
+      textAlign(CENTER, CENTER);
+      text(getAudioContext().state, width/2, height/2);
+    }
+    function mousePressed() {
+      userStartAudio();
+    }
+    </code></div>
+class: p5
+params:
+  - name: elements
+    description: |
+      <p>This argument can be an Element,
+                                    Selector String, NodeList, p5.Element,
+                                    jQuery Element, or an Array of any of those.</p>
+    type: Element|Array
+    optional: true
+  - name: callback
+    description: |
+      <p>Callback to invoke when the AudioContext
+                                    has started</p>
+    type: Function
+    optional: true
+return:
+  description: |-
+    Returns a Promise that resolves when
+                                         the AudioContext state is 'running'
+  type: Promise
+chainable: false
+---
+
+
+# userStartAudio

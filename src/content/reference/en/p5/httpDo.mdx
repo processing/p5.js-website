@@ -1,0 +1,147 @@
+---
+title: httpDo
+module: IO
+submodule: Input
+file: src/io/files.js
+description: >
+  <p>Method for executing an HTTP request. If data type is not specified,
+
+  p5 will try to guess based on the URL, defaulting to text.<br><br>
+
+  For more advanced use, you may also pass in the path as the first argument
+
+  and a object as the second argument, the signature follows the one specified
+
+  in the Fetch API specification.
+
+  This method is suitable for fetching files up to size of 64MB when "GET" is
+  used.</p>
+line: 907
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Examples use USGS Earthquake API:
+    // https://earthquake.usgs.gov/fdsnws/event/1/#methods
+
+    // displays an animation of all USGS earthquakes
+    let earthquakes;
+    let eqFeatureIndex = 0;
+
+    function preload() {
+      let url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson';
+      httpDo(
+        url,
+        {
+          method: 'GET',
+          // Other Request options, like special headers for apis
+          headers: { authorization: 'Bearer secretKey' }
+        },
+        function(res) {
+          earthquakes = res;
+        }
+      );
+    }
+
+    function draw() {
+      // wait until the data is loaded
+      if (!earthquakes || !earthquakes.features[eqFeatureIndex]) {
+        return;
+      }
+      clear();
+
+      let feature = earthquakes.features[eqFeatureIndex];
+      let mag = feature.properties.mag;
+      let rad = mag / 11 * ((width + height) / 2);
+      fill(255, 0, 0, 100);
+      ellipse(width / 2 + random(-2, 2), height / 2 + random(-2, 2), rad, rad);
+
+      if (eqFeatureIndex >= earthquakes.features.length) {
+        eqFeatureIndex = 0;
+      } else {
+        eqFeatureIndex += 1;
+      }
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: |-
+    A promise that resolves with the data when the operation
+                      completes successfully or rejects with the error after
+                      one occurs.
+  type: Promise
+overloads:
+  - line: 907
+    params:
+      - name: path
+        description: |
+          <p>name of the file or url to load</p>
+        type: String
+      - name: method
+        description: |
+          <p>either "GET", "POST", or "PUT",
+                                             defaults to "GET"</p>
+        type: String
+        optional: true
+      - name: datatype
+        description: |
+          <p>"json", "jsonp", "xml", or "text"</p>
+        type: String
+        optional: true
+      - name: data
+        description: |
+          <p>param data passed sent with request</p>
+        type: Object
+        optional: true
+      - name: callback
+        description: |
+          <p>function to be executed after
+                                             <a href="#/p5/httpGet">httpGet()</a> completes, data is passed in
+                                             as first argument</p>
+        type: Function
+        optional: true
+      - name: errorCallback
+        description: |
+          <p>function to be executed if
+                                             there is an error, response is passed
+                                             in as first argument</p>
+        type: Function
+        optional: true
+    return:
+      description: |-
+        A promise that resolves with the data when the operation
+                          completes successfully or rejects with the error after
+                          one occurs.
+      type: Promise
+  - line: 978
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: options
+        description: >
+          <p>Request object options as documented in the
+                                             "fetch" API
+          <a
+          href="https://developer.mozilla.org/en/docs/Web/API/Fetch_API">reference</a></p>
+        type: Object
+      - name: callback
+        description: ''
+        type: Function
+        optional: true
+      - name: errorCallback
+        description: ''
+        type: Function
+        optional: true
+    return:
+      description: ''
+      type: Promise
+chainable: false
+---
+
+
+# httpDo

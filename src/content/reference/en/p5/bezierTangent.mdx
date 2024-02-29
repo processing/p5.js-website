@@ -1,0 +1,97 @@
+---
+title: bezierTangent
+module: Shape
+submodule: Curves
+file: src/core/shape/curves.js
+description: |
+  <p>Evaluates the tangent to the Bezier at position t for points a, b, c, d.
+  The parameters a and d are the first and last points
+  on the curve, and b and c are the control points.
+  The final parameter t varies between 0 and 1.</p>
+line: 186
+isConstructor: false
+itemtype: method
+alt: >-
+  s-shaped line with 6 short orange lines showing the tangents at those points.
+
+  s-shaped line with 6 short orange lines showing lines coming out the underside
+  of the bezier.
+example:
+  - |-
+
+    <div>
+    <code>
+    noFill();
+    bezier(85, 20, 10, 10, 90, 90, 15, 80);
+    let steps = 6;
+    fill(255);
+    for (let i = 0; i <= steps; i++) {
+      let t = i / steps;
+      // Get the location of the point
+      let x = bezierPoint(85, 10, 90, 15, t);
+      let y = bezierPoint(20, 10, 90, 80, t);
+      // Get the tangent points
+      let tx = bezierTangent(85, 10, 90, 15, t);
+      let ty = bezierTangent(20, 10, 90, 80, t);
+      // Calculate an angle from the tangent points
+      let a = atan2(ty, tx);
+      a += PI;
+      stroke(255, 102, 0);
+      line(x, y, cos(a) * 30 + x, sin(a) * 30 + y);
+      // The following line of code makes a line
+      // inverse of the above line
+      //line(x, y, cos(a)*-30 + x, sin(a)*-30 + y);
+      stroke(0);
+      ellipse(x, y, 5, 5);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    noFill();
+    bezier(85, 20, 10, 10, 90, 90, 15, 80);
+    stroke(255, 102, 0);
+    let steps = 16;
+    for (let i = 0; i <= steps; i++) {
+      let t = i / steps;
+      let x = bezierPoint(85, 10, 90, 15, t);
+      let y = bezierPoint(20, 10, 90, 80, t);
+      let tx = bezierTangent(85, 10, 90, 15, t);
+      let ty = bezierTangent(20, 10, 90, 80, t);
+      let a = atan2(ty, tx);
+      a -= HALF_PI;
+      line(x, y, cos(a) * 8 + x, sin(a) * 8 + y);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p>coordinate of first point on the curve</p>
+    type: Number
+  - name: b
+    description: |
+      <p>coordinate of first control point</p>
+    type: Number
+  - name: c
+    description: |
+      <p>coordinate of second control point</p>
+    type: Number
+  - name: d
+    description: |
+      <p>coordinate of second point on the curve</p>
+    type: Number
+  - name: t
+    description: |
+      <p>value between 0 and 1</p>
+    type: Number
+return:
+  description: the tangent at position t
+  type: Number
+chainable: false
+---
+
+
+# bezierTangent

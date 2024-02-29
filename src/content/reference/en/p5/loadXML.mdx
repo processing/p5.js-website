@@ -1,0 +1,102 @@
+---
+title: loadXML
+module: IO
+submodule: Input
+file: src/io/files.js
+description: >
+  <p>Reads the contents of a file and creates an XML object with its values.
+
+  If the name of the file is used as the parameter, as in the above example,
+
+  the file must be located in the sketch directory/folder.</p>
+
+  <p>Alternatively, the file maybe be loaded from anywhere on the local
+
+  computer using an absolute path (something that starts with / on Unix and
+
+  Linux, or a drive letter on Windows), or the filename parameter can be a
+
+  URL for a file found on a network.</p>
+
+  <p>This method is asynchronous, meaning it may not finish before the next
+
+  line in your sketch is executed. Calling <a href="#/p5/loadXML">loadXML()</a>
+  inside <a href="#/p5/preload">preload()</a>
+
+  guarantees to complete the operation before <a href="#/p5/setup">setup()</a>
+  and <a href="#/p5/draw">draw()</a> are called.</p>
+
+  <p>Outside of <a href="#/p5/preload">preload()</a>, you may supply a callback
+  function to handle the
+
+  object.</p>
+
+  <p>This method is suitable for fetching files up to size of 64MB.</p>
+line: 575
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class='norender'><code>
+    // The following short XML file called "mammals.xml" is parsed
+    // in the code below.
+    //
+    // <?xml version="1.0"?>
+    // &lt;mammals&gt;
+    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
+    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
+    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
+    // &lt;/mammals&gt;
+
+    let xml;
+
+    function preload() {
+      xml = loadXML('assets/mammals.xml');
+    }
+
+    function setup() {
+      let children = xml.getChildren('animal');
+
+      for (let i = 0; i < children.length; i++) {
+        let id = children[i].getNum('id');
+        let coloring = children[i].getString('species');
+        let name = children[i].getContent();
+        print(id + ', ' + coloring + ', ' + name);
+      }
+      describe('no image displayed');
+    }
+
+    // Sketch prints:
+    // 0, Capra hircus, Goat
+    // 1, Panthera pardus, Leopard
+    // 2, Equus zebra, Zebra
+    </code></div>
+class: p5
+params:
+  - name: filename
+    description: |
+      <p>name of the file or URL to load</p>
+    type: String
+  - name: callback
+    description: |
+      <p>function to be executed after <a href="#/p5/loadXML">loadXML()</a>
+                                    completes, XML object is passed in as
+                                    first argument</p>
+    type: Function
+    optional: true
+  - name: errorCallback
+    description: |
+      <p>function to be executed if
+                                    there is an error, response is passed
+                                    in as first argument</p>
+    type: Function
+    optional: true
+return:
+  description: XML object containing data
+  type: Object
+chainable: false
+---
+
+
+# loadXML

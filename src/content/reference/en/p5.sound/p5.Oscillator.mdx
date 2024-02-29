@@ -1,0 +1,81 @@
+---
+title: p5.Oscillator
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |-
+  <p>Creates a signal that oscillates between -1.0 and 1.0.
+  By default, the oscillation takes the form of a sinusoidal
+  shape ('sine'). Additional types include 'triangle',
+  'sawtooth' and 'square'. The frequency defaults to
+  440 oscillations per second (440Hz, equal to the pitch of an
+  'A' note).</p>
+
+  <p>Set the type of oscillation with setType(), or by instantiating a
+  specific oscillator: <a href="/reference/#/p5.SinOsc">p5.SinOsc</a>, <a
+  href="/reference/#/p5.TriOsc">p5.TriOsc</a>, <a
+  href="/reference/#/p5.SqrOsc">p5.SqrOsc</a>, or <a
+  href="/reference/#/p5.SawOsc">p5.SawOsc</a>.
+  </p>
+line: 4060
+isConstructor: true
+params:
+  - name: freq
+    description: |
+      <p>frequency defaults to 440Hz</p>
+    type: Number
+    optional: true
+  - name: type
+    description: |
+      <p>type of oscillator. Options:
+                             'sine' (default), 'triangle',
+                             'sawtooth', 'square'</p>
+    type: String
+    optional: true
+example:
+  - |-
+
+    <div><code>
+    let osc, playing, freq, amp;
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playOscillator);
+      osc = new p5.Oscillator('sine');
+    }
+
+    function draw() {
+      background(220)
+      freq = constrain(map(mouseX, 0, width, 100, 500), 100, 500);
+      amp = constrain(map(mouseY, height, 0, 0, 1), 0, 1);
+
+      text('tap to play', 20, 20);
+      text('freq: ' + freq, 20, 40);
+      text('amp: ' + amp, 20, 60);
+
+      if (playing) {
+        // smooth the transitions by 0.1 seconds
+        osc.freq(freq, 0.1);
+        osc.amp(amp, 0.1);
+      }
+    }
+
+    function playOscillator() {
+      // starting an oscillator on a user gesture will enable audio
+      // in browsers that have a strict autoplay policy.
+      // See also: userStartAudio();
+      osc.start();
+      playing = true;
+    }
+
+    function mouseReleased() {
+      // ramp amplitude to 0 over 0.5 seconds
+      osc.amp(0, 0.5);
+      playing = false;
+    }
+    </code> </div>
+chainable: false
+---
+
+
+# p5.Oscillator
