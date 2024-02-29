@@ -1,38 +1,39 @@
-import { readdir, cp } from "fs/promises";
+import { readdir } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import YAML from "yaml";
 import {
   cloneLibraryRepo,
+  copyDirectory,
   fullPathFromDirent,
+  getFilepathsWithinDir,
   readFile,
+  repoRootPath,
   rewriteRelativeMdLinks,
   writeFile,
 } from "./utils";
 import type { Dirent } from "fs";
 
-/// The absolute path to the folder this file is in
+/* Absolute path to the folder this file is in */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-/// Absolute path to the root of this project repo
-const repoRootPath = path.join(__dirname, "../../");
-
-const localPath = path.join(__dirname, "../../in/p5.js/");
-const repoUrl = "https://github.com/processing/p5.js.git";
-
-/// Where to find the docs in the cloned repo
-const sourceDirectory = path.join(localPath, "contributor_docs/");
-
-/// Where the docs will be output for the website
+/* Repo to pull the contributor documentation from */
+const docsRepoUrl = "https://github.com/processing/p5.js.git";
+/* Where to clone the repo to */
+const clonedRepoPath = path.join(__dirname, "../../in/p5.js/");
+/* Absolute path to docs (within the cloned repo) */
+const sourceDirectory = path.join(clonedRepoPath, "contributor_docs/");
+/* Where the docs will be output for the website */
 const outputDirectory = path.join(__dirname, "../content/contributor-docs/");
-
-/// Directories that are translations
-// TODO: tie this to supported languages in astro config
-const langDirs = ["ar", "es", "hi", "ko", "pt-br", "sk", "zh"];
+/* Name of the folder within `sourceDirectory` folder where static assets are found */
 const assetsSubFolder = "images";
 
+/* Directories that are translations
+ * TODO: tie this to supported languages in astro config
+ */
+const langDirs = ["ar", "es", "hi", "ko", "pt-br", "sk", "zh"];
+
 /**
- * Moves a markdown to a new location, converting into MDX along the way
+ * Moves a markdown file to a new location, converting into MDX along the way
  * Skips files without an `.md` extension
  *
  * @param sourceFile        Which markdown file to read from
@@ -40,7 +41,7 @@ const assetsSubFolder = "images";
  *                          MDX with the same name
  * @param frontmatterObject This will be converted into the yaml frontmatter
  *                          of the output MDX file
- * @returns undefined
+ * @returns Promise that resolves to undefined
  */
 const convertMdtoMdx = async (
   sourceFile: string,
@@ -67,12 +68,15 @@ const convertMdtoMdx = async (
   );
 
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
+
+  // Build new file contents with frontmatter and .md file contents
   const newFileContents = `
   ---
   ${frontmatterObject ? YAML.stringify(frontmatterObject) : ""}
   ---
   ${contentWithRewrittenLinks}
   `;
+
   await writeFile(newFilePath, newFileContents);
 
   return undefined;
@@ -84,9 +88,13 @@ const convertMdtoMdx = async (
  * @param dirPath path to the folder of assets
  */
 const moveAssetsFolder = async (dirPath: string) => {
-  await cp(dirPath, path.join(repoRootPath, "public/images/contributor-docs"), {
-    recursive: true,
-  });
+  await copyDirectory(
+    dirPath,
+    path.join(repoRootPath, "public/images/contributor-docs"),
+    {
+      recursive: true,
+    },
+  );
 };
 
 /**
@@ -118,29 +126,23 @@ export const rewriteRelativeImageLinks = (
  * Moves a list of files or a folder of files to a new location,
  * converting all .md files into .mdx
  *
- * Does not recurse into subfolders!
+ * *Note: Does not recurse into subfolders!*
  *
  * @param files
  */
-const moveContentFiles = async (
-  files: Dirent | Array<string>,
+const moveContentDirectory = async (
+  directory: Dirent,
   destinationFolder: string,
 ) => {
-  // TODO: Make this little transform easier to read
-  const filepathsToMove = Array.isArray(files)
-    ? files
-    : files.isFile()
-      ? [fullPathFromDirent(files)]
-      : // jesus christ, readdir only returns relative filepaths 🥴
-        (await readdir(fullPathFromDirent(files))).map((p) =>
-          path.join(files.path, files.name, p),
-        );
+  const filepathsToMove = await getFilepathsWithinDir(directory);
+  // iterate through files and convert or move
   for (const fp of filepathsToMove) {
     const { ext, base } = path.parse(fp);
     if (ext === ".md") {
       await convertMdtoMdx(fp, destinationFolder);
     } else {
-      await cp(fp, path.join(destinationFolder, base));
+      // if it's not an md file, just copy it
+      await copyDirectory(fp, path.join(destinationFolder, base));
     }
   }
 };
@@ -148,35 +150,37 @@ const moveContentFiles = async (
 const run = async () => {
   console.log("Building contributor docs...");
 
-  await cloneLibraryRepo(localPath, repoUrl);
+  await cloneLibraryRepo(clonedRepoPath, docsRepoUrl);
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
 
+  // iterate through all the files at the top level and handle accordingly
   for (const tlf of topLevelFiles) {
     const fullFilePath = fullPathFromDirent(tlf);
     const { ext, base } = path.parse(tlf.name);
+    const isDirectory = tlf.isDirectory();
 
-    if (tlf.isDirectory()) {
-      if (base === assetsSubFolder) {
-        // console.debug("moving images folder");
-        await moveAssetsFolder(fullFilePath);
-      } else if (langDirs.includes(base)) {
-        // console.debug(`moving lang folder (${tlf.name})`);
-        await moveContentFiles(tlf, path.join(outputDirectory, base));
-      } else {
-        // console.debug(`moving regular folder into 'en' (${tlf.name})`);
-        await moveContentFiles(tlf, path.join(outputDirectory, "en", base));
-      }
-    } else if (ext === ".md") {
-      // console.debug(`moving markdown file into 'en' (${tlf.name})`);
+    if (isDirectory && base === assetsSubFolder) {
+      console.debug("Copying images folder");
+      await moveAssetsFolder(fullFilePath);
+    } else if (isDirectory && langDirs.includes(base)) {
+      console.debug(`Moving language folder (${tlf.name})`);
+      await moveContentDirectory(tlf, path.join(outputDirectory, base));
+      // The tricky thing here is that the files (and folders that
+      // aren't a language folder) at the top level of the p5 contribute
+      // docs folder need to be moved into an `en` subfolder in the output
+      // file structure to support our localization approach. This and the
+      // remaining conditionals handle that case depending on the kind of file
+    } else if (isDirectory) {
+      console.debug(`Moving regular folder into 'en' (${tlf.name})`);
+      await moveContentDirectory(tlf, path.join(outputDirectory, "en", base));
+    } else if (!isDirectory && ext === ".md") {
+      console.debug(`Converting Markdown file into MDC in 'en' (${tlf.name})`);
       await convertMdtoMdx(fullFilePath, path.join(outputDirectory, "en"));
-    } else if (ext === ".mdx") {
-      // console.debug(`copy mdx file into 'en' (${tlf.name})`);
-      await cp(fullFilePath, path.join(outputDirectory, "en", base));
     } else {
-      // some other file type (not sure if we want to do this?)
-      await cp(fullFilePath, path.join(outputDirectory, "en", base));
+      console.debug(`Copying file into 'en' (${tlf.name})`);
+      await copyDirectory(fullFilePath, path.join(outputDirectory, "en", base));
     }
   }
   console.log("Contributor docs build completed.");

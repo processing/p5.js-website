@@ -1,7 +1,14 @@
 import simpleGit from "simple-git";
-import fs from "fs/promises";
+import fs, { cp, readdir } from "fs/promises";
 import path from "path";
-import type { Dirent } from "fs";
+import type { CopyOptions, Dirent } from "fs";
+import { fileURLToPath } from "url";
+
+/* Absolute path to the root of this project repo */
+export const repoRootPath = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../",
+);
 
 /**
  * Clone the library repo if it doesn't exist or if it's not recent
@@ -115,6 +122,26 @@ export const readFile = async (filePath: string) => {
 };
 
 /**
+ * Wrapper around `fs.cp` that catches errors
+ * @param filePath Path to the file
+ * @param destinationPath Where to copy it
+ * @param cpOptions Options passed to `fs.cp`
+ *
+ * @returns string the content of the file
+ */
+export const copyDirectory = async (
+  directoryPath: string,
+  destinationPath: string,
+  cpOpts?: CopyOptions,
+) => {
+  try {
+    await cp(directoryPath, destinationPath, cpOpts);
+  } catch (err) {
+    console.error(`Error copying file: ${err}`);
+  }
+};
+
+/**
  * The preprocessor.js file in the library repo has an absolute path to the parameterData.json file.
  * This function modifies the absolute path to a relative path.
  * @param localSavePath The path that the library repo is saved to
@@ -156,6 +183,29 @@ export const sanitizeName = (name: string) =>
  */
 export const fullPathFromDirent = (dirent: Dirent): string =>
   path.join(dirent.path, dirent.name);
+
+/**
+ * Returns the absolute path of the files within a directory
+ * *Note: Does not recurse into subfolders!*
+ *
+ * If the given directory is actually a file, just returns
+ * that filepath in an array
+ *
+ * @param dir [Dirent object](https://nodejs.org/api/fs.html#class-fsdirent)
+ * @returns full path to the entry
+ */
+export const getFilepathsWithinDir = async (
+  dir: Dirent,
+): Promise<Array<string>> => {
+  const dirAbsolutePath = fullPathFromDirent(dir);
+  return dir.isFile()
+    ? // if the DirEnt is actually a single file, just return that as a list of one
+      [dirAbsolutePath]
+    : // readdir returns relative filepaths 🥴
+      (await readdir(dirAbsolutePath)).map((p) =>
+        path.join(dir.path, dir.name, p),
+      );
+};
 
 /**
  * Rewrites linked pages in a markdown document to remove the `.md`
