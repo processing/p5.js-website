@@ -154,5 +154,28 @@ export const sanitizeName = (name: string) =>
  * @param dirent
  * @returns full path to the entry
  */
-export const fullPathFromDirent = (dirent: Dirent) =>
+export const fullPathFromDirent = (dirent: Dirent): string =>
   path.join(dirent.path, dirent.name);
+
+/**
+ * Regex to find relative links to a markdown document in a string of Markdown
+ * Has 2 capture groups:
+ * 1. Text for the link
+ * 2. Link url (but not the .md extension at the end)
+ */
+const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/[^)]+)\.md\)/g;
+
+/**
+ * Rewrites linked pages in a markdown document to remove the `.md`
+ * extension and use the Astro URL convention of ending in a `/`
+ *
+ * For example: `./access.md` is converted to `./access/`
+ *
+ * @param markdownText markdown text to modify
+ * @returns markdown text with links replaced
+ */
+export const rewritePageLinks = (markdownText: string): string => {
+  return markdownText.replace(regexPattern, (match, linkText, url) => {
+    return `[${linkText}](${url}/)`;
+  });
+};
