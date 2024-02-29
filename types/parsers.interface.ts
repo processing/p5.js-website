@@ -56,6 +56,7 @@ export interface LibraryReferenceClassDefinition {
   is_constructor?: boolean;
   params?: Param[];
   example?: string[];
+  chainable?: number;
 }
 
 export interface LibraryReferenceClass {
@@ -71,6 +72,7 @@ interface BaseClassItem {
   name: string;
   module: string;
   submodule: string;
+  alt?: string;
 }
 
 interface Chainable {
@@ -89,7 +91,9 @@ interface Return {
   type: string;
 }
 
-interface MethodClassItem extends BaseClassItem, Chainable {
+export interface LibraryReferenceMethodClassItem
+  extends BaseClassItem,
+    Chainable {
   params?: Param[];
   return?: Return;
   example?: string[];
@@ -103,11 +107,13 @@ interface MethodOverload {
   chainable?: number;
 }
 
-export interface PropertyClassItem extends BaseClassItem {
+export interface LibraryReferenceProperyClassItem extends BaseClassItem {
   type: string;
 }
 
-export type LibraryReferenceClassItem = MethodClassItem | PropertyClassItem;
+export type LibraryReferenceClassItem =
+  | LibraryReferenceMethodClassItem
+  | LibraryReferenceProperyClassItem;
 
 export interface ParsedConsts {
   [key: string]: string[];

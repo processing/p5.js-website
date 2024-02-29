@@ -33,3 +33,14 @@ export interface ReferenceModulePathTree {
     };
   };
 }
+
+interface ClassMethodPreview {
+  description?: string;
+  path: string;
+}
+
+export interface ReferenceClassMethodPreviews {
+  [className: string]: {
+    [methodName: string]: ClassMethodPreview;
+  };
+}

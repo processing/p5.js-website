@@ -6,11 +6,17 @@ import { parseLibrary } from "../parsers/reference";
 import type {
   LibraryReferenceClassDefinition,
   LibraryReferenceClassItem,
+  LibraryReferenceMethodClassItem,
+  LibraryReferenceProperyClassItem,
 } from "../../../types/parsers.interface";
-import type { ReferenceModulePathTree } from "../../../types/builders.interface";
+import type {
+  ReferenceClassMethodPreviews,
+  ReferenceMDXDoc,
+  ReferenceModulePathTree,
+} from "../../../types/builders.interface";
 
 const prefix = "./src/content/reference/en/";
-const classMethodPreviews = {};
+const memberMethodPreviews: ReferenceClassMethodPreviews = {};
 const modulePathTree = { modules: {}, classes: {} } as ReferenceModulePathTree;
 
 export const buildReference = async () => {
@@ -31,8 +37,14 @@ const getModulePath = (
   doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
 ) => {
   if (!doc || !doc.name) return;
-  const docClass =
-    doc.class || (doc.module.startsWith("p5.") ? doc.module : "p5");
+
+  let docClass: string;
+  if ("class" in doc && doc.class) {
+    docClass = doc.class;
+  } else {
+    docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
+  }
+
   return `${prefix}/${docClass}/`;
 };
 
@@ -55,10 +67,8 @@ const addDocToModulePathTree = (
       modulePathTree[treePath][subPath] = {};
     modulePathTree[treePath][subPath][doc.name] = modulePath;
   } else {
-    // Handle the case for LibraryReferenceClassDefinition or add an else if branch for other types, if necessary
-    // For example, assuming LibraryReferenceClassDefinition always goes into "modules"
     const treePath = "modules";
-    const subPath = doc.module; // Assuming 'module' exists on LibraryReferenceClassDefinition
+    const subPath = doc.module;
 
     if (!modulePathTree[treePath][subPath])
       modulePathTree[treePath][subPath] = {};
@@ -66,10 +76,30 @@ const addDocToModulePathTree = (
   }
 };
 
-const convertToMDX = async (doc) => {
+function isClassDefinition(
+  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+): doc is LibraryReferenceClassDefinition {
+  return doc && "is_constructor" in doc;
+}
+
+function isMethodClassItem(
+  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+): doc is LibraryReferenceMethodClassItem {
+  return doc && "itemtype" in doc && doc.itemtype === "method";
+}
+
+function isPropertyClassItem(
+  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+): doc is LibraryReferenceProperyClassItem {
+  return doc && "itemtype" in doc && doc.itemtype === "method";
+}
+
+const convertToMDX = async (
+  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+) => {
   if (!doc || !doc.name || !doc.file) return;
 
-  const sanitizeName = (name) =>
+  const sanitizeName = (name: string) =>
     name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
   let frontMatterArgs = {
     title: sanitizeName(doc.name),
@@ -77,26 +107,37 @@ const convertToMDX = async (doc) => {
     submodule: doc.submodule ?? "",
     file: doc.file.replace(/.*p5\.js\/(.*)/, "$1"),
     description: doc.description ?? "",
-    isConstructor: !!doc.is_constructor,
     line: doc.line,
-    params: doc.params,
-    itemtype: doc.itemtype,
-    examples: doc.examples,
-    alt: doc.alt,
-    class: doc.class,
-    example: doc.example,
-    return: doc.return,
-    chainable: doc.chainable === 1,
-    ...classMethodPreviews[doc.name],
+    ...memberMethodPreviews[doc.name],
   };
+
+  if (isMethodClassItem(doc)) {
+    frontMatterArgs = {
+      ...frontMatterArgs,
+      ...getMethodFrontmatter(doc),
+      ...getClassItemFrontmatter(doc),
+    };
+    addClassMethodPreviewsToClassDocs(doc);
+  } else if (isPropertyClassItem(doc)) {
+    frontMatterArgs = {
+      ...frontMatterArgs,
+      ...getPropertyFrontmatter(doc),
+      ...getClassItemFrontmatter(doc),
+    };
+  } else if (isClassDefinition(doc)) {
+    frontMatterArgs = {
+      ...frontMatterArgs,
+      ...getClassFrontmatter(doc),
+    };
+  }
 
   // Filter out undefined values
   frontMatterArgs = Object.entries(frontMatterArgs).reduce(
-    (acc, [key, value]) => {
+    (acc: Record<string, unknown>, [key, value]) => {
       if (value !== undefined) acc[key] = value;
       return acc;
     },
-    {},
+    {} as Record<string, unknown>,
   );
 
   try {
@@ -110,9 +151,66 @@ const convertToMDX = async (doc) => {
   }
 };
 
+const getMethodFrontmatter = (doc: LibraryReferenceMethodClassItem) => {
+  const { params, return: returns, example, overloads, itemtype } = doc;
+  return {
+    params,
+    return: returns,
+    example,
+    overloads,
+    itemtype,
+    chainable: doc.chainable === 1,
+  };
+};
+
+const getClassItemFrontmatter = (doc: LibraryReferenceClassItem) => {
+  const { itemtype, alt } = doc;
+  return {
+    itemtype,
+    alt,
+    class: doc.class,
+  };
+};
+
+const getPropertyFrontmatter = (doc: LibraryReferenceProperyClassItem) => {
+  const { type, itemtype, alt } = doc;
+  return {
+    type,
+    itemtype,
+    alt,
+  };
+};
+
+const getClassFrontmatter = (doc: LibraryReferenceClassDefinition) => {
+  const { description, module, submodule, params, example } = doc;
+  return {
+    description,
+    isConstructor: true,
+    module,
+    submodule,
+    params,
+    example,
+    ...memberMethodPreviews[doc.name],
+    chainable: doc.chainable === 1,
+  };
+};
+
+const addClassMethodPreviewsToClassDocs = (
+  doc: LibraryReferenceMethodClassItem,
+) => {
+  if (!memberMethodPreviews[doc.class]) {
+    memberMethodPreviews[doc.class] = {};
+  }
+  const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
+  memberMethodPreviews[doc.class][doc.name] = {
+    description: doc.description,
+    path: classMethodPath,
+  };
+};
+
 const convertDocsToMDX = async (
   docs: LibraryReferenceClassDefinition[] | LibraryReferenceClassItem[],
-) => {
+): Promise<ReferenceMDXDoc[] | []> => {
   try {
     return (
       await Promise.all(
@@ -121,7 +219,9 @@ const convertDocsToMDX = async (
 
           const savePath = getModulePath(doc);
           if (!savePath) {
-            console.error(`Error getting save path for ${doc.name}`);
+            console.warn(
+              `No save path can be generated for ${doc.file} at line${doc.line}!`,
+            );
             return;
           }
 
@@ -129,14 +229,14 @@ const convertDocsToMDX = async (
           return mdx ? { mdx, savePath, name: doc.name } : null;
         }),
       )
-    ).filter(Boolean);
+    ).filter(Boolean) as ReferenceMDXDoc[];
   } catch (err) {
     console.error(`Error converting docs to MDX: ${err}`);
     return [];
   }
 };
 
-const saveMDX = async (mdxDocs) => {
+const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
   console.log("Saving MDX...");
   for (const { mdx, savePath, name } of mdxDocs) {
     try {
