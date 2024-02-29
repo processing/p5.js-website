@@ -17,7 +17,7 @@ const exampleSchema = z.string();
 export const referenceSchema = z.object({
   title: z.string(),
   module: z.string(),
-  submodule: z.string(),
+  submodule: z.string().optional(),
   file: z.string(),
   description: z.string(),
   line: z.number(),
