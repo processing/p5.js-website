@@ -6,6 +6,7 @@ import {
   cloneLibraryRepo,
   fullPathFromDirent,
   readFile,
+  rewriteRelativeMdLinks,
   writeFile,
 } from "./utils";
 import type { Dirent } from "fs";
@@ -60,14 +61,19 @@ const convertMdtoMdx = async (
   // this means the read file failed for some reason
   if (contents === undefined) return;
 
+  const contentWithRewrittenLinks = rewriteRelativeImageLinks(
+    rewriteRelativeMdLinks(contents),
+    "images/contributor-docs",
+  );
+
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
-  const newContents = `
+  const newFileContents = `
   ---
   ${frontmatterObject ? YAML.stringify(frontmatterObject) : ""}
   ---
-  ${contents}
+  ${contentWithRewrittenLinks}
   `;
-  await writeFile(newFilePath, newContents);
+  await writeFile(newFilePath, newFileContents);
 
   return undefined;
 };
@@ -78,7 +84,7 @@ const convertMdtoMdx = async (
  * @param dirPath path to the folder of assets
  */
 const moveAssetsFolder = async (dirPath: string) => {
-  await cp(dirPath, path.join(repoRootPath, "public/contributor-docs"), {
+  await cp(dirPath, path.join(repoRootPath, "public/images/contributor-docs"), {
     recursive: true,
   });
 };
