@@ -103,7 +103,7 @@ const run = async () => {
     const fullFilePath = fullPathFromDirent(tlf);
     const { ext, base, name } = path.parse(tlf.name);
 
-    console.log(`path.ext: ${ext}, path.base: ${base}, path.name: ${name}`);
+    // console.log(`path.ext: ${ext}, path.base: ${base}, path.name: ${name}`);
 
     if (tlf.isDirectory()) {
       if (base === assetsSubFolder) {
