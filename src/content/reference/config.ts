@@ -14,20 +14,22 @@ const returnSchema = z.object({
 
 const exampleSchema = z.string();
 
+export const referenceSchema = z.object({
+  title: z.string(),
+  module: z.string(),
+  submodule: z.string(),
+  file: z.string(),
+  description: z.string(),
+  line: z.number(),
+  params: z.array(paramSchema).optional(),
+  itemtype: z.string().optional(),
+  class: z.string().optional(),
+  chainable: z.boolean().optional(),
+  return: returnSchema.optional(),
+  example: z.array(exampleSchema).optional(),
+});
+
 export const referenceCollection = defineCollection({
   type: "content",
-  schema: z.object({
-    title: z.string(),
-    module: z.string(),
-    submodule: z.string(),
-    file: z.string(),
-    description: z.string(),
-    line: z.number(),
-    params: z.array(paramSchema).optional(),
-    itemtype: z.string().optional(),
-    class: z.string().optional(),
-    chainable: z.boolean().optional(),
-    return: returnSchema.optional(),
-    example: z.array(exampleSchema).optional(),
-  }),
+  schema: referenceSchema,
 });

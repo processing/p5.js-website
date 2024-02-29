@@ -141,3 +141,7 @@ export const fixAbsolutePathInPreprocessor = async (localSavePath: string) => {
     return false;
   }
 };
+
+/* Some names contain characters that need to be sanitized for pathing, MDX, etc. */
+export const sanitizeName = (name: string) =>
+  name.replace(/</g, "&lt;").replace(/>/g, "&gt;");

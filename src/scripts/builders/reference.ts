@@ -14,6 +14,7 @@ import type {
   ReferenceMDXDoc,
   ReferenceModulePathTree,
 } from "../../../types/builders.interface";
+import { sanitizeName } from "../utils";
 
 /* Base path for the content directory */
 const prefix = "./src/content/reference/en/";
@@ -126,10 +127,6 @@ const convertToMDX = async (
 ) => {
   if (!doc || !doc.name || !doc.file) return;
 
-  // Some names contain characters that need to be sanitized for MDX
-  const sanitizeName = (name: string) =>
-    name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
   let frontMatterArgs = {
     title: sanitizeName(doc.name),
     module: doc.module,
@@ -231,17 +228,18 @@ const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
   };
 };
 
+// TODO: Add back in when the pathing issue is resolved
 /* Adds class method previews to the class docs */
-const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
-  if (!memberMethodPreviews[doc.class]) {
-    memberMethodPreviews[doc.class] = {};
-  }
-  const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
-  memberMethodPreviews[doc.class][doc.name] = {
-    description: doc.description,
-    path: classMethodPath,
-  };
-};
+// const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
+//   if (!memberMethodPreviews[doc.class]) {
+//     memberMethodPreviews[doc.class] = {};
+//   }
+//   const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
+//   memberMethodPreviews[doc.class][doc.name] = {
+//     description: doc.description,
+//     path: classMethodPath,
+//   };
+// };
 
 /* Converts all docs to MDX */
 const convertDocsToMDX = async (
@@ -277,8 +275,24 @@ const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
   console.log("Saving MDX...");
   for (const { mdx, savePath, name } of mdxDocs) {
     try {
+      let fileName = sanitizeName(name);
+      // TODO: Place elsewhere
+      if (fileName[0] === "&") {
+        // Need special cases for >, >=, <, <=, and ===
+        if (fileName === "&gt;") {
+          fileName = "gt";
+        } else if (fileName === "&gt;=") {
+          fileName = "gte";
+        } else if (fileName === "&lt;") {
+          fileName = "lt";
+        } else if (fileName === "&lt;=") {
+          fileName = "lte";
+        } else if (fileName === "&equals;") {
+          fileName = "equals";
+        }
+      }
       await fs.mkdir(savePath, { recursive: true });
-      await fs.writeFile(`${savePath}/${name}.mdx`, mdx.toString());
+      await fs.writeFile(`${savePath}/${fileName}.mdx`, mdx.toString());
     } catch (err) {
       console.error(`Error saving MDX: ${err}`);
     }
