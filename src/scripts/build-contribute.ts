@@ -47,7 +47,7 @@ const convertMdtoMdx = async (
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
   const newContents = `
   ---
-  ${YAML.stringify(frontmatterObject)}
+  ${frontmatterObject ? YAML.stringify(frontmatterObject) : ""}
   ---
   ${contents}
   `;
