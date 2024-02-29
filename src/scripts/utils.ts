@@ -163,7 +163,7 @@ export const fullPathFromDirent = (dirent: Dirent): string =>
  * 1. Text for the link
  * 2. Link url (but not the .md extension at the end)
  */
-const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/[^)]+)\.md\)/g;
+const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/?[^)]+)\.md\)/g;
 
 /**
  * Rewrites linked pages in a markdown document to remove the `.md`
@@ -174,7 +174,7 @@ const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/[^)]+)\.md\)/g;
  * @param markdownText markdown text to modify
  * @returns markdown text with links replaced
  */
-export const rewritePageLinks = (markdownText: string): string => {
+export const rewriteRelativeMdLinks = (markdownText: string): string => {
   return markdownText.replace(regexPattern, (match, linkText, url) => {
     return `[${linkText}](${url}/)`;
   });
