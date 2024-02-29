@@ -7,16 +7,16 @@ import type { ParsedLibraryReference } from "../../../types/parsers.interface";
 // Derive the directory name (__dirname equivalent) in ES Module scope
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Local directory to clone the p5.js library
-const localPath = path.join(__dirname, "in", "p5.js");
+const inputPath = path.join(__dirname, "in", "p5.js");
 // Local path to save the YUIDoc output
-const yuidocOutputPath = path.join(__dirname, "out", "data.json");
+const outputPath = path.join(__dirname, "out", "data.json");
 
 /**
  * Main function to clone the p5.js library and save the YUIDoc output to a file
  */
-export const parseLibrary =
+export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
-    await cloneLibraryRepo(localPath);
+    await cloneLibraryRepo(inputPath);
     await saveYuidocOutput();
     return getYuidocOutput();
   };
@@ -26,7 +26,7 @@ export const parseLibrary =
  * returns the parsed YUIDoc output
  */
 const getYuidocOutput = async (): Promise<ParsedLibraryReference | null> => {
-  const outputFilePath = path.join(yuidocOutputPath, "data.json");
+  const outputFilePath = path.join(outputPath, "data.json");
   const output = await readFile(outputFilePath);
   if (output) {
     try {
@@ -45,7 +45,7 @@ export const saveYuidocOutput = async () => {
   console.log("Running YUIDoc command and capturing output...");
   try {
     await new Promise((resolve, reject) => {
-      exec(`yuidoc -p --outdir ${yuidocOutputPath}`, (error, stdout) => {
+      exec(`yuidoc -p --outdir ${outputPath}`, (error, stdout) => {
         if (error) {
           console.error(`Error running YUIDoc command: ${error}`);
           reject(error);
