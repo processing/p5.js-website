@@ -30,6 +30,17 @@ const outputDirectory = path.join(__dirname, "../content/contributor-docs/");
 const langDirs = ["ar", "es", "hi", "ko", "pt-br", "sk", "zh"];
 const assetsSubFolder = "images";
 
+/**
+ * Moves a markdown to a new location, converting into MDX along the way
+ * Skips files without an `.md` extension
+ *
+ * @param sourceFile        Which markdown file to read from
+ * @param destinationFolder Which folder to write the MD file into as an
+ *                          MDX with the same name
+ * @param frontmatterObject This will be converted into the yaml frontmatter
+ *                          of the output MDX file
+ * @returns undefined
+ */
 const convertMdtoMdx = async (
   sourceFile: string,
   destinationFolder: string,
@@ -57,8 +68,15 @@ const convertMdtoMdx = async (
   ${contents}
   `;
   await writeFile(newFilePath, newContents);
+
+  return undefined;
 };
 
+/**
+ * Moves the contents of given directory into Astro's static asset folder
+ *
+ * @param dirPath path to the folder of assets
+ */
 const moveAssetsFolder = async (dirPath: string) => {
   await cp(dirPath, path.join(repoRootPath, "public/contributor-docs"), {
     recursive: true,
