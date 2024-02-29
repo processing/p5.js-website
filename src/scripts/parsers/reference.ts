@@ -44,6 +44,7 @@ const getYuidocOutput = async (): Promise<ParsedLibraryReference | null> => {
 export const saveYuidocOutput = async () => {
   console.log("Running YUIDoc command and capturing output...");
   try {
+    await mkdir(yuidocOutputPath, { recursive: true });
     await new Promise((resolve, reject) => {
       exec(`yuidoc -p --outdir ${yuidocOutputPath}`, (error, stdout) => {
         if (error) {
