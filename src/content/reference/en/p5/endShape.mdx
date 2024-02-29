@@ -1,0 +1,160 @@
+---
+title: endShape
+module: Shape
+submodule: Vertex
+file: src/core/shape/vertex.js
+description: >
+  <p>The <a href="#/p5/endShape">endShape()</a> function is the companion to <a
+  href="#/p5/beginShape">beginShape()</a> and may only be
+
+  called after <a href="#/p5/beginShape">beginShape()</a>. When <a
+  href="#/p5/endshape">endShape()</a> is called, all of the image
+
+  data defined since the previous call to <a
+  href="#/p5/beginShape">beginShape()</a> is written into the image
+
+  buffer. The constant CLOSE is the value for the <code>mode</code> parameter to
+  close
+
+  the shape (to connect the beginning and the end).
+
+  When using instancing with <a href="#/p5/endShape">endShape()</a> the
+  instancing will not apply to the strokes.
+
+  When the count parameter is used with a value greater than 1, it enables
+  instancing for shapes built when in WEBGL mode. Instancing
+
+  is a feature that allows the GPU to efficiently draw multiples of the same
+  shape. It's often used for particle effects or other
+
+  times when you need a lot of repetition. In order to take advantage of
+  instancing, you will also need to write your own custom
+
+  shader using the gl_InstanceID keyword. You can read more about instancing
+
+  <a
+  href="https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html">here</a>
+  or by working from the example on this
+
+  page.</p>
+line: 591
+isConstructor: false
+itemtype: method
+alt: Triangle line shape with smallest interior angle on bottom and upside-down L.
+example:
+  - |-
+
+    <div>
+    <code>
+    noFill();
+
+    beginShape();
+    vertex(20, 20);
+    vertex(45, 20);
+    vertex(45, 80);
+    endShape(CLOSE);
+
+    beginShape();
+    vertex(50, 20);
+    vertex(75, 20);
+    vertex(75, 80);
+    endShape();
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    let fx;
+    let vs = `#version 300 es
+
+    precision mediump float;
+
+    in vec3 aPosition;
+    flat out int instanceID;
+
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    void main() {
+
+      // copy the instance ID to the fragment shader
+      instanceID = gl_InstanceID;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+
+      // gl_InstanceID represents a numeric value for each instance
+      // using gl_InstanceID allows us to move each instance separately
+      // here we move each instance horizontally by id * 23
+      float xOffset = float(gl_InstanceID) * 23.0;
+
+      // apply the offset to the final position
+      gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -
+        vec4(xOffset, 0.0, 0.0, 0.0));
+    }
+    `;
+    let fs = `#version 300 es
+
+    precision mediump float;
+
+    out vec4 outColor;
+    flat in int instanceID;
+    uniform float numInstances;
+
+    void main() {
+      vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+      vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+
+      // Normalize the instance id
+      float normId = float(instanceID) / numInstances;
+
+      // Mix between two colors using the normalized instance id
+      outColor = mix(red, blue, normId);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      fx = createShader(vs, fs);
+    }
+
+    function draw() {
+      background(220);
+
+      // strokes aren't instanced, and are rather used for debug purposes
+      shader(fx);
+      fx.setUniform('numInstances', 4);
+
+      // this doesn't have to do with instancing, this is just for centering the squares
+      translate(25, -10);
+
+      // here we draw the squares we want to instance
+      beginShape();
+      vertex(0, 0);
+      vertex(0, 20);
+      vertex(20, 20);
+      vertex(20, 0);
+      vertex(0, 0);
+      endShape(CLOSE, 4);
+
+      resetShader();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: mode
+    description: |
+      <p>use CLOSE to close the shape</p>
+    type: Constant
+    optional: true
+  - name: count
+    description: >
+      <p>number of times you want to draw/instance the shape (for WebGL
+      mode).</p>
+    type: Integer
+    optional: true
+chainable: true
+---
+
+
+# endShape

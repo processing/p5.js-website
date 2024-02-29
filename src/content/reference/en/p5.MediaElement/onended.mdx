@@ -1,0 +1,76 @@
+---
+title: onended
+module: DOM
+submodule: DOM
+file: src/dom/dom.js
+description: >
+  <p>Calls a function when the audio/video reaches the end of its playback
+
+  The function won't be called if the media is looping.</p>
+
+  <p>The <code>p5.MediaElement</code> is passed as an argument to the callback
+  function.</p>
+line: 4482
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let beat;
+    let isPlaying = false;
+    let isDone = false;
+
+    function setup() {
+
+      // Create a p5.MediaElement using createAudio().
+      beat = createAudio('assets/beat.mp3');
+
+      // Set isDone to false when
+      // the beat finishes.
+      beat.onended(() => {
+        isDone = true;
+      });
+
+      describe('The text "Click to play" written in black on a gray square. A beat plays when the user clicks. The text "Done!" appears when the beat finishes playing.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Display different messages
+      // based on playback.
+      textAlign(CENTER);
+      if (isDone === true) {
+        text('Done!', 50, 50);
+      } else if (isPlaying === false) {
+        text('Click to play', 50, 50);
+      } else {
+        text('Playing...', 50, 50);
+      }
+    }
+
+    // Play the beat when the
+    // user presses the mouse.
+    function mousePressed() {
+      if (isPlaying === false) {
+        isPlaying = true;
+        beat.play();
+      }
+    }
+    </code>
+    </div>
+class: p5.MediaElement
+params:
+  - name: callback
+    description: |
+      <p>function to call when playback ends.
+                                  The <code>p5.MediaElement</code> is passed as
+                                  the argument.</p>
+    type: Function
+chainable: true
+---
+
+
+# onended

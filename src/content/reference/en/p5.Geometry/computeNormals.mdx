@@ -1,0 +1,127 @@
+---
+title: computeNormals
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>This function calculates normals for each face, where each vertex's normal
+  is the average of the normals of all faces it's connected to.
+
+  i.e computes smooth normals per vertex as an average of each face.</p>
+
+  <p>When using <code>FLAT</code> shading, vertices are disconnected/duplicated
+  i.e each face has its own copy of vertices.
+
+  When using <code>SMOOTH</code> shading, vertices are connected/deduplicated
+  i.e each face has its vertices shared with other faces.</p>
+
+  <p>Options can include:</p>
+
+  <ul>
+
+  <li><code>roundToPrecision</code>: Precision value for rounding computations.
+  Defaults to 3.</li>
+
+  </ul>
+line: 364
+isConstructor: false
+itemtype: method
+alt: >-
+  A star-like geometry, here the computeNormals(SMOOTH) is applied for a smooth
+  shading effect.
+
+  This helps to avoid the faceted appearance that can occur with flat shading.
+example:
+  - |-
+
+    <div>
+    <code>
+    let helix;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      helix = buildGeometry(() => {
+        beginShape();
+
+        for (let i = 0; i < TWO_PI * 3; i += 0.6) {
+          let radius = 20;
+          let x = cos(i) * radius;
+          let y = sin(i) * radius;
+          let z = map(i, 0, TWO_PI * 3, -30, 30);
+          vertex(x, y, z);
+        }
+        endShape();
+      });
+      helix.computeNormals();
+    }
+    function draw() {
+      background(255);
+      stroke(0);
+      fill(150, 200, 250);
+      lights();
+      rotateX(PI*0.2);
+      orbitControl();
+      model(helix);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    let star;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      star = buildGeometry(() => {
+        beginShape();
+        for (let i = 0; i < TWO_PI; i += PI / 5) {
+          let outerRadius = 60;
+          let innerRadius = 30;
+          let xOuter = cos(i) * outerRadius;
+          let yOuter = sin(i) * outerRadius;
+          let zOuter = random(-20, 20);
+          vertex(xOuter, yOuter, zOuter);
+
+          let nextI = i + PI / 5 / 2;
+          let xInner = cos(nextI) * innerRadius;
+          let yInner = sin(nextI) * innerRadius;
+          let zInner = random(-20, 20);
+          vertex(xInner, yInner, zInner);
+        }
+        endShape(CLOSE);
+      });
+      star.computeNormals(SMOOTH);
+    }
+    function draw() {
+      background(255);
+      stroke(0);
+      fill(150, 200, 250);
+      lights();
+      rotateX(PI*0.2);
+      orbitControl();
+      model(star);
+    }
+    </code>
+    </div>
+class: p5.Geometry
+params:
+  - name: shadingType
+    description: >
+      <p>shading type (<code>FLAT</code> for flat shading or <code>SMOOTH</code>
+      for smooth shading) for buildGeometry() outputs. Defaults to
+      <code>FLAT</code>.</p>
+    type: String
+    optional: true
+  - name: options
+    description: |
+      <p>An optional object with configuration.</p>
+    type: Object
+    optional: true
+chainable: true
+---
+
+
+# computeNormals

@@ -1,0 +1,54 @@
+---
+title: begin
+module: Rendering
+submodule: ''
+file: src/webgl/p5.Framebuffer.js
+description: |
+  <p>Begin drawing to this framebuffer. Subsequent drawing functions to the
+  canvas the framebuffer is attached to will not be immediately visible, and
+  will instead be drawn to the framebuffer's texture. Call
+  <a href="#/p5.Framebuffer/end">end()</a> when finished to make draw
+  functions go right to the canvas again and to be able to read the
+  contents of the framebuffer's texture.</p>
+line: 790
+isConstructor: false
+itemtype: method
+alt: |-
+  A video of a floating and rotating red cube is pasted twice on the
+  canvas: once in the top left, and again, larger, in the bottom right.
+example:
+  - |-
+
+    <div>
+    <code>
+    let framebuffer;
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      framebuffer = createFramebuffer();
+      noStroke();
+    }
+
+    function draw() {
+      // Draw to the framebuffer
+      framebuffer.begin();
+      background(255);
+      translate(0, 10*sin(frameCount * 0.01), 0);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      fill(255, 0, 0);
+      box(50);
+      framebuffer.end();
+
+      background(100);
+      // Draw the framebuffer to the main canvas
+      image(framebuffer, -50, -50, 25, 25);
+      image(framebuffer, 0, 0, 35, 35);
+    }
+    </code>
+    </div>
+class: p5.Framebuffer
+chainable: false
+---
+
+
+# begin
