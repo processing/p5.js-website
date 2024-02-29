@@ -84,6 +84,31 @@ const moveAssetsFolder = async (dirPath: string) => {
 };
 
 /**
+ * Rewrites image links to use Astro's static asset folder url
+ *
+ * For example: `images/my-dog.png` is converted to `/public/images/my-dog.png`
+ *
+ * @param markdownText markdown text to modify
+ * @returns markdown text with links replaced
+ */
+export const rewriteRelativeImageLinks = (
+  markdownText: string,
+  assetsFolderUrl: string,
+): string => {
+  /**
+   * Regex to find relative image links in a string of Markdown
+   * Has 2 capture groups:
+   * 1. Alt Text for the image
+   * 2. Image url
+   */
+  const regexPattern: RegExp = /!\[([^\]]+)\]\((.?\/?images[^)]+)\)/g;
+  return markdownText.replace(regexPattern, (match, linkText, url) => {
+    const { base } = path.parse(url);
+    return `![${linkText}](${assetsFolderUrl}/${base})`;
+  });
+};
+
+/**
  * Moves a list of files or a folder of files to a new location,
  * converting all .md files into .mdx
  *
