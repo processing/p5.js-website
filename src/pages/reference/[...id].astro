@@ -1,0 +1,31 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const referenceEntries = await getCollection("reference");
+
+  const paths = referenceEntries.map((entry) => ({
+    params: {
+      // We cannot use Astro's default slug because it removes characters like '.'
+      // We use the id instead and remove the file extension
+      id: entry.id.replace(/\.mdx$/, ""),
+    },
+  }));
+
+  return paths;
+}
+
+const { id } = Astro.params;
+const referenceEntries = await getCollection("reference");
+
+const entriesById = referenceEntries.reduce((acc, entry) => {
+  acc[entry.id.replace(/\.mdx$/, "")] = entry;
+  return acc;
+}, {});
+
+const referenceEntry = entriesById[id];
+---
+
+<article>
+  <h1>{referenceEntry.data.title}</h1>
+</article>

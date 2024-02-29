@@ -29,13 +29,6 @@ export const buildReference = async () => {
   const classMDXDocs = await classesToMDX(parsedOutput);
   await saveMDX(classMDXDocs);
 
-  // Build the reference file differently
-  const indexMdx = getIndexMdx();
-  await fs.writeFile(
-    `./src/content/reference/en/index.mdx`,
-    indexMdx.toString(),
-  );
-
   console.log("Done building reference docs!");
 };
 
@@ -91,7 +84,6 @@ async function convertClassToMDX(doc) {
     : {};
   try {
     frontMatterArgs = {
-      layout: "@layouts/reference/ClassReferenceLayout.astro",
       title: doc.name ?? "",
       module: doc.module,
       submodule: doc.submodule ?? "",
@@ -108,7 +100,7 @@ async function convertClassToMDX(doc) {
     };
 
     const frontmatter = matter.stringify("", frontMatterArgs);
-    let markdownContent = `# ${doc.name}\n`;
+    const markdownContent = `# ${doc.name}\n`;
     const mdxContent = remark().use(remarkMDX).processSync(markdownContent);
     return `${frontmatter}\n${mdxContent.toString()}`;
   } catch (err) {
@@ -139,7 +131,6 @@ async function convertToMDX(doc) {
   const sourcePath = doc.file.replace(/.*p5\.js\/(.*)/, "$1") ?? "";
   try {
     frontMatterArgs = {
-      layout: "@layouts/reference/SingleReferenceLayout.astro",
       title: doc.name ?? "",
       module: doc.module,
       submodule: doc.submodule ?? "",
@@ -165,36 +156,6 @@ async function convertToMDX(doc) {
     return;
   }
 }
-
-const getIndexMdx = () => {
-  const frontmatter = matter.stringify("", {
-    title: "Reference",
-  });
-
-  let markdownContent = `# Reference\n`;
-  for (const key of Object.keys(modulePathTree.modules)) {
-    markdownContent += `## ${key}\n`;
-    const submodules = modulePathTree.modules[key];
-    const scanAndAddSubmodules = (modules) => {
-      if (!modules) return;
-      for (const [key, val] of Object.entries(modules)) {
-        if (typeof val === "object" && Object.keys(val).length > 0) {
-          markdownContent += `### ${key}\n`;
-
-          scanAndAddSubmodules(val);
-        } else {
-          markdownContent += `- [${key}](./${val}/)\n`;
-        }
-      }
-    };
-
-    scanAndAddSubmodules(submodules);
-  }
-
-  const mdxContent = remark().use(remarkMDX).processSync(markdownContent);
-
-  return `${frontmatter}\n${mdxContent.toString()}`;
-};
 
 async function classItemsToMDX(docs) {
   console.log("Converting YUI classitem docs to MDX...");
