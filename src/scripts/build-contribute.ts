@@ -151,7 +151,12 @@ const moveContentDirectory = async (
   }
 };
 
-const run = async () => {
+/**
+ * Builds the contributor docs by cloning the p5 repo
+ * and converting the files into a content collection in this
+ * Astro site.
+ */
+const buildContributorDocs = async () => {
   console.log("Building contributor docs...");
 
   await cloneLibraryRepo(clonedRepoPath, docsRepoUrl);
@@ -190,4 +195,4 @@ const run = async () => {
   console.log("Contributor docs build completed.");
 };
 
-run();
+buildContributorDocs();
