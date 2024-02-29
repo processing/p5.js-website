@@ -94,40 +94,40 @@ const moveContentFiles = async (
 };
 
 const run = async () => {
-  console.log("hello from the contribute builder script");
+  console.log("Building contributor docs...");
+
   await cloneLibraryRepo(localPath, repoUrl);
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
-  let i = 0;
-  for (const tlf of topLevelFiles) {
-    console.log(i++);
 
+  for (const tlf of topLevelFiles) {
     const fullFilePath = fullPathFromDirent(tlf);
     const { ext, base } = path.parse(tlf.name);
 
     if (tlf.isDirectory()) {
       if (base === assetsSubFolder) {
-        console.debug("moving images folder");
+        // console.debug("moving images folder");
         await moveAssetsFolder(fullFilePath);
       } else if (langDirs.includes(base)) {
-        console.debug(`moving lang folder (${tlf.name})`);
+        // console.debug(`moving lang folder (${tlf.name})`);
         await moveContentFiles(tlf, path.join(outputDirectory, base));
       } else {
-        console.debug(`moving regular folder into 'en' (${tlf.name})`);
+        // console.debug(`moving regular folder into 'en' (${tlf.name})`);
         await moveContentFiles(tlf, path.join(outputDirectory, "en", base));
       }
     } else if (ext === ".md") {
-      console.debug(`moving markdown file into 'en' (${tlf.name})`);
+      // console.debug(`moving markdown file into 'en' (${tlf.name})`);
       await convertMdtoMdx(fullFilePath, path.join(outputDirectory, "en"));
     } else if (ext === ".mdx") {
-      console.debug(`copy mdx file into 'en' (${tlf.name})`);
+      // console.debug(`copy mdx file into 'en' (${tlf.name})`);
       await cp(fullFilePath, path.join(outputDirectory, "en", base));
     } else {
-      console.warn(`what happened here?`);
+      // some other file type (not sure if we want to do this?)
+      await cp(fullFilePath, path.join(outputDirectory, "en", base));
     }
   }
-  console.log("DONE???");
+  console.log("Contributor docs build completed.");
 };
 
 run();
