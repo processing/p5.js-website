@@ -146,6 +146,7 @@ const convertToMDX = async (
       ...getClassItemFrontmatter(doc),
       ...getMethodFrontmatter(doc),
     };
+    // TODO: Has some pathing problems, will fix in follow-up PR
     // addMemberMethodPreviewsToClassDocs(doc);
   } else if (isPropertyClassItem(doc)) {
     frontMatterArgs = {
