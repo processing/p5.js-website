@@ -60,6 +60,8 @@ const moveAssetsFolder = async (dirPath: string) => {
   });
 };
 
+const fullPathFromDirent = (d: Dirent) => path.join(d.path, d.name);
+
 /**
  * Moves a list of files or a folder of files to a new location,
  * converting all .md files into .mdx
@@ -77,7 +79,7 @@ const moveContentFiles = async (
     ? files
     : files.isFile()
       ? [files.path]
-      : await readdir(files.path);
+      : await readdir(fullPathFromDirent(files));
   for (const fp of filepathsToMove) {
     const { ext, base } = path.parse(fp);
     if (ext === ".md") {
@@ -94,25 +96,34 @@ const run = async () => {
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
+  let i = 0;
   for (const tlf of topLevelFiles) {
-    const { ext, base } = path.parse(tlf.path);
+    console.log(i++);
+
+    const fullFilePath = fullPathFromDirent(tlf);
+    const { ext, base, name } = path.parse(tlf.name);
+
+    console.log(`path.ext: ${ext}, path.base: ${base}, path.name: ${name}`);
+
     if (tlf.isDirectory()) {
       if (base === assetsSubFolder) {
         console.log("moving images folder");
-        await moveAssetsFolder(tlf.path);
+        await moveAssetsFolder(fullFilePath);
       } else if (langDirs.includes(base)) {
         console.log(`moving lang folder (${tlf.name})`);
-        await moveContentFiles(tlf, path.join(outputDirectory, tlf.name));
+        await moveContentFiles(tlf, path.join(outputDirectory, base));
       } else {
         console.log(`moving regular folder into 'en' (${tlf.name})`);
-        await moveContentFiles(tlf, path.join(outputDirectory, "en", tlf.name));
+        await moveContentFiles(tlf, path.join(outputDirectory, "en", base));
       }
     } else if (ext === ".md") {
       console.log(`moving markdown file into 'en' (${tlf.name})`);
-      await convertMdtoMdx(tlf.path, path.join(outputDirectory, "en"));
+      await convertMdtoMdx(fullFilePath, path.join(outputDirectory, "en"));
     } else if (ext === ".mdx") {
       console.log(`copy mdx file into 'en' (${tlf.name})`);
-      await cp(tlf.path, path.join(outputDirectory, "en", base));
+      await cp(fullFilePath, path.join(outputDirectory, "en", base));
+    } else {
+      console.log(`what happened here?`);
     }
   }
   console.log("DONE???");
