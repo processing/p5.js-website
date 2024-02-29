@@ -78,8 +78,11 @@ const moveContentFiles = async (
   const filepathsToMove = Array.isArray(files)
     ? files
     : files.isFile()
-      ? [files.path]
-      : await readdir(fullPathFromDirent(files));
+      ? [fullPathFromDirent(files)]
+      : // jesus christ, readdir only returns relative filepaths 🥴
+        (await readdir(fullPathFromDirent(files))).map((p) =>
+          path.join(files.path, files.name, p),
+        );
   for (const fp of filepathsToMove) {
     const { ext, base } = path.parse(fp);
     if (ext === ".md") {
@@ -101,29 +104,27 @@ const run = async () => {
     console.log(i++);
 
     const fullFilePath = fullPathFromDirent(tlf);
-    const { ext, base, name } = path.parse(tlf.name);
-
-    // console.log(`path.ext: ${ext}, path.base: ${base}, path.name: ${name}`);
+    const { ext, base } = path.parse(tlf.name);
 
     if (tlf.isDirectory()) {
       if (base === assetsSubFolder) {
-        console.log("moving images folder");
+        console.debug("moving images folder");
         await moveAssetsFolder(fullFilePath);
       } else if (langDirs.includes(base)) {
-        console.log(`moving lang folder (${tlf.name})`);
+        console.debug(`moving lang folder (${tlf.name})`);
         await moveContentFiles(tlf, path.join(outputDirectory, base));
       } else {
-        console.log(`moving regular folder into 'en' (${tlf.name})`);
+        console.debug(`moving regular folder into 'en' (${tlf.name})`);
         await moveContentFiles(tlf, path.join(outputDirectory, "en", base));
       }
     } else if (ext === ".md") {
-      console.log(`moving markdown file into 'en' (${tlf.name})`);
+      console.debug(`moving markdown file into 'en' (${tlf.name})`);
       await convertMdtoMdx(fullFilePath, path.join(outputDirectory, "en"));
     } else if (ext === ".mdx") {
-      console.log(`copy mdx file into 'en' (${tlf.name})`);
+      console.debug(`copy mdx file into 'en' (${tlf.name})`);
       await cp(fullFilePath, path.join(outputDirectory, "en", base));
     } else {
-      console.log(`what happened here?`);
+      console.warn(`what happened here?`);
     }
   }
   console.log("DONE???");
