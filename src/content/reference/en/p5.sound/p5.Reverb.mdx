@@ -30,28 +30,42 @@ description: >
   available.</p>
 isConstructor: true
 line: 8308
-memberMethodPreviews:
-  process:
-    description: |
-      <p>Connect a source to the reverb, and assign reverb parameters.</p>
-    path: .././src/content/reference/en//p5.Reverb/process
-  set:
-    description: |
-      <p>Set the reverb settings. Similar to .process(), but without
-      assigning a new input.</p>
-    path: .././src/content/reference/en//p5.Reverb/set
-  amp:
-    description: |
-      <p>Set the output level of the reverb effect.</p>
-    path: .././src/content/reference/en//p5.Reverb/amp
-  connect:
-    description: |
-      <p>Send output to a p5.sound or web audio object</p>
-    path: .././src/content/reference/en//p5.Reverb/connect
-  disconnect:
-    description: |
-      <p>Disconnect all output.</p>
-    path: .././src/content/reference/en//p5.Reverb/disconnect
+example:
+  - |-
+
+    <div><code>
+    let soundFile, reverb;
+    function preload() {
+      soundFile = loadSound('assets/Damscray_DancingTiger.mp3');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playSound);
+
+      reverb = new p5.Reverb();
+      soundFile.disconnect(); // so we'll only hear reverb...
+
+      // connect soundFile to reverb, process w/
+      // 3 second reverbTime, decayRate of 2%
+      reverb.process(soundFile, 3, 2);
+    }
+
+    function draw() {
+      let dryWet = constrain(map(mouseX, 0, width, 0, 1), 0, 1);
+      // 1 = all reverb, 0 = no reverb
+      reverb.drywet(dryWet);
+
+      background(220);
+      text('tap to play', 10, 20);
+      text('dry/wet: ' + round(dryWet * 100) + '%', 10, height - 20);
+    }
+
+    function playSound() {
+      soundFile.play();
+    }
+    </code></div>
+chainable: false
 ---
 
 

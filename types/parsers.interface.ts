@@ -39,7 +39,7 @@ interface Param {
   optional?: boolean;
 }
 
-interface ClassDefinition {
+export interface LibraryReferenceClassDefinition {
   name: string;
   shortname: string;
   classitems: Param[];
@@ -58,8 +58,8 @@ interface ClassDefinition {
   example?: string[];
 }
 
-export interface Classes {
-  [className: string]: ClassDefinition;
+export interface LibraryReferenceClass {
+  [className: string]: LibraryReferenceClassDefinition;
 }
 
 interface BaseClassItem {
@@ -107,7 +107,7 @@ export interface PropertyClassItem extends BaseClassItem {
   type: string;
 }
 
-export type ClassItem = MethodClassItem | PropertyClassItem;
+export type LibraryReferenceClassItem = MethodClassItem | PropertyClassItem;
 
 export interface ParsedConsts {
   [key: string]: string[];
@@ -117,7 +117,7 @@ export interface ParsedLibraryReference {
   project: Project;
   files: Record<string, FileDetail>;
   modules: Modules;
-  classes: Classes;
-  classitems: ClassItem[];
+  classes: LibraryReferenceClass;
+  classitems: LibraryReferenceClassItem[];
   consts: ParsedConsts;
 }

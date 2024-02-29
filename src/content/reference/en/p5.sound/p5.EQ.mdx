@@ -40,22 +40,67 @@ params:
       <p>Constructor will accept 3 or 8, defaults to 3</p>
     type: Number
     optional: true
+example:
+  - |-
+
+    <div><code>
+    let eq, soundFile
+    let eqBandIndex = 0;
+    let eqBandNames = ['lows', 'mids', 'highs'];
+
+    function preload() {
+      soundFormats('mp3', 'ogg');
+      soundFile = loadSound('assets/beat');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(toggleSound);
+
+      eq = new p5.EQ(eqBandNames.length);
+      soundFile.disconnect();
+      eq.process(soundFile);
+    }
+
+    function draw() {
+      background(30);
+      noStroke();
+      fill(255);
+      textAlign(CENTER);
+      text('filtering ', 50, 25);
+
+      fill(255, 40, 255);
+      textSize(26);
+      text(eqBandNames[eqBandIndex], 50, 55);
+
+      fill(255);
+      textSize(9);
+
+      if (!soundFile.isPlaying()) {
+        text('tap to play', 50, 80);
+      } else {
+        text('tap to filter next band', 50, 80)
+      }
+    }
+
+    function toggleSound() {
+      if (!soundFile.isPlaying()) {
+        soundFile.play();
+      } else {
+        eqBandIndex = (eqBandIndex + 1) % eq.bands.length;
+      }
+
+      for (let i = 0; i < eq.bands.length; i++) {
+        eq.bands[i].gain(0);
+      }
+      // filter the band we want to filter
+      eq.bands[eqBandIndex].gain(-40);
+    }
+    </code></div>
 return:
   description: p5.EQ object
   type: Object
-memberMethodPreviews:
-  bands:
-    description: |
-      <p>The p5.EQ is built with abstracted p5.Filter objects.
-      To modify any bands, use methods of the <a
-      href="/reference/#/p5.Filter" title="p5.Filter reference">
-      p5.Filter</a> API, especially <code>gain</code> and <code>freq</code>.
-      Bands are stored in an array, with indices 0 - 3, or 0 - 7</p>
-    path: .././src/content/reference/en//p5.EQ/bands
-  process:
-    description: |
-      <p>Process an input by connecting it to the EQ</p>
-    path: .././src/content/reference/en//p5.EQ/process
+chainable: false
 ---
 
 

@@ -38,51 +38,43 @@ params:
                                          about what went wrong.</p>
     type: Function
     optional: true
-memberMethodPreviews:
-  convolverNode:
-    description: |
-      <p>Internally, the p5.Convolver uses the a
-      <a href="http://www.w3.org/TR/webaudio/#ConvolverNode">
-      Web Audio Convolver Node</a>.</p>
-    path: .././src/content/reference/en//p5.Convolver/convolverNode
-  impulses:
-    description: |
-      <p>If you load multiple impulse files using the .addImpulse method,
-      they will be stored as Objects in this Array. Toggle between them
-      with the <code>toggleImpulse(id)</code> method.</p>
-    path: .././src/content/reference/en//p5.Convolver/impulses
-  process:
-    description: |
-      <p>Connect a source to the convolver.</p>
-    path: .././src/content/reference/en//p5.Convolver/process
-  addImpulse:
-    description: |
-      <p>Load and assign a new Impulse Response to the p5.Convolver.
-      The impulse is added to the <code>.impulses</code> array. Previous
-      impulses can be accessed with the <code>.toggleImpulse(id)</code>
-      method.</p>
-    path: .././src/content/reference/en//p5.Convolver/addImpulse
-  resetImpulse:
-    description: |
-      <p>Similar to .addImpulse, except that the <code>.impulses</code>
-      Array is reset to save memory. A new <code>.impulses</code>
-      array is created with this impulse as the only item.</p>
-    path: .././src/content/reference/en//p5.Convolver/resetImpulse
-  toggleImpulse:
-    description: |
-      <p>If you have used <code>.addImpulse()</code> to add multiple impulses
-      to a p5.Convolver, then you can use this method to toggle between
-      the items in the <code>.impulses</code> Array. Accepts a parameter
-      to identify which impulse you wish to use, identified either by its
-      original filename (String) or by its position in the <code>.impulses
-      </code> Array (Number).<br/>
-      You can access the objects in the .impulses Array directly. Each
-      Object has two attributes: an <code>.audioBuffer</code> (type:
-      Web Audio <a href="
-      http://webaudio.github.io/web-audio-api/#the-audiobuffer-interface">
-      AudioBuffer)</a> and a <code>.name</code>, a String that corresponds
-      with the original filename.</p>
-    path: .././src/content/reference/en//p5.Convolver/toggleImpulse
+example:
+  - |-
+
+    <div><code>
+    let cVerb, sound;
+    function preload() {
+      // We have both MP3 and OGG versions of all sound assets
+      soundFormats('ogg', 'mp3');
+
+      // Try replacing 'bx-spring' with other soundfiles like
+      // 'concrete-tunnel' 'small-plate' 'drum' 'beatbox'
+      cVerb = createConvolver('assets/bx-spring.mp3');
+
+      // Try replacing 'Damscray_DancingTiger' with
+      // 'beat', 'doorbell', lucky_dragons_-_power_melody'
+      sound = loadSound('assets/Damscray_DancingTiger.mp3');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playSound);
+      background(220);
+      text('tap to play', 20, 20);
+
+      // disconnect from main output...
+      sound.disconnect();
+
+      // ...and process with cVerb
+      // so that we only hear the convolution
+      cVerb.process(sound);
+    }
+
+    function playSound() {
+      sound.play();
+    }
+    </code></div>
+chainable: false
 ---
 
 

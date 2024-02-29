@@ -3,230 +3,149 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import { parseLibrary } from "../parsers/reference";
+import type {
+  LibraryReferenceClassDefinition,
+  LibraryReferenceClassItem,
+} from "../../../types/parsers.interface";
+import type { ReferenceModulePathTree } from "../../../types/builders.interface";
 
-const prefix = `./src/content/reference/en/`;
-
+const prefix = "./src/content/reference/en/";
 const classMethodPreviews = {};
-
-/**
- * @description modulePathTree is used to structure the export of the reference docs
- * It will be built up as the docs are processed
- */
-const modulePathTree: ReferenceModulePathTree = {
-  modules: {},
-  classes: {},
-};
+const modulePathTree = { modules: {}, classes: {} } as ReferenceModulePathTree;
 
 export const buildReference = async () => {
   const parsedOutput = await parseLibrary();
-
-  // Class items also covers the functions that
-  // p5 makes globally available
-  const classItemMDXDocs = await classItemsToMDX(parsedOutput);
-  await saveMDX(classItemMDXDocs);
-  // Do in two separate steps so that class MDX
-  // can reference classitems
-  const classMDXDocs = await classesToMDX(parsedOutput);
-  await saveMDX(classMDXDocs);
-
+  if (!parsedOutput) {
+    console.error("Unable to build reference docs to error in parsing!");
+    return;
+  }
+  const mdxDocs = [
+    ...(await convertDocsToMDX(Object.values(parsedOutput.classitems))),
+    ...(await convertDocsToMDX(Object.values(parsedOutput.classes))),
+  ];
+  await saveMDX(mdxDocs);
   console.log("Done building reference docs!");
 };
 
-const getModulePath = (doc) => {
-  if (!doc || !doc.name) {
-    return;
-  }
-
-  let docClass = doc.class;
-  if (!docClass) {
-    if (doc.module.startsWith("p5.")) {
-      docClass = doc.module;
-    } else {
-      docClass = "p5";
-    }
-  }
-  const path = `${prefix}/${docClass}/`;
-
-  return path;
+const getModulePath = (
+  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+) => {
+  if (!doc || !doc.name) return;
+  const docClass =
+    doc.class || (doc.module.startsWith("p5.") ? doc.module : "p5");
+  return `${prefix}/${docClass}/`;
 };
 
-const addDocToModulePathTree = (doc, path) => {
-  if (!doc || !doc.name || !path) {
-    return;
-  }
+const addDocToModulePathTree = (
+  doc: LibraryReferenceClassDefinition | LibraryReferenceClassItem,
+  path: string,
+) => {
+  if (!doc || !doc.name || !path) return;
 
-  const modulePath = path.replace("./src/pages/en/reference/", "") + doc.name;
-  if (doc.class && doc.class !== "p5") {
-    if (!modulePathTree.classes[doc.class]) {
-      modulePathTree.classes[doc.class] = {};
-    }
-    modulePathTree.classes[doc.class][doc.name] = modulePath;
+  const modulePath = `${path.replace("./src/pages/en/reference/", "")}${doc.name}`;
+
+  // Type guard to check if 'doc' is LibraryReferenceClassItem
+  if ("class" in doc) {
+    const treePath = doc.class && doc.class !== "p5" ? "classes" : "modules";
+    const subPath = doc.submodule
+      ? `${doc.module}.${doc.submodule}`
+      : doc.module;
+
+    if (!modulePathTree[treePath][subPath])
+      modulePathTree[treePath][subPath] = {};
+    modulePathTree[treePath][subPath][doc.name] = modulePath;
   } else {
-    if (!modulePathTree.modules[doc.module]) {
-      modulePathTree.modules[doc.module] = {};
-    }
-    if (doc.submodule) {
-      if (!modulePathTree.modules[doc.module][doc.submodule]) {
-        modulePathTree.modules[doc.module][doc.submodule] = {};
-      }
-      modulePathTree.modules[doc.module][doc.submodule][doc.name] = modulePath;
-    } else {
-      modulePathTree.modules[doc.module][doc.name] = modulePath;
-    }
+    // Handle the case for LibraryReferenceClassDefinition or add an else if branch for other types, if necessary
+    // For example, assuming LibraryReferenceClassDefinition always goes into "modules"
+    const treePath = "modules";
+    const subPath = doc.module; // Assuming 'module' exists on LibraryReferenceClassDefinition
+
+    if (!modulePathTree[treePath][subPath])
+      modulePathTree[treePath][subPath] = {};
+    modulePathTree[treePath][subPath][doc.name] = modulePath;
   }
 };
 
-async function convertClassToMDX(doc) {
-  let frontMatterArgs = {};
-  const sourcePath = doc.file?.replace(/.*p5\.js\/(.*)/, "$1") ?? "";
-  const memberMethodPreviews = classMethodPreviews[doc.name]
-    ? { memberMethodPreviews: classMethodPreviews[doc.name] }
-    : {};
-  try {
-    frontMatterArgs = {
-      title: doc.name ?? "",
-      module: doc.module,
-      submodule: doc.submodule ?? "",
-      file: sourcePath ?? "",
-      description: doc.description ?? "",
-      isConstructor: true,
-      ...(doc.line ? { line: doc.line } : {}),
-      ...(doc.params ? { params: doc.params } : {}),
-      ...(doc.itemtype ? { itemtype: doc.itemtype } : {}),
-      ...(doc.examples ? { examples: doc.examples } : {}),
-      ...(doc.alt ? { alt: doc.alt } : {}),
-      ...(doc.return ? { return: doc.return } : {}),
-      ...memberMethodPreviews,
-    };
+const convertToMDX = async (doc) => {
+  if (!doc || !doc.name || !doc.file) return;
 
-    const frontmatter = matter.stringify("", frontMatterArgs);
-    const markdownContent = `# ${doc.name}\n`;
-    const mdxContent = remark().use(remarkMDX).processSync(markdownContent);
-    return `${frontmatter}\n${mdxContent.toString()}`;
-  } catch (err) {
-    console.error(`Error converting ${doc.name} to MDX: ${err}`);
-    console.log(frontMatterArgs);
-    return;
-  }
-}
-
-async function convertToMDX(doc) {
-  if (!doc || !doc.name || !doc.file) {
-    return;
-  }
-
-  if (doc.is_constructor) {
-    return convertClassToMDX(doc);
-  }
-
-  if (doc.name?.startsWith("_")) {
-    return;
-  }
-
-  if (doc.name.startsWith(">") || doc.name.startsWith("<")) {
-    doc.name = doc.name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
-  let frontMatterArgs = {};
-  const sourcePath = doc.file.replace(/.*p5\.js\/(.*)/, "$1") ?? "";
-  try {
-    frontMatterArgs = {
-      title: doc.name ?? "",
-      module: doc.module,
-      submodule: doc.submodule ?? "",
-      file: sourcePath ?? "",
-      description: doc.description ?? "",
-      ...(doc.line ? { line: doc.line } : {}),
-      ...(doc.params ? { params: doc.params } : {}),
-      ...(doc.itemtype ? { itemtype: doc.itemtype } : {}),
-      ...(doc.class ? { class: doc.class } : {}),
-      ...(doc.example ? { example: doc.example } : {}),
-      ...(doc.alt ? { alt: doc.alt } : {}),
-      ...(doc.return ? { return: doc.return } : {}),
-      chainable: doc.chainable === 1,
-    };
-
-    const frontmatter = matter.stringify("", frontMatterArgs);
-    const markdownContent = `# ${doc.name}\n`;
-    const mdxContent = remark().use(remarkMDX).processSync(markdownContent);
-    return `${frontmatter}\n${mdxContent.toString()}`;
-  } catch (err) {
-    console.error(`Error converting ${doc.name} to MDX: ${err}`);
-    console.log(frontMatterArgs);
-    return;
-  }
-}
-
-async function classItemsToMDX(docs) {
-  console.log("Converting YUI classitem docs to MDX...");
-
-  return convertDocsToMDX(Object.values(docs.classitems));
-}
-
-async function classesToMDX(docs) {
-  console.log("Converting YUI classes docs to MDX...");
-
-  return convertDocsToMDX(Object.values(docs.classes));
-}
-
-function addClassMethodPreviewsToClassDocs(doc, path) {
-  if (
-    !doc.class ||
-    doc.class === "p5" ||
-    !doc.name ||
-    !path ||
-    !doc.description
-  ) {
-    return;
-  }
-  // If this is a class method, we need to add relevant info to the classMethodPreviews object
-  if (!classMethodPreviews[doc.class]) {
-    classMethodPreviews[doc.class] = {};
-  }
-  const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
-  classMethodPreviews[doc.class][doc.name] = {
-    description: doc.description,
-    path: classMethodPath,
+  const sanitizeName = (name) =>
+    name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  let frontMatterArgs = {
+    title: sanitizeName(doc.name),
+    module: doc.module,
+    submodule: doc.submodule ?? "",
+    file: doc.file.replace(/.*p5\.js\/(.*)/, "$1"),
+    description: doc.description ?? "",
+    isConstructor: !!doc.is_constructor,
+    line: doc.line,
+    params: doc.params,
+    itemtype: doc.itemtype,
+    examples: doc.examples,
+    alt: doc.alt,
+    class: doc.class,
+    example: doc.example,
+    return: doc.return,
+    chainable: doc.chainable === 1,
+    ...classMethodPreviews[doc.name],
   };
-}
 
-const convertDocsToMDX = async (docs): ReferenceMDXDoc[] | [] => {
+  // Filter out undefined values
+  frontMatterArgs = Object.entries(frontMatterArgs).reduce(
+    (acc, [key, value]) => {
+      if (value !== undefined) acc[key] = value;
+      return acc;
+    },
+    {},
+  );
+
   try {
-    const mdxDocs = await Promise.all(
-      docs.map(async (doc) => {
-        const mdx = await convertToMDX(doc);
-        const savePath = getModulePath(doc);
-        const name = doc.name;
-        addDocToModulePathTree(doc, savePath);
-        addClassMethodPreviewsToClassDocs(doc, savePath);
-        return { mdx, savePath, name };
-      }),
-    );
+    const frontmatter = matter.stringify("", frontMatterArgs);
+    const markdownContent = `# ${sanitizeName(doc.name)}\n`;
+    const mdxContent = remark().use(remarkMDX).processSync(markdownContent);
+    return `${frontmatter}\n${mdxContent.toString()}`;
+  } catch (err) {
+    console.error(`Error converting ${doc.name} to MDX: ${err}`);
+    return;
+  }
+};
 
-    return mdxDocs.filter(
-      (mdxDoc) => mdxDoc.mdx && mdxDoc.savePath && mdxDoc.name,
-    );
+const convertDocsToMDX = async (
+  docs: LibraryReferenceClassDefinition[] | LibraryReferenceClassItem[],
+) => {
+  try {
+    return (
+      await Promise.all(
+        docs.map(async (doc) => {
+          const mdx = await convertToMDX(doc);
+
+          const savePath = getModulePath(doc);
+          if (!savePath) {
+            console.error(`Error getting save path for ${doc.name}`);
+            return;
+          }
+
+          addDocToModulePathTree(doc, savePath);
+          return mdx ? { mdx, savePath, name: doc.name } : null;
+        }),
+      )
+    ).filter(Boolean);
   } catch (err) {
     console.error(`Error converting docs to MDX: ${err}`);
     return [];
   }
 };
 
-async function saveMDX(mdxDocs) {
+const saveMDX = async (mdxDocs) => {
   console.log("Saving MDX...");
-  try {
-    for (const mdxDoc of mdxDocs) {
-      await fs.mkdir(mdxDoc.savePath, {
-        recursive: true,
-      });
-      await fs.writeFile(
-        `${mdxDoc.savePath}/${mdxDoc.name}.mdx`,
-        mdxDoc.mdx.toString(),
-      );
+  for (const { mdx, savePath, name } of mdxDocs) {
+    try {
+      await fs.mkdir(savePath, { recursive: true });
+      await fs.writeFile(`${savePath}/${name}.mdx`, mdx.toString());
+    } catch (err) {
+      console.error(`Error saving MDX: ${err}`);
     }
-  } catch (err) {
-    console.error(`Error saving MDX: ${err}`);
   }
-}
+};
 
 buildReference();

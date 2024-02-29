@@ -41,15 +41,41 @@ params:
       <p>Array of values to pass into the callback
                                 at each step of the phrase.</p>
     type: Array
-memberMethodPreviews:
-  sequence:
-    description: |
-      <p>Array of values to pass into the callback
-      at each step of the phrase. Depending on the callback
-      function's requirements, these values may be numbers,
-      strings, or an object with multiple parameters.
-      Zero (0) indicates a rest.</p>
-    path: .././src/content/reference/en//p5.Phrase/sequence
+example:
+  - |-
+
+    <div><code>
+    let mySound, myPhrase, myPart;
+    let pattern = [1,0,0,2,0,2,0,0];
+
+    function preload() {
+      mySound = loadSound('assets/beatbox.mp3');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playMyPart);
+      background(220);
+      text('tap to play', width/2, height/2);
+      textAlign(CENTER, CENTER);
+
+      myPhrase = new p5.Phrase('bbox', onEachStep, pattern);
+      myPart = new p5.Part();
+      myPart.addPhrase(myPhrase);
+      myPart.setBPM(60);
+    }
+
+    function onEachStep(time, playbackRate) {
+      mySound.rate(playbackRate);
+      mySound.play(time);
+    }
+
+    function playMyPart() {
+      userStartAudio();
+      myPart.start();
+    }
+    </code></div>
+chainable: false
 ---
 
 

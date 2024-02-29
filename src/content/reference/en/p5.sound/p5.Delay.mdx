@@ -32,65 +32,38 @@ description: >
   available.</p>
 isConstructor: true
 line: 7926
-memberMethodPreviews:
-  leftDelay:
-    description: |
-      <p>The p5.Delay is built with two
-      <a href="http://www.w3.org/TR/webaudio/#DelayNode">
-      Web Audio Delay Nodes</a>, one for each stereo channel.</p>
-    path: .././src/content/reference/en//p5.Delay/leftDelay
-  rightDelay:
-    description: |
-      <p>The p5.Delay is built with two
-      <a href="http://www.w3.org/TR/webaudio/#DelayNode">
-      Web Audio Delay Nodes</a>, one for each stereo channel.</p>
-    path: .././src/content/reference/en//p5.Delay/rightDelay
-  process:
-    description: |
-      <p>Add delay to an audio signal according to a set
-      of delay parameters.</p>
-    path: .././src/content/reference/en//p5.Delay/process
-  delayTime:
-    description: |
-      <p>Set the delay (echo) time, in seconds. Usually this value will be
-      a floating point number between 0.0 and 1.0.</p>
-    path: .././src/content/reference/en//p5.Delay/delayTime
-  feedback:
-    description: >
-      <p>Feedback occurs when Delay sends its signal back through its input
+example:
+  - |-
 
-      in a loop. The feedback amount determines how much signal to send each
+    <div><code>
+    let osc;
 
-      time through the loop. A feedback greater than 1.0 is not desirable
-      because
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      background(220);
+      textAlign(CENTER);
+      text('tap to play', width/2, height/2);
 
-      it will increase the overall output each time through the loop,
+      osc = new p5.Oscillator('square');
+      osc.amp(0.5);
+      delay = new p5.Delay();
 
-      creating an infinite feedback loop. The default value is 0.5</p>
-    path: .././src/content/reference/en//p5.Delay/feedback
-  filter:
-    description: |
-      <p>Set a lowpass filter frequency for the delay. A lowpass filter
-      will cut off any frequencies higher than the filter frequency.</p>
-    path: .././src/content/reference/en//p5.Delay/filter
-  setType:
-    description: |
-      <p>Choose a preset type of delay. 'pingPong' bounces the signal
-      from the left to the right channel to produce a stereo effect.
-      Any other parameter will revert to the default delay setting.</p>
-    path: .././src/content/reference/en//p5.Delay/setType
-  amp:
-    description: |
-      <p>Set the output level of the delay effect.</p>
-    path: .././src/content/reference/en//p5.Delay/amp
-  connect:
-    description: |
-      <p>Send output to a p5.sound or web audio object</p>
-    path: .././src/content/reference/en//p5.Delay/connect
-  disconnect:
-    description: |
-      <p>Disconnect all output.</p>
-    path: .././src/content/reference/en//p5.Delay/disconnect
+      // delay.process() accepts 4 parameters:
+      // source, delayTime (in seconds), feedback, filter frequency
+      delay.process(osc, 0.12, .7, 2300);
+
+      cnv.mousePressed(oscStart);
+    }
+
+    function oscStart() {
+      osc.start();
+    }
+
+    function mouseReleased() {
+      osc.stop();
+    }
+    </code></div>
+chainable: false
 ---
 
 
