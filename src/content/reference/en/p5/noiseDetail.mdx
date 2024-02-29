@@ -1,0 +1,92 @@
+---
+title: noiseDetail
+module: Math
+submodule: Noise
+file: src/math/noise.js
+description: >
+  <p>Adjusts the character of the noise produced by the
+
+  <a href="#/p5/noise">noise()</a> function.</p>
+
+  <p>Perlin noise values are created by adding layers of noise together. The
+
+  noise layers, called octaves, are similar to harmonics in music. Lower
+
+  octaves contribute more to the output signal. They define the overall
+
+  intensity of the noise. Higher octaves create finer-grained details.</p>
+
+  <p>By default, noise values are created by combining four octaves. Each higher
+
+  octave contributes half as much (50% less) compared to its predecessor.
+
+  <code>noiseDetail()</code> changes the number of octaves and the falloff
+  amount. For
+
+  example, calling <code>noiseDetail(6, 0.25)</code> ensures that
+
+  <a href="#/p5/noise">noise()</a> will use six octaves. Each higher octave
+
+  will contribute 25% as much (75% less) compared to its predecessor. Falloff
+
+  values between 0 and 1 are valid. However, falloff values greater than 0.5
+
+  might result in noise values greater than 1.</p>
+line: 277
+isConstructor: false
+itemtype: method
+example:
+  - >-
+
+    <div>
+
+    <code>
+
+    let noiseLevel = 255;
+
+    let noiseScale = 0.02;
+
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width / 2; x += 1) {
+        // Scale input coordinates.
+        let nx = noiseScale * x;
+        let ny = noiseScale * y;
+
+        // Compute noise value.
+        noiseDetail(6, 0.25);
+        let c = noiseLevel * noise(nx, ny);
+        // Render left side.
+        stroke(c);
+        point(x, y);
+
+        // Compute noise value.
+        noiseDetail(4, 0.5);
+        c = noiseLevel * noise(nx, ny);
+        // Render right side.
+        stroke(c);
+        point(x + width / 2, y);
+      }
+    }
+
+
+    describe('Two gray cloudy patterns. The pattern on the right is cloudier
+    than the pattern on the left.');
+
+    </code>
+
+    </div>
+class: p5
+params:
+  - name: lod
+    description: |
+      <p>number of octaves to be used by the noise.</p>
+    type: Number
+  - name: falloff
+    description: |
+      <p>falloff factor for each octave.</p>
+    type: Number
+chainable: false
+---
+
+
+# noiseDetail

@@ -1,0 +1,118 @@
+---
+title: beginClip
+module: Color
+submodule: Setting
+file: src/color/setting.js
+description: >
+  <p>Start defining a shape that will mask subsequent things drawn to the
+  canvas.
+
+  Only opaque regions of the mask shape will allow content to be drawn.
+
+  Any shapes drawn between this and <a href="#/p5/endClip">endClip()</a> will
+
+  contribute to the mask shape.</p>
+
+  <p>The mask will apply to anything drawn after this call. To draw without a
+  mask, contain
+
+  the code to apply the mask and to draw the masked content between
+
+  <a href="#/p5/push">push()</a> and <a href="#/p5/pop">pop()</a>.</p>
+
+  <p>Alternatively, rather than drawing the mask between this and
+
+  <a href="#/p5/endClip">endClip()</a>, draw the mask in a callback function
+
+  passed to <a href="#/p5/clip">clip()</a>.</p>
+
+  <p>Options can include:</p>
+
+  <ul>
+
+  <li><code>invert</code>: A boolean specifying whether or not to mask the areas
+  <em>not</em> filled by the mask shape. Defaults to false.</li>
+
+  </ul>
+line: 13
+isConstructor: false
+itemtype: method
+alt: |-
+  A silhouette of a rotating torus colored with a gradient from
+  cyan to purple
+example:
+  - |-
+
+    <div>
+    <code>
+    noStroke();
+
+    // Mask in some shapes
+    push();
+    beginClip();
+    triangle(15, 37, 30, 13, 43, 37);
+    circle(45, 45, 7);
+    endClip();
+
+    fill('red');
+    rect(5, 5, 45, 45);
+    pop();
+
+    translate(50, 50);
+
+    // Mask out the same shapes
+    push();
+    beginClip({ invert: true });
+    triangle(15, 37, 30, 13, 43, 37);
+    circle(45, 45, 7);
+    endClip();
+
+    fill('red');
+    rect(5, 5, 45, 45);
+    pop();
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+    }
+
+    function draw() {
+      background(255);
+      noStroke();
+
+      beginClip();
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+      endClip();
+
+      beginShape(QUAD_STRIP);
+      fill(0, 255, 255);
+      vertex(-width/2, -height/2);
+      vertex(width/2, -height/2);
+      fill(100, 0, 100);
+      vertex(-width/2, height/2);
+      vertex(width/2, height/2);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: options
+    description: |
+      <p>An object containing clip settings.</p>
+    type: Object
+    optional: true
+chainable: false
+---
+
+
+# beginClip

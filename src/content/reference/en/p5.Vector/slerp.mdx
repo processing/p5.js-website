@@ -1,0 +1,162 @@
+---
+title: slerp
+module: Math
+submodule: Vector
+file: src/math/p5.Vector.js
+description: >
+  <p>Calculates a new heading and magnitude that are between two vectors. The
+
+  <code>amt</code> parameter is the amount to interpolate between the old vector
+  and
+
+  the new vector. 0.0 keeps the heading and magnitude equal to the old
+
+  vector's, 0.5 sets them halfway between, and 1.0 sets the heading and
+
+  magnitude equal to the new vector's.</p>
+
+  <p><code>slerp()</code> differs from <a href="#/p5.Vector/lerp">lerp()</a>
+  because
+
+  it interpolates magnitude. Calling <code>v0.slerp(v1, 0.5)</code> sets
+  <code>v0</code>'s
+
+  magnitude to a value halfway between its original magnitude and
+  <code>v1</code>'s.
+
+  Calling <code>v0.lerp(v1, 0.5)</code> makes no such guarantee.</p>
+
+  <p>The static version of <code>slerp()</code>, as in <code>p5.Vector.slerp(v0,
+  v1, 0.5)</code>,
+
+  returns a new <a href="#/p5.Vector">p5.Vector</a> object and doesn't change
+
+  the original.</p>
+line: 2009
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class="norender">
+    <code>
+    let v0 = createVector(3, 0);
+    // Prints "3" to the console.
+    print(v0.mag());
+    // Prints "0" to the console.
+    print(v0.heading());
+
+    let v1 = createVector(0, 1);
+    // Prints "1" to the console.
+    print(v1.mag());
+    // Prints "1.570..." to the console.
+    print(v1.heading());
+
+    v0.slerp(v1, 0.5);
+    // Prints "2" to the console.
+    print(v0.mag());
+    // Prints "0.785..." to the console.
+    print(v0.heading());
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    let v0 = createVector(3, 0);
+    // Prints "3" to the console.
+    print(v0.mag());
+    // Prints "0" to the console.
+    print(v0.heading());
+
+    let v1 = createVector(0, 1);
+    // Prints "1" to the console.
+    print(v1.mag());
+    // Prints "1.570..." to the console.
+    print(v1.heading());
+
+    let v3 = p5.Vector.slerp(v0, v1, 0.5);
+    // Prints "2" to the console.
+    print(v3.mag());
+    // Prints "0.785..." to the console.
+    print(v3.heading());
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function draw() {
+      background(200);
+
+      let v0 = createVector(50, 50);
+      let v1 = createVector(20, 0);
+      let v2 = createVector(-40, 0);
+      let v3 = p5.Vector.slerp(v1, v2, 0.5);
+
+      drawArrow(v0, v1, 'red');
+      drawArrow(v0, v2, 'blue');
+      drawArrow(v0, v3, 'purple');
+
+      describe('Three arrows extend from the center of a gray square. A red arrow points to the right, a blue arrow points to the left, and a purple arrow points down.');
+    }
+
+    function drawArrow(base, vec, myColor) {
+      push();
+      stroke(myColor);
+      strokeWeight(3);
+      fill(myColor);
+      translate(base.x, base.y);
+      line(0, 0, vec.x, vec.y);
+      rotate(vec.heading());
+      let arrowSize = 7;
+      translate(vec.mag() - arrowSize, 0);
+      triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+      pop();
+    }
+    </code>
+    </div>
+class: p5.Vector
+return:
+  description: ''
+  type: p5.Vector
+overloads:
+  - line: 2009
+    params:
+      - name: v
+        description: |
+          <p><a href="#/p5.Vector">p5.Vector</a> to slerp toward.</p>
+        type: p5.Vector
+      - name: amt
+        description: |
+          <p>amount of interpolation between 0.0 (old vector)
+                               and 1.0 (new vector). 0.5 is halfway between.</p>
+        type: Number
+    return:
+      description: ''
+      type: p5.Vector
+  - line: 2840
+    params:
+      - name: v1
+        description: |
+          <p>old vector.</p>
+        type: p5.Vector
+      - name: v2
+        description: |
+          <p>new vector.</p>
+        type: p5.Vector
+      - name: amt
+        description: ''
+        type: Number
+      - name: target
+        description: |
+          <p>vector to receive the result.</p>
+        type: p5.Vector
+        optional: true
+    static: 1
+    return:
+      description: slerped vector between v1 and v2
+      type: p5.Vector
+chainable: false
+---
+
+
+# slerp

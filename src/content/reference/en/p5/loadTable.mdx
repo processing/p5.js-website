@@ -1,0 +1,120 @@
+---
+title: loadTable
+module: IO
+submodule: Input
+file: src/io/files.js
+description: >
+  <p>Reads the contents of a file or URL and creates a <a
+  href="#/p5.Table">p5.Table</a> object with
+
+  its values. If a file is specified, it must be located in the sketch's
+
+  "data" folder. The filename parameter can also be a URL to a file found
+
+  online. By default, the file is assumed to be comma-separated (in CSV
+
+  format). Table only looks for a header row if the 'header' option is
+
+  included.</p>
+
+  <p>This method is asynchronous, meaning it may not finish before the next
+
+  line in your sketch is executed. Calling <a
+  href="#/p5/loadTable">loadTable()</a> inside <a
+  href="#/p5/preload">preload()</a>
+
+  guarantees to complete the operation before <a href="#/p5/setup">setup()</a>
+  and <a href="#/p5/draw">draw()</a> are called.
+
+  Outside of <a href="#/p5/preload">preload()</a>, you may supply a callback
+  function to handle the
+
+  object:</p>
+
+  <p>All files loaded and saved use UTF-8 encoding. This method is suitable for
+  fetching files up to size of 64MB.</p>
+line: 300
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class='norender'>
+    <code>
+    // Given the following CSV file called "mammals.csv"
+    // located in the project's "assets" folder:
+    //
+    // id,species,name
+    // 0,Capra hircus,Goat
+    // 1,Panthera pardus,Leopard
+    // 2,Equus zebra,Zebra
+
+    let table;
+
+    function preload() {
+      //my table is comma separated value "csv"
+      //and has a header specifying the columns labels
+      table = loadTable('assets/mammals.csv', 'csv', 'header');
+      //the file can be remote
+      //table = loadTable("http://p5js.org/reference/assets/mammals.csv",
+      //                  "csv", "header");
+    }
+
+    function setup() {
+      //count the columns
+      print(table.getRowCount() + ' total rows in table');
+      print(table.getColumnCount() + ' total columns in table');
+
+      print(table.getColumn('name'));
+      //["Goat", "Leopard", "Zebra"]
+
+      //cycle through the table
+      for (let r = 0; r < table.getRowCount(); r++)
+        for (let c = 0; c < table.getColumnCount(); c++) {
+          print(table.getString(r, c));
+        }
+      describe(`randomly generated text from a file,
+        for example "i smell like butter"`);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: filename
+    description: |
+      <p>name of the file or URL to load</p>
+    type: String
+  - name: extension
+    description: |
+      <p>parse the table by comma-separated values "csv", semicolon-separated
+                                           values "ssv", or tab-separated values "tsv"</p>
+    type: String
+    optional: true
+  - name: header
+    description: |
+      <p>"header" to indicate table has header row</p>
+    type: String
+    optional: true
+  - name: callback
+    description: |
+      <p>function to be executed after
+                                           <a href="#/p5/loadTable">loadTable()</a> completes. On success, the
+                                           <a href="#/p5.Table">Table</a> object is passed in as the
+                                           first argument.</p>
+    type: Function
+    optional: true
+  - name: errorCallback
+    description: |
+      <p>function to be executed if
+                                           there is an error, response is passed
+                                           in as first argument</p>
+    type: Function
+    optional: true
+return:
+  description: <a href="#/p5.Table">Table</a> object containing data
+  type: Object
+chainable: false
+---
+
+
+# loadTable

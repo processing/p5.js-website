@@ -1,0 +1,268 @@
+---
+title: applyMatrix
+module: Transform
+submodule: Transform
+file: src/core/transform.js
+description: >
+  <p>Multiplies the current matrix by the one specified through the parameters.
+
+  This is a powerful operation that can perform the equivalent of translate,
+
+  scale, shear and rotate all at once. You can learn more about transformation
+
+  matrices on <a href="https://en.wikipedia.org/wiki/Transformation_matrix">
+
+  Wikipedia</a>.</p>
+
+  <p>The naming of the arguments here follows the naming of the <a href=
+
+  "https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-transform">
+
+  WHATWG specification</a> and corresponds to a
+
+  transformation matrix of the
+
+  form:</p>
+
+  <blockquote>
+
+  <p><img style="max-width: 150px" src="assets/transformation-matrix.png"
+
+  alt="The transformation matrix used when applyMatrix is called"/></p>
+
+  </blockquote>
+
+  <p><img style="max-width: 300px" src="assets/transformation-matrix-4-4.png"
+
+  alt="The transformation matrix used when applyMatrix is called with 4x4
+  matrix"/></p>
+line: 11
+isConstructor: false
+itemtype: method
+alt: |-
+  A rectangle translating to the right
+  A rectangle shrinking to the center
+  A rectangle rotating clockwise about the center
+  A rectangle shearing
+  A rectangle in the upper left corner
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      frameRate(10);
+      rectMode(CENTER);
+    }
+
+    function draw() {
+      let step = frameCount % 20;
+      background(200);
+      // Equivalent to translate(x, y);
+      applyMatrix(1, 0, 0, 1, 40 + step, 50);
+      rect(0, 0, 50, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      frameRate(10);
+      rectMode(CENTER);
+    }
+
+    function draw() {
+      let step = frameCount % 20;
+      background(200);
+      translate(50, 50);
+      // Equivalent to scale(x, y);
+      applyMatrix(1 / step, 0, 0, 1 / step, 0, 0);
+      rect(0, 0, 50, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      frameRate(10);
+      rectMode(CENTER);
+    }
+
+    function draw() {
+      let step = frameCount % 20;
+      let angle = map(step, 0, 20, 0, TWO_PI);
+      let cos_a = cos(angle);
+      let sin_a = sin(angle);
+      background(200);
+      translate(50, 50);
+      // Equivalent to rotate(angle);
+      applyMatrix(cos_a, sin_a, -sin_a, cos_a, 0, 0);
+      rect(0, 0, 50, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      frameRate(10);
+      rectMode(CENTER);
+    }
+
+    function draw() {
+      let step = frameCount % 20;
+      let angle = map(step, 0, 20, -PI / 4, PI / 4);
+      background(200);
+      translate(50, 50);
+      // equivalent to shearX(angle);
+      let shear_factor = 1 / tan(PI / 2 - angle);
+      applyMatrix(1, 0, shear_factor, 1, 0, 0);
+      rect(0, 0, 50, 50);
+    }
+    </code>
+    </div>
+
+    <div modernizr='webgl'>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      noFill();
+    }
+
+    function draw() {
+      background(200);
+      rotateY(PI / 6);
+      stroke(153);
+      box(35);
+      let rad = millis() / 1000;
+      // Set rotation angles
+      let ct = cos(rad);
+      let st = sin(rad);
+      // Matrix for rotation around the Y axis
+      applyMatrix(
+        ct, 0.0,  st,  0.0,
+        0.0, 1.0, 0.0,  0.0,
+        -st, 0.0,  ct,  0.0,
+        0.0, 0.0, 0.0,  1.0
+      );
+      stroke(255);
+      box(50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function draw() {
+      background(200);
+      let testMatrix = [1, 0, 0, 1, 0, 0];
+      applyMatrix(testMatrix);
+      rect(0, 0, 50, 50);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 11
+    params:
+      - name: arr
+        description: >
+          <p>an array of numbers - should be 6 or 16 length (2×3 or 4×4 matrix
+          values)</p>
+        type: Array
+    chainable: 1
+  - line: 157
+    params:
+      - name: a
+        description: |
+          <p>numbers which define the 2×3 or 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: b
+        description: |
+          <p>numbers which define the 2×3 or 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: c
+        description: |
+          <p>numbers which define the 2×3 or 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: d
+        description: |
+          <p>numbers which define the 2×3 or 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: e
+        description: |
+          <p>numbers which define the 2×3 or 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: f
+        description: |
+          <p>numbers which define the 2×3 or 4×4 matrix to be multiplied</p>
+        type: Number
+    chainable: 1
+  - line: 167
+    params:
+      - name: a
+        description: ''
+        type: Number
+      - name: b
+        description: ''
+        type: Number
+      - name: c
+        description: ''
+        type: Number
+      - name: d
+        description: ''
+        type: Number
+      - name: e
+        description: ''
+        type: Number
+      - name: f
+        description: ''
+        type: Number
+      - name: g
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: h
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: i
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: j
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: k
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: l
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: m
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: 'n'
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: o
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+      - name: p
+        description: |
+          <p>numbers which define the 4×4 matrix to be multiplied</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# applyMatrix

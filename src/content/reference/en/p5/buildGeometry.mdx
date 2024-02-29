@@ -1,0 +1,86 @@
+---
+title: buildGeometry
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/3d_primitives.js
+description: >
+  <p>Creates a new <a href="#/p5.Geometry">p5.Geometry</a> that contains all
+
+  the shapes drawn in a provided callback function. The returned combined shape
+
+  can then be drawn all at once using <a href="#/p5/model">model()</a>.</p>
+
+  <p>If you need to draw complex shapes every frame which don't change over
+  time,
+
+  combining them with <code>buildGeometry()</code> once and then drawing that
+  will run
+
+  faster than repeatedly drawing the individual pieces.</p>
+
+  <p>One can also draw shapes directly between
+
+  <a href="#/p5/beginGeometry">beginGeometry()</a> and
+
+  <a href="#/p5/endGeometry">endGeometry()</a> instead of using a callback
+
+  function.</p>
+line: 102
+isConstructor: false
+itemtype: method
+alt: A cluster of spheres.
+example:
+  - |-
+
+    <div>
+    <code>
+    let particles;
+    let button;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      button = createButton('New');
+      button.mousePressed(makeParticles);
+      makeParticles();
+    }
+
+    function makeParticles() {
+      if (particles) freeGeometry(particles);
+
+      particles = buildGeometry(() => {
+        for (let i = 0; i < 60; i++) {
+          push();
+          translate(
+            randomGaussian(0, 20),
+            randomGaussian(0, 20),
+            randomGaussian(0, 20)
+          );
+          sphere(5);
+          pop();
+        }
+      });
+    }
+
+    function draw() {
+      background(255);
+      noStroke();
+      lights();
+      orbitControl();
+      model(particles);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: callback
+    description: |
+      <p>A function that draws shapes.</p>
+    type: Function
+return:
+  description: The model that was built from the callback function.
+  type: p5.Geometry
+chainable: false
+---
+
+
+# buildGeometry

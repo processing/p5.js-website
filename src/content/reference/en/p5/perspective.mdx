@@ -1,0 +1,125 @@
+---
+title: perspective
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Sets a perspective projection for the current camera in a 3D sketch.
+
+  This projection represents depth through foreshortening: objects
+
+  that are close to the camera appear their actual size while those
+
+  that are further away from the camera appear smaller.</p>
+
+  <p>The parameters to this function define the viewing frustum
+
+  (the truncated pyramid within which objects are seen by the camera) through
+
+  vertical field of view, aspect ratio (usually width/height), and near and far
+
+  clipping planes.</p>
+
+  <p>If no parameters are given, the default values are used as:</p>
+
+  <ul>
+
+  <li><code>fov</code> : The default field of view for the camera is such that
+  the full height of renderer is visible when it is positioned at a default
+  distance of 800 units from the camera.</li>
+
+  <li><code>aspect</code> : The default aspect ratio is the ratio of renderer's
+  width to renderer's height.</li>
+
+  <li><code>near</code> : The default value for the near clipping plane is 80,
+  which is 0.1 times the default distance from the camera to its subject.</li>
+
+  <li><code>far</code> : The default value for the far clipping plane is 8000,
+  which is 10 times the default distance from the camera to its subject.</li>
+
+  </ul>
+
+  <p>If you prefer a fixed field of view, follow these steps:</p>
+
+  <ol>
+
+  <li>Choose your desired field of view angle (<code>fovy</code>). This is how
+  wide the camera can see.</li>
+
+  <li>To ensure that you can see the entire width across horizontally and height
+  across vertically, place the camera a distance of <code>(height / 2) /
+  tan(fovy / 2)</code> back from its subject.</li>
+
+  <li>Call perspective with the chosen field of view, canvas aspect ratio, and
+  near/far values:
+
+  <code>perspective(fovy, width / height, cameraDistance / 10, cameraDistance *
+  10);</code></li>
+
+  </ol>
+line: 121
+isConstructor: false
+itemtype: method
+alt: 'two colored 3D boxes move back and forth, rotating as mouse is dragged.'
+example:
+  - |-
+
+    <div>
+    <code>
+    //drag the mouse to look around!
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
+      perspective(PI / 3.0, width / height, 0.1, 500);
+      describe(
+        'two colored 3D boxes move back and forth, rotating as mouse is dragged.'
+      );
+    }
+    function draw() {
+      background(200);
+      orbitControl();
+      normalMaterial();
+
+      rotateX(-0.3);
+      rotateY(-0.2);
+      translate(0, 0, -50);
+
+      push();
+      translate(-15, 0, sin(frameCount / 30) * 65);
+      box(30);
+      pop();
+      push();
+      translate(15, 0, sin(frameCount / 30 + PI) * 65);
+      box(30);
+      pop();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: fovy
+    description: |
+      <p>camera frustum vertical field of view,
+                                from bottom to top of view, in <a href="#/p5/angleMode">angleMode</a> units</p>
+    type: Number
+    optional: true
+  - name: aspect
+    description: |
+      <p>camera frustum aspect ratio</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>frustum near plane length</p>
+    type: Number
+    optional: true
+  - name: far
+    description: |
+      <p>frustum far plane length</p>
+    type: Number
+    optional: true
+chainable: true
+---
+
+
+# perspective

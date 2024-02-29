@@ -1,0 +1,96 @@
+---
+title: camera
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: |
+  <p>Sets the camera's position and orientation.
+  Accepts the same parameters as the global
+  <a href="#/p5/camera">camera()</a>.
+  More information on this function can be found there.</p>
+line: 1250
+isConstructor: false
+itemtype: method
+alt: |-
+  An interactive example of a red cube with 3 sliders for moving it across x, y,
+  z axis and 3 sliders for shifting its center.
+example:
+  - |-
+
+    <div>
+    <code>
+    let cam;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      // Create a camera.
+      // createCamera() sets the newly created camera as
+      // the current (active) camera.
+      cam = createCamera();
+    }
+
+    function draw() {
+      background(204);
+      // Move the camera away from the plane by a sin wave
+      cam.camera(0, 0, 20 + sin(frameCount * 0.01) * 10, 0, 0, 0, 0, 1, 0);
+      plane(10, 10);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    // move slider to see changes!
+    // sliders control the first 6 parameters of camera()
+
+    let sliderGroup = [];
+    let X;
+    let Y;
+    let Z;
+    let centerX;
+    let centerY;
+    let centerZ;
+    let h = 20;
+    let cam;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      // create a camera
+      cam = createCamera();
+      cam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+      // create sliders
+      for (var i = 0; i < 6; i++) {
+        if (i === 2) {
+          sliderGroup[i] = createSlider(10, 400, 200);
+        } else {
+          sliderGroup[i] = createSlider(-400, 400, 0);
+        }
+        h = map(i, 0, 6, 5, 85);
+        sliderGroup[i].position(10, height + h);
+        sliderGroup[i].style('width', '80px');
+      }
+    }
+
+    function draw() {
+      background(60);
+      // assigning sliders' value to each parameters
+      X = sliderGroup[0].value();
+      Y = sliderGroup[1].value();
+      Z = sliderGroup[2].value();
+      centerX = sliderGroup[3].value();
+      centerY = sliderGroup[4].value();
+      centerZ = sliderGroup[5].value();
+      cam.camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
+      stroke(255);
+      fill(255, 102, 94);
+      box(85);
+    }
+    </code>
+    </div>
+class: p5.Camera
+chainable: false
+---
+
+
+# camera

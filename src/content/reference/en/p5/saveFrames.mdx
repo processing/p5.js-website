@@ -1,0 +1,127 @@
+---
+title: saveFrames
+module: Image
+submodule: Image
+file: src/image/image.js
+description: >
+  <p>Captures a sequence of frames from the canvas that can be used to create a
+
+  movie. Frames are downloaded as individual image files by default.</p>
+
+  <p>The first parameter, <code>filename</code>, sets the prefix for the file
+  names. For
+
+  example, setting the prefix to <code>'frame'</code> would generate the image
+  files
+
+  <code>frame0.png</code>, <code>frame1.png</code>, and so on. The second
+  parameter, <code>extension</code>,
+
+  sets the file type to either <code>'png'</code> or <code>'jpg'</code>.</p>
+
+  <p>The third parameter, <code>duration</code>, sets the duration to record in
+  seconds.
+
+  The maximum duration is 15 seconds. The fourth parameter,
+  <code>framerate</code>, sets
+
+  the number of frames to record per second. The maximum frame rate value is
+
+  22. Limits are placed on <code>duration</code> and <code>framerate</code> to
+  avoid using too much
+
+  memory. Recording large canvases can easily crash sketches or even web
+
+  browsers.</p>
+
+  <p>The fifth parameter, <code>callback</code>, is optional. If a function is
+  passed,
+
+  image files won't be saved by default. The callback function can be used
+
+  to process an array containing the data for each captured frame. The array
+
+  of image data contains a sequence of objects with three properties for each
+
+  frame: <code>imageData</code>, <code>filename</code>, and
+  <code>extension</code>.</p>
+line: 460
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function draw() {
+      let r = frameCount % 255;
+      let g = 50;
+      let b = 100;
+      background(r, g, b);
+
+      describe('A square repeatedly changes color from blue to pink.');
+    }
+
+    function keyPressed() {
+      if (key === 's') {
+        saveFrames('frame', 'png', 1, 5);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function draw() {
+      let r = frameCount % 255;
+      let g = 50;
+      let b = 100;
+      background(r, g, b);
+
+      describe('A square repeatedly changes color from blue to pink.');
+    }
+
+    function mousePressed() {
+      saveFrames('frame', 'png', 1, 5, data => {
+        // Prints an array of objects containing raw image data,
+        // filenames, and extensions.
+        print(data);
+      });
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: filename
+    description: |
+      <p>prefix of file name.</p>
+    type: String
+  - name: extension
+    description: |
+      <p>file extension, either 'jpg' or 'png'.</p>
+    type: String
+  - name: duration
+    description: >
+      <p>duration in seconds to record. This parameter will be constrained to be
+      less or equal to 15.</p>
+    type: Number
+  - name: framerate
+    description: >
+      <p>number of frames to save per second. This parameter will be constrained
+      to be less or equal to 22.</p>
+    type: Number
+  - name: callback
+    description: |
+      <p>callback function that will be executed
+                                       to handle the image data. This function
+                                       should accept an array as argument. The
+                                       array will contain the specified number of
+                                       frames of objects. Each object has three
+                                       properties: <code>imageData</code>, <code>filename</code>, and <code>extension</code>.</p>
+    type: Function(Array)
+    optional: true
+chainable: false
+---
+
+
+# saveFrames

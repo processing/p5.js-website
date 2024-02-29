@@ -1,0 +1,102 @@
+---
+title: p5.FFT
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |-
+  <p>FFT (Fast Fourier Transform) is an analysis algorithm that
+  isolates individual
+  <a href="https://en.wikipedia.org/wiki/Audio_frequency">
+  audio frequencies</a> within a waveform.</p>
+
+  <p>Once instantiated, a p5.FFT object can return an array based on
+  two types of analyses: <br> • <code>FFT.waveform()</code> computes
+  amplitude values along the time domain. The array indices correspond
+  to samples across a brief moment in time. Each value represents
+  amplitude of the waveform at that sample of time.<br>
+  • <code>FFT.analyze() </code> computes amplitude values along the
+  frequency domain. The array indices correspond to frequencies (i.e.
+  pitches), from the lowest to the highest that humans can hear. Each
+  value represents amplitude at that slice of the frequency spectrum.
+  Use with <code>getEnergy()</code> to measure amplitude at specific
+  frequencies, or within a range of frequencies. </p>
+
+  <p>FFT analyzes a very short snapshot of sound called a sample
+  buffer. It returns an array of amplitude measurements, referred
+  to as <code>bins</code>. The array is 1024 bins long by default.
+  You can change the bin array length, but it must be a power of 2
+  between 16 and 1024 in order for the FFT algorithm to function
+  correctly. The actual size of the FFT buffer is twice the
+  number of bins, so given a standard sample rate, the buffer is
+  2048/44100 seconds long.</p>
+line: 3347
+isConstructor: true
+params:
+  - name: smoothing
+    description: |
+      <p>Smooth results of Freq Spectrum.
+                                    0.0 < smoothing < 1.0.
+                                    Defaults to 0.8.</p>
+    type: Number
+    optional: true
+  - name: bins
+    description: |
+      <p>Length of resulting array.
+                                Must be a power of two between
+                                16 and 1024. Defaults to 1024.</p>
+    type: Number
+    optional: true
+example:
+  - |-
+
+    <div><code>
+    function preload(){
+      sound = loadSound('assets/Damscray_DancingTiger.mp3');
+    }
+
+    function setup(){
+      let cnv = createCanvas(100,100);
+      cnv.mouseClicked(togglePlay);
+      fft = new p5.FFT();
+      sound.amp(0.2);
+    }
+
+    function draw(){
+      background(220);
+
+      let spectrum = fft.analyze();
+      noStroke();
+      fill(255, 0, 255);
+      for (let i = 0; i< spectrum.length; i++){
+        let x = map(i, 0, spectrum.length, 0, width);
+        let h = -height + map(spectrum[i], 0, 255, height, 0);
+        rect(x, height, width / spectrum.length, h )
+      }
+
+      let waveform = fft.waveform();
+      noFill();
+      beginShape();
+      stroke(20);
+      for (let i = 0; i < waveform.length; i++){
+        let x = map(i, 0, waveform.length, 0, width);
+        let y = map( waveform[i], -1, 1, 0, height);
+        vertex(x,y);
+      }
+      endShape();
+
+      text('tap to play', 20, 20);
+    }
+
+    function togglePlay() {
+      if (sound.isPlaying()) {
+        sound.pause();
+      } else {
+        sound.loop();
+      }
+    }
+    </code></div>
+chainable: false
+---
+
+
+# p5.FFT

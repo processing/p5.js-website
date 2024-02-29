@@ -1,0 +1,63 @@
+---
+title: draw
+module: Rendering
+submodule: ''
+file: src/webgl/p5.Framebuffer.js
+description: >
+  <p>Run a function while drawing to the framebuffer rather than to its canvas.
+
+  This is equivalent to calling <code>framebuffer.begin()</code>, running the
+  function,
+
+  and then calling <code>framebuffer.end()</code>, but ensures that one never
+
+  accidentally forgets <code>begin</code> or <code>end</code>.</p>
+line: 947
+isConstructor: false
+itemtype: method
+alt: |-
+  A video of a floating and rotating red cube is pasted twice on the
+  canvas: once in the top left, and again, larger, in the bottom right.
+example:
+  - |-
+
+    <div>
+    <code>
+    let framebuffer;
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      framebuffer = createFramebuffer();
+      noStroke();
+    }
+
+    function draw() {
+      // Draw to the framebuffer
+      framebuffer.draw(function() {
+        background(255);
+        translate(0, 10*sin(frameCount * 0.01), 0);
+        rotateX(frameCount * 0.01);
+        rotateY(frameCount * 0.01);
+        fill(255, 0, 0);
+        box(50);
+      });
+
+      background(100);
+      // Draw the framebuffer to the main canvas
+      image(framebuffer, -50, -50, 25, 25);
+      image(framebuffer, 0, 0, 35, 35);
+    }
+    </code>
+    </div>
+class: p5.Framebuffer
+params:
+  - name: callback
+    description: |
+      <p>A function to run that draws to the canvas. The
+      function will immediately be run, but it will draw to the framebuffer
+      instead of the canvas.</p>
+    type: Function
+chainable: false
+---
+
+
+# draw

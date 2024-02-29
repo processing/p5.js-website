@@ -1,0 +1,133 @@
+---
+title: setUniform
+module: 3D
+submodule: Material
+file: src/webgl/p5.Shader.js
+description: >
+  <p>Used to set the uniforms of a
+
+  <a href="#/p5.Shader">p5.Shader</a> object.</p>
+
+  <p>Uniforms are used as a way to provide shader programs
+
+  (which run on the GPU) with values from a sketch
+
+  (which runs on the CPU).</p>
+
+  <p>Here are some examples of uniforms you can make:</p>
+
+  <ul>
+
+  <li>booleans<ul>
+
+  <li>Example: <code>setUniform('x', true)</code> becomes <code>uniform float
+  x</code> with the value <code>1.0</code></li>
+
+  </ul>
+
+  </li>
+
+  <li>numbers<ul>
+
+  <li>Example: <code>setUniform('x', -2)</code> becomes <code>uniform float
+  x</code> with the value <code>-2.0</code></li>
+
+  </ul>
+
+  </li>
+
+  <li>arrays of numbers<ul>
+
+  <li>Example: <code>setUniform('x', [0, 0.5, 1])</code> becomes <code>uniform
+  vec3 x</code> with the value <code>vec3(0.0, 0.5, 1.0)</code></li>
+
+  </ul>
+
+  </li>
+
+  <li>a p5.Image, p5.Graphics, p5.MediaElement, or p5.Texture<ul>
+
+  <li>Example: <code>setUniform('x', img)</code> becomes <code>uniform sampler2D
+  x</code></li>
+
+  </ul>
+
+  </li>
+
+  </ul>
+line: 367
+isConstructor: false
+itemtype: method
+alt: >-
+  canvas toggles between a circular gradient of orange and blue vertically. and
+  a circular gradient of red and green moving horizontally when mouse is
+  clicked/pressed.
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    // Click within the image to toggle the value of uniforms
+    // Note: for an alternative approach to the same example,
+    // involving toggling between shaders please refer to:
+    // https://p5js.org/reference/#/p5/shader
+
+    let grad;
+    let showRedGreen = false;
+
+    function preload() {
+      // note that we are using two instances
+      // of the same vertex and fragment shaders
+      grad = loadShader('assets/shader.vert', 'assets/shader-gradient.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      shader(grad);
+      noStroke();
+
+      describe(
+        'canvas toggles between a circular gradient of orange and blue vertically. and a circular gradient of red and green moving horizontally when mouse is clicked/pressed.'
+      );
+    }
+
+    function draw() {
+      // update the offset values for each scenario,
+      // moving the "grad" shader in either vertical or
+      // horizontal direction each with differing colors
+
+      if (showRedGreen === true) {
+        grad.setUniform('colorCenter', [1, 0, 0]);
+        grad.setUniform('colorBackground', [0, 1, 0]);
+        grad.setUniform('offset', [sin(millis() / 2000), 1]);
+      } else {
+        grad.setUniform('colorCenter', [1, 0.5, 0]);
+        grad.setUniform('colorBackground', [0.226, 0, 0.615]);
+        grad.setUniform('offset', [0, sin(millis() / 2000) + 1]);
+      }
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+
+    function mouseClicked() {
+      showRedGreen = !showRedGreen;
+    }
+    </code>
+    </div>
+class: p5.Shader
+params:
+  - name: uniformName
+    description: |
+      <p>the name of the uniform.
+      Must correspond to the name used in the vertex and fragment shaders</p>
+    type: String
+  - name: data
+    description: |
+      <p>The value to assign to the uniform. This can be
+      a boolean (true/false), a number, an array of numbers, or
+      an image (p5.Image, p5.Graphics, p5.MediaElement, p5.Texture)</p>
+    type: 'Boolean|Number|Number[]|p5.Image|p5.Graphics|p5.MediaElement|p5.Texture'
+chainable: true
+---
+
+
+# setUniform

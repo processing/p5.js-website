@@ -1,0 +1,73 @@
+---
+title: triggerAttack
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |
+  <p>Trigger the Attack, and Decay portion of the Envelope.
+  Similar to holding down a key on a piano, but it will
+  hold the sustain level until you let go. Input can be
+  any p5.sound object, or a <a href="
+  http://docs.webplatform.org/wiki/apis/webaudio/AudioParam">
+  Web Audio Param</a>.</p>
+line: 5148
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div><code>
+    let attackTime = 0.001;
+    let decayTime = 0.2;
+    let susPercent = 0.3;
+    let releaseTime = 0.4;
+    let env, triOsc;
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      background(220);
+      textAlign(CENTER);
+      textSize(10);
+      text('tap to triggerAttack', width/2, height/2);
+
+      env = new p5.Envelope();
+      env.setADSR(attackTime, decayTime, susPercent, releaseTime);
+      env.setRange(1.0, 0.0);
+      triOsc = new p5.Oscillator('triangle');
+      triOsc.freq(220);
+
+      cnv.mousePressed(envAttack);
+    }
+
+    function envAttack()  {
+      background(0, 255, 255);
+      text('release to release', width/2, height/2);
+
+      // ensures audio is enabled. See also: `userStartAudio`
+      triOsc.start();
+
+      env.triggerAttack(triOsc);
+    }
+
+    function mouseReleased() {
+      background(220);
+      text('tap to triggerAttack', width/2, height/2);
+
+      env.triggerRelease(triOsc);
+    }
+    </code></div>
+class: p5.Envelope
+params:
+  - name: unit
+    description: |
+      <p>p5.sound Object or Web Audio Param</p>
+    type: Object
+  - name: secondsFromNow
+    description: |
+      <p>time from now (in seconds)</p>
+    type: Number
+chainable: false
+---
+
+
+# triggerAttack

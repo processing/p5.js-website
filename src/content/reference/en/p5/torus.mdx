@@ -1,0 +1,126 @@
+---
+title: torus
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/3d_primitives.js
+description: >
+  <p>Draw a torus with given radius and tube radius</p>
+
+  <p>DetailX and detailY determine the number of subdivisions in the x-dimension
+  and
+
+  the y-dimension of a torus. More subdivisions make the torus appear to be
+  smoother.
+
+  The default and maximum values for detailX and detailY are 24 and 16,
+  respectively.
+
+  Setting them to relatively small values like 4 and 6 allows you to create new
+
+  shapes other than a torus.</p>
+line: 1006
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // draw a spinning torus
+    // with ring radius 30 and tube radius 15
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
+      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+      describe('a rotating white torus');
+    }
+
+    function draw() {
+      background(205, 102, 94);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      torus(30, 15);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    // slide to see how detailX works
+    let detailX;
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
+      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+      detailX = createSlider(3, 24, 3);
+      detailX.position(10, height + 5);
+      detailX.style('width', '80px');
+      describe(
+        'a rotating white torus with limited X detail, with a slider that adjusts detailX'
+      );
+    }
+
+    function draw() {
+      background(205, 102, 94);
+      rotateY(millis() / 1000);
+      torus(30, 15, detailX.value(), 12);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    // slide to see how detailY works
+    let detailY;
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
+      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+      detailY = createSlider(3, 16, 3);
+      detailY.position(10, height + 5);
+      detailY.style('width', '80px');
+      describe(
+        'a rotating white torus with limited Y detail, with a slider that adjusts detailY'
+      );
+    }
+
+    function draw() {
+      background(205, 102, 94);
+      rotateY(millis() / 1000);
+      torus(30, 15, 16, detailY.value());
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: radius
+    description: |
+      <p>radius of the whole ring</p>
+    type: Number
+    optional: true
+  - name: tubeRadius
+    description: |
+      <p>radius of the tube</p>
+    type: Number
+    optional: true
+  - name: detailX
+    description: |
+      <p>number of segments in x-dimension,
+                                     the more segments the smoother geometry
+                                     default is 24</p>
+    type: Integer
+    optional: true
+  - name: detailY
+    description: |
+      <p>number of segments in y-dimension,
+                                     the more segments the smoother geometry
+                                     default is 16</p>
+    type: Integer
+    optional: true
+chainable: true
+---
+
+
+# torus

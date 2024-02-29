@@ -1,0 +1,78 @@
+---
+title: lightFalloff
+module: 3D
+submodule: Lights
+file: src/webgl/light.js
+description: >
+  <p>Sets the falloff rate for <a href="#/p5/pointLight">pointLight()</a>
+
+  and <a href="#/p5/spotLight">spotLight()</a>.</p>
+
+  <p>lightFalloff() affects only the lights which are created after it
+
+  in the code.</p>
+
+  <p>The <code>constant</code>, <code>linear</code>, an <code>quadratic</code>
+  parameters are used to calculate falloff as follows:</p>
+
+  <p>d = distance from light position to vertex position</p>
+
+  <p>falloff = 1 / (CONSTANT + d * LINEAR + (d * d) * QUADRATIC)</p>
+line: 646
+isConstructor: false
+itemtype: method
+alt: Two spheres with different falloff values show different intensity of light
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      noStroke();
+      describe(
+        'Two spheres with different falloff values show different intensity of light'
+      );
+    }
+    function draw() {
+      background(125);
+
+      let locX = mouseX - width / 2;
+      let locY = mouseY - height / 2;
+      locX /= 2; // half scale
+
+      lightFalloff(1, 0, 0);
+      push();
+      translate(-25, 0, 0);
+      pointLight(250, 250, 250, locX - 25, locY, 50);
+      sphere(20);
+      pop();
+
+      lightFalloff(0.97, 0.03, 0);
+      push();
+      translate(25, 0, 0);
+      pointLight(250, 250, 250, locX + 25, locY, 50);
+      sphere(20);
+      pop();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: constant
+    description: |
+      <p>CONSTANT value for determining falloff</p>
+    type: Number
+  - name: linear
+    description: |
+      <p>LINEAR value for determining falloff</p>
+    type: Number
+  - name: quadratic
+    description: |
+      <p>QUADRATIC value for determining falloff</p>
+    type: Number
+chainable: true
+---
+
+
+# lightFalloff

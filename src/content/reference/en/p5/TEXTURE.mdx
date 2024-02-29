@@ -1,0 +1,144 @@
+---
+title: texture
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Sets the texture that will be used to render subsequent shapes.</p>
+
+  <p>A texture is like a "skin" that wraps around a 3D geometry. Currently
+
+  supported textures are images, video, and offscreen renders.</p>
+
+  <p>To texture a geometry created with <a
+  href="#/p5/beginShape">beginShape()</a>,
+
+  you will need to specify uv coordinates in <a
+  href="#/p5/vertex">vertex()</a>.</p>
+
+  <p>Note, texture() can only be used in WEBGL mode.</p>
+
+  <p>You can view more materials in this
+
+  <a href="https://p5js.org/examples/3d-materials.html">example</a>.</p>
+line: 529
+isConstructor: false
+itemtype: method
+alt: 'quad with a texture, mapped using normalized coordinates'
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+    function preload() {
+      img = loadImage('assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('spinning cube with a texture from an image');
+    }
+
+    function draw() {
+      background(0);
+      rotateZ(frameCount * 0.01);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      //pass image as texture
+      texture(img);
+      box(width / 2);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    let pg;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      pg = createGraphics(200, 200);
+      pg.textSize(75);
+      describe('plane with a texture from an image created by createGraphics()');
+    }
+
+    function draw() {
+      background(0);
+      pg.background(255);
+      pg.text('hello!', 0, 100);
+      //pass image as texture
+      texture(pg);
+      rotateX(0.5);
+      noStroke();
+      plane(50);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    let vid;
+    function preload() {
+      vid = createVideo('assets/fingers.mov');
+      vid.hide();
+    }
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('rectangle with video as texture');
+    }
+
+    function draw() {
+      background(0);
+      //pass video frame as texture
+      texture(vid);
+      rect(-40, -40, 80, 80);
+    }
+
+    function mousePressed() {
+      vid.loop();
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('quad with a texture, mapped using normalized coordinates');
+    }
+
+    function draw() {
+      background(0);
+      texture(img);
+      textureMode(NORMAL);
+      beginShape();
+      vertex(-40, -40, 0, 0);
+      vertex(40, -40, 1, 0);
+      vertex(40, 40, 1, 1);
+      vertex(-40, 40, 0, 1);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: tex
+    description: |
+      <p>image to use as texture</p>
+    type: >-
+      p5.Image|p5.MediaElement|p5.Graphics|p5.Texture|p5.Framebuffer|p5.FramebufferTexture
+chainable: true
+---
+
+
+# texture

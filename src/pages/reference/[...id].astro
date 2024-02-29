@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const referenceEntries = await getCollection("reference");
+
+  const paths = referenceEntries.map((entry) => ({
+    params: {
+      // We cannot use Astro's default slug because it removes characters like '.'
+      // We use the id instead and remove the file extension
+      id: entry.id.replace(/\.mdx$/, ""),
+    },
+  }));
+
+  return paths;
+}
+
+const { id } = Astro.params;
+const referenceEntries = await getCollection("reference");
+
+// TODO: Find correct way to handle Zod -> TS type inference
+const entriesById: Record<string, any> = referenceEntries.reduce<
+  Record<string, any>
+>((acc, entry) => {
+  const id = entry.id.replace(/\.mdx$/, "");
+  acc[id] = entry;
+  return acc;
+}, {});
+
+const refEntry = entriesById[id];
+---
+
+<article>
+  <h1>{refEntry.data.title}</h1>
+  <div set:html={refEntry.data.description} />
+</article>
