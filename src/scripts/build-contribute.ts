@@ -26,6 +26,14 @@ const sourceDirectory = path.join(clonedRepoPath, "contributor_docs/");
 const outputDirectory = path.join(__dirname, "../content/contributor-docs/");
 /* Name of the folder within `sourceDirectory` folder where static assets are found */
 const assetsSubFolder = "images";
+/* Base URL to refer to assets from final mdx docs*/
+const assetsOutputBaseUrl = path.join("images/contributor-docs");
+/* Where the image assets will be output for the website */
+const assetsOutputDirectory = path.join(
+  repoRootPath,
+  "public",
+  assetsOutputBaseUrl,
+);
 
 /* Directories that are translations
  * TODO: tie this to supported languages in astro config
@@ -64,7 +72,7 @@ const convertMdtoMdx = async (
 
   const contentWithRewrittenLinks = rewriteRelativeImageLinks(
     rewriteRelativeMdLinks(contents),
-    "images/contributor-docs",
+    assetsOutputBaseUrl,
   );
 
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
@@ -88,13 +96,9 @@ const convertMdtoMdx = async (
  * @param dirPath path to the folder of assets
  */
 const moveAssetsFolder = async (dirPath: string) => {
-  await copyDirectory(
-    dirPath,
-    path.join(repoRootPath, "public/images/contributor-docs"),
-    {
-      recursive: true,
-    },
-  );
+  await copyDirectory(dirPath, assetsOutputDirectory, {
+    recursive: true,
+  });
 };
 
 /**
