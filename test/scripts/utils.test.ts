@@ -32,5 +32,3 @@ test("rewriteRelativeMdLinks", () => {
   - [lol](./some-where-else/wow/)
   `);
 });
-
-});
