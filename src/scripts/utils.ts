@@ -122,7 +122,33 @@ export const readFile = async (filePath: string) => {
 };
 
 /**
- * Wrapper around `fs.cp` that catches errors
+ * Get all the file paths in a directory and its subdirectories
+ * @param directory Top-level directory to search for files
+ * @returns string[] an array of all the file paths in the directory and its subdirectories
+ */
+export const getAllFiles = async (directory: string) => {
+  const files: string[] = [];
+
+  // Function to recursively read the directory and its subdirectories
+  const readDirectory = async (dir: string) => {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        await readDirectory(fullPath);
+      } else {
+        files.push(fullPath);
+      }
+    }
+  };
+
+  await readDirectory(directory);
+  return files;
+};
+
+/* Wrapper around `fs.cp` that catches errors
  * @param filePath Path to the file
  * @param destinationPath Where to copy it
  * @param cpOptions Options passed to `fs.cp`
