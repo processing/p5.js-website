@@ -70,9 +70,11 @@ const convertMdtoMdx = async (
   // this means the read file failed for some reason
   if (contents === undefined) return;
 
-  const contentWithRewrittenLinks = rewriteRelativeImageLinks(
-    rewriteRelativeMdLinks(contents),
-    assetsOutputBaseUrl,
+  const contentWithRewrittenLinksAndComments = rewriteComments(
+    rewriteRelativeImageLinks(
+      rewriteRelativeMdLinks(contents),
+      assetsOutputBaseUrl,
+    ),
   );
 
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
@@ -82,8 +84,8 @@ const convertMdtoMdx = async (
 ---
 ${frontmatterObject ? YAML.stringify(frontmatterObject) : ""}
 ---
-${contentWithRewrittenLinks}
-  `;
+${contentWithRewrittenLinksAndComments}
+`;
 
   await writeFile(newFilePath, newFileContents);
 
@@ -123,6 +125,13 @@ export const rewriteRelativeImageLinks = (
   return markdownText.replace(regexPattern, (match, linkText, url) => {
     const { base } = path.parse(url);
     return `![${linkText}](${assetsFolderUrl}/${base})`;
+  });
+};
+
+export const rewriteComments = (markdownText: string): string => {
+  const regexPattern: RegExp = /<!--([^]+?)-->/g;
+  return markdownText.replace(regexPattern, (match, commentContent) => {
+    return `{/* ${commentContent} */}`;
   });
 };
 
