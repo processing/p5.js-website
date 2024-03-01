@@ -192,6 +192,26 @@ export const copyDirectory = async (
 };
 
 /**
+ * Wrapper around `fs.cp` that catches errors
+ * @param filePath Path to the file
+ * @param destinationPath Where to copy it
+ * @param cpOptions Options passed to `fs.cp`
+ *
+ * @returns string the content of the file
+ */
+export const copyDirectory = async (
+  directoryPath: string,
+  destinationPath: string,
+  cpOpts?: CopyOptions,
+) => {
+  try {
+    await cp(directoryPath, destinationPath, cpOpts);
+  } catch (err) {
+    console.error(`Error copying file: ${err}`);
+  }
+};
+
+/**
  * The preprocessor.js file in the library repo has an absolute path to the parameterData.json file.
  * This function modifies the absolute path to a relative path.
  * @param localSavePath The path that the library repo is saved to
