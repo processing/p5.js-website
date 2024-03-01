@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import { exampleContentSlugToLegacyWebsiteSlug } from "./utils";
+import { readFile } from "fs/promises";
+
+export async function getStaticPaths() {
+  const examples = await getCollection("examples");
+  const paths = await Promise.all(
+    examples.map(async (example) => {
+      const codePath = `src/content/examples/${example.id.replace("description.mdx", "code.js")}`;
+      const code = await readFile(codePath, "utf-8");
+      return {
+        params: { slug: exampleContentSlugToLegacyWebsiteSlug(example.slug) },
+        props: { example, code },
+      };
+    }),
+  );
+
+  return paths;
+}
+
+const { example, code } = Astro.props;
+const { Content } = await example.render();
+---
+
+<h1>{example.data.title}</h1>
+<p>{example.data.arialabel}</p>
+<Content />
+<pre>{code}</pre>
