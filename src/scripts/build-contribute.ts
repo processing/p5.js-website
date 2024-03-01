@@ -79,10 +79,10 @@ const convertMdtoMdx = async (
 
   // Build new file contents with frontmatter and .md file contents
   const newFileContents = `
-  ---
-  ${frontmatterObject ? YAML.stringify(frontmatterObject) : ""}
-  ---
-  ${contentWithRewrittenLinks}
+---
+${frontmatterObject ? YAML.stringify(frontmatterObject) : ""}
+---
+${contentWithRewrittenLinks}
   `;
 
   await writeFile(newFilePath, newFileContents);
