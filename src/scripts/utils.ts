@@ -1,6 +1,14 @@
 import simpleGit from "simple-git";
-import fs from "fs/promises";
+import fs, { cp, readdir } from "fs/promises";
 import path from "path";
+import type { CopyOptions, Dirent } from "fs";
+import { fileURLToPath } from "url";
+
+/* Absolute path to the root of this project repo */
+export const repoRootPath = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../",
+);
 
 /**
  * Clone the library repo if it doesn't exist or if it's not recent
@@ -114,6 +122,26 @@ export const readFile = async (filePath: string) => {
 };
 
 /**
+ * Wrapper around `fs.cp` that catches errors
+ * @param filePath Path to the file
+ * @param destinationPath Where to copy it
+ * @param cpOptions Options passed to `fs.cp`
+ *
+ * @returns string the content of the file
+ */
+export const copyDirectory = async (
+  directoryPath: string,
+  destinationPath: string,
+  cpOpts?: CopyOptions,
+) => {
+  try {
+    await cp(directoryPath, destinationPath, cpOpts);
+  } catch (err) {
+    console.error(`Error copying file: ${err}`);
+  }
+};
+
+/**
  * The preprocessor.js file in the library repo has an absolute path to the parameterData.json file.
  * This function modifies the absolute path to a relative path.
  * @param localSavePath The path that the library repo is saved to
@@ -145,3 +173,58 @@ export const fixAbsolutePathInPreprocessor = async (localSavePath: string) => {
 /* Some names contain characters that need to be sanitized for pathing, MDX, etc. */
 export const sanitizeName = (name: string) =>
   name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/**
+ * Returns the full path for a
+ * [Dirent object](https://nodejs.org/api/fs.html#class-fsdirent)
+ *
+ * @param dirent
+ * @returns full path to the entry
+ */
+export const fullPathFromDirent = (dirent: Dirent): string =>
+  path.join(dirent.path, dirent.name);
+
+/**
+ * Returns the absolute path of the files within a directory
+ * *Note: Does not recurse into subfolders!*
+ *
+ * If the given directory is actually a file, just returns
+ * that filepath in an array
+ *
+ * @param dir [Dirent object](https://nodejs.org/api/fs.html#class-fsdirent)
+ * @returns full path to the entry
+ */
+export const getFilepathsWithinDir = async (
+  dir: Dirent,
+): Promise<Array<string>> => {
+  const dirAbsolutePath = fullPathFromDirent(dir);
+  return dir.isFile()
+    ? // if the DirEnt is actually a single file, just return that as a list of one
+      [dirAbsolutePath]
+    : // readdir returns relative filepaths 🥴
+      (await readdir(dirAbsolutePath)).map((p) =>
+        path.join(dir.path, dir.name, p),
+      );
+};
+
+/**
+ * Rewrites linked pages in a markdown document to remove the `.md`
+ * extension and use the Astro URL convention of ending in a `/`
+ *
+ * For example: `./access.md` is converted to `./access/`
+ *
+ * @param markdownText markdown text to modify
+ * @returns markdown text with links replaced
+ */
+export const rewriteRelativeMdLinks = (markdownText: string): string => {
+  /**
+   * Regex to find relative links to a markdown document in a string of Markdown
+   * Has 2 capture groups:
+   * 1. Text for the link
+   * 2. Link url (but not the .md extension at the end)
+   */
+  const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/?[^)]+)\.md\)/g;
+  return markdownText.replace(regexPattern, (match, linkText, url) => {
+    return `[${linkText}](${url}/)`;
+  });
+};
