@@ -15,7 +15,7 @@ const yuidocOutputPath = path.join(__dirname, "out", "data.json");
 /**
  * Main function to clone the p5.js library and save the YUIDoc output to a file
  */
-export const parseLibrary =
+export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
     await cloneLibraryRepo(localPath);
     await saveYuidocOutput();

@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import matter from "gray-matter";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
-import { parseLibrary } from "../parsers/reference";
+import { parseLibraryReference } from "../parsers/reference";
 import type {
   ReferenceClassDefinition,
   ReferenceClassItem,
@@ -28,7 +28,7 @@ const modulePathTree = { modules: {}, classes: {} } as ReferenceModulePathTree;
 /* Main function to build the reference docs, runs automatically with Node execution */
 export const buildReference = async () => {
   // Gets the JSON output from parsing
-  const parsedOutput = await parseLibrary();
+  const parsedOutput = await parseLibraryReference();
   if (!parsedOutput) {
     console.error("Unable to build reference docs to error in parsing!");
     return;
