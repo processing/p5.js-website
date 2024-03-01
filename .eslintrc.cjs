@@ -1,5 +1,9 @@
 module.exports = {
-  ignorePatterns: ["src/content/contributor-docs/*/**.js"],
+  ignorePatterns: [
+    "src/content/contributor-docs/*/**.js",
+    "src/scripts/parsers/in/**/*",
+    "src/scripts/parsers/out/**/*",
+  ],
   env: {
     browser: true,
     es2021: true,
