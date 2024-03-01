@@ -1,0 +1,31 @@
+---
+import { getCollection } from "astro:content";
+import { exampleContentSlugToLegacyWebsiteSlug } from "./utils";
+
+/* We have to modify the Astro.js slug to match existing routing */
+/* This is done dynamically here instead of relying on example authors */
+/* to update their slugs in the MDX Content Entry */
+async function transformExampleSlugs() {
+  const exampleEntries = await getCollection("examples");
+
+  const transformedEntries = exampleEntries.map((entry) => ({
+    ...entry,
+    slug: exampleContentSlugToLegacyWebsiteSlug(entry.slug),
+  }));
+
+  return transformedEntries;
+}
+
+// Using the transformed collection
+const exampleEntries = await transformExampleSlugs();
+---
+
+<ul>
+  {
+    exampleEntries.map((exampleEntry) => (
+      <li>
+        <a href={`.${exampleEntry.slug}`}>{exampleEntry.data.title}</a>
+      </li>
+    ))
+  }
+</ul>
