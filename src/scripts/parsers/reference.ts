@@ -1,4 +1,5 @@
 import { cloneLibraryRepo, readFile } from "../utils";
+import fs from "fs/promises";
 import { exec } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -7,16 +8,16 @@ import type { ParsedLibraryReference } from "../../../types/parsers.interface";
 // Derive the directory name (__dirname equivalent) in ES Module scope
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Local directory to clone the p5.js library
-const inputPath = path.join(__dirname, "in", "p5.js");
+const localPath = path.join(__dirname, "in", "p5.js");
 // Local path to save the YUIDoc output
-const outputPath = path.join(__dirname, "out", "data.json");
+const yuidocOutputPath = path.join(__dirname, "out", "data.json");
 
 /**
  * Main function to clone the p5.js library and save the YUIDoc output to a file
  */
 export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
-    await cloneLibraryRepo(inputPath);
+    await cloneLibraryRepo(localPath);
     await saveYuidocOutput();
     return getYuidocOutput();
   };
@@ -26,7 +27,7 @@ export const parseLibraryReference =
  * returns the parsed YUIDoc output
  */
 const getYuidocOutput = async (): Promise<ParsedLibraryReference | null> => {
-  const outputFilePath = path.join(outputPath, "data.json");
+  const outputFilePath = path.join(yuidocOutputPath, "data.json");
   const output = await readFile(outputFilePath);
   if (output) {
     try {
@@ -44,8 +45,9 @@ const getYuidocOutput = async (): Promise<ParsedLibraryReference | null> => {
 export const saveYuidocOutput = async () => {
   console.log("Running YUIDoc command and capturing output...");
   try {
+    await fs.mkdir(yuidocOutputPath, { recursive: true });
     await new Promise((resolve, reject) => {
-      exec(`yuidoc -p --outdir ${outputPath}`, (error, stdout) => {
+      exec(`yuidoc -p --outdir ${yuidocOutputPath}`, (error, stdout) => {
         if (error) {
           console.error(`Error running YUIDoc command: ${error}`);
           reject(error);
