@@ -5,6 +5,7 @@ import { peopleCollection } from "./people/config";
 import { sketchesCollection } from "./sketches/config";
 import { referenceCollection } from "./reference/config";
 import { examplesCollection } from "./examples/config";
+import { contributorDocsCollection } from "./contributor-docs/config";
 
 export const collections = {
   tutorials: tutorialsCollection,
@@ -14,4 +15,5 @@ export const collections = {
   sketches: sketchesCollection,
   reference: referenceCollection,
   examples: examplesCollection,
+  "contributor-docs": contributorDocsCollection,
 };
