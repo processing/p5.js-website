@@ -7,6 +7,7 @@ export const tutorialsCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
+    authors: z.array(z.string()).optional(),
     description: z.string().optional(),
     category: z.enum(categories),
     featuredImage: image().optional(),
