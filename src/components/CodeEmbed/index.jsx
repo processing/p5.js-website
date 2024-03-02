@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 
@@ -14,8 +14,15 @@ import { CodeFrame } from "./frame";
  * }
  */
 export const CodeEmbedCodeMirror = (props) => {
+  const [rendered, setRendered] = useState(false);
   const [codeString, setCodeString] = useState(props.initialValue ?? "");
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
+
+  useEffect(() => {
+    setRendered(true)
+  }, []);
+
+  if (!rendered) return <div className="code-placeholder" />;
 
   return (
     <>
