@@ -16,6 +16,7 @@ import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
+import unifiedPrettier from "unified-prettier";
 import { compile } from "@mdx-js/mdx";
 
 /* Absolute path to the folder this file is in */
@@ -35,7 +36,7 @@ const assetsOutputBaseUrl = path.join("/images/contributor-docs");
 /* Where the image assets will be output for the website */
 const assetsOutputDirectory = path.join(
   repoRootPath,
-  "src/content/assets/",
+  "public",
   assetsOutputBaseUrl,
 );
 
@@ -85,6 +86,7 @@ const convertMdtoMdx = async (
     const newContent = remark()
       .use(remarkGfm)
       .use(remarkMDX)
+      .use(unifiedPrettier)
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
 
