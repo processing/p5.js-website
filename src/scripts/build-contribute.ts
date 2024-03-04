@@ -16,6 +16,7 @@ import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
+import { compile } from "@mdx-js/mdx";
 
 /* Absolute path to the folder this file is in */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,11 +31,11 @@ const outputDirectory = path.join(__dirname, "../content/contributor-docs/");
 /* Name of the folder within `sourceDirectory` folder where static assets are found */
 const assetsSubFolder = "images";
 /* Base URL to refer to assets from final mdx docs*/
-const assetsOutputBaseUrl = path.join("images/contributor-docs");
+const assetsOutputBaseUrl = path.join("/images/contributor-docs");
 /* Where the image assets will be output for the website */
 const assetsOutputDirectory = path.join(
   repoRootPath,
-  "public",
+  "src/content/assets/",
   assetsOutputBaseUrl,
 );
 
@@ -73,13 +74,10 @@ const convertMdtoMdx = async (
   // this means the read file failed for some reason
   if (contents === undefined) return;
 
-  const contentWithRewrittenLinksAndComments = rewriteComments(
-    rewriteRelativeImageLinks(
-      rewriteRelativeMdLinks(contents),
-      assetsOutputBaseUrl,
-    ),
+  const contentWithRewrittenLinksAndComments = rewriteRelativeImageLinks(
+    rewriteRelativeMdLinks(contents),
+    assetsOutputBaseUrl,
   );
-
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
 
   try {
@@ -89,6 +87,8 @@ const convertMdtoMdx = async (
       .use(remarkMDX)
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
+
+    await compile(newContent);
 
     // All MDX content with frontmatter as a string
     const fullFileContent = matter.stringify(
@@ -139,13 +139,6 @@ export const rewriteRelativeImageLinks = (
   return markdownText.replace(regexPattern, (match, linkText, url) => {
     const { base } = path.parse(url);
     return `![${linkText}](${assetsFolderUrl}/${base})`;
-  });
-};
-
-export const rewriteComments = (markdownText: string): string => {
-  const regexPattern: RegExp = /<!--([^]+?)-->/g;
-  return markdownText.replace(regexPattern, (match, commentContent) => {
-    return `{/* ${commentContent} */}`;
   });
 };
 
