@@ -89,13 +89,15 @@ const convertMdtoMdx = async (
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
 
-    await compile(newContent);
-
     // All MDX content with frontmatter as a string
     const fullFileContent = matter.stringify(
       newContent,
       frontmatterObject ?? {},
     );
+
+    // Check that generated content can be compiled by MDX
+    // (sometimes this catches different problems)
+    await compile(fullFileContent);
 
     await writeFile(newFilePath, fullFileContent);
   } catch (e) {
