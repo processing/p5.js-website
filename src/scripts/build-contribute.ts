@@ -16,7 +16,6 @@ import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
-import unifiedPrettier from "unified-prettier";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
 
@@ -87,7 +86,6 @@ const convertMdtoMdx = async (
     const newContent = remark()
       .use(remarkGfm)
       .use(remarkMDX)
-      .use(unifiedPrettier)
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
 
