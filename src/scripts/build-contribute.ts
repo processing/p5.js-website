@@ -18,6 +18,7 @@ import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
 import unifiedPrettier from "unified-prettier";
 import { compile } from "@mdx-js/mdx";
+import isAbsoluteUrl from "is-absolute-url";
 
 /* Absolute path to the folder this file is in */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -137,10 +138,13 @@ export const rewriteRelativeImageLinks = (
    * 1. Alt Text for the image
    * 2. Image url
    */
-  const regexPattern: RegExp = /!\[([^\]]+)\]\((.?\/?images[^)]+)\)/g;
+  const regexPattern: RegExp = /!\[([^\]]+)\]\((.?\/?[^)]+)\)/g;
   return markdownText.replace(regexPattern, (match, linkText, url) => {
-    const { base } = path.parse(url);
-    return `![${linkText}](${assetsFolderUrl}/${base})`;
+    if (!isAbsoluteUrl(url)) {
+      const { base } = path.parse(url);
+      return `![${linkText}](${assetsFolderUrl}/${base})`;
+    }
+    return match;
   });
 };
 
