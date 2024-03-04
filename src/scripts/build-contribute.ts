@@ -1,13 +1,11 @@
 import { readdir } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import YAML from "yaml";
 import {
   cloneLibraryRepo,
   copyDirectory,
   fullPathFromDirent,
   getFilepathsWithinDir,
-  isValidMDX,
   readFile,
   repoRootPath,
   rewriteRelativeMdLinks,
@@ -16,6 +14,7 @@ import {
 import type { Dirent } from "fs";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
+import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
 
 /* Absolute path to the folder this file is in */
@@ -83,28 +82,26 @@ const convertMdtoMdx = async (
 
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
 
-  // Convert the markdown content to MDX
-  let isDraft = false;
-  let newContent = contentWithRewrittenLinksAndComments;
   try {
-    newContent = remark()
+    // Convert the markdown content to MDX
+    const newContent = remark()
+      .use(remarkGfm)
       .use(remarkMDX)
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
+
+    // All MDX content with frontmatter as a string
+    const fullFileContent = matter.stringify(
+      newContent,
+      frontmatterObject ?? {},
+    );
+
+    await writeFile(newFilePath, fullFileContent);
   } catch (e) {
     console.error(
-      `${sourceFile} could not be converted to .mdx (${e}). Copying file contents as-is and marking as draft.`,
+      `${sourceFile} could not be converted to .mdx (${e}). Skipping.`,
     );
-    isDraft = true;
   }
-
-  // All MDX content with frontmatter as a string
-  const fullFileContent = matter.stringify(newContent, {
-    ...frontmatterObject,
-    isDraft,
-  });
-
-  await writeFile(newFilePath, fullFileContent);
 
   return undefined;
 };
