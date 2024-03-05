@@ -1,7 +1,3 @@
-
----
-
----
 # p5.js WEBGL 모드 아키텍쳐
 
 이 문서는 p5.js 기여자, 메인테이너 및 기타 이해 관계자를 위한 p5.js의 WEBGL 모드의 구조를 설명합니다. 스케치에서 3D 그래픽을 사용하는 데 관심이 있다면 대신에 [튜토리얼 보기](https://github.com/processing/p5.js/wiki/Getting-started-with-WebGL-in-p5)를 참조해주세요.
@@ -26,7 +22,8 @@ p5.Renderer에서 파생되었으며 2D 모드에서 사용할 수 없는 추가
 
 렌더러는 현재 그리기 조건에 적합한 p5.Shader를 선택하는 것을 관리합니다.
 
-### p5.Shader 
+### p5.Shader
+
 p5.Shader클래스는 GL 프로그램의 정형과 속성에 대한 액세스를 제공합니다.
 
 * vertex 및 프래그먼트 쉐이더 컴포넌트를 컴파일하고 연결합니다.
@@ -52,34 +49,32 @@ p5.Texture 객체는 `p5.Image`,`p5.MediaElement`,`p5.Element` 또는 `ImageData
 * 꼭지점 세트에 대한 면, 법선, 선 꼭지점 및 선 법선을 계산하는 방법을 제공합니다.
 
 ## 즉시 모드
+
 즉시 모드로 그려진 모든 속성은 렌더러의 객체에 저장되고, GL 드로잉 컨텍스트에 그리는데 사용 된 후 폐기됩니다.
 
 ## 지오메트리 : 고정 및 즉시 모드
+
 고정된 지오메트리는 3D 원형에 사용되는 반면 즉시 모드는 begin/endShape로 만든 모양에 사용됩니다.
 
-|고정된 지오메트리 함수| 즉시 모드 함수 |
-|--------------------------------|----------------------------------------|
-|plane()                         | bezier()                               |
-|box()                           | curve()                                |
-|sphere()                        | line()                                 |
-|cylinder()                      | beginShape()                           |
-|cone()                          | vertex()                               |
-|ellipsoid()                     | endShape()                             |
-|torus()                         | point()                                |
-|triangle()                      | curveVertex()                          |
-|arc()                           | bezierVertex()                         |
-|point()                         | quadraticVertex()                      |
-|ellipse()                       |
-|rect()                          |
-|quad()                          |
-|text()                          |
-
-
-
-
-
+| 고정된 지오메트리 함수 | 즉시 모드 함수          |
+| ------------ | ----------------- |
+| plane()      | bezier()          |
+| box()        | curve()           |
+| sphere()     | line()            |
+| cylinder()   | beginShape()      |
+| cone()       | vertex()          |
+| ellipsoid()  | endShape()        |
+| torus()      | point()           |
+| triangle()   | curveVertex()     |
+| arc()        | bezierVertex()    |
+| point()      | quadraticVertex() |
+| ellipse()    |                   |
+| rect()       |                   |
+| quad()       |                   |
+| text()       |                   |
 
 ## 텍스쳐 관리
+
 p5.Renderer.GL 인스턴스는 필요에 따라 p5.Textures 객체의 배열을 관리합니다.
 텍스처는 `texture()` 메서드와 함께 사용되는 이미지 및 비디오용으로 생성되거나 커스텀 쉐이더에 제공되는 정형으로 생성됩니다.
 
@@ -90,13 +85,16 @@ p5.Renderer.GL 인스턴스는 필요에 따라 p5.Textures 객체의 배열을 
 ### 쉐이더 유형
 
 #### 색상 쉐이더
+
 현재 채우기 색상에 따라 객체의 평평한 음영을 제공합니다.
 
 #### 조명 쉐이더(조명 & 텍스처용)
+
 다음을 설명합니다:
+
 * `ambientLight()`, `directionalLight()`, `pointLight()`, `spotLight()` 및 `specularColor()`에 의해 설정된 조명 매개 변수
 * `ambientMaterial()`, `emissiveMaterial()` 및 `specularMaterial()`에 의해 설정된 재질 매개 변수
-* `texture()`로 설정 된 텍스처 매개 변수 
+* `texture()`로 설정 된 텍스처 매개 변수
 
 #### 일반 쉐이더
 
@@ -105,86 +103,86 @@ p5.Renderer.GL 인스턴스는 필요에 따라 p5.Textures 객체의 배열을 
 ### 쉐이더 매개변수
 
 #### 표준 모델 뷰 및 카메라 정형
-|Parameter                        |Line Shader|TexLight Shader|Color Shader|Normal Shader|Point Shader|
-|---------------------------------|-----------|---------------|------------|-------------|------------|
-|`uniform mat4 uModelViewMatrix;` |x          |x              |x           |x            |x           |
-|`uniform mat4 uProjectionMatrix;`|x          |x              |x           |x            |x           |
-|`uniform vec4 uViewPort;`        |x          |               |            |             |            |
-|`uniform vec4 uPerspective;`     |x          |               |            |             |            |
 
+| Parameter                         | Line Shader | TexLight Shader | Color Shader | Normal Shader | Point Shader |
+| --------------------------------- | ----------- | --------------- | ------------ | ------------- | ------------ |
+| `uniform mat4 uModelViewMatrix;`  | x           | x               | x            | x             | x            |
+| `uniform mat4 uProjectionMatrix;` | x           | x               | x            | x             | x            |
+| `uniform vec4 uViewPort;`         | x           |                 |              |               |              |
+| `uniform vec4 uPerspective;`      | x           |                 |              |               |              |
 
 #### 지오메트리 속성 및 정형
-|Parameter                        |Line Shader|TexLight Shader|Color Shader|Normal Shader|Point Shader|
-|---------------------------------|-----------|---------------|------------|-------------|------------|
-|`attribute vec3 aPosition;`      |x          |x              |x           |x            |x           |
-|`attribute vec3 aNormal;`        |           |x              |            |x            |            | 
-|`attribute vec2 aTexCoord;`      |           |x              |            |x            |            |
-|`uniform mat3 uNormalMatrix;`    |           |x              |            |x            |            |
-|`attribute vec4 aDirection;`     |x          |               |            |             |            |
-|`uniform float uStrokeWeight;`   |x          |               |            |             |            |
+
+| Parameter                      | Line Shader | TexLight Shader | Color Shader | Normal Shader | Point Shader |
+| ------------------------------ | ----------- | --------------- | ------------ | ------------- | ------------ |
+| `attribute vec3 aPosition;`    | x           | x               | x            | x             | x            |
+| `attribute vec3 aNormal;`      |             | x               |              | x             |              |
+| `attribute vec2 aTexCoord;`    |             | x               |              | x             |              |
+| `uniform mat3 uNormalMatrix;`  |             | x               |              | x             |              |
+| `attribute vec4 aDirection;`   | x           |                 |              |               |              |
+| `uniform float uStrokeWeight;` | x           |                 |              |               |              |
 
 #### 재질 색상
-|Parameter                        |Line Shader|TexLight Shader|Color Shader|Normal Shader|Point Shader|
-|---------------------------------|-----------|---------------|------------|-------------|------------|
-|`uniform vec4 uMaterialColor;`   |x          |x              |            |             |x           |
-|`attribute vec4 aVertexColor;`   |           |               |x           |             |            |
+
+| Parameter                      | Line Shader | TexLight Shader | Color Shader | Normal Shader | Point Shader |
+| ------------------------------ | ----------- | --------------- | ------------ | ------------- | ------------ |
+| `uniform vec4 uMaterialColor;` | x           | x               |              |               | x            |
+| `attribute vec4 aVertexColor;` |             |                 | x            |               |              |
 
 #### 조명 매개변수
 
-|Parameter                                      |Line Shader|TexLight Shader|Color Shader|Normal Shader|Point Shader|
-|-----------------------------------------------|-----------|---------------|------------|-------------|------------|
-|`uniform int uAmbientLightCount;`              |           |x              |            |             |            |
-|`uniform int uDirectionalLightCount;`          |           |x              |            |             |            |
-|`uniform int uPointLightCount;`                |           |x              |            |             |            |
-|`uniform int uSpotLightCount;`                 |           |x              |            |             |            |
-|`uniform vec3 uAmbientColor[8];`               |           |x              |            |             |            |
-|`uniform vec3 uLightingDirection[8];`          |           |x              |            |             |            |
-|`uniform vec3 uDirectionalDiffuseColors[8];`   |           |x              |            |             |            |
-|`uniform vec3 uDirectionalSpecularColors[8];`  |           |x              |            |             |            |
-|`uniform vec3 uPointLightLocation[8];`         |           |x              |            |             |            |
-|`uniform vec3 uPointLightDiffuseColors[8];`    |           |x              |            |             |            |
-|`uniform vec3 uPointLightSpecularColors[8];`   |           |x              |            |             |            |
-|`uniform float uSpotLightAngle[8];`            |           |x              |            |             |            |
-|`uniform float uSpotLightConc[8];`             |           |x              |            |             |            |
-|`uniform vec3 uSpotLightDiffuseColors[8];`     |           |x              |            |             |            |
-|`uniform vec3 uSpotLightSpecularColors[8];`    |           |x              |            |             |            |
-|`uniform vec3 uSpotLightLocation[8];`          |           |x              |            |             |            |
-|`uniform vec3 uSpotLightDirection[8];`         |           |x              |            |             |            |
-|`uniform bool uSpecular;`                      |           |x              |            |             |            |
-|`uniform bool uEmissive;`                      |           |x              |            |             |            |
-|`uniform int  uShininess;`                     |           |x              |            |             |            |
-|`uniform bool uUseLighting;`                   |           |x              |            |             |            |
-|`uniform float uConstantAttenuation;`          |           |x              |            |             |            |
-|`uniform float uLinearAttenuation;`            |           |x              |            |             |            |
-|`uniform float uQuadraticAttenuation;`         |           |x              |            |             |            |
+| Parameter                                     | Line Shader | TexLight Shader | Color Shader | Normal Shader | Point Shader |
+| --------------------------------------------- | ----------- | --------------- | ------------ | ------------- | ------------ |
+| `uniform int uAmbientLightCount;`             |             | x               |              |               |              |
+| `uniform int uDirectionalLightCount;`         |             | x               |              |               |              |
+| `uniform int uPointLightCount;`               |             | x               |              |               |              |
+| `uniform int uSpotLightCount;`                |             | x               |              |               |              |
+| `uniform vec3 uAmbientColor[8];`              |             | x               |              |               |              |
+| `uniform vec3 uLightingDirection[8];`         |             | x               |              |               |              |
+| `uniform vec3 uDirectionalDiffuseColors[8];`  |             | x               |              |               |              |
+| `uniform vec3 uDirectionalSpecularColors[8];` |             | x               |              |               |              |
+| `uniform vec3 uPointLightLocation[8];`        |             | x               |              |               |              |
+| `uniform vec3 uPointLightDiffuseColors[8];`   |             | x               |              |               |              |
+| `uniform vec3 uPointLightSpecularColors[8];`  |             | x               |              |               |              |
+| `uniform float uSpotLightAngle[8];`           |             | x               |              |               |              |
+| `uniform float uSpotLightConc[8];`            |             | x               |              |               |              |
+| `uniform vec3 uSpotLightDiffuseColors[8];`    |             | x               |              |               |              |
+| `uniform vec3 uSpotLightSpecularColors[8];`   |             | x               |              |               |              |
+| `uniform vec3 uSpotLightLocation[8];`         |             | x               |              |               |              |
+| `uniform vec3 uSpotLightDirection[8];`        |             | x               |              |               |              |
+| `uniform bool uSpecular;`                     |             | x               |              |               |              |
+| `uniform bool uEmissive;`                     |             | x               |              |               |              |
+| `uniform int  uShininess;`                    |             | x               |              |               |              |
+| `uniform bool uUseLighting;`                  |             | x               |              |               |              |
+| `uniform float uConstantAttenuation;`         |             | x               |              |               |              |
+| `uniform float uLinearAttenuation;`           |             | x               |              |               |              |
+| `uniform float uQuadraticAttenuation;`        |             | x               |              |               |              |
 
 #### 텍스쳐 매개변수
 
-|Parameter                             |Line Shader|TexLight Shader|Color Shader|Normal Shader|Point Shader|
-|--------------------------------------|-----------|---------------|------------|-------------|------------|
-|`uniform sampler2D uSampler;`         |           |x              |            |             |            |
-|`uniform bool isTexture;`             |           |x              |            |             |            |
+| Parameter                     | Line Shader | TexLight Shader | Color Shader | Normal Shader | Point Shader |
+| ----------------------------- | ----------- | --------------- | ------------ | ------------- | ------------ |
+| `uniform sampler2D uSampler;` |             | x               |              |               |              |
+| `uniform bool isTexture;`     |             | x               |              |               |              |
 
 #### 일반 매개변수
 
-|Parameter                             |Line Shader|TexLight Shader|Color Shader|Normal Shader|Point Shader|
-|--------------------------------------|-----------|---------------|------------|-------------|------------|
-|`uniform float uResolution;`          |           |               |x           |             |            |
-|`uniform float uPointSize;`           |           |               |x           |             |x           |
+| Parameter                    | Line Shader | TexLight Shader | Color Shader | Normal Shader | Point Shader |
+| ---------------------------- | ----------- | --------------- | ------------ | ------------- | ------------ |
+| `uniform float uResolution;` |             |                 | x            |               |              |
+| `uniform float uPointSize;`  |             |                 | x            |               | x            |
 
 #### 다양한 매개변수
 
-|Parameter                             |Line Shader|TexLight Shader|Color Shader|Normal Shader|Point Shader|
-|--------------------------------------|-----------|---------------|------------|-------------|------------|
-|`varying vec3 vVertexNormal;`         |           |x              |            |             |            |
-|`varying vec2 vVertTexCoord;`         |           |x              |            |             |            |
-|`varying vec3 vLightWeighting;`       |           |x              |            |             |            |
-|`varying highp vec2 vVertTexCoord;`   |           |               |            |x            |            |
-|`varying vec4 vColor;`                |           |               |x           |             |            |
-|`varying float vStrokeWeight`         |           |               |            |             |x           |
+| Parameter                           | Line Shader | TexLight Shader | Color Shader | Normal Shader | Point Shader |
+| ----------------------------------- | ----------- | --------------- | ------------ | ------------- | ------------ |
+| `varying vec3 vVertexNormal;`       |             | x               |              |               |              |
+| `varying vec2 vVertTexCoord;`       |             | x               |              |               |              |
+| `varying vec3 vLightWeighting;`     |             | x               |              |               |              |
+| `varying highp vec2 vVertTexCoord;` |             |                 |              | x             |              |
+| `varying vec4 vColor;`              |             |                 | x            |               |              |
+| `varying float vStrokeWeight`       |             |                 |              |               | x            |
 
 ## 다음 단계
 
 커밍 쑨!
-
-  

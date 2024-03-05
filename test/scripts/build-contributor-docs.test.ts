@@ -15,7 +15,8 @@ test("rewriteRelativeImageLinks", () => {
   ![alt-text](images/image.gif)
 
   ![alt-text](https://mypage.com/cool-image.jpg)
-  ![alt-text](mypage.com/cool-image.jpg)
+  ![alt-text](http://www.mypage.com/cool-image.jpg)
+  ![Screenshot of the main page of repository. A button, labeled with a fork icon and "Fork 59.3k," is outlined in dark orange.](fork.png)
   `,
       "/public/docs",
     ),
@@ -30,6 +31,7 @@ test("rewriteRelativeImageLinks", () => {
   ![alt-text](/public/docs/image.gif)
 
   ![alt-text](https://mypage.com/cool-image.jpg)
-  ![alt-text](mypage.com/cool-image.jpg)
+  ![alt-text](http://www.mypage.com/cool-image.jpg)
+  ![Screenshot of the main page of repository. A button, labeled with a fork icon and "Fork 59.3k," is outlined in dark orange.](/public/docs/fork.png)
   `);
 });
