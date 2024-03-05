@@ -15,7 +15,7 @@ export default defineConfig({
     tailwind(),
     compress(),
   ],
-  trailingSlash: "always",
+  trailingSlash: "ignore",
   build: {
     format: "directory",
   },

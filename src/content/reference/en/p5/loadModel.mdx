@@ -1,0 +1,212 @@
+---
+title: loadModel
+module: Shape
+submodule: 3D Models
+file: src/webgl/loading.js
+description: >
+  <p>Load a 3d model from an OBJ or STL file.</p>
+
+  <p><a href="#/p5/loadModel">loadModel()</a> should be placed inside of <a
+  href="#/p5/preload">preload()</a>.
+
+  This allows the model to load fully before the rest of your code is run.</p>
+
+  <p>One of the limitations of the OBJ and STL format is that it doesn't have a
+  built-in
+
+  sense of scale. This means that models exported from different programs might
+
+  be very different sizes. If your model isn't displaying, try calling
+
+  <a href="#/p5/loadModel">loadModel()</a> with the normalized parameter set to
+  true. This will resize the
+
+  model to a scale appropriate for p5. You can also make additional changes to
+
+  the final size of your model with the <a href="#/p5/scale">scale()</a>
+  function.</p>
+
+  <p>Also, the support for colored STL files is not present. STL files with
+  color will be
+
+  rendered without color properties.</p>
+
+  <p>Options can include:</p>
+
+  <ul>
+
+  <li><code>path</code>: Specifies the location or path of the 3D model file for
+  loading.</li>
+
+  <li><code>normalize</code>: Enables standardized size scaling during loading
+  if set to true.</li>
+
+  <li><code>successCallback</code>: Callback for post-loading actions with the
+  3D model object.</li>
+
+  <li><code>failureCallback</code>: Handles errors if model loading fails,
+  receiving an event error.</li>
+
+  <li><code>fileType</code>: Defines the file extension of the model.</li>
+
+  <li><code>flipU</code>: Flips the U texture coordinates of the model.</li>
+
+  <li><code>flipV</code>: Flips the V texture coordinates of the model.</li>
+
+  </ul>
+line: 12
+isConstructor: false
+itemtype: method
+alt: 'Vertically rotating 3-d teapot with red, green and blue gradient.'
+example:
+  - |-
+
+    <div>
+    <code>
+    //draw a spinning octahedron
+    let octahedron;
+
+    function preload() {
+      octahedron = loadModel('assets/octahedron.obj');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('Vertically rotating 3-d octahedron.');
+    }
+
+    function draw() {
+      background(200);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      model(octahedron);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    //draw a spinning teapot
+    let teapot;
+
+    function preload() {
+      // Load model with normalise parameter set to true
+      teapot = loadModel('assets/teapot.obj', true);
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('Vertically rotating 3-d teapot with red, green and blue gradient.');
+    }
+
+    function draw() {
+      background(200);
+      scale(0.4); // Scaled to make model fit into canvas
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      normalMaterial(); // For effect
+      model(teapot);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+  type: p5.Geometry
+overloads:
+  - line: 12
+    params:
+      - name: path
+        description: |
+          <p>Path of the model to be loaded</p>
+        type: String
+      - name: normalize
+        description: |
+          <p>If true, scale the model to a
+                                               standardized size when loading</p>
+        type: Boolean
+      - name: successCallback
+        description: |
+          <p>Function to be called
+                                              once the model is loaded. Will be passed
+                                              the 3D model object.</p>
+        type: function(p5.Geometry)
+        optional: true
+      - name: failureCallback
+        description: |
+          <p>called with event error if
+                                                  the model fails to load.</p>
+        type: Function(Event)
+        optional: true
+      - name: fileType
+        description: |
+          <p>The file extension of the model
+                                               (<code>.stl</code>, <code>.obj</code>).</p>
+        type: String
+        optional: true
+    return:
+      description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+      type: p5.Geometry
+  - line: 107
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: successCallback
+        description: ''
+        type: function(p5.Geometry)
+        optional: true
+      - name: failureCallback
+        description: ''
+        type: Function(Event)
+        optional: true
+      - name: fileType
+        description: ''
+        type: String
+        optional: true
+    return:
+      description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+      type: p5.Geometry
+  - line: 115
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: options
+        description: ''
+        type: Object
+        optional: true
+        props:
+          - name: successCallback
+            description: ''
+            type: function(p5.Geometry)
+            optional: true
+          - name: failureCallback
+            description: ''
+            type: Function(Event)
+            optional: true
+          - name: fileType
+            description: ''
+            type: String
+            optional: true
+          - name: normalize
+            description: ''
+            type: Boolean
+            optional: true
+          - name: flipU
+            description: ''
+            type: Boolean
+            optional: true
+          - name: flipV
+            description: ''
+            type: Boolean
+            optional: true
+    return:
+      description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+      type: p5.Geometry
+chainable: false
+---
+
+
+# loadModel

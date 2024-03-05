@@ -1,0 +1,146 @@
+---
+title: createCapture
+module: DOM
+submodule: DOM
+file: src/dom/dom.js
+description: >
+  <p>Creates a <code>&lt;video&gt;</code> element that "captures" the
+  audio/video stream from
+
+  the webcam and microphone. Returns a new
+
+  <a href="#/p5.Element">p5.Element</a> object.</p>
+
+  <p>Videos are shown by default. They can be hidden by calling
+  <code>capture.hide()</code>
+
+  and drawn to the canvas using <a href="#/p5/image">image()</a>.</p>
+
+  <p>The first parameter, <code>type</code>, is optional. It sets the type of
+  capture to
+
+  use. By default, <code>createCapture()</code> captures both audio and video.
+  If <code>VIDEO</code>
+
+  is passed, as in <code>createCapture(VIDEO)</code>, only video will be
+  captured.
+
+  If <code>AUDIO</code> is passed, as in <code>createCapture(AUDIO)</code>, only
+  audio will be
+
+  captured. A constraints object can also be passed to customize the stream.
+
+  See the <a
+  href="http://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints"
+  target="_blank">
+
+  W3C documentation</a> for possible properties. Different browsers support
+  different
+
+  properties.</p>
+
+  <p>The second parameter, <code>callback</code>, is optional. It's a function
+  to call once
+
+  the capture is ready for use. The callback function should have one
+
+  parameter, <code>stream</code>, that's a
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream"
+  target="_blank">MediaStream</a> object.</p>
+
+  <p>Note: <code>createCapture()</code> only works when running a sketch locally
+  or using HTTPS. Learn more
+
+  <a
+  href="http://stackoverflow.com/questions/34197653/getusermedia-in-chrome-47-without-using-https"
+  target="_blank">here</a>
+
+  and <a
+  href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia"
+  target="_blank">here</a>.</p>
+line: 2121
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class='notest'>
+    <code>
+    function setup() {
+      noCanvas();
+      createCapture(VIDEO);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      // Create the video capture and hide the element.
+      capture = createCapture(VIDEO);
+      capture.hide();
+
+      describe('A video stream from the webcam with inverted colors.');
+    }
+
+    function draw() {
+      // Draw the video capture within the canvas.
+      image(capture, 0, 0, width, width * capture.height / capture.width);
+      // Invert the colors in the stream.
+      filter(INVERT);
+    }
+    </code>
+    </div>
+
+    <div class='notest norender'>
+    <code>
+    function setup() {
+      createCanvas(480, 120);
+
+      // Create a constraints object.
+      let constraints = {
+        video: {
+          mandatory: {
+            minWidth: 1280,
+            minHeight: 720
+          },
+          optional: [{ maxFrameRate: 10 }]
+        },
+        audio: false
+      };
+
+      // Create the video capture.
+      createCapture(constraints);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: type
+    description: |
+      <p>type of capture, either AUDIO or VIDEO,
+                                        or a constraints object. Both video and audio
+                                        audio streams are captured by default.</p>
+    type: String|Constant|Object
+    optional: true
+  - name: callback
+    description: |
+      <p>function to call once the stream
+                                        has loaded.</p>
+    type: Function
+    optional: true
+return:
+  description: new <a href="#/p5.Element">p5.Element</a> object.
+  type: p5.Element
+chainable: false
+---
+
+
+# createCapture

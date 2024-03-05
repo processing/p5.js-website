@@ -1,0 +1,70 @@
+---
+title: triggerRelease
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |
+  <p>Trigger the Release of the Envelope. This is similar to releasing
+  the key on a piano and letting the sound fade according to the
+  release level and release time.</p>
+line: 5256
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div><code>
+    let attackTime = 0.001;
+    let decayTime = 0.2;
+    let susPercent = 0.3;
+    let releaseTime = 0.4;
+    let env, triOsc;
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      background(220);
+      textAlign(CENTER);
+      textSize(10);
+      text('tap to triggerAttack', width/2, height/2);
+
+      env = new p5.Envelope();
+      env.setADSR(attackTime, decayTime, susPercent, releaseTime);
+      env.setRange(1.0, 0.0);
+      triOsc = new p5.Oscillator('triangle');
+      triOsc.freq(220);
+
+      cnv.mousePressed(envAttack);
+    }
+
+    function envAttack()  {
+      background(0, 255, 255);
+      text('release to release', width/2, height/2);
+
+      // ensures audio is enabled. See also: `userStartAudio`
+      triOsc.start();
+
+      env.triggerAttack(triOsc);
+    }
+
+    function mouseReleased() {
+      background(220);
+      text('tap to triggerAttack', width/2, height/2);
+
+      env.triggerRelease(triOsc);
+    }
+    </code></div>
+class: p5.Envelope
+params:
+  - name: unit
+    description: |
+      <p>p5.sound Object or Web Audio Param</p>
+    type: Object
+  - name: secondsFromNow
+    description: |
+      <p>time to trigger the release</p>
+    type: Number
+chainable: false
+---
+
+
+# triggerRelease
