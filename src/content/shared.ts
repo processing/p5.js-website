@@ -6,7 +6,7 @@ import { z } from "astro:content";
  */
 export const image = () =>
   z.object({
-    url: z.string().url(),
+    url: z.string(), // Not using .url() to allow relative paths
     altText: z.string(),
   });
 
