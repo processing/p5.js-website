@@ -18,7 +18,7 @@ authors:
   - Adam Ferriss
 ---
 
-import { SketchEmbed } from "../../components/SketchEmbed";
+import { EditableSketch } from "../../components/EditableSketch";
 import { Callout } from "../../components/Callout";
 
 p5.js has a number of built-in basic shapes, like `box()` and `sphere()`. It can also render complex custom geometry, both from 3D model files or code. This tutorial will walk through how to import 3D models into p5.js, as well as how to create geometry from scratch.
@@ -27,7 +27,7 @@ p5.js has a number of built-in basic shapes, like `box()` and `sphere()`. It can
 
 Custom geometry can be imported into p5.js using either OBJ or STL files. These files are usually generated in a 3D modeling tool like Blender, which offers much more control when constructing a 3D scene. This is done using the `loadModel()` method, which should be used within `preload()`. Then, you can use the `model()` function to draw the model, as demonstrated in the example below.
 
-<SketchEmbed code={`
+<EditableSketch client:load code={`
 let teapotModel;
 function preload() {
   teapotModel = loadModel('/images/tutorials/webgl/teapot.obj', true);
@@ -66,40 +66,41 @@ Geometry can also be defined procedurally using code. This is a great way to cre
 There are other functions that offer greater control of the geometry. A shape can be defined point-by-point using `beginShape()`, `vertex()`, and `endShape()`. The following example shows how these functions can be used to construct a 3D shape.
 
 
-<SketchEmbed code={`
+<EditableSketch client:load code={`
 function setup() {
-  createCanvas(216, 216, WEBGL);
-  colorMode(HSB);
-  describe('A ribbon rotating in a spiral');
+  createCanvas(216, 216, WEBGL);
+  colorMode(HSB);
+  describe('A ribbon rotating in a spiral');
 }
+
 function draw() {
-  background(255);
- 
-  // Click and drag to look around the shape
-  orbitControl();
- 
-  // Angle down and to the right to get a better view
-  rotateX(PI * -0.2);
-  rotateY(PI * 0.2);
- 
-  // Draw a strip of quads in a spiral formation
-  beginShape(QUAD_STRIP);
-  for (let z = -100; z < 100; z += 5) {
-    fill((z + frameCount) % 360, 100, 100);
-   
-    // Rotate the end point based on how far back it is,
-    // and additionally based on the time
-    let endPoint = createVector(0, 20);
-    endPoint.rotate((z + frameCount) * 0.1);
-   
-    // In a QUAD_STRIP, each pair of vertices forms a
-    // quad with the next pair. By making each pair have
-    // a small y offset between them, we make a vertical
-    // ribbon.
-    vertex(endPoint.x, endPoint.y - 5, z);
-    vertex(endPoint.x, endPoint.y + 5, z);
-  }
-  endShape();
+  background(255);
+  
+  // Click and drag to look around the shape
+  orbitControl();
+  
+  // Angle down and to the right to get a better view
+  rotateX(PI * -0.2);
+  rotateY(PI * 0.2);
+  
+  // Draw a strip of quads in a spiral formation
+  beginShape(QUAD_STRIP);
+  for (let z = -100; z < 100; z += 5) {
+    fill((z + frameCount) % 360, 100, 100);
+    
+    // Rotate the end point based on how far back it is,
+    // and additionally based on the time
+    let endPoint = createVector(0, 20);
+    endPoint.rotate((z + frameCount) * 0.1);
+    
+    // In a QUAD_STRIP, each pair of vertices forms a
+    // quad with the next pair. By making each pair have
+    // a small y offset between them, we make a vertical
+    // ribbon.
+    vertex(endPoint.x, endPoint.y - 5, z);
+    vertex(endPoint.x, endPoint.y + 5, z);
+  }
+  endShape();
 }
 `} />
 
@@ -116,73 +117,77 @@ This method is great for creating custom shapes that change over time. Sometimes
 
 It takes in a function that draws some shapes. It will then output geometry that you can draw with model() as often as you like.
 
-<SketchEmbed code={`
+<EditableSketch client:load code={`
 let bug;
+
 function setup() {
-  createCanvas(200, 200, WEBGL);
-  describe('Bugs randomly moving around');
- 
-  // Record shapes and store them
-  bug = buildGeometry(function() {
-    // Head
-    push();
-    translate(-50, 0, 0);
-    sphere(70);
-   
-    // Draw symmetrical parts of the head that come
-    // in pairs by looping over each side of the head
-    for (let side of [-1, 1]) {
-      // Eye
-      push();
-      translate(-20, -60, side * 30);
-      sphere(20);
-      pop();
-      // Antenna
-      push();
-      translate(0, -100, side * 30);
-      rotateX(PI * -0.1 * side);
-      cylinder(5, 100);
-      pop();
-    }
-    pop();
-    // Body
-    push();
-    translate(50, 0, 0);
-    scale(1.5, 0.8, 1);
-    sphere(100);
-    pop();
-  });
+  createCanvas(200, 200, WEBGL);
+  describe('Bugs randomly moving around');
+  
+  // Record shapes and store them
+  bug = buildGeometry(() => {
+    // Head
+    push();
+    translate(-50, 0, 0);
+    sphere(70);
+    
+    // Draw symmetrical parts of the head that come
+    // in pairs by looping over each side of the head
+    for (let side of [-1, 1]) {
+      // Eye
+      push();
+      translate(-20, -60, side * 30);
+      sphere(20);
+      pop();
+
+      // Antenna
+      push();
+      translate(0, -100, side * 30);
+      rotateX(PI * -0.1 * side);
+      cylinder(5, 100);
+      pop();
+    }
+    pop();
+
+    // Body
+    push();
+    translate(50, 0, 0);
+    scale(1.5, 0.8, 1);
+    sphere(100);
+    pop();
+  });
 }
+
 function draw() {
-  background(255);
-  orbitControl();
-  rotateX(PI * -0.1);
- 
-  noStroke();
-  lights();
- 
-  // Draw a bunch of bugs
-  for (let i = 0; i < 20; i += 1) {
-    push();
-    // Move each bug to a random position and rotation using noise
-    translate(
-      map(
-        noise(frameCount*0.001, i, 0), // Map this value...
-        0, 1, // ...from this range...
-        -150, 150 // ...into this range
-      ),
-      0,
-      map(
-        noise(frameCount*0.001, i, 100),  // Map this value...
-        0, 1, // ...from this range...
-        -200, 300 // ...into this range
-      )
-    );
-    rotateY(noise(frameCount*0.01, i, 200) * TWO_PI);
-    scale(0.1);
-    model(bug);
-    pop();
-  }
+  background(255);
+  orbitControl();
+  rotateX(PI * -0.1);
+  
+  noStroke();
+  lights();
+  
+  // Draw a bunch of bugs
+  for (let i = 0; i < 20; i++) {
+    push();
+    // Move each bug to a random position and rotation using noise
+    translate(
+      map(
+        noise(frameCount*0.001, i, 0), // Map this value...
+        0, 1, // ...from this range...
+        -150, 150 // ...into this range
+      ),
+      0,
+      map(
+        noise(frameCount*0.001, i, 100),  // Map this value...
+        0, 1, // ...from this range...
+        -200, 300 // ...into this range
+      )
+    );
+    rotateY(noise(frameCount*0.01, i, 200) * TWO_PI);
+    scale(0.1);
+    model(bug);
+    pop();
+  }
 }
 `} />
 	
@@ -201,60 +206,66 @@ A normal is the direction that is perpendicular to the face, which helps p5.js c
 
 As long as every vertex shared between touching faces has the same normal, then shading will look smooth. You can specify normals manually by calling `normal(x, y, z)` before each `vertex(x, y, z)`, but p5.js includes functionality to calculate these for you. The following example uses `geometry.calculateNormals(SMOOTH)` to create a warped tube with smooth lighting.
 
-<SketchEmbed code={`
+<EditableSketch code={`
 let tube;
+
 function setup() {
-  createCanvas(216, 216, WEBGL);
-  describe("A rotating, warped tube");
- 
-  tube = buildGeometry(function() {
-    let verticesPerRing = 20;
-    let rings = 20;
-    for (let ring = 0; ring < rings - 1; ring += 1) {
-      beginShape(QUAD_STRIP);
-      for (let i = 0; i <= verticesPerRing; i += 1) {
-        for (let ringOffset of [0, 1]) {
-          let y = map(ring + ringOffset, 0, rings, 70, -70);
-          let angle = map(i, 0, verticesPerRing, 0, TWO_PI);
-         
-          // Rotate a line 70px from the tube center according to the angle
-          let position = createVector(70, 0).rotate(angle);
-          // Pick a random value between 0 and 1 that we'll use to squish
-          // the tube in towards the center. The input to noise() changes
-          // based on the position of the shape to get a smoothly changing
-          // output.
-          // If you were to set radius=1 instead, you would get a perfect
-          // tube with no warping.
-          let radius = noise(
-            200 + position.x * 0.01,
-            200 + y * 0.01,
-            200 + position.y * 0.01
-          );
-          // Use radius to squish in towards the center of the tube
-          let squishedPosition = createVector(
-            position.x * radius,
-            y,
-            position.y * radius
-          );
-         
-          vertex(squishedPosition.x, squishedPosition.y, squishedPosition.z);
-        }
-      }
-      endShape();
-    }
-  });
-  tube.computeNormals(SMOOTH);
+  createCanvas(216, 216, WEBGL);
+  describe("A rotating, warped tube");
+  
+  tube = buildGeometry(() => {
+    let verticesPerRing = 20;
+    let rings = 20;
+    for (let ring = 0; ring < rings - 1; ring++) {
+      beginShape(QUAD_STRIP);
+      for (let i = 0; i <= verticesPerRing; i++) {
+        for (let ringOffset of [0, 1]) {
+          let y = map(ring + ringOffset, 0, rings, 70, -70);
+          let angle = map(i, 0, verticesPerRing, 0, TWO_PI);
+          
+          // Rotate a line 70px from the tube center according to the angle
+          let position = createVector(70, 0).rotate(angle);
+
+          // Pick a random value between 0 and 1 that we'll use to squish
+          // the tube in towards the center. The input to noise() changes
+          // based on the position of the shape to get a smoothly changing
+          // output.
+          // If you were to set radius=1 instead, you would get a perfect
+          // tube with no warping.
+          let radius = noise(
+            200 + position.x * 0.01,
+            200 + y * 0.01,
+            200 + position.y * 0.01
+          );
+
+          // Use radius to squish in towards the center of the tube
+          let squishedPosition = createVector(
+            position.x * radius,
+            y,
+            position.y * radius
+          );
+          
+          vertex(squishedPosition.x, squishedPosition.y, squishedPosition.z);
+        }
+      }
+      endShape();
+    }
+  });
+  tube.computeNormals(SMOOTH);
 }
+
 function draw() {
-  background(255);
-  orbitControl();
-  lights();
-  noStroke();
-  specularMaterial(50);
-  shininess(100);
-  rotateY(frameCount * 0.01);
-  model(tube);
+  background(255);
+  orbitControl();
+
+  lights();
+  noStroke();
+  specularMaterial(50);
+  shininess(100);
+  rotateY(frameCount * 0.01);
+  model(tube);
 }
+
 `} />
 
 <Callout>
@@ -276,7 +287,7 @@ In 3D, a face refers to a collection of three points that make up a surface, giv
 
 The following example uses this method of creating vertices and faces to create a custom tetrahedron shape.
 
-<SketchEmbed code={`
+<EditableSketch client:load code={`
 let tetrahedron;
 function setup() {
   createCanvas(200, 200, WEBGL);
