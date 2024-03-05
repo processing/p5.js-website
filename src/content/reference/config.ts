@@ -14,8 +14,13 @@ const returnSchema = z.object({
 
 const exampleSchema = z.string();
 
+/**
+ * Content collection for the Reference pages of the site.
+ */
 export const referenceSchema = z.object({
+  // Name of the reference item
   title: z.string(),
+  // Module this item is within (for example: Color)
   module: z.string(),
   submodule: z.string().optional(),
   file: z.string(),
