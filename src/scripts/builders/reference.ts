@@ -53,7 +53,7 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
-  return `${prefix}/${docClass}/`;
+  return `${prefix}${docClass}/`;
 };
 
 /* Adds the doc to the module path tree */
@@ -68,16 +68,14 @@ const addDocToModulePathTree = (
 
   // Use a type guard to check if the 'doc' is a LibraryReferenceClassItem.
   // This check allows us to handle class items differently from class definitions.
-  if ("class" in doc) {
+  if ("class" in doc && doc.class !== "p5") {
     // Determine the treePath, which decides whether the doc belongs to the 'classes'
     // or 'modules' category based on its 'class' property. If the class is not 'p5',
     // it's categorized under 'classes'; otherwise, it falls under 'modules'.
-    const treePath = doc.class && doc.class !== "p5" ? "classes" : "modules";
+    const treePath = "classes";
     // The subPath is constructed based on the module and submodule information.
     // If a submodule exists, it's appended to the module name; otherwise, just the module name is used.
-    const subPath = doc.submodule
-      ? `${doc.module}.${doc.submodule}`
-      : doc.module;
+    const subPath = doc.class;
 
     // If the treePath doesn't exist, initialize it.
     if (!modulePathTree[treePath][subPath]) {
@@ -143,8 +141,7 @@ const convertToMDX = async (
       ...getClassItemFrontmatter(doc),
       ...getMethodFrontmatter(doc),
     };
-    // TODO: Has some pathing problems, will fix in follow-up PR
-    // addMemberMethodPreviewsToClassDocs(doc);
+    addMemberMethodPreviewsToClassDocs(doc);
   } else if (isPropertyClassItem(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
@@ -228,18 +225,31 @@ const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
   };
 };
 
-// TODO: Add back in when the pathing issue is resolved
-/* Adds class method previews to the class docs */
-// const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
-//   if (!memberMethodPreviews[doc.class]) {
-//     memberMethodPreviews[doc.class] = {};
-//   }
-//   const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
-//   memberMethodPreviews[doc.class][doc.name] = {
-//     description: doc.description,
-//     path: classMethodPath,
-//   };
-// };
+/* Adds description and path for member methods to the class docs */
+const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
+  // Skip p5 methods which are "global" and not part of a class from the perspective of the reference
+  if (doc.class === "p5") return;
+
+  // If the class doesn't exist in the memberMethodPreviews object, initialize it
+  if (!memberMethodPreviews[doc.class]) {
+    memberMethodPreviews[doc.class] = {};
+  }
+
+  // If the method doesn't exist in the class, log a warning and skip it
+  if (!modulePathTree.classes[doc.class]) {
+    console.warn(`No class path found for ${doc.class} in modulePathTree`);
+    return;
+  }
+
+  // Construct the path to the class method
+  const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
+
+  // Add the method to the memberMethodPreviews object, this is used to add previews to the class docs
+  memberMethodPreviews[doc.class][doc.name] = {
+    description: doc.description,
+    path: classMethodPath,
+  };
+};
 
 /* Converts all docs to MDX */
 const convertDocsToMDX = async (
@@ -249,16 +259,15 @@ const convertDocsToMDX = async (
     return (
       await Promise.all(
         docs.map(async (doc) => {
-          const mdx = await convertToMDX(doc);
-
           const savePath = getModulePath(doc);
           // If the savePath is undefined, the doc is skipped
           // This will often happen with inline comments that don't define necessary properties
           if (!savePath) {
             return;
           }
-
           addDocToModulePathTree(doc, savePath);
+          const mdx = await convertToMDX(doc);
+
           return mdx ? { mdx, savePath, name: doc.name } : null;
         }),
       )
