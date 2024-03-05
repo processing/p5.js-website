@@ -1,0 +1,95 @@
+---
+import { codeToHtml } from 'shiki';
+import { JSDOM } from 'jsdom';
+const { props } = Astro;
+
+const begin = (name) => `__SLOT_BEGIN_${name}`;
+const end = (name) => `__SLOT_END_${name}`;
+
+const rawCode = props.code({ begin, end });
+
+// Split raw lines into blocks separated by begin/end (and regions between)
+const rawLines = rawCode.split(/\n/g);
+let currentLine = 0;
+const rows = [];
+let currentRow = null;
+for (const line of rawLines) {
+  const startMatch = /__SLOT_BEGIN_(\w+)/.exec(line);
+  if (startMatch) {
+    if (currentRow) {
+      rows.push(currentRow);
+    }
+    currentRow = { code: '', slot: startMatch[1] };
+    continue;
+  }
+
+  const endMatch = /__SLOT_END_(\w+)/.exec(line);
+  if (endMatch) {
+    if (currentRow) {
+      rows.push(currentRow);
+      currentRow = null;
+    }
+    continue;
+  }
+
+  if (!currentRow) {
+    currentRow = { code: '' };
+  }
+  if (currentRow.startLine === undefined) {
+    currentRow.startLine = currentLine;
+  }
+  currentRow.code += line + '\n';
+  currentLine++;
+  currentRow.endLine = currentLine;
+}
+if (currentRow) {
+  rows.push(currentRow);
+}
+
+// Get the code without section markers
+const code = rows.map((row) => row.code).join('');
+
+// Convert it to HTML with style tags
+const html = await codeToHtml(code, {
+  lang: props.lang || 'javascript',
+  theme: props.theme || 'github-dark',
+})
+
+// Turn it into a DOM tree we can query
+const parsed = new JSDOM(html)
+const dom = parsed.window.document
+const preTag = dom.querySelector('pre')
+const codeTag = dom.querySelector('code')
+
+// Extract code lines
+const lines = [...dom.querySelectorAll('span.line')]
+
+// Extract the style attributes on the code/pre tags (we'll manually add these back)
+const preAttrs = {};
+for (const attr of preTag.attributes) {
+  if (attr.name === 'style') continue
+  preAttrs[attr.name] = attr.value;
+}
+const preStyle = preTag.attributes.style.value;
+const codeAttrs = {};
+for (const attr of codeTag.attributes) {
+  codeAttrs[attr.name] = attr.value;
+}
+---
+    <table class="h-1">
+      <tbody>
+        {rows.map((row, i) => {
+          const lineNodes = lines.slice(row.startLine, row.endLine);
+          return (
+            <tr key={i}>
+              <td class="align-top" style="height:100%; margin:0">
+              <pre {...preAttrs} style={`${preStyle};height:100%`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
+              </td>
+              <td class="align-top py-2" style="margin:0" set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </code>
+</pre>
