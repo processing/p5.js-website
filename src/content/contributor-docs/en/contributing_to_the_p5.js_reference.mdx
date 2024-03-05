@@ -1,13 +1,8 @@
-
----
-
----
 # Contributing to the p5.js Reference
 
 In p5.js, we author the code reference you see on the [reference](https://p5js.org/reference/) page on the p5.js website by including them alongside the library’s source code as specialized comments. These reference comments include the description, the function’s signature (its parameters and return value), and usage examples. In other words, the content on each p5.js function/variable’s reference page is built from the reference comments in the source code.
 
 This document will show you how to write and format the reference comments so that they can eventually be rendered onto the website correctly. You should follow this guide whenever you are editing or writing a reference for any p5.js function or variable.
-
 
 ## A quick introduction to how reference comments work
 
@@ -72,7 +67,6 @@ They are usually followed by the actual JavaScript code that defines the functio
 
 Anything in a block in this manner will be interpreted as reference documentation. You may be familiar with this style of code comments through [JSDoc](https://jsdoc.app/). While p5.js does not use JSDoc, it uses a very similar tool called [YUIDoc](https://yui.github.io/yuidoc/), which has a very similar reference syntax. In this style of reference comments, each comment block is further divided into individual elements, which we will have a look at next. 
 
-
 ## Reference comments block
 
 Let’s break down the reference comments block above for the `sin()` function and see what each section does. You can compare what you see in the comments here and what you can see on the reference page for [`sin()`](https://p5js.org/reference/#/p5/sin).
@@ -95,14 +89,14 @@ At the very top of the comment is the text description of the function. This des
 
 A function will typically have the three sections above, each starting with an `@` symbol followed by one of the following keywords:
 
-- `@method` is used to define the name of the function, in this case `sin` (note that the function name does not include the brackets `()`).
-- `@param` is used to define the parameters or arguments that the function accepts.
-  - Following the keyword `@param`, stored in curly brackets `{}` is the type of the parameter.
-  - After the type, the next word (angle) is the name of the parameter.
-  - After the name, the rest of the line is the description of the parameter.
-- `@return` is used to define the return value of the function.
-  - Following the keyword `@return`, stored in curly brackets `{}` is the type of the return value.
-  - After the type, the rest of the line is the description of the return value.
+* `@method` is used to define the name of the function, in this case `sin` (note that the function name does not include the brackets `()`).
+* `@param` is used to define the parameters or arguments that the function accepts.
+  * Following the keyword `@param`, stored in curly brackets `{}` is the type of the parameter.
+  * After the type, the next word (angle) is the name of the parameter.
+  * After the name, the rest of the line is the description of the parameter.
+* `@return` is used to define the return value of the function.
+  * Following the keyword `@return`, stored in curly brackets `{}` is the type of the return value.
+  * After the type, the rest of the line is the description of the return value.
 
 More generically for parameters, you should follow this format:
 
@@ -115,7 +109,6 @@ If the parameter is optional, add square brackets around the name:
 ```
 @param {type} [name] Description here.
 ```
-
 
 ### Additional info: Constants
 
@@ -133,7 +126,6 @@ For return types you should follow this format:
 
 If the function does not return a value, the `@return` tag can be left out.
 
-
 ### Additional info: Chaining
 
 If the method returns the parent object, you can skip the `@return` tag and add this line instead:
@@ -141,7 +133,6 @@ If the method returns the parent object, you can skip the `@return` tag and add 
 ```
 @chainable
 ```
-
 
 ## Additional signatures
 
@@ -163,11 +154,9 @@ If a function has multiple possible parameter options, you can specify each indi
  */
 ```
 
-
 ### Additional info: Multiple signatures
 
 It is not necessary to create a separate signature if the only difference between two signatures is the addition of an optional parameter. Limit the use of this feature if possible because it can create unnecessary noise in the reference.
-
 
 ## Reference for p5.js variables
 
@@ -200,12 +189,11 @@ So far, we have looked at how to write references for functions and constants. V
 
 The start of the block contains the description of the variable (`mouseX` in this case). To define the name of the variable, we use `@property` instead of `@method`. `@property` follows the same syntax as `@param` for defining the type and its name. The `@readonly` tag is present on most p5.js variables and is used internally to indicate this value should not be overwritten directly by a library user.
 
-
 ## Adding examples
 
 One tag that is present in both `sin()` and `mouseX`’s reference comments that we have not talked about yet is the `@example` tag. This tag is where you define the code example(s) that is run when you visit the reference page.
 
-![Screenshot of the p5.js reference page of the "red()" function, showing only the example code section.](images/contributor-docs/reference-screenshot.png)
+![Screenshot of the p5.js reference page of the "red()" function, showing only the example code section.](/images/contributor-docs/reference-screenshot.png)
 
 The relevant `@example` tag to create the above is as follows:
 
@@ -274,7 +262,6 @@ If you do not want the example to be run as part of the automated tests (for exa
 
 If your example uses external asset files, put them in the [/docs/yuidoc-p5-theme/assets](https://github.com/processing/p5.js/tree/main/docs/yuidoc-p5-theme/assets) folder (or reuse one already in there) then link to them with "assets/filename.ext" in the code. See the [tint()](http://p5js.org/reference/#/p5/tint) reference for example.
 
-
 ### Add a canvas description using `describe()`
 
 Finally, for every example you add, you are required to use the p5.js function `describe()` in the example to create a screen-reader accessible description for the canvas. Include only one parameter: a string with a brief description of what is happening on the canvas. 
@@ -314,7 +301,6 @@ For more on `describe()` visit the [web accessibility contributor documentation]
 
 With all the above you should have most of the tools needed to write and edit p5.js reference comments. However, there are a few more specialized usage of JSDoc style reference comments that you may come across in p5.js. These are situationally useful and not something that you need often.
 
-
 ### `@private` tag
 
 You can use the `@private` if a property or variable is a private function or variable. If a feature is marked as `@private` it will not be included as part of the rendered reference on the website. The reason to use the `@private` tag to mark a reference comments block as private is when you document internal features for the library itself. For example, see the reference comments for `_start` below:
@@ -330,7 +316,6 @@ You can use the `@private` if a property or variable is a private function or va
  */
 p5.prototype._start = function () {
 ```
-
 
 ### `@module` and related tags
 
@@ -351,7 +336,6 @@ The `@requires` tag defines the required imported modules that the current modul
 ```
 
 The convention p5.js follows is that each subfolder in the `src/` folder will be one `@module` while each file inside the subfolder will be its own `@submodule` under the overall subfolder’s `@module`. Unless you are adding new subfolders/files to the p5.js source code, you shouldn’t need to edit this reference comments block.
-
 
 ### `@class` tag
 
@@ -386,12 +370,11 @@ Class constructors are defined with the `@class` tag and the `@constructor` tag.
  */
 ```
 
-
 ## Generating and previewing the reference
 
 The p5.js repository is set up so that you can generate and preview the reference without needing to build and run the p5.js website as well.
 
-- The main command to generate the reference from the reference comments in the source code is to run the following command. 
+* The main command to generate the reference from the reference comments in the source code is to run the following command. 
 
 ```
 npm run docs
@@ -399,7 +382,7 @@ npm run docs
 
 This will generate the necessary preview files and the main `docs/reference/data.json` file, which is the same file (after minification) that will be used to render the reference page on the website.
 
-- For continuous work on the reference, you can run the following command.
+* For continuous work on the reference, you can run the following command.
 
 ```
 npm run docs:dev
@@ -407,14 +390,10 @@ npm run docs:dev
 
 This will launch a live preview of the rendered reference that will update each time you make changes (you will need to refresh the page after making changes to see them appear). This is useful, especially for previewing example code running in the browser.
 
-- The main template files are stored in the `docs/` folder and, in most cases, you should not make changes directly to files in this folder, except to add new asset files in the `docs/yuidoc-p5-theme/assets` folder.
-
+* The main template files are stored in the `docs/` folder and, in most cases, you should not make changes directly to files in this folder, except to add new asset files in the `docs/yuidoc-p5-theme/assets` folder.
 
 ## Next steps
 
 For additional details about the reference system, you can checkout the documentation for [JSDoc](https://jsdoc.app/) and [YUIDoc](https://yui.github.io/yuidoc/).
 
 For examples of issues related to the reference, have a look at [#6519](https://github.com/processing/p5.js/issues/6519) and [#6045](https://github.com/processing/p5.js/issues/6045). The [contributor guidelines](https://docs.google.com/document/d/1roBu-7s9xspuie3M6EhEokYWc82DZhDNYO2SQiY4k68/edit?tab=t.0#heading=h.627q50vo09fb) document is also a good place to start.
-
-
-  
