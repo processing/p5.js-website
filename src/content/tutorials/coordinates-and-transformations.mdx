@@ -21,6 +21,7 @@ authors:
 import { EditableSketch } from "../../components/EditableSketch/";
 import { SketchEmbed } from "../../components/SketchEmbed";
 import { Callout } from "../../components/Callout";
+import fs from 'node:fs/promises';
 
 This tutorial will introduce new concepts for creating 3D sketches with p5.js, including x, y, and z.
 
@@ -54,98 +55,10 @@ p5.js has a few functions that we can use to position and orient objects within 
 
 ### `translate()`: Moving Objects in Space
 
-<SketchEmbed code={`
-
-let xSlider, ySlider, zSlider;
-let p;
-
-function setup() {
-  let canvas = createCanvas(350, 350, WEBGL);
-  canvas.parent("sketchContainer");
-
-  debugMode();
-  camera(0,-200,200,0,0,0);
-
-  xSlider = document.querySelector('#xAxis');
-  ySlider = document.querySelector('#yAxis');
-  zSlider = document.querySelector('#zAxis');
-
-  p = document.querySelector('#axisText');
-
-  describe('an interactive example that visualizes translation on a box shape');
-}
-
-function draw() {
-  background(220);
-  orbitControl();
-
-  push();
-  translate(xSlider.value,ySlider.value,zSlider.value);
-  box(50);
-  pop();
-
-  // draw axes
-  push();
-  strokeWeight(5);
-  stroke(255,0,0);
-  line(0,0,0, xSlider.value,0,0);
-  
-  translate(xSlider.value,0,0);
-  stroke(0,255,0);
-  line(0,0,0, 0, ySlider.value, 0);
-  
-  translate(0,ySlider.value,0);
-  stroke(0,0,255);
-  line(0,0,0, 0, 0, zSlider.value);
-  pop();
-
-  p.innerHTML = 'translate('+parseFloat(xSlider.value).toFixed(3)+','+parseFloat(ySlider.value).toFixed(3)+','+parseFloat(zSlider.value).toFixed(3)+') <br />';
-}
-`}
-cssCode={`
-body {
-  padding: 0;
-  margin: 0;
-  font-family: monospace;
-  font-size: 16px;
-  background-color: #dcdcdc
-}
-
-#pageContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-#pageContainer>div {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  justify-content: space-evenly;
-  margin: 0px 10px;
-}
-
-#controlsContainer {
-  width: 250px;
-  flex-grow: 2;
-}
-
-#controlsContainer label {
-  padding: 15px;
-}
-`}
-bodyCode={`
-<div id="pageContainer">
-  <div id="sketchContainer"></div>
-  <div id="controlsContainer">
-    <label>x: <input id="xAxis" type="range" step="0.001" min="-100" max="100" /></label>
-    <label>y: <input id="yAxis" type="range" step="0.001" min="-100" max="100" /></label>
-    <label>z: <input id="zAxis" type="range" step="0.001" min="-100" max="100" /></label>
-
-    <p id="axisText"></p>
-  </div>
-</div>
-`}
+<SketchEmbed
+  code={await fs.readFile(new URL('./sketches/coordinates-and-transformation/translate/sketch.js', import.meta.url))}
+  cssCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/style.css', import.meta.url))}
+  bodyCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/translate/index.html', import.meta.url))}
 />
 
 `translate()` moves the origin to a given point. Anything drawn after we call `translate()` will be positioned relative to that point. `translate()` accepts arguments for x, y, and z values. Use the sliders in the sketch above to change the translation of the box and see how it moves along each axis. The code snippet below demonstrates simple translation on a `box()` shape.
@@ -167,102 +80,10 @@ A [random walk](https://upload.wikimedia.org/wikipedia/commons/f/f3/Random_walk_
 
 ### `rotate()`: Orienting Objects in Space
 
-<SketchEmbed code={`
-
-let xRotateSlider, yRotateSlider, zRotateSlider, angleSlider;
-let p;
-
-function setup() {
-  let canvas = createCanvas(350, 350, WEBGL);
-  canvas.parent("sketchContainer")
-  camera(0,-200,200,0,0,0)
-
-  // note these are all angle ranges:
-  xAxisSlider = document.querySelector('#xAxis');
-  yAxisSlider = document.querySelector('#yAxis');
-  zAxisSlider = document.querySelector('#zAxis');
-
-  debugMode();
-
-  p = document.querySelector('#axisText');
-
-  describe('an interactive example that visualizes different axes of rotation on a torus shape');
-}
-
-function draw() {
-  background(220);
-  orbitControl();
-
-  push();
-  rotateX(xAxisSlider.value);
-  rotateY(yAxisSlider.value);
-  rotateZ(zAxisSlider.value);
-
-  // draw lines along x, y, z axes in rotated space
-  strokeWeight(4);
-  stroke('red');
-  line(0, 0, 0, 100, 0, 0);
-  stroke('green');
-  line(0, 0, 0, 0, 100, 0);
-  stroke('blue');
-  line(0, 0, 0, 0, 0, 100);
-
-  normalMaterial();
-  torus(30, 20);
-  pop();
-
-  noFill();
-
-  p.innerHTML = 'angleMode(DEGREES) <br /><br />';
-  p.innerHTML += 'rotateX('+parseFloat(degrees(xAxisSlider.value)).toFixed(1)+') <br />';
-  p.innerHTML += 'rotateY('+parseFloat(degrees(yAxisSlider.value)).toFixed(1)+') <br />';
-  p.innerHTML += 'rotateZ('+parseFloat(degrees(zAxisSlider.value)).toFixed(1)+') <br />';
-}
-`}
-cssCode={`
-body {
-  padding: 0;
-  margin: 0;
-  font-family: monospace;
-  font-size: 16px;
-  background-color: #dcdcdc
-}
-
-#pageContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-#pageContainer>div {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  justify-content: space-evenly;
-  margin: 0px 10px;
-}
-
-#controlsContainer {
-  width: 250px;
-  flex-grow: 2;
-}
-
-#controlsContainer label {
-  padding: 15px;
-}
-`}
-bodyCode={`
-<div id="pageContainer">
-  <div id="sketchContainer"></div>
-  <div id="controlsContainer">
-    <label>x: <input id="xAxis" type="range" step="0.001" min="0" max="6.28318530718" /></label>
-    <label>y: <input id="yAxis" type="range" step="0.001" min="0" max="6.28318530718" /></label>
-    <label>z: <input id="zAxis" type="range" step="0.001" min="0" max="6.28318530718" /></label>
-
-    <p id="axisText"></p>
-  </div>
-</div>
-`}
+<SketchEmbed
+  code={await fs.readFile(new URL('./sketches/coordinates-and-transformation/rotate/sketch.js', import.meta.url))}
+  cssCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/style.css', import.meta.url))}
+  bodyCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/rotate/index.html', import.meta.url))}
 />
 
 `rotate()` reorients whatever is drawn after it.
@@ -326,98 +147,10 @@ function draw() {
 
 ### `scale()`: Size in Space
 
-<SketchEmbed code={`
-let xSlider, ySlider, zSlider;
-let p;
-
-function setup() {
-  let canvas = createCanvas(350, 350, WEBGL);
-  canvas.parent("sketchContainer");
-  
-  camera(0,-200,200,0,0,0);
-  debugMode();
-  
-  xSlider = document.querySelector('#xAxis');
-  ySlider = document.querySelector('#yAxis');
-  zSlider = document.querySelector('#zAxis');
-
-  p = document.querySelector('#axisText');
-
-  describe('an interactive example that visualizes how scale works on a box shape')
-}
-
-function draw() {
-  background(220);
-  orbitControl();
-  
-  push();
-  scale(xSlider.value,ySlider.value,zSlider.value);
-  box(50);
-
-  strokeWeight(5);
-  stroke(255,0,0);
-  line(-25,0,25, 25,0,25);
-
-  stroke(0,255,0);
-  line(0,-25,25, 0,25,25);
-
-  stroke(0,0,255);
-  line(0,-25,-25, 0,-25,25);
-
-  pop();
-  
-  // draw axes
-  push();
-
-  pop();
-  
-  p.innerHTML = 'scale('+parseFloat(xSlider.value).toFixed(2)+', '+parseFloat(ySlider.value).toFixed(2)+', '+parseFloat(zSlider.value).toFixed(2)+')';
-}
-`}
-cssCode={`
-body {
-  padding: 0;
-  margin: 0;
-  font-family: monospace;
-  font-size: 16px;
-  background-color: #dcdcdc
-}
-
-#pageContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-#pageContainer>div {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  justify-content: space-evenly;
-  margin: 0px 10px;
-}
-
-#controlsContainer {
-  width: 250px;
-  flex-grow: 2;
-}
-
-#controlsContainer label {
-  padding: 15px;
-}
-`}
-bodyCode={`
-<div id="pageContainer">
-  <div id="sketchContainer"></div>
-  <div id="controlsContainer">
-    <label>x: <input id="xAxis" type="range" value="1" step="0.001" min="0" max="10" /></label>
-    <label>y: <input id="yAxis" type="range" value="1" step="0.001" min="0" max="10" /></label>
-    <label>z: <input id="zAxis" type="range" value="1" step="0.001" min="0" max="10" /></label>
-
-    <p id="axisText"></p>
-  </div>
-</div>
-`}
+<SketchEmbed
+  code={await fs.readFile(new URL('./sketches/coordinates-and-transformation/scale/sketch.js', import.meta.url))}
+  cssCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/style.css', import.meta.url))}
+  bodyCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/scale/index.html', import.meta.url))}
 />
 
 `scale()` changes the size of whatever is drawn after it. Like the other functions described, it accepts arguments for x, y, and z values.
