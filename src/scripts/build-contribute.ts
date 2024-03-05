@@ -1,7 +1,6 @@
 import { readdir } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import YAML from "yaml";
 import {
   cloneLibraryRepo,
   copyDirectory,
@@ -13,6 +12,12 @@ import {
   writeFile,
 } from "./utils";
 import type { Dirent } from "fs";
+import { remark } from "remark";
+import remarkMDX from "remark-mdx";
+import remarkGfm from "remark-gfm";
+import matter from "gray-matter";
+import { compile } from "@mdx-js/mdx";
+import isAbsoluteUrl from "is-absolute-url";
 
 /* Absolute path to the folder this file is in */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -27,7 +32,7 @@ const outputDirectory = path.join(__dirname, "../content/contributor-docs/");
 /* Name of the folder within `sourceDirectory` folder where static assets are found */
 const assetsSubFolder = "images";
 /* Base URL to refer to assets from final mdx docs*/
-const assetsOutputBaseUrl = path.join("images/contributor-docs");
+const assetsOutputBaseUrl = path.join("/images/contributor-docs");
 /* Where the image assets will be output for the website */
 const assetsOutputDirectory = path.join(
   repoRootPath,
@@ -70,22 +75,36 @@ const convertMdtoMdx = async (
   // this means the read file failed for some reason
   if (contents === undefined) return;
 
-  const contentWithRewrittenLinks = rewriteRelativeImageLinks(
+  const contentWithRewrittenLinksAndComments = rewriteRelativeImageLinks(
     rewriteRelativeMdLinks(contents),
     assetsOutputBaseUrl,
   );
-
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
 
-  // Build new file contents with frontmatter and .md file contents
-  const newFileContents = `
----
-${frontmatterObject ? YAML.stringify(frontmatterObject) : ""}
----
-${contentWithRewrittenLinks}
-  `;
+  try {
+    // Convert the markdown content to MDX
+    const newContent = remark()
+      .use(remarkGfm)
+      .use(remarkMDX)
+      .processSync(contentWithRewrittenLinksAndComments)
+      .toString();
 
-  await writeFile(newFilePath, newFileContents);
+    // All MDX content with frontmatter as a string
+    const fullFileContent = matter.stringify(
+      newContent,
+      frontmatterObject ?? {},
+    );
+
+    // Check that generated content can be compiled by MDX
+    // (sometimes this catches different problems)
+    await compile(fullFileContent);
+
+    await writeFile(newFilePath, fullFileContent);
+  } catch (e) {
+    console.error(
+      `${sourceFile} could not be converted to .mdx (${e}). Skipping.`,
+    );
+  }
 
   return undefined;
 };
@@ -119,10 +138,13 @@ export const rewriteRelativeImageLinks = (
    * 1. Alt Text for the image
    * 2. Image url
    */
-  const regexPattern: RegExp = /!\[([^\]]+)\]\((.?\/?images[^)]+)\)/g;
+  const regexPattern: RegExp = /!\[([^\]]+)\]\((.?\/?[^)]+)\)/g;
   return markdownText.replace(regexPattern, (match, linkText, url) => {
-    const { base } = path.parse(url);
-    return `![${linkText}](${assetsFolderUrl}/${base})`;
+    if (!isAbsoluteUrl(url)) {
+      const { base } = path.parse(url);
+      return `![${linkText}](${assetsFolderUrl}/${base})`;
+    }
+    return match;
   });
 };
 

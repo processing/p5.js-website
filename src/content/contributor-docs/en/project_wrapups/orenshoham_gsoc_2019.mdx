@@ -1,7 +1,3 @@
-
----
-
----
 # AudioWorklet Support in p5.js-sound
 
 For my Google Summer of Code 2019 project, I worked with my mentor [Jason Sigal](https://github.com/therewasaguy) to add [AudioWorklet](https://developers.google.com/web/updates/2017/12/audio-worklet) support to [p5.js-sound](https://github.com/processing/p5.js-sound), allowing certain parts of the library to run more efficiently by moving custom audio processing to a separate audio thread. I also helped Jason integrate [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) into the p5.js-sound [Grunt](https://gruntjs.com/) build pipeline, allowing the library's developers to use ES6 JavaScript features and laying the groundwork for modernizing the codebase and examples.
@@ -12,9 +8,9 @@ The AudioWorklet API consists of two classes: [AudioWorkletProcessor](https://de
 
 AudioWorklet replaces [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode), a now-deprecated Web Audio node that runs audio code in the browser's main thread. p5.js-sound used ScriptProcessorNode internally in three classes:
 
-- [p5.SoundFile](https://p5js.org/reference/#/p5.SoundFile), which used a ScriptProcessorNode to keep track of a SoundFile's current playback position.
-- [p5.Amplitude](https://p5js.org/reference/#/p5.Amplitude), which used a ScriptProcessorNode to perform amplitude analysis.
-- [p5.SoundRecorder](https://p5js.org/reference/#/p5.SoundRecorder), which used a ScriptProcessorNode to concatenate audio buffers together during the recording process.
+* [p5.SoundFile](https://p5js.org/reference/#/p5.SoundFile), which used a ScriptProcessorNode to keep track of a SoundFile's current playback position.
+* [p5.Amplitude](https://p5js.org/reference/#/p5.Amplitude), which used a ScriptProcessorNode to perform amplitude analysis.
+* [p5.SoundRecorder](https://p5js.org/reference/#/p5.SoundRecorder), which used a ScriptProcessorNode to concatenate audio buffers together during the recording process.
 
 For each of these classes, I created new AudioWorkletProcessors for [p5.SoundFile](https://github.com/processing/p5.js-sound/blob/4d3a3833de4d30f6770740052a82586444a4482a/src/audioWorklet/soundFileProcessor.js), [p5.Amplitude](https://github.com/processing/p5.js-sound/blob/4d3a3833de4d30f6770740052a82586444a4482a/src/audioWorklet/amplitudeProcessor.js), and [p5.SoundRecorder](https://github.com/processing/p5.js-sound/blob/4d3a3833de4d30f6770740052a82586444a4482a/src/audioWorklet/recorderProcessor.js) that replicated the corresponding ScriptProcessorNode's [onaudioprocess](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode/onaudioprocess) function.
 
@@ -73,20 +69,18 @@ Unfortunately, the additional comments inserted by Webpack into the compiled bun
 
 ## Contributions
 
-- [Add tests for p5.SoundRecorder and lint existing tests (#364)](https://github.com/processing/p5.js-sound/pull/364)
+* [Add tests for p5.SoundRecorder and lint existing tests (#364)](https://github.com/processing/p5.js-sound/pull/364)
 
-- [Replace requirejs with webpack to enable ES6+ and non-AMD modules (#366)](https://github.com/processing/p5.js-sound/pull/366)
+* [Replace requirejs with webpack to enable ES6+ and non-AMD modules (#366)](https://github.com/processing/p5.js-sound/pull/366)
 
-- [Replace ScriptProcessorNode in p5.SoundRecorder with AudioWorkletNode (#369)](https://github.com/processing/p5.js-sound/pull/369)
+* [Replace ScriptProcessorNode in p5.SoundRecorder with AudioWorkletNode (#369)](https://github.com/processing/p5.js-sound/pull/369)
 
-- [Replace ScriptProcessorNode with AudioWorkletNode in p5.SoundFile and p5.Amplitude (#373)](https://github.com/processing/p5.js-sound/pull/373)
+* [Replace ScriptProcessorNode with AudioWorkletNode in p5.SoundFile and p5.Amplitude (#373)](https://github.com/processing/p5.js-sound/pull/373)
 
-- [Add ring buffers to AudioWorklet processors to support variable buffer sizes (#376)](https://github.com/processing/p5.js-sound/pull/376)
+* [Add ring buffers to AudioWorklet processors to support variable buffer sizes (#376)](https://github.com/processing/p5.js-sound/pull/376)
 
-- [Bugfixes for p5.Amplitude and p5.Soundfile for browsers without AudioWorklet support (#380)](https://github.com/processing/p5.js-sound/pull/380)
+* [Bugfixes for p5.Amplitude and p5.Soundfile for browsers without AudioWorklet support (#380)](https://github.com/processing/p5.js-sound/pull/380)
 
 ## Acknowledgements
 
 I'm extremely grateful to the Processing Foundation for giving me the opportunity to contribute to p5.js, as well as to my mentor Jason Sigal for all of his support over the course of this project.
-
-  
