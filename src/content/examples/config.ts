@@ -12,6 +12,6 @@ export const examplesCollection = defineCollection({
     title: z.string(),
     // Aria label used for the live example code
     arialabel: z.string().optional(),
-    relatedContent: relatedContent(),
+    relatedContent: relatedContent().optional(),
   }),
 });

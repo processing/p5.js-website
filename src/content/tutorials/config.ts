@@ -17,6 +17,6 @@ export const tutorialsCollection = defineCollection({
     category: z.enum(categories),
     // Image to use as a thumbnail for the tutorial
     featuredImage: image().optional(),
-    relatedContent: relatedContent(),
+    relatedContent: relatedContent().optional(),
   }),
 });
