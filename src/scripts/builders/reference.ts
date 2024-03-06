@@ -15,6 +15,7 @@ import type {
   ReferenceModulePathTree,
 } from "../../../types/builders.interface";
 import { sanitizeName } from "../utils";
+import path from "path";
 
 /* Base path for the content directory */
 const prefix = "./src/content/reference/en/";
@@ -56,18 +57,18 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
-  return `${prefix}${docClass}/`;
+  return path.join(prefix, docClass);
 };
 
 /* Adds the doc to the module path tree */
 const addDocToModulePathTree = (
   doc: ReferenceClassDefinition | ReferenceClassItem,
-  path: string,
+  savePath: string,
 ) => {
-  if (!doc || !doc.name || !path) return;
+  if (!doc || !doc.name || !savePath) return;
 
   // Remove prefix from path
-  const itemPath = `${path.replace("./src/pages/en/reference/", "")}${doc.name}`;
+  const itemPath = `${savePath.replace("src/content/reference/en/", "")}/${doc.name}`;
 
   // Use a type guard to check if the 'doc' is a LibraryReferenceClassItem.
   // This check allows us to handle class items differently from class definitions.
@@ -261,7 +262,7 @@ const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
   }
 
   // Construct the path to the class method
-  const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
+  const classMethodPath = `${modulePathTree.classes[doc.class][doc.name]}`;
 
   // Add the method to the memberMethodPreviews object, this is used to add previews to the class docs
   memberMethodPreviews[doc.class][doc.name] = {
