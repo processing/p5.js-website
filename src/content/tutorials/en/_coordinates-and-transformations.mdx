@@ -18,10 +18,10 @@ authors:
   - Adam Ferriss
 ---
 
-import { EditableSketch } from "../../components/EditableSketch/";
-import { SketchEmbed } from "../../components/SketchEmbed";
-import { Callout } from "../../components/Callout";
-import fs from 'node:fs/promises';
+import { EditableSketch } from "../../../components/EditableSketch/";
+import { SketchEmbed } from "../../../components/SketchEmbed";
+import { Callout } from "../../../components/Callout";
+import fs from "node:fs/promises";
 
 This tutorial will introduce new concepts for creating 3D sketches with p5.js, including x, y, and z.
 
@@ -29,13 +29,13 @@ Let's start by setting up the p5.js to use WebGL, by passing `WEBGL` as a third 
 
 ```javascript
 function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
-  describe('A red box on a white background.');
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  describe("A red box on a white background.");
 }
 function draw() {
-  background(255);
-  fill(255, 0, 0);
-  box();
+  background(255);
+  fill(255, 0, 0);
+  box();
 }
 ```
 
@@ -47,29 +47,40 @@ function draw() {
 
 You can call [`debugMode()`](https://p5js.org/reference/#/p5/debugMode) in your `setup()` function to add a grid on the x- and z-axes and the red-green-blue x, y, and z arrows to your sketch, similar to the illustration above.
 
-
 ## Transformations: Position and Size of 3D Shapes
 
-p5.js has a few functions that we can use to position and orient objects within 3D space: `translate()`, `rotate()`, and `scale()`. Collectively these are known as the *transformation* of an object. These methods are available for both 2D and 3D drawing.
-
+p5.js has a few functions that we can use to position and orient objects within 3D space: `translate()`, `rotate()`, and `scale()`. Collectively these are known as the _transformation_ of an object. These methods are available for both 2D and 3D drawing.
 
 ### `translate()`: Moving Objects in Space
 
 <SketchEmbed
-  code={await fs.readFile(new URL('./sketches/coordinates-and-transformation/translate/sketch.js', import.meta.url))}
-  cssCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/style.css', import.meta.url))}
-  bodyCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/translate/index.html', import.meta.url))}
+  code={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/translate/sketch.js",
+      import.meta.url,
+    ),
+  )}
+  cssCode={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/style.css",
+      import.meta.url,
+    ),
+  )}
+  bodyCode={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/translate/index.html",
+      import.meta.url,
+    ),
+  )}
 />
 
 `translate()` moves the origin to a given point. Anything drawn after we call `translate()` will be positioned relative to that point. `translate()` accepts arguments for x, y, and z values. Use the sliders in the sketch above to change the translation of the box and see how it moves along each axis. The code snippet below demonstrates simple translation on a `box()` shape.
 
 ```javascript
 // draw a box 100 units to the right
-translate(100,0,0);
+translate(100, 0, 0);
 box();
 ```
-
-
 
 <Callout>
 
@@ -77,13 +88,27 @@ A [random walk](https://upload.wikimedia.org/wikipedia/commons/f/f3/Random_walk_
 
 </Callout>
 
-
 ### `rotate()`: Orienting Objects in Space
 
 <SketchEmbed
-  code={await fs.readFile(new URL('./sketches/coordinates-and-transformation/rotate/sketch.js', import.meta.url))}
-  cssCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/style.css', import.meta.url))}
-  bodyCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/rotate/index.html', import.meta.url))}
+  code={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/rotate/sketch.js",
+      import.meta.url,
+    ),
+  )}
+  cssCode={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/style.css",
+      import.meta.url,
+    ),
+  )}
+  bodyCode={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/rotate/index.html",
+      import.meta.url,
+    ),
+  )}
 />
 
 `rotate()` reorients whatever is drawn after it.
@@ -118,11 +143,11 @@ You can also use `rotate(angle, axis)`, which allows you to specify which axis y
 
 function draw() {
   background(255);
- 
-  // Slowly rotate over time
-  let angle = millis() * 0.001;
- 
-  // The axis of rotation will be the line
+
+// Slowly rotate over time
+  let angle = millis() \* 0.001;
+
+// The axis of rotation will be the line
   // going through the center of the canvas
   // and the mouse
   let axis = createVector(
@@ -130,15 +155,15 @@ function draw() {
     mouseY - height/2,
     0
   );
- 
-  // Visualize the axis
+
+// Visualize the axis
   strokeWeight(3);
   stroke('red');
   line(0, 0, 0, axis.x, axis.y, axis.z);
   stroke('blue');
   line(0, 0, 0, -axis.x, -axis.y, -axis.z);
- 
-  // Rotate a box about that axis
+
+// Rotate a box about that axis
   lights();
   noStroke();
   rotate(angle, axis);
@@ -148,9 +173,24 @@ function draw() {
 ### `scale()`: Size in Space
 
 <SketchEmbed
-  code={await fs.readFile(new URL('./sketches/coordinates-and-transformation/scale/sketch.js', import.meta.url))}
-  cssCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/style.css', import.meta.url))}
-  bodyCode={await fs.readFile(new URL('./sketches/coordinates-and-transformation/scale/index.html', import.meta.url))}
+  code={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/scale/sketch.js",
+      import.meta.url,
+    ),
+  )}
+  cssCode={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/style.css",
+      import.meta.url,
+    ),
+  )}
+  bodyCode={await fs.readFile(
+    new URL(
+      "./sketches/coordinates-and-transformation/scale/index.html",
+      import.meta.url,
+    ),
+  )}
 />
 
 `scale()` changes the size of whatever is drawn after it. Like the other functions described, it accepts arguments for x, y, and z values.
@@ -160,7 +200,6 @@ function draw() {
 Try making a cube jump up and down, but use `scale()` to have it [squash and stretch](https://en.wikipedia.org/wiki/Squash_and_stretch) when it bounces to give it a cartoon feel!
 
 </Callout>
-
 
 ## Transforming Multiple Shapes
 
@@ -201,7 +240,7 @@ function draw() {
 <details>
 <summary>Transformation Matrices</summary>
 
-*While this is a more advanced topic, each of these transformations affects what is called the model matrix. The model matrix is combined with the view matrix and the projection matrix, both of which help simulate the view of a camera, and this combination results in our 3D scene! You can* [*learn more about Model View Projection on MDN.*](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_model_view_projection)
+_While this is a more advanced topic, each of these transformations affects what is called the model matrix. The model matrix is combined with the view matrix and the projection matrix, both of which help simulate the view of a camera, and this combination results in our 3D scene! You can_ [_learn more about Model View Projection on MDN._](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_model_view_projection)
 
 </details>
 
@@ -211,11 +250,9 @@ Try making two spheres that can be moved around separately, with arrow keys cont
 
 </Callout>
 
-
 ## The Order of Transformations Matters!
 
 The way transformations affect each other can feel unpredictable at first because order matters. Each transformation always affects the next one. For example, if `rotate()` is called, followed by `translate()`, the direction of that translation will be affected by the rotation. The entire coordinate system is rotating and moving, not just the shape itself. Here are some recipes for different transformation orders that you can use.
-
 
 ### The Default: Positioning Objects in a Scene
 
@@ -270,7 +307,6 @@ Try making a solar system, where each planet has its own independent position as
 
 </Callout>
 
-
 ### Rotating Around a Pivot Point
 
 Sometimes you want to rotate a shape about a point that isn't its center. For this, you can `translate()` to the pivot point, `rotate()` or `scale()` as needed, and then `translate()` back to the center before drawing your shape. The sketch below uses this method to make a shape squash and stretch about its base rather than its center.
@@ -285,35 +321,35 @@ function draw() {
   orbitControl();
   noStroke();
   lights();
- 
-  // Rotate left/right over time
-  let angle = sin(millis() * 0.005) * PI * 0.2;
- 
-  // This represents how much to scale vertically by.
+
+// Rotate left/right over time
+  let angle = sin(millis() _ 0.005) _ PI \* 0.2;
+
+// This represents how much to scale vertically by.
   let squash = map(
-    sin(millis() * 0.0125),
+    sin(millis() \* 0.0125),
     -1, 1,
     1, 0.3
   );
- 
-  // When vertically compressed, squish out in the
+
+// When vertically compressed, squish out in the
   // other axes.
   let stretch = 1/squash;
   let pivot = createVector(0, 50, 0);
- 
-  push()
+
+push()
   translate(pivot.x, pivot.y, pivot.z);
- 
-  // Apply a transformation centered at the pivot
+
+// Apply a transformation centered at the pivot
   rotateZ(angle);
   scale(stretch, squash, stretch);
- 
-  translate(-pivot.x, -pivot.y, -pivot.z);
+
+translate(-pivot.x, -pivot.y, -pivot.z);
   cylinder(20, 100);
   pop()
 }
 `} />
-	
+
 <Callout>
 
 Try making a character waving its arm! You will want to rotate the arm about the point where the arm connects to its body so that it stays connected.
@@ -336,46 +372,45 @@ function draw() {
   lights();
   noStroke();
   orbitControl();
- 
-  // The head
+
+// The head
   push();
   scale(1, 1.25, 1);
   sphere(50);
   pop();
- 
-  // The nose
+
+// The nose
   push()
   translate(0, 0, 50);
   scale(1, 1.5, 1);
   sphere(10);
   pop()
- 
-  // Draw symmetrical parts by looping over each
+
+// Draw symmetrical parts by looping over each
   // side, represented by the horizontal scale applied.
   for (let side of [-1, 1]) {
     push();
     // Apply the symmetrical transformation
     scale(side, 1, 1);
-   
-    // Eyes
+
+// Eyes
     push();
     translate(20, -10, 40);
     sphere(8);
     pop();
-   
-    // Ears
+
+// Ears
     push();
     translate(50, 0, 0);
     scale(1, 1, 0.3);
     sphere(20);
     pop();
-   
-    pop();
+
+pop();
   }
 }
 `} />
 
-	
 In this example, `rotateY()` is used to create radial symmetry for a stonehenge scene.
 
 <EditableSketch client:load code={`
@@ -388,44 +423,43 @@ function draw() {
   noStroke();
   lights();
   orbitControl();
- 
-  let numArches = 6;
- 
-  for (let i = 0; i < numArches; i++) {
+
+let numArches = 6;
+
+for (let i = 0; i < numArches; i++) {
     const angle = map(i, 0, numArches-1, -PI/2, PI/2);
-   
-    // Apply radially symmetrical transformation
+
+// Apply radially symmetrical transformation
     push();
     rotateY(angle);
-   
-    // Draw each arch
+
+// Draw each arch
     translate(0, 0, -150);
-   
-    // Left beam
+
+// Left beam
     push();
     translate(-20, 0, 0);
     cylinder(10, 100);
     pop();
-   
-    // Right beam
+
+// Right beam
     push();
     translate(20, 0, 0);
     cylinder(10, 100);
     pop();
-   
-    // Top
+
+// Top
     push();
     translate(0, -50, 0);
     rotateZ(PI/2);
     cylinder(10, 80);
     pop();
-   
-    pop();
+
+pop();
   }
 }
 `} />
 
-	
 <Callout>
 
 Try giving a body with arms and legs to the head in the example!
@@ -436,40 +470,32 @@ Try giving a body with arms and legs to the head in the example!
 
 By having control over 3D coordinates, you will be able to create more complex scenes in 3D. The tutorials that follow this one build on these skills by giving you more control over what you draw after you have transformed it.
 
-
 ## Glossary
 
 #### GPU
 
 The GPU (Graphics Processing Unit) is a piece of hardware that is particularly well suited for performing many calculations in parallel, making it powerful for 3D graphics.
 
-
 #### Model
 
 A custom 3D geometry that can be saved and loaded from a file.
-
 
 #### Matrix
 
 A special array that can hold information about the transformation of a geometry.
 
-
 #### Camera
 
 The viewpoint of a 3D scene.
 
-
 #### Transformation
 
-The combined scale, rotation, and translation of a geometry. The verb *transform* is used when describing altering these properties.
-
+The combined scale, rotation, and translation of a geometry. The verb _transform_ is used when describing altering these properties.
 
 #### Vertex
 
 A point in 3D space with an x, y, and z position.
 
-
 #### Face
 
 A collection of three points that create a solid surface.
-

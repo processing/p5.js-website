@@ -18,14 +18,13 @@ authors:
   - Adam Ferriss
 ---
 
-import { EditableSketch } from "../../components/EditableSketch/";
-import { Callout } from "../../components/Callout";
-import AnnotatedCode from "../../components/AnnotatedCode/index.astro";
+import { EditableSketch } from "../../../components/EditableSketch/";
+import { Callout } from "../../../components/Callout";
+import AnnotatedCode from "../../../components/AnnotatedCode/index.astro";
 
 Modern computers come with a special piece of hardware called the Graphics Processing Unit, or GPU. Shaders are special programs that run on it and can do incredible things. They take advantage of the GPU to process many pixels at once in parallel, making them fast and particularly well suited for certain tasks in computer graphics, like generating noise, applying filters like blur, or shading polygons.
 
 Shader programming can feel daunting at first, requiring a different approach than the 2D drawing of p5.js. This tutorial will outline the basics of shader programming and point you towards other resources.
-
 
 ## Setup
 
@@ -71,19 +70,19 @@ A shader program consists of two parts, a **vertex shader** and a **fragment sha
 
 <td>
 
-*Original shape*
+_Original shape_
 
 </td>
 
 <td>
 
-*A custom vertex shader can adjust the positions of vertices within a shape*
+_A custom vertex shader can adjust the positions of vertices within a shape_
 
 </td>
 
 <td>
 
-*A custom fragment shader can adjust the colors inside a shape*
+_A custom fragment shader can adjust the colors inside a shape_
 
 </td>
 
@@ -98,28 +97,25 @@ Each of these live in separate files and are loaded into p5.js using the `loadSh
 ```javascript
 let myShader;
 function preload() {
-  // load each shader file (don't worry, we will come back to these!)
-  myShader = loadShader('shader.vert', 'shader.frag');
+  // load each shader file (don't worry, we will come back to these!)
+  myShader = loadShader("shader.vert", "shader.frag");
 }
 function setup() {
-  // the canvas has to be created with WEBGL mode
-  createCanvas(windowWidth, windowHeight, WEBGL);
+  // the canvas has to be created with WEBGL mode
+  createCanvas(windowWidth, windowHeight, WEBGL);
 }
 function draw() {
-  // shader() sets the active shader, which will be applied to what is drawn next
-  shader(myShader);
-  // apply the shader to a rectangle taking up the full canvas
+  // shader() sets the active shader, which will be applied to what is drawn next
+  shader(myShader); // apply the shader to a rectangle taking up the full canvas
   plane(width, height);
 }
 ```
 
-There is also an additional function called `createShader()`, which can be used to load shaders directly from strings defined in your sketch. 
-
+There is also an additional function called `createShader()`, which can be used to load shaders directly from strings defined in your sketch.
 
 ## Writing Shaders
 
 Now, we'll look at what goes into the vertex and fragment shader files we referenced in `loadShader()`.
-
 
 ### Shading Language (GLSL)
 
@@ -206,7 +202,7 @@ Functions must declare the types of their parameters, and their return value.
 
 ```javascript
 function isBetween(val, start, end) {
-  return val >= start && val <= end;
+  return val >= start && val <= end;
 }
 ```
 
@@ -269,10 +265,10 @@ Loops in GLSL have to stop at a constant value. If you want to end conditionally
 ```javascript
 let maxVal = 10;
 if (something) {
-  maxVal = 20;
+  maxVal = 20;
 }
 for (let i = 0; i < maxVal; i++) {
-  // do something
+  // do something
 }
 ```
 
@@ -371,43 +367,70 @@ vec2 smallVec = bigVec.zy;
 
 </table>
 
-
 ### Vertex Shaders
 
 Here's a simple vertex shader that applies the transformations and camera perspective supplied by p5.js:
 
-<AnnotatedCode lang="glsl" code={({ begin, end }) =>
-`${begin('precision')}
+<AnnotatedCode
+  lang="glsl"
+  code={({ begin, end }) =>
+    `${begin("precision")}
 precision highp float;
-${end('precision')}
-${begin('attributes')}
+${end("precision")}
+${begin("attributes")}
 attribute vec3 aPosition;
-${end('attributes')}
-${begin('uniforms')}
+${end("attributes")}
+${begin("uniforms")}
 // The transform of the object being drawn
 uniform mat4 uModelViewMatrix;
 // Transforms 3D coordinates to 2D screen coordinates
 uniform mat4 uProjectionMatrix;
-${end('uniforms')}
-${begin('main')}
+${end("uniforms")}
+${begin("main")}
 void main() {
   // Apply the camera transform
   vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
   // Tell WebGL where the vertex goes
   gl_Position = uProjectionMatrix * viewModelPosition;  
 }
-${end('main')}`}>
+${end("main")}`
+  }
+>
   <Fragment slot="precision">
-   The shader starts with a `precision` line. It can either be `lowp`, `mediump`, or `highp`. Using the highest quality is a good place to start to ensure your shaders look the same everywhere. On desktops and laptops, your GPU will likely use the highest quality regardless of what you write. On phones, using a lower quality might be faster, but it may make your shaders render differently.
+    The shader starts with a `precision` line. It can either be `lowp`,
+    `mediump`, or `highp`. Using the highest quality is a good place to start to
+    ensure your shaders look the same everywhere. On desktops and laptops, your
+    GPU will likely use the highest quality regardless of what you write. On
+    phones, using a lower quality might be faster, but it may make your shaders
+    render differently.
   </Fragment>
   <Fragment slot="attributes">
-    The *attributes* of the shader contain values that change per vertex, which p5.js uses to share information like the position of each vertex. The attribute in this shader is a `vec3`, meaning it contains a value for x, y, and z. Attributes are special variable types that are only used in the vertex shader and are typically provided by p5.js. When you use p5.js methods like `rect()` or `vertex()`, p5.js passes the vertex information to the shader for you automatically.
+    The *attributes* of the shader contain values that change per vertex, which
+    p5.js uses to share information like the position of each vertex. The
+    attribute in this shader is a `vec3`, meaning it contains a value for x, y,
+    and z. Attributes are special variable types that are only used in the
+    vertex shader and are typically provided by p5.js. When you use p5.js
+    methods like `rect()` or `vertex()`, p5.js passes the vertex information to
+    the shader for you automatically.
   </Fragment>
   <Fragment slot="uniforms">
-    The *uniforms* of a shader are values that are constants for the whole shape being drawn. Each one in this shader happens to be a `mat4`, which is a type often used to represent transformations like translations, scales, and rotations. Multiplying a point by a `mat4` applies the transformation it represents to the point. The ones in this shader get provided automatically by p5.js, but we'll see later how you can provide your own custom uniforms. Note that the order of multiplication with matrices matters. In most cases you will write the matrix first and the value being multiplied by it second.
+    The *uniforms* of a shader are values that are constants for the whole shape
+    being drawn. Each one in this shader happens to be a `mat4`, which is a type
+    often used to represent transformations like translations, scales, and
+    rotations. Multiplying a point by a `mat4` applies the transformation it
+    represents to the point. The ones in this shader get provided automatically
+    by p5.js, but we'll see later how you can provide your own custom uniforms.
+    Note that the order of multiplication with matrices matters. In most cases
+    you will write the matrix first and the value being multiplied by it second.
   </Fragment>
   <Fragment slot="main">
-    All vertex shaders require a function, `main()`, within which we position our vertices by assigning a value to `gl_Position`. This value is in *clip space*, where x, y, and z values go from -1 to 1 as they go from one side to the other. Multiplying a 3D point by `uProjectionMatrix` does this conversion for us using p5.js's camera settings. Before we do that, this shader also multiplies by `uModelViewMatrix` to apply the accumulated transformations that were set before drawing the shape.
+    All vertex shaders require a function, `main()`, within which we position
+    our vertices by assigning a value to `gl_Position`. This value is in *clip
+    space*, where x, y, and z values go from -1 to 1 as they go from one side to
+    the other. Multiplying a 3D point by `uProjectionMatrix` does this
+    conversion for us using p5.js's camera settings. Before we do that, this
+    shader also multiplies by `uModelViewMatrix` to apply the accumulated
+    transformations that were set before drawing the shape.
   </Fragment>
 </AnnotatedCode>
 
@@ -426,7 +449,7 @@ void main() {
   // Apply the camera transform
   vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
   // Tell WebGL where the vertex goes
-  gl_Position = uProjectionMatrix * viewModelPosition;  
+  gl_Position = uProjectionMatrix * viewModelPosition; 
   // Pass along data to the fragment shader
   vTexCoord = aTexCoord;
   vVertexColor = aVertexColor;
@@ -461,7 +484,6 @@ The variable, `myColor`, is defined as a `vec4`, meaning it stores four values. 
 
 Now that we have a vertex shader and a fragment shader, these can be saved to separate files (`shader.vert` and `shader.frag`, respectively) and loaded into our sketch using `loadShader()`.
 
-
 ## Uniforms: Passing data from sketch to shader
 
 A simple shader like this can be useful by itself, but there are times when it's necessary to communicate variables from the p5.js sketch to a shader. This is when uniforms come in. Uniforms are a type of variable that can be sent from a sketch to a shader. These make it possible to have much more control over a shader from JavaScript.
@@ -487,14 +509,14 @@ uniform mat4 uProjectionMatrix;
 uniform float time;
 
 void main() {
-  // Apply the camera transform
-  vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+// Apply the camera transform
+vec4 viewModelPosition = uModelViewMatrix \* vec4(aPosition, 1.0);
 
-  // Use the time to adjust the position of the vertices
-  viewModelPosition.x += 10.0 * sin(time * 0.01 + viewModelPosition.y * 0.1);
+// Use the time to adjust the position of the vertices
+viewModelPosition.x += 10.0 _ sin(time _ 0.01 + viewModelPosition.y \* 0.1);
 
-  // Tell WebGL where the vertex goes
-  gl_Position = uProjectionMatrix * viewModelPosition;  
+// Tell WebGL where the vertex goes
+gl_Position = uProjectionMatrix \* viewModelPosition;  
 }
 \`;
 
@@ -502,33 +524,32 @@ let frag = \`
 precision highp float;
 
 void main() {
-  vec4 myColor = vec4(1.0, 0.0, 0.0, 1.0);
-  gl_FragColor = myColor;
+vec4 myColor = vec4(1.0, 0.0, 0.0, 1.0);
+gl_FragColor = myColor;
 }
 \`
 
 function setup() {
-  createCanvas(200, 200, WEBGL);
-  myShader = createShader(vert, frag);
+createCanvas(200, 200, WEBGL);
+myShader = createShader(vert, frag);
 }
 
 function draw() {
-  background(255);
-  noStroke();
-  
-  // Use our custom shader
-  shader(myShader);
-  
-  // Pass the time from p5 to the shader
-  myShader.setUniform('time', millis());
-  
-  // Draw a shape using the shader
-  circle(0, 0, 100);
+background(255);
+noStroke();
+
+// Use our custom shader
+shader(myShader);
+
+// Pass the time from p5 to the shader
+myShader.setUniform('time', millis());
+
+// Draw a shape using the shader
+circle(0, 0, 100);
 }
 `} />
 
 It also works in the fragment shader. In the following example, we create a color uniform, `myColor`, that will allow us to change the color from the JavaScript part of our sketch. Just remember that in shaders, color channel values go from 0-1 instead of 0-255.
-
 
 <EditableSketch client:load code={`
 let myShader;
@@ -546,11 +567,11 @@ uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
 
 void main() {
-  // Apply the camera transform
-  vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+// Apply the camera transform
+vec4 viewModelPosition = uModelViewMatrix \* vec4(aPosition, 1.0);
 
-  // Tell WebGL where the vertex goes
-  gl_Position = uProjectionMatrix * viewModelPosition;  
+// Tell WebGL where the vertex goes
+gl_Position = uProjectionMatrix \* viewModelPosition;  
 }
 \`;
 
@@ -561,42 +582,41 @@ precision highp float;
 uniform vec4 myColor;
 
 void main() {
-  gl_FragColor = myColor;
+gl_FragColor = myColor;
 }
 \`
 
 function setup() {
-  createCanvas(200, 200, WEBGL);
-  myShader = createShader(vert, frag);
+createCanvas(200, 200, WEBGL);
+myShader = createShader(vert, frag);
 }
 
 function draw() {
-  background(255);
-  noStroke();
-  
-  // Use our custom shader
-  shader(myShader);
-  
-  // Create a color using the mouse's x position as red and
-  // its y position as blue, and pass it into the shader
-  myShader.setUniform('myColor', [
-    map(mouseX, 0, width, 0, 1, true), // Red
-    map(mouseY, 0, width, 0, 1, true), // Green
-    0, // Blue
-    1 // Alpha
-  ]);
-  
-  // Draw a shape using the shader
-  circle(0, 0, 100);
+background(255);
+noStroke();
+
+// Use our custom shader
+shader(myShader);
+
+// Create a color using the mouse's x position as red and
+// its y position as blue, and pass it into the shader
+myShader.setUniform('myColor', [
+map(mouseX, 0, width, 0, 1, true), // Red
+map(mouseY, 0, width, 0, 1, true), // Green
+0, // Blue
+1 // Alpha
+]);
+
+// Draw a shape using the shader
+circle(0, 0, 100);
 }
 `} />
 
 You can see the complete list of uniforms that p5.js provides for you in the [p5.js WebGL Mode Architecture](https://github.com/processing/p5.js/blob/main/contributor_docs/webgl_mode_architecture.md) document.
 
-
 ## Varyings: Passing data from vertex to fragment shader
 
-*Varying* variables share data between the vertex shader and the fragment shader. This makes it possible to use position or other geometry data within our fragment shaders.
+_Varying_ variables share data between the vertex shader and the fragment shader. This makes it possible to use position or other geometry data within our fragment shaders.
 
 For example, you may want to use a shape's texture coordinates in the fragment shader. These come in the form of a `vec2`, where coordinates go between 0 and 1. This initially comes in an `attribute` from p5.js, and those are only accessible in the vertex shader. Let's look at what our standard vertex shader does to pass that to fragment shaders:
 
@@ -618,14 +638,15 @@ ${end('varying')}
 varying vec4 vVertexColor;
 void main() {
   // Apply the camera transform
-  vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+  vec4 viewModelPosition = uModelViewMatrix _ vec4(aPosition, 1.0);
   // Tell WebGL where the vertex goes
-  gl_Position = uProjectionMatrix * viewModelPosition;
+  gl_Position = uProjectionMatrix _ viewModelPosition;
 ${begin('assign')}
   vVertexColor = aVertexColor;
 ${end('assign')}
 }
 `}>
+
   <Fragment slot="texcoord">
     The texture coordinates initially come in the form of an `attribute` called `aTexCoord`. This is automatically filled in by p5.js.
   </Fragment>
@@ -637,7 +658,7 @@ ${end('assign')}
   </Fragment>
 </AnnotatedCode>
 
-Since we defined a `varying` called `vTexCoord` in the vertex shader, we can now use it in the fragment shader as well. Here is a simple fragment shader that maps the x value to the red channel and the y value to the blue channel. Note that while `vTexCoord` is defined *per vertex* in the vertex shader, its value is defined *per pixel* in the fragment shader. To get the per-pixel value, WebGL smoothly interpolates between the per-vertex values on each face.
+Since we defined a `varying` called `vTexCoord` in the vertex shader, we can now use it in the fragment shader as well. Here is a simple fragment shader that maps the x value to the red channel and the y value to the blue channel. Note that while `vTexCoord` is defined _per vertex_ in the vertex shader, its value is defined _per pixel_ in the fragment shader. To get the per-pixel value, WebGL smoothly interpolates between the per-vertex values on each face.
 
 <AnnotatedCode lang="glsl" code={({ begin, end }) =>
 `${begin('shader')}
@@ -656,7 +677,6 @@ ${end('shader')}`}>
 
   </Fragment>
 </AnnotatedCode>
-
 
 ## Filter Shaders
 
@@ -682,43 +702,43 @@ uniform sampler2D tex0;
 varying vec2 vTexCoord;
 
 void main() {
-  // Get the original color for this pixel
-  vec4 color = texture2D(tex0, vTexCoord);
+// Get the original color for this pixel
+vec4 color = texture2D(tex0, vTexCoord);
 
-  // Make it black and white by replacing all channels with blue
-  color.r = color.b;
-  color.g = color.b;
+// Make it black and white by replacing all channels with blue
+color.r = color.b;
+color.g = color.b;
 
-  // Set the new color
-  gl_FragColor = color;
+// Set the new color
+gl_FragColor = color;
 }
 \`;
 
 function setup() {
-  createCanvas(200, 200, WEBGL);
-  video = createVideo(
-    'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
-  );
-  video.volume(0);
-  video.hide();
-  video.loop();
-  
-  bw = createFilterShader(bwSrc);
-  
-  describe('A video of a city crosswalk in black and white');
+createCanvas(200, 200, WEBGL);
+video = createVideo(
+'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
+);
+video.volume(0);
+video.hide();
+video.loop();
+
+bw = createFilterShader(bwSrc);
+
+describe('A video of a city crosswalk in black and white');
 }
 
 function draw() {
-  background(255);
-  push();
-  imageMode(CENTER);
-  image(video, 0, 0, 255, 200);
-  pop();
-  filter(bw);
+background(255);
+push();
+imageMode(CENTER);
+image(video, 0, 0, 255, 200);
+pop();
+filter(bw);
 }
 `} />
 
-Another thing you might want to try is modifying the *input* to `texture2D` rather than modifying its output. Adjusting the texture coordinate used can create an offset from the original or a warp effect if the offset is different per pixel:
+Another thing you might want to try is modifying the _input_ to `texture2D` rather than modifying its output. Adjusting the texture coordinate used can create an offset from the original or a warp effect if the offset is different per pixel:
 
 <EditableSketch client:load code={`
 let video;
@@ -731,37 +751,37 @@ uniform sampler2D tex0;
 varying vec2 vTexCoord;
 
 void main() {
-  // Offset the input coordinate
-  vec2 warpedCoord = vTexCoord;
-  warpedCoord.x += 0.05 * sin(vTexCoord.y * 10.0);
-  warpedCoord.y += 0.05 * sin(vTexCoord.x * 10.0);
+// Offset the input coordinate
+vec2 warpedCoord = vTexCoord;
+warpedCoord.x += 0.05 _ sin(vTexCoord.y _ 10.0);
+warpedCoord.y += 0.05 _ sin(vTexCoord.x _ 10.0);
 
-  // Set the new color by looking up the warped coordinate
-  gl_FragColor = texture2D(tex0, warpedCoord);
+// Set the new color by looking up the warped coordinate
+gl_FragColor = texture2D(tex0, warpedCoord);
 }
 \`;
 
 function setup() {
-  createCanvas(200, 200, WEBGL);
-  video = createVideo(
-    'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
-  );
-  video.volume(0);
-  video.hide();
-  video.loop();
-  
-  warp = createFilterShader(warpSrc);
-  
-  describe('A warped video of a city crosswalk');
+createCanvas(200, 200, WEBGL);
+video = createVideo(
+'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
+);
+video.volume(0);
+video.hide();
+video.loop();
+
+warp = createFilterShader(warpSrc);
+
+describe('A warped video of a city crosswalk');
 }
 
 function draw() {
-  background(255);
-  push();
-  imageMode(CENTER);
-  image(video, 0, 0, 255, 200);
-  pop();
-  filter(warp);
+background(255);
+push();
+imageMode(CENTER);
+image(video, 0, 0, 255, 200);
+pop();
+filter(warp);
 }
 `} />
 
@@ -777,8 +797,7 @@ Want to keep learning more about shaders? Check out some of these websites!
 - [p5js Shader Examples](https://github.com/aferriss/p5jsShaderExamples), a collection of resources by Adam Ferriss.
 - [OpenGL ES 2.0 Specification](https://registry.khronos.org/OpenGL/specs/es/2.0/es_cm_spec_2.0.pdf), super technical specification for GLSL
 - [WebGL Quick Reference card](https://www.khronos.org/files/webgl/webgl-reference-card-1_0.pdf), another slightly dense technical reference, but it contains lots of goodies about GLSL functions
-- [Shaderific GLSL ES reference](https://shaderific.com/glsl.html), a somewhat slimmed-down reference for built-in GLSL functions and data types 
-
+- [Shaderific GLSL ES reference](https://shaderific.com/glsl.html), a somewhat slimmed-down reference for built-in GLSL functions and data types
 
 ## Glossary
 
@@ -786,61 +805,49 @@ Want to keep learning more about shaders? Check out some of these websites!
 
 A special graphics card program that can efficiently produce many visual effects and filters.
 
-
 #### GLSL
 
 Graphics Library Shader Language (GLSL) is a programming language that is used to write shaders.
-
 
 #### Uniform
 
 A variable that is passed from your sketch to a shader.
 
-
 #### Varying
 
 A variable that is passed from the vertex shader to the fragment shader
-
 
 #### Vector (`vec2` / `vec3` / `vec4`)
 
 A data type that stores a group of numbers, most commonly two, three, or four, to represent colors, positions, and more.
 
-
 #### Float
 
 A data type that stores floating point numbers, which can have a decimal point.
-
 
 #### Int
 
 A data type that stores integers, which are whole numbers without a decimal.
 
-
 #### Sampler
 
 A data type that represents a texture being passed into the shader. Typically expressed as a `sampler2D` in GLSL.
-
 
 #### Attribute
 
 A GLSL variable that is generated in the p5.js sketch and made available in the vertex shader. For most situations these are provided by p5.js.
 
-
 #### Texture
 
 An image that is passed into a shader program. Can be sampled using the `texture2D()` function.
-
 
 #### Type
 
 A label describing the format of a piece of data, such as an int, a float, a vector, etc.
 
-
 #### Vertex Shader
 
 The part of a shader program that is responsible for positioning geometry in 3D space.
-
 
 #### Fragment Shader
 
