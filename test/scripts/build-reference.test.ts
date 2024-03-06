@@ -21,7 +21,7 @@ const defaultDoc = {
   chainable: 1,
 };
 let doc = { ...defaultDoc };
-const path = "expected/path/to/";
+const path = "expected/path/to";
 
 describe("modulePathTree", () => {
   beforeEach(() => {
@@ -31,18 +31,16 @@ describe("modulePathTree", () => {
   });
 
   test("should add a class item correctly", () => {
-    const expectedPath = `${path}exampleClass`;
+    const expectedPath = `${path}/exampleClass`;
     doc.name = "exampleClass";
     addDocToModulePathTree(doc, path);
-
     expect(modulePathTree.classes["ExampleClass"]["exampleClass"]).toBe(
       expectedPath,
     );
   });
 
   test("should add a global item correctly", () => {
-    const path = "expected/path/to/";
-    const expectedPath = `${path}exampleMethod`;
+    const expectedPath = `${path}/exampleMethod`;
     doc.class = "p5";
     addDocToModulePathTree(doc, path);
     expect(modulePathTree.modules["TestModule"]["exampleMethod"]).toBe(
@@ -51,8 +49,7 @@ describe("modulePathTree", () => {
   });
 
   test("should add a submodule item correctly", () => {
-    const path = "expected/path/to/";
-    const expectedPath = `${path}exampleMethod`;
+    const expectedPath = `${path}/exampleMethod`;
     doc.submodule = "TestSubmodule";
     doc.class = "p5";
     addDocToModulePathTree(doc, path);
@@ -76,15 +73,16 @@ describe("modulePathTree with method previews", () => {
 
   test("should add a method preview correctly", () => {
     doc.class = "p5.TestClass";
-    doc.name = "testMethod";
+    doc.name = "exampleClassMethod";
     doc.description = "test description";
+    const expectedPath = `${path}/exampleClassMethod`;
     addDocToModulePathTree(doc, path);
     addMemberMethodPreviewsToClassDocs(doc);
-    expect(memberMethodPreviews["p5.TestClass"]["testMethod"].description).toBe(
-      "test description",
-    );
-    expect(memberMethodPreviews["p5.TestClass"]["testMethod"].path).toBe(
-      "../expected/path/to/testMethod",
-    );
+    expect(
+      memberMethodPreviews["p5.TestClass"]["exampleClassMethod"].description,
+    ).toBe("test description");
+    expect(
+      memberMethodPreviews["p5.TestClass"]["exampleClassMethod"].path,
+    ).toBe(expectedPath);
   });
 });
