@@ -1,4 +1,5 @@
 import { z, defineCollection } from "astro:content";
+import { relatedContent } from "../shared";
 
 const paramSchema = z.object({
   name: z.string(),
@@ -32,6 +33,7 @@ export const referenceSchema = z.object({
   chainable: z.boolean().optional(),
   return: returnSchema.optional(),
   example: z.array(exampleSchema).optional(),
+  relatedContent: relatedContent(),
 });
 
 export const referenceCollection = defineCollection({

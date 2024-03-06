@@ -1,5 +1,5 @@
 import { z, defineCollection } from "astro:content";
-import { image } from "../shared";
+import { image, relatedContent } from "../shared";
 
 const categories = ["getting-started", "webgl"] as const;
 
@@ -17,11 +17,6 @@ export const tutorialsCollection = defineCollection({
     category: z.enum(categories),
     // Image to use as a thumbnail for the tutorial
     featuredImage: image().optional(),
-    // Examples related to this tutorial (use the slug of the example)
-    relatedExamples: z.array(z.string()).optional(),
-    // related_examples: z.array(reference("examples")).optional(),
-    // Reference pages related to this tutorial (use the slug of the reference page)
-    relatedReferences: z.array(z.string()).optional(),
-    // related_references: z.array(reference("reference")).optional(),
+    relatedContent: relatedContent(),
   }),
 });

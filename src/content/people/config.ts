@@ -1,6 +1,8 @@
 import { z, defineCollection } from "astro:content";
 import { image } from "../shared";
 
+const displayTypes = ["featured", "gallery"] as const;
+
 /**
  * Content collection for the People section of the site.
  *
@@ -14,5 +16,7 @@ export const peopleCollection = defineCollection({
     url: z.string().url().optional(),
     blurb: z.string().optional(),
     image: image(),
+    // How this person should be displayed on the people page
+    displayed: z.enum(displayTypes),
   }),
 });
