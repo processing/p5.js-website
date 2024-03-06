@@ -23,7 +23,10 @@ const prefix = "./src/content/reference/en/";
 const memberMethodPreviews: ReferenceClassMethodPreviews = {};
 
 /* Object to store the module path tree, needed for indicating relationships between records */
-const modulePathTree = { modules: {}, classes: {} } as ReferenceModulePathTree;
+const modulePathTree = {
+  modules: {},
+  classes: {},
+} as ReferenceModulePathTree;
 
 /* Main function to build the reference docs, runs automatically with Node execution */
 export const buildReference = async () => {
@@ -64,7 +67,7 @@ const addDocToModulePathTree = (
   if (!doc || !doc.name || !path) return;
 
   // Remove prefix from path
-  const modulePath = `${path.replace("./src/pages/en/reference/", "")}${doc.name}`;
+  const itemPath = `${path.replace("./src/pages/en/reference/", "")}${doc.name}`;
 
   // Use a type guard to check if the 'doc' is a LibraryReferenceClassItem.
   // This check allows us to handle class items differently from class definitions.
@@ -83,20 +86,36 @@ const addDocToModulePathTree = (
     }
     // Add the doc to the modulePathTree under the appropriate treePath and subPath,
     // using the doc's name as the key and the constructed modulePath as the value.
-    modulePathTree[treePath][subPath][doc.name] = modulePath;
+    modulePathTree[treePath][subPath][doc.name] = itemPath;
   } else {
     // If the doc is not a class item, it's handled here.
     // We default to adding it under the 'modules' category.
-    const treePath = "modules";
-    const subPath = doc.module;
+    const modulePath = doc.module;
+    const subPath = doc.submodule;
 
     // Similar to above, initialize the subPath if needed.
-    if (!modulePathTree[treePath][subPath]) {
-      modulePathTree[treePath][subPath] = {};
+    if (!modulePathTree.modules[modulePath]) {
+      modulePathTree.modules[modulePath] = {};
     }
 
-    // Add the module to the modulePathTree.
-    modulePathTree[treePath][subPath][doc.name] = modulePath;
+    // If a submodule exists, add the doc to the modulePathTree under the appropriate treePath,
+    // modulePath, and subPath, using the doc's name as the key and the constructed modulePath as the value.
+    if (subPath) {
+      if (!modulePathTree.modules[modulePath][subPath]) {
+        modulePathTree.modules[modulePath][subPath] = {} as Record<
+          string,
+          string
+        >;
+      }
+      // Add the doc to the modulePathTree. We assert the type because we know that the subPath exists
+      // as an object at this point but TypeScript can't infer that.
+      (modulePathTree.modules[modulePath][subPath] as Record<string, string>)[
+        doc.name
+      ] = itemPath;
+    } else {
+      // Add the module to the modulePathTree.
+      modulePathTree.modules[modulePath][doc.name] = itemPath;
+    }
   }
 };
 
@@ -220,7 +239,7 @@ const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
     submodule,
     params,
     example,
-    ...memberMethodPreviews[doc.name],
+    methods: { ...memberMethodPreviews[doc.name] },
     chainable: doc.chainable === 1,
   };
 };
@@ -309,3 +328,10 @@ const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
 };
 
 buildReference();
+
+export const testingExports = {
+  modulePathTree,
+  memberMethodPreviews,
+  addDocToModulePathTree,
+  addMemberMethodPreviewsToClassDocs,
+};
