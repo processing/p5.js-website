@@ -1,4 +1,4 @@
-import { z } from "astro:content";
+import { reference, z } from "astro:content";
 
 /*
  * A zod type for an image.
@@ -18,4 +18,15 @@ export const author = () =>
   z.object({
     name: z.string(),
     url: z.string().url().optional(),
+  });
+
+/*
+ * A zod type for related pages
+ */
+export const relatedContent = () =>
+  z.object({
+    // Reference pages related to this tutorial (use the slug of the reference page)
+    references: z.array(reference("reference")).optional(),
+    // Examples related to this tutorial (use the slug of the example)
+    examples: z.array(reference("examples")).optional(),
   });

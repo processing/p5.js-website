@@ -8,6 +8,12 @@ import { textDetailCollection } from "./text-detail/config";
 import { examplesCollection } from "./examples/config";
 import { contributorDocsCollection } from "./contributor-docs/config";
 
+/**
+ * All content collections defined in subfolders of /src/content/
+ * must be imported into this file and exported in the object below.
+ * Astro uses this object to know which content collections exist to
+ * build into the site.
+ */
 export const collections = {
   tutorials: tutorialsCollection,
   "past-events": pastEventsCollection,
