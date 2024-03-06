@@ -233,6 +233,23 @@ export const getFilepathsWithinDir = async (
       );
 };
 
+export const getMdxFiles = async (baseDir: string) => {
+  const files = await fs.readdir(baseDir, { withFileTypes: true });
+  let mdxFiles: string[] = [];
+  for (const file of files) {
+    if (file.isDirectory()) {
+      // Recurse into subdirectories
+      mdxFiles = mdxFiles.concat(
+        await getMdxFiles(path.join(baseDir, file.name)),
+      );
+    } else if (file.name.endsWith(".mdx")) {
+      // Collect MDX files
+      mdxFiles.push(path.join(baseDir, file.name));
+    }
+  }
+  return mdxFiles;
+};
+
 /**
  * Rewrites linked pages in a markdown document to remove the `.md`
  * extension and use the Astro URL convention of ending in a `/`
