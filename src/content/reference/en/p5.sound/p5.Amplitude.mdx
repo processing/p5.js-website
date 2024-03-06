@@ -19,6 +19,33 @@ params:
     optional: true
 example:
   - "\n<div><code>\nlet sound, amplitude;\n\nfunction preload(){\n  sound = loadSound('assets/beat.mp3');\n}\nfunction setup() {\n  let cnv = createCanvas(100,100);\n  cnv.mouseClicked(togglePlay);\n  amplitude = new p5.Amplitude();\n}\n\nfunction draw() {\n  background(220);\n  text('tap to play', 20, 20);\n\n  let level = amplitude.getLevel();\n  let size = map(level, 0, 1, 0, 200);\n  ellipse(width/2, height/2, size, size);\n}\n\nfunction togglePlay() {\n  if (sound.isPlaying() ){\n    sound.pause();\n  } else {\n    sound.loop();\n\t\tamplitude = new p5.Amplitude();\n\t\tamplitude.setInput(sound);\n  }\n}\n\n</code></div>"
+methods:
+  setInput:
+    description: |
+      <p>Connects to the p5sound instance (main output) by default.
+      Optionally, you can pass in a specific source (i.e. a soundfile).</p>
+    path: p5.Amplitude/setInput
+  getLevel:
+    description: |
+      <p>Returns a single Amplitude reading at the moment it is called.
+      For continuous readings, run in the draw loop.</p>
+    path: p5.Amplitude/getLevel
+  toggleNormalize:
+    description: |
+      <p>Determines whether the results of Amplitude.process() will be
+      Normalized. To normalize, Amplitude finds the difference the
+      loudest reading it has processed and the maximum amplitude of
+      1.0. Amplitude adds this difference to all values to produce
+      results that will reliably map between 0.0 and 1.0. However,
+      if a louder moment occurs, the amount that Normalize adds to
+      all the values will change. Accepts an optional boolean parameter
+      (true or false). Normalizing is off by default.</p>
+    path: p5.Amplitude/toggleNormalize
+  smooth:
+    description: |
+      <p>Smooth Amplitude analysis by averaging with the last analysis
+      frame. Off by default.</p>
+    path: p5.Amplitude/smooth
 chainable: false
 ---
 
