@@ -33,7 +33,7 @@ export const referenceSchema = z.object({
   chainable: z.boolean().optional(),
   return: returnSchema.optional(),
   example: z.array(exampleSchema).optional(),
-  relatedContent: relatedContent(),
+  relatedContent: relatedContent().optional(),
 });
 
 export const referenceCollection = defineCollection({
