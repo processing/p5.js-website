@@ -15,6 +15,7 @@ import type {
   ReferenceModulePathTree,
 } from "../../../types/builders.interface";
 import { sanitizeName } from "../utils";
+import path from "path";
 
 /* Base path for the content directory */
 const prefix = "./src/content/reference/en/";
@@ -23,7 +24,10 @@ const prefix = "./src/content/reference/en/";
 const memberMethodPreviews: ReferenceClassMethodPreviews = {};
 
 /* Object to store the module path tree, needed for indicating relationships between records */
-const modulePathTree = { modules: {}, classes: {} } as ReferenceModulePathTree;
+const modulePathTree = {
+  modules: {},
+  classes: {},
+} as ReferenceModulePathTree;
 
 /* Main function to build the reference docs, runs automatically with Node execution */
 export const buildReference = async () => {
@@ -53,31 +57,29 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
-  return `${prefix}/${docClass}/`;
+  return path.join(prefix, docClass);
 };
 
 /* Adds the doc to the module path tree */
 const addDocToModulePathTree = (
   doc: ReferenceClassDefinition | ReferenceClassItem,
-  path: string,
+  savePath: string,
 ) => {
-  if (!doc || !doc.name || !path) return;
+  if (!doc || !doc.name || !savePath) return;
 
   // Remove prefix from path
-  const modulePath = `${path.replace("./src/pages/en/reference/", "")}${doc.name}`;
+  const itemPath = `${savePath.replace("src/content/reference/en/", "")}/${doc.name}`;
 
   // Use a type guard to check if the 'doc' is a LibraryReferenceClassItem.
   // This check allows us to handle class items differently from class definitions.
-  if ("class" in doc) {
+  if ("class" in doc && doc.class !== "p5") {
     // Determine the treePath, which decides whether the doc belongs to the 'classes'
     // or 'modules' category based on its 'class' property. If the class is not 'p5',
     // it's categorized under 'classes'; otherwise, it falls under 'modules'.
-    const treePath = doc.class && doc.class !== "p5" ? "classes" : "modules";
+    const treePath = "classes";
     // The subPath is constructed based on the module and submodule information.
     // If a submodule exists, it's appended to the module name; otherwise, just the module name is used.
-    const subPath = doc.submodule
-      ? `${doc.module}.${doc.submodule}`
-      : doc.module;
+    const subPath = doc.class;
 
     // If the treePath doesn't exist, initialize it.
     if (!modulePathTree[treePath][subPath]) {
@@ -85,20 +87,36 @@ const addDocToModulePathTree = (
     }
     // Add the doc to the modulePathTree under the appropriate treePath and subPath,
     // using the doc's name as the key and the constructed modulePath as the value.
-    modulePathTree[treePath][subPath][doc.name] = modulePath;
+    modulePathTree[treePath][subPath][doc.name] = itemPath;
   } else {
     // If the doc is not a class item, it's handled here.
     // We default to adding it under the 'modules' category.
-    const treePath = "modules";
-    const subPath = doc.module;
+    const modulePath = doc.module;
+    const subPath = doc.submodule;
 
     // Similar to above, initialize the subPath if needed.
-    if (!modulePathTree[treePath][subPath]) {
-      modulePathTree[treePath][subPath] = {};
+    if (!modulePathTree.modules[modulePath]) {
+      modulePathTree.modules[modulePath] = {};
     }
 
-    // Add the module to the modulePathTree.
-    modulePathTree[treePath][subPath][doc.name] = modulePath;
+    // If a submodule exists, add the doc to the modulePathTree under the appropriate treePath,
+    // modulePath, and subPath, using the doc's name as the key and the constructed modulePath as the value.
+    if (subPath) {
+      if (!modulePathTree.modules[modulePath][subPath]) {
+        modulePathTree.modules[modulePath][subPath] = {} as Record<
+          string,
+          string
+        >;
+      }
+      // Add the doc to the modulePathTree. We assert the type because we know that the subPath exists
+      // as an object at this point but TypeScript can't infer that.
+      (modulePathTree.modules[modulePath][subPath] as Record<string, string>)[
+        doc.name
+      ] = itemPath;
+    } else {
+      // Add the module to the modulePathTree.
+      modulePathTree.modules[modulePath][doc.name] = itemPath;
+    }
   }
 };
 
@@ -143,8 +161,7 @@ const convertToMDX = async (
       ...getClassItemFrontmatter(doc),
       ...getMethodFrontmatter(doc),
     };
-    // TODO: Has some pathing problems, will fix in follow-up PR
-    // addMemberMethodPreviewsToClassDocs(doc);
+    addMemberMethodPreviewsToClassDocs(doc);
   } else if (isPropertyClassItem(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
@@ -223,23 +240,36 @@ const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
     submodule,
     params,
     example,
-    ...memberMethodPreviews[doc.name],
+    methods: { ...memberMethodPreviews[doc.name] },
     chainable: doc.chainable === 1,
   };
 };
 
-// TODO: Add back in when the pathing issue is resolved
-/* Adds class method previews to the class docs */
-// const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
-//   if (!memberMethodPreviews[doc.class]) {
-//     memberMethodPreviews[doc.class] = {};
-//   }
-//   const classMethodPath = `../${modulePathTree.classes[doc.class][doc.name]}`;
-//   memberMethodPreviews[doc.class][doc.name] = {
-//     description: doc.description,
-//     path: classMethodPath,
-//   };
-// };
+/* Adds description and path for member methods to the class docs */
+const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
+  // Skip p5 methods which are "global" and not part of a class from the perspective of the reference
+  if (doc.class === "p5") return;
+
+  // If the class doesn't exist in the memberMethodPreviews object, initialize it
+  if (!memberMethodPreviews[doc.class]) {
+    memberMethodPreviews[doc.class] = {};
+  }
+
+  // If the method doesn't exist in the class, log a warning and skip it
+  if (!modulePathTree.classes[doc.class]) {
+    console.warn(`No class path found for ${doc.class} in modulePathTree`);
+    return;
+  }
+
+  // Construct the path to the class method
+  const classMethodPath = `${modulePathTree.classes[doc.class][doc.name]}`;
+
+  // Add the method to the memberMethodPreviews object, this is used to add previews to the class docs
+  memberMethodPreviews[doc.class][doc.name] = {
+    description: doc.description,
+    path: classMethodPath,
+  };
+};
 
 /* Converts all docs to MDX */
 const convertDocsToMDX = async (
@@ -249,16 +279,15 @@ const convertDocsToMDX = async (
     return (
       await Promise.all(
         docs.map(async (doc) => {
-          const mdx = await convertToMDX(doc);
-
           const savePath = getModulePath(doc);
           // If the savePath is undefined, the doc is skipped
           // This will often happen with inline comments that don't define necessary properties
           if (!savePath) {
             return;
           }
-
           addDocToModulePathTree(doc, savePath);
+          const mdx = await convertToMDX(doc);
+
           return mdx ? { mdx, savePath, name: doc.name } : null;
         }),
       )
@@ -300,3 +329,10 @@ const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
 };
 
 buildReference();
+
+export const testingExports = {
+  modulePathTree,
+  memberMethodPreviews,
+  addDocToModulePathTree,
+  addMemberMethodPreviewsToClassDocs,
+};
