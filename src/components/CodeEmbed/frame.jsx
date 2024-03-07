@@ -1,6 +1,15 @@
 const wrapJsInMarkup = (jsCode, options) => `<!DOCTYPE html>
 <meta charset="utf8" />
-${options.cssCode ? (`<style type='text/css'>${options.cssCode}</style>`) : ""}
+<style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+${options.cssCode || ""}
+</style>
 <body>${options.bodyCode || ""}</body>
 <script id="code" type="text/javascript">${jsCode}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js"></script>
