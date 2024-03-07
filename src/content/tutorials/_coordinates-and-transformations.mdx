@@ -18,7 +18,7 @@ authors:
   - Adam Ferriss
 ---
 
-import { EditableSketch } from "../../components/EditableSketch/";
+import EditableSketch from "../../components/EditableSketch/index.astro";
 import { SketchEmbed } from "../../components/SketchEmbed";
 import { Callout } from "../../components/Callout";
 import fs from 'node:fs/promises';
@@ -43,7 +43,7 @@ function draw() {
 
 2D sketches use the x- and y-axes to define horizontal and vertical positions. 3D sketches extend this model with a z-axis which defines depth. When drawing in 2D, the point (0,0) is located at the top left corner of the screen. In WebGL mode, the origin of the sketch (0,0,0) is located in the middle of the screen. By default, the x-axis goes left to right, the y-axis goes up to down, and the z-axis goes from further to closer, “out of” the screen.
 
-![An illustration showing a 2D coordinate system on the left, showing an origin of (0,0) at its top left, and a 3D coordinate system on the right, showing an origin of (0,0,0) in its center](/images/tutorials/webgl/2d3d_coordinates.png)
+![An illustration showing a 2D coordinate system on the left, showing an origin of (0,0) at its top left, and a 3D coordinate system on the right, showing an origin of (0,0,0) in its center](./images/webgl/2d3d_coordinates.png)
 
 You can call [`debugMode()`](https://p5js.org/reference/#/p5/debugMode) in your `setup()` function to add a grid on the x- and z-axes and the red-green-blue x, y, and z arrows to your sketch, similar to the illustration above.
 
@@ -112,7 +112,7 @@ box();
 
 You can also use `rotate(angle, axis)`, which allows you to specify which axis you'd like to rotate around using a vector as the second argument. This lets you rotate a shape about any axis you choose. In the example below, we create an axis using the mouse coordinates, and rotate about it:
 
-<EditableSketch client:load code={`function setup() {
+<EditableSketch code={`function setup() {
   createCanvas(200, 200, WEBGL);
 }
 
@@ -168,7 +168,7 @@ Transform functions are cumulative and affect everything drawn after them. For e
 
 The `push()` function saves the current transformations and style settings. Then, after performing new transformations, the `pop()` function is used to restore us to the original transformations. The result is that whatever transformations or styling changes that are made between `push()` and `pop()` are isolated to that portion of the code. In the example below, we draw a number of boxes at their own distinct locations by placing their transforms between `push()` and `pop()`:
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 function setup() {
   createCanvas(200, 200, WEBGL);
 }
@@ -221,7 +221,7 @@ The way transformations affect each other can feel unpredictable at first becaus
 
 If you are drawing many objects, chances are that each one will have a unique position, orientation, and scale. For this, you should first `translate()` to the center of where the object should be, then `rotate()` to match its orientation, and finally `scale()` to fit its size. This is a good order to use by default.
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 let positions = [];
 let rotations = [];
 let scales = [];
@@ -275,7 +275,7 @@ Try making a solar system, where each planet has its own independent position as
 
 Sometimes you want to rotate a shape about a point that isn't its center. For this, you can `translate()` to the pivot point, `rotate()` or `scale()` as needed, and then `translate()` back to the center before drawing your shape. The sketch below uses this method to make a shape squash and stretch about its base rather than its center.
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 function setup() {
   createCanvas(200, 200, WEBGL);
 }
@@ -326,7 +326,7 @@ Sometimes you want to draw the same thing multiple times with mirror or radial s
 
 In the example below, `scale(-1, 1)` is used to add horizontal symmetry to draw the eyes and ears of a face:
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 function setup() {
   createCanvas(200, 200, WEBGL);
 }
@@ -378,7 +378,7 @@ function draw() {
 	
 In this example, `rotateY()` is used to create radial symmetry for a stonehenge scene.
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 function setup() {
   createCanvas(200, 200, WEBGL);
 }
