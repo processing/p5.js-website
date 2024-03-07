@@ -40,5 +40,8 @@ export default defineConfig({
     defaultLocale: defaultLanguage,
     fallback: fallbackLanguages,
     locales: supportedLocales,
+    routing: {
+      prefixDefaultLocale: true,
+    },
   },
 });
