@@ -16,6 +16,6 @@ export const SketchEmbed = (props) => (
     cssCode={props.cssCode}
     bodyCode={props.bodyCode}
     height={props.height || 400}
-    width="100%"
+    width={props.width || "100%"}
   />
 );

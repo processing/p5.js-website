@@ -81,11 +81,15 @@ for (const attr of codeTag.attributes) {
         {rows.map(row => {
           const lineNodes = lines.slice(row.startLine, row.endLine);
           return (
-            <tr>
+            <tr class="[&>*]:align-top [&>*]:m-0 [&>*:not(:first-child)]:py-2 [&>*:not(:first-child)]:max-w-xl">
               <td class="align-top" style="height:100%; margin:0">
               <pre {...preAttrs} style={`${preStyle};height:100%`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
               </td>
-              <td class="align-top py-2" style="margin:0" set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+              {props.columns ? (
+                <Fragment set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+              ) : (
+                <td set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+              )}
             </tr>
           );
         })}

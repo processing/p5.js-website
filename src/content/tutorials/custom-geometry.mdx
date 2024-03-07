@@ -18,7 +18,7 @@ authors:
   - Adam Ferriss
 ---
 
-import { EditableSketch } from "../../components/EditableSketch";
+import EditableSketch from "../../components/EditableSketch/index.astro";
 import { Callout } from "../../components/Callout";
 
 p5.js has a number of built-in basic shapes, like `box()` and `sphere()`. It can also render complex custom geometry, both from 3D model files or code. This tutorial will walk through how to import 3D models into p5.js, as well as how to create geometry from scratch.
@@ -27,10 +27,10 @@ p5.js has a number of built-in basic shapes, like `box()` and `sphere()`. It can
 
 Custom geometry can be imported into p5.js using either OBJ or STL files. These files are usually generated in a 3D modeling tool like Blender, which offers much more control when constructing a 3D scene. This is done using the `loadModel()` method, which should be used within `preload()`. Then, you can use the `model()` function to draw the model, as demonstrated in the example below.
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 let teapotModel;
 function preload() {
-  teapotModel = loadModel('/images/tutorials/webgl/teapot.obj', true);
+  teapotModel = loadModel('/models/teapot.obj', true);
 }
 function setup() {
   createCanvas(200, 200, WEBGL);
@@ -66,7 +66,7 @@ Geometry can also be defined procedurally using code. This is a great way to cre
 There are other functions that offer greater control of the geometry. A shape can be defined point-by-point using `beginShape()`, `vertex()`, and `endShape()`. The following example shows how these functions can be used to construct a 3D shape.
 
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 function setup() {
   createCanvas(216, 216, WEBGL);
   colorMode(HSB);
@@ -117,7 +117,7 @@ This method is great for creating custom shapes that change over time. Sometimes
 
 It takes in a function that draws some shapes. It will then output geometry that you can draw with model() as often as you like.
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 let bug;
 
 function setup() {
@@ -202,7 +202,7 @@ Try making a few snowflakes using `buildGeometry`, and then use them to create a
 
 A normal is the direction that is perpendicular to the face, which helps p5.js calculate lighting across the surface.
 
-![A triangular face with an arrow pointing directly out of it representing its normal](/images/tutorials/webgl/face-normal.png)
+![A triangular face with an arrow pointing directly out of it representing its normal](./images/webgl/face-normal.png)
 
 As long as every vertex shared between touching faces has the same normal, then shading will look smooth. You can specify normals manually by calling `normal(x, y, z)` before each `vertex(x, y, z)`, but p5.js includes functionality to calculate these for you. The following example uses `geometry.calculateNormals(SMOOTH)` to create a warped tube with smooth lighting.
 
@@ -283,11 +283,11 @@ In 3D, a face refers to a collection of three points that make up a surface, giv
 1. Putting all the points you will use into a big array in the `geometry.vertices` property, and remembering the **order** the points are added.
 2. Putting sets of three indices at a time into the `geometry.faces` array. The **index** of a point refers to its position in the array, determined by the order in which it was added. Index 0 corresponds to the first point you added, index 1 corresponds to the second, index 2 corresponds to the third, etc.
 
-![An illustration of how to create faces by referring to vertices by their positions in the array. Four vertices are created in a square in a left-to-right then top-to-bottom order. A trianlge is formed in the bottom left of the square with indices \[0, 3, 2\], and a triangle is formed in the top right with indices \[0, 1, 3\].](/images/tutorials/webgl/faces.svg)
+![An illustration of how to create faces by referring to vertices by their positions in the array. Four vertices are created in a square in a left-to-right then top-to-bottom order. A trianlge is formed in the bottom left of the square with indices \[0, 3, 2\], and a triangle is formed in the top right with indices \[0, 1, 3\].](./images/webgl/faces.svg)
 
 The following example uses this method of creating vertices and faces to create a custom tetrahedron shape.
 
-<EditableSketch client:load code={`
+<EditableSketch code={`
 let tetrahedron;
 function setup() {
   createCanvas(200, 200, WEBGL);
