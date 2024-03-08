@@ -58,7 +58,7 @@ function draw() {
   });
   outsideView.draw(() => {
     background(220, 220, 255);
-    translate(0, -200, -700);    
+    translate(0, -200, -1800);    
     
     // Visualize camera view
     push();
