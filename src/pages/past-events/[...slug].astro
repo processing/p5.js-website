@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const pastEvents = await getCollection("past-events");
@@ -13,22 +14,21 @@ const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
 
-<h1>{entry.data.title}</h1>
+<BaseLayout title={entry.data.title}>
+  {
+    entry.data.featuredImage ? (
+      <img
+        src={entry.data.featuredImage.url}
+        alt={entry.data.featuredImage.altText}
+      />
+    ) : null
+  }
+  <Content />
 
-{
-  entry.data.featuredImage ? (
-    <img
-      src={entry.data.featuredImage.url}
-      alt={entry.data.featuredImage.altText}
-    />
-  ) : null
-}
+  <h2>Related Past Events</h2>
 
-<Content />
-
-## Related Past Events
-
-<ul>
-  {/* TODO: make this into a proper link */}
-  {entry.data.relatedPastEvents?.map((relEx) => <li>{relEx.slug}</li>)}
-</ul>
+  <ul>
+    {/* TODO: make this into a proper link */}
+    {entry.data.relatedPastEvents?.map((relEx) => <li>{relEx.slug}</li>)}
+  </ul>
+</BaseLayout>

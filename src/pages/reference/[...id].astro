@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const referenceEntries = await getCollection("reference");
@@ -30,7 +31,6 @@ const entriesById: Record<string, any> = referenceEntries.reduce<
 const refEntry = entriesById[id];
 ---
 
-<article>
-  <h1>{refEntry.data.title}</h1>
+<BaseLayout title={refEntry.data.title}>
   <div set:html={refEntry.data.description} />
-</article>
+</BaseLayout>
