@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {
+  getCollectionInNonDefaultLocales,
+  removeLocalePrefixfromSlug,
+} from "../../utils";
+
+export async function getStaticPaths() {
+  /**
+   * The slug of the entry in this collection that we want to
+   * use as the index page
+   *
+   * For example: `contributor-docs/es/` will show
+   * the content from `contributor-docs/es/readme`
+   */
+  const indexPageName = "readme";
+  const pastEvents = await getCollectionInNonDefaultLocales("contributor-docs");
+  return pastEvents.map((entry) => {
+    const [locale, slug] = removeLocalePrefixfromSlug(entry.slug);
+    // Use the `indexPageName` as the route
+    // for whatever folder its in
+    // TODO: Move to utils file
+    const maybeIndexslug = slug.endsWith(indexPageName)
+      ? entry.slug.slice(0, -indexPageName.length)
+      : entry.slug;
+    return {
+      params: { locale, slug: maybeIndexslug },
+      props: { entry },
+    };
+  });
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title="Placeholder title">
+  <Content />
+</BaseLayout>
