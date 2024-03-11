@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { exampleContentSlugToLegacyWebsiteSlug } from "./utils";
 import { readFile } from "fs/promises";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const examples = await getCollection("examples");
@@ -23,7 +24,8 @@ const { example, code } = Astro.props;
 const { Content } = await example.render();
 ---
 
-<h1>{example.data.title}</h1>
-<p>{example.data.arialabel}</p>
-<Content />
-<pre>{code}</pre>
+<BaseLayout title={example.data.title}>
+  <p>{example.data.arialabel}</p>
+  <Content />
+  <pre>{code}</pre>
+</BaseLayout>
