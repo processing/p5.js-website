@@ -2,24 +2,15 @@ import { defineConfig } from "astro/config";
 import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
 import compress from "astro-compress";
-
 import tailwind from "@astrojs/tailwind";
+import { supportedLocales, defaultLanguage } from "./const";
 
-export const supportedLocales = [
-  "en",
-  "ar",
-  "es",
-  "hi",
-  "ko",
-  "pt-br",
-  "sk",
-  "zh",
-];
-
-const defaultLanguage = "en";
-
+// create a config object that maps all non-default
+// languages to fallback to the default language
 const fallbackLanguages = Object.fromEntries(
-  supportedLocales.filter((l) => l !== defaultLanguage).map((l) => [l, "en"]),
+  supportedLocales
+    .filter((l) => l !== defaultLanguage)
+    .map((l) => [l, defaultLanguage]),
 );
 
 // https://astro.build/config
