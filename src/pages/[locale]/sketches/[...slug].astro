@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {
+  getCollectionInNonDefaultLocales,
+  removeLocalePrefixfromSlug,
+} from "../../utils";
+
+export async function getStaticPaths() {
+  const pastEvents = await getCollectionInNonDefaultLocales("sketches");
+  return pastEvents.map((entry) => {
+    const [locale, slug] = removeLocalePrefixfromSlug(entry.id);
+    return {
+      params: { locale, slug },
+      props: { entry },
+    };
+  });
+}
+
+const { entry } = Astro.props;
+const { title, author, embed, license, relatedSketches } = entry.data;
+---
+
+<BaseLayout title={title}>
+  <iframe src={embed.url} width={embed.width} height={embed.height}></iframe>
+
+  By {author.name}, licensed as {license.name}
+
+  <h2>Related Sketches</h2>
+
+  <ul>
+    {/* TODO: make this into a proper link */}
+    {relatedSketches?.map((relEx) => <li>{relEx.id}</li>)}
+  </ul>
+</BaseLayout>
