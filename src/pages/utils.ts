@@ -1,19 +1,25 @@
-import { getCollection, type ContentCollectionKey } from "astro:content";
+import {
+  getCollection,
+  type CollectionEntry,
+  type AnyEntryMap,
+} from "astro:content";
 import { defaultLanguage, supportedLocales } from "../../const";
 
-export const getCollectionInDefaultLocale = async (
-  collectionName: ContentCollectionKey,
-) =>
+export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
+  collectionName: C,
+): Promise<CollectionEntry<C>[]> =>
   await getCollection(
     collectionName,
-    ({ slug }) => !startsWithSupportedLocale(slug),
+    ({ id }) => !startsWithSupportedLocale(id),
   );
 
-export const getCollectionInNonDefaultLocales = async (
-  collectionName: ContentCollectionKey,
-) =>
-  await getCollection(collectionName, ({ slug }) =>
-    startsWithSupportedLocale(slug),
+export const getCollectionInNonDefaultLocales = async <
+  C extends keyof AnyEntryMap,
+>(
+  collectionName: C,
+): Promise<CollectionEntry<C>[]> =>
+  await getCollection(collectionName, ({ id }) =>
+    startsWithSupportedLocale(id),
   );
 
 export const startsWithSupportedLocale = (slug: string) => {
