@@ -1,0 +1,31 @@
+---
+import { readFile } from "fs/promises";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {
+  exampleContentSlugToLegacyWebsiteSlug,
+  getCollectionInNonDefaultLocales,
+  removeLocalePrefixfromSlug,
+} from "../../utils";
+
+export async function getStaticPaths() {
+  const examples = await getCollectionInNonDefaultLocales("examples");
+  return examples.map(async (entry) => {
+    const [locale, slug] = removeLocalePrefixfromSlug(entry.slug);
+    const codePath = `src/content/examples/${example.id.replace("description.mdx", "code.js")}`;
+    const code = await readFile(codePath, "utf-8");
+    return {
+      params: { locale, slug: exampleContentSlugToLegacyWebsiteSlug(slug) },
+      props: { example, code },
+    };
+  });
+}
+
+const { example, code } = Astro.props;
+const { Content } = await example.render();
+---
+
+<BaseLayout title={example.data.title}>
+  <p>{example.data.arialabel}</p>
+  <Content />
+  <pre>{code}</pre>
+</BaseLayout>
