@@ -1,3 +1,5 @@
+export const defaultLanguage = "en";
+
 export const supportedLocales = [
   "en",
   "ar",
@@ -9,4 +11,6 @@ export const supportedLocales = [
   "zh",
 ];
 
-export const defaultLanguage = "en";
+export const nonDefaultSupportedLocales = supportedLocales.filter(
+  (l) => l !== defaultLanguage,
+);
