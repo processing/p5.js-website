@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const sketches = await getCollection("sketches");
@@ -13,15 +14,15 @@ const { entry } = Astro.props;
 const { title, author, embed, license, relatedSketches } = entry.data;
 ---
 
-<h1>{title}</h1>
+<BaseLayout title={title}>
+  <iframe src={embed.url} width={embed.width} height={embed.height}></iframe>
 
-<iframe src={embed.url} width={embed.width} height={embed.height}></iframe>
+  By {author.name}, licensed as {license.name}
 
-By {author.name}, licensed as {license.name}
+  <h2>Related Sketches</h2>
 
-## Related Sketches
-
-<ul>
-  {/* TODO: make this into a proper link */}
-  {relatedSketches?.map((relEx) => <li>{relEx.id}</li>)}
-</ul>
+  <ul>
+    {/* TODO: make this into a proper link */}
+    {relatedSketches?.map((relEx) => <li>{relEx.id}</li>)}
+  </ul>
+</BaseLayout>
