@@ -1,11 +1,11 @@
 ---
-import { getCollection } from "astro:content";
 import { exampleContentSlugToLegacyWebsiteSlug } from "./utils";
 import { readFile } from "fs/promises";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollectionInDefaultLocale } from "../utils";
 
 export async function getStaticPaths() {
-  const examples = await getCollection("examples");
+  const examples = await getCollectionInDefaultLocale("examples");
   const paths = await Promise.all(
     examples.map(async (example) => {
       const codePath = `src/content/examples/${example.id.replace("description.mdx", "code.js")}`;
