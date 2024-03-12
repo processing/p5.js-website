@@ -16,9 +16,8 @@ import { readFile } from "fs/promises";
 export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
   collectionName: C,
 ): Promise<CollectionEntry<C>[]> =>
-  await getCollection(
-    collectionName,
-    ({ id }) => !startsWithSupportedLocale(id),
+  await getCollection(collectionName, ({ id }) =>
+    id.startsWith(`${defaultLocale}/`),
   );
 
 /**

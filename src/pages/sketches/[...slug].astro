@@ -1,11 +1,14 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollectionInDefaultLocale } from "../_utils";
+import {
+  getCollectionInDefaultLocale,
+  removeDefaultLocalePrefix,
+} from "../_utils";
 
 export async function getStaticPaths() {
   const sketches = await getCollectionInDefaultLocale("sketches");
   return sketches.map((entry) => ({
-    params: { slug: entry.id },
+    params: { slug: removeDefaultLocalePrefix(entry.id) },
     props: { entry },
   }));
 }

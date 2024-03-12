@@ -1,11 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollectionInDefaultLocale } from "./_utils";
+import {
+  getCollectionInDefaultLocale,
+  removeDefaultLocalePrefix,
+} from "./_utils";
 
 export const getStaticPaths = async () => {
   const pages = await getCollectionInDefaultLocale("text-detail");
   return pages.map((page) => ({
-    params: { slug: page.slug },
+    params: { slug: removeDefaultLocalePrefix(page.slug) },
     props: { page },
   }));
 };

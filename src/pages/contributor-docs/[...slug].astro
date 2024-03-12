@@ -3,13 +3,15 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
   convertContributorDocIndexSlugIfNeeded,
   getCollectionInDefaultLocale,
+  removeDefaultLocalePrefix,
 } from "../_utils";
 
 export async function getStaticPaths() {
   const contributorDocs =
     await getCollectionInDefaultLocale("contributor-docs");
   return contributorDocs.map((entry) => {
-    const slug = convertContributorDocIndexSlugIfNeeded(entry.id);
+    const unPrefixSlug = removeDefaultLocalePrefix(entry.slug);
+    const slug = convertContributorDocIndexSlugIfNeeded(unPrefixSlug);
     return {
       params: {
         slug,
