@@ -3,14 +3,16 @@ import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
 import compress from "astro-compress";
 import tailwind from "@astrojs/tailwind";
-import { supportedLocales, defaultLanguage } from "./const";
+import {
+  supportedLocales,
+  defaultLocale,
+  nonDefaultSupportedLocales,
+} from "./const";
 
 // create a config object that maps all non-default
 // languages to fallback to the default language
 const fallbackLanguages = Object.fromEntries(
-  supportedLocales
-    .filter((l) => l !== defaultLanguage)
-    .map((l) => [l, defaultLanguage]),
+  nonDefaultSupportedLocales.map((l) => [l, defaultLocale]),
 );
 
 // https://astro.build/config
@@ -28,7 +30,7 @@ export default defineConfig({
     format: "directory",
   },
   i18n: {
-    defaultLocale: defaultLanguage,
+    defaultLocale: defaultLocale,
     fallback: fallbackLanguages,
     locales: supportedLocales,
   },
