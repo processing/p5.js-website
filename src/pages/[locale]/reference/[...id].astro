@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import {
   getCollectionInNonDefaultLocales,
+  makeReferencePageSlug,
   removeLocalePrefixfromSlug,
 } from "../../utils";
 
@@ -15,9 +16,7 @@ export async function getStaticPaths() {
     return {
       params: {
         locale,
-        // We cannot use Astro's default slug because it removes characters like '.'
-        // We use the id instead and remove the file extension
-        id: id.replace(/\.mdx$/, ""),
+        id: makeReferencePageSlug(entry.id),
       },
       props: { entry },
     };

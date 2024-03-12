@@ -1,15 +1,13 @@
 ---
 import { exampleContentSlugToLegacyWebsiteSlug } from "./utils";
-import { readFile } from "fs/promises";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollectionInDefaultLocale } from "../utils";
+import { getCollectionInDefaultLocale, getExampleCode } from "../utils";
 
 export async function getStaticPaths() {
   const examples = await getCollectionInDefaultLocale("examples");
   const paths = await Promise.all(
     examples.map(async (example) => {
-      const codePath = `src/content/examples/${example.id.replace("description.mdx", "code.js")}`;
-      const code = await readFile(codePath, "utf-8");
+      const code = await getExampleCode(example.id);
       return {
         params: { slug: exampleContentSlugToLegacyWebsiteSlug(example.slug) },
         props: { example, code },

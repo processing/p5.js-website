@@ -1,16 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollectionInDefaultLocale } from "../utils";
+import { getCollectionInDefaultLocale, makeReferencePageSlug } from "../utils";
 
 export async function getStaticPaths() {
   const referenceEntries = await getCollectionInDefaultLocale("reference");
 
   const paths = referenceEntries.map((entry) => ({
     params: {
-      // We cannot use Astro's default slug because it removes characters like '.'
-      // We use the id instead and remove the file extension
-      id: entry.id.replace(/\.mdx$/, ""),
+      id: makeReferencePageSlug(entry.id),
     },
   }));
 
