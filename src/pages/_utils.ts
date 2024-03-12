@@ -66,6 +66,15 @@ export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
 };
 
 /**
+ * Removes the default locale prefix from a slug (if its there)
+ *
+ * @param slug
+ * @returns
+ */
+export const removeDefaultLocalePrefix = (slug: string): string =>
+  slug.startsWith(`${defaultLocale}/`) ? slug.replace(defaultLocale, "") : slug;
+
+/**
  * Astro automatically uses the directory structure for slug information
  * Historically the p5 website has used a different structure for example file vs. webpage routing
  * This function transforms the Astro slug to the appropriate webpage route to avoid breaking

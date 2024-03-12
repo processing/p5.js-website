@@ -2,6 +2,7 @@ import { expect, test, suite } from "vitest";
 import {
   convertContributorDocIndexSlugIfNeeded,
   exampleContentSlugToLegacyWebsiteSlug,
+  makeReferencePageSlug,
 } from "../../src/pages/_utils";
 
 suite("exampleContentSlugToLegacyWebsiteSlug", () => {
@@ -42,5 +43,16 @@ suite("convertContributorDocIndexSlugIfNeeded", () => {
     expect(convertContributorDocIndexSlugIfNeeded("en/folder/readme")).toBe(
       "en/folder/",
     );
+  });
+});
+
+suite("makeReferencePageSlug", () => {
+  test("handles prefixed english slugs", () => {
+    expect(makeReferencePageSlug("en/p5.AudioIn/amp.mdx")).toBe(
+      "en/p5.AudioIn/amp",
+    );
+  });
+  test("handles un-prefixed english slugs", () => {
+    expect(makeReferencePageSlug("p5.AudioIn/amp.mdx")).toBe("p5.AudioIn/amp");
   });
 });
