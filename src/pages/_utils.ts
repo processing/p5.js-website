@@ -6,6 +6,13 @@ import {
 import { defaultLocale, supportedLocales } from "../../const";
 import { readFile } from "fs/promises";
 
+/**
+ * Retreives all the entries in the given collection, filtered to only include
+ * those in the default locale (language).
+ *
+ * @param collectionName
+ * @returns
+ */
 export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
   collectionName: C,
 ): Promise<CollectionEntry<C>[]> =>
@@ -14,6 +21,13 @@ export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
     ({ id }) => !startsWithSupportedLocale(id),
   );
 
+/**
+ * Retreives all the entries in the given collection, filtered to only include
+ * those in *non-default* locales (languages).
+ *
+ * @param collectionName
+ * @returns
+ */
 export const getCollectionInNonDefaultLocales = async <
   C extends keyof AnyEntryMap,
 >(
@@ -23,6 +37,13 @@ export const getCollectionInNonDefaultLocales = async <
     startsWithSupportedLocale(id),
   );
 
+/**
+ * Checks if a collecion entry's slug begins with a locale prefix
+ * (for example: 'es/')
+ *
+ * @param slug
+ * @returns
+ */
 export const startsWithSupportedLocale = (slug: string) => {
   for (const loc of supportedLocales) {
     if (slug.startsWith(`${loc}/`)) return true;
@@ -30,6 +51,13 @@ export const startsWithSupportedLocale = (slug: string) => {
   return false;
 };
 
+/**
+ * Splits the locale prefix out of a slug, and
+ * returns the two as separate strings.
+ *
+ * @param slug
+ * @returns a tuple of the locale and the new slug
+ */
 export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
   for (const loc of supportedLocales) {
     if (slug.startsWith(`${loc}/`)) return [loc, slug.replace(loc, "")];
@@ -37,10 +65,12 @@ export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
   return [defaultLocale, slug];
 };
 
-/** Astro automatically uses the directory structure for slug information */
-/** Historically the p5 website has used a different structure for example file vs. webpage routing */
-/** This function transforms the Astro slug to the appropriate webpage route to avoid breaking */
-/** Any inbound legacy links */
+/**
+ * Astro automatically uses the directory structure for slug information
+ * Historically the p5 website has used a different structure for example file vs. webpage routing
+ * This function transforms the Astro slug to the appropriate webpage route to avoid breaking
+ * Any inbound legacy links
+ */
 export const exampleContentSlugToLegacyWebsiteSlug = (path: string): string =>
   path
     .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2.html")
@@ -58,7 +88,6 @@ export const getExampleCode = async (exampleId: string): Promise<string> => {
   return code;
 };
 
-const contributorDocIndexPageName = "readme";
 /**
  * If the given slug is the slug of the entry in the contributor doc
  * collection that we want to use as the index page, this returns a
@@ -68,10 +97,12 @@ const contributorDocIndexPageName = "readme";
  * For example: `contributor-docs/es/` will show
  * the content from `contributor-docs/es/readme`
  */
-export const convertContributorDocIndexSlugIfNeeded = (slug: string) =>
-  slug.endsWith(contributorDocIndexPageName)
+export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
+  const contributorDocIndexPageName = "readme";
+  return slug.endsWith(contributorDocIndexPageName)
     ? slug.slice(0, -contributorDocIndexPageName.length)
     : slug;
+};
 
 /**
  * We cannot use Astro's default slug because it removes characters like '.'
