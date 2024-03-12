@@ -1,7 +1,14 @@
-export const defaultLanguage = "en";
+/**
+ * The default language to render the language in.
+ * ("en" stands for English.) Also used for fallback pages
+ * when they don't exist in a locale.
+ */
+export const defaultLocale = "en";
 
-export const supportedLocales = [
-  "en",
+/**
+ * All other locales supported by the website.
+ */
+export const nonDefaultSupportedLocales = [
   "ar",
   "es",
   "hi",
@@ -11,6 +18,8 @@ export const supportedLocales = [
   "zh",
 ];
 
-export const nonDefaultSupportedLocales = supportedLocales.filter(
-  (l) => l !== defaultLanguage,
-);
+/**
+ * The list of locales (languages) the website
+ * can be rendered in, including the default locale
+ */
+export const supportedLocales = [defaultLocale, ...nonDefaultSupportedLocales];
