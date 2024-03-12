@@ -100,7 +100,7 @@ export const getExampleCode = async (exampleId: string): Promise<string> => {
 export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
   const contributorDocIndexPageName = "readme";
   return slug.endsWith(contributorDocIndexPageName)
-    ? slug.slice(0, -contributorDocIndexPageName.length)
+    ? `/${slug.slice(0, -contributorDocIndexPageName.length)}`
     : slug;
 };
 
