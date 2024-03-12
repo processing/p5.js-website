@@ -43,7 +43,7 @@ export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
 /** Any inbound legacy links */
 export const exampleContentSlugToLegacyWebsiteSlug = (path: string): string =>
   path
-    .replace(/^en\/\d+_(.*?)\/\d+_(.*?)\/description$/, "/$1-$2.html")
+    .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "/$1-$2.html")
     .replace(/_/g, "-");
 
 /**
