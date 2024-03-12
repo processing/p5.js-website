@@ -1,9 +1,13 @@
 import { promises as fs } from "fs";
 import path from "path";
 import matter from "gray-matter";
-import type { ContentType } from "../../../types/content.interface";
-import { getMdxFiles } from "../utils";
+import type {
+  ContentType,
+  SearchSupportedLocales,
+} from "../../../types/content.interface";
+import { getContentFilePaths } from "../utils";
 import keywordExtractor from "keyword-extractor";
+import { contentTypes, localesWithSearchSupport } from "../../globals/globals";
 
 interface SearchIndex {
   [title: string]: {
@@ -12,13 +16,13 @@ interface SearchIndex {
   };
 }
 
-interface LocaleSearchIndex {
-  [locale: string]: SearchIndex;
-}
+type LocaleSearchIndex = {
+  [locale in SearchSupportedLocales]?: ContentTypeSearchIndex;
+};
 
-interface ContentTypeSearchIndex {
-  [contentType: string]: LocaleSearchIndex;
-}
+type ContentTypeSearchIndex = {
+  [contentType in ContentType]?: SearchIndex;
+};
 
 const languagesWithKeywordExtractionStopwords = [
   "ar",
@@ -42,69 +46,35 @@ const languagesWithKeywordExtractionStopwords = [
   "vi",
 ];
 
-async function buildSearchIndices(
-  baseDir: string,
-  outputBaseDir: string,
-): Promise<void> {
-  const fullSearchIndex: ContentTypeSearchIndex = {};
-  const contentDirs: ContentType[] = [
-    "contributor-docs",
-    "examples",
-    // "libraries",
-    // "past-events",
-    // "people",
-    "reference",
-    // "sketches",
-    // "tutorials",
-  ];
+async function buildSearchIndices(): Promise<void> {
+  const fullSearchIndex: LocaleSearchIndex = {};
 
-  for (const contentType of contentDirs) {
-    const contentTypeSearchIndex = await generateSearchIndex(contentType);
+  for (const locale of localesWithSearchSupport) {
+    const contentTypeSearchIndex =
+      await generateContentTypesSearchIndex(locale);
     if (contentTypeSearchIndex) {
-      fullSearchIndex[contentType] = contentTypeSearchIndex;
+      fullSearchIndex[locale] = contentTypeSearchIndex;
     }
   }
 
-  // Save the search index to the output directory
-  await fs.writeFile(
-    path.join(outputBaseDir, "searchIndex.json"),
-    JSON.stringify(fullSearchIndex, null, 2),
-  );
-
-  // const locales: string[] = await fs.readdir(baseDir);
-  // for (const locale of locales) {
-  //   const localeDir: string = path.join(baseDir, locale);
-  //   const stats = await fs.stat(localeDir);
-  //   if (!stats.isDirectory()) {
-  //     continue; // Skip files, process directories
-  //   }
-  //   // const mdxFiles: string[] = await glob(`${localeDir}/**/*.mdx`);
-  //   // const titles: TitleEntry[] = await Promise.all(
-  //   //   mdxFiles.map(async (filePath) => {
-  //   //     const content: string = await fs.readFile(filePath, 'utf8');
-  //   //     const { data } = matter(content) as { data: Frontmatter };
-  //   //     return { title: data.title, filePath };
-  //   //   })
-  //   // );
-  //   await fs.writeFile(
-  //     path.join(outputDir, `${locale}.json`),
-  //     JSON.stringify(titles, null, 2),
-  //   );
-  // }
+  await saveSearchIndex(fullSearchIndex);
 }
 
-const getLocaleDirectories = async (baseDir: string): Promise<string[]> => {
-  const dirs = await fs.readdir(baseDir, { withFileTypes: true });
-  let locales = dirs
-    .filter((dir) => dir.isDirectory() && dir.name.length == 2)
-    .map((dir) => dir.name);
-
-  if (!locales.length) {
-    console.warn("No locales found in examples directory, defaulting to en");
-    locales = ["en"];
+const saveSearchIndex = async (
+  fullSearchIndex: LocaleSearchIndex,
+): Promise<void> => {
+  for (const locale in fullSearchIndex) {
+    const output = fullSearchIndex[locale];
+    if (locale !== "en") {
+      for (const contentType in fullSearchIndex["en"]) {
+        output[`${contentType}-fallback`] = fullSearchIndex["en"][contentType];
+      }
+    }
+    await fs.writeFile(
+      path.join(outputBaseDir, `${locale}.json`),
+      JSON.stringify(output),
+    );
   }
-
-  return locales;
 };
 
 const getKeywordsFromContent = (content: string, locale: string) => {
@@ -118,98 +88,111 @@ const getKeywordsFromContent = (content: string, locale: string) => {
       })
       .join(" ");
   }
-  return "";
+  return content;
 };
 
-/**
- * Generate the search index for the examples content type
- * Loops over each locale and generates a search index for each locale
- */
-const generateExamplesSearchIndex = async () => {
-  const examplesDir = path.join(contentBaseDir, "examples");
-  const locales = await getLocaleDirectories(examplesDir);
-  const allLocalesSearchIndex: LocaleSearchIndex = {};
-  for (const locale of locales) {
-    const searchIndex: SearchIndex = {};
-    const localeDir = path.join(contentBaseDir, "examples", locale);
-    const files = await getMdxFiles(localeDir);
-    for (const file of files) {
-      const fileContent = await fs.readFile(file, "utf8");
-      const { data, content } = matter(fileContent);
-      const relativeUrl = file
-        .split("/")[5]
-        .slice(3)
-        .replaceAll("_", "-")
-        .toLocaleLowerCase();
-      searchIndex[data.title] = {
-        relativeUrl: `/examples/${relativeUrl}`,
-        description: getKeywordsFromContent(content, locale),
-      };
+const generateContentTypesSearchIndex = async (
+  locale: SearchSupportedLocales,
+) => {
+  const localeSearchIndex: ContentTypeSearchIndex = {};
+
+  for (const contentType of contentTypes) {
+    const contentTypeSearchIndex = await generateSearchIndex(
+      contentType,
+      locale,
+    );
+    if (contentTypeSearchIndex) {
+      localeSearchIndex[contentType] = contentTypeSearchIndex;
     }
-    allLocalesSearchIndex[locale] = searchIndex;
   }
-  return allLocalesSearchIndex;
+
+  return localeSearchIndex;
 };
 
-const generateReferenceSearchIndex = async () => {
-  const refDir = path.join(contentBaseDir, "reference");
-  const locales = await getLocaleDirectories(refDir);
-  const allLocalesSearchIndex: LocaleSearchIndex = {};
-  for (const locale of locales) {
-    const searchIndex: SearchIndex = {};
-    const localeDir = path.join(contentBaseDir, "reference", locale);
-    const files = await getMdxFiles(localeDir);
-    for (const file of files) {
-      const fileContent = await fs.readFile(file, "utf8");
-      const { data } = matter(fileContent);
-      const relativeUrl = file.replace(`${localeDir}/`, "").replace(".mdx", "");
-      searchIndex[data.title] = {
-        relativeUrl: `/reference/${relativeUrl}`,
-        // description: content,
-      };
+const generateSearchIndex = async (
+  contentType: ContentType,
+  locale: SearchSupportedLocales,
+) => {
+  const contentDir = path.join(contentBaseDir, contentType);
+  let localeDir = path.join(contentDir, locale);
+
+  try {
+    await fs.access(localeDir);
+  } catch {
+    if (locale === "en") {
+      localeDir = contentDir;
+    } else {
+      console.warn(`localeDir ${localeDir} does not exist. Skipping...`);
+      return;
     }
-    allLocalesSearchIndex[locale] = searchIndex;
   }
-  return allLocalesSearchIndex;
-};
 
-const generateContributeSearchIndex = async () => {
-  const refDir = path.join(contentBaseDir, "contributor-docs");
-  const locales = await getLocaleDirectories(refDir);
-  const allLocalesSearchIndex: LocaleSearchIndex = {};
-  for (const locale of locales) {
-    const searchIndex: SearchIndex = {};
-    const localeDir = path.join(contentBaseDir, "contributor-docs", locale);
-    const files = await getMdxFiles(localeDir);
-    for (const file of files) {
-      const fileContent = await fs.readFile(file, "utf8");
-      const { content } = matter(fileContent);
-      const relativeUrl = file.replace(`${localeDir}/`, "").replace(".mdx", "");
-      const title = file.split("/")[4].replace(".mdx", "");
-      searchIndex[title] = {
-        relativeUrl: `/contribute/${relativeUrl}`,
-        description: getKeywordsFromContent(content, locale),
-      };
+  const searchIndex: SearchIndex = {};
+  const files = await getContentFilePaths(localeDir);
+  for (const file of files) {
+    let fileContent = await fs.readFile(file, "utf8");
+    // Add fences so that the frontmatter is always parsed
+    // even if read from a .yaml file. This is done so that
+    // graymatter can parse and is an alternative to using
+    // a dedicated yaml parser.
+    if (file.match(/\.(yaml|yml)$/i)) {
+      fileContent = `---\n${fileContent}\n---`;
     }
-    allLocalesSearchIndex[locale] = searchIndex;
-  }
-  return allLocalesSearchIndex;
-};
+    const parsed = matter(fileContent);
+    const { data, content } = parsed;
+    const contentRelativeUrl = file
+      .replace(`${localeDir}/`, "")
+      .replace(".mdx", "")
+      .replace(".yaml", "");
+    const relativeUrl = `/${contentType}/${contentRelativeUrl}`;
+    let description, title;
+    switch (contentType) {
+      case "tutorials":
+        title = data.title;
+        description = data.description;
+        break;
+      case "contributor-docs":
+        title = file.split("/")[4].replace(".mdx", "");
+        description = getKeywordsFromContent(content, locale);
+        break;
+      case "examples":
+        title = data.title;
+        description = getKeywordsFromContent(content, locale);
+        break;
+      case "reference":
+        title = data.title;
+        break;
+      case "libraries":
+        title = data.name;
+        description = data.description;
+        break;
+      case "people":
+        title = data.name;
+        break;
+      case "sketches":
+        title = data.title;
+        description = data.author?.name ?? "";
+        break;
+      case "past-events":
+        title = data.title;
+        description = getKeywordsFromContent(
+          content + data.description,
+          locale,
+        );
+        break;
+      default:
+        throw new Error(`Invalid content type: ${contentType}`);
+    }
 
-const generateSearchIndex = async (contentType: ContentType) => {
-  switch (contentType) {
-    case "reference":
-      return generateReferenceSearchIndex();
-    case "examples":
-      return generateExamplesSearchIndex();
-    case "contributor-docs":
-      return generateContributeSearchIndex();
-    default:
-      throw new Error(`Invalid content type: ${contentType}`);
+    searchIndex[title] = {
+      relativeUrl,
+      description,
+    };
   }
+  return searchIndex;
 };
 
 const contentBaseDir: string = "./src/content";
-const outputBaseDir: string = "./public/searchIndices";
+const outputBaseDir: string = "./public/search-indices";
 
-buildSearchIndices(contentBaseDir, outputBaseDir).catch(console.error);
+buildSearchIndices().catch(console.error);
