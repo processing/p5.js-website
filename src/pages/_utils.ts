@@ -43,13 +43,13 @@ export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
 /** Any inbound legacy links */
 export const exampleContentSlugToLegacyWebsiteSlug = (path: string): string =>
   path
-    .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "/$1-$2.html")
+    .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2.html")
     .replace(/_/g, "-");
 
 /**
  * Returns the code sample needed for the example given.
  *
- * @param exampleId
+ * @param exampleId id for the entry (not the slug)
  * @returns
  */
 export const getExampleCode = async (exampleId: string): Promise<string> => {

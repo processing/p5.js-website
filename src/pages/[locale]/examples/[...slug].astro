@@ -12,9 +12,9 @@ export async function getStaticPaths() {
   return await Promise.all(
     examples.map(async (example) => {
       const code = await getExampleCode(example.id);
-      const [locale, id] = removeLocalePrefixfromSlug(example.id);
+      const [locale, slug] = removeLocalePrefixfromSlug(example.slug);
       return {
-        params: { locale, slug: exampleContentSlugToLegacyWebsiteSlug(id) },
+        params: { locale, slug: exampleContentSlugToLegacyWebsiteSlug(slug) },
         props: { example, code },
       };
     }),
@@ -30,4 +30,3 @@ const { Content } = await example.render();
   <Content />
   <pre>{code}</pre>
 </BaseLayout>
-../../_utils
