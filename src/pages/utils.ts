@@ -3,7 +3,7 @@ import {
   type CollectionEntry,
   type AnyEntryMap,
 } from "astro:content";
-import { defaultLanguage, supportedLocales } from "../../const";
+import { defaultLocale, supportedLocales } from "../../const";
 
 export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
   collectionName: C,
@@ -33,7 +33,7 @@ export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
   for (const loc of supportedLocales) {
     if (slug.startsWith(`${loc}/`)) return [loc, slug.replace(loc, "")];
   }
-  return [defaultLanguage, slug];
+  return [defaultLocale, slug];
 };
 
 /** Astro automatically uses the directory structure for slug information */
