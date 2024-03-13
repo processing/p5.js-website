@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { nonDefaultSupportedLocales } from "../../../../const";
+import {
+  getCollectionInLocale,
+  makeReferencePageSlug,
+  removeDefaultLocalePrefix,
+} from "../../_utils";
+
+export async function getStaticPaths() {
+  const paths = nonDefaultSupportedLocales.map(async (locale) => ({
+    params: {
+      locale,
+    },
+    props: { entries: await getCollectionInLocale("reference", locale) },
+  }));
+
+  return await Promise.all(paths);
+}
+
+const { locale } = Astro.params;
+const { entries } = Astro.props;
+---
+
+<BaseLayout title="Reference">
+  <ul>
+    {
+      entries.map((refEntry) => (
+        <li>
+          <a
+            href={`/${locale}reference/${makeReferencePageSlug(removeDefaultLocalePrefix(refEntry.id))}`}
+          >
+            {refEntry.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
