@@ -1,0 +1,37 @@
+---
+import { getCollectionInLocale, transformExampleSlugs } from "../../_utils";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { nonDefaultSupportedLocales } from "../../../../const";
+
+export async function getStaticPaths() {
+  const pages = nonDefaultSupportedLocales.map(async (locale) => ({
+    params: {
+      locale,
+    },
+    props: {
+      entries: transformExampleSlugs<"examples">(
+        await getCollectionInLocale("examples", locale),
+      ),
+    },
+  }));
+
+  return await Promise.all(pages);
+}
+
+const { locale } = Astro.params;
+const { entries } = Astro.props;
+---
+
+<BaseLayout title="Examples">
+  <ul>
+    {
+      entries.map((exampleEntry) => (
+        <li>
+          <a href={`${locale}/.${exampleEntry.slug}`}>
+            {exampleEntry.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

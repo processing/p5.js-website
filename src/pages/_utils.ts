@@ -2,6 +2,7 @@ import {
   getCollection,
   type CollectionEntry,
   type AnyEntryMap,
+  type ContentEntryMap,
 } from "astro:content";
 import { defaultLocale, supportedLocales } from "../../const";
 import { readFile } from "fs/promises";
@@ -35,6 +36,19 @@ export const getCollectionInNonDefaultLocales = async <
   await getCollection(collectionName, ({ id }) =>
     startsWithSupportedLocale(id),
   );
+
+/**
+ * Retreives all the entries in the given collection, filtered to only include
+ * those in *non-default* locales (languages).
+ *
+ * @param collectionName
+ * @returns
+ */
+export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
+  collectionName: C,
+  locale: string,
+): Promise<CollectionEntry<C>[]> =>
+  await getCollection(collectionName, ({ id }) => id.startsWith(`${locale}/`));
 
 /**
  * Checks if a collecion entry's slug begins with a locale prefix
@@ -118,3 +132,17 @@ export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
  */
 export const makeReferencePageSlug = (id: string): string =>
   id.replace(/\.mdx$/, "");
+
+/* We have to modify the Astro.js slug to match existing routing */
+/* This is done dynamically here instead of relying on example authors */
+/* to update their slugs in the MDX Content Entry */
+export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
+  exampleCollection: CollectionEntry<C>[],
+): CollectionEntry<C>[] => {
+  const transformedEntries = exampleCollection.map((entry) => ({
+    ...entry,
+    slug: exampleContentSlugToLegacyWebsiteSlug(entry.slug),
+  }));
+
+  return transformedEntries;
+};

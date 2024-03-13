@@ -1,24 +1,11 @@
 ---
-import { getCollection } from "astro:content";
-import { exampleContentSlugToLegacyWebsiteSlug } from "../_utils";
+import { getCollectionInDefaultLocale, transformExampleSlugs } from "../_utils";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-/* We have to modify the Astro.js slug to match existing routing */
-/* This is done dynamically here instead of relying on example authors */
-/* to update their slugs in the MDX Content Entry */
-async function transformExampleSlugs() {
-  const exampleEntries = await getCollection("examples");
-
-  const transformedEntries = exampleEntries.map((entry) => ({
-    ...entry,
-    slug: exampleContentSlugToLegacyWebsiteSlug(entry.slug),
-  }));
-
-  return transformedEntries;
-}
-
 // Using the transformed collection
-const exampleEntries = await transformExampleSlugs();
+const exampleEntries = transformExampleSlugs<"examples">(
+  await getCollectionInDefaultLocale("examples"),
+);
 ---
 
 <BaseLayout title="Examples">
