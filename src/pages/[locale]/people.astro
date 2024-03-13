@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { nonDefaultSupportedLocales } from "../../../const";
+import { getCollectionInLocale } from "../_utils";
+
+export const getStaticPaths = async () => {
+  return await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const entries = await getCollectionInLocale("people", locale);
+
+      return { params: { locale }, props: { entries } };
+    }),
+  );
+};
+
+const { entries } = Astro.props;
+---
+
+<BaseLayout title="People">
+  <ul>
+    {
+      entries.map((person) => (
+        <li>
+          <img src={person.data.image.url} alt={person.data.image.altText} />
+          {person.data.name}
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

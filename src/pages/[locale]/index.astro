@@ -1,0 +1,25 @@
+---
+import { getEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { nonDefaultSupportedLocales } from "../../../const";
+
+export const getStaticPaths = async () => {
+  const pages = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const homePage = await getEntry("text-detail", locale);
+      if (!homePage) return null;
+
+      return { params: { locale }, props: { homePage } };
+    }),
+  );
+  return pages.filter((p) => p !== null);
+};
+
+const { homePage } = Astro.props;
+const { title } = homePage.data;
+const { Content } = await homePage.render();
+---
+
+<BaseLayout title={title}>
+  <Content />
+</BaseLayout>

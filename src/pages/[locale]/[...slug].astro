@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  getCollectionInNonDefaultLocales,
+  removeLocalePrefixfromSlug,
+} from "../_utils";
+
+export const getStaticPaths = async () => {
+  const pages = await getCollectionInNonDefaultLocales("text-detail");
+  return pages.map((page) => {
+    const [locale, slug] = removeLocalePrefixfromSlug(page.slug);
+
+    return { params: { locale, slug }, props: { page } };
+  });
+};
+
+const { page } = Astro.props;
+const { Content } = await page.render();
+---
+
+<BaseLayout title={page.data.title}>
+  <Content />
+</BaseLayout>

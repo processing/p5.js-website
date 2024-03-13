@@ -1,7 +1,11 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-const referenceEntries = await getCollection("reference");
+import {
+  getCollectionInDefaultLocale,
+  makeReferencePageSlug,
+  removeDefaultLocalePrefix,
+} from "../_utils";
+const referenceEntries = await getCollectionInDefaultLocale("reference");
 ---
 
 <BaseLayout title="Reference">
@@ -9,7 +13,9 @@ const referenceEntries = await getCollection("reference");
     {
       referenceEntries.map((refEntry) => (
         <li>
-          <a href={`/reference/${refEntry.id.replace(/\.mdx$/, "")}`}>
+          <a
+            href={`/reference/${makeReferencePageSlug(removeDefaultLocalePrefix(refEntry.id))}`}
+          >
             {refEntry.data.title}
           </a>
         </li>
