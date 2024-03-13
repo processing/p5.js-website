@@ -1,36 +1,28 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  getCollectionInDefaultLocale,
+  makeReferencePageSlug,
+  removeDefaultLocalePrefix,
+} from "../_utils";
 
 export async function getStaticPaths() {
-  const referenceEntries = await getCollection("reference");
+  const referenceEntries = await getCollectionInDefaultLocale("reference");
 
-  const paths = referenceEntries.map((entry) => ({
+  return referenceEntries.map((entry) => ({
     params: {
-      // We cannot use Astro's default slug because it removes characters like '.'
-      // We use the id instead and remove the file extension
-      id: entry.id.replace(/\.mdx$/, ""),
+      id: makeReferencePageSlug(removeDefaultLocalePrefix(entry.id)),
+    },
+    props: {
+      entry,
     },
   }));
-
-  return paths;
 }
 
 const { id } = Astro.params;
-const referenceEntries = await getCollection("reference");
-
-// TODO: Find correct way to handle Zod -> TS type inference
-const entriesById: Record<string, any> = referenceEntries.reduce<
-  Record<string, any>
->((acc, entry) => {
-  const id = entry.id.replace(/\.mdx$/, "");
-  acc[id] = entry;
-  return acc;
-}, {});
-
-const refEntry = entriesById[id];
+const { entry } = Astro.props;
 ---
 
-<BaseLayout title={refEntry.data.title}>
-  <div set:html={refEntry.data.description} />
+<BaseLayout title={entry.data.title}>
+  <div set:html={entry.data.description} />
 </BaseLayout>

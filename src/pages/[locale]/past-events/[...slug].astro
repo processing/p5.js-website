@@ -1,0 +1,41 @@
+---
+import {
+  getCollectionInNonDefaultLocales,
+  removeLocalePrefixfromSlug,
+} from "../../_utils";
+
+export async function getStaticPaths() {
+  const pastEvents = await getCollectionInNonDefaultLocales("past-events");
+  return pastEvents.map((entry) => {
+    const [locale, slug] = removeLocalePrefixfromSlug(entry.slug);
+    return {
+      params: { locale, slug },
+      props: { entry },
+    };
+  });
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<h1>{entry.data.title}</h1>
+<h2>{Astro.currentLocale}</h2>
+
+{
+  entry.data.featuredImage ? (
+    <img
+      src={entry.data.featuredImage.url}
+      alt={entry.data.featuredImage.altText}
+    />
+  ) : null
+}
+
+<Content />
+
+## Related Past Events
+
+<ul>
+  {/* TODO: make this into a proper link */}
+  {entry.data.relatedPastEvents?.map((relEx) => <li>{relEx.slug}</li>)}
+</ul>

@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {
+  getCollectionInNonDefaultLocales,
+  makeReferencePageSlug,
+  removeLocalePrefixfromSlug,
+} from "../../_utils";
+
+export async function getStaticPaths() {
+  const referenceEntries = await getCollectionInNonDefaultLocales("reference");
+
+  const paths = referenceEntries.map((entry) => {
+    const [locale, _id] = removeLocalePrefixfromSlug(entry.id);
+
+    return {
+      params: {
+        locale,
+        id: makeReferencePageSlug(entry.id),
+      },
+      props: { entry },
+    };
+  });
+
+  return paths;
+}
+
+const { id } = Astro.params;
+const { entry } = Astro.props;
+---
+
+<BaseLayout title={entry.data.title}>
+  <div set:html={entry.data.description} />
+</BaseLayout>

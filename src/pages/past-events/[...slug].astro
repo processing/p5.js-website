@@ -1,11 +1,15 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  getCollectionInDefaultLocale,
+  removeDefaultLocalePrefix,
+} from "../_utils";
 
 export async function getStaticPaths() {
-  const pastEvents = await getCollection("past-events");
+  // get all past events pages that are in the default locale
+  const pastEvents = await getCollectionInDefaultLocale("past-events");
   return pastEvents.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: removeDefaultLocalePrefix(entry.slug) },
     props: { entry },
   }));
 }

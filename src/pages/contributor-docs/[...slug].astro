@@ -1,23 +1,17 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  convertContributorDocIndexSlugIfNeeded,
+  getCollectionInDefaultLocale,
+  removeDefaultLocalePrefix,
+} from "../_utils";
 
 export async function getStaticPaths() {
-  /**
-   * The slug of the entry in this collection that we want to
-   * use as the index page
-   *
-   * For example: `contributor-docs/es/` will show
-   * the content from `contributor-docs/es/readme`
-   */
-  const indexPageName = "readme";
-  const contributorDocs = await getCollection("contributor-docs");
+  const contributorDocs =
+    await getCollectionInDefaultLocale("contributor-docs");
   return contributorDocs.map((entry) => {
-    // Use the `indexPageName` as the route
-    // for whatever folder its in
-    const slug = entry.slug.endsWith(indexPageName)
-      ? entry.slug.slice(0, -indexPageName.length)
-      : entry.slug;
+    const unPrefixSlug = removeDefaultLocalePrefix(entry.slug);
+    const slug = convertContributorDocIndexSlugIfNeeded(unPrefixSlug);
     return {
       params: {
         slug,
