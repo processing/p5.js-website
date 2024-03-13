@@ -16,6 +16,17 @@ if (shouldSkipCompress) {
 }
 
 import tailwind from "@astrojs/tailwind";
+import {
+  supportedLocales,
+  defaultLocale,
+  nonDefaultSupportedLocales,
+} from "./const";
+
+// create a config object that maps all non-default
+// languages to fallback to the default language
+const fallbackLanguages = Object.fromEntries(
+  nonDefaultSupportedLocales.map((l) => [l, defaultLocale]),
+);
 
 // https://astro.build/config
 export default defineConfig({
