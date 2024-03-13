@@ -1,25 +1,24 @@
 ---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
-  removeDefaultLocalePrefix,
-} from "../_utils";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollectionInDefaultLocale, getExampleCode } from "../_utils";
+  getCollectionInNonDefaultLocales,
+  getExampleCode,
+  removeLocalePrefixfromSlug,
+} from "../../_utils";
 
 export async function getStaticPaths() {
-  const examples = await getCollectionInDefaultLocale("examples");
-  const paths = await Promise.all(
+  const examples = await getCollectionInNonDefaultLocales("examples");
+  return await Promise.all(
     examples.map(async (example) => {
-      const unPrefixSlug = removeDefaultLocalePrefix(example.slug);
       const code = await getExampleCode(example.id);
+      const [locale, slug] = removeLocalePrefixfromSlug(example.slug);
       return {
-        params: { slug: exampleContentSlugToLegacyWebsiteSlug(unPrefixSlug) },
+        params: { locale, slug: exampleContentSlugToLegacyWebsiteSlug(slug) },
         props: { example, code },
       };
     }),
   );
-
-  return paths;
 }
 
 const { example, code } = Astro.props;

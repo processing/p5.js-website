@@ -1,16 +1,19 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
 import {
-  getCollectionInDefaultLocale,
-  removeDefaultLocalePrefix,
-} from "../_utils";
+  getCollectionInNonDefaultLocales,
+  removeLocalePrefixfromSlug,
+} from "../../_utils";
 
 export async function getStaticPaths() {
-  const sketches = await getCollectionInDefaultLocale("sketches");
-  return sketches.map((entry) => ({
-    params: { slug: removeDefaultLocalePrefix(entry.id) },
-    props: { entry },
-  }));
+  const pastEvents = await getCollectionInNonDefaultLocales("sketches");
+  return pastEvents.map((entry) => {
+    const [locale, slug] = removeLocalePrefixfromSlug(entry.id);
+    return {
+      params: { locale, slug },
+      props: { entry },
+    };
+  });
 }
 
 const { entry } = Astro.props;
