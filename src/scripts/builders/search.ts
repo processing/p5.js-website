@@ -131,9 +131,8 @@ const generateSearchIndex = async (
   const files = await getContentFilePaths(localeDir);
   for (const file of files) {
     let fileContent = await fs.readFile(file, "utf8");
-    // Add fences so that the frontmatter is always parsed
-    // even if read from a .yaml file. This is done so that
-    // graymatter can parse and is an alternative to using
+    // Add fences so that graymatter can parse yaml into object.
+    // This is an alternative to using
     // a dedicated yaml parser.
     if (file.match(/\.(yaml|yml)$/i)) {
       fileContent = `---\n${fileContent}\n---`;
