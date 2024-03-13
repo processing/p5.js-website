@@ -26,21 +26,10 @@ export async function getStaticPaths() {
 }
 
 const { id } = Astro.params;
-const referenceEntries = await getCollection("reference");
-
-// TODO: Find correct way to handle Zod -> TS type inference
-const entriesById: Record<string, any> = referenceEntries.reduce<
-  Record<string, any>
->((acc, entry) => {
-  const id = entry.id.replace(/\.mdx$/, "");
-  acc[id] = entry;
-  return acc;
-}, {});
-
-const refEntry = entriesById[id];
+const { entry } = Astro.props;
 ---
 
-<BaseLayout title={refEntry.data.title}>
-  <div set:html={refEntry.data.description} />
+<BaseLayout title={entry.data.title}>
+  <div set:html={entry.data.description} />
 </BaseLayout>
 ../../_utils
