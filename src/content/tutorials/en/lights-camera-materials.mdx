@@ -25,43 +25,37 @@ import fs from "node:fs/promises";
 
 Creating in 3D is about more than just geometry. Cameras, lights, and materials are important parts of creating a visually interesting 3D scene. p5.js has a number of tools that make it possible to transform the appearance of our geometry.
 
+
 ## Camera and view
 
 The camera is an essential piece of a 3D scene. It gives us a sense of space and dimension and helps us frame our content. WebGL mode provides a perspective camera by default, but we can change this using the `perspective()` or `ortho()` functions.
 
-![An illustration showing the difference between perspective and orthographic camera types. In the orthographic view, lines move parallel to each other, where in the perspective view, lines converge.](../images/webgl/cameraTypeIllustration.png)
+![An illustration showing the difference between perspective and orthographic camera types. In the orthographic view, lines move parallel to each other, where in the perspective view, lines converge.](./images/webgl/cameraTypeIllustration.png)
 
-A _perspective_ camera skews objects so that they appear smaller as they get further away, vanishing at a single point in the distance. This is in contrast to an _orthographic_ camera, where the geometry stays the same size as it gets further away and has no vanishing point. You can play around with both options in the example below.
+A *perspective* camera skews objects so that they appear smaller as they get further away, vanishing at a single point in the distance. This is in contrast to an *orthographic* camera, where the geometry stays the same size as it gets further away and has no vanishing point. You can play around with both options in the example below.
 
 <SketchEmbed
-  code={await fs.readFile(
-    "src/content/tutorials/sketches/lights-camera-materials/camera/sketch.js",
-  )}
-  cssCode={await fs.readFile(
-    "src/content/tutorials/sketches/lights-camera-materials/style.css",
-  )}
-  bodyCode={await fs.readFile(
-    "src/content/tutorials/sketches/lights-camera-materials/camera/index.html",
-  )}
+  code={await fs.readFile('src/content/tutorials/sketches/lights-camera-materials/camera/sketch.js')}
+  cssCode={await fs.readFile('src/content/tutorials/sketches/lights-camera-materials/style.css')}
+  bodyCode={await fs.readFile('src/content/tutorials/sketches/lights-camera-materials/camera/index.html')}
 />
 
-_Field-of-view,_ or FOV, is the term used to describe how much our camera can see, measured in angle. In simple examples, it might appear to have a zoom-like effect, but larger FOV angles cause shapes to have more perspective distortion. Sometimes, this effect is [used for artistic purposes.](https://en.wikipedia.org/wiki/Dolly_zoom)
+*Field-of-view,* or FOV, is the term used to describe how much our camera can see, measured in angle. In simple examples, it might appear to have a zoom-like effect, but larger FOV angles cause shapes to have more perspective distortion. Sometimes, this effect is [used for artistic purposes.](https://en.wikipedia.org/wiki/Dolly_zoom)
 
 <SketchEmbed
   width={400}
-  code={await fs.readFile(
-    "src/content/tutorials/sketches/lights-camera-materials/fov/sketch.js",
-  )}
+  code={await fs.readFile('src/content/tutorials/sketches/lights-camera-materials/fov/sketch.js')}
 />
 
-Another important term to understand when working with cameras in 3D is the camera _frustum_. The frustum of the camera is the shape of the camera's view. It is a pyramid-like shape within which geometry will be displayed. The frustum includes two components, a _near plane_ and a _far plane_. The near plane defines the minimum distance that geometry must be from the camera to be rendered. The far plane defines the maximum distance that the geometry can be from the camera and still be seen. Each of these can be changed to affect how close and how far the camera can see. This process of selectively including geometry is sometimes referred to as "clipping." You can set these using `perspective()` like so:
+
+Another important term to understand when working with cameras in 3D is the camera *frustum*. The frustum of the camera is the shape of the camera's view. It is a pyramid-like shape within which geometry will be displayed. The frustum includes two components, a *near plane* and a *far plane*. The near plane defines the minimum distance that geometry must be from the camera to be rendered. The far plane defines the maximum distance that the geometry can be from the camera and still be seen. Each of these can be changed to affect how close and how far the camera can see. This process of selectively including geometry is sometimes referred to as "clipping." You can set these using `perspective()` like so:
 
 ```js
 perspective(
-  fieldOfViewY, // Angle, in radians
-  aspectRatio, // width / height
-  nearPlaneDistance, // Minimum distance from camera
-  farPlaneDistance, // Maximum distance from camera
+  fieldOfViewY, // Angle, in radians
+  aspectRatio, // width / height
+  nearPlaneDistance, // Minimum distance from camera
+  farPlaneDistance // Maximum distance from camera
 );
 ```
 
@@ -69,8 +63,7 @@ perspective(
 
 You can move cameras by passing arguments to `camera()`, but constantly moving and adjusting the camera in code can be tedious. [`orbitControl()`](/reference/en/p5/orbitControl) can be used to zoom, pan, and position the camera using the mouse. You can use it by calling it at the beginning your `draw()` function, outside of any `push()` and `pop()` calls:
 
-<EditableSketch
-  code={`
+<EditableSketch code={`
 function setup() {
   createCanvas(200, 200, WEBGL);
   debugMode();
@@ -81,12 +74,10 @@ function draw() {
  
   orbitControl();
   box(50);
-}`}
-/>
+}`} />
 
 <Callout>
-  Try building a sculpture out of cubes that looks like one thing from one side,
-  but something else when you orbit to a different side.
+Try building a sculpture out of cubes that looks like one thing from one side, but something else when you orbit to a different side.
 </Callout>
 
 ## Lighting
@@ -105,15 +96,9 @@ These lights should be used within `draw()`. One image light and up to 5 lights 
 Try checking and unchecking the boxes in the following interactive example to see how lighting can be blended together. For each active light source there are visual indicators of their position or direction, just know that these are here for illustrative purposes!
 
 <SketchEmbed
-  code={await fs.readFile(
-    "src/content/tutorials/sketches/lights-camera-materials/lights/sketch.js",
-  )}
-  cssCode={await fs.readFile(
-    "src/content/tutorials/sketches/lights-camera-materials/style.css",
-  )}
-  bodyCode={await fs.readFile(
-    "src/content/tutorials/sketches/lights-camera-materials/lights/index.html",
-  )}
+  code={await fs.readFile('src/content/tutorials/sketches/lights-camera-materials/lights/sketch.js')}
+  cssCode={await fs.readFile('src/content/tutorials/sketches/lights-camera-materials/style.css')}
+  bodyCode={await fs.readFile('src/content/tutorials/sketches/lights-camera-materials/lights/index.html')}
 />
 
 <Callout>
@@ -166,9 +151,9 @@ Objects can appear different based on their material properties. Materials dicta
 
 There are five material properties in p5.js that combine to control the look of an object:
 
-- [`fill()`](/reference/en/p5/fill): This is the color used when there are no lights in the scene. When lights are added, this color mixes with the _diffuse_ component of the light: the bright and dark areas of the surface due to light being directly cast on it.
+- [`fill()`](/reference/en/p5/fill): This is the color used when there are no lights in the scene. When lights are added, this color mixes with the *diffuse* component of the light: the bright and dark areas of the surface due to light being directly cast on it.
 - [`ambientMaterial()`](/reference/en/p5/ambientMaterial): This is a color that mixes with the `ambientLight()` set in the scene. If it is not set, this will be the same as the fill color.
-- [`specularMaterial()`](/reference/en/p5/specularMaterial): This is a color that mixes with the _specular_ component of the light: the reflected highlights on the surface of the shape. If this is not set, there will be no highlights on the shape.
+- [`specularMaterial()`](/reference/en/p5/specularMaterial): This is a color that mixes with the *specular* component of the light: the reflected highlights on the surface of the shape. If this is not set, there will be no highlights on the shape.
 - [`shininess()`](/reference/en/p5/shininess): This number represents how sharp the specular highlights are. A value of 1 gives spread-out, blurry highlights. The higher the shininess, the sharper and smaller the highlights get. This only makes a difference if a specular material has been set.
 - [`emissiveMaterial()`](/reference/en/p5/emissiveMaterial): This is a color that gets added to the shape. It represents the light that the shape produces on its own, so it does not vary based on the other lights in the scene.
 
@@ -194,8 +179,7 @@ In the interactive example below, try selecting each of the different materials 
 
 Comment and uncomment the different lights in this example to see how they interact with the materials:
 
-<EditableSketch
-  code={`
+<EditableSketch code={`
 function setup() {
   createCanvas(200, 200, WEBGL);
   describe('a sphere geometry with multiple materials applied to it');
@@ -222,8 +206,7 @@ function draw() {
   // box(50);
   sphere();
 }
-`}
-/>
+`} />
 
 </Callout>
 
@@ -240,12 +223,12 @@ let palette = [
 function setup() {
   createCanvas(200, 200, WEBGL);
 
-describe('a gradient from teal to white to orange');
+  describe('a gradient from teal to white to orange');
 }
 function draw() {
   background(0);
-
-// Click and hold on the canvas to see where the edges
+ 
+  // Click and hold on the canvas to see where the edges
   // of the shapes are. Everything in between is blended for
   // you by WebGL!
   if (mouseIsPressed === true) {
@@ -253,8 +236,8 @@ function draw() {
   } else {
     noStroke();
   }
-
-beginShape(QUAD_STRIP);
+ 
+  beginShape(QUAD_STRIP);
   // Create a column of vertices for each color
   for (let i = 0; i < palette.length; i += 1) {
     fill(palette[i]);
@@ -268,8 +251,7 @@ beginShape(QUAD_STRIP);
 
 More custom materials can be achieved by using the `texture()` function. This allows you to map an image to the surface of a geometry. These textures can be imported from an image and even generated within code using shaders. To map a texture to your geometry, use `loadImage()` within `preload()`, then call `texture()` before drawing your shape.
 
-<EditableSketch
-  code={`
+<EditableSketch code={`
 let myTexture;
 function preload() {
   myTexture = loadImage('/images/tutorials/simpleTexture.png');
@@ -290,15 +272,13 @@ function draw() {
   box();
   pop();
 }
-`}
-/>
+`} />
 
 When you create custom geometry you can specify a texture coordinate for each vertex after each 3D position. By default, these coordinates are in pixels relative to the texture you have applied, but you can set `textureMode(NORMAL)` to use a 0-1 range, representing a fraction of the image's dimensions, which is helpful in making models that work for any image.
 
 The texture coordinates of a vertex can stay the same while its 3D position changes. You can use this to distort and animate images. In the example below, changing vertex positions while keeping texture coordinates the same is used to wiggle a drawing. Click and hold on the canvas to see the edges of the grid of vertices being drawn.
 
-<EditableSketch
-  code={`
+<EditableSketch code={`
 let img;
 function preload() {
   img = loadImage('/images/tutorials/wiggly-guy.png');
@@ -351,19 +331,18 @@ function draw() {
     endShape();
   }
 }
-`}
-/>
+`} />
 
 <Callout>
-  By distorting vertex positions, can you make an image of a character look like
-  it's jumping? Waving? Walking?
+By distorting vertex positions, can you make an image of a character look like it's jumping? Waving? Walking?
 </Callout>
 
 ## Conclusion
 
 Having control over the camera, lighting, and materials will give you more flexibility to change the look of your sketch and open up the possibility for you to introduce your own style to your 3D sketches.
 
-To make even more advanced materials for your shapes, artists often write _shaders._ Check out the [Introduction to Shaders](./intro-to-shaders) tutorial when you're ready to explore even more possibilities!
+To make even more advanced materials for your shapes, artists often write *shaders.* Check out the [Introduction to Shaders](./intro-to-shaders) tutorial when you're ready to explore even more possibilities!
+
 
 ## Glossary
 
@@ -371,47 +350,57 @@ To make even more advanced materials for your shapes, artists often write _shade
 
 The viewpoint of a 3D scene
 
+
 #### Perspective
 
 A camera projection that gives the appearance of depth, achieved by making objects in the distance appear smaller.
 
+
 #### Orthographic
 
-A camera projection that is _orthogonal_ and unaffected by depth. It gives the appearance of being two-dimensional.
+A camera projection that is *orthogonal* and unaffected by depth. It gives the appearance of being two-dimensional.
+
 
 #### Field-of-View
 
 The angle representing how much can be seen by the camera.
 
+
 #### Frustum
 
 The geometric shape representing the full area that can be viewed by the camera.
+
 
 #### Near and Far Plane
 
 The near plane represents the minimum distance a geometry must be from the camera to be displayed, while the far plane represents the maximum distance.
 
+
 #### Clipping
 
 Selectively showing some geometry and not others, such as when geometry falls outside of the camera frustum.
+
 
 #### Diffuse Light
 
 The effect of light on a matte material. Since matte materials bounce light equally in all directions, the color you see will look the same regardless of your vantage point.
 
+
 #### Specular Light
 
 The effect of light on a shiny or glossy material, visible as reflected highlights. The positions of the highlights will change as you move around an object as the reflection angles change.
+
 
 #### Shininess
 
 How sharp the specular reflections on an object are. This property comes from how much reflected light spreads out after bouncing off of the surface of an object: the less it spreads out, the sharper the reflections and the shinier the object appears; the more it spreads out, the blurrier the reflections are and the less shiny the object appears.
 
+
 #### Emissive Light
 
 Light emitted from the surface of an object, which gets added to the light that comes from external light sources.
 
+
 #### Ambient Light
 
 A uniform amount of light coming from all directions, as if the scene were inside a big sphere emitting light.
-../../../components/SketchEmbed../../../components/Callout
