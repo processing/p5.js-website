@@ -31,17 +31,17 @@ suite("exampleContentSlugToLegacyWebsiteSlug", () => {
 
 suite("convertContributorDocIndexSlugIfNeeded", () => {
   test("works for prefixed english slugs", () => {
-    expect(convertContributorDocIndexSlugIfNeeded("en/readme")).toBe("en/");
+    expect(convertContributorDocIndexSlugIfNeeded("en/readme")).toBe("/en/");
   });
   test("works for un-prefixed english slugs", () => {
     expect(convertContributorDocIndexSlugIfNeeded("readme")).toBe("/");
   });
   test("works for other locale slugs", () => {
-    expect(convertContributorDocIndexSlugIfNeeded("es/readme")).toBe("es/");
+    expect(convertContributorDocIndexSlugIfNeeded("es/readme")).toBe("/es/");
   });
   test("works for folders", () => {
     expect(convertContributorDocIndexSlugIfNeeded("en/folder/readme")).toBe(
-      "en/folder/",
+      "/en/folder/",
     );
   });
 });
