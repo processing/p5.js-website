@@ -1,15 +1,3 @@
-/**
- * @name Mobile Device Movement
- * @description The <a href="https://p5js.org/reference/#/p5/deviceMoved" target="_blank">deviceMoved()</a>
- * function runs when the mobile device displaying the sketch moves.
- * In this example, the
- * <a href="https://p5js.org/reference/#/p5/accelerationX" target="_blank">accelerationX</a>,
- * <a href="https://p5js.org/reference/#/p5/accelerationY" target="_blank">accelerationY</a>,
- * and <a href="https://p5js.org/reference/#/p5/accelerationZ" target="_blank">accelerationZ</a>
- * values set the position and size of a circle.
- * This only works for mobile devices.
- */
-
 function setup() {
   describe(
     'Available on mobile devices only: a white circle on a black background that moves and changes size based on the movement of the device.'

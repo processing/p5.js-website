@@ -1,16 +1,3 @@
-/**
- * @name Clock
- * @description The current time can be read with the
- * <a href="https://p5js.org/reference/#/p5/second" target="_blank">second()</a>,
- * <a href="https://p5js.org/reference/#/p5/minute" target="_blank">minute()</a>,
- * and <a href="https://p5js.org/reference/#/p5/minute" target="_blank">hour()</a>
- * functions. This example uses
- * <a href="https://p5js.org/reference/#/p5/map" target="_blank">map()</a>
- * to calculate the angle of the hands. It then uses
- * <a href="https://p5js.org/reference/#group-Transform" target="_blank">transformations</a>
- * to set their position.
- */
-
 // Declare variables for shape radii
 let secondsRadius;
 let minutesRadius;

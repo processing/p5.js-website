@@ -1,11 +1,3 @@
-/**
- * @name Custom Geometry
- * @description The
- * <a href="https://p5js.org/reference/#/p5/buildGeometry" target="_blank">buildGeometry()</a>
- * function stores shapes into a 3D model that can be efficiently used and
- * reused.
- */
-
 let snake;
 
 function setup() {

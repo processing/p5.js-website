@@ -1,11 +1,3 @@
-/**
- * @name Circle Clicker
- * @description This example demonstrates a game with a time limit and score. The browser's
- * <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">local storage</a>
- * stores the high score so when the game is played again using the same browser,
- * the high score remains. Clearing the browser data also clears the high score.
- */
-
 let circleX;
 let circleY;
 let circleRadius;

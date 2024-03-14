@@ -1,9 +1,3 @@
-/**
- * @name Adjusting Positions with a Shader
- * @description Shaders can adjust the positions of the vertices of shapes.
- * This lets you distort and animate 3D models.
- */
-
 let wiggleShader;
 
 let vertSrc = `

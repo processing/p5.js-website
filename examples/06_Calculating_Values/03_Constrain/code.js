@@ -1,12 +1,3 @@
-/**
- * @name Constrain
- * @description This example draws a circle as the cursor's position but
- * keeps the circle within a rectangle. It does so by passing the
- * mouse's coordinates into the
- * <a href="https://p5js.org/reference/#/p5/constrain" target="_blank">constrain()</a>
- * function.
- */
-
 // Circle's radius
 let radius = 24;
 

@@ -1,11 +1,3 @@
-/**
- * @name Recursive Tree
- * @description This is an example of rendering a simple tree-like structure via recursion.
- * The branching angle is calculated as a function of the horizontal mouse
- * location. Move the mouse left and right to change the angle.
- * Based on Daniel Shiffman's <a href="https://processing.org/examples/tree.html">Recursive Tree Example</a> for Processing.
- */
-
 let angle;
 
 function setup() {

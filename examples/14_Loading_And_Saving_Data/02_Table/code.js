@@ -1,16 +1,3 @@
-/**
- * @name Load and Save Table
- * @description Comma-Separated Values, or CSV, is a format for writing
- * data in a file. p5 can work with this format using a
- * <a href="https://p5js.org/reference/#/p5.Table" target="_blank">p5.Table</a>.
- * This example is based on Daniel Shiffman's
- * <a href="https://processing.org/examples/loadsavetable.html" target="_blank">Loading Tabular Data</a>
- * example for Processing. It uses a class to organize data representing
- * a bubble. When the sketch starts, it loads the data for four bubbles
- * from a CSV file. The visitor can add new bubbles, download an updated
- * CSV file, and load in a CSV file.
- * */
-
 // Global object to hold results from the loadTable call
 let table;
 
@@ -29,7 +16,7 @@ function preload() {
   table = loadTable('assets/bubbles.csv', 'header', loadData);
 }
 
-// Convert saved Bbubble data into Bubble Objects
+// Convert saved Bubble data into Bubble Objects
 function loadData(table) {
   bubbles = [];
   let tableRows = table.getRows();
@@ -108,7 +95,7 @@ function mouseReleased() {
   }
 }
 
-// Create a new Bbubble
+// Create a new Bubble
 function addBubble() {
   // Create a new row
   let row = table.addRow();

@@ -1,11 +1,3 @@
-/**
- * @name Bezier
- * @description
- * <a href="https://p5js.org/reference/#/p5/bezier" target="_blank">bezier()</a> curves are created using control and anchor points.
- * The first two parameters for the <a href="https://p5js.org/reference/#/p5/bezier" target="_blank">bezier()</a>
- * function specify the first point in the curve and the last two parameters specify the last point.
- * The middle parameters set the control points that define the shape of the curve.
- */
 // Define strokeHue as a global variable. This variable
 // will be used to color each line.
 let strokeHue = 20;

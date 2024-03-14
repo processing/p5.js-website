@@ -1,13 +1,3 @@
-/**
- * @name Map
- * @description The
- * <a href="https://p5js.org/reference/#/p5/map" target="_blank">map()</a>
- * function converts a value from one range to another. In this example, map
- * converts the cursor's horizontal position from a range of 0-720 to 0-360.
- * The resulting value become the circle's hue. Map also converts the cursor's
- * vertical position from a range of 0-400 to 20-300. The resulting value
- * becomes the circle's diameter.
- */
 function setup() {
   createCanvas(720, 400);
   colorMode(HSB);

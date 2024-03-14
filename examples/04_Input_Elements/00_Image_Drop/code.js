@@ -1,11 +1,3 @@
-/**
- * @name Image Drop
- * @description <a href="https://p5js.org/reference/#/p5.Element/drop" target="_blank">drop()</a>
- * is a p5.js element method that registers a callback every time a file is loaded into the element.
- * The uploaded file is created into a <a href="https://p5js.org/reference/#/p5.File" target="_blank">p5.File</a> class.
- * You can use the <a href="https://p5js.org/reference/#/p5.Element/drop" target="_blank">drop()</a> callback to check
- * the file type, then write conditional statements responding to the file type.
- */
 // Define canvasText as a global variable.
 let canvasText = 'Drag an image file onto the canvas.';
 

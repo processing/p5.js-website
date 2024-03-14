@@ -1,14 +1,3 @@
-/**
- * @name Flocking
- * @description Demonstration of flocking behavior.
- * Full discussion of the implementation can be found in the
- * <a href="https://natureofcode.com/book/chapter-6-autonomous-agents/">
- * Nature of Code</a>
- * book by Daniel Shiffman. The simulation is based on the research of
- * <a href="http://www.red3d.com/cwr/">Craig Reynolds</a>, who
- * used the term 'boid' to represent a bird-like object.
- */
-
 let flock;
 
 function setup() {

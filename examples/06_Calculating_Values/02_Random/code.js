@@ -1,13 +1,3 @@
-/**
- * @name Random
- * @description This example demonstrates the use of the
- * <a href="https://p5js.org/reference/#/p5/random">random()</a>
- * function.
- *
- * When the user presses the mouse button, the position and color
- * of the circle change randomly.
- */
-
 // Declare variables for the position and color of the circle
 
 let circleX;

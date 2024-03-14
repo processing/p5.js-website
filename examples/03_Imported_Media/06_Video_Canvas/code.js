@@ -1,13 +1,3 @@
-/**
- * @name Video Canvas
- * @description Using the <a href="https://p5js.org/reference/#/p5/createVideo" target="_blank">createVideo()</a>
- * and <a href="https://p5js.org/reference/#/p5/image" target="_blank">image()</a> functions, you can upload a video into
- * the canvas. Since the video capture is passed through the
- * <a href="https://p5js.org/reference/#/p5/image" target="_blank">image()</a> constructor, you can add filters to the
- * video capture using the <a href="https://p5js.org/reference/#/p5/filter" target="_blank">filter()</a> method. To run this example locally,
- * you will need a running <a href="https://github.com/processing/p5.js/wiki/Local-server">local server</a>.
- * To build a video without embedding it within the canvas, visit the <a href="https://p5js.org/examples/dom-video.html">Video</a> example.
- **/
 // Define video and playing as global variables.
 // Set playing to false so the videos are paused when loaded into the canvas.
 let video;

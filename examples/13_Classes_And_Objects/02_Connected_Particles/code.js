@@ -1,17 +1,3 @@
-/**
- * @name Connected Particles
- * @description This example uses two custom
- * <a href="https://p5js.org/reference/#/p5/class" target="_blank">classes</a>.
- * The Particle class stores a position, velocity, and hue. It renders
- * a circle using the current position and hue, and it updates the
- * position using the current velocity. The Path class stores an array
- * of objects created from the Particle class. It renders lines
- * connecting each of the particles. When the user clicks the mouse, the
- * sketch creates a new instance of the Path class. When the user drags
- * the mouse, the sketch adds a new instance of the Particle class to
- * the current path.
- */
-
 // Array of path objects, each containing an array of particles
 let paths = [];
 

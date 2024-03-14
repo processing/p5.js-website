@@ -1,17 +1,3 @@
-/**
- * @name Noise
- * @description
- * <a href="https://en.wikipedia.org/wiki/Perlin_noise" target="_blank">Perlin noise</a>
- * is an algorithm written by Ken Perlin to produce sequences that appear both
- * random and organic. The
- * <a href="https://p5js.org/reference/#/p5/noise" target="_blank">noise()</a>
- * function in p5 produces Perlin noise.
- *
- * The dots in this example are sized based on noise values. The slider on the
- * left sets the distance between dots. The slider on the right sets an offset
- * in the noise calculation.
- */
-
 // Noise tends to look smoother with coordinates that are very close together
 // These values will be multiplied by the x and y coordinates to make the
 // resulting values very close together

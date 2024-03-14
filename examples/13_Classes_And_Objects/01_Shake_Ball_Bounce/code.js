@@ -1,9 +1,3 @@
-/**
- * @name Shake Ball Bounce
- * @description Using the <a href="https://p5js.org/reference/#/p5/class" target="_blank">class</a> property, you can create a collection of
- * circles that move within the canvas in response to the tilt of a mobile device.
- * You must open this page on a mobile device to display the sketch.
- */
 // Define the global variables.
 // The balls variable will contain all the
 // balls in the canvas.

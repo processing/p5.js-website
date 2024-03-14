@@ -1,15 +1,3 @@
-/**
- * @name Load and Save Local Storage
- * @description Browsers allow websites to store data on the visitor's
- * device. This is called
- * <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">local storage</a>.
- * The <a href="https://p5js.org/reference/#/p5/getItem" target="_blank">getItem()</a>,
- * <a href="https://p5js.org/reference/#/p5/storeItem" target="_blank">storeItem()</a>,
- * <a href="https://p5js.org/reference/#/p5/clearStorage" target="_blank">clearStorage()</a>,
- * and <a href="https://p5js.org/reference/#/p5/removeItem" target="_blank">removeItem()</a>
- * functions control it.
- * */
-
 // Global array to hold all bubble objects
 let bubbles;
 

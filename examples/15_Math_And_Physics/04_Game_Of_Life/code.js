@@ -1,23 +1,3 @@
-/**
- * @name Game of Life
- * @description The Game of Life is a cellular automaton created by
- * mathematician John Conway. A cellular automaton is a type of
- * simulation. In the Game of Life, there is a grid of cells in which each cell is either dead
- * or alive. In this example, black squares represent living cells and
- * white squares represent dead cells. As the simulation runs, cells
- * switch between being dead and alive based on a set of rules:
- * <ol>
- *  <li>Any live cell with fewer than two live neighbours dies.</li>
- *  <li>Any live cell with more than three live neighbours dies.</li>
- *  <li>Any live cell with two or three live neighbours lives, unchanged,
- * to the next generation.</li>
- *  <li>Any dead cell with exactly three live neighbours will come to life.</li>
- * </ol>
- * These rules generate complex interactions. Click the canvas to start
- * the simulation with randomized cells. Clicking the canvas again will
- * restart it.
- */
-
 let cellSize = 20;
 let columnCount;
 let rowCount;
