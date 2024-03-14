@@ -55,7 +55,6 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
 /**
  * Splits the locale prefix out of a slug, and
  * returns the two as separate strings.
- * **Note: only handles absolute paths!**
  *
  * @param slug
  * @returns a tuple of the locale and the new slug
