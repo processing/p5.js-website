@@ -12,15 +12,19 @@ export const LocaleSwitcher = () => (
         );
       }}
     >
-      {supportedLocales.map((locale) => {
-        <option value={locale} selected={getCurrentLocale() === locale}>
+      {supportedLocales.map((locale) => (
+        <option
+          value={locale}
+          selected={getCurrentLocale() === locale}
+          key={locale}
+        >
           {
             // displays the language associated with a
             // locale code in its own language
             new Intl.DisplayNames([locale], { type: "language" }).of(locale)
           }
-        </option>;
-      })}
+        </option>
+      ))}
     </select>
   </div>
 );
