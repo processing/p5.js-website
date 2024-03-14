@@ -1,5 +1,9 @@
 import { readFile } from "fs/promises";
 
+// THIS FILE OF UTILS IS FOR CODE THAT NEEDS NODEJS RUNTIME DEPS
+// IT CANNOT BE IMPORTED INTO A COMPONENT THAT RENDERS ON THE CLIENT
+// TODO: PICK A BETTER NAME FOR THIS FILE
+
 /**
  * Returns the code sample needed for the example given.
  *

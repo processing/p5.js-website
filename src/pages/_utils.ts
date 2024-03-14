@@ -66,6 +66,7 @@ export const startsWithSupportedLocale = (slug: string) => {
 /**
  * Splits the locale prefix out of a slug, and
  * returns the two as separate strings.
+ * **Note: only handles absolute paths!**
  *
  * @param slug
  * @returns a tuple of the locale and the new slug
@@ -87,6 +88,33 @@ export const splitLocaleFromPath = (path: string): [string, string] => {
  */
 export const removeLocalePrefix = (prefixedPath: string): string =>
   splitLocaleFromPath(prefixedPath)[1];
+
+/**
+ * Turns a given url (of any locale) into a url within the given locale
+ * **Note: only handles absolute paths!**
+ *
+ * @param url
+ * @param newLocale
+ * @returns
+ */
+export const reformUrlforNewLocale = (url: string, newLocale: string) => {
+  const unPrefixedUrl = removeLocalePrefix(url);
+  if (newLocale === defaultLocale) {
+    return `${unPrefixedUrl}`;
+  }
+  return `/${newLocale}${unPrefixedUrl}`;
+};
+
+/**
+ * Gets the current locale by parsing it out of the current url.
+ * **Note: Can only be used client-side!**
+ *
+ * @returns
+ */
+export const getCurrentLocale = (): string => {
+  const [locale] = splitLocaleFromPath(window.location.pathname);
+  return locale;
+};
 
 /**
  * Astro automatically uses the directory structure for slug information
@@ -148,16 +176,3 @@ export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
  */
 export const localeMatchingRegex = () =>
   new RegExp(`^/?(?:${supportedLocales.join("|")})(?:/|$)`);
-
-export const reformUrlforNewLocale = (url: string, newLocale: string) => {
-  const unPrefixedUrl = removeLocalePrefix(url);
-  if (newLocale === defaultLocale) {
-    return `${unPrefixedUrl}`;
-  }
-  return `/${newLocale}${unPrefixedUrl}`;
-};
-
-export const getCurrentLocale = (): string => {
-  const [locale] = splitLocaleFromPath(window.location.pathname);
-  return locale;
-};
