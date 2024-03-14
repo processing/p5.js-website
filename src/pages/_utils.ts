@@ -70,11 +70,13 @@ export const startsWithSupportedLocale = (slug: string) => {
  * @param slug
  * @returns a tuple of the locale and the new slug
  */
-export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
+export const splitLocaleFromPath = (path: string): [string, string] => {
   for (const loc of supportedLocales) {
-    if (slug.startsWith(`${loc}/`)) return [loc, slug.replace(loc, "")];
+    const localeRegex = new RegExp(`^/?${loc}/`, "i");
+    const matched = path.match(localeRegex);
+    if (matched !== null) return [loc, path.replace(localeRegex, "/")];
   }
-  return [defaultLocale, slug];
+  return [defaultLocale, path];
 };
 
 /**
@@ -83,17 +85,8 @@ export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
  * @param slug
  * @returns
  */
-export const removeDefaultLocalePrefix = (slug: string): string =>
-  slug.startsWith(`${defaultLocale}/`) ? slug.replace(defaultLocale, "") : slug;
-
-export const removeLocalePrefix = (prefixedPath: string): string => {
-  for (const loc of supportedLocales) {
-    const localeRegex = new RegExp(`^/?${loc}/`, "i");
-    const matched = prefixedPath.match(localeRegex);
-    if (matched !== null) return prefixedPath.replace(localeRegex, "/");
-  }
-  return prefixedPath;
-};
+export const removeLocalePrefix = (prefixedPath: string): string =>
+  splitLocaleFromPath(prefixedPath)[1];
 
 /**
  * Astro automatically uses the directory structure for slug information
@@ -159,12 +152,12 @@ export const localeMatchingRegex = () =>
 export const reformUrlforNewLocale = (url: string, newLocale: string) => {
   const unPrefixedUrl = removeLocalePrefix(url);
   if (newLocale === defaultLocale) {
-    return `/${unPrefixedUrl}`;
+    return `${unPrefixedUrl}`;
   }
-  return `/${newLocale}/${unPrefixedUrl}`;
+  return `${newLocale}${unPrefixedUrl}`;
 };
 
 export const getCurrentLocale = (): string => {
-  const [locale] = removeLocalePrefixfromSlug(window.location.pathname);
+  const [locale] = splitLocaleFromPath(window.location.pathname);
   return locale;
 };

@@ -1,13 +1,13 @@
 ---
 import {
   getCollectionInNonDefaultLocales,
-  removeLocalePrefixfromSlug,
+  splitLocaleFromPath,
 } from "@pages/_utils";
 
 export async function getStaticPaths() {
   const pastEvents = await getCollectionInNonDefaultLocales("past-events");
   return pastEvents.map((entry) => {
-    const [locale, slug] = removeLocalePrefixfromSlug(entry.slug);
+    const [locale, slug] = splitLocaleFromPath(entry.slug);
     return {
       params: { locale, slug },
       props: { entry },

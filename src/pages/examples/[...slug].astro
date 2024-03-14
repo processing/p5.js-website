@@ -1,7 +1,7 @@
 ---
 import {
   exampleContentSlugToLegacyWebsiteSlug,
-  removeDefaultLocalePrefix,
+  removeLocalePrefix,
   getCollectionInDefaultLocale,
 } from "@pages/_utils";
 import { getExampleCode } from "@pages/_utils-node";
@@ -11,7 +11,7 @@ export async function getStaticPaths() {
   const examples = await getCollectionInDefaultLocale("examples");
   const paths = await Promise.all(
     examples.map(async (example) => {
-      const unPrefixSlug = removeDefaultLocalePrefix(example.slug);
+      const unPrefixSlug = removeLocalePrefix(example.slug);
       const code = await getExampleCode(example.id);
       return {
         params: { slug: exampleContentSlugToLegacyWebsiteSlug(unPrefixSlug) },

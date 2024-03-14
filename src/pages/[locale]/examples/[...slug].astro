@@ -3,7 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
   getCollectionInNonDefaultLocales,
-  removeLocalePrefixfromSlug,
+  splitLocaleFromPath,
 } from "@pages/_utils";
 import { getExampleCode } from "@pages/_utils-node";
 
@@ -12,7 +12,7 @@ export async function getStaticPaths() {
   return await Promise.all(
     examples.map(async (example) => {
       const code = await getExampleCode(example.id);
-      const [locale, slug] = removeLocalePrefixfromSlug(example.slug);
+      const [locale, slug] = splitLocaleFromPath(example.slug);
       return {
         params: { locale, slug: exampleContentSlugToLegacyWebsiteSlug(slug) },
         props: { example, code },
