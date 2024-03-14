@@ -72,7 +72,7 @@ export const startsWithSupportedLocale = (slug: string) => {
  */
 export const splitLocaleFromPath = (path: string): [string, string] => {
   for (const loc of supportedLocales) {
-    const localeRegex = new RegExp(`^/?${loc}/`, "i");
+    const localeRegex = new RegExp(`^/?${loc}(?:/|$)`, "i");
     const matched = path.match(localeRegex);
     if (matched !== null) return [loc, path.replace(localeRegex, "/")];
   }
@@ -154,7 +154,7 @@ export const reformUrlforNewLocale = (url: string, newLocale: string) => {
   if (newLocale === defaultLocale) {
     return `${unPrefixedUrl}`;
   }
-  return `${newLocale}${unPrefixedUrl}`;
+  return `/${newLocale}${unPrefixedUrl}`;
 };
 
 export const getCurrentLocale = (): string => {
