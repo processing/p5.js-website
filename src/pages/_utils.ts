@@ -5,8 +5,6 @@ import {
   type ContentEntryMap,
 } from "astro:content";
 import { defaultLocale, supportedLocales } from "../../const";
-import { readFile } from "fs/promises";
-import path from "path";
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
@@ -114,18 +112,6 @@ export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
     .replace(/_/g, "-");
 
 /**
- * Returns the code sample needed for the example given.
- *
- * @param exampleId id for the entry (not the slug)
- * @returns
- */
-export const getExampleCode = async (exampleId: string): Promise<string> => {
-  const codePath = `src/content/examples/${exampleId.replace("description.mdx", "code.js")}`;
-  const code = await readFile(codePath, "utf-8");
-  return code;
-};
-
-/**
  * If the given slug is the slug of the entry in the contributor doc
  * collection that we want to use as the index page, this returns a
  * '/' slug for routing purposes. Otherwise, just returns the slug given,
@@ -175,7 +161,7 @@ export const reformUrlforNewLocale = (url: string, newLocale: string) => {
   if (newLocale === defaultLocale) {
     return `/${unPrefixedUrl}`;
   }
-  return path.join(`/${newLocale}`, unPrefixedUrl);
+  return `/${newLocale}/${unPrefixedUrl}`;
 };
 
 export const getCurrentLocale = (): string => {
