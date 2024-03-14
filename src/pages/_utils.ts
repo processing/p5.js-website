@@ -32,9 +32,12 @@ export const getCollectionInNonDefaultLocales = async <
 >(
   collectionName: C,
 ): Promise<CollectionEntry<C>[]> =>
-  await getCollection(collectionName, ({ id }) =>
-    startsWithSupportedLocale(id),
-  );
+  await getCollection(collectionName, ({ id }) => {
+    for (const loc of nonDefaultSupportedLocales) {
+      if (id.startsWith(`${loc}/`)) return true;
+    }
+    return false;
+  });
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
@@ -48,20 +51,6 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
   locale: string,
 ): Promise<CollectionEntry<C>[]> =>
   await getCollection(collectionName, ({ id }) => id.startsWith(`${locale}/`));
-
-/**
- * Checks if a collecion entry's slug begins with a locale prefix
- * (for example: 'es/')
- *
- * @param slug
- * @returns
- */
-export const startsWithSupportedLocale = (slug: string) => {
-  for (const loc of supportedLocales) {
-    if (slug.startsWith(`${loc}/`)) return true;
-  }
-  return false;
-};
 
 /**
  * Splits the locale prefix out of a slug, and
