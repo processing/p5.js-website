@@ -1,18 +1,17 @@
 import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import FlexSearch from "flexsearch";
+import Fuse from "fuse.js";
 
 interface SearchProviderProps {
   currentLocale: string;
 }
 
-const SearchProvider = ({ currentLocale }) => {
+const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
 
   const flattenData = (data) => {
     const flatData = [];
-    console.log(data);
     let flatId = 0;
     Object.entries(data).forEach(([category, entries]) => {
       Object.entries(entries).forEach(([title, docDetails]) => {
@@ -32,46 +31,53 @@ const SearchProvider = ({ currentLocale }) => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get("term");
     setSearchTerm(query);
+  }, []);
 
-    if (!query) return;
+  useEffect(() => {
+    if (!currentLocale) {
+      console.warn("No locale provided to SearchProvider");
+      return;
+    }
 
-    let flatData; // Store flat data outside fetch scope for later access
+    if (!searchTerm) return;
 
-    const index = new FlexSearch.Index({
-      tokenize: "forward",
-      resolution: 9,
-      threshold: 0.001,
-      depth: 9,
-      latin: "extra",
-    });
+    let flatData;
 
     fetch(`./search-indices/${currentLocale}.json`)
       .then((response) => response.json())
       .then((data) => {
         flatData = flattenData(data);
-        flatData.forEach((doc) => {
-          index.add(doc.id, doc.title + " " + doc.description);
-        });
-        return index.search({
-          query,
-          suggest: true,
-        });
-      })
-      .then((searchResults) => {
-        const mappedResults = searchResults.map((r) => {
-          return flatData[r];
-        });
 
-        setResults(mappedResults);
+        const fuseOptions = {
+          includeScore: true,
+          keys: ["title", "description"],
+          shouldSort: true,
+          threshold: 0.3,
+        };
+
+        const fuse = new Fuse(flatData, fuseOptions);
+
+        const searchResults = fuse
+          .search(searchTerm)
+          .map((result) => result.item);
+
+        setResults(searchResults);
       })
       .catch((error) =>
         console.error("Error fetching or indexing data:", error),
       );
-  }, []);
+  }, [searchTerm, currentLocale]);
 
-  return (
-    <div>
-      <h2>Search Results for: {searchTerm}</h2>
+  const renderSearchResults = () => {
+    if (!results) {
+      return <p>Searching ...</p>;
+    }
+
+    if (results.length === 0) {
+      return <p>No results found</p>;
+    }
+
+    return (
       <ul>
         {results.map((result) => (
           <li key={result.id}>
@@ -79,6 +85,15 @@ const SearchProvider = ({ currentLocale }) => {
           </li>
         ))}
       </ul>
+    );
+  };
+
+  if (!searchTerm) return null;
+
+  return (
+    <div>
+      <h2>Search Results for: {searchTerm}</h2>
+      {renderSearchResults()}
     </div>
   );
 };
