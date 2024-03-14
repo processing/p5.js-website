@@ -142,4 +142,12 @@ suite("splitLocaleFromPath", () => {
   test("detects un-prefixed locale", () => {
     expect(splitLocaleFromPath("examples/number")[0]).toBe("en");
   });
+  test('works for "relative" paths', () => {
+    expect(splitLocaleFromPath("examples")[0]).toBe("en");
+    expect(splitLocaleFromPath("examples")[1]).toBe("examples");
+    expect(splitLocaleFromPath("en")[0]).toBe("en");
+    expect(splitLocaleFromPath("en")[1]).toBe("/");
+    expect(splitLocaleFromPath("es")[0]).toBe("es");
+    expect(splitLocaleFromPath("es")[1]).toBe("/");
+  });
 });
