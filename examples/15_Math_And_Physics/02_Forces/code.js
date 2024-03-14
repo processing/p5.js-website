@@ -1,18 +1,3 @@
-/**
- * @name Forces
- * @description Demonstration of multiple forces acting on bodies.
- * Bodies experience gravity continuously. Bodies experience fluid
- * resistance when in "water".
- * (<a href="http://natureofcode.com">natureofcode.com</a>)
- *
- * The force calculations are performed using the
- * <a href="https://p5js.org/reference/#/p5.Vector">p5.Vector</a>
- * class, including the
- * <a href="https://p5js.org/reference/#/p5/createVector">createVector()</a>
- * function to create vectors.
- *
- */
-
 // Declare array to store the moving bodies
 let movers = [];
 

@@ -1,11 +1,3 @@
-/**
- * @name Shader as a Texture
- * @description Shaders can be applied to 2D/3D shapes as textures.
- *
- * To learn more about using shaders in p5.js:
- * <a href="https://itp-xstory.github.io/p5js-shaders/">p5.js Shaders</a>
- */
-
 // vertex shader code as a string
 let vertexShader = `
 precision highp float;

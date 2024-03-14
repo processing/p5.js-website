@@ -1,22 +1,3 @@
-/**
- * @name Smoke Particles
- * @description Smoke particle system demo, based on
- * Dan Shiffman's original
- * <a href="https://natureofcode.com/book/chapter-4-particle-systems/">example</a>
- * for Processing.
- *
- * The code makes use of the
- * <a href="https://p5js.org/reference/#/p5.Vector">p5.Vector</a>
- * class, including the
- * <a href="https://p5js.org/reference/#/p5/createVector">createVector()</a>
- * function. The various calculations for updating particles'
- * positions and velocities are performed with p5.Vector methods.
- *
- * The particle system is implemented as a
- * <a href="https://p5js.org/reference/#/p5/class">class</a>, which contains an array of
- * objects (of class Particle).
- */
-
 // Declare variables for the particle system and texture
 let particleTexture;
 let particleSystem;

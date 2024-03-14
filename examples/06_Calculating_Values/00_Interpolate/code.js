@@ -1,20 +1,3 @@
-/**
- * @name Linear Interpolation
- * @frame 720, 400
- * @description
- * <a href="https://developer.mozilla.org/en-US/docs/Glossary/Interpolation" target="_blank">Interpolation</a>
- * calculates a value between two other values. For example, the number 5 is
- * halfway between 0 and 10. Different types of interpolation use
- * different rates of change between values. Linear interpolation,
- * abbreviated as lerp, uses a constant rate of change. The
- * <a href="https://p5js.org/reference/#/p5/lerp" target="_blank">lerp()</a>
- * function linearly interpolates between two numbers.
- *
- * Move the mouse across the screen and the symbol will follow.
- * Between drawing each frame of the animation, the ellipse moves part
- * of the distance from its current position toward the cursor.
- */
-
 let x = 0;
 let y = 0;
 

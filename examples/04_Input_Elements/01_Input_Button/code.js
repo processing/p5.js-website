@@ -1,10 +1,3 @@
-/**
- ** @name Input and Button
- ** @description Using the <a href="https://p5js.org/reference/#/p5.Element/createElement" target="_blank">createElement()</a>,
- ** <a href="https://p5js.org/reference/#/p5/createInput" target="_blank">createInput()</a>,
- ** and <a href="https://p5js.org/reference/#/p5.Element/createButton" target="_blank">createButton()</a> functions,
- ** you can take a string of text submitted via text input and transpose it into multiple elements within your canvas.
- **/
 // Define the global variables: input, button, and greeting.
 let nameInput;
 let button;

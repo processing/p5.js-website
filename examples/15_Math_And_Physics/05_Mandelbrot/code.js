@@ -1,10 +1,3 @@
-/**
- * @name The Mandelbrot Set
- * @description Colorful rendering of the Mandelbrot set
- * based on Daniel Shiffman's
- * <a href="https://processing.org/examples/mandelbrot.html">Mandelbrot Example</a> for Processing.
- */
-
 function setup() {
   createCanvas(710, 400);
   pixelDensity(1);

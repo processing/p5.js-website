@@ -1,21 +1,3 @@
-/**
- * @name Scale
- * @description The
- * <a href="https://p5js.org/reference/#/p5/scale">scale()</a>
- * function scales the current coordinate system by the specified
- * factor.
- *
- * The
- * <a href="https://p5js.org/reference/#/p5/push">push()</a>
- * and
- * <a href="https://p5js.org/reference/#/p5/pop">pop()</a>
- * functions save and restore the coordinate system, respectively.
- *
- * In this example, a square size 200 is drawn at the origin, with
- * three different scaling factors.
- *
- */
-
 function setup() {
   // Create the canvas
   createCanvas(720, 400);

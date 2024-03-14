@@ -1,18 +1,3 @@
-/**
- *
- * @name Multiple Canvases
- * @description By default, p5 runs in Global Mode, which means that
- * all p5 functions are in the global scope, and all canvas-related functions
- * apply to a single canvas. p5 can also run in Instance Mode, in which those
- * same functions are methods of an instance of the p5 class. Each instance of
- * p5 may have its own canvas.
- *
- * To use instance mode, a function must be defined with a parameter representing
- * the p5 instance (labeled p in this example). All the p5 functions and variables
- * that are typically global will belong to this parameter within this function's
- * scope. Passing the function into the p5 constructor, runs it.
- */
-
 // Function for first canvas
 function sketch1(p) {
   p.setup = function () {

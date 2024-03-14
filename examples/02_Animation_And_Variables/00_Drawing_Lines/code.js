@@ -1,23 +1,3 @@
-/**
- * @name Drawing Lines
- * @description Click and drag the mouse to draw a line.
- *
- * This example demonstrates the use of several built-in
- * variables.
- * <a href="https://p5js.org/reference/#/p5/mouseX">mouseX</a>
- * and
- * <a href="https://p5js.org/reference/#/p5/mouseY">mouseY</a>
- * store the current mouse position, while the
- * previous mouse position is represented by
- * <a href="https://p5js.org/reference/#/p5/pmouseX">pmouseX</a>
- * and
- * <a href="https://p5js.org/reference/#/p5/pmouseY">pmouseY</a>.
- *
- * This example also shows the use of
- * <a href="https://p5js.org/reference/#/p5/colorMode">colorMode</a> with HSB
- * (hue-saturation-brightness), so that the first variable sets the hue.
- *
- */
 function setup() {
   // Create the canvas
   createCanvas(710, 400);

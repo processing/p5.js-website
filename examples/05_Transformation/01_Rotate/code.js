@@ -1,23 +1,3 @@
-/**
- * @name Rotate
- * @description The
- * <a href="https://p5js.org/reference/#/p5/rotate">rotate()</a>
- * function rotates the current coordinate system around the current
- * origin.
- *
- * Note that by default the origin is the upper left corner of the canvas.
- * In order to rotate around the center of the canvas, we must first
- * translate the coordinate system, and then rotate around the new origin.
- *
- * The 
- * <a href="https://p5js.org/reference/#/p5/push">push()</a>
- * and
- * <a href="https://p5js.org/reference/#/p5/pop">pop()</a>
- * functions save and restore the coordinate system, respectively.
- *
-  */
-
-
 function setup() {
   // Create the canvas
   createCanvas(720, 400);
@@ -71,5 +51,3 @@ function draw() {
   strokeWeight(5);
   line(0, 0, 150, 0);
 }
-
-

@@ -1,13 +1,3 @@
-/**
- * @name Soft Body
- * @description Physics simulation of a soft body experiencing
- * acceleration toward the mouse position. The shape is created
- * with curves using
- * <a href="https://p5js.org/reference/#/p5/curveVertex">curveVertex()</a>
- * and
- * <a href="https://p5js.org/reference/#/p5/curveTightness">curveTightness()</a>.
- */
-
 // Declare variables for the physics calculations
 let centerX = 0.0;
 let centerY = 0.0;

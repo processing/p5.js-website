@@ -1,17 +1,3 @@
-/**
- * @name Load and Save JSON
- * @description
- * <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON" target="_blank">JavaScript Object Notation, or JSON</a>,
- * is a format for writing data in a file. While the syntax comes from
- * JavaScript, JSON is used in many other contexts. This example  is
- * based on Daniel Shiffman's Loading JSON Data Example for Processing
- * written in Java. It uses a
- * <a href="https://p5js.org/reference/#/p5/class" target="_blank">class</a>
- * to organize data for a bubble. When the sketch starts, it
- * loads the data for two bubbles from a JSON file. The visitor can add
- * new bubbles, download an updated JSON file, and load in a JSON file.
- * */
-
 // Global array to hold all bubble objects
 let bubbles;
 

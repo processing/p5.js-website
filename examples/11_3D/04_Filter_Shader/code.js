@@ -1,9 +1,3 @@
-/**
- * @name Filter Shader
- * @description Filter shaders are a way to apply an effect to anything that
- * is on the canvas. In this example, the effect is applied to a video.
- */
-
 let video;
 let displaceColors;
 
