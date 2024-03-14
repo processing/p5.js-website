@@ -6,6 +6,7 @@ import {
 } from "astro:content";
 import { defaultLocale, supportedLocales } from "../../const";
 import { readFile } from "fs/promises";
+import path from "path";
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
@@ -87,6 +88,15 @@ export const removeLocalePrefixfromSlug = (slug: string): [string, string] => {
 export const removeDefaultLocalePrefix = (slug: string): string =>
   slug.startsWith(`${defaultLocale}/`) ? slug.replace(defaultLocale, "") : slug;
 
+export const removeLocalePrefix = (prefixedPath: string): string => {
+  for (const loc of supportedLocales) {
+    const localeRegex = new RegExp(`^/?${loc}/`, "i");
+    const matched = prefixedPath.match(localeRegex);
+    if (matched !== null) return prefixedPath.replace(localeRegex, "/");
+  }
+  return prefixedPath;
+};
+
 /**
  * Astro automatically uses the directory structure for slug information
  * Historically the p5 website has used a different structure for example file vs. webpage routing
@@ -159,3 +169,16 @@ export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
  */
 export const localeMatchingRegex = () =>
   new RegExp(`^/?(?:${supportedLocales.join("|")})(?:/|$)`);
+
+export const reformUrlforNewLocale = (url: string, newLocale: string) => {
+  const unPrefixedUrl = removeLocalePrefix(url);
+  if (newLocale === defaultLocale) {
+    return `/${unPrefixedUrl}`;
+  }
+  return path.join(`/${newLocale}`, unPrefixedUrl);
+};
+
+export const getCurrentLocale = (): string => {
+  const [locale] = removeLocalePrefixfromSlug(window.location.pathname);
+  return locale;
+};
