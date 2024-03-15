@@ -1,4 +1,4 @@
-import { expect, test, suite, beforeEach } from "vitest";
+import { expect, test, suite } from "vitest";
 import {
   convertContributorDocIndexSlugIfNeeded,
   exampleContentSlugToLegacyWebsiteSlug,
