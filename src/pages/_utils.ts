@@ -151,3 +151,11 @@ export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
 
   return transformedEntries;
 };
+
+/**
+ * Creates a regex that matches any of the supported locale codes
+ * at the beginning of a path or slug. Also matches an optional `/`
+ * before and an optional `/` after.
+ */
+export const localeMatchingRegex = () =>
+  new RegExp(`^/?(?:${supportedLocales.join("|")})(?:/|$)`);
