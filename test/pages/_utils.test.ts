@@ -54,26 +54,26 @@ suite("makeReferencePageSlug", () => {
 suite("localeMatchingRegex", () => {
   test("matches locale paths", () => {
     const re = localeMatchingRegex();
-    expect("/es/examples/number".match(re)).toHaveLength(1);
-    expect("/es/examples/number/".match(re)).toHaveLength(1);
-    expect("es/examples/number/".match(re)).toHaveLength(1);
-    expect("es/examples/number".match(re)).toHaveLength(1);
+    expect("/es/examples/number".match(re)[0]).toBe("/es/");
+    expect("/es/examples/number/".match(re)[0]).toBe("/es/");
+    expect("es/examples/number/".match(re)[0]).toBe("es/");
+    expect("es/examples/number".match(re)[0]).toBe("es/");
   });
   test("matches default locale paths", () => {
     const re = localeMatchingRegex();
-    expect("/en/examples/number".match(re)).toHaveLength(1);
-    expect("/en/examples/number/".match(re)).toHaveLength(1);
-    expect("en/examples/number/".match(re)).toHaveLength(1);
-    expect("en/examples/number".match(re)).toHaveLength(1);
+    expect("/en/examples/number".match(re)[0]).toBe("/en/");
+    expect("/en/examples/number/".match(re)[0]).toBe("/en/");
+    expect("en/examples/number/".match(re)[0]).toBe("en/");
+    expect("en/examples/number".match(re)[0]).toBe("en/");
   });
   test("matches locale alone", () => {
     const re = localeMatchingRegex();
-    expect("/es".match(re)).toHaveLength(1);
-    expect("es/".match(re)).toHaveLength(1);
-    expect("/es/".match(re)).toHaveLength(1);
-    expect("/en".match(re)).toHaveLength(1);
-    expect("en/".match(re)).toHaveLength(1);
-    expect("/en/".match(re)).toHaveLength(1);
+    expect("/es".match(re)[0]).toBe("/es");
+    expect("es/".match(re)[0]).toBe("es/");
+    expect("/es/".match(re)[0]).toBe("/es/");
+    expect("/en".match(re)[0]).toBe("/en");
+    expect("en/".match(re)[0]).toBe("en/");
+    expect("/en/".match(re)[0]).toBe("/en/");
   });
   test("doesnt match unsupported locale prefixes", () => {
     const re = localeMatchingRegex();
