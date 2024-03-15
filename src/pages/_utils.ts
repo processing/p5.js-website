@@ -93,9 +93,14 @@ export const removeDefaultLocalePrefix = (slug: string): string =>
  * This function transforms the Astro slug to the appropriate webpage route to avoid breaking
  * Any inbound legacy links
  */
-export const exampleContentSlugToLegacyWebsiteSlug = (path: string): string =>
-  path
+export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
+  slug
+    // First transformation: Remove any locale prefix.
+    .replace(/^[\w-]+?\//, "") // Remove locale prefix
+    // Second transformation: Convert slugs built from local dev path to the legacy format.
+    // For example, "123_topicA/456_topicB/description" becomes "topicA-topicB.html".
     .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2.html")
+    // Third transformation: Replace all remaining underscores in the slug with hyphens.
     .replace(/_/g, "-");
 
 /**

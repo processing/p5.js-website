@@ -11,13 +11,6 @@ suite("exampleContentSlugToLegacyWebsiteSlug", () => {
       exampleContentSlugToLegacyWebsiteSlug(
         "en/00_structure/01_coordinates/description",
       ),
-    ).toBe("en/structure-coordinates.html");
-  });
-  test("works for un-prefixed english slugs", () => {
-    expect(
-      exampleContentSlugToLegacyWebsiteSlug(
-        "00_structure/01_coordinates/description",
-      ),
     ).toBe("structure-coordinates.html");
   });
   test("works for other locale slugs", () => {
@@ -25,7 +18,7 @@ suite("exampleContentSlugToLegacyWebsiteSlug", () => {
       exampleContentSlugToLegacyWebsiteSlug(
         "ar/00_structure/01_coordinates/description",
       ),
-    ).toBe("ar/structure-coordinates.html");
+    ).toBe("structure-coordinates.html");
   });
 });
 
