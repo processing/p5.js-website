@@ -1,5 +1,5 @@
 import { supportedLocales } from "../../../const";
-import { reformUrlforNewLocale, getCurrentLocale } from "../../pages/_utils";
+import { reformUrlforNewLocale, getCurrentLocale } from "@pages/_utils";
 
 export const LocaleSwitcher = () => (
   <div>
