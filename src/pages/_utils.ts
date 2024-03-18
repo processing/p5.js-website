@@ -67,9 +67,10 @@ export const getCollectionInNonDefaultLocales = async <
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
- * those in *non-default* locales (languages).
+ * those in a the given *non-default* locale (language).
  *
  * @param collectionName
+ * @param locale
  * @returns
  */
 export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
