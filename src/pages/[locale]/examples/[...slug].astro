@@ -10,12 +10,12 @@ import { getExampleCode } from "@pages/_utils-node";
 
 export async function getStaticPaths() {
   const entries = await Promise.all(
-    nonDefaultSupportedLocales.flatMap(async (locale) => {
+    nonDefaultSupportedLocales.map(async (locale) => {
       const localeEntries = await getCollectionInLocaleWithFallbacks(
         "examples",
         locale
       );
-      return Promise.all(
+      return await Promise.all(
         localeEntries.map(async (entry) => {
           const code = await getExampleCode(entry.id);
           const slug = exampleContentSlugToLegacyWebsiteSlug(
@@ -33,7 +33,7 @@ export async function getStaticPaths() {
     })
   );
 
-  return entries;
+  return entries.flat();
 }
 
 const { entry, code } = Astro.props;

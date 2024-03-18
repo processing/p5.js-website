@@ -8,7 +8,7 @@ import {
 
 export const getStaticPaths = async () => {
   const pages = await Promise.all(
-    nonDefaultSupportedLocales.flatMap(async (locale) => {
+    nonDefaultSupportedLocales.map(async (locale) => {
       const pages = await getCollectionInLocaleWithFallbacks(
         "text-detail",
         locale
@@ -23,7 +23,7 @@ export const getStaticPaths = async () => {
       });
     })
   );
-  return pages.filter((p) => p !== null);
+  return pages.flat().filter((p) => p !== null);
 };
 
 const { page } = Astro.props;

@@ -8,7 +8,7 @@ import {
 
 export async function getStaticPaths() {
   const entries = await Promise.all(
-    nonDefaultSupportedLocales.flatMap(async (locale) => {
+    nonDefaultSupportedLocales.map(async (locale) => {
       const localeEntries = await getCollectionInLocaleWithFallbacks(
         "sketches",
         locale
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
     })
   );
 
-  return entries;
+  return entries.flat();
 }
 
 const { entry } = Astro.props;
