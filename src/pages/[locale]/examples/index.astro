@@ -11,17 +11,17 @@ export async function getStaticPaths() {
     params: {
       locale,
     },
+    props: {
+      entries: transformExampleSlugs<"examples">(
+        await getCollectionInLocaleWithFallbacks("examples", locale)
+      ),
+    },
   }));
 
   return await Promise.all(pages);
 }
 
-const { locale } = Astro.params;
-
-// Merge the locale entries with the filtered default entries
-const entries = transformExampleSlugs<"examples">(
-  await getCollectionInLocaleWithFallbacks("examples", locale)
-);
+const { entries } = Astro.props;
 ---
 
 <ExamplesLayout exampleEntries={entries} />

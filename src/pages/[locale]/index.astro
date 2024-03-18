@@ -1,18 +1,24 @@
 ---
 import { getEntry } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { nonDefaultSupportedLocales } from "@/const";
+import { defaultLocale, nonDefaultSupportedLocales } from "@/const";
 
 export const getStaticPaths = async () => {
   const pages = await Promise.all(
     nonDefaultSupportedLocales.map(async (locale) => {
       const homePage = await getEntry("text-detail", locale);
-      if (!homePage) return null;
+      const defaultLocaleHomePage = await getEntry(
+        "text-detail",
+        defaultLocale
+      )!;
 
-      return { params: { locale }, props: { homePage } };
-    }),
+      return {
+        params: { locale },
+        props: { homePage: homePage ?? defaultLocaleHomePage },
+      };
+    })
   );
-  return pages.filter((p) => p !== null);
+  return pages;
 };
 
 const { homePage } = Astro.props;
