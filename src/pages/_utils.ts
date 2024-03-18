@@ -37,7 +37,7 @@ export const getCollectionInLocaleWithFallbacks = async <
   const localizedEntries = await getCollectionInLocale(collectionName, locale);
   const defaultLocaleCollection =
     await getCollectionInDefaultLocale(collectionName);
-  const filteredDefaultEntries = await defaultLocaleCollection.filter(
+  const filteredDefaultEntries = defaultLocaleCollection.filter(
     (defaultEntry) =>
       !localizedEntries.some(
         (localeEntry) =>
