@@ -13,10 +13,17 @@ type SearchResult = {
   description?: string;
 };
 
+/**
+ * SearchProvider this component is responsible for handling client-side search.
+ * It reads the search term from query params and fetches the search index for the current locale.
+ * It then uses Fuse.js to search the index and display the results.
+ * @param {string} currentLocale - The current locale
+ */
 const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
 
+  // Flattens the search index data
   const flattenData = (data: FuseResult<SearchResult>) => {
     const flatData: SearchResult[] = [];
     let flatId = 0;
@@ -34,12 +41,15 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
     return flatData;
   };
 
+  // Read the search term from query params on first load
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get("term");
     if (query) setSearchTerm(query);
   }, []);
 
+  // Fetch the search index for the current locale and search for the search term
+  // This effect runs whenever the search term or the current locale changes
   useEffect(() => {
     if (!currentLocale) {
       console.warn("No locale provided to SearchProvider");
