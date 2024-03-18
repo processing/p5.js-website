@@ -1,17 +1,24 @@
-import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import Fuse from "fuse.js";
+import Fuse, { type FuseResult } from "fuse.js";
 
 interface SearchProviderProps {
-  currentLocale: string;
+  currentLocale?: string;
 }
+
+type SearchResult = {
+  id: number;
+  category: string;
+  title: string;
+  relativeUrl: string;
+  description?: string;
+};
 
 const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
 
-  const flattenData = (data) => {
-    const flatData = [];
+  const flattenData = (data: FuseResult<SearchResult>) => {
+    const flatData: SearchResult[] = [];
     let flatId = 0;
     Object.entries(data).forEach(([category, entries]) => {
       Object.entries(entries).forEach(([title, docDetails]) => {
@@ -30,7 +37,7 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get("term");
-    setSearchTerm(query);
+    if (query) setSearchTerm(query);
   }, []);
 
   useEffect(() => {

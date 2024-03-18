@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import path, { relative } from "path";
+import path from "path";
 import matter from "gray-matter";
 import type {
   ContentType,
@@ -8,6 +8,7 @@ import type {
 import { getContentFilePaths } from "../utils";
 import keywordExtractor from "keyword-extractor";
 import { contentTypes, localesWithSearchSupport } from "../../globals/globals";
+import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
 
 interface SearchIndex {
   [title: string]: {
@@ -64,10 +65,14 @@ const saveSearchIndex = async (
   fullSearchIndex: LocaleSearchIndex,
 ): Promise<void> => {
   for (const locale in fullSearchIndex) {
-    const output = fullSearchIndex[locale];
+    const output = fullSearchIndex[locale as SearchSupportedLocales];
     if (locale !== "en") {
       for (const contentType in fullSearchIndex["en"]) {
-        output[`${contentType}-fallback`] = fullSearchIndex["en"][contentType];
+        if (!output) continue;
+        output[`${contentType}-fallback` as ContentType] =
+          fullSearchIndex?.["en" as SearchSupportedLocales]?.[
+            contentType as ContentType
+          ];
       }
     }
     await fs.writeFile(
@@ -81,7 +86,7 @@ const getKeywordsFromContent = (content: string, locale: string) => {
   if (languagesWithKeywordExtractionStopwords.includes(locale)) {
     return keywordExtractor
       .extract(content, {
-        language: locale,
+        language: locale as LanguageName,
         remove_digits: true,
         return_changed_case: false,
         remove_duplicates: true,
