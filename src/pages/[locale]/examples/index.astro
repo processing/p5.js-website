@@ -1,5 +1,8 @@
 ---
-import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import {
+  getCollectionInLocaleWithFallbacks,
+  transformExampleSlugs,
+} from "@pages/_utils";
 import ExamplesLayout from "@layouts/ExamplesLayout.astro";
 import { nonDefaultSupportedLocales } from "@/const";
 
@@ -16,7 +19,9 @@ export async function getStaticPaths() {
 const { locale } = Astro.params;
 
 // Merge the locale entries with the filtered default entries
-const entries = await getCollectionInLocaleWithFallbacks("examples", locale);
+const entries = transformExampleSlugs<"examples">(
+  await getCollectionInLocaleWithFallbacks("examples", locale)
+);
 ---
 
 <ExamplesLayout exampleEntries={entries} />
