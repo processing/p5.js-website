@@ -78,4 +78,9 @@ export default defineConfig({
       external: ["/src/scripts/*"],
     },
   },
+  server: {
+    watch: {
+      ignored: ["src/scripts/*"],
+    },
+  },
 });
