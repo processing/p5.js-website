@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import path from "path";
+import path, { relative } from "path";
 import matter from "gray-matter";
 import type {
   ContentType,
@@ -143,7 +143,7 @@ const generateSearchIndex = async (
       .replace(`${localeDir}/`, "")
       .replace(".mdx", "")
       .replace(".yaml", "");
-    const relativeUrl = `/${contentType}/${contentRelativeUrl}`;
+    let relativeUrl = `/${contentType}/${contentRelativeUrl}`;
     let description, title;
     switch (contentType) {
       case "tutorials":
@@ -155,6 +155,15 @@ const generateSearchIndex = async (
         description = getKeywordsFromContent(content, locale);
         break;
       case "examples":
+        relativeUrl = file
+          .replace("src/content/examples/", "")
+          .replace(".mdx", "")
+          .toLowerCase()
+          // TODO: Separate Astro utils from the exampleContentSlugToLegacyWebsiteSlug
+          .replace(/^[\w-]+?\//, "")
+          .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2")
+          .replace(/_/g, "-");
+        relativeUrl = `examples/${relativeUrl}`;
         title = data.title;
         description = getKeywordsFromContent(content, locale);
         break;
@@ -164,9 +173,11 @@ const generateSearchIndex = async (
       case "libraries":
         title = data.name;
         description = data.description;
+        relativeUrl = `libraries/`;
         break;
       case "people":
         title = data.name;
+        relativeUrl = `people/`;
         break;
       case "sketches":
         title = data.title;
