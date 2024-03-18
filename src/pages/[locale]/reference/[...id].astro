@@ -3,14 +3,14 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   getCollectionInNonDefaultLocales,
   makeReferencePageSlug,
-  removeLocalePrefixfromSlug,
+  splitLocaleFromPath,
 } from "@pages/_utils";
 
 export async function getStaticPaths() {
   const referenceEntries = await getCollectionInNonDefaultLocales("reference");
 
   const paths = referenceEntries.map((entry) => {
-    const [locale, _id] = removeLocalePrefixfromSlug(entry.id);
+    const [locale, _id] = splitLocaleFromPath(entry.id);
 
     return {
       params: {

@@ -2,13 +2,13 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   getCollectionInNonDefaultLocales,
-  removeLocalePrefixfromSlug,
+  splitLocaleFromPath,
 } from "@pages/_utils";
 
 export async function getStaticPaths() {
   const pastEvents = await getCollectionInNonDefaultLocales("sketches");
   return pastEvents.map((entry) => {
-    const [locale, slug] = removeLocalePrefixfromSlug(entry.id);
+    const [locale, slug] = splitLocaleFromPath(entry.id);
     return {
       params: { locale, slug },
       props: { entry },

@@ -2,15 +2,20 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   getCollectionInDefaultLocale,
-  removeDefaultLocalePrefix,
+  removeLocalePrefix,
 } from "@pages/_utils";
 
 export const getStaticPaths = async () => {
   const pages = await getCollectionInDefaultLocale("text-detail");
-  return pages.map((page) => ({
-    params: { slug: removeDefaultLocalePrefix(page.slug) },
-    props: { page },
-  }));
+  return pages
+    .map((page) => {
+      const slug = removeLocalePrefix(page.slug);
+      // don't generate "index" pages, those are handled by ./index.astro
+      if (slug === "/") return null;
+
+      return { params: { slug }, props: { page } };
+    })
+    .filter((p) => p !== null);
 };
 
 const { page } = Astro.props;
