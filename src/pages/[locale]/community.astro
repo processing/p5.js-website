@@ -1,0 +1,34 @@
+---
+import { nonDefaultSupportedLocales } from "@/const";
+import CommunityLayout from "@layouts/CommunityLayout.astro";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+
+export const getStaticPaths = async () => {
+  return await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const sketches = await getCollectionInLocaleWithFallbacks(
+        "sketches",
+        locale
+      );
+      const libraries = await getCollectionInLocaleWithFallbacks(
+        "libraries",
+        locale
+      );
+      const pastEvents = await getCollectionInLocaleWithFallbacks(
+        "past-events",
+        locale
+      );
+
+      return { params: { locale }, props: { libraries, sketches, pastEvents } };
+    })
+  );
+};
+
+const { libraries, sketches, pastEvents } = Astro.props;
+---
+
+<CommunityLayout
+  sketches={sketches}
+  libraries={libraries}
+  pastEvents={pastEvents}
+/>
