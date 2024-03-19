@@ -234,6 +234,28 @@ export const getFilepathsWithinDir = async (
 };
 
 /**
+ * Get all the .yaml and .mdx files in a directory and its subdirectories
+ * @param baseDir Base directory to start searching for content files
+ * @returns string[] an array of all the .yaml and .mdx paths in the directory and its subdirectories
+ */
+export const getContentFilePaths = async (baseDir: string) => {
+  const files = await fs.readdir(baseDir, { withFileTypes: true });
+  let contentFilePaths: string[] = [];
+  for (const file of files) {
+    if (file.isDirectory()) {
+      // Recurse into subdirectories
+      contentFilePaths = contentFilePaths.concat(
+        await getContentFilePaths(path.join(baseDir, file.name)),
+      );
+    } else if (file.name.endsWith(".mdx") || file.name.endsWith(".yaml")) {
+      // Collect MDX files
+      contentFilePaths.push(path.join(baseDir, file.name));
+    }
+  }
+  return contentFilePaths;
+};
+
+/**
  * Rewrites linked pages in a markdown document to remove the `.md`
  * extension and use the Astro URL convention of ending in a `/`
  *
