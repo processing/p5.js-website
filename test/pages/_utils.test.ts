@@ -14,14 +14,14 @@ suite("exampleContentSlugToLegacyWebsiteSlug", () => {
       exampleContentSlugToLegacyWebsiteSlug(
         "en/00_structure/01_coordinates/description",
       ),
-    ).toBe("structure-coordinates.html");
+    ).toBe("structure-coordinates");
   });
   test("works for other locale slugs", () => {
     expect(
       exampleContentSlugToLegacyWebsiteSlug(
         "ar/00_structure/01_coordinates/description",
       ),
-    ).toBe("structure-coordinates.html");
+    ).toBe("structure-coordinates");
   });
 });
 
