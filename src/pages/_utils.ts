@@ -207,5 +207,10 @@ export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
 export const localeMatchingRegex = () =>
   new RegExp(`^/?(?:${supportedLocales.join("|")})(?:/|$)`);
 
+/**
+ * Returns the correct URL to link to for a libary entry
+ * @param library
+ * @returns
+ */
 export const getLibraryLink = (library: CollectionEntry<"libraries">) =>
   library.data.websiteUrl ?? library.data.sourceUrl;
