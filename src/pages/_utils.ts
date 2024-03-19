@@ -128,7 +128,7 @@ export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
     .replace(/^[\w-]+?\//, "") // Remove locale prefix
     // Second transformation: Convert slugs built from local dev path to the legacy format.
     // For example, "123_topicA/456_topicB/description" becomes "topicA-topicB.html".
-    .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2.html")
+    .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2")
     // Third transformation: Replace all remaining underscores in the slug with hyphens.
     .replace(/_/g, "-");
 
