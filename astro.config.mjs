@@ -30,8 +30,13 @@ export default defineConfig({
     format: "directory",
   },
   i18n: {
-    defaultLocale: defaultLocale,
+    defaultLocale,
     fallback: fallbackLanguages,
     locales: supportedLocales,
+  },
+  server: {
+    watch: {
+      ignored: ["src/scripts/*"],
+    },
   },
 });
