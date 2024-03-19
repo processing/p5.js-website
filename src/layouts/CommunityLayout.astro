@@ -1,6 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { removeLocalePrefix, makeReferencePageSlug } from "../pages/_utils";
+import {
+  removeLocalePrefix,
+  makeReferencePageSlug,
+  getLibraryLink,
+} from "../pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
@@ -10,7 +14,6 @@ interface Props {
 }
 
 const { sketches, libraries, pastEvents } = Astro.props;
-console.log(sketches);
 ---
 
 <BaseLayout title="Community">
@@ -26,17 +29,20 @@ console.log(sketches);
       </li>
     ))
   }
+  <a href="/sketches">See Sketches Archive</a>
 
   <h2>Libraries</h2>
   {
     libraries.map((entry) => (
       <li>
-        <a href={entry.data.websiteUrl ?? entry.data.sourceUrl}>
+        <a href={getLibraryLink(entry)}>
           {removeLocalePrefix(makeReferencePageSlug(entry.id))}
         </a>
       </li>
     ))
   }
+
+  <a href="/libraries">See Libraries Archive</a>
 
   <h2>Past Events</h2>
   {
@@ -50,4 +56,5 @@ console.log(sketches);
       </li>
     ))
   }
+  <a href="/past-events">See Past Events Archive</a>
 </BaseLayout>
