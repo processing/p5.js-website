@@ -9,7 +9,7 @@ import {
   type MockedFunction,
 } from "vitest";
 import { render, screen, act } from "@testing-library/preact";
-import SearchProvider from "./";
+import SearchProvider from "@components/SearchProvider";
 
 // Setup fetch mock so that we can test the search results rendering
 beforeEach(() => {
