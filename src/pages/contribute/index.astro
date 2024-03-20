@@ -1,8 +1,15 @@
 ---
 import { getCollectionInDefaultLocale } from "@pages/_utils";
 import ContributeLayout from "@layouts/ContributeLayout.astro";
+import { removeLocalePrefix } from "@pages/_utils";
 
-const entries = await getCollectionInDefaultLocale("contributor-docs");
+const entries = await getCollectionInDefaultLocale("contributor-docs").then(
+  (entries) =>
+    entries.map((entry) => ({
+      ...entry,
+      slug: removeLocalePrefix(entry.slug),
+    }))
+);
 ---
 
 <ContributeLayout entries={entries} />
