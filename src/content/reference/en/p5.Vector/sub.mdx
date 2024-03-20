@@ -5,11 +5,23 @@ submodule: Vector
 file: src/math/p5.Vector.js
 description: >
   <p>Subtracts from a vector's <code>x</code>, <code>y</code>, and
-  <code>z</code> components using separate
+  <code>z</code> components.</p>
 
-  numbers, another <a href="#/p5.Vector">p5.Vector</a> object, or an array of
+  <p><code>sub()</code> can use separate numbers, as in <code>v.sub(1, 2,
+  3)</code>, another
 
-  numbers. Calling <code>sub()</code> with no arguments has no effect.</p>
+  <a href="#/p5.Vector">p5.Vector</a> object, as in <code>v.sub(v2)</code>, or
+  an array
+
+  of numbers, as in <code>v.sub([1, 2, 3])</code>.</p>
+
+  <p>If a value isn't provided for a component, it won't change. For
+
+  example, <code>v.sub(4, 5)</code> adds 4 to <code>v.x</code>, 5 to
+  <code>v.y</code>, and 0 to <code>v.z</code>.
+
+  Calling <code>sub()</code> with no arguments, as in <code>v.sub()</code>, has
+  no effect.</p>
 
   <p>The static version of <code>sub()</code>, as in <code>p5.Vector.sub(v2,
   v1)</code>, returns a new
@@ -17,115 +29,100 @@ description: >
   <a href="#/p5.Vector">p5.Vector</a> object and doesn't change the
 
   originals.</p>
-line: 490
+line: 640
 isConstructor: false
 itemtype: method
 example:
-  - >-
+  - |-
 
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    strokeWeight(5);
+      background(200);
 
+      // Style the points.
+      strokeWeight(5);
 
-    // Bottom right.
+      // Bottom right.
+      let pos = createVector(75, 75);
+      point(pos);
 
-    let pos = createVector(75, 75);
+      // Top right.
+      // Subtract numbers.
+      pos.sub(0, 50);
+      point(pos);
 
-    point(pos);
+      // Top left.
+      // Subtract a p5.Vector.
+      let p2 = createVector(50, 0);
+      pos.sub(p2);
+      point(pos);
 
+      // Bottom left.
+      // Subtract an array.
+      let arr = [0, -50];
+      pos.sub(arr);
+      point(pos);
 
-    // Top right.
-
-    pos.sub(0, 50);
-
-    point(pos);
-
-
-    // Top left.
-
-    let p2 = createVector(50, 0);
-
-    pos.sub(p2);
-
-    point(pos);
-
-
-    // Bottom left.
-
-    let arr = [0, -50];
-
-    pos.sub(arr);
-
-    point(pos);
-
-
-    describe('Four black dots arranged in a square on a gray background.');
-
+      describe('Four black dots arranged in a square on a gray background.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    // Bottom right.
+      background(200);
 
-    let p1 = createVector(75, 75);
+      // Create p5.Vector objects.
+      let p1 = createVector(75, 75);
+      let p2 = createVector(50, 50);
 
+      // Subtract with modifying the original vectors.
+      let p3 = p5.Vector.sub(p1, p2);
 
-    // Center.
+      // Draw the points.
+      strokeWeight(5);
+      point(p1);
+      point(p2);
+      point(p3);
 
-    let p2 = createVector(50, 50);
-
-
-    // Top left.
-
-    let p3 = p5.Vector.sub(p1, p2);
-
-
-    strokeWeight(5);
-
-    point(p1);
-
-    point(p2);
-
-    point(p3);
-
-
-    describe('Three black dots in a diagonal line from top left to bottom
-    right.');
-
+      describe('Three black dots in a diagonal line from top left to bottom right.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('Three arrows drawn on a gray square. A red and a blue arrow extend from the top left. A purple arrow extends from the tip of the red arrow to the tip of the blue arrow.');
+    }
 
     function draw() {
       background(200);
 
       let origin = createVector(0, 0);
+
+      // Draw the red arrow.
       let v1 = createVector(50, 50);
       drawArrow(origin, v1, 'red');
 
+      // Draw the blue arrow.
       let v2 = createVector(20, 70);
       drawArrow(origin, v2, 'blue');
 
+      // Purple arrow.
       let v3 = p5.Vector.sub(v2, v1);
       drawArrow(v1, v3, 'purple');
-
-      describe('Three arrows drawn on a gray square. A red and a blue arrow extend from the top left. A purple arrow extends from the tip of the red arrow to the tip of the blue arrow.');
     }
 
-
+    // Draws an arrow between two vectors.
     function drawArrow(base, vec, myColor) {
       push();
       stroke(myColor);
@@ -139,13 +136,11 @@ example:
       triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
       pop();
     }
-
     </code>
-
     </div>
 class: p5.Vector
 overloads:
-  - line: 490
+  - line: 640
     params:
       - name: x
         description: |
@@ -162,14 +157,14 @@ overloads:
         type: Number
         optional: true
     chainable: 1
-  - line: 585
+  - line: 766
     params:
       - name: value
         description: |
           <p>the vector to subtract</p>
         type: 'p5.Vector|Number[]'
     chainable: 1
-  - line: 2610
+  - line: 3414
     params:
       - name: v1
         description: |

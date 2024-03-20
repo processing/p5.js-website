@@ -3,14 +3,10 @@ title: changed
 module: DOM
 submodule: DOM
 file: src/dom/dom.js
-description: >
-  <p><code>myElement.changed()</code> sets a function to call when the value of
-  the
-
-  <a href="#/p5.Element">p5.Element</a> object changes. Calling
-
-  <code>myElement.changed(false)</code> disables the function.</p>
-line: 309
+description: |
+  <p>Calls a function when the element changes.</p>
+  <p>Calling <code>myElement.changed(false)</code> disables the function.</p>
+line: 329
 isConstructor: false
 itemtype: method
 example:
@@ -18,47 +14,59 @@ example:
 
     <div>
     <code>
+    let dropdown;
+
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
 
       // Create a dropdown menu and add a few color options.
-      let drop = createSelect();
-      drop.position(0, 0);
-      drop.option('red');
-      drop.option('green');
-      drop.option('blue');
+      dropdown = createSelect();
+      dropdown.position(0, 0);
+      dropdown.option('red');
+      dropdown.option('green');
+      dropdown.option('blue');
 
-      // When the color option changes, paint the background with
-      // that color.
-      drop.changed(() => {
-        let c = drop.value();
-        background(c);
-      });
+      // Call paintBackground() when the color option changes.
+      dropdown.changed(paintBackground);
 
       describe('A gray square with a dropdown menu at the top. The square changes color when an option is selected.');
+    }
+
+    // Paint the background with the selected color.
+    function paintBackground() {
+      let c = dropdown.value();
+      background(c);
     }
     </code>
     </div>
 
     <div>
     <code>
+    let checkbox;
+
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
 
       // Create a checkbox and place it beneath the canvas.
-      let checkbox = createCheckbox(' circle');
+      checkbox = createCheckbox(' circle');
       checkbox.position(0, 100);
 
-      // When the checkbox changes, paint the background gray
-      // and determine whether to draw a circle.
-      checkbox.changed(() => {
-        background(200);
-        if (checkbox.checked() === true) {
-          circle(50, 50, 30);
-        }
-      });
+      // Call repaint() when the checkbox changes.
+      checkbox.changed(repaint);
 
       describe('A gray square with a checkbox underneath it that says "circle". A white circle appears when the box is checked and disappears otherwise.');
+    }
+
+    // Paint the background gray and determine whether to draw a circle.
+    function repaint() {
+      background(200);
+      if (checkbox.checked() === true) {
+        circle(50, 50, 30);
+      }
     }
     </code>
     </div>

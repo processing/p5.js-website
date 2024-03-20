@@ -1,0 +1,110 @@
+---
+title: linePerspective
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Enable or disable perspective for lines in the WebGL renderer.
+   The behavior of <code>linePerspective()</code>  is associated with the type of camera projection being used.</p>
+  <ul>
+
+  <li>When using <code>perspective()</code>, which simulates realistic
+  perspective, linePerspective
+    is set to <code>true</code> by default. This means that lines will be affected by the current
+    camera's perspective, resulting in a more natural appearance.</li>
+  <li>When using <code>ortho()</code> or <code>frustum()</code>, which do not
+  simulate realistic perspective,
+   linePerspective is set to <code>false</code> by default. In this case, lines will have a uniform
+   scale regardless of the camera's perspective, providing a more predictable and
+   consistent appearance.</li>
+  <li>You can override the default behavior by explicitly calling
+  <code>linePerspective()</code> after
+   using <code>perspective()</code>, <code>ortho()</code>, or <code>frustum()</code>. This allows you to customize the line
+   perspective based on your specific requirements.</li>
+  </ul>
+line: 197
+isConstructor: false
+itemtype: method
+alt: >-
+  Demonstrates the dynamic control of line perspective in a 3D environment with
+  rotating boxes.
+example:
+  - |2-
+
+     <div>
+     <code>
+     function setup() {
+       createCanvas(100, 100, WEBGL);
+       setAttributes({ antialias: true });
+       strokeWeight(3);
+       describe(
+         'rotated 3D boxes have their stroke weights affected if toggled back and forth with mouse clicks.'
+       );
+     }
+    function draw() {
+       background(220);
+       rotateY(PI/24);
+       rotateZ(PI/8);
+       translate(0, 0, 350);
+       for (let i = 0; i < 12; i++) {
+         translate(0, 0, -70);
+         box(30);
+       }
+     }
+    function mousePressed() {
+       linePerspective(!linePerspective());
+     }
+     </code>
+     </div>
+    <div>
+     <code>
+     function setup() {
+       createCanvas(100, 100, WEBGL);
+       strokeWeight(4);
+     }
+    function draw() {
+       background(220);
+      // Using orthographic projection
+       ortho();
+      // Enable line perspective explicitly
+       linePerspective(true);
+      // Draw a rotating cube
+       rotateX(frameCount * 0.01);
+       rotateY(frameCount * 0.01);
+       box(25);
+      // Move to a new position
+       translate(0, -60, 0);
+      // Using perspective projection
+       perspective();
+      // Disable line perspective explicitly
+       linePerspective(false);
+      // Draw another rotating cube with perspective
+       rotateX(frameCount * 0.01);
+       rotateY(frameCount * 0.01);
+       box(25);
+     }
+     </code>
+     </div>
+class: p5
+overloads:
+  - line: 197
+    params:
+      - name: enable
+        description: >
+          <ul>
+
+          <li>Set to <code>true</code> to enable line perspective,
+          <code>false</code> to disable.</li>
+
+          </ul>
+        type: Boolean
+  - line: 286
+    params: []
+    return:
+      description: The boolean value representing the current state of linePerspective().
+      type: Boolean
+chainable: false
+---
+
+
+# linePerspective

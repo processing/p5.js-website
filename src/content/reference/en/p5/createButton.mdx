@@ -21,7 +21,7 @@ description: >
   target="_blank">MDN</a>
 
   for more details.</p>
-line: 842
+line: 923
 isConstructor: false
 itemtype: method
 example:
@@ -30,19 +30,24 @@ example:
     <div>
     <code>
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
 
       // Create a button and place it beneath the canvas.
       let button = createButton('click me');
       button.position(0, 100);
 
-      // Use the button to change the background color.
-      button.mousePressed(() => {
-        let g = random(255);
-        background(g);
-      });
+      // Call repaint() when the button is pressed.
+      button.mousePressed(repaint);
 
       describe('A gray square with a button that says "click me" beneath it. The square changes color when the button is clicked.');
+    }
+
+    // Change the background color.
+    function repaint() {
+      let g = random(255);
+      background(g);
     }
     </code>
     </div>
@@ -52,17 +57,17 @@ example:
     let button;
 
     function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
       // Create a button and set its value to 0.
       // Place the button beneath the canvas.
       button = createButton('click me', 'red');
       button.position(0, 100);
 
-      // Change the button's value when the mouse
-      // is pressed.
-      button.mousePressed(() => {
-        let c = random(['red', 'green', 'blue', 'yellow']);
-        button.value(c);
-      });
+      // Call randomColor() when the button is pressed.
+      button.mousePressed(randomColor);
 
       describe('A red square with a button that says "click me" beneath it. The square changes color when the button is clicked.');
     }
@@ -71,6 +76,12 @@ example:
       // Use the button's value to set the background color.
       let c = button.value();
       background(c);
+    }
+
+    // Set the button's value to a random color.
+    function randomColor() {
+      let c = random(['red', 'green', 'blue', 'yellow']);
+      button.value(c);
     }
     </code>
     </div>

@@ -6,17 +6,17 @@ file: src/image/pixels.js
 description: >
   <p>Updates the canvas with the RGBA values in the
 
-  <a href="#/p5/pixels">pixels</a> array.</p>
+  <a href="./pixels">pixels</a> array.</p>
 
   <p><code>updatePixels()</code> only needs to be called after changing values
   in the
 
-  <a href="#/p5/pixels">pixels</a> array. Such changes can be made directly
+  <a href="./pixels">pixels</a> array. Such changes can be made directly
 
-  after calling <a href="#/p5/loadPixels">loadPixels()</a> or by calling
+  after calling <a href="./loadPixels">loadPixels()</a> or by calling
 
-  <a href="#/p5/set">set()</a>.</p>
-line: 884
+  <a href="./set">set()</a>.</p>
+line: 1118
 isConstructor: false
 itemtype: method
 example:
@@ -26,18 +26,32 @@ example:
     <code>
     let img;
 
+    // Load the image.
     function preload() {
       img = loadImage('assets/rockies.jpg');
     }
 
     function setup() {
-      image(img, 0, 0, width, height);
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0, 100, 100);
+
+      // Get the pixel density.
       let d = pixelDensity();
+
+      // Calculate the halfway index in the pixels array.
       let halfImage = 4 * (d * width) * (d * height / 2);
+
+      // Load the pixels array.
       loadPixels();
+
+      // Copy the top half of the canvas to the bottom.
       for (let i = 0; i < halfImage; i += 1) {
         pixels[i + halfImage] = pixels[i];
       }
+
+      // Update the canvas.
       updatePixels();
 
       describe('Two identical images of mountain landscapes, one on top of the other.');

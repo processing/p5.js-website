@@ -4,108 +4,220 @@ module: Shape
 submodule: 2D Primitives
 file: src/core/shape/2d_primitives.js
 description: >
-  <p>Draws an arc to the canvas. Arcs are drawn along the outer edge of an
-  ellipse
+  <p>Draws an arc.</p>
 
-  (oval) defined by the <code>x</code>, <code>y</code>, <code>w</code>, and
-  <code>h</code> parameters. Use the <code>start</code> and <code>stop</code>
+  <p>An arc is a section of an ellipse defined by the <code>x</code>,
+  <code>y</code>, <code>w</code>, and
 
-  parameters to specify the angles (in radians) at which to draw the arc. Arcs
-  are
+  <code>h</code> parameters. <code>x</code> and <code>y</code> set the location
+  of the arc's center. <code>w</code> and
 
-  always drawn clockwise from <code>start</code> to <code>stop</code>. The
-  origin of the arc's ellipse may
+  <code>h</code> set the arc's width and height. See
 
-  be changed with the <a href="#/p5/ellipseMode">ellipseMode()</a> function.</p>
+  <a href="./ellipse">ellipse()</a> and
 
-  <p>The optional <code>mode</code> parameter determines the arc's fill style.
-  The fill modes are
+  <a href="./ellipseMode">ellipseMode()</a> for more details.</p>
 
-  a semi-circle (<code>OPEN</code>), a closed semi-circle (<code>CHORD</code>),
-  or a closed pie segment (<code>PIE</code>).</p>
+  <p>The fifth and sixth parameters, <code>start</code> and <code>stop</code>,
+  set the angles
+
+  between which to draw the arc. Arcs are always drawn clockwise from
+
+  <code>start</code> to <code>stop</code>. Angles are always given in
+  radians.</p>
+
+  <p>The seventh parameter, <code>mode</code>, is optional. It determines the
+  arc's fill
+
+  style. The fill modes are a semi-circle (<code>OPEN</code>), a closed
+  semi-circle
+
+  (<code>CHORD</code>), or a closed pie segment (<code>PIE</code>).</p>
+
+  <p>The eighth parameter, <code>detail</code>, is also optional. It determines
+  how many
+
+  vertices are used to draw the arc in WebGL mode. The default value is 25.</p>
 line: 102
 isConstructor: false
 itemtype: method
 example:
-  - >
+  - |-
 
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    arc(50, 55, 50, 50, 0, HALF_PI);
+      background(200);
 
-    noFill();
+      arc(50, 50, 80, 80, 0, PI + HALF_PI);
 
-    arc(50, 55, 60, 60, HALF_PI, PI);
-
-    arc(50, 55, 70, 70, PI, PI + QUARTER_PI);
-
-    arc(50, 55, 80, 80, PI + QUARTER_PI, TWO_PI);
-
-    describe(
-      'A shattered outline of an ellipse with a quarter of a white circle at the bottom-right.'
-    );
-
+      describe('A white circle on a gray canvas. The top-right quarter of the circle is missing.');
+    }
     </code>
+    </div>
+  - |-
 
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      arc(50, 50, 80, 40, 0, PI + HALF_PI);
+
+      describe('A white ellipse on a gray canvas. The top-right quarter of the ellipse is missing.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Bottom-right.
+      arc(50, 55, 50, 50, 0, HALF_PI);
+
+      noFill();
+
+      // Bottom-left.
+      arc(50, 55, 60, 60, HALF_PI, PI);
+
+      // Top-left.
+      arc(50, 55, 70, 70, PI, PI + QUARTER_PI);
+
+      // Top-right.
+      arc(50, 55, 80, 80, PI + QUARTER_PI, TWO_PI);
+
+      describe(
+        'A shattered outline of an circle with a quarter of a white circle at the bottom-right.'
+      );
+    }
+    </code>
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    arc(50, 50, 80, 80, 0, PI + QUARTER_PI);
+      background(200);
 
-    describe('A white ellipse with the top-right third missing. The bottom is
-    outlined in black.');
+      // Default fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI);
 
+      describe('A white circle with the top-right third missing. The bottom is outlined in black.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    arc(50, 50, 80, 80, 0, PI + QUARTER_PI, OPEN);
+      background(200);
 
-    describe(
-      'A white ellipse missing a section from the top-right. The bottom is outlined in black.'
-    );
+      // OPEN fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, OPEN);
 
+      describe(
+        'A white circle missing a section from the top-right. The bottom is outlined in black.'
+      );
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    arc(50, 50, 80, 80, 0, PI + QUARTER_PI, CHORD);
+      background(200);
 
-    describe('A white ellipse with a black outline missing a section from the
-    top-right.');
+      // CHORD fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, CHORD);
 
+      describe('A white circle with a black outline missing a section from the top-right.');
+    }
     </code>
-
     </div>
 
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // PIE fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, PIE);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
 
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
 
-    arc(50, 50, 80, 80, 0, PI + QUARTER_PI, PIE);
+      background(200);
 
-    describe('A white ellipse with a black outline. The top-right third is
-    missing.');
+      // PIE fill mode.
+      arc(0, 0, 80, 80, 0, PI + QUARTER_PI, PIE);
 
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
     </code>
+    </div>
 
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // PIE fill mode with 5 vertices.
+      arc(0, 0, 80, 80, 0, PI + QUARTER_PI, PIE, 5);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A yellow circle on a black background. The circle opens and closes its mouth.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Style the arc.
+      noStroke();
+      fill(255, 255, 0);
+
+      // Update start and stop angles.
+      let biteSize = PI / 16;
+      let startAngle = biteSize * sin(frameCount * 0.1) + biteSize;
+      let endAngle = TWO_PI - startAngle;
+
+      // Draw the arc.
+      arc(50, 50, 80, 80, startAngle, endAngle, PIE);
+    }
+    </code>
     </div>
 class: p5
 params:
