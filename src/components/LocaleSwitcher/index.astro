@@ -1,0 +1,38 @@
+---
+import { removeLocalePrefix } from "@/src/pages/_utils";
+import { supportedLocales } from "../../../const";
+
+const currentLocation = removeLocalePrefix(Astro.url.pathname);
+const currentLocale = Astro.currentLocale;
+// Generate the correct URL for all supported locales
+const localeOptions = supportedLocales.map((locale) => {
+  // No url prefix for the default locale
+  const targetLocale = locale === "en" ? "" : locale;
+  return {
+    locale,
+    // displays the language associated with a
+    // locale code in its own language
+    label: new Intl.DisplayNames([locale], { type: "language" }).of(locale),
+    // The url for the default locale does not need a leading slash
+    url: `${locale === "en" ? "" : "/"}${targetLocale}${currentLocation}`,
+  };
+});
+---
+
+<select id="locale-select">
+  {
+    localeOptions.map(({ locale, label, url }) => (
+      <option value={url} selected={currentLocale === locale}>
+        {label}
+      </option>
+    ))
+  }
+</select>
+
+<script is:inline>
+  document
+    .getElementById("locale-select")
+    ?.addEventListener("change", function () {
+      window.location.href = this.value;
+    });
+</script>
