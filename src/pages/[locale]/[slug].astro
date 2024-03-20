@@ -19,6 +19,17 @@ export const getStaticPaths = async () => {
         // don't generate "index" pages, those are handled by ./index.astro
         if (slug === "/") return null;
 
+        // if slug has / at the beginning (and will if we only remove
+        // the locale prefix) then chop it off
+        // this is necessary because this file is [slug].astro and
+        // not [...slug].astro, so sub routes are not allowed
+        if (slug.startsWith("/")) {
+          return {
+            params: { locale, slug: slug.slice(1) },
+            props: { page },
+          };
+        }
+
         return { params: { locale, slug }, props: { page } };
       });
     })
