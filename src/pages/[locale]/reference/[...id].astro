@@ -1,27 +1,26 @@
 ---
+import { nonDefaultSupportedLocales } from "@/const";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
-  getCollectionInNonDefaultLocales,
+  getCollectionInLocaleWithFallbacks,
   makeReferencePageSlug,
-  splitLocaleFromPath,
 } from "@pages/_utils";
 
 export async function getStaticPaths() {
-  const referenceEntries = await getCollectionInNonDefaultLocales("reference");
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const localeEntries = await getCollectionInLocaleWithFallbacks(
+        "reference",
+        locale
+      );
+      return localeEntries.map((entry) => ({
+        params: { locale, id: makeReferencePageSlug(entry.id) },
+        props: { entry },
+      }));
+    })
+  );
 
-  const paths = referenceEntries.map((entry) => {
-    const [locale, _id] = splitLocaleFromPath(entry.id);
-
-    return {
-      params: {
-        locale,
-        id: makeReferencePageSlug(entry.id),
-      },
-      props: { entry },
-    };
-  });
-
-  return paths;
+  return entries.flat();
 }
 
 const { entry } = Astro.props;
