@@ -5,13 +5,28 @@ submodule: Vector
 file: src/math/p5.Vector.js
 description: >
   <p>Multiplies a vector's <code>x</code>, <code>y</code>, and <code>z</code>
-  components by the same number,
+  components.</p>
 
-  separate numbers, the components of another
+  <p><code>mult()</code> can use separate numbers, as in <code>v.mult(1, 2,
+  3)</code>, another
 
-  <a href="#/p5.Vector">p5.Vector</a> object, or an array of numbers. Calling
+  <a href="#/p5.Vector">p5.Vector</a> object, as in <code>v.mult(v2)</code>, or
+  an array
 
-  <code>mult()</code> with no arguments has no effect.</p>
+  of numbers, as in <code>v.mult([1, 2, 3])</code>.</p>
+
+  <p>If only one value is provided, as in <code>v.mult(2)</code>, then all the
+  components
+
+  will be multiplied by 2. If a value isn't provided for a component, it
+
+  won't change. For example, <code>v.mult(4, 5)</code> multiplies
+  <code>v.x</code> by, <code>v.y</code> by 5,
+
+  and <code>v.z</code> by 1. Calling <code>mult()</code> with no arguments, as
+  in <code>v.mult()</code>, has
+
+  no effect.</p>
 
   <p>The static version of <code>mult()</code>, as in <code>p5.Vector.mult(v,
   2)</code>, returns a new
@@ -19,161 +34,154 @@ description: >
   <a href="#/p5.Vector">p5.Vector</a> object and doesn't change the
 
   originals.</p>
-line: 609
+line: 790
 isConstructor: false
 itemtype: method
 example:
-  - >-
+  - |-
 
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    strokeWeight(5);
+      background(200);
 
+      // Style the points.
+      strokeWeight(5);
 
-    let p = createVector(25, 25);
+      // Top-left.
+      let p = createVector(25, 25);
+      point(p);
 
-    point(p);
+      // Center.
+      // Multiply all components by 2.
+      p.mult(2);
+      point(p);
 
-
-    p.mult(2);
-
-    point(p);
-
-
-    describe('Two black dots drawn on a gray square. One dot is in the top left
-    corner and the other is in the center.');
-
+      describe('Two black dots drawn on a gray square. One dot is in the top left corner and the other is in the center.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      strokeWeight(5);
 
-    strokeWeight(5);
+      // Top-left.
+      let p = createVector(25, 25);
+      point(p);
 
+      // Bottom-right.
+      // Multiply p.x * 2 and p.y * 3
+      p.mult(2, 3);
+      point(p);
 
-    let p = createVector(25, 25);
-
-    point(p);
-
-
-    p.mult(2, 3);
-
-    point(p);
-
-
-    describe('Two black dots drawn on a gray square. One dot is in the top left
-    corner and the other is in the bottom center.');
-
+      describe('Two black dots drawn on a gray square. One dot is in the top left corner and the other is in the bottom center.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    strokeWeight(5);
+      background(200);
 
+      // Style the points.
+      strokeWeight(5);
 
-    let p = createVector(25, 25);
+      // Top-left.
+      let p = createVector(25, 25);
+      point(p);
 
-    point(p);
+      // Bottom-right.
+      // Multiply p.x * 2 and p.y * 3
+      let arr = [2, 3];
+      p.mult(arr);
+      point(p);
 
-
-    let arr = [2, 3];
-
-    p.mult(arr);
-
-    point(p);
-
-
-    describe('Two black dots drawn on a gray square. One dot is in the top left
-    corner and the other is in the bottom center.');
-
+      describe('Two black dots drawn on a gray square. One dot is in the top left corner and the other is in the bottom center.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    strokeWeight(5);
+      background(200);
 
+      // Style the points.
+      strokeWeight(5);
 
-    let p = createVector(25, 25);
+      // Top-left.
+      let p = createVector(25, 25);
+      point(p);
 
-    point(p);
+      // Bottom-right.
+      // Multiply p.x * p2.x and p.y * p2.y
+      let p2 = createVector(2, 3);
+      p.mult(p2);
+      point(p);
 
-
-    let p2 = createVector(2, 3);
-
-    p.mult(p2);
-
-    point(p);
-
-
-    describe('Two black dots drawn on a gray square. One dot is in the top left
-    corner and the other is in the bottom center.');
-
+      describe('Two black dots drawn on a gray square. One dot is in the top left corner and the other is in the bottom center.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    strokeWeight(5);
+      background(200);
 
+      // Style the points.
+      strokeWeight(5);
 
-    let p = createVector(25, 25);
+      // Top-left.
+      let p = createVector(25, 25);
+      point(p);
 
-    point(p);
+      // Bottom-right.
+      // Create a new p5.Vector with
+      // p3.x = p.x * p2.x
+      // p3.y = p.y * p2.y
+      let p2 = createVector(2, 3);
+      let p3 = p5.Vector.mult(p, p2);
+      point(p3);
 
-
-    let p2 = createVector(2, 3);
-
-    let p3 = p5.Vector.mult(p, p2);
-
-    point(p3);
-
-
-    describe('Two black dots drawn on a gray square. One dot is in the top left
-    corner and the other is in the bottom center.');
-
+      describe('Two black dots drawn on a gray square. One dot is in the top left corner and the other is in the bottom center.');
+    }
     </code>
-
     </div>
 
-
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
+      describe('Two arrows extending from the top left corner. The blue arrow is twice the length of the red arrow.');
+    }
     function draw() {
       background(200);
 
       let origin = createVector(0, 0);
+
+      // Draw the red arrow.
       let v1 = createVector(25, 25);
       drawArrow(origin, v1, 'red');
 
+      // Draw the blue arrow.
       let v2 = p5.Vector.mult(v1, 2);
       drawArrow(origin, v2, 'blue');
-
-      describe('Two arrows extending from the top left corner. The blue arrow is twice the length of the red arrow.');
     }
 
-
+    // Draws an arrow between two vectors.
     function drawArrow(base, vec, myColor) {
       push();
       stroke(myColor);
@@ -187,20 +195,18 @@ example:
       triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
       pop();
     }
-
     </code>
-
     </div>
 class: p5.Vector
 overloads:
-  - line: 609
+  - line: 790
     params:
       - name: 'n'
         description: |
           <p>The number to multiply with the vector</p>
         type: Number
     chainable: 1
-  - line: 728
+  - line: 970
     params:
       - name: x
         description: |
@@ -216,21 +222,21 @@ overloads:
         type: Number
         optional: true
     chainable: 1
-  - line: 736
+  - line: 978
     params:
       - name: arr
         description: |
           <p>array to multiply with the components of the vector.</p>
         type: 'Number[]'
     chainable: 1
-  - line: 742
+  - line: 984
     params:
       - name: v
         description: |
           <p>vector to multiply with the components of the original vector.</p>
         type: p5.Vector
     chainable: 1
-  - line: 2639
+  - line: 3443
     params:
       - name: x
         description: ''
@@ -246,7 +252,7 @@ overloads:
     return:
       description: resulting new <a href="#/p5.Vector">p5.Vector</a>.
       type: p5.Vector
-  - line: 2648
+  - line: 3452
     params:
       - name: v
         description: ''
@@ -260,7 +266,7 @@ overloads:
         type: p5.Vector
         optional: true
     static: 1
-  - line: 2656
+  - line: 3460
     params:
       - name: v0
         description: ''
@@ -273,7 +279,7 @@ overloads:
         type: p5.Vector
         optional: true
     static: 1
-  - line: 2664
+  - line: 3468
     params:
       - name: v0
         description: ''

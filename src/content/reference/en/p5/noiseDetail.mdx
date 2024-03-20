@@ -6,7 +6,7 @@ file: src/math/noise.js
 description: >
   <p>Adjusts the character of the noise produced by the
 
-  <a href="#/p5/noise">noise()</a> function.</p>
+  <a href="./noise">noise()</a> function.</p>
 
   <p>Perlin noise values are created by adding layers of noise together. The
 
@@ -25,55 +25,59 @@ description: >
 
   example, calling <code>noiseDetail(6, 0.25)</code> ensures that
 
-  <a href="#/p5/noise">noise()</a> will use six octaves. Each higher octave
+  <a href="./noise">noise()</a> will use six octaves. Each higher octave
 
   will contribute 25% as much (75% less) compared to its predecessor. Falloff
 
   values between 0 and 1 are valid. However, falloff values greater than 0.5
 
   might result in noise values greater than 1.</p>
-line: 277
+line: 331
 isConstructor: false
 itemtype: method
 example:
-  - >-
+  - |-
 
     <div>
-
     <code>
+    function setup() {
+      createCanvas(100, 100);
 
-    let noiseLevel = 255;
+      // Set the noise level and scale.
+      let noiseLevel = 255;
+      let noiseScale = 0.02;
 
-    let noiseScale = 0.02;
+      // Iterate from top to bottom.
+      for (let y = 0; y < 100; y += 1) {
+        // Iterate from left to right.
+        for (let x = 0; x < 50; x += 1) {
+          // Scale the input coordinates.
+          let nx = noiseScale * x;
+          let ny = noiseScale * y;
 
-    for (let y = 0; y < height; y += 1) {
-      for (let x = 0; x < width / 2; x += 1) {
-        // Scale input coordinates.
-        let nx = noiseScale * x;
-        let ny = noiseScale * y;
+          // Compute the noise value with six octaves
+          // and a low falloff factor.
+          noiseDetail(6, 0.25);
+          let c = noiseLevel * noise(nx, ny);
 
-        // Compute noise value.
-        noiseDetail(6, 0.25);
-        let c = noiseLevel * noise(nx, ny);
-        // Render left side.
-        stroke(c);
-        point(x, y);
+          // Draw the left side.
+          stroke(c);
+          point(x, y);
 
-        // Compute noise value.
-        noiseDetail(4, 0.5);
-        c = noiseLevel * noise(nx, ny);
-        // Render right side.
-        stroke(c);
-        point(x + width / 2, y);
+          // Compute the noise value with four octaves
+          // and a high falloff factor.
+          noiseDetail(4, 0.5);
+          c = noiseLevel * noise(nx, ny);
+
+          // Draw the right side.
+          stroke(c);
+          point(x + 50, y);
+        }
       }
+
+      describe('Two gray cloudy patterns. The pattern on the right is cloudier than the pattern on the left.');
     }
-
-
-    describe('Two gray cloudy patterns. The pattern on the right is cloudier
-    than the pattern on the left.');
-
     </code>
-
     </div>
 class: p5
 params:
