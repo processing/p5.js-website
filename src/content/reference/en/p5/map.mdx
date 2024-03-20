@@ -16,7 +16,19 @@ description: >
   in the target range [0, 100] is proportional to 2's position in the
 
   original range [0, 10].</p>
-line: 347
+
+  <p>The sixth parameter, <code>withinBounds</code>, is optional. By default,
+  <code>map()</code> can
+
+  return values outside of the target range. For example,
+
+  <code>map(11, 0, 10, 0, 100)</code> returns 110. Passing <code>true</code> as
+  the sixth parameter
+
+  constrains the remapped value to the target range. For example,
+
+  <code>map(11, 0, 10, 0, 100, true)</code> returns 100.</p>
+line: 534
 isConstructor: false
 itemtype: method
 example:
@@ -24,32 +36,46 @@ example:
 
     <div>
     <code>
-    let n = map(7, 0, 10, 0, 100);
-    text(n, 50, 50);
+    function setup() {
+      createCanvas(100, 100);
 
-    describe('The number 70 written in the middle of a gray square.');
-    </code>
-    </div>
+      describe('Two horizontal lines. The top line grows horizontally as the mouse moves to the right. The bottom line also grows horizontally but is scaled to stay on the left half of the canvas.');
+    }
 
-    <div>
-    <code>
-    let x = map(2, 0, 10, 0, width);
-    circle(x, 50, 10);
-
-    describe('A white circle drawn on the left side of a gray square.');
-    </code>
-    </div>
-
-    <div>
-    <code>
     function draw() {
       background(200);
 
-      let c = map(mouseX, 0, width, 0, 255);
-      fill(c);
-      circle(50, 50, 20);
+      // Draw the top line.
+      line(0, 25, mouseX, 25);
+
+      // Remap mouseX from [0, 100] to [0, 50].
+      let x = map(mouseX, 0, 100, 0, 50);
+
+      // Draw the bottom line.
+      line(0, 75, 0, x);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
 
       describe('A circle changes color from black to white as the mouse moves from left to right.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Remap mouseX from [0, 100] to [0, 255]
+      let c = map(mouseX, 0, 100, 0, 255);
+
+      // Style the circle.
+      fill(c);
+
+      // Draw the circle.
+      circle(50, 50, 20);
     }
     </code>
     </div>
@@ -57,7 +83,7 @@ class: p5
 params:
   - name: value
     description: |
-      <p>the incoming value to be converted.</p>
+      <p>the value to be remapped.</p>
     type: Number
   - name: start1
     description: |

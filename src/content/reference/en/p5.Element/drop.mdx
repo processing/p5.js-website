@@ -4,7 +4,7 @@ module: DOM
 submodule: DOM
 file: src/dom/dom.js
 description: >
-  <p>Sets a function to call when the user drops a file on the element.</p>
+  <p>Calls a function when the user drops a file on the element.</p>
 
   <p>The first parameter, <code>callback</code>, is a function to call once the
   file loads.
@@ -24,7 +24,7 @@ description: >
 
   <a
   href="https://developer.mozilla.org/en-US/docs/Web/API/DragEvent">DragEvent</a>.</p>
-line: 3390
+line: 3764
 isConstructor: false
 itemtype: method
 example:
@@ -41,25 +41,26 @@ example:
 
       background(200);
 
-      // Call a function when a file
-      // dropped on the canvas has
-      // loaded.
-      c.drop(file => {
-        // Remove the current image, if any.
-        if (img) {
-          img.remove();
-        }
-
-        // Create an <img> element with the
-        // dropped file.
-        img = createImg(file.data, '');
-        img.hide();
-
-        // Draw the image.
-        image(img, 0, 0, width, height);
-      });
+      // Call handleFile() when a file that's dropped on the canvas has loaded.
+      c.drop(handleFile);
 
       describe('A gray square. When the user drops an image on the square, it is displayed.');
+    }
+
+    // Remove the existing image and display the new one.
+    function handleFile(file) {
+      // Remove the current image, if any.
+      if (img) {
+        img.remove();
+      }
+
+      // Create an <img> element with the
+      // dropped file.
+      img = createImg(file.data, '');
+      img.hide();
+
+      // Draw the image.
+      image(img, 0, 0, width, height);
     }
     </code>
     </div>
@@ -76,22 +77,21 @@ example:
 
       background(200);
 
-      // Call functions when the user
-      // drops a file on the canvas
+      // Call functions when the user drops a file on the canvas
       // and when the file loads.
       c.drop(handleFile, handleDrop);
 
       describe('A gray square. When the user drops an image on the square, it is displayed. The id attribute of canvas element is also displayed.');
     }
 
+    // Display the image when it loads.
     function handleFile(file) {
       // Remove the current image, if any.
       if (img) {
         img.remove();
       }
 
-      // Create an <img> element with the
-      // dropped file.
+      // Create an img element with the dropped file.
       img = createImg(file.data, '');
       img.hide();
 
@@ -99,23 +99,21 @@ example:
       image(img, 0, 0, width, height);
     }
 
+    // Display the file's name when it loads.
     function handleDrop(event) {
       // Remove current paragraph, if any.
       if (msg) {
         msg.remove();
       }
 
-      // Use event to get the drop
-      // target's id.
+      // Use event to get the drop target's id.
       let id = event.target.id;
 
-      // Write the canvas' id
-      // beneath it.
+      // Write the canvas' id beneath it.
       msg = createP(id);
       msg.position(0, 100);
 
-      // Set the font color
-      // randomly for each drop.
+      // Set the font color randomly for each drop.
       let c = random(['red', 'green', 'blue']);
       msg.style('color', c);
       msg.style('font-size', '12px');

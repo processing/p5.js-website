@@ -4,26 +4,33 @@ module: Shape
 submodule: 2D Primitives
 file: src/core/shape/2d_primitives.js
 description: >
-  <p>Draws a quad to the canvas. A quad is a quadrilateral, a four-sided
+  <p>Draws a quadrilateral (four-sided shape).</p>
 
-  polygon. Some examples of quads include rectangles, squares, rhombuses,
+  <p>Quadrilaterals include rectangles, squares, rhombuses, and trapezoids. The
 
-  and trapezoids. The first pair of parameters (<code>x1</code>,<code>y1</code>)
-  sets the quad's
+  first pair of parameters <code>(x1, y1)</code> sets the quad's first point.
+  The next
 
-  first point. The following pairs of parameters set the coordinates for
+  three pairs of parameters set the coordinates for its next three points
 
-  its next three points. Parameters should proceed clockwise or
+  <code>(x2, y2)</code>, <code>(x3, y3)</code>, and <code>(x4, y4)</code>.
+  Points should be added in either
 
-  counter-clockwise around the shape.</p>
+  clockwise or counter-clockwise order.</p>
 
   <p>The version of <code>quad()</code> with twelve parameters allows the quad
   to be drawn
 
   in 3D space. Doing so requires adding the <code>WEBGL</code> argument to
 
-  <a href="#/p5/createCanvas">createCanvas()</a>.</p>
-line: 506
+  <a href="./createCanvas">createCanvas()</a>.</p>
+
+  <p>The thirteenth and fourteenth parameters are optional. In WebGL mode, they
+
+  set the number of segments used to draw the quadrilateral in the x- and
+
+  y-directions. They're both 25 by default.</p>
+line: 923
 isConstructor: false
 itemtype: method
 example:
@@ -31,34 +38,96 @@ example:
 
     <div>
     <code>
-    quad(20, 20, 80, 20, 80, 80, 20, 80);
-    describe('A white square with a black outline drawn on a gray canvas.');
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      quad(20, 20, 80, 20, 80, 80, 20, 80);
+
+      describe('A white square with a black outline drawn on a gray canvas.');
+    }
     </code>
     </div>
 
     <div>
     <code>
-    quad(20, 30, 80, 30, 80, 70, 20, 70);
-    describe('A white rectangle with a black outline drawn on a gray canvas.');
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      quad(20, 30, 80, 30, 80, 70, 20, 70);
+
+      describe('A white rectangle with a black outline drawn on a gray canvas.');
+    }
     </code>
     </div>
 
     <div>
     <code>
-    quad(50, 62, 86, 50, 50, 38, 14, 50);
-    describe('A white rhombus with a black outline drawn on a gray canvas.');
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      quad(50, 62, 86, 50, 50, 38, 14, 50);
+
+      describe('A white rhombus with a black outline drawn on a gray canvas.');
+    }
     </code>
     </div>
 
     <div>
     <code>
-    quad(20, 50, 80, 30, 80, 70, 20, 70);
-    describe('A white trapezoid with a black outline drawn on a gray canvas.');
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      quad(20, 50, 80, 30, 80, 70, 20, 70);
+
+      describe('A white trapezoid with a black outline drawn on a gray canvas.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      quad(-30, -30, 30, -30, 30, 30, -30, 30);
+
+      describe('A white square with a black outline drawn on a gray canvas.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A wavy white surface spins around on gray canvas.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Draw the quad.
+      quad(-30, -30, 0, 30, -30, 0, 30, 30, 20, -30, 30, -20);
+    }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 506
+  - line: 923
     params:
       - name: x1
         description: |
@@ -103,7 +172,7 @@ overloads:
         type: Integer
         optional: true
     chainable: 1
-  - line: 559
+  - line: 1043
     params:
       - name: x1
         description: ''

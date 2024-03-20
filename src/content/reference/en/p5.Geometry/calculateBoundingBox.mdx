@@ -1,0 +1,92 @@
+---
+title: calculateBoundingBox
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>Custom bounding box calculation based on the object's vertices.
+
+  The bounding box is a rectangular prism that encompasses the entire object.
+
+  It is defined by the minimum and maximum coordinates along each axis, as well
+
+  as the size and offset of the box.</p>
+
+  <p>It returns an object containing the bounding box properties:</p>
+
+  <ul>
+
+  <li><code>min</code>: The minimum coordinates of the bounding box as a
+  p5.Vector.</li>
+
+  <li><code>max</code>: The maximum coordinates of the bounding box as a
+  p5.Vector.</li>
+
+  <li><code>size</code>: The size of the bounding box as a p5.Vector.</li>
+
+  <li><code>offset</code>: The offset of the bounding box as a p5.Vector.</li>
+
+  </ul>
+line: 80
+isConstructor: false
+itemtype: method
+example:
+  - |
+
+
+    <div>
+    <code>
+    let particles;
+    let button;
+    let resultParagraph;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      button = createButton('New');
+      button.mousePressed(makeParticles);
+
+      resultParagraph = createElement('pre').style('width', '200px' );
+      resultParagraph.style('font-family', 'monospace');
+      resultParagraph.style('font-size', '12px');
+      makeParticles();
+    }
+
+    function makeParticles() {
+      if (particles) freeGeometry(particles);
+
+      particles = buildGeometry(() => {
+        for (let i = 0; i < 60; i++) {
+          push();
+          translate(
+            randomGaussian(0, 200),
+            randomGaussian(0, 100),
+            randomGaussian(0, 150)
+          );
+          sphere(10);
+          pop();
+        }
+      });
+
+      const boundingBox = particles.calculateBoundingBox();
+      resultParagraph.html('Bounding Box: \n' + JSON.stringify(boundingBox, null, 2));
+    }
+
+    function draw() {
+      background(255);
+      noStroke();
+      lights();
+      orbitControl();
+      model(particles);
+    }
+
+    </code>
+    </div>
+class: p5.Geometry
+return:
+  description: ''
+  type: Object
+chainable: false
+---
+
+
+# calculateBoundingBox
