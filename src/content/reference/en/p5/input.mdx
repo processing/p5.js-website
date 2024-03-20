@@ -4,16 +4,13 @@ module: DOM
 submodule: DOM
 file: src/dom/dom.js
 description: >
-  <p><code>myElement.input()</code> sets a function to call when input is
-  detected within
+  <p>Calls a function when the element receives input.</p>
 
-  the <a href="#/p5.Element">p5.Element</a> object. It's often used to with
+  <p><code>myElement.input()</code> is often used to with text inputs and
+  sliders. Calling
 
-  text inputs and sliders. Calling <code>myElement.input(false)</code> disables
-  the
-
-  function.</p>
-line: 371
+  <code>myElement.input(false)</code> disables the function.</p>
+line: 404
 isConstructor: false
 itemtype: method
 example:
@@ -21,43 +18,55 @@ example:
 
     <div>
     <code>
+    let slider;
+
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
 
       // Create a slider and place it beneath the canvas.
-      let slider = createSlider(0, 255, 200);
+      slider = createSlider(0, 255, 200);
       slider.position(0, 100);
 
-      // When the slider changes, use its value to paint
-      // the background.
-      slider.input(() => {
-        let g = slider.value();
-        background(g);
-      });
+      // Call repaint() when the slider changes.
+      slider.input(repaint);
 
       describe('A gray square with a range slider underneath it. The background changes shades of gray when the slider is moved.');
+    }
+
+    // Paint the background using slider's value.
+    function repaint() {
+      let g = slider.value();
+      background(g);
     }
     </code>
     </div>
 
     <div>
     <code>
+    let input;
+
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
 
       // Create an input and place it beneath the canvas.
-      let inp = createInput('');
-      inp.position(0, 100);
+      input = createInput('');
+      input.position(0, 100);
 
-      // When input is detected, paint the background gray
-      // and display the text.
-      inp.input(() => {
-        background(200);
-        let msg = inp.value();
-        text(msg, 5, 50);
-      });
+      // Call repaint() when input is detected.
+      input.input(repaint);
 
       describe('A gray square with a text input bar beneath it. Any text written in the input appears in the middle of the square.');
+    }
+
+    // Paint the background gray and display the input's value.
+    function repaint() {
+      background(200);
+      let msg = input.value();
+      text(msg, 5, 50);
     }
     </code>
     </div>
