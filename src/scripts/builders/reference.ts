@@ -99,6 +99,9 @@ const addDocToModulePathTree = (
       modulePathTree.modules[modulePath] = {};
     }
 
+    // Fix relative routing
+    doc.description = doc.description?.replaceAll("#/p5/", "./");
+
     // If a submodule exists, add the doc to the modulePathTree under the appropriate treePath,
     // modulePath, and subPath, using the doc's name as the key and the constructed modulePath as the value.
     if (subPath) {

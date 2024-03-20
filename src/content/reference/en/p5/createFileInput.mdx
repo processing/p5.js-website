@@ -5,9 +5,12 @@ submodule: DOM
 file: src/dom/dom.js
 description: >
   <p>Creates an <code>&lt;input&gt;&lt;/input&gt;</code> element of type
-  <code>'file'</code>.
+  <code>'file'</code>.</p>
 
-  This allows users to select local files for use in a sketch.</p>
+  <p><code>createFileInput()</code> allows users to select local files for use
+  in a sketch.
+
+  It returns a <a href="#/p5.File">p5.File</a> object.</p>
 
   <p>The first parameter, <code>callback</code>, is a function that's called
   when the file
@@ -24,7 +27,7 @@ description: >
   <code>true</code>, <code>callback</code>
 
   will be called once per file.</p>
-line: 1785
+line: 1923
 isConstructor: false
 itemtype: method
 example:
@@ -38,6 +41,8 @@ example:
     let img;
 
     function setup() {
+      createCanvas(100, 100);
+
       // Create a file input and place it beneath
       // the canvas.
       input = createFileInput(handleImage);
@@ -87,10 +92,13 @@ example:
       // Draw the images if loaded. Each image
       // is drawn 20 pixels lower than the
       // previous image.
-      images.forEach((img, index) => {
-        let y = index * 20;
-        image(img, 0, y, width, height);
-      });
+      for (let i = 0; i < images.length; i += 1) {
+        // Calculate the y-coordinate.
+        let y = i * 20;
+
+        // Draw the image.
+        image(img, 0, y, 100, 100);
+      }
 
       describe('A gray square with a file input beneath it. If the user selects multiple image files to load, they are displayed on the square.');
     }
@@ -118,8 +126,8 @@ params:
     type: Boolean
     optional: true
 return:
-  description: new <a href="#/p5.Element">p5.Element</a> object.
-  type: p5.Element
+  description: new <a href="#/p5.File">p5.File</a> object.
+  type: p5.File
 chainable: false
 ---
 
