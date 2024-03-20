@@ -29,7 +29,8 @@ export async function onRequest(
 
   // Extract the currentLocale from the request URL
   const url = new URL(request.url);
-  const pathSegments = url.pathname.split("/").filter(Boolean); // This is just to check the first segment
+  // Check the first segment
+  const pathSegments = url.pathname.split("/").filter(Boolean);
   let currentLocale = ""; // Assume default locale initially which doesn't prefix
   if (
     pathSegments.length > 0 &&
@@ -40,7 +41,8 @@ export async function onRequest(
 
   let modifiedHtml = html;
 
-  // If we have a currentLocale, modify the HTML to ensure all links have the correct locale prefix
+  // If we have a currentLocale, modify the HTML to ensure all links
+  // have the correct locale prefix
   if (currentLocale) {
     modifiedHtml = ensureCorrectLocalePrefixesInHtmlLinks(html, currentLocale);
   }
@@ -58,16 +60,19 @@ export const ensureCorrectLocalePrefixesInHtmlLinks = (
 ) => {
   const $ = load(html);
 
-  // Modify the href attributes of <a> tags so that authors don't have to worry about locale prefixes
+  // Modify the href attributes of <a> tags so that authors don't
+  // have to worry about locale prefixes
   $("a").each(function () {
     let href = $(this).attr("href");
-    if (!href || href.startsWith("http")) return; // Skip if href is undefined or an external link
+    // Skip if href is undefined, an external link, or written with a dot slash
+    if (!href || href.startsWith("http") || href.startsWith("./")) return;
 
     const startsWithLocale = nonDefaultSupportedLocales.some(
       (locale) => href && href.startsWith(`/${locale}/`),
     );
 
-    // Only prepend currentLocale if it's not empty and href doesn't already start with a locale
+    // Only prepend currentLocale if it's not empty and href doesn't
+    // already start with a locale
     if (currentLocale && !startsWithLocale) {
       href = `/${currentLocale}${href.startsWith("/") ? "" : "/"}${href}`;
       $(this).attr("href", href);
