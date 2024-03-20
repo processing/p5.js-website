@@ -57,28 +57,6 @@ export const reformUrlforNewLocale = (url: string, newLocale: string) => {
 };
 
 /**
- * Returns the given url with the given locale prefix (when needed)
- * In most cases, you should be able to get the right locale from:
- * - `Astro.currentLocale`
- * - the url's `locale` segment (within the `pages/[locale]/` folder)
- * - `getCurrentLocale()`, but this uses client side javascript and
- *   should be avoided where possible
- *
- * If you pass a relative url to this function, it will be made absolute.
- *
- * @param url an absolute url
- * @param locale
- * @returns
- */
-export const urlInLocale = (url: string, locale?: string) => {
-  const definitelyAbsoluteUrl = url.startsWith("/") ? url : `/${url}`;
-  if (locale === undefined || locale === defaultLocale) {
-    return `${definitelyAbsoluteUrl}`;
-  }
-  return `/${locale}${definitelyAbsoluteUrl}`;
-};
-
-/**
  * Gets the current locale by parsing it out of the current url.
  * If no path is supplied, it will attempt to get it from window
  *
