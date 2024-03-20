@@ -183,7 +183,7 @@ export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
  * We use the id instead and remove the file extension
  */
 export const makeReferencePageSlug = (id: string): string =>
-  id.replace(/\.mdx$/, "");
+  id.replace(/\.(mdx?|ya?ml)$/, "");
 
 /* We have to modify the Astro.js slug to match existing routing */
 /* This is done dynamically here instead of relying on example authors */
@@ -206,3 +206,11 @@ export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
  */
 export const localeMatchingRegex = () =>
   new RegExp(`^/?(?:${supportedLocales.join("|")})(?:/|$)`);
+
+/**
+ * Returns the correct URL to link to for a libary entry
+ * @param library
+ * @returns
+ */
+export const getLibraryLink = (library: CollectionEntry<"libraries">) =>
+  library.data.websiteUrl ?? library.data.sourceUrl;
