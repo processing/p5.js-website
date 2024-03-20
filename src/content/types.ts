@@ -27,5 +27,4 @@ export type ExampleDocContentItem = AstroBaseContentType<
 export type ArchiveCollectionEntry =
   | CollectionEntry<"contributor-docs">
   | CollectionEntry<"past-events">
-  | CollectionEntry<"sketches">
-  | CollectionEntry<"libraries">;
+  | CollectionEntry<"sketches">;
