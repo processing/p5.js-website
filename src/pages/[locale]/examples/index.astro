@@ -1,8 +1,7 @@
 ---
 import {
-  getCollectionInLocale,
+  getCollectionInLocaleWithFallbacks,
   transformExampleSlugs,
-  getCollectionInDefaultLocale,
 } from "@pages/_utils";
 import ExamplesLayout from "@layouts/ExamplesLayout.astro";
 import { nonDefaultSupportedLocales } from "@/const";
@@ -12,33 +11,17 @@ export async function getStaticPaths() {
     params: {
       locale,
     },
+    props: {
+      entries: transformExampleSlugs<"examples">(
+        await getCollectionInLocaleWithFallbacks("examples", locale)
+      ),
+    },
   }));
 
   return await Promise.all(pages);
 }
 
-const { locale } = Astro.params;
-
-// Get the English entries as fallback for any missing translations
-const defaultLocaleEntries = transformExampleSlugs<"examples">(
-  await getCollectionInDefaultLocale("examples"),
-);
-
-// Get the entries for the current locale
-const localeEntries = transformExampleSlugs<"examples">(
-  await getCollectionInLocale("examples", locale!),
-);
-
-// Filter out any entries that have been translated
-const filteredDefaultEntries = defaultLocaleEntries.filter(
-  (defaultEntry) =>
-    !localeEntries.some(
-      (localeEntry) => localeEntry.slug === defaultEntry.slug,
-    ),
-);
-
-// Merge the locale entries with the filtered default entries
-const entries = [...localeEntries, ...filteredDefaultEntries];
+const { entries } = Astro.props;
 ---
 
 <ExamplesLayout exampleEntries={entries} />

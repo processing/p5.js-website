@@ -1,15 +1,18 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { nonDefaultSupportedLocales } from "@/const";
-import { getCollectionInLocale } from "@pages/_utils";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 
 export const getStaticPaths = async () => {
   return await Promise.all(
     nonDefaultSupportedLocales.map(async (locale) => {
-      const entries = await getCollectionInLocale("people", locale);
+      const entries = await getCollectionInLocaleWithFallbacks(
+        "people",
+        locale
+      );
 
       return { params: { locale }, props: { entries } };
-    }),
+    })
   );
 };
 

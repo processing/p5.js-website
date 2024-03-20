@@ -1,19 +1,26 @@
 ---
+import { nonDefaultSupportedLocales } from "@/const";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
-  getCollectionInNonDefaultLocales,
-  splitLocaleFromPath,
+  getCollectionInLocaleWithFallbacks,
+  removeLocalePrefix,
 } from "@pages/_utils";
 
 export async function getStaticPaths() {
-  const pastEvents = await getCollectionInNonDefaultLocales("sketches");
-  return pastEvents.map((entry) => {
-    const [locale, slug] = splitLocaleFromPath(entry.id);
-    return {
-      params: { locale, slug },
-      props: { entry },
-    };
-  });
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const localeEntries = await getCollectionInLocaleWithFallbacks(
+        "sketches",
+        locale
+      );
+      return localeEntries.map((entry) => ({
+        params: { locale, slug: removeLocalePrefix(entry.id) },
+        props: { entry },
+      }));
+    })
+  );
+
+  return entries.flat();
 }
 
 const { entry } = Astro.props;
