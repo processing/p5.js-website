@@ -2,7 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { nonDefaultSupportedLocales } from "@/const";
 import {
-  getCollectionInLocale,
+  getCollectionInLocaleWithFallbacks,
   makeReferencePageSlug,
   removeLocalePrefix,
 } from "@pages/_utils";
@@ -12,7 +12,9 @@ export async function getStaticPaths() {
     params: {
       locale,
     },
-    props: { entries: await getCollectionInLocale("reference", locale) },
+    props: {
+      entries: await getCollectionInLocaleWithFallbacks("reference", locale),
+    },
   }));
 
   return await Promise.all(paths);
@@ -28,7 +30,7 @@ const { entries } = Astro.props;
       entries.map((refEntry) => (
         <li>
           <a
-            href={`/${locale}reference/${makeReferencePageSlug(removeLocalePrefix(refEntry.id))}`}
+            href={`/${locale}/reference/${makeReferencePageSlug(removeLocalePrefix(refEntry.id))}`}
           >
             {refEntry.data.title}
           </a>

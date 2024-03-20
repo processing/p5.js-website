@@ -1,22 +1,29 @@
 ---
+import { nonDefaultSupportedLocales } from "@/const";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
-  getCollectionInNonDefaultLocales,
-  splitLocaleFromPath,
+  getCollectionInLocaleWithFallbacks,
+  removeLocalePrefix,
 } from "@pages/_utils";
 
 export const getStaticPaths = async () => {
-  const pages = await getCollectionInNonDefaultLocales("text-detail");
-  return pages
-    .map((page) => {
-      const [locale, slug] = splitLocaleFromPath(page.slug);
+  const pages = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const pages = await getCollectionInLocaleWithFallbacks(
+        "text-detail",
+        locale
+      );
+      return pages.map((page) => {
+        const slug = removeLocalePrefix(page.slug);
 
-      // don't generate "index" pages, those are handled by ./index.astro
-      if (slug === "/") return null;
+        // don't generate "index" pages, those are handled by ./index.astro
+        if (slug === "/") return null;
 
-      return { params: { locale, slug }, props: { page } };
+        return { params: { locale, slug }, props: { page } };
+      });
     })
-    .filter((p) => p !== null);
+  );
+  return pages.flat().filter((p) => p !== null);
 };
 
 const { page } = Astro.props;

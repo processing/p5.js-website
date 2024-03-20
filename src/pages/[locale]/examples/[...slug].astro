@@ -1,32 +1,47 @@
 ---
+import { nonDefaultSupportedLocales } from "@/const";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
-  getCollectionInNonDefaultLocales,
-  splitLocaleFromPath,
+  getCollectionInLocaleWithFallbacks,
+  removeLocalePrefix,
 } from "@pages/_utils";
 import { getExampleCode } from "@pages/_utils-node";
 
 export async function getStaticPaths() {
-  const examples = await getCollectionInNonDefaultLocales("examples");
-  return await Promise.all(
-    examples.map(async (example) => {
-      const code = await getExampleCode(example.id);
-      const [locale, slug] = splitLocaleFromPath(example.slug);
-      return {
-        params: { locale, slug: exampleContentSlugToLegacyWebsiteSlug(slug) },
-        props: { example, code },
-      };
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const localeEntries = await getCollectionInLocaleWithFallbacks(
+        "examples",
+        locale
+      );
+      return await Promise.all(
+        localeEntries.map(async (entry) => {
+          const code = await getExampleCode(entry.id);
+          const slug = exampleContentSlugToLegacyWebsiteSlug(
+            removeLocalePrefix(entry.slug)
+          );
+          return {
+            params: {
+              locale,
+              slug,
+            },
+            props: { entry, code },
+          };
+        })
+      );
     })
   );
+
+  return entries.flat();
 }
 
-const { example, code } = Astro.props;
-const { Content } = await example.render();
+const { entry, code } = Astro.props;
+const { Content } = await entry.render();
 ---
 
-<BaseLayout title={example.data.title}>
-  <p>{example.data.arialabel}</p>
+<BaseLayout title={entry.data.title}>
+  <p>{entry.data.arialabel}</p>
   <Content />
   <pre>{code}</pre>
 </BaseLayout>

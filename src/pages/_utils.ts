@@ -21,6 +21,35 @@ export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
   );
 
 /**
+ * Retreives all the entries in the given collection for a given locale, and
+ * includes entries in the default locale for entries that aren't localized
+ *
+ * @param collectionName
+ * @param locale
+ * @returns
+ */
+export const getCollectionInLocaleWithFallbacks = async <
+  C extends keyof AnyEntryMap,
+>(
+  collectionName: C,
+  locale: string,
+): Promise<CollectionEntry<C>[]> => {
+  const localizedEntries = await getCollectionInLocale(collectionName, locale);
+  const defaultLocaleCollection =
+    await getCollectionInDefaultLocale(collectionName);
+  const filteredDefaultEntries = defaultLocaleCollection.filter(
+    (defaultEntry) =>
+      !localizedEntries.some(
+        (localeEntry) =>
+          removeLocalePrefix(localeEntry.id) ===
+          removeLocalePrefix(defaultEntry.id),
+      ),
+  );
+  // Merge the locale entries with the filtered default entries
+  return [...localizedEntries, ...filteredDefaultEntries];
+};
+
+/**
  * Retreives all the entries in the given collection, filtered to only include
  * those in *non-default* locales (languages).
  *
@@ -38,9 +67,10 @@ export const getCollectionInNonDefaultLocales = async <
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
- * those in *non-default* locales (languages).
+ * those in a the given *non-default* locale (language).
  *
  * @param collectionName
+ * @param locale
  * @returns
  */
 export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
