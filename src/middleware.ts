@@ -1,4 +1,4 @@
-import { nonDefaultSupportedLocales } from "@/const";
+import { nonDefaultSupportedLocales } from "@i18n/const";
 import type { MiddlewareNext } from "astro";
 import { load } from "cheerio";
 /**

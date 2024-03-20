@@ -1,21 +1,20 @@
 ---
-import { removeLocalePrefix } from "@/src/pages/_utils";
-import { supportedLocales } from "../../../const";
-import { getCurrentLocale } from "@/src/pages/_utils";
+import { removeLocalePrefix, getCurrentLocale } from "@i18n/utils";
+import { defaultLocale, supportedLocales } from "@i18n/const";
 
 const currentLocation = removeLocalePrefix(Astro.url.pathname);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 // Generate the correct URL for all supported locales
 const localeOptions = supportedLocales.map((locale) => {
   // No url prefix for the default locale
-  const targetLocale = locale === "en" ? "" : locale;
+  const targetLocale = locale === defaultLocale ? "" : locale;
   return {
     locale,
     // displays the language associated with a
     // locale code in its own language
     label: new Intl.DisplayNames([locale], { type: "language" }).of(locale),
     // The url for the default locale does not need a leading slash
-    url: `${locale === "en" ? "" : "/"}${targetLocale}${currentLocation}`,
+    url: `${locale === defaultLocale ? "" : "/"}${targetLocale}${currentLocation}`,
   };
 });
 ---
