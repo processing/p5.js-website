@@ -1,0 +1,34 @@
+---
+import { getLibraryLink } from "@pages/_utils";
+
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  entries: CollectionEntry<"libraries">[];
+  title: string;
+}
+
+const { entries, title } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <ul>
+    {
+      entries.map((lib) => (
+        <li>
+          <a href={getLibraryLink(lib)}>
+            <img
+              src={lib.data.featuredImage.url}
+              alt={lib.data.featuredImage.altText}
+            />
+            <span>{lib.data.name}</span>
+            {lib.data.description}
+            Created by: {lib.data.author.name}
+          </a>
+        </li>
+      ))
+    }
+    }
+  </ul>
+</BaseLayout>

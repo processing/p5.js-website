@@ -1,0 +1,22 @@
+---
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import { nonDefaultSupportedLocales } from "@/const";
+import LibrariesLayout from "@/src/layouts/LibrariesLayout.astro";
+
+export async function getStaticPaths() {
+  const pages = nonDefaultSupportedLocales.map(async (locale) => ({
+    params: {
+      locale,
+    },
+    props: {
+      entries: await getCollectionInLocaleWithFallbacks("libraries", locale),
+    },
+  }));
+
+  return await Promise.all(pages);
+}
+
+const { entries } = Astro.props;
+---
+
+<LibrariesLayout title="Libraries" entries={entries} />

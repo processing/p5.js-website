@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from "astro:content";
+import {
+  removeLocalePrefix,
+  makeReferencePageSlug,
+  getLibraryLink,
+} from "../pages/_utils";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  sketches: CollectionEntry<"sketches">[];
+  libraries: CollectionEntry<"libraries">[];
+  pastEvents: CollectionEntry<"past-events">[];
+}
+
+const { sketches, libraries, pastEvents } = Astro.props;
+---
+
+<BaseLayout title="Community">
+  <h2>Sketches</h2>
+  {
+    sketches.map((entry) => (
+      <li>
+        <a
+          href={`/${sketches}/${removeLocalePrefix(makeReferencePageSlug(entry.id))}`}
+        >
+          {removeLocalePrefix(makeReferencePageSlug(entry.id))}
+        </a>
+      </li>
+    ))
+  }
+  <a href="/sketches">See Sketches Archive</a>
+
+  <h2>Libraries</h2>
+  {
+    libraries.map((entry) => (
+      <li>
+        <a href={getLibraryLink(entry)}>
+          {removeLocalePrefix(makeReferencePageSlug(entry.id))}
+        </a>
+      </li>
+    ))
+  }
+
+  <a href="/libraries">See Libraries Archive</a>
+
+  <h2>Past Events</h2>
+  {
+    pastEvents.map((entry) => (
+      <li>
+        <a
+          href={`/past-events/${removeLocalePrefix(makeReferencePageSlug(entry.id))}`}
+        >
+          {removeLocalePrefix(makeReferencePageSlug(entry.id))}
+        </a>
+      </li>
+    ))
+  }
+  <a href="/past-events">See Past Events Archive</a>
+</BaseLayout>
