@@ -2,6 +2,7 @@
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 import ContributeLayout from "@layouts/ContributeLayout.astro";
 import { nonDefaultSupportedLocales } from "@/const";
+import { removeLocalePrefix } from "@pages/_utils";
 
 export async function getStaticPaths() {
   const pages = nonDefaultSupportedLocales.map(async (locale) => ({
@@ -12,6 +13,11 @@ export async function getStaticPaths() {
       entries: await getCollectionInLocaleWithFallbacks(
         "contributor-docs",
         locale
+      ).then((entries) =>
+        entries.map((entry) => ({
+          ...entry,
+          slug: removeLocalePrefix(entry.slug),
+        }))
       ),
     },
   }));
