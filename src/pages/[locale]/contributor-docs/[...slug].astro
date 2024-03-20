@@ -1,21 +1,36 @@
 ---
+import { nonDefaultSupportedLocales } from "@/const";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   convertContributorDocIndexSlugIfNeeded,
-  getCollectionInNonDefaultLocales,
-  splitLocaleFromPath,
+  getCollectionInLocaleWithFallbacks,
+  removeLocalePrefix,
 } from "@pages/_utils";
 
 export async function getStaticPaths() {
-  const pastEvents = await getCollectionInNonDefaultLocales("contributor-docs");
-  return pastEvents.map((entry) => {
-    const [locale, slug] = splitLocaleFromPath(entry.slug);
-    const maybeIndexslug = convertContributorDocIndexSlugIfNeeded(slug);
-    return {
-      params: { locale, slug: maybeIndexslug },
-      props: { entry },
-    };
-  });
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const localeEntries = await getCollectionInLocaleWithFallbacks(
+        "contributor-docs",
+        locale
+      );
+
+      return localeEntries.map((entry) => {
+        const slug = convertContributorDocIndexSlugIfNeeded(
+          removeLocalePrefix(entry.slug)
+        );
+        return {
+          params: {
+            locale,
+            slug,
+          },
+          props: { entry },
+        };
+      });
+    })
+  );
+
+  return entries.flat();
 }
 
 const { entry } = Astro.props;
