@@ -1,0 +1,61 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//interaction-reach2/ selected=true>English</option><option value=/ar/examples//interaction-reach2/ >العربية</option><option value=/es/examples//interaction-reach2/ >español</option><option value=/hi/examples//interaction-reach2/ >हिन्दी</option><option value=/ko/examples//interaction-reach2/ >한국어</option><option value=/pt-br/examples//interaction-reach2/ >português (Brasil)</option><option value=/sk/examples//interaction-reach2/ >slovenčina</option><option value=/zh/examples//interaction-reach2/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Reach 2</h1><span></span><main><p>Grey triangle segmented and attached to the bottom of the black screen. The tip of the triangle follows the direction of the user’s mouse</p><p>The arm follows the position of the mouse by calculating the angles with atan2(). Based on code from Keith Peters.</p><pre>
+let numSegments = 10,
+  x = [],
+  y = [],
+  angle = [],
+  segLength = 26,
+  targetX,
+  targetY;
+
+for (let i = 0; i &lt; numSegments; i++) {
+  x[i] = 0;
+  y[i] = 0;
+  angle[i] = 0;
+}
+
+function setup() {
+  createCanvas(710, 400);
+  strokeWeight(20);
+  stroke(255, 100);
+
+  x[x.length - 1] = width / 2; // Set base x-coordinate
+  y[x.length - 1] = height; // Set base y-coordinate
+}
+
+function draw() {
+  background(0);
+
+  reachSegment(0, mouseX, mouseY);
+  for (let i = 1; i &lt; numSegments; i++) {
+    reachSegment(i, targetX, targetY);
+  }
+  for (let j = x.length - 1; j &gt;= 1; j--) {
+    positionSegment(j, j - 1);
+  }
+  for (let k = 0; k &lt; x.length; k++) {
+    segment(x[k], y[k], angle[k], (k + 1) * 2);
+  }
+}
+
+function positionSegment(a, b) {
+  x[b] = x[a] + cos(angle[a]) * segLength;
+  y[b] = y[a] + sin(angle[a]) * segLength;
+}
+
+function reachSegment(i, xin, yin) {
+  const dx = xin - x[i];
+  const dy = yin - y[i];
+  angle[i] = atan2(dy, dx);
+  targetX = xin - cos(angle[i]) * segLength;
+  targetY = yin - sin(angle[i]) * segLength;
+}
+
+function segment(x, y, a, sw) {
+  strokeWeight(sw);
+  push();
+  translate(x, y);
+  rotate(a);
+  line(0, 0, segLength, 0);
+  pop();
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//sound-noise-envelope/ selected=true>English</option><option value=/ar/examples//sound-noise-envelope/ >العربية</option><option value=/es/examples//sound-noise-envelope/ >español</option><option value=/hi/examples//sound-noise-envelope/ >हिन्दी</option><option value=/ko/examples//sound-noise-envelope/ >한국어</option><option value=/pt-br/examples//sound-noise-envelope/ >português (Brasil)</option><option value=/sk/examples//sound-noise-envelope/ >slovenčina</option><option value=/zh/examples//sound-noise-envelope/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Noise Drum Envelope</h1><span></span><main><p>Lime green rectangle rises from the bottom of a black screen when the screen is clicked on and plays a sound effect</p><p>White Noise is a random audio signal with equal energy at every part of the frequency spectrum</p><p>An Envelope is a series of fades, defined as time / value pairs.</p><p>In this example, the p5.Env will be used to “play” the p5.Noise like a drum by controlling its output amplitude. A p5.Amplitude will get the level of all sound in the sketch, and we’ll use this value to draw a green rectangle that shows the envelope in action.</p><p><em><span class=small>To run this example locally, you will need the <a href=http://p5js.org/reference/#/libraries/p5.sound>p5.sound library</a> and a sound file.</span></em></p><pre>
+let noise, env, analyzer;
+
+function setup() {
+  createCanvas(710, 200);
+  noise = new p5.Noise(); // other types include &#39;brown&#39; and &#39;pink&#39;
+  noise.start();
+
+  // multiply noise volume by 0
+  // (keep it quiet until we&#39;re ready to make noise!)
+  noise.amp(0);
+
+  env = new p5.Env();
+  // set attackTime, decayTime, sustainRatio, releaseTime
+  env.setADSR(0.001, 0.1, 0.2, 0.1);
+  // set attackLevel, releaseLevel
+  env.setRange(1, 0);
+
+  // p5.Amplitude will analyze all sound in the sketch
+  // unless the setInput() method is used to specify an input.
+  analyzer = new p5.Amplitude();
+}
+
+function draw() {
+  background(0);
+
+  // get volume reading from the p5.Amplitude analyzer
+  let level = analyzer.getLevel();
+
+  // use level to draw a green rectangle
+  let levelHeight = map(level, 0, 0.4, 0, height);
+  fill(100, 250, 100);
+  rect(0, height, width, -levelHeight);
+}
+
+function mousePressed() {
+  env.play(noise);
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

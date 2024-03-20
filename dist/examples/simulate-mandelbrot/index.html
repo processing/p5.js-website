@@ -1,0 +1,83 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-mandelbrot/ selected=true>English</option><option value=/ar/examples//simulate-mandelbrot/ >العربية</option><option value=/es/examples//simulate-mandelbrot/ >español</option><option value=/hi/examples//simulate-mandelbrot/ >हिन्दी</option><option value=/ko/examples//simulate-mandelbrot/ >한국어</option><option value=/pt-br/examples//simulate-mandelbrot/ >português (Brasil)</option><option value=/sk/examples//simulate-mandelbrot/ >slovenčina</option><option value=/zh/examples//simulate-mandelbrot/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">The Mandelbrot Set</h1><span></span><main><p>A fractal that roughly resembles a series of heart-shaped disks, to which smaller disks are attached and consists of a connected set</p><p>Simple rendering of the Mandelbrot set. Based on Daniel Shiffman’s <a href=https://processing.org/examples/mandelbrot.html>Mandelbrot Example</a> for Processing.</p><pre>
+
+function setup() {
+  createCanvas(710, 400);
+  pixelDensity(1);
+  noLoop();
+}
+
+function draw() {
+  background(0);
+
+  // Establish a range of values on the complex plane
+  // A different range will allow us to &quot;zoom&quot; in or out on the fractal
+
+  // It all starts with the width, try higher or lower values
+  const w = 4;
+  const h = (w * height) / width;
+
+  // Start at negative half the width and height
+  const xmin = -w/2;
+  const ymin = -h/2;
+
+  // Make sure we can write to the pixels[] array.
+  // Only need to do this once since we don&#39;t do any other drawing.
+  loadPixels();
+
+  // Maximum number of iterations for each point on the complex plane
+  const maxiterations = 100;
+
+  // x goes from xmin to xmax
+  const xmax = xmin + w;
+  // y goes from ymin to ymax
+  const ymax = ymin + h;
+
+  // Calculate amount we increment x,y for each pixel
+  const dx = (xmax - xmin) / (width);
+  const dy = (ymax - ymin) / (height);
+
+  // Start y
+  let y = ymin;
+  for (let j = 0; j &lt; height; j++) {
+    // Start x
+    let x = xmin;
+    for (let i = 0; i &lt; width; i++) {
+
+      // Now we test, as we iterate z = z^2 + cm does z tend towards infinity?
+      let a = x;
+      let b = y;
+      let n = 0;
+      while (n &lt; maxiterations) {
+        const aa = a * a;
+        const bb = b * b;
+        const twoab = 2.0 * a * b;
+        a = aa - bb + x;
+        b = twoab + y;
+        // Infinty in our finite world is simple, let&#39;s just consider it 16
+        if (dist(aa, bb, 0, 0) &gt; 16) {
+          break;  // Bail
+        }
+        n++;
+      }
+
+      // We color each pixel based on how long it takes to get to infinity
+      // If we never got there, let&#39;s pick the color black
+      const pix = (i+j*width)*4;
+      const norm = map(n, 0, maxiterations, 0, 1);
+      let bright = map(sqrt(norm), 0, 1, 0, 255);
+      if (n == maxiterations) {
+        bright = 0;
+      } else {
+        // Gosh, we could make fancy colors here if we wanted
+        pixels[pix + 0] = bright;
+        pixels[pix + 1] = bright;
+        pixels[pix + 2] = bright;
+        pixels[pix + 3] = 255;
+      }
+      x += dx;
+    }
+    y += dy;
+  }
+  updatePixels();
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

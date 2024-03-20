@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//dom-modify-dom/ selected=true>English</option><option value=/ar/examples//dom-modify-dom/ >العربية</option><option value=/es/examples//dom-modify-dom/ >español</option><option value=/hi/examples//dom-modify-dom/ >हिन्दी</option><option value=/ko/examples//dom-modify-dom/ >한국어</option><option value=/pt-br/examples//dom-modify-dom/ >português (Brasil)</option><option value=/sk/examples//dom-modify-dom/ >slovenčina</option><option value=/zh/examples//dom-modify-dom/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Modifying the DOM</h1><span></span><main><p>Words in black font jittering on a white background</p><p>Create DOM elements and modify their properties every time draw() is called.</p><pre>
+let dancingWords = [];
+
+class DanceSpan {
+  constructor(element, x, y) {
+    element.position(x, y);
+    this.element = element;
+    this.x = x;
+    this.y = y;
+  }
+
+  brownian() {
+    this.x += random(-6, 6);
+    this.y += random(-6, 6);
+    this.element.position(this.x, this.y);
+  }
+}
+
+function setup() {
+  // This paragraph is created aside of the main block of code.
+  // It&#39;s to differentiate the creation of an element from its
+  // selection. Selected elements don&#39;t need to be created by
+  // p5js, they can be just plain HTML.
+  createP(
+    &#39;I learn in this Letter, that Don Peter of Aragon, &#39; +
+      &#39; comes this night to Messina&#39;
+  ).addClass(&#39;text&#39;).hide();
+
+  // This line grabs the paragraph just created, but it would
+  // also grab any other elements with class &#39;text&#39; in the HTML
+  // page.
+  const texts = selectAll(&#39;.text&#39;);
+
+  for (let i = 0; i &lt; texts.length; i++) {
+    const paragraph = texts[i].html();
+    const words = paragraph.split(&#39; &#39;);
+    for (let j = 0; j &lt; words.length; j++) {
+      const spannedWord = createSpan(words[j]);
+      const dw = new DanceSpan(spannedWord, random(600), random(200));
+      dancingWords.push(dw);
+    }
+  }
+}
+
+function draw() {
+  for (let i = 0; i &lt; dancingWords.length; i++) {
+    dancingWords[i].brownian();
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

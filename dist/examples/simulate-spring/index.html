@@ -1,0 +1,89 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-spring/ selected=true>English</option><option value=/ar/examples//simulate-spring/ >العربية</option><option value=/es/examples//simulate-spring/ >español</option><option value=/hi/examples//simulate-spring/ >हिन्दी</option><option value=/ko/examples//simulate-spring/ >한국어</option><option value=/pt-br/examples//simulate-spring/ >português (Brasil)</option><option value=/sk/examples//simulate-spring/ >slovenčina</option><option value=/zh/examples//simulate-spring/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Spring</h1><span></span><main><p>Light grey horizontal rectangle on a black vertical rectangle on a grey background. The user can move the horizontal rectangle up and down. Upon releasing the horizontal rectangle, the system moves like a spring and the vertical rectangle expands and compresses as the horizontal rectangle moves up and down.</p><p>Click, drag, and release the horizontal bar to start the spring.</p><pre>
+// Spring drawing constants for top bar
+let springHeight = 32,
+    left,
+    right,
+    maxHeight = 200,
+    minHeight = 100,
+    over = false,
+    move = false;
+
+// Spring simulation constants
+let M = 0.8,  // Mass
+    K = 0.2,  // Spring constant
+    D = 0.92, // Damping
+    R = 150;  // Rest position
+
+// Spring simulation variables
+let ps = R,   // Position
+    vs = 0.0, // Velocity
+    as = 0,   // Acceleration
+    f = 0;    // Force
+
+function setup() {
+  createCanvas(710, 400);
+  rectMode(CORNERS);
+  noStroke();
+  left = width / 2 - 100;
+  right = width / 2 + 100;
+}
+
+function draw() {
+  background(102);
+  updateSpring();
+  drawSpring();
+}
+
+function drawSpring() {
+  // Draw base
+  fill(0.2);
+  let baseWidth = 0.5 * ps + -8;
+  rect(width / 2 - baseWidth, ps + springHeight, width / 2 + baseWidth, height);
+
+  // Set color and draw top bar
+  if (over || move) {
+    fill(255);
+  } else {
+    fill(204);
+  }
+
+  rect(left, ps, right, ps + springHeight);
+}
+
+function updateSpring() {
+  // Update the spring position
+  if ( !move ) {
+    f = -K * ( ps - R ); // f=-ky
+    as = f / M;          // Set the acceleration, f=ma == a=f/m
+    vs = D * (vs + as);  // Set the velocity
+    ps = ps + vs;        // Updated position
+  }
+
+  if (abs(vs) &lt; 0.1) {
+    vs = 0.0;
+  }
+
+  // Test if mouse if over the top bar
+  if (mouseX &gt; left &amp;&amp; mouseX &lt; right &amp;&amp; mouseY &gt; ps &amp;&amp; mouseY &lt; ps + springHeight) {
+    over = true;
+  } else {
+    over = false;
+  }
+
+  // Set and constrain the position of top bar
+  if (move) {
+    ps = mouseY - springHeight / 2;
+    ps = constrain(ps, minHeight, maxHeight);
+  }
+}
+
+function mousePressed() {
+  if (over) {
+    move = true;
+  }
+}
+
+function mouseReleased() {
+  move = false;
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

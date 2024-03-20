@@ -1,0 +1,47 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//sound-note-envelope/ selected=true>English</option><option value=/ar/examples//sound-note-envelope/ >العربية</option><option value=/es/examples//sound-note-envelope/ >español</option><option value=/hi/examples//sound-note-envelope/ >हिन्दी</option><option value=/ko/examples//sound-note-envelope/ >한국어</option><option value=/pt-br/examples//sound-note-envelope/ >português (Brasil)</option><option value=/sk/examples//sound-note-envelope/ >slovenčina</option><option value=/zh/examples//sound-note-envelope/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Note Envelope</h1><span></span><main><p>Red bars rise on the screen based on the amplitude and the note played</p><p>An Envelope is a series of fades, defined as time / value pairs. In this example, the envelope will be used to “play” a note by controlling the output amplitude of an oscillator.<br/><br/>The p5.Oscillator sends its output through an internal Web Audio GainNode (p5.Oscillator.output). By default, that node has a constant value of 0.5. It can be reset with the osc.amp() method. Or, in this example, an Envelope takes control of that node, turning the amplitude up and down like a volume knob.</p><p><em><span class=small>To run this example locally, you will need the <a href=http://p5js.org/reference/#/libraries/p5.sound>p5.sound library</a> and a sound file.</span></em></p><pre>
+let osc, envelope, fft;
+
+let scaleArray = [60, 62, 64, 65, 67, 69, 71, 72];
+let note = 0;
+
+function setup() {
+  createCanvas(710, 200);
+  osc = new p5.SinOsc();
+
+  // Instantiate the envelope
+  envelope = new p5.Env();
+
+  // set attackTime, decayTime, sustainRatio, releaseTime
+  envelope.setADSR(0.001, 0.5, 0.1, 0.5);
+
+  // set attackLevel, releaseLevel
+  envelope.setRange(1, 0);
+
+  osc.start();
+
+  fft = new p5.FFT();
+  noStroke();
+}
+
+function draw() {
+  background(20);
+
+  if (frameCount % 60 === 0 || frameCount === 1) {
+    let midiValue = scaleArray[note];
+    let freqValue = midiToFreq(midiValue);
+    osc.freq(freqValue);
+
+    envelope.play(osc, 0, 0.1);
+    note = (note + 1) % scaleArray.length;
+  }
+
+  // plot FFT.analyze() frequency analysis on the canvas
+  let spectrum = fft.analyze();
+  for (let i = 0; i &lt; spectrum.length / 20; i++) {
+    fill(spectrum[i], spectrum[i] / 10, 0);
+    let x = map(i, 0, spectrum.length / 20, 0, width);
+    let h = map(spectrum[i], 0, 255, 0, height);
+    rect(x, height, spectrum.length / 20, -h);
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

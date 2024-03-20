@@ -1,0 +1,46 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//math-noise2d/ selected=true>English</option><option value=/ar/examples//math-noise2d/ >العربية</option><option value=/es/examples//math-noise2d/ >español</option><option value=/hi/examples//math-noise2d/ >हिन्दी</option><option value=/ko/examples//math-noise2d/ >한국어</option><option value=/pt-br/examples//math-noise2d/ >português (Brasil)</option><option value=/sk/examples//math-noise2d/ >slovenčina</option><option value=/zh/examples//math-noise2d/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Noise2D</h1><span></span><main><p>Two gradient, perlin noises, one on the left and one on the right</p><p>Create a 2D noise with different parameters.</p><pre>
+
+let noiseScale = 0.02;
+
+function setup() {
+  createCanvas(640, 360);
+}
+
+function drawNoise(x, y, w, h) {
+  for (let pixelY = y; pixelY &lt; y + h; pixelY++) {
+    for (let pixelX = x; pixelX &lt; x + w; pixelX++) {
+      let noiseVal =
+        noise((mouseX + pixelX) * noiseScale, (mouseY + pixelY) * noiseScale) * 255;
+
+      let index = 4 * (pixelY * width + pixelX);
+
+      pixels[index]     = noiseVal;
+      pixels[index + 1] = noiseVal;
+      pixels[index + 2] = noiseVal;
+      pixels[index + 3] = 255;
+    }
+  }
+}
+
+function draw() {
+  background(0);
+
+  loadPixels();
+
+  // Draw the left half of image
+  noiseDetail(2, 0.2);
+  drawNoise(0, 0, width / 2, height - 30);
+
+  // Draw the right half of image
+  noiseDetail(5, 0.5);
+  drawNoise(width / 2, 0, width / 2, height - 30);
+
+  updatePixels();
+
+  //Show the details of two partitions
+  textSize(18);
+  fill(255, 255, 255);
+  text(&quot;Noise2D with 2 octaves and 0.2 falloff&quot;, 10, 350);
+  text(&quot;Noise2D with 5 octaves and 0.5 falloff&quot;, 330, 350);
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

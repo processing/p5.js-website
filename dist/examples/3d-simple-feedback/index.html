@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//3d-simple-feedback/ selected=true>English</option><option value=/ar/examples//3d-simple-feedback/ >العربية</option><option value=/es/examples//3d-simple-feedback/ >español</option><option value=/hi/examples//3d-simple-feedback/ >हिन्दी</option><option value=/ko/examples//3d-simple-feedback/ >한국어</option><option value=/pt-br/examples//3d-simple-feedback/ >português (Brasil)</option><option value=/sk/examples//3d-simple-feedback/ >slovenčina</option><option value=/zh/examples//3d-simple-feedback/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Simple Feedback</h1><span></span><main><p>An example of a simple feedback effect using two buffers.</p><p>A simple feedback effect that is achieved by using two WebGL graphics buffers. This effect works by drawing the previous frame to a second createGraphics() buffer, which can be blended with the current frame. This takes advantage of texture mapping in WebGL.</p><pre>
+
+let pg, swap;
+
+function setup() {
+  createCanvas(710, 400);
+
+  // this will hold the previous frame
+  pg = createGraphics(710, 400, WEBGL);
+  // this will hold our main graphic
+  swap = createGraphics(710, 400, WEBGL);
+
+  describe(
+    &#39;a slowly oscillating, radiating white sphere that fades into a dark gray background through a feedback visual effect&#39;
+  );
+}
+
+function draw() {
+  // clears and resets the p5.Graphics so that 3D objects draw correctly
+  pg.reset();
+
+  // draw the previous frame
+  pg.texture(swap);
+  pg.noStroke();
+  pg.plane(width, height);
+
+  // draw our sphere on top
+  pg.push();
+  // slowly move the sphere in a circle
+  pg.translate(sin(millis() / 200) * 5, cos(millis() / 200) * 5, 0);
+  pg.fill(255);
+  pg.sphere(90);
+  pg.pop();
+
+  // draw a slightly scaled up copy of the texture
+  swap.push();
+  swap.scale(1.1, 1.1);
+  swap.texture(pg);
+  swap.noStroke();
+  swap.plane(width, height);
+  swap.pop();
+
+  // an opaque rectangle is drawn over top to control the feedback decay
+  swap.fill(0, 50);
+  swap.rect(-width / 2, -height / 2, width, height);
+
+  // draw the output to the screen
+  image(swap, 0, 0);
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

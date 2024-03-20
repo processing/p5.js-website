@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//arrays-array-2d/ selected=true>English</option><option value=/ar/examples//arrays-array-2d/ >العربية</option><option value=/es/examples//arrays-array-2d/ >español</option><option value=/hi/examples//arrays-array-2d/ >हिन्दी</option><option value=/ko/examples//arrays-array-2d/ >한국어</option><option value=/pt-br/examples//arrays-array-2d/ >português (Brasil)</option><option value=/sk/examples//arrays-array-2d/ >slovenčina</option><option value=/zh/examples//arrays-array-2d/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Array 2D</h1><span></span><main><p>A grid of dots drawn on a black background. Dots closer to the center are darker in color and dots further away from the center are whiter in color</p><p>Demonstrates the syntax for creating a two-dimensional (2D) array. Values in a 2D array are accessed through two index values. 2D arrays are useful for storing images. In this example, each dot is colored in relation to its distance from the center of the image.</p><pre>
+let distances = [];
+let maxDistance;
+let spacer;
+
+function setup() {
+  createCanvas(720, 360);
+  maxDistance = dist(width / 2, height / 2, width, height);
+  for (let x = 0; x &lt; width; x++) {
+    distances[x] = []; // create nested array
+    for (let y = 0; y &lt; height; y++) {
+      let distance = dist(width / 2, height / 2, x, y);
+      distances[x][y] = (distance / maxDistance) * 255;
+    }
+  }
+  spacer = 10;
+  noLoop(); // Run once and stop
+}
+
+function draw() {
+  background(0);
+  // This embedded loop skips over values in the arrays based on
+  // the spacer variable, so there are more values in the array
+  // than are drawn here. Change the value of the spacer variable
+  // to change the density of the points
+  for (let x = 0; x &lt; width; x += spacer) {
+    for (let y = 0; y &lt; height; y += spacer) {
+      stroke(distances[x][y]);
+      point(x + spacer / 2, y + spacer / 2);
+    }
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

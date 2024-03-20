@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//image-processing--histogram/ selected=true>English</option><option value=/ar/examples//image-processing--histogram/ >العربية</option><option value=/es/examples//image-processing--histogram/ >español</option><option value=/hi/examples//image-processing--histogram/ >हिन्दी</option><option value=/ko/examples//image-processing--histogram/ >한국어</option><option value=/pt-br/examples//image-processing--histogram/ >português (Brasil)</option><option value=/sk/examples//image-processing--histogram/ >slovenčina</option><option value=/zh/examples//image-processing--histogram/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Histogram</h1><span></span><main><p>A black and white image of white persons in front of a tent with a white bar histogram overlayed on the bottom.</p><p>Calculates the histogram of an image. A histogram is the frequency distribution of the gray levels with the number of pure black values displayed on the left and number of pure white values on the right. Note that this sketch will behave differently on Android, since most images will no longer be full 24-bit color.</p><pre>
+
+let img;
+let hist = [];
+
+function preload() {
+  // Load an image from the data directory
+  // Load a different image by modifying the comments
+  img = loadImage(&#39;assets/frontier.jpg&#39;);
+}
+
+function setup() {
+  createCanvas(640, 360);
+  image(img, 0, 0);
+
+  // Initialize the histogram
+  for (let i = 0; i &lt; 100; i++) {
+    hist.push(0);
+  }
+
+  // Calculate the histogram
+  for (let i = 0; i &lt; img.width; i++) {
+    for (let j = 0; j &lt; img.height; j++) {
+      let bright = int(brightness(img.get(i, j)));
+      hist[bright]++;
+    }
+  }
+}
+
+function draw(){
+  // Find the largest value in the histogram
+  let histMax = max(hist);
+  stroke(255);
+  // Draw half of the histogram (skip every second value)
+  for (let i = 0; i &lt; img.width; i += 2) {
+    // Map i (from 0..img.width) to a location in the histogram (0..100)
+    let which = int(map(i, 0, img.width, 0, 100));
+    // Convert the histogram value to a location between
+    // the bottom and the top of the picture
+    let y = int(map(hist[which], 0, histMax, img.height, 0));
+    line(i, img.height, i, y);
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/tutorials/coordinates-and-transformations/ selected=true>English</option><option value=/ar/tutorials/coordinates-and-transformations/ >العربية</option><option value=/es/tutorials/coordinates-and-transformations/ >español</option><option value=/hi/tutorials/coordinates-and-transformations/ >हिन्दी</option><option value=/ko/tutorials/coordinates-and-transformations/ >한국어</option><option value=/pt-br/tutorials/coordinates-and-transformations/ >português (Brasil)</option><option value=/sk/tutorials/coordinates-and-transformations/ >slovenčina</option><option value=/zh/tutorials/coordinates-and-transformations/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Coordinates and Transformations</h1><span></span><main><h6>By Dave Pagurek, Austin Lee Slominski, Adam Ferriss</h6><p>This tutorial will introduce new concepts for creating 3D sketches with p5.js, including x, y, and z.</p><p>Let’s start by setting up the p5.js to use WebGL, by passing <code>WEBGL</code> as a third parameter into <code>createCanvas()</code>.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(windowWidth, windowHeight, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;A red box on a white background.&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  fill</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  box</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre><h2 id=3d-coordinate-space>3D coordinate space</h2><p>2D sketches use the x- and y-axes to define horizontal and vertical positions. 3D sketches extend this model with a z-axis which defines depth. When drawing in 2D, the point (0,0) is located at the top left corner of the screen. In WebGL mode, the origin of the sketch (0,0,0) is located in the middle of the screen. By default, the x-axis goes left to right, the y-axis goes up to down, and the z-axis goes from further to closer, “out of” the screen.</p><p><img alt="An illustration showing a 2D coordinate system on the left, showing an origin of (0,0) at its top left, and a 3D coordinate system on the right, showing an origin of (0,0,0) in its center" decoding=async height=300 loading=lazy src=/_astro/2d3d_coordinates.4-yLWupo_1Qx2QY.webp width=720></p><p>You can call <a href=https://p5js.org/reference/#/p5/debugMode><code>debugMode()</code></a> in your <code>setup()</code> function to add a grid on the x- and z-axes and the red-green-blue x, y, and z arrows to your sketch, similar to the illustration above.</p><h2 id=transformations-position-and-size-of-3d-shapes>Transformations: Position and Size of 3D Shapes</h2><p>p5.js has a few functions that we can use to position and orient objects within 3D space: <code>translate()</code>, <code>rotate()</code>, and <code>scale()</code>. Collectively these are known as the <em>transformation</em> of an object. These methods are available for both 2D and 3D drawing.</p><h3 id=translate-moving-objects-in-space><code>translate()</code>: Moving Objects in Space</h3><iframe aria-label="Code Preview" height=400 sandbox="allow-scripts allow-popups allow-modals allow-forms" srcdoc="&lt;!DOCTYPE html>
+&lt;meta charset=&quot;utf8&quot; />
+&lt;style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+body {
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+  font-size: 16px;
+  background-color: #dcdcdc
+}
+
+#pageContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#pageContainer>div {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-evenly;
+  margin: 0px 10px;
+}
+
+#controlsContainer {
+  width: 250px;
+  flex-grow: 2;
+}
+
+#controlsContainer label {
+  padding: 15px;
+}
+
+&lt;/style>
+&lt;body>&lt;div id=&quot;pageContainer&quot;>
+  &lt;div id=&quot;sketchContainer&quot;>&lt;/div>
+  &lt;div id=&quot;controlsContainer&quot;>
+    &lt;label>x: &lt;input id=&quot;xAxis&quot; type=&quot;range&quot; step=&quot;0.001&quot; min=&quot;-100&quot; max=&quot;100&quot; />&lt;/label>
+    &lt;label>y: &lt;input id=&quot;yAxis&quot; type=&quot;range&quot; step=&quot;0.001&quot; min=&quot;-100&quot; max=&quot;100&quot; />&lt;/label>
+    &lt;label>z: &lt;input id=&quot;zAxis&quot; type=&quot;range&quot; step=&quot;0.001&quot; min=&quot;-100&quot; max=&quot;100&quot; />&lt;/label>
+
+    &lt;p id=&quot;axisText&quot;>&lt;/p>
+  &lt;/div>
+&lt;/div>&lt;/body>
+&lt;script id=&quot;code&quot; type=&quot;text/javascript&quot;>let xSlider, ySlider, zSlider;
+let p;
+
+function setup() {
+  let canvas = createCanvas(350, 350, WEBGL);
+  canvas.parent(&quot;sketchContainer&quot;);
+
+  debugMode();
+  camera(0,-200,200,0,0,0);
+
+  xSlider = document.querySelector('#xAxis');
+  ySlider = document.querySelector('#yAxis');
+  zSlider = document.querySelector('#zAxis');
+
+  p = document.querySelector('#axisText');
+
+  describe('an interactive example that visualizes translation on a box shape');
+}
+
+function draw() {
+  background(220);
+  orbitControl();
+
+  push();
+  translate(xSlider.value,ySlider.value,zSlider.value);
+  box(50);
+  pop();
+
+  // draw axes
+  push();
+  strokeWeight(5);
+  stroke(255,0,0);
+  line(0,0,0, xSlider.value,0,0);
+  
+  translate(xSlider.value,0,0);
+  stroke(0,255,0);
+  line(0,0,0, 0, ySlider.value, 0);
+  
+  translate(0,ySlider.value,0);
+  stroke(0,0,255);
+  line(0,0,0, 0, 0, zSlider.value);
+  pop();
+
+  p.innerHTML = 'translate('+parseFloat(xSlider.value).toFixed(3)+','+parseFloat(ySlider.value).toFixed(3)+','+parseFloat(zSlider.value).toFixed(3)+') &lt;br />';
+}&lt;/script>
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js&quot;>&lt;/script>
+" title="Code Preview" width=100%></iframe><p><code>translate()</code> moves the origin to a given point. Anything drawn after we call <code>translate()</code> will be positioned relative to that point. <code>translate()</code> accepts arguments for x, y, and z values. Use the sliders in the sketch above to change the translation of the box and see how it moves along each axis. The code snippet below demonstrates simple translation on a <code>box()</code> shape.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#6a737d>// draw a box 100 units to the right</span></span>
+<span class=line><span style=color:#b392f0>translate</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>,</span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>,</span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>box</span><span style=color:#e1e4e8>();</span></span></code></pre><div class=callout><h5>Try this!</h5><p>A <a href=https://upload.wikimedia.org/wikipedia/commons/f/f3/Random_walk_2500_animated.svg>random walk</a> involves moving in a random direction each step. Try doing a random walk in 3D using <code>translate()</code>, drawing a cube after each step like a trail of breadcrumbs!</p></div><h3 id=rotate-orienting-objects-in-space><code>rotate()</code>: Orienting Objects in Space</h3><iframe aria-label="Code Preview" height=400 sandbox="allow-scripts allow-popups allow-modals allow-forms" srcdoc="&lt;!DOCTYPE html>
+&lt;meta charset=&quot;utf8&quot; />
+&lt;style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+body {
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+  font-size: 16px;
+  background-color: #dcdcdc
+}
+
+#pageContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#pageContainer>div {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-evenly;
+  margin: 0px 10px;
+}
+
+#controlsContainer {
+  width: 250px;
+  flex-grow: 2;
+}
+
+#controlsContainer label {
+  padding: 15px;
+}
+
+&lt;/style>
+&lt;body>&lt;div id=&quot;pageContainer&quot;>
+  &lt;div id=&quot;sketchContainer&quot;>&lt;/div>
+  &lt;div id=&quot;controlsContainer&quot;>
+    &lt;label>x: &lt;input id=&quot;xAxis&quot; type=&quot;range&quot; step=&quot;0.001&quot; min=&quot;0&quot; max=&quot;6.28318530718&quot; />&lt;/label>
+    &lt;label>y: &lt;input id=&quot;yAxis&quot; type=&quot;range&quot; step=&quot;0.001&quot; min=&quot;0&quot; max=&quot;6.28318530718&quot; />&lt;/label>
+    &lt;label>z: &lt;input id=&quot;zAxis&quot; type=&quot;range&quot; step=&quot;0.001&quot; min=&quot;0&quot; max=&quot;6.28318530718&quot; />&lt;/label>
+
+    &lt;p id=&quot;axisText&quot;>&lt;/p>
+  &lt;/div>
+&lt;/div>&lt;/body>
+&lt;script id=&quot;code&quot; type=&quot;text/javascript&quot;>let xRotateSlider, yRotateSlider, zRotateSlider, angleSlider;
+let p;
+
+function setup() {
+  let canvas = createCanvas(350, 350, WEBGL);
+  canvas.parent(&quot;sketchContainer&quot;)
+  camera(0,-200,200,0,0,0)
+
+  // note these are all angle ranges:
+  xAxisSlider = document.querySelector('#xAxis');
+  yAxisSlider = document.querySelector('#yAxis');
+  zAxisSlider = document.querySelector('#zAxis');
+
+  debugMode();
+
+  p = document.querySelector('#axisText');
+
+  describe('an interactive example that visualizes different axes of rotation on a torus shape');
+}
+
+function draw() {
+  background(220);
+  orbitControl();
+
+  push();
+  rotateX(xAxisSlider.value);
+  rotateY(yAxisSlider.value);
+  rotateZ(zAxisSlider.value);
+
+  // draw lines along x, y, z axes in rotated space
+  strokeWeight(4);
+  stroke('red');
+  line(0, 0, 0, 100, 0, 0);
+  stroke('green');
+  line(0, 0, 0, 0, 100, 0);
+  stroke('blue');
+  line(0, 0, 0, 0, 0, 100);
+
+  normalMaterial();
+  torus(30, 20);
+  pop();
+
+  noFill();
+
+  p.innerHTML = 'angleMode(DEGREES) &lt;br />&lt;br />';
+  p.innerHTML += 'rotateX('+parseFloat(degrees(xAxisSlider.value)).toFixed(1)+') &lt;br />';
+  p.innerHTML += 'rotateY('+parseFloat(degrees(yAxisSlider.value)).toFixed(1)+') &lt;br />';
+  p.innerHTML += 'rotateZ('+parseFloat(degrees(zAxisSlider.value)).toFixed(1)+') &lt;br />';
+}
+&lt;/script>
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js&quot;>&lt;/script>
+" title="Code Preview" width=100%></iframe><p><code>rotate()</code> reorients whatever is drawn after it.</p><p>There are a few functions that can be used to rotate an object in 3D. Most of the time, it’s easiest to call functions like <code>rotateX()</code>, <code>rotateY()</code>, and <code>rotateZ()</code>, which each allow for rotation around a specific axis. Each function accepts a single argument specifying the angle of rotation. Try moving the sliders in the example above to see how rotation is performed on each axis. The code below shows each of these methods in use.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#6a737d>// rotate X, Y, and Z axes by 45 degrees</span></span>
+<span class=line><span style=color:#b392f0>rotateX</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>QUARTER_PI</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>rotateY</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>QUARTER_PI</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>rotateZ</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>QUARTER_PI</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>box</span><span style=color:#e1e4e8>();</span></span></code></pre><p>By default, p5.js expects angles to be in radians. Radians use numbers from 0 to <code>TWO_PI</code> to specify an angle. To use degrees, either convert degrees to radians using <code>radians(numberInDegrees)</code> or use <code>angleMode(DEGREES)</code>:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#6a737d>// rotate each axis by 45 degrees</span></span>
+<span class=line><span style=color:#b392f0>rotateX</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>radians</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>45</span><span style=color:#e1e4e8>));</span></span>
+<span class=line><span style=color:#b392f0>box</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#6a737d>// or</span></span>
+<span class=line><span style=color:#b392f0>angleMode</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>DEGREES</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>rotateY</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>45</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>box</span><span style=color:#e1e4e8>();</span></span></code></pre><p>You can also use <code>rotate(angle, axis)</code>, which allows you to specify which axis you’d like to rotate around using a vector as the second argument. This lets you rotate a shape about any axis you choose. In the example below, we create an axis using the mouse coordinates, and rotate about it:</p><style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(self.Astro||(self.Astro={})).load=async t=>{await(await t())()},window.dispatchEvent(new Event("astro:load")),(()=>{var t,e=Object.defineProperty,r=(t,r,n)=>(((t,r,n)=>{r in t?e(t,r,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[r]=n})(t,"symbol"!=typeof r?r+"":r,n),n);{let e={0:t=>i(t),1:t=>s(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(s(t)),5:t=>new Set(s(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t)},n=t=>{let[r,n]=t;return r in e?e[r](n):void 0},s=t=>t.map(n),i=t=>"object"!=typeof t||null===t?t:Object.fromEntries(Object.entries(t).map((([t,e])=>[t,n(e)])));customElements.get("astro-island")||customElements.define("astro-island",(t=class extends HTMLElement{constructor(){super(...arguments),r(this,"Component"),r(this,"hydrator"),r(this,"hydrate",(async()=>{var t;if(!this.hydrator||!this.isConnected)return;let e=null==(t=this.parentElement)?void 0:t.closest("astro-island[ssr]");if(e)return void e.addEventListener("astro:hydrate",this.hydrate,{once:!0});let r,n=this.querySelectorAll("astro-slot"),s={},o=this.querySelectorAll("template[data-astro-template]");for(let t of o){let e=t.closest(this.tagName);null!=e&&e.isSameNode(this)&&(s[t.getAttribute("data-astro-template")||"default"]=t.innerHTML,t.remove())}for(let t of n){let e=t.closest(this.tagName);null!=e&&e.isSameNode(this)&&(s[t.getAttribute("name")||"default"]=t.innerHTML)}try{r=this.hasAttribute("props")?i(JSON.parse(this.getAttribute("props"))):{}}catch(t){let e=this.getAttribute("component-url")||"<unknown>",r=this.getAttribute("component-export");throw r&&(e+=` (export ${r})`),console.error(`[hydrate] Error parsing props for component ${e}`,this.getAttribute("props"),t),t}await this.hydrator(this)(this.Component,r,s,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))})),r(this,"unmount",(()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))}))}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(this.hasAttribute("await-children")&&"interactive"!==document.readyState&&"complete"!==document.readyState){let t=()=>{document.removeEventListener("DOMContentLoaded",t),e.disconnect(),this.childrenConnectedCallback()},e=new MutationObserver((()=>{var e;(null==(e=this.lastChild)?void 0:e.nodeType)===Node.COMMENT_NODE&&"astro:end"===this.lastChild.nodeValue&&(this.lastChild.remove(),t())}));e.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",t)}else this.childrenConnectedCallback()}async childrenConnectedCallback(){let t=this.getAttribute("before-hydration-url");t&&await import(t),this.start()}async start(){let t=JSON.parse(this.getAttribute("opts")),e=this.getAttribute("client");if(void 0!==Astro[e])try{await Astro[e]((async()=>{let t=this.getAttribute("renderer-url"),[e,{default:r}]=await Promise.all([import(this.getAttribute("component-url")),t?import(t):()=>()=>{}]),n=this.getAttribute("component-export")||"default";if(n.includes(".")){this.Component=e;for(let t of n.split("."))this.Component=this.Component[t]}else this.Component=e[n];return this.hydrator=r,this.hydrate}),t,this)}catch(t){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,t)}else window.addEventListener(`astro:${e}`,(()=>this.start()),{once:!0})}attributeChangedCallback(){this.hydrate()}},r(t,"observedAttributes",["props"]),t))}})()</script><astro-island await-children="" client=load component-export=default component-url=/_astro/CodeEmbed.BxoFCdDb.js opts={&quot;name&quot;:&quot;CodeEmbedCodeMirror&quot;,&quot;value&quot;:true} props="{&quot;initialValue&quot;:[0,&quot;function setup() {\n  createCanvas(200, 200, WEBGL);\n}\n\nfunction draw() {\n  background(255);\n \n  // Slowly rotate over time\n  let angle = millis() * 0.001;\n \n  // The axis of rotation will be the line\n  // going through the center of the canvas\n  // and the mouse\n  let axis = createVector(\n    mouseX - width/2,\n    mouseY - height/2,\n    0\n  );\n \n  // Visualize the axis\n  strokeWeight(3);\n  stroke(&#39;red&#39;);\n  line(0, 0, 0, axis.x, axis.y, axis.z);\n  stroke(&#39;blue&#39;);\n  line(0, 0, 0, -axis.x, -axis.y, -axis.z);\n \n  // Rotate a box about that axis\n  lights();\n  noStroke();\n  rotate(angle, axis);\n  box();\n}&quot;],&quot;previewable&quot;:[0,true],&quot;editable&quot;:[0,true]}" renderer-url=/_astro/client.CwpMCSBY.js ssr="" uid=ZlfMWI><div class=code-placeholder></div></astro-island><h3 id=scale-size-in-space><code>scale()</code>: Size in Space</h3><iframe aria-label="Code Preview" height=400 sandbox="allow-scripts allow-popups allow-modals allow-forms" srcdoc="&lt;!DOCTYPE html>
+&lt;meta charset=&quot;utf8&quot; />
+&lt;style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+body {
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+  font-size: 16px;
+  background-color: #dcdcdc
+}
+
+#pageContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#pageContainer>div {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-evenly;
+  margin: 0px 10px;
+}
+
+#controlsContainer {
+  width: 250px;
+  flex-grow: 2;
+}
+
+#controlsContainer label {
+  padding: 15px;
+}
+
+&lt;/style>
+&lt;body>&lt;div id=&quot;pageContainer&quot;>
+  &lt;div id=&quot;sketchContainer&quot;>&lt;/div>
+  &lt;div id=&quot;controlsContainer&quot;>
+    &lt;label>x: &lt;input id=&quot;xAxis&quot; type=&quot;range&quot; value=&quot;1&quot; step=&quot;0.001&quot; min=&quot;0&quot; max=&quot;10&quot; />&lt;/label>
+    &lt;label>y: &lt;input id=&quot;yAxis&quot; type=&quot;range&quot; value=&quot;1&quot; step=&quot;0.001&quot; min=&quot;0&quot; max=&quot;10&quot; />&lt;/label>
+    &lt;label>z: &lt;input id=&quot;zAxis&quot; type=&quot;range&quot; value=&quot;1&quot; step=&quot;0.001&quot; min=&quot;0&quot; max=&quot;10&quot; />&lt;/label>
+
+    &lt;p id=&quot;axisText&quot;>&lt;/p>
+  &lt;/div>
+&lt;/div>&lt;/body>
+&lt;script id=&quot;code&quot; type=&quot;text/javascript&quot;>let xSlider, ySlider, zSlider;
+let p;
+
+function setup() {
+  let canvas = createCanvas(350, 350, WEBGL);
+  canvas.parent(&quot;sketchContainer&quot;);
+  
+  camera(0,-200,200,0,0,0);
+  debugMode();
+  
+  xSlider = document.querySelector('#xAxis');
+  ySlider = document.querySelector('#yAxis');
+  zSlider = document.querySelector('#zAxis');
+
+  p = document.querySelector('#axisText');
+
+  describe('an interactive example that visualizes how scale works on a box shape')
+}
+
+function draw() {
+  background(220);
+  orbitControl();
+  
+  push();
+  scale(xSlider.value,ySlider.value,zSlider.value);
+  box(50);
+
+  strokeWeight(5);
+  stroke(255,0,0);
+  line(-25,0,25, 25,0,25);
+
+  stroke(0,255,0);
+  line(0,-25,25, 0,25,25);
+
+  stroke(0,0,255);
+  line(0,-25,-25, 0,-25,25);
+
+  pop();
+  
+  // draw axes
+  push();
+
+  pop();
+  
+  p.innerHTML = 'scale('+parseFloat(xSlider.value).toFixed(2)+', '+parseFloat(ySlider.value).toFixed(2)+', '+parseFloat(zSlider.value).toFixed(2)+')';
+}&lt;/script>
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js&quot;>&lt;/script>
+" title="Code Preview" width=100%></iframe><p><code>scale()</code> changes the size of whatever is drawn after it. Like the other functions described, it accepts arguments for x, y, and z values.</p><div class=callout><h5>Try this!</h5><p>Try making a cube jump up and down, but use <code>scale()</code> to have it <a href=https://en.wikipedia.org/wiki/Squash_and_stretch>squash and stretch</a> when it bounces to give it a cartoon feel!</p></div><h2 id=transforming-multiple-shapes>Transforming Multiple Shapes</h2><p>Transform functions are cumulative and affect everything drawn after them. For example, if you call <code>translate(50, 0, 0)</code> twice, they add together, making it equivalent to calling <code>translate(100, 0, 0)</code> once.  However, sometimes you will want to draw different shapes with different transformations.</p><p>The <code>push()</code> function saves the current transformations and style settings. Then, after performing new transformations, the <code>pop()</code> function is used to restore us to the original transformations. The result is that whatever transformations or styling changes that are made between <code>push()</code> and <code>pop()</code> are isolated to that portion of the code. In the example below, we draw a number of boxes at their own distinct locations by placing their transforms between <code>push()</code> and <code>pop()</code>:</p><astro-island await-children="" client=load component-export=default component-url=/_astro/CodeEmbed.BxoFCdDb.js opts={&quot;name&quot;:&quot;CodeEmbedCodeMirror&quot;,&quot;value&quot;:true} props="{&quot;initialValue&quot;:[0,&quot;function setup() {\n  createCanvas(200, 200, WEBGL);\n}\nfunction draw() {\n  background(220);\n  noStroke();\n  lights();\n  orbitControl();\n \n  push();\n  translate(-50, 0, -100);\n  fill(&#39;red&#39;);\n  sphere(50);\n  pop();\n \n  push();\n  translate(0, -100, -300);\n  fill(&#39;green&#39;);\n  sphere(50);\n  pop();\n \n  push();\n  translate(25, 25, 50);\n  fill(&#39;blue&#39;);\n  sphere(50);\n  pop();\n}&quot;],&quot;previewable&quot;:[0,true],&quot;editable&quot;:[0,true]}" renderer-url=/_astro/client.CwpMCSBY.js ssr="" uid=14pT5y><div class=code-placeholder></div></astro-island><details><summary>Transformation Matrices</summary><p><em>While this is a more advanced topic, each of these transformations affects what is called the model matrix. The model matrix is combined with the view matrix and the projection matrix, both of which help simulate the view of a camera, and this combination results in our 3D scene! You can</em> <a href=https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_model_view_projection><em>learn more about Model View Projection on MDN.</em></a></p></details><div class=callout><h5>Try this!</h5><p>Try making two spheres that can be moved around separately, with arrow keys controlling one, and WASD keys controlling the other.</p></div><h2 id=the-order-of-transformations-matters>The Order of Transformations Matters!</h2><p>The way transformations affect each other can feel unpredictable at first because order matters. Each transformation always affects the next one. For example, if <code>rotate()</code> is called, followed by <code>translate()</code>, the direction of that translation will be affected by the rotation. The entire coordinate system is rotating and moving, not just the shape itself. Here are some recipes for different transformation orders that you can use.</p><h3 id=the-default-positioning-objects-in-a-scene>The Default: Positioning Objects in a Scene</h3><p>If you are drawing many objects, chances are that each one will have a unique position, orientation, and scale. For this, you should first <code>translate()</code> to the center of where the object should be, then <code>rotate()</code> to match its orientation, and finally <code>scale()</code> to fit its size. This is a good order to use by default.</p><astro-island await-children="" client=load component-export=default component-url=/_astro/CodeEmbed.BxoFCdDb.js opts={&quot;name&quot;:&quot;CodeEmbedCodeMirror&quot;,&quot;value&quot;:true} props="{&quot;initialValue&quot;:[0,&quot;let positions = [];\nlet rotations = [];\nlet scales = [];\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  for (let i = 0; i &lt; 10; i++) {\n    positions.push(createVector(\n      random(-width / 2, width / 2),\n      random(-height / 2, height / 2),\n      random(-width / 2, width / 2)\n    ));\n    rotations.push(createVector(\n      random(TWO_PI),\n      random(TWO_PI),\n      random(TWO_PI)\n    ));\n    scales.push(random(0.5, 2));\n  }\n}\nfunction draw() {\n  background(255);\n  orbitControl();\n  noStroke();\n  lights();\n \n  for (let i = 0; i &lt; 10; i += 1) {\n    push();\n    translate(\n      positions[i].x,\n      positions[i].y,\n      positions[i].z\n    );\n    rotateX(rotations[i].x);\n    rotateY(rotations[i].y);\n    rotateZ(rotations[i].z);\n    scale(scales[i]);\n    box(20);\n    pop();\n  }\n}&quot;],&quot;previewable&quot;:[0,true],&quot;editable&quot;:[0,true]}" renderer-url=/_astro/client.CwpMCSBY.js ssr="" uid=1Be8So><div class=code-placeholder></div></astro-island><div class=callout><h5>Try this!</h5><p>Try making a solar system, where each planet has its own independent position as it moves around the sun, and each has its own rotation as they spin at different speeds!</p></div><h3 id=rotating-around-a-pivot-point>Rotating Around a Pivot Point</h3><p>Sometimes you want to rotate a shape about a point that isn’t its center. For this, you can <code>translate()</code> to the pivot point, <code>rotate()</code> or <code>scale()</code> as needed, and then <code>translate()</code> back to the center before drawing your shape. The sketch below uses this method to make a shape squash and stretch about its base rather than its center.</p><astro-island await-children="" client=load component-export=default component-url=/_astro/CodeEmbed.BxoFCdDb.js opts={&quot;name&quot;:&quot;CodeEmbedCodeMirror&quot;,&quot;value&quot;:true} props="{&quot;initialValue&quot;:[0,&quot;function setup() {\n  createCanvas(200, 200, WEBGL);\n}\n\nfunction draw() {\n  background(255);\n  orbitControl();\n  noStroke();\n  lights();\n \n  // Rotate left/right over time\n  let angle = sin(millis() * 0.005) * PI * 0.2;\n \n  // This represents how much to scale vertically by.\n  let squash = map(\n    sin(millis() * 0.0125),\n    -1, 1,\n    1, 0.3\n  );\n \n  // When vertically compressed, squish out in the\n  // other axes.\n  let stretch = 1/squash;\n  let pivot = createVector(0, 50, 0);\n \n  push()\n  translate(pivot.x, pivot.y, pivot.z);\n \n  // Apply a transformation centered at the pivot\n  rotateZ(angle);\n  scale(stretch, squash, stretch);\n \n  translate(-pivot.x, -pivot.y, -pivot.z);\n  cylinder(20, 100);\n  pop()\n}&quot;],&quot;previewable&quot;:[0,true],&quot;editable&quot;:[0,true]}" renderer-url=/_astro/client.CwpMCSBY.js ssr="" uid=ZpRHRP><div class=code-placeholder></div></astro-island><div class=callout><h5>Try this!</h5><p>Try making a character waving its arm! You will want to rotate the arm about the point where the arm connects to its body so that it stays connected.</p></div><h3 id=drawing-with-symmetry>Drawing with Symmetry</h3><p>Sometimes you want to draw the same thing multiple times with mirror or radial symmetry. In these cases, you will end up drawing in a loop. For each iteration, <code>rotate()</code> or <code>scale()</code> depending on the type of symmetry you want. Finally, apply any other transformations needed to draw your shape.</p><p>In the example below, <code>scale(-1, 1)</code> is used to add horizontal symmetry to draw the eyes and ears of a face:</p><astro-island await-children="" client=load component-export=default component-url=/_astro/CodeEmbed.BxoFCdDb.js opts={&quot;name&quot;:&quot;CodeEmbedCodeMirror&quot;,&quot;value&quot;:true} props="{&quot;initialValue&quot;:[0,&quot;function setup() {\n  createCanvas(200, 200, WEBGL);\n}\n\nfunction draw() {\n  background(255);\n  lights();\n  noStroke();\n  orbitControl();\n \n  // The head\n  push();\n  scale(1, 1.25, 1);\n  sphere(50);\n  pop();\n \n  // The nose\n  push()\n  translate(0, 0, 50);\n  scale(1, 1.5, 1);\n  sphere(10);\n  pop()\n \n  // Draw symmetrical parts by looping over each\n  // side, represented by the horizontal scale applied.\n  for (let side of [-1, 1]) {\n    push();\n    // Apply the symmetrical transformation\n    scale(side, 1, 1);\n   \n    // Eyes\n    push();\n    translate(20, -10, 40);\n    sphere(8);\n    pop();\n   \n    // Ears\n    push();\n    translate(50, 0, 0);\n    scale(1, 1, 0.3);\n    sphere(20);\n    pop();\n   \n    pop();\n  }\n}&quot;],&quot;previewable&quot;:[0,true],&quot;editable&quot;:[0,true]}" renderer-url=/_astro/client.CwpMCSBY.js ssr="" uid=Z1sU0d9><div class=code-placeholder></div></astro-island><p>In this example, <code>rotateY()</code> is used to create radial symmetry for a stonehenge scene.</p><astro-island await-children="" client=load component-export=default component-url=/_astro/CodeEmbed.BxoFCdDb.js opts={&quot;name&quot;:&quot;CodeEmbedCodeMirror&quot;,&quot;value&quot;:true} props="{&quot;initialValue&quot;:[0,&quot;function setup() {\n  createCanvas(200, 200, WEBGL);\n}\n\nfunction draw() {\n  background(255);\n  noStroke();\n  lights();\n  orbitControl();\n \n  let numArches = 6;\n \n  for (let i = 0; i &lt; numArches; i++) {\n    const angle = map(i, 0, numArches-1, -PI/2, PI/2);\n   \n    // Apply radially symmetrical transformation\n    push();\n    rotateY(angle);\n   \n    // Draw each arch\n    translate(0, 0, -150);\n   \n    // Left beam\n    push();\n    translate(-20, 0, 0);\n    cylinder(10, 100);\n    pop();\n   \n    // Right beam\n    push();\n    translate(20, 0, 0);\n    cylinder(10, 100);\n    pop();\n   \n    // Top\n    push();\n    translate(0, -50, 0);\n    rotateZ(PI/2);\n    cylinder(10, 80);\n    pop();\n   \n    pop();\n  }\n}&quot;],&quot;previewable&quot;:[0,true],&quot;editable&quot;:[0,true]}" renderer-url=/_astro/client.CwpMCSBY.js ssr="" uid=2cBu7x><div class=code-placeholder></div></astro-island><div class=callout><h5>Try this!</h5><p>Try giving a body with arms and legs to the head in the example!</p></div><h2 id=conclusion>Conclusion</h2><p>By having control over 3D coordinates, you will be able to create more complex scenes in 3D. The tutorials that follow this one build on these skills by giving you more control over what you draw after you have transformed it.</p><h2 id=glossary>Glossary</h2><h4 id=gpu>GPU</h4><p>The GPU (Graphics Processing Unit) is a piece of hardware that is particularly well suited for performing many calculations in parallel, making it powerful for 3D graphics.</p><h4 id=model>Model</h4><p>A custom 3D geometry that can be saved and loaded from a file.</p><h4 id=matrix>Matrix</h4><p>A special array that can hold information about the transformation of a geometry.</p><h4 id=camera>Camera</h4><p>The viewpoint of a 3D scene.</p><h4 id=transformation>Transformation</h4><p>The combined scale, rotation, and translation of a geometry. The verb <em>transform</em> is used when describing altering these properties.</p><h4 id=vertex>Vertex</h4><p>A point in 3D space with an x, y, and z position.</p><h4 id=face>Face</h4><p>A collection of three points that create a solid surface.</p><h2>Related examples</h2><ul></ul><h2>Related references</h2><ul></ul></main><div>p5.js site footer goes here</div></body></html>

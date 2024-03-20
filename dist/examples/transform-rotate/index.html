@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//transform-rotate/ selected=true>English</option><option value=/ar/examples//transform-rotate/ >العربية</option><option value=/es/examples//transform-rotate/ >español</option><option value=/hi/examples//transform-rotate/ >हिन्दी</option><option value=/ko/examples//transform-rotate/ >한국어</option><option value=/pt-br/examples//transform-rotate/ >português (Brasil)</option><option value=/sk/examples//transform-rotate/ >slovenčina</option><option value=/zh/examples//transform-rotate/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Rotate</h1><span></span><main><p>White square on a dark grey background rotates side to side</p><p>Rotating a square around the Z axis. To get the results you expect, send the rotate function angle parameters that are values between 0 and PI*2 (TWO_PI which is roughly 6.28). If you prefer to think about angles as degrees (0-360), you can use the radians() method to convert your values. For example: rotate(radians(90)) is identical to the statement rotate(PI/2). In this example, every even numbered second a jitter is added to the rotation. During odd seconds, rotation moves CW and CCW at the speed determined by the last jitter value.</p><pre>
+
+let angle = 0.0;
+let jitter = 0.0;
+
+function setup() {
+  createCanvas(720, 400);
+  noStroke();
+  fill(255);
+  //Draw the rectangle from the center and it will also be the
+  //rotate around that center
+  rectMode(CENTER);
+}
+
+function draw() {
+  background(51);
+
+  // during even-numbered seconds (0, 2, 4, 6...) add jitter to
+  // the rotation
+  if (second() % 2 === 0) {
+    jitter = random(-0.1, 0.1);
+  }
+  //increase the angle value using the most recent jitter value
+  angle = angle + jitter;
+  //use cosine to get a smooth CW and CCW motion when not jittering
+  let c = cos(angle);
+  //move the shape to the center of the canvas
+  translate(width / 2, height / 2);
+  //apply the final rotation
+  rotate(c);
+  rect(0, 0, 180, 180);
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

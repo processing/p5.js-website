@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//3d-framebuffer-blur/ selected=true>English</option><option value=/ar/examples//3d-framebuffer-blur/ >العربية</option><option value=/es/examples//3d-framebuffer-blur/ >español</option><option value=/hi/examples//3d-framebuffer-blur/ >हिन्दी</option><option value=/ko/examples//3d-framebuffer-blur/ >한국어</option><option value=/pt-br/examples//3d-framebuffer-blur/ >português (Brasil)</option><option value=/sk/examples//3d-framebuffer-blur/ >slovenčina</option><option value=/zh/examples//3d-framebuffer-blur/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Blur using Framebuffer Depth</h1><span></span><main><p>A line of five spheres rotating in front of the camera, with ones too close and too far to the camera appearing blurred</p><p>A shader that uses depth information from a p5.Framebuffer to draw a scene with focal blur.</p><pre>
+let layer;
+let blur;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  layer = createFramebuffer();
+  blur = createShader(vert, frag);
+  noStroke();
+}
+
+function draw() {
+  // Draw a scene
+  layer.begin();
+  background(255);
+  ambientLight(100);
+  directionalLight(255, 255, 255, -1, 1, -1);
+  ambientMaterial(255, 0, 0);
+  fill(255, 255, 100);
+  specularMaterial(255);
+  shininess(150);
+  
+  rotateY(millis() * 0.001);
+  for (let i = 0; i &lt; 5; i++) {
+    push();
+    translate((i-2)*100, 0, 0);
+    sphere();
+    pop();
+  }
+  layer.end();
+  
+  // Render the scene with depth of field blur
+  shader(blur);
+  blur.setUniform(&#39;img&#39;, layer.color);
+  blur.setUniform(&#39;depth&#39;, layer.depth);
+  rect(0, 0, width, height);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+let vert = `
+precision highp float;
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
+varying vec2 vTexCoord;
+void main() {
+  vec4 positionVec4 = vec4(aPosition, 1.0);
+  positionVec4.xy = positionVec4.xy * 2.0 - 1.0;
+  positionVec4.y *= -1.0;
+  gl_Position = positionVec4;
+  vTexCoord = aTexCoord;
+}`;
+
+let frag = `
+precision highp float;
+varying vec2 vTexCoord;
+uniform sampler2D img;
+uniform sampler2D depth;
+float getBlurriness(float d) {
+  // Blur more the farther away we go from the
+  // focal point at depth=0.9
+  return abs(d - 0.9) * 40.;
+}
+float maxBlurDistance(float blurriness) {
+  return blurriness * 0.01;
+}
+void main() {
+  vec4 color = texture2D(img, vTexCoord);
+  float samples = 1.;
+  float centerDepth = texture2D(depth, vTexCoord).r;
+  float blurriness = getBlurriness(centerDepth);
+  for (int sample = 0; sample &lt; 20; sample++) {
+    // Sample nearby pixels in a spiral going out from the
+    // current pixel
+    float angle = float(sample);
+    float distance = float(sample)/20.
+      * maxBlurDistance(blurriness);
+    vec2 offset = vec2(cos(angle), sin(angle)) * distance;
+
+    // How close is the object at the nearby pixel?
+    float sampleDepth = texture2D(depth, vTexCoord + offset).r;
+
+    // How far should its blur reach?
+    float sampleBlurDistance =
+      maxBlurDistance(getBlurriness(sampleDepth));
+
+    // If it&#39;s in front of the current pixel, or its blur overlaps
+    // with the current pixel, add its color to the average
+    if (
+      sampleDepth &gt;= centerDepth ||
+      sampleBlurDistance &gt;= distance
+    ) {
+      color += texture2D(img, vTexCoord + offset);
+      samples++;
+    }
+  }
+  color /= samples;
+  gl_FragColor = color;
+}`;
+</pre></main><div>p5.js site footer goes here</div></body></html>

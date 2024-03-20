@@ -1,0 +1,92 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//motion-bouncy-bubbles/ selected=true>English</option><option value=/ar/examples//motion-bouncy-bubbles/ >العربية</option><option value=/es/examples//motion-bouncy-bubbles/ >español</option><option value=/hi/examples//motion-bouncy-bubbles/ >हिन्दी</option><option value=/ko/examples//motion-bouncy-bubbles/ >한국어</option><option value=/pt-br/examples//motion-bouncy-bubbles/ >português (Brasil)</option><option value=/sk/examples//motion-bouncy-bubbles/ >slovenčina</option><option value=/zh/examples//motion-bouncy-bubbles/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Bouncy Bubbles</h1><span></span><main><p>Grey circles of varying sizes bounce off the sides of the canvas and each other, eventually settling on the bottom of the screen</p><p>based on code from Keith Peters. Multiple-object collision..</p><pre>
+
+let numBalls = 13;
+let spring = 0.05;
+let gravity = 0.03;
+let friction = -0.9;
+let balls = [];
+
+function setup() {
+  createCanvas(720, 400);
+  for (let i = 0; i &lt; numBalls; i++) {
+    balls[i] = new Ball(
+      random(width),
+      random(height),
+      random(30, 70),
+      i,
+      balls
+    );
+  }
+  noStroke();
+  fill(255, 204);
+}
+
+function draw() {
+  background(0);
+  balls.forEach(ball =&gt; {
+    ball.collide();
+    ball.move();
+    ball.display();
+  });
+}
+
+class Ball {
+  constructor(xin, yin, din, idin, oin) {
+    this.x = xin;
+    this.y = yin;
+    this.vx = 0;
+    this.vy = 0;
+    this.diameter = din;
+    this.id = idin;
+    this.others = oin;
+  }
+
+  collide() {
+    for (let i = this.id + 1; i &lt; numBalls; i++) {
+      // console.log(others[i]);
+      let dx = this.others[i].x - this.x;
+      let dy = this.others[i].y - this.y;
+      let distance = sqrt(dx * dx + dy * dy);
+      let minDist = this.others[i].diameter / 2 + this.diameter / 2;
+      //   console.log(distance);
+      //console.log(minDist);
+      if (distance &lt; minDist) {
+        //console.log(&quot;2&quot;);
+        let angle = atan2(dy, dx);
+        let targetX = this.x + cos(angle) * minDist;
+        let targetY = this.y + sin(angle) * minDist;
+        let ax = (targetX - this.others[i].x) * spring;
+        let ay = (targetY - this.others[i].y) * spring;
+        this.vx -= ax;
+        this.vy -= ay;
+        this.others[i].vx += ax;
+        this.others[i].vy += ay;
+      }
+    }
+  }
+
+  move() {
+    this.vy += gravity;
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x + this.diameter / 2 &gt; width) {
+      this.x = width - this.diameter / 2;
+      this.vx *= friction;
+    } else if (this.x - this.diameter / 2 &lt; 0) {
+      this.x = this.diameter / 2;
+      this.vx *= friction;
+    }
+    if (this.y + this.diameter / 2 &gt; height) {
+      this.y = height - this.diameter / 2;
+      this.vy *= friction;
+    } else if (this.y - this.diameter / 2 &lt; 0) {
+      this.y = this.diameter / 2;
+      this.vy *= friction;
+    }
+  }
+
+  display() {
+    ellipse(this.x, this.y, this.diameter, this.diameter);
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

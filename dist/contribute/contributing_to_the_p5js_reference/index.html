@@ -1,0 +1,194 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/contribute//contributing_to_the_p5js_reference/ selected=true>English</option><option value=/ar/contribute//contributing_to_the_p5js_reference/ >العربية</option><option value=/es/contribute//contributing_to_the_p5js_reference/ >español</option><option value=/hi/contribute//contributing_to_the_p5js_reference/ >हिन्दी</option><option value=/ko/contribute//contributing_to_the_p5js_reference/ >한국어</option><option value=/pt-br/contribute//contributing_to_the_p5js_reference/ >português (Brasil)</option><option value=/sk/contribute//contributing_to_the_p5js_reference/ >slovenčina</option><option value=/zh/contribute//contributing_to_the_p5js_reference/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Placeholder title</h1><span></span><main><h1 id=contributing-to-the-p5js-reference>Contributing to the p5.js Reference</h1><p>In p5.js, we author the code reference you see on the <a href=https://p5js.org/reference/ >reference</a> page on the p5.js website by including them alongside the library’s source code as specialized comments. These reference comments include the description, the function’s signature (its parameters and return value), and usage examples. In other words, the content on each p5.js function/variable’s reference page is built from the reference comments in the source code.</p><p>This document will show you how to write and format the reference comments so that they can eventually be rendered onto the website correctly. You should follow this guide whenever you are editing or writing a reference for any p5.js function or variable.</p><h2 id=a-quick-introduction-to-how-reference-comments-work>A quick introduction to how reference comments work</h2><p>When you look at the source code of p5.js, you will see many lines in the library being reference comments; they look like this:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>/**</span></span>
+<span class=line><span> * Calculates the sine of an angle. `sin()` is useful for many geometric tasks</span></span>
+<span class=line><span> * in creative coding. The values returned oscillate between -1 and 1 as the</span></span>
+<span class=line><span> * input angle increases. `sin()` takes into account the current</span></span>
+<span class=line><span> * &lt;a href=&quot;#/p5/angleMode&quot;&gt;angleMode&lt;/a&gt;.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * @method sin</span></span>
+<span class=line><span> * @param  {Number} angle the angle.</span></span>
+<span class=line><span> * @return {Number} sine of the angle.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * @example</span></span>
+<span class=line><span> * &lt;div&gt;</span></span>
+<span class=line><span> * &lt;code&gt;</span></span>
+<span class=line><span> * function draw() {</span></span>
+<span class=line><span> *   background(200);</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> *   let t = frameCount;</span></span>
+<span class=line><span> *   let x = 50;</span></span>
+<span class=line><span> *   let y = 30 * sin(t * 0.05) + 50;</span></span>
+<span class=line><span> *   line(x, 50, x, y);</span></span>
+<span class=line><span> *   circle(x, y, 20);</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> *   describe(&#39;A white ball on a string oscillates up and down.&#39;);</span></span>
+<span class=line><span> * }</span></span>
+<span class=line><span> * &lt;/code&gt;</span></span>
+<span class=line><span> * &lt;/div&gt;</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * &lt;div&gt;</span></span>
+<span class=line><span> * &lt;code&gt;</span></span>
+<span class=line><span> * function draw() {</span></span>
+<span class=line><span> *   let x = frameCount;</span></span>
+<span class=line><span> *   let y = 30 * sin(x * 0.1) + 50;</span></span>
+<span class=line><span> *   point(x, y);</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> *   describe(&#39;A series of black dots form a wave pattern.&#39;);</span></span>
+<span class=line><span> * }</span></span>
+<span class=line><span> * &lt;/code&gt;</span></span>
+<span class=line><span> * &lt;/div&gt;</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * &lt;div&gt;</span></span>
+<span class=line><span> * &lt;code&gt;</span></span>
+<span class=line><span> * function draw() {</span></span>
+<span class=line><span> *   let t = frameCount;</span></span>
+<span class=line><span> *   let x = 30 * cos(t * 0.1) + 50;</span></span>
+<span class=line><span> *   let y = 10 * sin(t * 0.2) + 50;</span></span>
+<span class=line><span> *   point(x, y);</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> *   describe(&#39;A series of black dots form an infinity symbol.&#39;);</span></span>
+<span class=line><span> * }</span></span>
+<span class=line><span> * &lt;/code&gt;</span></span>
+<span class=line><span> * &lt;/div&gt;</span></span>
+<span class=line><span> */</span></span></code></pre><p>They are usually followed by the actual JavaScript code that defines the function. Reference comments always start with <code>/**</code> and end with <code>*/</code>, with each line in between the two starting with <code>*</code>.</p><p>Anything in a block in this manner will be interpreted as reference documentation. You may be familiar with this style of code comments through <a href=https://jsdoc.app/ >JSDoc</a>. While p5.js does not use JSDoc, it uses a very similar tool called <a href=https://yui.github.io/yuidoc/ >YUIDoc</a>, which has a very similar reference syntax. In this style of reference comments, each comment block is further divided into individual elements, which we will have a look at next. </p><h2 id=reference-comments-block>Reference comments block</h2><p>Let’s break down the reference comments block above for the <code>sin()</code> function and see what each section does. You can compare what you see in the comments here and what you can see on the reference page for <a href=https://p5js.org/reference/#/p5/sin><code>sin()</code></a>.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>/**</span></span>
+<span class=line><span> * Calculates the sine of an angle. `sin()` is useful for many geometric tasks</span></span>
+<span class=line><span> * in creative coding. The values returned oscillate between -1 and 1 as the</span></span>
+<span class=line><span> * input angle increases. `sin()` takes into account the current</span></span>
+<span class=line><span> * &lt;a href=&quot;#/p5/angleMode&quot;&gt;angleMode&lt;/a&gt;.</span></span></code></pre><p>At the very top of the comment is the text description of the function. This description can contain both markdown syntax and HTML. The description should be concise and describe what the function does and, if necessary, some details about its quirks or behaviors.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span> * @method sin</span></span>
+<span class=line><span> * @param  {Number} angle  the angle.</span></span>
+<span class=line><span> * @return {Number} sine of the angle.</span></span></code></pre><p>A function will typically have the three sections above, each starting with an <code>@</code> symbol followed by one of the following keywords:</p><ul><li><code>@method</code> is used to define the name of the function, in this case <code>sin</code> (note that the function name does not include the brackets <code>()</code>).</li><li><code>@param</code> is used to define the parameters or arguments that the function accepts.<ul><li>Following the keyword <code>@param</code>, stored in curly brackets <code>{}</code> is the type of the parameter.</li><li>After the type, the next word (angle) is the name of the parameter.</li><li>After the name, the rest of the line is the description of the parameter.</li></ul></li><li><code>@return</code> is used to define the return value of the function.<ul><li>Following the keyword <code>@return</code>, stored in curly brackets <code>{}</code> is the type of the return value.</li><li>After the type, the rest of the line is the description of the return value.</li></ul></li></ul><p>More generically for parameters, you should follow this format:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>@param {type} name Description here.</span></span></code></pre><p>If the parameter is optional, add square brackets around the name:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>@param {type} [name] Description here.</span></span></code></pre><h3 id=additional-info-constants>Additional info: Constants</h3><p>If the parameter takes one or more values defined in <a href=https://github.com/processing/p5.js/blob/main/src/core/constants.js><code>constants.js</code></a> , then the type should be specified as <code>{Constant}</code> and the valid values should be enumerated in the comment following the <code>either</code> keyword, e.g.:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>@param {Constant} horizAlign horizontal alignment, either LEFT, CENTER, or RIGHT</span></span></code></pre><p>For return types you should follow this format:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>@return {type} Description of the data returned.</span></span></code></pre><p>If the function does not return a value, the <code>@return</code> tag can be left out.</p><h3 id=additional-info-chaining>Additional info: Chaining</h3><p>If the method returns the parent object, you can skip the <code>@return</code> tag and add this line instead:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>@chainable</span></span></code></pre><h2 id=additional-signatures>Additional signatures</h2><p>If a function has multiple possible parameter options, you can specify each individually. For example, the <a href=http://p5js.org/reference/#p5/background><code>background()</code></a> function takes a number of different parameter options (see “Syntax” section on the reference page). Choose one version to list as the first signature using the template above. At the end of the first reference comment block, you can add additional signatures, each in its own block, using only the <code>@method</code> and <code>@param</code> tags following the example below.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>/**</span></span>
+<span class=line><span> * @method background</span></span>
+<span class=line><span> * @param {String} colorstring color string, possible formats include: integer</span></span>
+<span class=line><span> *                         rgb() or rgba(), percentage rgb() or rgba(),</span></span>
+<span class=line><span> *                         3-digit hex, 6-digit hex</span></span>
+<span class=line><span> * @param {Number} [a] alpha value</span></span>
+<span class=line><span> */</span></span>
+<span class=line><span></span></span>
+<span class=line><span>/**</span></span>
+<span class=line><span> * @method background</span></span>
+<span class=line><span> * @param {Number} gray specifies a value between white and black</span></span>
+<span class=line><span> * @param {Number} [a]</span></span>
+<span class=line><span> */</span></span></code></pre><h3 id=additional-info-multiple-signatures>Additional info: Multiple signatures</h3><p>It is not necessary to create a separate signature if the only difference between two signatures is the addition of an optional parameter. Limit the use of this feature if possible because it can create unnecessary noise in the reference.</p><h2 id=reference-for-p5js-variables>Reference for p5.js variables</h2><p>So far, we have looked at how to write references for functions and constants. Variables follow the same structure but use different tags.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>/**</span></span>
+<span class=line><span> * The system variable mouseX always contains the current horizontal</span></span>
+<span class=line><span> * position of the mouse, relative to (0, 0) of the canvas. The value at</span></span>
+<span class=line><span> * the top-left corner is (0, 0) for 2-D and (-width/2, -height/2) for WebGL.</span></span>
+<span class=line><span> * If touch is used instead of mouse input, mouseX will hold the x value</span></span>
+<span class=line><span> * of the most recent touch point.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * @property {Number} mouseX</span></span>
+<span class=line><span> * @readOnly</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * @example</span></span>
+<span class=line><span> * &lt;div&gt;</span></span>
+<span class=line><span> * &lt;code&gt;</span></span>
+<span class=line><span> * // Move the mouse across the canvas</span></span>
+<span class=line><span> * function draw() {</span></span>
+<span class=line><span> *   background(244, 248, 252);</span></span>
+<span class=line><span> *   line(mouseX, 0, mouseX, 100);</span></span>
+<span class=line><span> *   describe(&#39;horizontal black line moves left and right with mouse x-position&#39;);</span></span>
+<span class=line><span> * }</span></span>
+<span class=line><span> * &lt;/code&gt;</span></span>
+<span class=line><span> * &lt;/div&gt;</span></span>
+<span class=line><span> */</span></span></code></pre><p>The start of the block contains the description of the variable (<code>mouseX</code> in this case). To define the name of the variable, we use <code>@property</code> instead of <code>@method</code>. <code>@property</code> follows the same syntax as <code>@param</code> for defining the type and its name. The <code>@readonly</code> tag is present on most p5.js variables and is used internally to indicate this value should not be overwritten directly by a library user.</p><h2 id=adding-examples>Adding examples</h2><p>One tag that is present in both <code>sin()</code> and <code>mouseX</code>’s reference comments that we have not talked about yet is the <code>@example</code> tag. This tag is where you define the code example(s) that is run when you visit the reference page.</p><p><img alt="Screenshot of the p5.js reference page of the &#34;red()&#34; function, showing only the example code section." src=/images/contributor-docs/reference-screenshot.png /></p><p>The relevant <code>@example</code> tag to create the above is as follows:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span> * @example</span></span>
+<span class=line><span> * &lt;div&gt;</span></span>
+<span class=line><span> * &lt;code&gt;</span></span>
+<span class=line><span> * const c = color(255, 204, 0);</span></span>
+<span class=line><span> * fill(c);</span></span>
+<span class=line><span> * rect(15, 20, 35, 60);</span></span>
+<span class=line><span> * // Sets &#39;redValue&#39; to 255.</span></span>
+<span class=line><span> * const redValue = red(c);</span></span>
+<span class=line><span> * fill(redValue, 0, 0);</span></span>
+<span class=line><span> * rect(50, 20, 35, 60);</span></span>
+<span class=line><span> * describe(</span></span>
+<span class=line><span> *   &#39;Two rectangles with black edges. The rectangle on the left is yellow and the one on the right is red.&#39;</span></span>
+<span class=line><span> * );</span></span>
+<span class=line><span> * &lt;/code&gt;</span></span>
+<span class=line><span> * &lt;/div&gt;</span></span></code></pre><p>After the <code>@example</code> tag, you should start an HTML <code>&lt;div&gt;</code> tag followed by a <code>&lt;code&gt;</code> tag. In between the opening and closing <code>&lt;code&gt;</code>  tag, you will insert the relevant example code. The basic principle of writing good example code for the reference is to keep things simple and minimal. The example should be meaningful and explain how the feature works without being too complicated. The example’s canvas should be 100x100 pixels and if the <code>setup()</code> function is not included, such as in the example above, the code will be automatically wrapped in a <code>setup()</code> function with a default 100x100 pixels gray background canvas created. We won’t go through the details about best practices and code style for the example code here; please see the reference style guide instead.</p><p>You can have multiple examples for one feature.To do so, add an additional <code>&lt;div&gt;</code> and <code>&lt;code&gt;</code> HTML block right after the first closed, separated by a blank line.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>* @example</span></span>
+<span class=line><span>* &lt;div&gt;</span></span>
+<span class=line><span>* &lt;code&gt;</span></span>
+<span class=line><span>* arc(50, 50, 80, 80, 0, PI + QUARTER_PI, OPEN);</span></span>
+<span class=line><span>* describe(&#39;An ellipse created using an arc with its top right open.&#39;);</span></span>
+<span class=line><span>* &lt;/code&gt;</span></span>
+<span class=line><span>* &lt;/div&gt;</span></span>
+<span class=line><span>* </span></span>
+<span class=line><span>* &lt;div&gt;</span></span>
+<span class=line><span>* &lt;code&gt;</span></span>
+<span class=line><span>* arc(50, 50, 80, 80, 0, PI, OPEN);</span></span>
+<span class=line><span>* describe(&#39;The bottom half of an ellipse created using arc.&#39;);</span></span>
+<span class=line><span>* &lt;/code&gt;</span></span>
+<span class=line><span>* &lt;/div&gt;</span></span></code></pre><p>If you do not want the reference page to execute your example code (i.e., you just want the code to show up), include the class “<code>norender</code>” in the <code>&lt;div&gt;</code>:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>* @example</span></span>
+<span class=line><span>* &lt;div class=&quot;norender&quot;&gt;</span></span>
+<span class=line><span>* &lt;code&gt;</span></span>
+<span class=line><span>* arc(50, 50, 80, 80, 0, PI + QUARTER_PI, OPEN);</span></span>
+<span class=line><span>* describe(&#39;ellipse created using arc with its top right open&#39;);</span></span>
+<span class=line><span>* &lt;/code&gt;</span></span>
+<span class=line><span>* &lt;/div&gt;</span></span></code></pre><p>If you do not want the example to be run as part of the automated tests (for example, if the example requires user interaction), include the class “<code>notest</code>” in the <code>&lt;div&gt;</code>:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>* @example</span></span>
+<span class=line><span>* &lt;div class=&#39;norender notest&#39;&gt;&lt;code&gt;</span></span>
+<span class=line><span>* function setup() {</span></span>
+<span class=line><span>*   let c = createCanvas(100, 100);</span></span>
+<span class=line><span>*   saveCanvas(c, &#39;myCanvas&#39;, &#39;jpg&#39;);</span></span>
+<span class=line><span>* }</span></span>
+<span class=line><span>* &lt;/code&gt;&lt;/div&gt;</span></span></code></pre><p>If your example uses external asset files, put them in the <a href=https://github.com/processing/p5.js/tree/main/docs/yuidoc-p5-theme/assets>/docs/yuidoc-p5-theme/assets</a> folder (or reuse one already in there) then link to them with “assets/filename.ext” in the code. See the <a href=http://p5js.org/reference/#/p5/tint>tint()</a> reference for example.</p><h3 id=add-a-canvas-description-using-describe>Add a canvas description using <code>describe()</code></h3><p>Finally, for every example you add, you are required to use the p5.js function <code>describe()</code> in the example to create a screen-reader accessible description for the canvas. Include only one parameter: a string with a brief description of what is happening on the canvas. </p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>* @example</span></span>
+<span class=line><span>* &lt;div&gt;</span></span>
+<span class=line><span>* &lt;code&gt;</span></span>
+<span class=line><span>* let xoff = 0.0;</span></span>
+<span class=line><span>* function draw() {</span></span>
+<span class=line><span>*   background(204);</span></span>
+<span class=line><span>*   xoff = xoff + 0.01;</span></span>
+<span class=line><span>*   let n = noise(xoff) * width;</span></span>
+<span class=line><span>*   line(n, 0, n, height);</span></span>
+<span class=line><span>*   describe(&#39;A vertical line moves randomly from left to right.&#39;);</span></span>
+<span class=line><span>* }</span></span>
+<span class=line><span>* &lt;/code&gt;</span></span>
+<span class=line><span>* &lt;/div&gt;</span></span>
+<span class=line><span>* </span></span>
+<span class=line><span>* &lt;div&gt;</span></span>
+<span class=line><span>* &lt;code&gt;</span></span>
+<span class=line><span>* let noiseScale = 0.02;</span></span>
+<span class=line><span>* function draw() {</span></span>
+<span class=line><span>*   background(0);</span></span>
+<span class=line><span>*   for (let x = 0; x &lt; width; x += 1) {</span></span>
+<span class=line><span>*     let noiseVal = noise((mouseX + x) * noiseScale, mouseY * noiseScale);</span></span>
+<span class=line><span>*     stroke(noiseVal*255);</span></span>
+<span class=line><span>*     line(x, mouseY + noiseVal * 80, x, height);</span></span>
+<span class=line><span>*   }</span></span>
+<span class=line><span>*   describe(&#39;A horizontal wave pattern moves in the opposite direction of the mouse.&#39;);</span></span>
+<span class=line><span>* }</span></span>
+<span class=line><span>* &lt;/code&gt;</span></span>
+<span class=line><span>* &lt;/div&gt;</span></span></code></pre><p>For more on <code>describe()</code> visit the <a href="https://p5js.org/contributor-docs/#/web_accessibility?id=user-generated-accessible-canvas-descriptions">web accessibility contributor documentation</a>.</p><p>With all the above you should have most of the tools needed to write and edit p5.js reference comments. However, there are a few more specialized usage of JSDoc style reference comments that you may come across in p5.js. These are situationally useful and not something that you need often.</p><h3 id=private-tag><code>@private</code> tag</h3><p>You can use the <code>@private</code> if a property or variable is a private function or variable. If a feature is marked as <code>@private</code> it will not be included as part of the rendered reference on the website. The reason to use the <code>@private</code> tag to mark a reference comments block as private is when you document internal features for the library itself. For example, see the reference comments for <code>_start</code> below:</p><p>   </p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>/**</span></span>
+<span class=line><span> * _start calls preload() setup() and draw()</span></span>
+<span class=line><span> * </span></span>
+<span class=line><span> * @method _start</span></span>
+<span class=line><span> * @private</span></span>
+<span class=line><span> */</span></span>
+<span class=line><span>p5.prototype._start = function () {</span></span></code></pre><h3 id=module-and-related-tags><code>@module</code> and related tags</h3><p>At the top of each source code file will be a <code>@module</code> tag. Modules correspond to a group of features in p5.js which on the rendered reference page on the website are split into the corresponding sections. Inside each module, there are additional submodules defined with the <code>@submodule</code> tag.</p><p>The <code>@for</code> tag defines the relationship between this module and the overall <code>p5</code> class, effectively saying this module is a part of the <code>p5</code> class.</p><p>The <code>@requires</code> tag defines the required imported modules that the current module depends on.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>/**</span></span>
+<span class=line><span> * @module Color</span></span>
+<span class=line><span> * @submodule Creating &amp; Reading</span></span>
+<span class=line><span> * @for p5</span></span>
+<span class=line><span> * @requires core</span></span>
+<span class=line><span> * @requires constants</span></span>
+<span class=line><span> */</span></span></code></pre><p>The convention p5.js follows is that each subfolder in the <code>src/</code> folder will be one <code>@module</code> while each file inside the subfolder will be its own <code>@submodule</code> under the overall subfolder’s <code>@module</code>. Unless you are adding new subfolders/files to the p5.js source code, you shouldn’t need to edit this reference comments block.</p><h3 id=class-tag><code>@class</code> tag</h3><p>Class constructors are defined with the <code>@class</code> tag and the <code>@constructor</code> tag. The format for this block is similar to how a function is defined with the <code>@method</code> block, the class’s name will need to be defined with the <code>@class</code> tag and the <code>@constructor</code> tag will indicate the class has a constructor function. See the example below for the <code>p5.Color</code> class:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>/**</span></span>
+<span class=line><span> * A class to describe a color. Each `p5.Color` object stores the color mode</span></span>
+<span class=line><span> * and level maxes that were active during its construction. These values are</span></span>
+<span class=line><span> * used to interpret the arguments passed to the object&#39;s constructor. They</span></span>
+<span class=line><span> * also determine output formatting such as when</span></span>
+<span class=line><span> * &lt;a href=&quot;#/p5/saturation&quot;&gt;saturation()&lt;/a&gt; is called.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * Color is stored internally as an array of ideal RGBA values in floating</span></span>
+<span class=line><span> * point form, normalized from 0 to 1. These values are used to calculate the</span></span>
+<span class=line><span> * closest screen colors, which are RGBA levels from 0 to 255. Screen colors</span></span>
+<span class=line><span> * are sent to the renderer.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * When different color representations are calculated, the results are cached</span></span>
+<span class=line><span> * for performance. These values are normalized, floating-point numbers.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * &lt;a href=&quot;#/p5/color&quot;&gt;color()&lt;/a&gt; is the recommended way to create an instance</span></span>
+<span class=line><span> * of this class.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * @class p5.Color</span></span>
+<span class=line><span> * @constructor</span></span>
+<span class=line><span> * @param {p5} [pInst]                  pointer to p5 instance.</span></span>
+<span class=line><span> *</span></span>
+<span class=line><span> * @param {Number[]|String} vals        an array containing the color values</span></span>
+<span class=line><span> *                                      for red, green, blue and alpha channel</span></span>
+<span class=line><span> *                                      or CSS color.</span></span>
+<span class=line><span> */</span></span></code></pre><h2 id=generating-and-previewing-the-reference>Generating and previewing the reference</h2><p>The p5.js repository is set up so that you can generate and preview the reference without needing to build and run the p5.js website as well.</p><ul><li>The main command to generate the reference from the reference comments in the source code is to run the following command. </li></ul><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>npm run docs</span></span></code></pre><p>This will generate the necessary preview files and the main <code>docs/reference/data.json</code> file, which is the same file (after minification) that will be used to render the reference page on the website.</p><ul><li>For continuous work on the reference, you can run the following command.</li></ul><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span>npm run docs:dev</span></span></code></pre><p>This will launch a live preview of the rendered reference that will update each time you make changes (you will need to refresh the page after making changes to see them appear). This is useful, especially for previewing example code running in the browser.</p><ul><li>The main template files are stored in the <code>docs/</code> folder and, in most cases, you should not make changes directly to files in this folder, except to add new asset files in the <code>docs/yuidoc-p5-theme/assets</code> folder.</li></ul><h2 id=next-steps>Next steps</h2><p>For additional details about the reference system, you can checkout the documentation for <a href=https://jsdoc.app/ >JSDoc</a> and <a href=https://yui.github.io/yuidoc/ >YUIDoc</a>.</p><p>For examples of issues related to the reference, have a look at <a href=https://github.com/processing/p5.js/issues/6519>#6519</a> and <a href=https://github.com/processing/p5.js/issues/6045>#6045</a>. The <a href="https://docs.google.com/document/d/1roBu-7s9xspuie3M6EhEokYWc82DZhDNYO2SQiY4k68/edit?tab=t.0#heading=h.627q50vo09fb">contributor guidelines</a> document is also a good place to start.</p></main><div>p5.js site footer goes here</div></body></html>

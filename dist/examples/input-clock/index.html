@@ -1,0 +1,58 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//input-clock/ selected=true>English</option><option value=/ar/examples//input-clock/ >العربية</option><option value=/es/examples//input-clock/ >español</option><option value=/hi/examples//input-clock/ >हिन्दी</option><option value=/ko/examples//input-clock/ >한국어</option><option value=/pt-br/examples//input-clock/ >português (Brasil)</option><option value=/sk/examples//input-clock/ >slovenčina</option><option value=/zh/examples//input-clock/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Clock</h1><span></span><main><p>Functioning pink clock on a grey background</p><p>The current time can be read with the second(), minute(), and hour() functions. In this example, sin() and cos() values are used to set the position of the hands.</p><pre>
+let cx, cy;
+let secondsRadius;
+let minutesRadius;
+let hoursRadius;
+let clockDiameter;
+
+function setup() {
+  createCanvas(720, 400);
+  stroke(255);
+
+  let radius = min(width, height) / 2;
+  secondsRadius = radius * 0.71;
+  minutesRadius = radius * 0.6;
+  hoursRadius = radius * 0.5;
+  clockDiameter = radius * 1.7;
+
+  cx = width / 2;
+  cy = height / 2;
+}
+
+function draw() {
+  background(230);
+
+  // Draw the clock background
+  noStroke();
+  fill(244, 122, 158);
+  ellipse(cx, cy, clockDiameter + 25, clockDiameter + 25);
+  fill(237, 34, 93);
+  ellipse(cx, cy, clockDiameter, clockDiameter);
+
+  // Angles for sin() and cos() start at 3 o&#39;clock;
+  // subtract HALF_PI to make them start at the top
+  let s = map(second(), 0, 60, 0, TWO_PI) - HALF_PI;
+  let m = map(minute() + norm(second(), 0, 60), 0, 60, 0, TWO_PI) - HALF_PI;
+  let h = map(hour() + norm(minute(), 0, 60), 0, 24, 0, TWO_PI * 2) - HALF_PI;
+
+  // Draw the hands of the clock
+  stroke(255);
+  strokeWeight(1);
+  line(cx, cy, cx + cos(s) * secondsRadius, cy + sin(s) * secondsRadius);
+  strokeWeight(2);
+  line(cx, cy, cx + cos(m) * minutesRadius, cy + sin(m) * minutesRadius);
+  strokeWeight(4);
+  line(cx, cy, cx + cos(h) * hoursRadius, cy + sin(h) * hoursRadius);
+
+  // Draw the minute ticks
+  strokeWeight(2);
+  beginShape(POINTS);
+  for (let a = 0; a &lt; 360; a += 6) {
+    let angle = radians(a);
+    let x = cx + cos(angle) * secondsRadius;
+    let y = cy + sin(angle) * secondsRadius;
+    vertex(x, y);
+  }
+  endShape();
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//sound-sound-effect/ selected=true>English</option><option value=/ar/examples//sound-sound-effect/ >العربية</option><option value=/es/examples//sound-sound-effect/ >español</option><option value=/hi/examples//sound-sound-effect/ >हिन्दी</option><option value=/ko/examples//sound-sound-effect/ >한국어</option><option value=/pt-br/examples//sound-sound-effect/ >português (Brasil)</option><option value=/sk/examples//sound-sound-effect/ >slovenčina</option><option value=/zh/examples//sound-sound-effect/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Sound Effect</h1><span></span><main><p>Grey circle on a white screen that plays a doorbell sound when pressed on</p><p>Play a sound effect when the mouse is clicked inside the circle.</p><p><em><span class=small>To run this example locally, you will need the <a href=http://p5js.org/reference/#/libraries/p5.sound>p5.sound library</a> a sound file, and a running <a href=https://github.com/processing/p5.js/wiki/Local-server>local server</a>.</span></em></p><pre>
+// Adapted from Learning Processing by Daniel Shiffman
+// http://www.learningprocessing.com
+// Doorbell sample by Corsica_S via freesound.org,
+// Creative Commons BY 3.0
+
+// A Class to describe a &quot;doorbell&quot; (really a button)
+class Doorbell {
+  constructor(x_, y_, r_) {
+    // Location and size
+    this.x = x_;
+    this.y = y_;
+    this.r = r_;
+  }
+  // Is a point inside the doorbell? (used for mouse rollover, etc.)
+  contains(mx, my) {
+    return dist(mx, my, this.x, this.y) &lt; this.r;
+  }
+
+  // Show the doorbell (hardcoded colors, could be improved)
+  display(mx, my) {
+    if (this.contains(mx, my)) {
+      fill(100);
+    } else {
+      fill(175);
+    }
+    stroke(0);
+    strokeWeight(4);
+    ellipseMode(RADIUS);
+    ellipse(this.x, this.y, this.r, this.r);
+  }
+}
+
+// A sound file object
+let dingdong;
+
+// A doorbell object (that will trigger the sound)
+let doorbell;
+
+function setup() {
+  createCanvas(200, 200);
+
+  // Load the sound file.
+  // We have included both an MP3 and an OGG version.
+  soundFormats(&#39;mp3&#39;, &#39;ogg&#39;);
+  dingdong = loadSound(&#39;assets/doorbell.mp3&#39;);
+
+  // Create a new doorbell
+  doorbell = new Doorbell(width / 2, height / 2, 32);
+}
+
+function draw() {
+  background(255);
+  // Show the doorbell
+  doorbell.display(mouseX, mouseY);
+}
+
+function mousePressed() {
+  // If the user clicks on the doorbell, play the sound!
+  if (doorbell.contains(mouseX, mouseY)) {
+    dingdong.play();
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

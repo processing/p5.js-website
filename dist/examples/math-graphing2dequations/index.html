@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//math-graphing2dequations/ selected=true>English</option><option value=/ar/examples//math-graphing2dequations/ >العربية</option><option value=/es/examples//math-graphing2dequations/ >español</option><option value=/hi/examples//math-graphing2dequations/ >हिन्दी</option><option value=/ko/examples//math-graphing2dequations/ >한국어</option><option value=/pt-br/examples//math-graphing2dequations/ >português (Brasil)</option><option value=/sk/examples//math-graphing2dequations/ >slovenčina</option><option value=/zh/examples//math-graphing2dequations/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Graphing 2D Equations</h1><span></span><main><p>Rays in a black and white pattern swirl together as the user’s mouse moves right and unswirl as the user’s mouse moves left</p><p>Graphics the following equation: sin(n cos(r) + 5θ) where n is a function of horizontal mouse location. Original by Daniel Shiffman</p><pre>
+function setup() {
+  createCanvas(710, 400);
+  pixelDensity(1);
+}
+
+function draw() {
+  loadPixels();
+  let n = (mouseX * 10.0) / width;
+  const w = 16.0; // 2D space width
+  const h = 16.0; // 2D space height
+  const dx = w / width; // Increment x this amount per pixel
+  const dy = h / height; // Increment y this amount per pixel
+  let x = -w / 2; // Start x at -1 * width / 2
+  let y;
+
+  let r;
+  let theta;
+  let val;
+
+  let bw; //variable to store grayscale
+  let i;
+  let j;
+  let cols = width;
+  let rows = height;
+
+  for (i = 0; i &lt; cols; i += 1) {
+    y = -h / 2;
+    for (j = 0; j &lt; rows; j += 1) {
+      r = sqrt(x * x + y * y); // Convert cartesian to polar
+      theta = atan2(y, x); // Convert cartesian to polar
+      // Compute 2D polar coordinate function
+      val = sin(n * cos(r) + 5 * theta); // Results in a value between -1 and 1
+      //var val = cos(r);                            // Another simple function
+      //var val = sin(theta);                        // Another simple function
+      bw = color(((val + 1) * 255) / 2);
+      index = 4 * (i + j * width);
+      pixels[index] = red(bw);
+      pixels[index + 1] = green(bw);
+      pixels[index + 2] = blue(bw);
+      pixels[index + 3] = alpha(bw);
+
+      y += dy;
+    }
+    x += dx;
+  }
+  updatePixels();
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

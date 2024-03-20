@@ -1,0 +1,70 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-wolframca/ selected=true>English</option><option value=/ar/examples//simulate-wolframca/ >العربية</option><option value=/es/examples//simulate-wolframca/ >español</option><option value=/hi/examples//simulate-wolframca/ >हिन्दी</option><option value=/ko/examples//simulate-wolframca/ >한국어</option><option value=/pt-br/examples//simulate-wolframca/ >português (Brasil)</option><option value=/sk/examples//simulate-wolframca/ >slovenčina</option><option value=/zh/examples//simulate-wolframca/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Wolfram CA</h1><span></span><main><p>1-dimensional cellular automata is depicted which is a pyramid shape with a design consisting of white squares that create a pixelated look</p><p>Simple demonstration of a Wolfram 1-dimensional cellular automata (<a href=http://natureofcode.com>natureofcode.com</a>)</p><pre>
+
+let w = 10;
+// An array of 0s and 1s
+let cells;
+
+ // We arbitrarily start with just the middle cell having a state of &quot;1&quot;
+let generation = 0;
+
+// An array to store the ruleset, for example {0,1,1,0,1,1,0,1}
+let ruleset = [0, 1, 0, 1, 1, 0, 1, 0];
+
+function setup() {
+  createCanvas(640, 400);
+  cells = Array(floor(width / w));
+  for (let i = 0; i &lt; cells.length; i++) {
+    cells[i] = 0;
+  }
+  cells[cells.length/2] = 1;
+
+}
+
+function draw() {
+  for (let i = 0; i &lt; cells.length; i++) {
+    if (cells[i] === 1) {
+      fill(200);
+    } else {
+      fill(51);
+      noStroke();
+      rect(i * w, generation * w, w, w);
+    }
+  }
+  if (generation &lt; height/w) {
+    generate();
+  }
+}
+
+// The process of creating the new generation
+function generate() {
+  // First we create an empty array for the new values
+  let nextgen = Array(cells.length);
+  // For every spot, determine new state by examing current state, and neighbor states
+  // Ignore edges that only have one neighor
+  for (let i = 1; i &lt; cells.length-1; i++) {
+    let left   = cells[i-1];   // Left neighbor state
+    let me     = cells[i];     // Current state
+    let right  = cells[i+1];   // Right neighbor state
+    nextgen[i] = rules(left, me, right); // Compute next generation state based on ruleset
+  }
+  // The current generation is the new generation
+  cells = nextgen;
+  generation++;
+}
+
+
+// Implementing the Wolfram rules
+// Could be improved and made more concise, but here we can explicitly see what is going on for each case
+function rules(a, b, c) {
+  if (a == 1 &amp;&amp; b == 1 &amp;&amp; c == 1) return ruleset[0];
+  if (a == 1 &amp;&amp; b == 1 &amp;&amp; c == 0) return ruleset[1];
+  if (a == 1 &amp;&amp; b == 0 &amp;&amp; c == 1) return ruleset[2];
+  if (a == 1 &amp;&amp; b == 0 &amp;&amp; c == 0) return ruleset[3];
+  if (a == 0 &amp;&amp; b == 1 &amp;&amp; c == 1) return ruleset[4];
+  if (a == 0 &amp;&amp; b == 1 &amp;&amp; c == 0) return ruleset[5];
+  if (a == 0 &amp;&amp; b == 0 &amp;&amp; c == 1) return ruleset[6];
+  if (a == 0 &amp;&amp; b == 0 &amp;&amp; c == 0) return ruleset[7];
+  return 0;
+}
+
+</pre></main><div>p5.js site footer goes here</div></body></html>

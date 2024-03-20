@@ -1,0 +1,42 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-brownianmotion/ selected=true>English</option><option value=/ar/examples//simulate-brownianmotion/ >العربية</option><option value=/es/examples//simulate-brownianmotion/ >español</option><option value=/hi/examples//simulate-brownianmotion/ >हिन्दी</option><option value=/ko/examples//simulate-brownianmotion/ >한국어</option><option value=/pt-br/examples//simulate-brownianmotion/ >português (Brasil)</option><option value=/sk/examples//simulate-brownianmotion/ >slovenčina</option><option value=/zh/examples//simulate-brownianmotion/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Brownian Motion</h1><span></span><main><p>A continuous white line draws squiggles on a grey background</p><p>Recording random movement as a continuous line. Port of original example from the Processing examples page.</p><pre>
+
+let num = 2000;
+let range = 6;
+
+let ax = [];
+let ay = [];
+
+
+function setup() {
+  createCanvas(710, 400);
+  for ( let i = 0; i &lt; num; i++ ) {
+    ax[i] = width / 2;
+    ay[i] = height / 2;
+  }
+  frameRate(30);
+}
+
+function draw() {
+  background(51);
+
+  // Shift all elements 1 place to the left
+  for ( let i = 1; i &lt; num; i++ ) {
+    ax[i - 1] = ax[i];
+    ay[i - 1] = ay[i];
+  }
+
+  // Put a new value at the end of the array
+  ax[num - 1] += random(-range, range);
+  ay[num - 1] += random(-range, range);
+
+  // Constrain all points to the screen
+  ax[num - 1] = constrain(ax[num - 1], 0, width);
+  ay[num - 1] = constrain(ay[num - 1], 0, height);
+
+  // Draw a line connecting the points
+  for ( let j = 1; j &lt; num; j++ ) {
+    let val = j / num * 204.0 + 51;
+    stroke(val);
+    line(ax[j - 1], ay[j - 1], ax[j], ay[j]);
+  }
+}</pre></main><div>p5.js site footer goes here</div></body></html>

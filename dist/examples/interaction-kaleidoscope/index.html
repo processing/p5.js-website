@@ -1,0 +1,70 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//interaction-kaleidoscope/ selected=true>English</option><option value=/ar/examples//interaction-kaleidoscope/ >العربية</option><option value=/es/examples//interaction-kaleidoscope/ >español</option><option value=/hi/examples//interaction-kaleidoscope/ >हिन्दी</option><option value=/ko/examples//interaction-kaleidoscope/ >한국어</option><option value=/pt-br/examples//interaction-kaleidoscope/ >português (Brasil)</option><option value=/sk/examples//interaction-kaleidoscope/ >slovenčina</option><option value=/zh/examples//interaction-kaleidoscope/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Kaleidoscope</h1><span></span><main><p>User draws thick black lines on the grey background and it is mirrored 5 times in a circle like a kaleidoscope</p><p>A kaleidoscope is an optical instrument with two or more reflecting surfaces tilted to each other in an angle. This example tries to replicate the behavior of a kaleidoscope. Set the number of reflections at the symmetry variable and start drawing on the screen. Paste the below code in the <a href=https://editor.p5js.org/ >Editor </a>and click on the save button if you wish to download a .jpg file of the art that you have created.</p><pre>
+// Symmetry corresponding to the number of reflections. Change the number for different number of reflections 
+let symmetry = 6;   
+
+let angle = 360 / symmetry;
+let saveButton, clearButton, mouseButton, keyboardButton;
+let slider;
+
+function setup() { 
+  createCanvas(710, 710);
+  angleMode(DEGREES);
+  background(127);
+
+  // Creating the save button for the file
+  saveButton = createButton(&#39;save&#39;);
+  saveButton.mousePressed(saveFile);
+
+  // Creating the clear screen button
+  clearButton = createButton(&#39;clear&#39;);
+  clearButton.mousePressed(clearScreen);
+
+  // Creating the button for Full Screen
+  fullscreenButton = createButton(&#39;Full Screen&#39;);
+  fullscreenButton.mousePressed(screenFull);
+
+  // Setting up the slider for the thickness of the brush
+  brushSizeSlider = createButton(&#39;Brush Size Slider&#39;);
+  sizeSlider = createSlider(1, 32, 4, 0.1);
+}
+
+// Save File Function
+function saveFile() {
+  save(&#39;design.jpg&#39;);
+}
+
+// Clear Screen function
+function clearScreen() {
+  background(127);
+}
+
+// Full Screen Function
+function screenFull() {
+  let fs = fullscreen();
+  fullscreen(!fs);
+}
+
+function draw() {
+  translate(width / 2, height / 2);
+
+  if (mouseX &gt; 0 &amp;&amp; mouseX &lt; width &amp;&amp; mouseY &gt; 0 &amp;&amp; mouseY &lt; height) {
+    let mx = mouseX - width / 2;
+    let my = mouseY - height / 2;
+    let pmx = pmouseX - width / 2;
+    let pmy = pmouseY - height / 2;
+    
+    if (mouseIsPressed) {
+      for (let i = 0; i &lt; symmetry; i++) {
+        rotate(angle);
+        let sw = sizeSlider.value();
+        strokeWeight(sw);
+        line(mx, my, pmx, pmy);
+        push();
+        scale(1, -1);
+        line(mx, my, pmx, pmy);
+        pop();
+      }
+    }
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

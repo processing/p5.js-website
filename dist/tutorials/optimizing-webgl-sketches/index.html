@@ -1,0 +1,432 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/tutorials/optimizing-webgl-sketches/ selected=true>English</option><option value=/ar/tutorials/optimizing-webgl-sketches/ >العربية</option><option value=/es/tutorials/optimizing-webgl-sketches/ >español</option><option value=/hi/tutorials/optimizing-webgl-sketches/ >हिन्दी</option><option value=/ko/tutorials/optimizing-webgl-sketches/ >한국어</option><option value=/pt-br/tutorials/optimizing-webgl-sketches/ >português (Brasil)</option><option value=/sk/tutorials/optimizing-webgl-sketches/ >slovenčina</option><option value=/zh/tutorials/optimizing-webgl-sketches/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Optimizing WebGL Sketches</h1><span></span><main><h6>By Dave Pagurek, Adam Ferriss</h6><p>WebGL mode in p5.js gives you access to your computer’s graphics hardware. This can allow you to produce 3D visuals even on lower-powered mobile devices. When doing more complex tasks, however, you can sometimes end up writing code that struggles to maintain a good framerate. We’ll go over some ways to measure and debug your sketch’s performance, and offer some tips for structuring your code for success.</p><h2 id=how-well-does-your-sketch-run>How well does your sketch run?</h2><p>When performance drops, you will notice your draw function doesn’t run as often as it should. This can cause slow or choppy animation. When you make a change to improve performance, you will want to check to see if you made the situation noticeably better. In addition to seeing how smooth the animation feels, we can display the <em>frame rate.</em></p><p>The frame rate counts the number of times <code>draw()</code> is called per second. The faster your sketch runs, the higher this number will be—at least, up to the point when your screen can’t refresh any quicker. On many displays, this limit is 60. Don’t worry if your sketch doesn’t quite reach 60 frames per second: 30 frames per second will also appear smooth—feature films typically run at 24 frames per second.</p><p>To measure your sketch’s frame rate, we can create a new <code>&lt;p&gt;</code> element on the page and update it every frame:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> frameRateP;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  frameRateP </span><span style=color:#f97583>=</span><span style=color:#b392f0> createP</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#e1e4e8>  frameRateP.</span><span style=color:#b392f0>html</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>round</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>frameRate</span><span style=color:#e1e4e8>()));</span></span>
+<span class=line><span style=color:#6a737d>  // Put the rest of your sketch here</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre><p>It’s normal for this value to flicker a bit. Sometimes you will want to display a <em>moving average</em> of the frame rate to get a better estimate. Augmenting the previous code to show a moving average looks like this:</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> frameRateP;</span></span>
+<span class=line><span style=color:#6a737d>// Over how many frames should we average the frame rate?</span></span>
+<span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> numSamples </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 30</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#6a737d>// An array to store for all the individual samples</span></span>
+<span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> frameRateSamples </span><span style=color:#f97583>=</span><span style=color:#e1e4e8> [];</span></span>
+<span class=line><span style=color:#6a737d>// A running count of the sum of the array</span></span>
+<span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> frameRateSum </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 0</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  frameRateP </span><span style=color:#f97583>=</span><span style=color:#b392f0> createP</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#f97583>  let</span><span style=color:#e1e4e8> newSample </span><span style=color:#f97583>=</span><span style=color:#b392f0> frameRate</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>  frameRateSamples.</span><span style=color:#b392f0>push</span><span style=color:#e1e4e8>(newSample);</span></span>
+<span class=line><span style=color:#e1e4e8>  frameRateSum </span><span style=color:#f97583>+=</span><span style=color:#e1e4e8> newSample;</span></span>
+<span class=line><span style=color:#f97583>  if</span><span style=color:#e1e4e8> (frameRateSamples.</span><span style=color:#79b8ff>length</span><span style=color:#f97583> &gt;</span><span style=color:#e1e4e8> numSamples) {</span></span>
+<span class=line><span style=color:#e1e4e8>    frameRateSum </span><span style=color:#f97583>-=</span><span style=color:#e1e4e8> frameRateSamples.</span><span style=color:#b392f0>shift</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>  }</span></span>
+<span class=line><span style=color:#e1e4e8>  frameRateP.</span><span style=color:#b392f0>html</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>round</span><span style=color:#e1e4e8>(frameRateSum </span><span style=color:#f97583>/</span><span style=color:#e1e4e8> frameRateSamples.</span><span style=color:#79b8ff>length</span><span style=color:#e1e4e8>));</span></span>
+<span class=line><span style=color:#6a737d>  // Put the rest of your sketch here</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre><div class=callout><h5>Try this!</h5><p>What does it take to get the frame rate to drop? Try drawing many shapes in a <code>for</code> loop. How many shapes do you need to draw before you notice a change in frame rate? Is that number different when you look at your sketch on a phone instead of a desktop or laptop?</p></div><h2 id=getting-the-best-performance-out-of-webgl>Getting the best performance out of WebGL</h2><p>Here are some best practices for WebGL sketches. Following these will start you off on good footing for performance.</p><h3 id=prefer-p5framebuffer-over-p5graphics-in-webgl-mode>Prefer <code>p5.Framebuffer</code> over <code>p5.Graphics</code>in WebGL Mode</h3><p>In 2D mode, if you need to draw something and then use it as a texture for something else, you would reach for a <code>p5.Graphics</code> object. This approach works well because much of what happens in 2D mode happens on your computer’s CPU. In WebGL mode, it will be faster to use a <code>p5.Framebuffer</code>, which lives on your computer’s graphics hardware along with your WebGL sketch, minimizing data transfer.</p><p>Here’s an example of some code that uses <code>p5.Graphics</code>, and an improved example using <code>p5.Framebuffer</code>:</p><div class="flex flex-row items-start justify-start"><div class=flex-1><h4 id=-using-p5graphics>❌ Using <code>p5.Graphics</code></h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> layer;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer </span><span style=color:#f97583>=</span><span style=color:#b392f0> createGraphics</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating red cube with yellow dots on each face&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#f97583>  let</span><span style=color:#e1e4e8> t </span><span style=color:#f97583>=</span><span style=color:#b392f0> millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.001</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>background</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;red&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>fill</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;yellow&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#f97583>  for</span><span style=color:#e1e4e8> (</span><span style=color:#f97583>let</span><span style=color:#e1e4e8> i </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 0</span><span style=color:#e1e4e8>; i </span><span style=color:#f97583>&lt;</span><span style=color:#79b8ff> 30</span><span style=color:#e1e4e8>; i </span><span style=color:#f97583>+=</span><span style=color:#79b8ff> 1</span><span style=color:#e1e4e8>) {</span></span>
+<span class=line><span style=color:#e1e4e8>    layer.</span><span style=color:#b392f0>circle</span><span style=color:#e1e4e8>(</span></span>
+<span class=line><span style=color:#b392f0>      map</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>noise</span><span style=color:#e1e4e8>(i</span><span style=color:#f97583>*</span><span style=color:#79b8ff>10</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, t), </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>1</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, width),</span></span>
+<span class=line><span style=color:#b392f0>      map</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>noise</span><span style=color:#e1e4e8>(i</span><span style=color:#f97583>*</span><span style=color:#79b8ff>10</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>, t), </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>1</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, height),</span></span>
+<span class=line><span style=color:#79b8ff>      20</span></span>
+<span class=line><span style=color:#e1e4e8>    );</span></span>
+<span class=line><span style=color:#e1e4e8>  }</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  texture</span><span style=color:#e1e4e8>(layer);</span></span>
+<span class=line><span style=color:#b392f0>  rotateX</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  box</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><h4 id=-using-p5framebuffer>✅ Using <code>p5.Framebuffer</code></h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> layer;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer </span><span style=color:#f97583>=</span><span style=color:#b392f0> createFramebuffer</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating red cube with yellow dots on each face&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#f97583>  let</span><span style=color:#e1e4e8> t </span><span style=color:#f97583>=</span><span style=color:#b392f0> millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.001</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>begin</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;red&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  fill</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;yellow&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#f97583>  for</span><span style=color:#e1e4e8> (</span><span style=color:#f97583>let</span><span style=color:#e1e4e8> i </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 0</span><span style=color:#e1e4e8>; i </span><span style=color:#f97583>&lt;</span><span style=color:#79b8ff> 30</span><span style=color:#e1e4e8>; i </span><span style=color:#f97583>+=</span><span style=color:#79b8ff> 1</span><span style=color:#e1e4e8>) {</span></span>
+<span class=line><span style=color:#b392f0>    circle</span><span style=color:#e1e4e8>(</span></span>
+<span class=line><span style=color:#b392f0>      map</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>noise</span><span style=color:#e1e4e8>(i</span><span style=color:#f97583>*</span><span style=color:#79b8ff>10</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, t), </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>1</span><span style=color:#e1e4e8>, </span><span style=color:#f97583>-</span><span style=color:#e1e4e8>width</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>, width</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>),</span></span>
+<span class=line><span style=color:#b392f0>      map</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>noise</span><span style=color:#e1e4e8>(i</span><span style=color:#f97583>*</span><span style=color:#79b8ff>10</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>, t), </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>1</span><span style=color:#e1e4e8>, </span><span style=color:#f97583>-</span><span style=color:#e1e4e8>height</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>, height</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>),</span></span>
+<span class=line><span style=color:#79b8ff>      20</span></span>
+<span class=line><span style=color:#e1e4e8>    );</span></span>
+<span class=line><span style=color:#e1e4e8>  }</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>end</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  texture</span><span style=color:#e1e4e8>(layer);</span></span>
+<span class=line><span style=color:#b392f0>  rotateX</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  box</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><iframe aria-label="Code Preview" height=200 sandbox="allow-scripts allow-popups allow-modals allow-forms" srcdoc="&lt;!DOCTYPE html>
+&lt;meta charset=&quot;utf8&quot; />
+&lt;style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+&lt;/style>
+&lt;body>&lt;/body>
+&lt;script id=&quot;code&quot; type=&quot;text/javascript&quot;>
+let layer;
+function setup() {
+  createCanvas(200, 200, WEBGL);
+  layer = createFramebuffer();
+  describe('a rotating red cube with yellow dots on each face');
+}
+function draw() {
+  let t = millis() * 0.001;
+  layer.begin();
+  background('red');
+  noStroke();
+  fill('yellow');
+  for (let i = 0; i &lt; 30; i += 1) {
+    circle(
+      map(noise(i*10, 0, t), 0, 1, -width/2, width/2),
+      map(noise(i*10, 100, t), 0, 1, -height/2, height/2),
+      20
+    );
+  }
+  layer.end();
+ 
+  background(255);
+  lights();
+  noStroke();
+  texture(layer);
+  rotateX(t);
+  rotateY(t);
+  box(100);
+}
+&lt;/script>
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js&quot;>&lt;/script>
+" title="Code Preview" width=200></iframe></div></div><div class=callout><h5>Try this!</h5><p>If you were using a 2D mode <code>p5.Graphics</code>, switching to a <code>p5.Framebuffer</code> means using WebGL mode instead. WebGL mode can draw 2D shapes too! Try adapting a 2D sketch you’ve made in the past to WebGL mode. Remember that the point (0,0) is in the <em>top left</em> of the canvas in 2D mode, but in the <em>center</em> in WebGL mode!</p></div><h3 id=replace-static-p5graphics-with-p5image>Replace static <code>p5.Graphics</code> with <code>p5.Image</code></h3><p>Sometimes, you can’t use <code>p5.Framebuffer</code>—maybe because you really need to draw something in 2D mode. If you are using <code>p5.Graphics</code>, but you won’t be changing its contents every frame, you can turn it into a <code>p5.Image</code> by calling <code>.get()</code> on it. This lets p5.js know that it doesn’t need to send new image data to a texture every frame, and it can continue to reuse the initial texture instead.</p><div class="flex flex-row items-start justify-start"><div class=flex-1><h4 id=-using-p5graphics-1>❌ Using <code>p5.Graphics</code></h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> layer;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer </span><span style=color:#f97583>=</span><span style=color:#b392f0> createGraphics</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>background</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;red&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>fill</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;yellow&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>textAlign</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>CENTER</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>CENTER</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>textSize</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>50</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>text</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;Hello!&#39;</span><span style=color:#e1e4e8>, width</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>, height</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>);</span></span>
+<span class=line></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating red cube with the word &quot;Hello!&quot; in yellow on each face&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#f97583>  let</span><span style=color:#e1e4e8> t </span><span style=color:#f97583>=</span><span style=color:#b392f0> millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.001</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  texture</span><span style=color:#e1e4e8>(layer);</span></span>
+<span class=line><span style=color:#b392f0>  rotateX</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  box</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><h4 id=-using-p5image>✅ Using <code>p5.Image</code></h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> layerImg;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#f97583>  let</span><span style=color:#e1e4e8> layer </span><span style=color:#f97583>=</span><span style=color:#b392f0> createGraphics</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>background</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;red&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>fill</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;yellow&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>textAlign</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>CENTER</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>CENTER</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>textSize</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>50</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>text</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;Hello!&#39;</span><span style=color:#e1e4e8>, width</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>, height</span><span style=color:#f97583>/</span><span style=color:#79b8ff>2</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#6a737d>  // Save as a static image</span></span>
+<span class=line><span style=color:#e1e4e8>  layerImg </span><span style=color:#f97583>=</span><span style=color:#e1e4e8> layer.</span><span style=color:#b392f0>get</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#6a737d>  // We no longer need the original</span></span>
+<span class=line><span style=color:#e1e4e8>  layer.</span><span style=color:#b392f0>remove</span><span style=color:#e1e4e8>();</span></span>
+<span class=line></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating red cube with the word &quot;Hello!&quot; in yellow on each face&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#f97583>  let</span><span style=color:#e1e4e8> t </span><span style=color:#f97583>=</span><span style=color:#b392f0> millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.001</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  texture</span><span style=color:#e1e4e8>(layerImg);</span></span>
+<span class=line><span style=color:#b392f0>  rotateX</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  box</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><iframe aria-label="Code Preview" height=200 sandbox="allow-scripts allow-popups allow-modals allow-forms" srcdoc="&lt;!DOCTYPE html>
+&lt;meta charset=&quot;utf8&quot; />
+&lt;style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+&lt;/style>
+&lt;body>&lt;/body>
+&lt;script id=&quot;code&quot; type=&quot;text/javascript&quot;>
+let layerImg;
+function setup() {
+  createCanvas(200, 200, WEBGL);
+  let layer = createGraphics(200, 200);
+  layer.background('red');
+  layer.noStroke();
+  layer.fill('yellow');
+  layer.textAlign(CENTER, CENTER);
+  layer.textSize(50);
+  layer.text('Hello!', width/2, height/2);
+ 
+  // Save as a static image
+  layerImg = layer.get();
+ 
+  // We no longer need the original
+  layer.remove();
+
+  describe('a rotating red cube with the word &quot;Hello!&quot; in yellow on each face');
+}
+function draw() {
+  let t = millis() * 0.001;
+ 
+  background(255);
+  lights();
+  noStroke();
+  texture(layerImg);
+  rotateX(t);
+  rotateY(t);
+  box(100);
+}
+&lt;/script>
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js&quot;>&lt;/script>
+" title="Code Preview" width=200></iframe></div></div><div class=callout><h5>Try this!</h5><p>Try making a slideshow of generative art images, where you use <code>.get()</code> on a <code>p5.Graphics</code> to create each slide!</p></div><h3 id=use-p5geometry-for-shapes-that-dont-change>Use <code>p5.Geometry</code> for shapes that don’t change</h3><p>Using <code>beginShape()</code> and <code>endShape()</code> lets you create interesting geometry, but it spends time processing your shapes into a form that can be rendered. Similarly, you can make interesting shapes out of many simple pieces like <code>sphere()</code> and <code>box()</code>, but having too many at once can slow down a sketch.</p><p>If you have shapes (or pieces of shapes) that don’t change internally over time, even if their <em>position, scales, and orientations</em> change, you can collapse them into a single, reusable model using <code>buildGeometry</code>. This means that p5.js can avoid recalculating positions again and again every frame.</p><div class="flex flex-row items-start justify-start"><div class=flex-1><h4 id=-redrawing-the-same-shape>❌ Redrawing the same shape</h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating corkscrew&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.01</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#f97583>  for</span><span style=color:#e1e4e8> (</span><span style=color:#f97583>let</span><span style=color:#e1e4e8> y </span><span style=color:#f97583>=</span><span style=color:#f97583> -</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>; y </span><span style=color:#f97583>&lt;=</span><span style=color:#79b8ff> 100</span><span style=color:#e1e4e8>; y </span><span style=color:#f97583>+=</span><span style=color:#79b8ff> 0.5</span><span style=color:#e1e4e8>) {</span></span>
+<span class=line><span style=color:#f97583>    const</span><span style=color:#79b8ff> angle</span><span style=color:#f97583> =</span><span style=color:#e1e4e8> y </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.1</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#f97583>    const</span><span style=color:#79b8ff> vec</span><span style=color:#f97583> =</span><span style=color:#b392f0> createVector</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>50</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>)</span></span>
+<span class=line><span style=color:#e1e4e8>      .</span><span style=color:#b392f0>rotate</span><span style=color:#e1e4e8>(angle);</span></span>
+<span class=line><span style=color:#b392f0>    push</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>    translate</span><span style=color:#e1e4e8>(vec.x, y, vec.y);</span></span>
+<span class=line><span style=color:#b392f0>    sphere</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>5</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>    pop</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>  }</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><h4 id=-using-buildgeometry>✅ Using <code>buildGeometry()</code></h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> shape;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  shape </span><span style=color:#f97583>=</span><span style=color:#b392f0> buildGeometry</span><span style=color:#e1e4e8>(</span><span style=color:#f97583>function</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#f97583>    for</span><span style=color:#e1e4e8> (</span><span style=color:#f97583>let</span><span style=color:#e1e4e8> y </span><span style=color:#f97583>=</span><span style=color:#f97583> -</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>; y </span><span style=color:#f97583>&lt;=</span><span style=color:#79b8ff> 100</span><span style=color:#e1e4e8>; y </span><span style=color:#f97583>+=</span><span style=color:#79b8ff> 0.5</span><span style=color:#e1e4e8>) {</span></span>
+<span class=line><span style=color:#f97583>      let</span><span style=color:#e1e4e8> angle </span><span style=color:#f97583>=</span><span style=color:#e1e4e8> y </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.1</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#f97583>      let</span><span style=color:#e1e4e8> vec </span><span style=color:#f97583>=</span><span style=color:#b392f0> createVector</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>50</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>0</span><span style=color:#e1e4e8>)</span></span>
+<span class=line><span style=color:#e1e4e8>        .</span><span style=color:#b392f0>rotate</span><span style=color:#e1e4e8>(angle);</span></span>
+<span class=line><span style=color:#b392f0>      push</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>      translate</span><span style=color:#e1e4e8>(vec.x, y, vec.y);</span></span>
+<span class=line><span style=color:#b392f0>      sphere</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>5</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>      pop</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>    }</span></span>
+<span class=line><span style=color:#e1e4e8>  });</span></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating corkscrew&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(</span><span style=color:#b392f0>millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.01</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#b392f0>  model</span><span style=color:#e1e4e8>(shape);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><iframe aria-label="Code Preview" height=200 sandbox="allow-scripts allow-popups allow-modals allow-forms" srcdoc="&lt;!DOCTYPE html>
+&lt;meta charset=&quot;utf8&quot; />
+&lt;style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+&lt;/style>
+&lt;body>&lt;/body>
+&lt;script id=&quot;code&quot; type=&quot;text/javascript&quot;>
+let shape;
+function setup() {
+  createCanvas(200, 200, WEBGL);
+  shape = buildGeometry(function() {
+    for (let y = -100; y &lt;= 100; y += 0.5) {
+      let angle = y * 0.1;
+      let vec = createVector(50, 0)
+        .rotate(angle);
+      push();
+      translate(vec.x, y, vec.y);
+      sphere(5);
+      pop();
+    }
+  });
+  describe('a rotating corkscrew');
+}
+function draw() {
+  background(255);
+  noStroke();
+  lights();
+  rotateY(millis() * 0.01);
+ 
+  model(shape);
+}
+&lt;/script>
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js&quot;>&lt;/script>
+" title="Code Preview" width=200></iframe></div></div><div class=callout><h5>Try this!</h5><p>Try making a swarm of bugs, flock of birds, or school of fish by making a <code>p5.Geometry</code> for one animal, then drawing it many times!</p></div><h3 id=prefer-shaders-over-modifying-pixels>Prefer shaders over modifying <code>pixels</code></h3><p>There are many effects one can achieve that involve looking at and modifying individual pixels on the canvas. Unfortunately, modifying <code>pixels</code> in your sketch involves looping through every pixel, one at a time, in JavaScript. A shader, on the other hand, can run in parallel for every pixel at once, making it a great alternative for when speed is required.</p><p>Here is an example of some noise-based dithering using <code>pixels</code>, and the equivalent filter using a shader. Be sure to check out our <a href=https://docs.google.com/document/u/0/d/1R7eO9XHcACHnxanFCKVviBK2c1Pci0y9qfRwuHY2_PI/edit>introduction to shaders</a> for more information about shader programming.</p><div class="flex flex-row items-start justify-start"><div class=flex-1><h4 id=-using-pixels>❌ Using <code>pixels</code></h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  pixelDensity</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>1</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating cube with stippled shading&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#f97583>  const</span><span style=color:#79b8ff> t</span><span style=color:#f97583> =</span><span style=color:#b392f0> millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.001</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#b392f0>  push</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  rotateX</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  box</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  pop</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#b392f0>  loadPixels</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#f97583>  for</span><span style=color:#e1e4e8> (</span><span style=color:#f97583>let</span><span style=color:#e1e4e8> x </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 0</span><span style=color:#e1e4e8>; x </span><span style=color:#f97583>&lt;</span><span style=color:#e1e4e8> width; x </span><span style=color:#f97583>+=</span><span style=color:#79b8ff> 1</span><span style=color:#e1e4e8>) {</span></span>
+<span class=line><span style=color:#f97583>    for</span><span style=color:#e1e4e8> (</span><span style=color:#f97583>let</span><span style=color:#e1e4e8> y </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 0</span><span style=color:#e1e4e8>; y </span><span style=color:#f97583>&lt;</span><span style=color:#e1e4e8> height; y </span><span style=color:#f97583>+=</span><span style=color:#79b8ff> 1</span><span style=color:#e1e4e8>) {</span></span>
+<span class=line><span style=color:#f97583>      let</span><span style=color:#e1e4e8> idx </span><span style=color:#f97583>=</span><span style=color:#e1e4e8> (y </span><span style=color:#f97583>*</span><span style=color:#e1e4e8> height </span><span style=color:#f97583>+</span><span style=color:#e1e4e8> x) </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 4</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#f97583>      let</span><span style=color:#e1e4e8> newValue;</span></span>
+<span class=line><span style=color:#f97583>      if</span><span style=color:#e1e4e8> (pixels[idx] </span><span style=color:#f97583>+</span><span style=color:#b392f0> noise</span><span style=color:#e1e4e8>(x, y)</span><span style=color:#f97583>*</span><span style=color:#79b8ff>50</span><span style=color:#f97583> &gt;=</span><span style=color:#79b8ff> 220</span><span style=color:#e1e4e8>) {</span></span>
+<span class=line><span style=color:#e1e4e8>        newValue </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 255</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#e1e4e8>      } </span><span style=color:#f97583>else</span><span style=color:#e1e4e8> {</span></span>
+<span class=line><span style=color:#e1e4e8>        newValue </span><span style=color:#f97583>=</span><span style=color:#79b8ff> 0</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#e1e4e8>      }</span></span>
+<span class=line><span style=color:#e1e4e8>      pixels[idx] </span><span style=color:#f97583>=</span><span style=color:#e1e4e8> newValue;</span></span>
+<span class=line><span style=color:#e1e4e8>      pixels[idx </span><span style=color:#f97583>+</span><span style=color:#79b8ff> 1</span><span style=color:#e1e4e8>] </span><span style=color:#f97583>=</span><span style=color:#e1e4e8> newValue;</span></span>
+<span class=line><span style=color:#e1e4e8>      pixels[idx </span><span style=color:#f97583>+</span><span style=color:#79b8ff> 2</span><span style=color:#e1e4e8>] </span><span style=color:#f97583>=</span><span style=color:#e1e4e8> newValue;</span></span>
+<span class=line><span style=color:#e1e4e8>    }</span></span>
+<span class=line><span style=color:#e1e4e8>  }</span></span>
+<span class=line><span style=color:#b392f0>  updatePixels</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><h4 id=-using-a-shader>✅ Using a shader</h4><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>let</span><span style=color:#e1e4e8> dither;</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>  dither </span><span style=color:#f97583>=</span><span style=color:#b392f0> createFilterShader</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>`</span></span>
+<span class=line><span style=color:#9ecbff>precision highp float;</span></span>
+<span class=line><span style=color:#9ecbff>uniform sampler2D tex0;</span></span>
+<span class=line><span style=color:#9ecbff>varying vec2 vTexCoord;</span></span>
+<span class=line><span style=color:#9ecbff>float random(vec2 p) {</span></span>
+<span class=line><span style=color:#9ecbff>  vec3 p3  = fract(vec3(p.xyx) * .1031);</span></span>
+<span class=line><span style=color:#9ecbff>  p3 += dot(p3, p3.yzx + 33.33);</span></span>
+<span class=line><span style=color:#9ecbff>  return fract((p3.x + p3.y) * p3.z);</span></span>
+<span class=line><span style=color:#9ecbff>}</span></span>
+<span class=line><span style=color:#9ecbff>void main() {</span></span>
+<span class=line><span style=color:#9ecbff>  float sample = texture2D(tex0, vTexCoord).r;</span></span>
+<span class=line><span style=color:#9ecbff>  sample += random(vTexCoord*100.0) * 0.2;</span></span>
+<span class=line><span style=color:#9ecbff>  // 0 if sample &lt; 0.98; 1 otherwise</span></span>
+<span class=line><span style=color:#9ecbff>  float level = step(0.98, sample);</span></span>
+<span class=line><span style=color:#9ecbff>  gl_FragColor = vec4(vec3(level), 1.);</span></span>
+<span class=line><span style=color:#9ecbff>}</span></span>
+<span class=line><span style=color:#9ecbff>`</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  describe</span><span style=color:#e1e4e8>(</span><span style=color:#9ecbff>&#39;a rotating cube with stippled shading&#39;</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span>
+<span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> draw</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  background</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>255</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#f97583>  let</span><span style=color:#e1e4e8> t </span><span style=color:#f97583>=</span><span style=color:#b392f0> millis</span><span style=color:#e1e4e8>() </span><span style=color:#f97583>*</span><span style=color:#79b8ff> 0.001</span><span style=color:#e1e4e8>;</span></span>
+<span class=line><span style=color:#b392f0>  push</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  rotateX</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  rotateY</span><span style=color:#e1e4e8>(t);</span></span>
+<span class=line><span style=color:#b392f0>  noStroke</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  lights</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#b392f0>  box</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>100</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  pop</span><span style=color:#e1e4e8>();</span></span>
+<span class=line><span style=color:#e1e4e8> </span></span>
+<span class=line><span style=color:#b392f0>  filter</span><span style=color:#e1e4e8>(dither);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre></div><div class=flex-1><iframe aria-label="Code Preview" height=200 sandbox="allow-scripts allow-popups allow-modals allow-forms" srcdoc="&lt;!DOCTYPE html>
+&lt;meta charset=&quot;utf8&quot; />
+&lt;style type='text/css'>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+&lt;/style>
+&lt;body>&lt;/body>
+&lt;script id=&quot;code&quot; type=&quot;text/javascript&quot;>
+function setup() {
+  createCanvas(200, 200, WEBGL);
+  dither = createFilterShader(`
+precision highp float;
+uniform sampler2D tex0;
+varying vec2 vTexCoord;
+
+float random(vec2 p) {
+  vec3 p3  = fract(vec3(p.xyx) * .1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+
+void main() {
+  float sample = texture2D(tex0, vTexCoord).r;
+  sample += random(vTexCoord*100.0) * 0.2;
+  // 0 if sample &lt; 0.98; 1 otherwise
+  float level = step(0.98, sample);
+  gl_FragColor = vec4(vec3(level), 1.);
+}
+`);
+  describe('a rotating cube with stippled shading');
+}
+function draw() {
+  background(255);
+  let t = millis() * 0.001;
+  push();
+  rotateX(t);
+  rotateY(t);
+  noStroke();
+  lights();
+  box(100);
+  pop();
+ 
+  filter(dither);
+}
+&lt;/script>
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js&quot;>&lt;/script>
+" title="Code Preview" width=200></iframe></div></div><div class=callout><h5>Try this!</h5><p>Try adapting the dithering shader into a grain shader by making it add a small random amount of color to each pixel!</p></div><h2 id=other-tips>Other tips</h2><p>Aside from the other structural changes we’ve listed so far, you may also be able to squeeze more performance out of your sketch by tweaking some minor settings that affect how the sketch gets rendered. These may provide varying levels of improvement on different browsers, screens, and computers, so try your changes out in a variety of spots.</p><h3 id=pixel-density>Pixel density</h3><p>Some devices have high-resolution screens. To ensure that everything isn’t tiny on your browser, those devices will render four pixels in a 2-by-2 grid for every pixel on a lower-density display. This makes images crisp, but it means there are four times the number of pixels to draw.</p><p>If your sketches are slower on these devices, consider adding <code>pixelDensity(1)</code> to only draw the number of pixels you specify in the width and height of your canvas. Your sketch may appear a bit blurry, but that could be fine depending on your sketch.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  pixelDensity</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>1</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre><h3 id=antialiasing>Antialiasing</h3><p>Antialiasing is the process of smoothing the colors of pixels when a shape intersects only part of the pixel. This can avoid jagged lines and visible pixel grids. However, like high pixel density displays, this is done by doing extra calculations per pixel. Sometimes, when you don’t need that extra smoothness, you can turn off antialiasing to run faster.</p><pre class="astro-code github-dark" style=background-color:#24292e;color:#e1e4e8;overflow-x:auto tabindex=0><code><span class=line><span style=color:#f97583>function</span><span style=color:#b392f0> setup</span><span style=color:#e1e4e8>() {</span></span>
+<span class=line><span style=color:#b392f0>  createCanvas</span><span style=color:#e1e4e8>(</span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>200</span><span style=color:#e1e4e8>, </span><span style=color:#79b8ff>WEBGL</span><span style=color:#e1e4e8>);</span></span>
+<span class=line><span style=color:#b392f0>  setAttributes</span><span style=color:#e1e4e8>({ antialias: </span><span style=color:#79b8ff>false</span><span style=color:#e1e4e8> });</span></span>
+<span class=line><span style=color:#e1e4e8>}</span></span></code></pre><h3 id=curve-detail>Curve Detail</h3><p>When you aren’t drawing premade shapes with <code>model()</code>, things generally run faster when fewer triangles and edges are involved. One way to tune how detailed your shapes are is with <code>curveDetail()</code>: the larger the value you give, the more edges and triangles are used when breaking down curves. Try using a level of detail smaller than the default value of 20.</p><style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(self.Astro||(self.Astro={})).load=async t=>{await(await t())()},window.dispatchEvent(new Event("astro:load")),(()=>{var t,e=Object.defineProperty,r=(t,r,n)=>(((t,r,n)=>{r in t?e(t,r,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[r]=n})(t,"symbol"!=typeof r?r+"":r,n),n);{let e={0:t=>i(t),1:t=>s(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(s(t)),5:t=>new Set(s(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t)},n=t=>{let[r,n]=t;return r in e?e[r](n):void 0},s=t=>t.map(n),i=t=>"object"!=typeof t||null===t?t:Object.fromEntries(Object.entries(t).map((([t,e])=>[t,n(e)])));customElements.get("astro-island")||customElements.define("astro-island",(t=class extends HTMLElement{constructor(){super(...arguments),r(this,"Component"),r(this,"hydrator"),r(this,"hydrate",(async()=>{var t;if(!this.hydrator||!this.isConnected)return;let e=null==(t=this.parentElement)?void 0:t.closest("astro-island[ssr]");if(e)return void e.addEventListener("astro:hydrate",this.hydrate,{once:!0});let r,n=this.querySelectorAll("astro-slot"),s={},o=this.querySelectorAll("template[data-astro-template]");for(let t of o){let e=t.closest(this.tagName);null!=e&&e.isSameNode(this)&&(s[t.getAttribute("data-astro-template")||"default"]=t.innerHTML,t.remove())}for(let t of n){let e=t.closest(this.tagName);null!=e&&e.isSameNode(this)&&(s[t.getAttribute("name")||"default"]=t.innerHTML)}try{r=this.hasAttribute("props")?i(JSON.parse(this.getAttribute("props"))):{}}catch(t){let e=this.getAttribute("component-url")||"<unknown>",r=this.getAttribute("component-export");throw r&&(e+=` (export ${r})`),console.error(`[hydrate] Error parsing props for component ${e}`,this.getAttribute("props"),t),t}await this.hydrator(this)(this.Component,r,s,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))})),r(this,"unmount",(()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))}))}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(this.hasAttribute("await-children")&&"interactive"!==document.readyState&&"complete"!==document.readyState){let t=()=>{document.removeEventListener("DOMContentLoaded",t),e.disconnect(),this.childrenConnectedCallback()},e=new MutationObserver((()=>{var e;(null==(e=this.lastChild)?void 0:e.nodeType)===Node.COMMENT_NODE&&"astro:end"===this.lastChild.nodeValue&&(this.lastChild.remove(),t())}));e.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",t)}else this.childrenConnectedCallback()}async childrenConnectedCallback(){let t=this.getAttribute("before-hydration-url");t&&await import(t),this.start()}async start(){let t=JSON.parse(this.getAttribute("opts")),e=this.getAttribute("client");if(void 0!==Astro[e])try{await Astro[e]((async()=>{let t=this.getAttribute("renderer-url"),[e,{default:r}]=await Promise.all([import(this.getAttribute("component-url")),t?import(t):()=>()=>{}]),n=this.getAttribute("component-export")||"default";if(n.includes(".")){this.Component=e;for(let t of n.split("."))this.Component=this.Component[t]}else this.Component=e[n];return this.hydrator=r,this.hydrate}),t,this)}catch(t){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,t)}else window.addEventListener(`astro:${e}`,(()=>this.start()),{once:!0})}attributeChangedCallback(){this.hydrate()}},r(t,"observedAttributes",["props"]),t))}})()</script><astro-island await-children="" client=load component-export=default component-url=/_astro/CodeEmbed.BxoFCdDb.js opts={&quot;name&quot;:&quot;CodeEmbedCodeMirror&quot;,&quot;value&quot;:true} props="{&quot;initialValue&quot;:[0,&quot;let detailSlider;\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  detailSlider = createSlider(\n    3, // min\n    20, // max\n    20, // initial value\n    1 // step\n  );\n\n  describe(&#39;an arch made of line segments&#39;)\n}\nfunction draw() {\n  background(200);\n  strokeWeight(3);\n  curveDetail(detailSlider.value());\n  curve(250, 600, 0, -30, 40, 0, 30, 30, 0, -250, 600, 0);\n}&quot;],&quot;previewable&quot;:[0,true],&quot;editable&quot;:[0,true]}" renderer-url=/_astro/client.CwpMCSBY.js ssr="" uid=18JxQi><div class=code-placeholder></div></astro-island><div class=callout><h5>Try this!</h5><p>What level of detail do you need for the curve above to appear smooth to you? Does it change the level you need if you draw the curve larger? What about smaller?</p></div><h2 id=debugging-further>Debugging further</h2><p>If your sketch is still running slowly and you don’t know what part is causing it, it can be helpful to use your browser’s profiler. This will vary based on your browser. For more information, you can get more detailed instructions <a href=https://developer.chrome.com/docs/devtools/performance/ >for Chrome here</a> or <a href=https://profiler.firefox.com/docs/#/./guide-getting-started>for Firefox here</a>.</p><p>In general, you start by opening up the browser’s developer tools. An easy way to do that is to right-click somewhere on the page and click “Inspect.” In the new toolbar that opens, there will be a tab labeled “Performance” that you can click on to get to the profiler. Here is what that looks like in Chrome:</p><p><img alt="A screenshot of the Chrome developer tools. The Performance tab is selected. The window is mostly blank, with a message in the center that says, &#34;Click the record button or hit Cmd E to start a new recording.&#34;" decoding=async height=718 loading=lazy src=/_astro/chrome-dev-tools.Dt5MmL0L_ZfAGqy.webp width=1319></p><p>Start running your sketch, then click the <strong>record</strong> button in the profiler. After a few seconds, you can click again to stop the recording. It will now look something like this:</p><p><img alt="A screenshot of the Chrome developer tools after having recorded a sketch in the Performance tab. It shows a 2D graph, with boxes going from left, and successively smaller boxes stacked vertically below each initial box." decoding=async height=718 loading=lazy src=/_astro/chrome-perf-profile._fT2e1qX_ZRLiWG.webp width=1319></p><p>The horizontal axis of this graph is time, showing what code is executing. The longer a block in the graph, the longer that code took to run. The vertical axis shows nested function calls. High up in the stack should be your <code>draw()</code> function, and below it will be any functions called within it, and below that will be any functions called by those functions. If you zoom in with your mouse wheel so that one <code>draw()</code> call takes up most of the width of the window, you can see a breakdown of how it spends its time by looking at the level right below it and how long those blocks are. The longest blocks are most likely the ones you want to try to optimize further.</p><p><img alt="A screenshot of the Chrome developer tools after having recorded a sketch in the Performance tab, zoomed in on one frame of animation. The draw() function takes up the whole frame, and it is subdivided into the functions called by draw(), and the functions those functions call." decoding=async height=718 loading=lazy src=/_astro/chrome-perf-tools-zoom.B4uCV_rt_Z1jAfA0.webp width=1319></p><h2 id=conclusion>Conclusion</h2><p>With these tips and tools, you should be able to hit the ground running with WebGL projects that run fast. Optimization can be complicated though, so don’t worry if you get stuck! Consider <a href=https://discord.gg/SHQ8dH25r9>joining the p5.js Discord server</a> where you will be able to ask for suggestions.</p><h2>Related examples</h2><ul></ul><h2>Related references</h2><ul></ul></main><div>p5.js site footer goes here</div></body></html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//interaction-tickle/ selected=true>English</option><option value=/ar/examples//interaction-tickle/ >العربية</option><option value=/es/examples//interaction-tickle/ >español</option><option value=/hi/examples//interaction-tickle/ >हिन्दी</option><option value=/ko/examples//interaction-tickle/ >한국어</option><option value=/pt-br/examples//interaction-tickle/ >português (Brasil)</option><option value=/sk/examples//interaction-tickle/ >slovenčina</option><option value=/zh/examples//interaction-tickle/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Tickle</h1><span></span><main><p>The word “tickle” in black is on a light gray background. As the user hovers the word, the word shakes and moves as if being tickled</p><p>The word “tickle” jitters when the cursor hovers over. Sometimes, it can be tickled off the screen.</p><pre>
+let message = &#39;tickle&#39;,
+  font,
+  bounds, // holds x, y, w, h of the text&#39;s bounding box
+  fontsize = 60,
+  x,
+  y; // x and y coordinates of the text
+
+function preload() {
+  font = loadFont(&#39;assets/SourceSansPro-Regular.otf&#39;);
+}
+
+function setup() {
+  createCanvas(710, 400);
+
+  // set up the font
+  textFont(font);
+  textSize(fontsize);
+
+  // get the width and height of the text so we can center it initially
+  bounds = font.textBounds(message, 0, 0, fontsize);
+  x = width / 2 - bounds.w / 2;
+  y = height / 2 - bounds.h / 2;
+}
+
+function draw() {
+  background(204, 120);
+
+  // write the text in black and get its bounding box
+  fill(0);
+  text(message, x, y);
+  bounds = font.textBounds(message, x, y, fontsize);
+
+  // check if the mouse is inside the bounding box and tickle if so
+  if (
+    mouseX &gt;= bounds.x &amp;&amp;
+    mouseX &lt;= bounds.x + bounds.w &amp;&amp;
+    mouseY &gt;= bounds.y &amp;&amp;
+    mouseY &lt;= bounds.y + bounds.h
+  ) {
+    x += random(-5, 5);
+    y += random(-5, 5);
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

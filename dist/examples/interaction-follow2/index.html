@@ -1,0 +1,34 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//interaction-follow2/ selected=true>English</option><option value=/ar/examples//interaction-follow2/ >العربية</option><option value=/es/examples//interaction-follow2/ >español</option><option value=/hi/examples//interaction-follow2/ >हिन्दी</option><option value=/ko/examples//interaction-follow2/ >한국어</option><option value=/pt-br/examples//interaction-follow2/ >português (Brasil)</option><option value=/sk/examples//interaction-follow2/ >slovenčina</option><option value=/zh/examples//interaction-follow2/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Follow 2</h1><span></span><main><p>Two long ovals connected at the end. The user’s mouse is attached to the end of one of the ovals and when the mouse moves, the two ovals move as well</p><p>A two-segmented arm follows the cursor position. The relative angle between the segments is calculated with atan2() and the position calculated with sin() and cos(). Based on code from Keith Peters.</p><pre>
+let x = [0, 0],
+  y = [0, 0],
+  segLength = 50;
+
+function setup() {
+  createCanvas(710, 400);
+  strokeWeight(20.0);
+  stroke(255, 100);
+}
+
+function draw() {
+  background(0);
+  dragSegment(0, mouseX, mouseY);
+  dragSegment(1, x[0], y[0]);
+}
+
+function dragSegment(i, xin, yin) {
+  const dx = xin - x[i];
+  const dy = yin - y[i];
+  const angle = atan2(dy, dx);
+  x[i] = xin - cos(angle) * segLength;
+  y[i] = yin - sin(angle) * segLength;
+  segment(x[i], y[i], angle);
+}
+
+function segment(x, y, a) {
+  push();
+  translate(x, y);
+  rotate(a);
+  line(0, 0, segLength, 0);
+  pop();
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

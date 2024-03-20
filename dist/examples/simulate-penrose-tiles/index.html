@@ -1,0 +1,122 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-penrose-tiles/ selected=true>English</option><option value=/ar/examples//simulate-penrose-tiles/ >العربية</option><option value=/es/examples//simulate-penrose-tiles/ >español</option><option value=/hi/examples//simulate-penrose-tiles/ >हिन्दी</option><option value=/ko/examples//simulate-penrose-tiles/ >한국어</option><option value=/pt-br/examples//simulate-penrose-tiles/ >português (Brasil)</option><option value=/sk/examples//simulate-penrose-tiles/ >slovenčina</option><option value=/zh/examples//simulate-penrose-tiles/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Penrose Tiles</h1><span></span><main><p>A penrose tile pattern is created by white rhombi being drawn on a black background</p><p>This is a port by David Blitz of the “Penrose Tile” example from <a href=https://processing.org/examples/ >processing.org/examples</a></p><pre>
+
+let ds;
+
+function setup() {
+  createCanvas(710, 400);
+  ds = new PenroseLSystem();
+  //please, play around with the following line
+  ds.simulate(5);
+}
+
+function draw() {
+  background(0);
+  ds.render();
+}
+
+function PenroseLSystem() {
+    this.steps = 0;
+
+   //these are axiom and rules for the penrose rhombus l-system
+   //a reference would be cool, but I couldn&#39;t find a good one
+    this.axiom = &quot;[X]++[X]++[X]++[X]++[X]&quot;;
+    this.ruleW = &quot;YF++ZF----XF[-YF----WF]++&quot;;
+    this.ruleX = &quot;+YF--ZF[---WF--XF]+&quot;;
+    this.ruleY = &quot;-WF++XF[+++YF++ZF]-&quot;;
+    this.ruleZ = &quot;--YF++++WF[+ZF++++XF]--XF&quot;;
+
+    //please play around with the following two lines
+    this.startLength = 460.0;
+    this.theta = TWO_PI / 10.0; //36 degrees, try TWO_PI / 6.0, ...
+    this.reset();
+}
+
+PenroseLSystem.prototype.simulate = function (gen) {
+  while (this.getAge() &lt; gen) {
+    this.iterate(this.production);
+  }
+}
+
+PenroseLSystem.prototype.reset = function () {
+    this.production = this.axiom;
+    this.drawLength = this.startLength;
+    this.generations = 0;
+  }
+
+PenroseLSystem.prototype.getAge = function () {
+    return this.generations;
+  }
+
+//apply substitution rules to create new iteration of production string
+PenroseLSystem.prototype.iterate = function() {
+    let newProduction = &quot;&quot;;
+
+    for(let i=0; i &lt; this.production.length; ++i) {
+      let step = this.production.charAt(i);
+      //if current character is &#39;W&#39;, replace current character
+      //by corresponding rule
+      if (step == &#39;W&#39;) {
+        newProduction = newProduction + this.ruleW;
+      }
+      else if (step == &#39;X&#39;) {
+        newProduction = newProduction + this.ruleX;
+      }
+      else if (step == &#39;Y&#39;) {
+        newProduction = newProduction + this.ruleY;
+      }
+      else if (step == &#39;Z&#39;) {
+        newProduction = newProduction + this.ruleZ;
+      }
+      else {
+        //drop all &#39;F&#39; characters, don&#39;t touch other
+        //characters (i.e. &#39;+&#39;, &#39;-&#39;, &#39;[&#39;, &#39;]&#39;
+        if (step != &#39;F&#39;) {
+          newProduction = newProduction + step;
+        }
+      }
+    }
+
+    this.drawLength = this.drawLength * 0.5;
+    this.generations++;
+    this.production = newProduction;
+}
+
+//convert production string to a turtle graphic
+PenroseLSystem.prototype.render = function () {
+    translate(width / 2, height / 2);
+
+    this.steps += 20;
+    if(this.steps &gt; this.production.length) {
+      this.steps = this.production.length;
+    }
+
+    for(let i=0; i&lt;this.steps; ++i) {
+      let step = this.production.charAt(i);
+
+      //&#39;W&#39;, &#39;X&#39;, &#39;Y&#39;, &#39;Z&#39; symbols don&#39;t actually correspond to a turtle action
+      if( step == &#39;F&#39;) {
+        stroke(255, 60);
+        for(let j=0; j &lt; this.repeats; j++) {
+          line(0, 0, 0, -this.drawLength);
+          noFill();
+          translate(0, -this.drawLength);
+        }
+        this.repeats = 1;
+      }
+      else if (step == &#39;+&#39;) {
+        rotate(this.theta);
+      }
+      else if (step == &#39;-&#39;) {
+        rotate(-this.theta);
+      }
+      else if (step == &#39;[&#39;) {
+        push();
+      }
+      else if (step == &#39;]&#39;) {
+        pop();
+      }
+    }
+  }
+
+
+</pre></main><div>p5.js site footer goes here</div></body></html>

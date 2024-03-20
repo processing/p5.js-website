@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//sound-record-save/ selected=true>English</option><option value=/ar/examples//sound-record-save/ >العربية</option><option value=/es/examples//sound-record-save/ >español</option><option value=/hi/examples//sound-record-save/ >हिन्दी</option><option value=/ko/examples//sound-record-save/ >한국어</option><option value=/pt-br/examples//sound-record-save/ >português (Brasil)</option><option value=/sk/examples//sound-record-save/ >slovenčina</option><option value=/zh/examples//sound-record-save/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Record Save Audio</h1><span></span><main><p>The user clicks the grey screen to begin recording audio input through their mic. When recording the screen turns red. The user clicks their mouse again to end recording and the screen turns green. If the user clicks their mouse again the audio recording is saved to their downloads as a wav file</p><p>Record a sound, play it back and save it as a .wav file to the client’s computer. We need three objects: a p5.AudioIn (mic / sound source), p5.SoundRecorder (records the sound), and a p5.SoundFile (play back / save).</p><p><em><span class=small>To run this example locally, you will need the <a href=http://p5js.org/reference/#/libraries/p5.sound>p5.sound library</a> a sound file, and a running <a href=https://github.com/processing/p5.js/wiki/Local-server>local server</a>.</span></em></p><p></p><pre>
+let mic, recorder, soundFile;
+
+let state = 0; // mousePress will increment from Record, to Stop, to Play
+
+function setup() {
+  createCanvas(400, 400);
+  background(200);
+  fill(0);
+  text(&#39;Enable mic and click the mouse to begin recording&#39;, 20, 20);
+
+  // create an audio in
+  mic = new p5.AudioIn();
+
+  // users must manually enable their browser microphone for recording to work properly!
+  mic.start();
+
+  // create a sound recorder
+  recorder = new p5.SoundRecorder();
+
+  // connect the mic to the recorder
+  recorder.setInput(mic);
+
+  // create an empty sound file that we will use to playback the recording
+  soundFile = new p5.SoundFile();
+}
+
+function mousePressed() {
+  // use the &#39;.enabled&#39; boolean to make sure user enabled the mic (otherwise we&#39;d record silence)
+  if (state === 0 &amp;&amp; mic.enabled) {
+    // Tell recorder to record to a p5.SoundFile which we will use for playback
+    recorder.record(soundFile);
+
+    background(255, 0, 0);
+    text(&#39;Recording now! Click to stop.&#39;, 20, 20);
+    state++;
+  } else if (state === 1) {
+    recorder.stop(); // stop recorder, and send the result to soundFile
+
+    background(0, 255, 0);
+    text(&#39;Recording stopped. Click to play &amp; save&#39;, 20, 20);
+    state++;
+  } else if (state === 2) {
+    soundFile.play(); // play the result!
+    saveSound(soundFile, &#39;mySound.wav&#39;); // save file
+    state++;
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

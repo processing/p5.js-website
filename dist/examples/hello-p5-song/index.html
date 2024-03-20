@@ -1,0 +1,113 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//hello-p5-song/ selected=true>English</option><option value=/ar/examples//hello-p5-song/ >العربية</option><option value=/es/examples//hello-p5-song/ >español</option><option value=/hi/examples//hello-p5-song/ >हिन्दी</option><option value=/ko/examples//hello-p5-song/ >한국어</option><option value=/pt-br/examples//hello-p5-song/ >português (Brasil)</option><option value=/sk/examples//hello-p5-song/ >slovenčina</option><option value=/zh/examples//hello-p5-song/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Song</h1><span></span><main><p>Grey background divided into 7 vertical rectangles. When the user hovers, the rectangle turns dark grey. When the user clicks, each rectangle turns cyan and plays a different note.</p><p>Play a song. You will need to include the <a href=http://p5js.org/reference/#/libraries/p5.sound>p5.sound library</a> for this example to work in your own project.</p><pre>
+// The midi notes of a scale
+let notes = [ 60, 62, 64, 65, 67, 69, 71];
+
+// For automatically playing the song
+let index = 0;
+let song = [
+  { note: 4, duration: 400, display: &quot;D&quot; },
+  { note: 0, duration: 200, display: &quot;G&quot; },
+  { note: 1, duration: 200, display: &quot;A&quot; },
+  { note: 2, duration: 200, display: &quot;B&quot; },
+  { note: 3, duration: 200, display: &quot;C&quot; },
+  { note: 4, duration: 400, display: &quot;D&quot; },
+  { note: 0, duration: 400, display: &quot;G&quot; },
+  { note: 0, duration: 400, display: &quot;G&quot; }
+];
+let trigger = 0;
+let autoplay = false;
+let osc;
+
+function setup() {
+  createCanvas(720, 400);
+  let div = createDiv(&quot;Click to play notes or &quot;)
+  div.id(&quot;instructions&quot;);
+  let button = createButton(&quot;play song automatically.&quot;);
+  button.parent(&quot;instructions&quot;);
+  // Trigger automatically playing
+  button.mousePressed(function() {
+    if (!autoplay) {
+      index = 0;
+      autoplay = true;
+    }
+  });
+
+  // A triangle oscillator
+  osc = new p5.TriOsc();
+  // Start silent
+  osc.start();
+  osc.amp(0);
+}
+
+// A function to play a note
+function playNote(note, duration) {
+  osc.freq(midiToFreq(note));
+  // Fade it in
+  osc.fade(0.5,0.2);
+
+  // If we sest a duration, fade it out
+  if (duration) {
+    setTimeout(function() {
+      osc.fade(0,0.2);
+    }, duration-50);
+  }
+}
+
+function draw() {
+
+  // If we are autoplaying and it&#39;s time for the next note
+  if (autoplay &amp;&amp; millis() &gt; trigger){
+    playNote(notes[song[index].note], song[index].duration);
+    trigger = millis() + song[index].duration;
+    // Move to the next note
+    index ++;
+  // We&#39;re at the end, stop autoplaying.
+  } else if (index &gt;= song.length) {
+    autoplay = false;
+  }
+
+
+  // Draw a keyboard
+
+  // The width for each key
+  let w = width / notes.length;
+  for (let i = 0; i &lt; notes.length; i++) {
+    let x = i * w;
+    // If the mouse is over the key
+    if (mouseX &gt; x &amp;&amp; mouseX &lt; x + w &amp;&amp; mouseY &lt; height) {
+      // If we&#39;re clicking
+      if (mouseIsPressed) {
+        fill(100,255,200);
+      // Or just rolling over
+      } else {
+        fill(127);
+      }
+    } else {
+      fill(200);
+    }
+
+    // Or if we&#39;re playing the song, let&#39;s highlight it too
+    if (autoplay &amp;&amp; i === song[index-1].note) {
+      fill(100,255,200);
+    }
+
+    // Draw the key
+    rect(x, 0, w-1, height-1);
+  }
+
+}
+
+// When we click
+function mousePressed(event) {
+  if(event.button == 0 &amp;&amp; event.clientX &lt; width &amp;&amp; event.clientY &lt; height) {
+    // Map mouse to the key index
+    let key = floor(map(mouseX, 0, width, 0, notes.length));
+    playNote(notes[key]);
+  }
+}
+
+// Fade it out when we release
+function mouseReleased() {
+  osc.fade(0,0.5);
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

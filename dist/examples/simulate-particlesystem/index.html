@@ -1,0 +1,66 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-particlesystem/ selected=true>English</option><option value=/ar/examples//simulate-particlesystem/ >العربية</option><option value=/es/examples//simulate-particlesystem/ >español</option><option value=/hi/examples//simulate-particlesystem/ >हिन्दी</option><option value=/ko/examples//simulate-particlesystem/ >한국어</option><option value=/pt-br/examples//simulate-particlesystem/ >português (Brasil)</option><option value=/sk/examples//simulate-particlesystem/ >slovenčina</option><option value=/zh/examples//simulate-particlesystem/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Particle System</h1><span></span><main><p>Light grey circles flowing out from a point like a sparkler</p><p>This is a basic Particle System (<a href=http://natureofcode.com>natureofcode.com</a>)</p><pre>
+let system;
+
+function setup() {
+  createCanvas(720, 400);
+  system = new ParticleSystem(createVector(width / 2, 50));
+}
+
+function draw() {
+  background(51);
+  system.addParticle();
+  system.run();
+}
+
+// A simple Particle class
+let Particle = function(position) {
+  this.acceleration = createVector(0, 0.05);
+  this.velocity = createVector(random(-1, 1), random(-1, 0));
+  this.position = position.copy();
+  this.lifespan = 255;
+};
+
+Particle.prototype.run = function() {
+  this.update();
+  this.display();
+};
+
+// Method to update position
+Particle.prototype.update = function(){
+  this.velocity.add(this.acceleration);
+  this.position.add(this.velocity);
+  this.lifespan -= 2;
+};
+
+// Method to display
+Particle.prototype.display = function() {
+  stroke(200, this.lifespan);
+  strokeWeight(2);
+  fill(127, this.lifespan);
+  ellipse(this.position.x, this.position.y, 12, 12);
+};
+
+// Is the particle still useful?
+Particle.prototype.isDead = function(){
+  return this.lifespan &lt; 0;
+};
+
+let ParticleSystem = function(position) {
+  this.origin = position.copy();
+  this.particles = [];
+};
+
+ParticleSystem.prototype.addParticle = function() {
+  this.particles.push(new Particle(this.origin));
+};
+
+ParticleSystem.prototype.run = function() {
+  for (let i = this.particles.length-1; i &gt;= 0; i--) {
+    let p = this.particles[i];
+    p.run();
+    if (p.isDead()) {
+      this.particles.splice(i, 1);
+    }
+  }
+};
+</pre></main><div>p5.js site footer goes here</div></body></html>

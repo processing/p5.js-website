@@ -1,0 +1,59 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-snowflakeparticlesystem/ selected=true>English</option><option value=/ar/examples//simulate-snowflakeparticlesystem/ >العربية</option><option value=/es/examples//simulate-snowflakeparticlesystem/ >español</option><option value=/hi/examples//simulate-snowflakeparticlesystem/ >हिन्दी</option><option value=/ko/examples//simulate-snowflakeparticlesystem/ >한국어</option><option value=/pt-br/examples//simulate-snowflakeparticlesystem/ >português (Brasil)</option><option value=/sk/examples//simulate-snowflakeparticlesystem/ >slovenčina</option><option value=/zh/examples//simulate-snowflakeparticlesystem/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Snowflakes</h1><span></span><main><p>White snowflakes fall in a random pattern from the top of a red background</p><p>Particle system simulating the motion of falling snowflakes. Uses an array of objects to hold the snowflake particles. Contributed by Aatish Bhatia.</p><pre>
+
+let snowflakes = []; // array to hold snowflake objects
+
+function setup() {
+  createCanvas(400, 600);
+  fill(240);
+  noStroke();
+}
+
+function draw() {
+  background(&#39;brown&#39;);
+  let t = frameCount / 60; // update time
+
+  // create a random number of snowflakes each frame
+  for (let i = 0; i &lt; random(5); i++) {
+    snowflakes.push(new snowflake()); // append snowflake object
+  }
+
+  // loop through snowflakes with a for..of loop
+  for (let flake of snowflakes) {
+    flake.update(t); // update snowflake position
+    flake.display(); // draw snowflake
+  }
+}
+
+// snowflake class
+function snowflake() {
+  // initialize coordinates
+  this.posX = 0;
+  this.posY = random(-50, 0);
+  this.initialangle = random(0, 2 * PI);
+  this.size = random(2, 5);
+
+  // radius of snowflake spiral
+  // chosen so the snowflakes are uniformly spread out in area
+  this.radius = sqrt(random(pow(width / 2, 2)));
+
+  this.update = function(time) {
+    // x position follows a circle
+    let w = 0.6; // angular speed
+    let angle = w * time + this.initialangle;
+    this.posX = width / 2 + this.radius * sin(angle);
+
+    // different size snowflakes fall at slightly different y speeds
+    this.posY += pow(this.size, 0.5);
+
+    // delete snowflake if past end of screen
+    if (this.posY &gt; height) {
+      let index = snowflakes.indexOf(this);
+      snowflakes.splice(index, 1);
+    }
+  };
+
+  this.display = function() {
+    ellipse(this.posX, this.posY, this.size);
+  };
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

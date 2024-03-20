@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//input-storing-input/ selected=true>English</option><option value=/ar/examples//input-storing-input/ >العربية</option><option value=/es/examples//input-storing-input/ >español</option><option value=/hi/examples//input-storing-input/ >हिन्दी</option><option value=/ko/examples//input-storing-input/ >한국어</option><option value=/pt-br/examples//input-storing-input/ >português (Brasil)</option><option value=/sk/examples//input-storing-input/ >slovenčina</option><option value=/zh/examples//input-storing-input/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Storing Input</h1><span></span><main><p>User draws white circles on a fuschia background. Circles fade in color as the next circle is drawn.</p><p>Move the mouse across the screen to change the position of the circles. The positions of the mouse are recorded into an array and played back every frame. Between each frame, the newest value are added to the end of each array and the oldest value is deleted.</p><pre>
+let num = 60;
+let mx = [];
+let my = [];
+
+function setup() {
+  createCanvas(720, 400);
+  noStroke();
+  fill(255, 153);
+  for (let i = 0; i &lt; num; i++) {
+    mx.push(i);
+    my.push(i);
+  }
+}
+
+function draw() {
+  background(237, 34, 93);
+
+  // Cycle through the array, using a different entry on each frame.
+  // Using modulo (%) like this is faster than moving all the values over.
+  let which = frameCount % num;
+  mx[which] = mouseX;
+  my[which] = mouseY;
+
+  for (let i = 0; i &lt; num; i++) {
+    // which+1 is the smallest (the oldest in the array)
+    let index = (which + 1 + i) % num;
+    ellipse(mx[index], my[index], i, i);
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

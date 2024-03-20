@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//simulate-recursive-tree/ selected=true>English</option><option value=/ar/examples//simulate-recursive-tree/ >العربية</option><option value=/es/examples//simulate-recursive-tree/ >español</option><option value=/hi/examples//simulate-recursive-tree/ >हिन्दी</option><option value=/ko/examples//simulate-recursive-tree/ >한국어</option><option value=/pt-br/examples//simulate-recursive-tree/ >português (Brasil)</option><option value=/sk/examples//simulate-recursive-tree/ >slovenčina</option><option value=/zh/examples//simulate-recursive-tree/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Recursive Tree</h1><span></span><main><p>If the user’s mouse is on the far left side of the screen, there is a white vertical line on a black background. As the user’s mouse moves right, the top of the vertical line begins to expand into branches of a tree until it curves down into a very geometric tree</p><p>Renders a simple tree-like structure via recursion. The branching angle is calculated as a function of the horizontal mouse location. Move the mouse left and right to change the angle. Based on Daniel Shiffman’s <a href=https://processing.org/examples/tree.html>Recursive Tree Example</a> for Processing.</p><pre>
+let theta;
+
+function setup() {
+  createCanvas(710, 400);
+}
+
+function draw() {
+  background(0);
+  frameRate(30);
+  stroke(255);
+  // Let&#39;s pick an angle 0 to 90 degrees based on the mouse position
+  let a = (mouseX / width) * 90;
+  // Convert it to radians
+  theta = radians(a);
+  // Start the tree from the bottom of the screen
+  translate(width/2,height);
+  // Draw a line 120 pixels
+  line(0,0,0,-120);
+  // Move to the end of that line
+  translate(0,-120);
+  // Start the recursive branching!
+  branch(120);
+
+}
+
+function branch(h) {
+  // Each branch will be 2/3rds the size of the previous one
+  h *= 0.66;
+
+  // All recursive functions must have an exit condition!!!!
+  // Here, ours is when the length of the branch is 2 pixels or less
+  if (h &gt; 2) {
+    push();    // Save the current state of transformation (i.e. where are we now)
+    rotate(theta);   // Rotate by theta
+    line(0, 0, 0, -h);  // Draw the branch
+    translate(0, -h); // Move to the end of the branch
+    branch(h);       // Ok, now call myself to draw two new branches!!
+    pop();     // Whenever we get back here, we &quot;pop&quot; in order to restore the previous matrix state
+
+    // Repeat the same thing, only branch off to the &quot;left&quot; this time!
+    push();
+    rotate(-theta);
+    line(0, 0, 0, -h);
+    translate(0, -h);
+    branch(h);
+    pop();
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//motion-non-orthogonal-reflection/ selected=true>English</option><option value=/ar/examples//motion-non-orthogonal-reflection/ >العربية</option><option value=/es/examples//motion-non-orthogonal-reflection/ >español</option><option value=/hi/examples//motion-non-orthogonal-reflection/ >हिन्दी</option><option value=/ko/examples//motion-non-orthogonal-reflection/ >한국어</option><option value=/pt-br/examples//motion-non-orthogonal-reflection/ >português (Brasil)</option><option value=/sk/examples//motion-non-orthogonal-reflection/ >slovenčina</option><option value=/zh/examples//motion-non-orthogonal-reflection/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Non Orthogonal Reflection</h1><span></span><main><p>A white circle bounces around a black screen and on a grey slanted floor leaving a white streak behind it. The grey slanted floor changes every couple of frames</p><p>This is a port by David Blitz of the “Reflection 1” example from processing.org/examples</p><pre>
+
+//Position of left hand side of floor
+let base1;
+
+//Position of right hand side of floor
+let base2;
+//Length of floor
+//let baseLength;
+
+// Variables related to moving ball
+let position;
+let velocity;
+let r = 6;
+let speed = 3.5;
+
+function setup() {
+  createCanvas(710, 400);
+
+  fill(128);
+  base1 = createVector(0, height - 150);
+  base2 = createVector(width, height);
+  //createGround();
+
+  //start ellipse at middle top of screen
+  position = createVector(width / 2, 0);
+
+  //calculate initial random velocity
+  velocity = p5.Vector.random2D();
+  velocity.mult(speed);
+}
+
+function draw() {
+  //draw background
+  fill(0, 12);
+  noStroke();
+  rect(0, 0, width, height);
+
+  //draw base
+  fill(200);
+  quad(base1.x, base1.y, base2.x, base2.y, base2.x, height, 0, height);
+
+  //calculate base top normal
+  let baseDelta = p5.Vector.sub(base2, base1);
+  baseDelta.normalize();
+  let normal = createVector(-baseDelta.y, baseDelta.x);
+  let intercept = p5.Vector.dot(base1, normal);
+
+  //draw ellipse
+  noStroke();
+  fill(255);
+  ellipse(position.x, position.y, r * 2, r * 2);
+
+  //move ellipse
+  position.add(velocity);
+
+  //normalized incidence vector
+  incidence = p5.Vector.mult(velocity, -1);
+  incidence.normalize();
+
+  // detect and handle collision with base
+  if (p5.Vector.dot(normal, position) &gt; intercept) {
+    //calculate dot product of incident vector and base top
+    let dot = incidence.dot(normal);
+
+    //calculate reflection vector
+    //assign reflection vector to direction vector
+    velocity.set(
+      2 * normal.x * dot - incidence.x,
+      2 * normal.y * dot - incidence.y,
+      0
+    );
+    velocity.mult(speed);
+
+    // draw base top normal at collision point
+    stroke(255, 128, 0);
+    line(
+      position.x,
+      position.y,
+      position.x - normal.x * 100,
+      position.y - normal.y * 100
+    );
+  }
+  //}
+
+  // detect boundary collision
+  // right
+  if (position.x &gt; width - r) {
+    position.x = width - r;
+    velocity.x *= -1;
+  }
+  // left
+  if (position.x &lt; r) {
+    position.x = r;
+    velocity.x *= -1;
+  }
+  // top
+  if (position.y &lt; r) {
+    position.y = r;
+    velocity.y *= -1;
+
+    //randomize base top
+    base1.y = random(height - 100, height);
+    base2.y = random(height - 100, height);
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//mobile-shake-ball-bounce/ selected=true>English</option><option value=/ar/examples//mobile-shake-ball-bounce/ >العربية</option><option value=/es/examples//mobile-shake-ball-bounce/ >español</option><option value=/hi/examples//mobile-shake-ball-bounce/ >हिन्दी</option><option value=/ko/examples//mobile-shake-ball-bounce/ >한국어</option><option value=/pt-br/examples//mobile-shake-ball-bounce/ >português (Brasil)</option><option value=/sk/examples//mobile-shake-ball-bounce/ >slovenčina</option><option value=/zh/examples//mobile-shake-ball-bounce/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Shake Ball Bounce</h1><span></span><main><p></p><p>Create a Ball class, instantiate multiple objects, move it around the screen, and bounce when touch the edge of the canvas. Detect shake event based on total change in accelerationX and accelerationY and speed up or slow down objects based on detection.</p><pre>
+
+let balls = [];
+
+let threshold = 30;
+let accChangeX = 0;
+let accChangeY = 0;
+let accChangeT = 0;
+
+function setup() {
+  createCanvas(displayWidth, displayHeight);
+
+  for (let i = 0; i &lt; 20; i++) {
+    balls.push(new Ball());
+  }
+}
+
+function draw() {
+  background(0);
+
+  for (let i = 0; i &lt; balls.length; i++) {
+    balls[i].move();
+    balls[i].display();
+  }
+
+  checkForShake();
+}
+
+function checkForShake() {
+  // Calculate total change in accelerationX and accelerationY
+  accChangeX = abs(accelerationX - pAccelerationX);
+  accChangeY = abs(accelerationY - pAccelerationY);
+  accChangeT = accChangeX + accChangeY;
+  // If shake
+  if (accChangeT &gt;= threshold) {
+    for (let i = 0; i &lt; balls.length; i++) {
+      balls[i].shake();
+      balls[i].turn();
+    }
+  }
+  // If not shake
+  else {
+    for (let i = 0; i &lt; balls.length; i++) {
+      balls[i].stopShake();
+      balls[i].turn();
+      balls[i].move();
+    }
+  }
+}
+
+// Ball class
+class Ball {
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.diameter = random(10, 30);
+    this.xspeed = random(-2, 2);
+    this.yspeed = random(-2, 2);
+    this.oxspeed = this.xspeed;
+    this.oyspeed = this.yspeed;
+    this.direction = 0.7;
+  }
+
+  move() {
+    this.x += this.xspeed * this.direction;
+    this.y += this.yspeed * this.direction;
+  }
+
+  // Bounce when touch the edge of the canvas
+  turn() {
+    if (this.x &lt; 0) {
+      this.x = 0;
+      this.direction = -this.direction;
+    } else if (this.y &lt; 0) {
+      this.y = 0;
+      this.direction = -this.direction;
+    } else if (this.x &gt; width - 20) {
+      this.x = width - 20;
+      this.direction = -this.direction;
+    } else if (this.y &gt; height - 20) {
+      this.y = height - 20;
+      this.direction = -this.direction;
+    }
+  }
+
+  // Add to xspeed and yspeed based on
+  // the change in accelerationX value
+  shake() {
+    this.xspeed += random(5, accChangeX / 3);
+    this.yspeed += random(5, accChangeX / 3);
+  }
+
+  // Gradually slows down
+  stopShake() {
+    if (this.xspeed &gt; this.oxspeed) {
+      this.xspeed -= 0.6;
+    } else {
+      this.xspeed = this.oxspeed;
+    }
+    if (this.yspeed &gt; this.oyspeed) {
+      this.yspeed -= 0.6;
+    } else {
+      this.yspeed = this.oyspeed;
+    }
+  }
+
+  display() {
+    ellipse(this.x, this.y, this.diameter, this.diameter);
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

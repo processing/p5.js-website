@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//image-convolution/ selected=true>English</option><option value=/ar/examples//image-convolution/ >العربية</option><option value=/es/examples//image-convolution/ >español</option><option value=/hi/examples//image-convolution/ >हिन्दी</option><option value=/ko/examples//image-convolution/ >한국어</option><option value=/pt-br/examples//image-convolution/ >português (Brasil)</option><option value=/sk/examples//image-convolution/ >slovenčina</option><option value=/zh/examples//image-convolution/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Convolution</h1><span></span><main><p>An astronaut on a planet. As the user’s mouse moves, a square section increasing the sharpness of the image also moves</p><p>Applies a convolution matrix to a portion of an image. Move mouse to apply filter to different parts of the image. This example is a port of <a href=https://processing.org/examples/convolution.html target=blank>Dan Shiffman’s example</a> for Processing. Original comments written by Dan unless otherwise specified.</p><p><em><span class=small>To run this example locally, you will need an image file, and a running <a href=https://github.com/processing/p5.js/wiki/Local-server>local server</a>.</span></em></p><p></p><pre>
+
+let img;
+let w = 80;
+
+// It&#39;s possible to convolve the image with many different
+// matrices to produce different effects. This is a high-pass
+// filter; it accentuates the edges.
+const matrix = [
+  [-1, -1, -1],
+  [-1,  9, -1],
+  [-1, -1, -1]
+];
+
+function preload() {
+  img = loadImage(&#39;assets/moonwalk.jpg&#39;);
+}
+
+function setup() {
+  createCanvas(720, 400);
+  img.loadPixels();
+
+  // pixelDensity(1) for not scaling pixel density to display density
+  // for more information, check the reference of pixelDensity()
+  pixelDensity(1);
+}
+
+function draw() {
+  // We&#39;re only going to process a portion of the image
+  // so let&#39;s set the whole image as the background first
+  background(img);
+
+  // Calculate the small rectangle we will process
+  const xstart = constrain(mouseX - w / 2, 0, img.width);
+  const ystart = constrain(mouseY - w / 2, 0, img.height);
+  const xend = constrain(mouseX + w / 2, 0, img.width);
+  const yend = constrain(mouseY + w / 2, 0, img.height);
+  const matrixsize = 3;
+
+  loadPixels();
+  // Begin our loop for every pixel in the smaller image
+  for (let x = xstart; x &lt; xend; x++) {
+    for (let y = ystart; y &lt; yend; y++) {
+      let c = convolution(x, y, matrix, matrixsize, img);
+
+      // retrieve the RGBA values from c and update pixels()
+      let loc = (x + y * img.width) * 4;
+      pixels[loc] = red(c);
+      pixels[loc + 1] = green(c);
+      pixels[loc + 2] = blue(c);
+      pixels[loc + 3] = alpha(c);
+    }
+  }
+  updatePixels();
+}
+
+function convolution(x, y, matrix, matrixsize, img) {
+  let rtotal = 0.0;
+  let gtotal = 0.0;
+  let btotal = 0.0;
+  const offset = Math.floor(matrixsize / 2);
+  for (let i = 0; i &lt; matrixsize; i++) {
+    for (let j = 0; j &lt; matrixsize; j++) {
+      // What pixel are we testing
+      const xloc = x + i - offset;
+      const yloc = y + j - offset;
+      let loc = (xloc + img.width * yloc) * 4;
+
+      // Make sure we haven&#39;t walked off our image, we could do better here
+      loc = constrain(loc, 0, img.pixels.length - 1);
+
+      // Calculate the convolution
+      // retrieve RGB values
+      rtotal += img.pixels[loc] * matrix[i][j];
+      gtotal += img.pixels[loc + 1] * matrix[i][j];
+      btotal += img.pixels[loc + 2] * matrix[i][j];
+    }
+  }
+  // Make sure RGB is within range
+  rtotal = constrain(rtotal, 0, 255);
+  gtotal = constrain(gtotal, 0, 255);
+  btotal = constrain(btotal, 0, 255);
+
+  // Return the resulting color
+  return color(rtotal, gtotal, btotal);
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

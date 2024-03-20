@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//hello-p5-weather/ selected=true>English</option><option value=/ar/examples//hello-p5-weather/ >العربية</option><option value=/es/examples//hello-p5-weather/ >español</option><option value=/hi/examples//hello-p5-weather/ >हिन्दी</option><option value=/ko/examples//hello-p5-weather/ >한국어</option><option value=/pt-br/examples//hello-p5-weather/ >português (Brasil)</option><option value=/sk/examples//hello-p5-weather/ >slovenčina</option><option value=/zh/examples//hello-p5-weather/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Weather</h1><span></span><main><p>Uses weather from Metweather website to control a blue arrow and grey circle on the screen. The blue arrow is in a white circle on the bottom left corner and points in the direction of the wind. The small dark grey circle is on a grey background and moves in the window’s direction</p><p>This example grabs JSON weather data from <a href=http://www.metaweather.com>www.metaweather.com</a>.</p><pre>
+
+// A wind direction vector
+let wind;
+// Circle position
+let position;
+
+function setup() {
+  createCanvas(720, 200);
+  // Request the data from metaweather.com
+  let url = &#39;https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/2459115/&#39;;
+  loadJSON(url,gotWeather);
+  // Circle starts in the middle
+  position = createVector(width/2, height/2);
+  // wind starts as (0,0)
+  wind = createVector();
+}
+
+function draw() {
+  background(200);
+
+  // This section draws an arrow pointing in the direction of wind
+  push();
+  translate(32, height - 32);
+  // Rotate by the wind&#39;s angle
+  rotate(wind.heading() + PI/2);
+  noStroke();
+  fill(255);
+  ellipse(0, 0, 48, 48);
+
+  stroke(45, 123, 182);
+  strokeWeight(3);
+  line(0, -16, 0, 16);
+
+  noStroke();
+  fill(45, 123, 182);
+  triangle(0, -18, -6, -10, 6, -10);
+  pop();
+  
+  // Move in the wind&#39;s direction
+  position.add(wind);
+  
+  stroke(0);
+  fill(51);
+  ellipse(position.x, position.y, 16, 16);
+
+  if (position.x &gt; width)  position.x = 0;
+  if (position.x &lt; 0)      position.x = width;
+  if (position.y &gt; height) position.y = 0;
+  if (position.y &lt; 0)      position.y = height;
+}
+
+function gotWeather(weather) {
+  let weather_today = weather.consolidated_weather[0]
+  // Get the angle (convert to radians)
+  let angle = radians(Number(weather_today.wind_direction));
+  // Get the wind speed
+  let windmag = Number(weather_today.wind_speed);
+  
+  // Display as HTML elements
+  let temperatureDiv = createDiv(floor(weather_today.the_temp) + &#39;&amp;deg;C&#39;);
+  let windDiv = createDiv(&quot;WIND &quot; + windmag + &quot; &lt;small&gt;MPH&lt;/small&gt;&quot;);
+  
+  // Make a vector
+  wind = p5.Vector.fromAngle(angle);
+}
+
+</pre></main><div>p5.js site footer goes here</div></body></html>

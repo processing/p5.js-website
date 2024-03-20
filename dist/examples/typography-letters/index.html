@@ -1,0 +1,59 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//typography-letters/ selected=true>English</option><option value=/ar/examples//typography-letters/ >العربية</option><option value=/es/examples//typography-letters/ >español</option><option value=/hi/examples//typography-letters/ >हिन्दी</option><option value=/ko/examples//typography-letters/ >한국어</option><option value=/pt-br/examples//typography-letters/ >português (Brasil)</option><option value=/sk/examples//typography-letters/ >slovenčina</option><option value=/zh/examples//typography-letters/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Letters</h1><span></span><main><p>Letters and characters on a grey background. All are white except the vowels are pink.</p><p>Letters can be drawn to the screen by loading a font, setting its characteristics and then drawing the letters. This example uses a for loop and unicode reference numbers to automatically fill the canvas with characters in a grid. Vowels are selected and given a specific fill color.</p><pre>
+let font,
+  fontsize = 32;
+
+function preload() {
+  // Ensure the .ttf or .otf font stored in the assets directory
+  // is loaded before setup() and draw() are called
+  font = loadFont(&#39;assets/SourceSansPro-Regular.otf&#39;);
+}
+
+function setup() {
+  createCanvas(710, 400);
+
+  // Set text characteristics
+  textFont(font);
+  textSize(fontsize);
+  textAlign(CENTER, CENTER);
+}
+
+function draw() {
+  background(160);
+
+  // Set the gap between letters and the left and top margin
+  let gap = 52;
+  let margin = 10;
+  translate(margin * 4, margin * 4);
+
+  // Set the counter to start at the character you want
+  // in this case 35, which is the # symbol
+  let counter = 35;
+
+  // Loop as long as there is space on the canvas
+  for (let y = 0; y &lt; height - gap; y += gap) {
+    for (let x = 0; x &lt; width - gap; x += gap) {
+      // Use the counter to retrieve individual letters by their Unicode number
+      let letter = char(counter);
+
+      // Add different color to the vowels and other characters
+      if (
+        letter === &#39;A&#39; ||
+        letter === &#39;E&#39; ||
+        letter === &#39;I&#39; ||
+        letter === &#39;O&#39; ||
+        letter === &#39;U&#39;
+      ) {
+        fill(&#39;#ed225d&#39;);
+      } else {
+        fill(255);
+      }
+
+      // Draw the letter to the screen
+      text(letter, x, y);
+
+      // Increment the counter
+      counter++;
+    }
+  }
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>

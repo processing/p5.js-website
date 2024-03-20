@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=/_astro/_slug_.C79K3bky.css rel=stylesheet /></head><body><nav><ul><a href=/ >Home</a> <a href=/reference>Reference</a> <a href=/tutorials>Tutorials</a> <a href=/examples>Examples</a> <a href=/community>Community</a> <a href=/about>About</a> <a href=/contribute>Contribute</a></ul></nav><div class="flex space-x-2"><select id=locale-select><option value=/examples//sound-pan-soundfile/ selected=true>English</option><option value=/ar/examples//sound-pan-soundfile/ >العربية</option><option value=/es/examples//sound-pan-soundfile/ >español</option><option value=/hi/examples//sound-pan-soundfile/ >हिन्दी</option><option value=/ko/examples//sound-pan-soundfile/ >한국어</option><option value=/pt-br/examples//sound-pan-soundfile/ >português (Brasil)</option><option value=/sk/examples//sound-pan-soundfile/ >slovenčina</option><option value=/zh/examples//sound-pan-soundfile/ >中文</option></select><script>document.getElementById("locale-select")?.addEventListener("change",(function(){window.location.href=this.value}))</script><div><form action=/search method=GET role=search><label for=search-term>Search</label> <input aria-label="Search through site content" class="border border-black" id=search-term name=term required type=search> <button type=submit>Search</button></form></div><div>Language: en</div><div>Accessibility</div></div><h1 class="font-bold text-lg">Pan Sound</h1><span></span><main><p>User moves a white ball on black screen, sound effect plays when the user clicks the screen and the sound comes out more of the speaker closer to the side the ball is on</p><p>Click mouse to play the sound. Ball position follows mouse and correlates to panning of sound.</p><p><em><span class=small>To run this example locally, you will need the <a href=http://p5js.org/reference/#/libraries/p5.sound>p5.sound library</a> a sound file, and a running <a href=https://github.com/processing/p5.js/wiki/Local-server>local server</a>.</span></em></p><pre>
+let ball = {};
+let soundFile;
+
+function preload() {
+  soundFormats(&#39;mp3&#39;, &#39;ogg&#39;);
+  soundFile = loadSound(&#39;assets/beatbox.ogg&#39;);
+}
+
+function setup() {
+  createCanvas(710, 100);
+}
+
+function draw() {
+  background(0);
+  ball.x = constrain(mouseX, 0, width);
+  ellipse(ball.x, height / 2, 100, 100);
+}
+
+function mousePressed() {
+  // map the ball&#39;s x location to a panning degree
+  // between -1.0 (left) and 1.0 (right)
+  let panning = map(ball.x, 0, width, -1.0, 1.0);
+  soundFile.pan(panning);
+  soundFile.play();
+}
+</pre></main><div>p5.js site footer goes here</div></body></html>
