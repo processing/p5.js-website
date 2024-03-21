@@ -12,9 +12,9 @@ import { CodeFrame } from "../CodeEmbed/frame";
  */
 export const SketchEmbed = (props) => (
   <CodeFrame
-    code={props.code}
+    jsCode={props.code}
     cssCode={props.cssCode}
-    bodyCode={props.bodyCode}
+    htmlBodyCode={props.bodyCode}
     height={props.height || 400}
     width={props.width || "100%"}
   />
