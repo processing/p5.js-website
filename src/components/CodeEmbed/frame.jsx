@@ -1,8 +1,9 @@
+import { p5VersionForEmbeds } from "../../globals/globals";
+
 /*
  * Url to fetch the p5.js library from
  */
-const p5LibraryUrl =
-  "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.min.js";
+const p5LibraryUrl = `https://cdnjs.cloudflare.com/ajax/libs/p5.js/${p5VersionForEmbeds}/p5.min.js`;
 
 /*
  * Wraps the given code in a html document for display.
