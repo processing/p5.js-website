@@ -60,7 +60,7 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
 
     let flatData;
 
-    fetch(`./search-indices/${currentLocale}.json`)
+    fetch(`/search-indices/${currentLocale}.json`)
       .then((response) => response.json())
       .then((data) => {
         flatData = flattenData(data);
