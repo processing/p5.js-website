@@ -15,7 +15,8 @@ import { CodeFrame } from "./frame";
  */
 export const CodeEmbed = (props) => {
   const [rendered, setRendered] = useState(false);
-  const [codeString, setCodeString] = useState(props.initialValue ?? "");
+  const initialCode = props.initialValue ?? "";
+  const [codeString, setCodeString] = useState(initialCode);
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
   useEffect(() => {
@@ -54,6 +55,15 @@ export const CodeEmbed = (props) => {
             }}
           >
             Run Code
+          </button>
+          <button
+            onClick={() => {
+              console.log("resetting code");
+              setCodeString(initialCode);
+              setPreviewCodeString(initialCode);
+            }}
+          >
+            Reset
           </button>
           <CodeFrame jsCode={previewCodeString} />
         </>
