@@ -13,13 +13,13 @@ import { CodeFrame } from "./frame";
  *   previewable: boolean;
  * }
  */
-export const CodeEmbedCodeMirror = (props) => {
+export const CodeEmbed = (props) => {
   const [rendered, setRendered] = useState(false);
   const [codeString, setCodeString] = useState(props.initialValue ?? "");
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
   useEffect(() => {
-    setRendered(true)
+    setRendered(true);
   }, []);
 
   if (!rendered) return <div className="code-placeholder" />;
@@ -55,11 +55,11 @@ export const CodeEmbedCodeMirror = (props) => {
           >
             Run Code
           </button>
-          <CodeFrame code={previewCodeString} />
+          <CodeFrame jsCode={previewCodeString} />
         </>
       ) : null}
     </>
   );
 };
 
-export default CodeEmbedCodeMirror;
+export default CodeEmbed;
