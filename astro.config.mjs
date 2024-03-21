@@ -29,11 +29,11 @@ export default defineConfig({
   build: {
     format: "directory",
   },
-  i18n: {
-    defaultLocale,
-    fallback: fallbackLanguages,
-    locales: supportedLocales,
-  },
+  // i18n: {
+  //   defaultLocale,
+  //   fallback: fallbackLanguages,
+  //   locales: supportedLocales,
+  // },
   server: {
     watch: {
       ignored: ["src/scripts/*"],

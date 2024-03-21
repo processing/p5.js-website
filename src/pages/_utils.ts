@@ -141,8 +141,8 @@ export const reformUrlforNewLocale = (url: string, newLocale: string) => {
  *
  * @returns
  */
-export const getCurrentLocale = (): string => {
-  const [locale] = splitLocaleFromPath(window.location.pathname);
+export const getCurrentLocale = (path: undefined | string): string => {
+  const [locale] = splitLocaleFromPath(path || window.location.pathname);
   return locale;
 };
 
