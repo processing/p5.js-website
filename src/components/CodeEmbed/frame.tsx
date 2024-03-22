@@ -1,20 +1,21 @@
-import { p5VersionForEmbeds } from "../../globals/globals";
+import { p5VersionForEmbeds } from "@/src/globals/globals";
 
 /*
  * Url to fetch the p5.js library from
  */
 const p5LibraryUrl = `https://cdnjs.cloudflare.com/ajax/libs/p5.js/${p5VersionForEmbeds}/p5.min.js`;
 
+interface CodeBundle {
+  css?: string;
+  htmlBody?: string;
+  js?: string;
+}
+
 /*
  * Wraps the given code in a html document for display.
  * Single object argument, all properties optional:
- * {
- *   js: javascript code as a string
- *   css: css code as a string
- *   htmlBody: html code as a string
- * }
  */
-const wrapInMarkup = (code) => `<!DOCTYPE html>
+const wrapInMarkup = (code: CodeBundle) => `<!DOCTYPE html>
 <meta charset="utf8" />
 <style type='text/css'>
 html, body {
@@ -31,18 +32,19 @@ ${code.css || ""}
 <script src="${p5LibraryUrl}"></script>
 `;
 
+export interface CodeFrameProps {
+  jsCode: string;
+  cssCode?: string;
+  htmlBodyCode?: string;
+  height?: number | string;
+  width?: number | string;
+}
+
 /*
  * Component that uses an iframe to run code with the p5 library included.
  *
- * props: {
- *   jsCode: string;
- *   cssCode?: string;
- *   htmlBody?: string;
- *   height?: number | string;
- *   width?: number | string
- * }
  */
-export const CodeFrame = (props) => (
+export const CodeFrame = (props: CodeFrameProps) => (
   <iframe
     srcDoc={wrapInMarkup({
       js: props.jsCode,
