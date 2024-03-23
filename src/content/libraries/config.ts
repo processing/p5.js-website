@@ -11,7 +11,7 @@ const categories = [
   "3d",
   "ai-ml-cv",
   "animation",
-  "filters",
+  "shaders",
   "language",
   "hardware",
   "sound",
