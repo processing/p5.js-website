@@ -12,6 +12,7 @@ import { server } from "../mocks/server";
 import { CodeEmbed } from "@/src/components/CodeEmbed";
 
 suite("CodeEmbed", () => {
+  // Start a mock server to intercept network requests
   beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
   afterAll(() => server.close());
   afterEach(() => server.resetHandlers());
@@ -33,7 +34,7 @@ suite("CodeEmbed", () => {
 
     cleanup();
   });
-  it("can use p5.dom within iframe", async () => {
+  it("can run a p5.dom method", async () => {
     act(() => {
       render(
         <CodeEmbed
