@@ -39,7 +39,7 @@ export const librariesCollection = defineCollection({
     websiteUrl: z.string().url().optional(),
     // 1500x1000
     featuredImage: image(),
-    author: author(),
+    author: author().or(z.array(author())),
     // What license is the library licensed with?
     license: z.string().optional(),
     npm: z.string().optional(),
