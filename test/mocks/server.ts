@@ -6,7 +6,7 @@ import { setupServer } from "msw/node";
 const handlers = [
   http.get("https://cdnjs.cloudflare.com/ajax/libs/p5.js/*", () => {
     return HttpResponse.text(
-      readFileSync("./p5.min.js", { encoding: "utf-8" }),
+      readFileSync("./assets/p5.min.js", { encoding: "utf-8" }),
     );
   }),
 ];
