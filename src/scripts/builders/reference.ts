@@ -144,23 +144,28 @@ const addDocToModulePathTree = (
       modulePathTree.modules[modulePath][doc.name] = itemPath;
     }
   }
-  // if (doc?.description) {
-  //   const $ = load(doc.description, { xmlMode: true });
+  if (doc?.description) {
+    const $ = load(doc.description, { xmlMode: true });
 
-  //   // Modify the href attributes of <a> tags so that authors don't
-  //   // have to worry about locale prefixes
-  //   $("a").each(function () {
-  //     const href = $(this).attr("href");
-  //     if (!href) return;
-  //     if (href.startsWith("#/")) {
-  //       $(this).attr("href", `/reference/${href}`);
-  //     } else if (href.startsWith("/reference/#")) {
-  //       $(this).attr("href", href.replace("/reference/#", "/reference/"));
-  //     }
-  //   });
+    // Modify the href attributes of <a> tags so that authors don't
+    // have to worry about locale prefixes
+    $("a").each(function () {
+      let href = $(this).attr("href");
+      if (!href) return;
+      if (href.startsWith("#/")) {
+        href = href.replace("#/", "/reference/");
+      } else if (href.startsWith("/reference/#")) {
+        href = href.replace("/reference/#", "/reference/");
+      }
+      $(this).attr("href", href);
+    });
 
-  //   doc.description = $.xml();
-  // }
+    // Initially encode the document to XML
+    const output = $.xml();
+
+    // Decode entities using the 'he' library to revert escaped punctuation
+    doc.description = he.decode(output);
+  }
 };
 
 /**
