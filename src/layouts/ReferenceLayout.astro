@@ -1,0 +1,31 @@
+---
+import { type CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import { makeReferencePageSlug } from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
+
+type ReferenceEntry = CollectionEntry<"reference">;
+
+interface Props {
+  title: string;
+  entries: ReferenceEntry[];
+}
+
+const { entries, title } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <ul>
+    {
+      entries.map((refEntry) => (
+        <li>
+          <a
+            href={`/reference${makeReferencePageSlug(removeLocalePrefix(refEntry.id))}`}
+          >
+            {refEntry.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
