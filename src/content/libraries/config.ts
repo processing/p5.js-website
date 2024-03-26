@@ -40,7 +40,7 @@ export const librariesCollection = defineCollection({
       websiteUrl: z.string().url().optional(),
       // 1500x1000
       featuredImage: image().refine(
-        (img) => img.width === 1500 && img.height === 1000,
+        (img) => img.width >= 1500 && img.height >= 1000,
         {
           message: "Featured image must be 1500x1000",
         },
