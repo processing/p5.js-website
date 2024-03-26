@@ -88,6 +88,22 @@ const addDocToModulePathTree = (
     // Add the doc to the modulePathTree under the appropriate treePath and subPath,
     // using the doc's name as the key and the constructed modulePath as the value.
     modulePathTree[treePath][subPath][doc.name] = itemPath;
+
+    /** Fix relative routing in JSDoc descriptions */
+    // If the link is to another class, it should go up and then down to the class
+    // doc.description = doc.description?.replaceAll(`#/p5.`, `./p5.`);
+    // If the link is to a method in this same class, it should be a sibling link
+    doc.description = doc.description?.replaceAll(`#/${doc.class}/`, "./");
+    // If the link is to this same class, it should be a sibling link
+    doc.description = doc.description?.replaceAll(
+      `/${doc.class}`,
+      `./${doc.class}`,
+    );
+    // Different linking strategy used in p5.Sound
+    doc.description = doc.description?.replaceAll(`reference/#/p5.`, `./p5.`);
+    // Since this reference is in a class, any link to the base p5 class
+    // should be "up" one level to the p5 module.
+    doc.description = doc.description?.replaceAll("#/p5/", "./p5/");
   } else {
     // If the doc is not a class item, it's handled here.
     // We default to adding it under the 'modules' category.
@@ -98,9 +114,6 @@ const addDocToModulePathTree = (
     if (!modulePathTree.modules[modulePath]) {
       modulePathTree.modules[modulePath] = {};
     }
-
-    // Fix relative routing
-    doc.description = doc.description?.replaceAll("#/p5/", "./");
 
     // If a submodule exists, add the doc to the modulePathTree under the appropriate treePath,
     // modulePath, and subPath, using the doc's name as the key and the constructed modulePath as the value.
@@ -120,6 +133,13 @@ const addDocToModulePathTree = (
       // Add the module to the modulePathTree.
       modulePathTree.modules[modulePath][doc.name] = itemPath;
     }
+
+    /** Fix relative routing in JSDoc descriptions */
+    // If the link is to another class, it should go up and then down to the class
+    doc.description = doc.description?.replaceAll(`#/p5.`, `./p5.`);
+    // Since this reference is not in a class, any link to the base p5 class
+    // should be in a sibling route.
+    doc.description = doc.description?.replaceAll("#/p5/", "./");
   }
 };
 
@@ -308,7 +328,7 @@ const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
   for (const { mdx, savePath, name } of mdxDocs) {
     try {
       let fileName = sanitizeName(name);
-      // TODO: Place elsewhere
+      // Special case for operators
       if (fileName[0] === "&") {
         // Need special cases for >, >=, <, <=, and ===
         if (fileName === "&gt;") {
