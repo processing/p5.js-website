@@ -3,53 +3,105 @@ title: copy
 module: Image
 submodule: Image
 file: src/image/p5.Image.js
-description: |
-  <p>Copies pixels from a source <a href="#/p5.Image">p5.Image</a>
-   to this one. Calling <code>img.copy()</code> will scale pixels from the source
-   region if it isn't the same size as the destination region.</p>
-line: 770
+description: >
+  <p>Copies pixels from a source image to this image.</p>
+
+  <p>The first parameter, <code>srcImage</code>, is an optional
+
+  <a href="#./p5.Image">p5.Image</a> object to copy. If a source image isn't
+
+  passed, then <code>img.copy()</code> can copy a region of this image to
+  another
+
+  region.</p>
+
+  <p>The next four parameters, <code>sx</code>, <code>sy</code>,
+  <code>sw</code>, and <code>sh</code> determine the region
+
+  to copy from the source image. <code>(sx, sy)</code> is the top-left corner of
+  the
+
+  region. <code>sw</code> and <code>sh</code> are the region's width and
+  height.</p>
+
+  <p>The next four parameters, <code>dx</code>, <code>dy</code>,
+  <code>dw</code>, and <code>dh</code> determine the region
+
+  of this image to copy into. <code>(dx, dy)</code> is the top-left corner of
+  the
+
+  region. <code>dw</code> and <code>dh</code> are the region's width and
+  height.</p>
+
+  <p>Calling <code>img.copy()</code> will scale pixels from the source region if
+  it isn't
+
+  the same size as the destination region.</p>
+line: 1006
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
 
-     <div>
-     <code>
-     let img;
-    function preload() {
-       img = loadImage('assets/rockies.jpg');
-     }
-    function setup() {
-       img.copy(7, 22, 10, 10, 35, 25, 50, 50);
-       image(img, 0, 0);
-       // Outline copied region.
-       stroke(255);
-       noFill();
-       square(7, 22, 10);
-      describe('An image of a mountain landscape. A square region is outlined in white. A larger square contains a pixelated view of the outlined region.');
-     }
-     </code>
-     </div>
     <div>
-     <code>
-     let mountains;
-     let bricks;
+    <code>
+    let img;
+
+    // Load the image.
     function preload() {
-       mountains = loadImage('assets/rockies.jpg');
-       bricks = loadImage('assets/bricks.jpg');
-     }
+      img = loadImage('assets/rockies.jpg');
+    }
+
     function setup() {
-       let x = bricks.width / 2;
-       let y = bricks.height / 2;
-       mountains.copy(bricks, 0, 0, x, y, 0, 0, x, y);
-       image(mountains, 0, 0);
+      createCanvas(100, 100);
+
+      // Copy one region of the image to another.
+      img.copy(7, 22, 10, 10, 35, 25, 50, 50);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Outline the copied region.
+      stroke(255);
+      noFill();
+      square(7, 22, 10);
+
+      describe('An image of a mountain landscape. A square region is outlined in white. A larger square contains a pixelated view of the outlined region.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let mountains;
+    let bricks;
+
+    // Load the images.
+    function preload() {
+      mountains = loadImage('assets/rockies.jpg');
+      bricks = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Calculate the center of the bricks image.
+      let x = bricks.width / 2;
+      let y = bricks.height / 2;
+
+      // Copy the bricks to the mountains image.
+      mountains.copy(bricks, 0, 0, x, y, 0, 0, x, y);
+
+      // Display the mountains image.
+      image(mountains, 0, 0);
+
       describe('An image of a brick wall drawn at the top-left of an image of a mountain landscape.');
-     }
-     </code>
-     </div>
+    }
+    </code>
+    </div>
 class: p5.Image
 overloads:
-  - line: 770
+  - line: 1006
     params:
       - name: srcImage
         description: |
@@ -87,7 +139,7 @@ overloads:
         description: |
           <p>destination image height.</p>
         type: Integer
-  - line: 830
+  - line: 1094
     params:
       - name: sx
         description: ''
