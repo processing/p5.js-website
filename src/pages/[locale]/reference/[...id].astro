@@ -3,9 +3,8 @@ import { nonDefaultSupportedLocales } from "@i18n/const";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   getCollectionInLocaleWithFallbacks,
-  makeReferencePageSlug,
+  removeLocaleAndExtension,
 } from "@pages/_utils";
-import { removeLocalePrefix } from "@i18n/utils";
 
 export async function getStaticPaths() {
   const entries = await Promise.all(
@@ -17,7 +16,7 @@ export async function getStaticPaths() {
       return localeEntries.map((entry) => ({
         params: {
           locale,
-          id: makeReferencePageSlug(removeLocalePrefix(entry.id)),
+          id: removeLocaleAndExtension(entry.id),
         },
         props: { entry },
       }));

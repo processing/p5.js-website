@@ -4,33 +4,39 @@ module: Image
 submodule: Image
 file: src/image/p5.Image.js
 description: >
-  <p>Saves the <a href="#/p5.Image">p5.Image</a> object to a file.
+  <p>Saves the image to a file.</p>
 
-  The browser will either save the file immediately or prompt the user
+  <p>By default, <code>img.save()</code> saves the image as a PNG image called
+
+  <code>untitled.png</code>.</p>
+
+  <p>The first parameter, <code>filename</code>, is optional. It's a string that
+  sets the
+
+  file's name. If a file extension is included, as in
+
+  <code>img.save('drawing.png')</code>, then the image will be saved using that
+
+  format.</p>
+
+  <p>The second parameter, <code>extension</code>, is also optional. It sets the
+  files format.
+
+  Either <code>'png'</code> or <code>'jpg'</code> can be used. For example,
+  <code>img.save('drawing', 'jpg')</code>
+
+  saves the canvas to a file called <code>drawing.jpg</code>.</p>
+
+  <p>Note: The browser will either save the file immediately or prompt the user
 
   with a dialogue window.</p>
 
-  <p>By default, calling <code>img.save()</code> will save the image as
-  <code>untitled.png</code>.</p>
+  <p>The image will only be downloaded as an animated GIF if it was loaded
 
-  <p>Calling <code>img.save()</code> with one argument, as in
-  <code>img.save('photo.png')</code>,
+  from a GIF file. See <a href="./p5/saveGif">saveGif()</a> to create new
 
-  will set the image's filename and type together.</p>
-
-  <p>Calling <code>img.save()</code> with two arguments, as in
-
-  <code>image.save('photo', 'png')</code>, will set the image's filename and
-  type
-
-  separately.</p>
-
-  <p>The image will only be downloaded as an animated GIF if the
-
-  <a href="#/p5.Image">p5.Image</a> object was loaded from a GIF file.
-
-  See <a href="#/p5/saveGif">saveGif()</a> to create new GIFs.</p>
-line: 1238
+  GIFs.</p>
+line: 1598
 isConstructor: false
 itemtype: method
 example:
@@ -40,16 +46,21 @@ example:
     <code>
     let img;
 
+    // Load the image.
     function preload() {
       img = loadImage('assets/rockies.jpg');
     }
 
-    function draw() {
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
       image(img, 0, 0);
 
-      describe('An image of a mountain landscape.');
+      describe('An image of a mountain landscape. The image is downloaded when the user presses the "s", "j", or "p" key.');
     }
 
+    // Save the image with different options when the user presses a key.
     function keyPressed() {
       if (key === 's') {
         img.save();
