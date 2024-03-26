@@ -1,5 +1,5 @@
 import { z, defineCollection } from "astro:content";
-import { image, relatedContent } from "../shared";
+import { relatedContent } from "../shared";
 
 const categories = ["introduction", "webgl"] as const;
 
@@ -8,15 +8,17 @@ const categories = ["introduction", "webgl"] as const;
  */
 export const tutorialsCollection = defineCollection({
   type: "content",
-  schema: z.object({
-    // Title of the tutorial
-    title: z.string(),
-    // People who wrote the tutorial
-    authors: z.array(z.string()).optional(),
-    description: z.string().optional(),
-    category: z.enum(categories),
-    // Image to use as a thumbnail for the tutorial
-    featuredImage: image().optional(),
-    relatedContent: relatedContent().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      // Title of the tutorial
+      title: z.string(),
+      // People who wrote the tutorial
+      authors: z.array(z.string()).optional(),
+      description: z.string().optional(),
+      category: z.enum(categories),
+      // Image to use as a thumbnail for the tutorial
+      featuredImage: image().optional(),
+      featuredImageAlt: z.string().optional(),
+      relatedContent: relatedContent().optional(),
+    }),
 });
