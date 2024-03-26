@@ -1,26 +1,8 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import {
-  getCollectionInDefaultLocale,
-  makeReferencePageSlug,
-} from "@pages/_utils";
-import { removeLocalePrefix } from "@i18n/utils";
+import ReferenceLayout from "@layouts/ReferenceLayout.astro";
+import { getCollectionInDefaultLocale } from "@pages/_utils";
 
-const referenceEntries = await getCollectionInDefaultLocale("reference");
+const entries = await getCollectionInDefaultLocale("reference");
 ---
 
-<BaseLayout title="Reference">
-  <ul>
-    {
-      referenceEntries.map((refEntry) => (
-        <li>
-          <a
-            href={`/reference/${makeReferencePageSlug(removeLocalePrefix(refEntry.id))}`}
-          >
-            {refEntry.data.title}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-</BaseLayout>
+<ReferenceLayout title="Reference" entries={entries} />
