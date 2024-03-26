@@ -11,7 +11,7 @@ const categories = [
   "3d",
   "ai-ml-cv",
   "animation",
-  "filters",
+  "shaders",
   "language",
   "hardware",
   "sound",
@@ -46,7 +46,9 @@ export const librariesCollection = defineCollection({
         },
       ),
       featuredImageAlt: z.string(),
-      author: author(),
+      author: author()
+        .transform((val) => [val])
+        .or(z.array(author())),
       // What license is the library licensed with?
       license: z.string().optional(),
       npm: z.string().optional(),
