@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
+import { Image } from "astro:assets";
 
 type TutorialEntry = CollectionEntry<"tutorials">;
 
@@ -12,7 +13,18 @@ const { entries } = Astro.props;
     {
       entries.map((entry: TutorialEntry) => (
         <li>
-          <a href={`/tutorials/${entry.slug}`}>{entry.data.title}</a>
+          <a href={`/tutorials/${entry.slug}`}>
+            {" "}
+            {entry.data.featuredImageAlt && entry.data.featuredImage && (
+              <Image
+                src={entry.data.featuredImage}
+                alt={entry.data.featuredImageAlt}
+                width={200}
+                height={200}
+              />
+            )}
+            {entry.data.title}
+          </a>
         </li>
       ))
     }
