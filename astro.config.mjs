@@ -20,7 +20,7 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ["src/scripts/*"],
+      ignored: ["src/scripts/**/*.ts"],
     },
   },
 });
