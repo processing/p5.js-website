@@ -112,11 +112,16 @@ export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
     : slug;
 };
 
+export const removeLocaleAndExtension = (id: string): string =>
+  removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
+
+export const removeLeadingSlash = (path: string): string =>
+  path.replace(/^\//, "");
 /**
  * We cannot use Astro's default slug because it removes characters like '.'
  * We use the id instead and remove the file extension
  */
-export const makeReferencePageSlug = (id: string): string =>
+export const removeContentFileExt = (id: string): string =>
   id.replace(/\.(mdx?|ya?ml)$/, "");
 
 /* We have to modify the Astro.js slug to match existing routing */

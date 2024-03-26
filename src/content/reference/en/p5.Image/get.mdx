@@ -4,42 +4,41 @@ module: Image
 submodule: Image
 file: src/image/p5.Image.js
 description: >
-  <p>Gets a pixel or a region of pixels from a
-
-  <a href="#/p5.Image">p5.Image</a> object.</p>
+  <p>Gets a pixel or a region of pixels from the image.</p>
 
   <p><code>img.get()</code> is easy to use but it's not as fast as
 
-  <a href="#/p5.Image/pixels">img.pixels</a>. Use
+  <a href="./pixels">img.pixels</a>. Use
 
-  <a href="#/p5.Image/pixels">img.pixels</a> to read many pixel values.</p>
+  <a href="./pixels">img.pixels</a> to read many pixel values.</p>
 
   <p>The version of <code>img.get()</code> with no parameters returns the entire
   image.</p>
 
-  <p>The version of <code>img.get()</code> with two parameters interprets them
-  as
+  <p>The version of <code>img.get()</code> with two parameters, as in
+  <code>img.get(10, 20)</code>,
 
-  coordinates. It returns an array with the <code>[R, G, B, A]</code> values of
-  the
+  interprets them as coordinates. It returns an array with the
 
-  pixel at the given point.</p>
+  <code>[R, G, B, A]</code> values of the pixel at the given point.</p>
 
-  <p>The version of <code>img.get()</code> with four parameters interprets them
-  as
+  <p>The version of <code>img.get()</code> with four parameters, as in
 
-  coordinates and dimensions. It returns a subsection of the canvas as a
+  <code>img,get(10, 20, 50, 90)</code>, interprets them as
 
-  <a href="#/p5.Image">p5.Image</a> object. The first two parameters are
+  coordinates and dimensions. The first two parameters are the coordinates
 
-  the coordinates for the upper-left corner of the subsection. The last two
+  of the upper-left corner of the subsection. The last two parameters are
 
-  parameters are the width and height of the subsection.</p>
+  the width and height of the subsection. It returns a subsection of the
 
-  <p>Use <a href="#/p5.Image/get">img.get()</a> to work directly with
+  canvas in a new <a href="#./p5.Image">p5.Image</a> object.</p>
 
-  <a href="#/p5.Image">p5.Image</a> objects.</p>
-line: 430
+  <p>Use <code>img.get()</code> instead of <a href="./p5/get">get()</a> to work
+  directly
+
+  with images.</p>
+line: 563
 isConstructor: false
 itemtype: method
 example:
@@ -49,14 +48,24 @@ example:
     <code>
     let img;
 
+    // Load the image.
     function preload() {
       img = loadImage('assets/rockies.jpg');
     }
 
     function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Display the image.
       image(img, 0, 0);
+
+      // Copy the image.
       let img2 = get();
-      image(img2, width / 2, 0);
+
+      // Display the copied image on the right.
+      image(img2, 50, 0);
 
       describe('Two identical mountain landscapes shown side-by-side.');
     }
@@ -67,15 +76,25 @@ example:
     <code>
     let img;
 
+    // Load the image.
     function preload() {
       img = loadImage('assets/rockies.jpg');
     }
 
     function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
       image(img, 0, 0);
+
+      // Get a pixel's color.
       let c = img.get(50, 90);
+
+      // Style the square using the pixel's color.
       fill(c);
       noStroke();
+
+      // Draw the square.
       square(25, 25, 50);
 
       describe('A mountain landscape with an olive green square in its center.');
@@ -87,14 +106,22 @@ example:
     <code>
     let img;
 
+    // Load the image.
     function preload() {
       img = loadImage('assets/rockies.jpg');
     }
 
     function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
       image(img, 0, 0);
+
+      // Copy half of the image.
       let img2 = img.get(0, 0, img.width / 2, img.height / 2);
-      image(img2, width / 2, height / 2);
+
+      // Display half of the image.
+      image(img2, 50, 50);
 
       describe('A mountain landscape drawn on top of another mountain landscape.');
     }
@@ -105,7 +132,7 @@ return:
   description: subsection as a <a href="#/p5.Image">p5.Image</a> object.
   type: p5.Image
 overloads:
-  - line: 430
+  - line: 563
     params:
       - name: x
         description: |
@@ -126,12 +153,12 @@ overloads:
     return:
       description: subsection as a <a href="#/p5.Image">p5.Image</a> object.
       type: p5.Image
-  - line: 516
+  - line: 678
     params: []
     return:
       description: whole <a href="#/p5.Image">p5.Image</a>
       type: p5.Image
-  - line: 520
+  - line: 682
     params:
       - name: x
         description: ''

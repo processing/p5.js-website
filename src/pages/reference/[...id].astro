@@ -2,16 +2,15 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   getCollectionInDefaultLocale,
-  makeReferencePageSlug,
+  removeLocaleAndExtension,
 } from "@pages/_utils";
-import { removeLocalePrefix } from "@i18n/utils";
 
 export async function getStaticPaths() {
   const referenceEntries = await getCollectionInDefaultLocale("reference");
 
   return referenceEntries.map((entry) => ({
     params: {
-      id: makeReferencePageSlug(removeLocalePrefix(entry.id)),
+      id: removeLocaleAndExtension(entry.id),
     },
     props: {
       entry,
