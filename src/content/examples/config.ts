@@ -10,6 +10,7 @@ export const exampleSchema = z.object({
   // Aria label used for the live example code
   arialabel: z.string().optional(),
   relatedContent: relatedContent().optional(),
+  featuredImage: z.string(),
 });
 
 /**
