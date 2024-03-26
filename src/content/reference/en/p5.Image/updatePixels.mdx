@@ -6,32 +6,31 @@ file: src/image/p5.Image.js
 description: >
   <p>Updates the canvas with the RGBA values in the
 
-  <a href="#/p5.Image/pixels">img.pixels</a> array.</p>
+  <a href="./pixels">img.pixels</a> array.</p>
 
   <p><code>img.updatePixels()</code> only needs to be called after changing
   values in
 
-  the <a href="#/p5.Image/pixels">img.pixels</a> array. Such changes can be
+  the <a href="./pixels">img.pixels</a> array. Such changes can be
 
   made directly after calling
 
-  <a href="#/p5.Image/loadPixels">img.loadPixels()</a> or by calling
+  <a href="./loadPixels">img.loadPixels()</a> or by calling
 
-  <a href="#/p5.Image/set">img.set()</a>.</p>
+  <a href="./set">img.set()</a>.</p>
 
   <p>The optional parameters <code>x</code>, <code>y</code>, <code>width</code>,
   and <code>height</code> define a
 
-  subsection of the <a href="#/p5.Image">p5.Image</a> object to update.
+  subsection of the image to update. Doing so can improve performance in
 
-  Doing so can improve performance in some cases.</p>
+  some cases.</p>
 
-  <p>If the <a href="#/p5.Image">p5.Image</a> object was loaded from a GIF,
+  <p>If the image was loaded from a GIF, then calling
+  <code>img.updatePixels()</code>
 
-  then calling <code>img.updatePixels()</code> will update the pixels in current
-
-  frame.</p>
-line: 358
+  will update the pixels in current frame.</p>
+line: 462
 isConstructor: false
 itemtype: method
 example:
@@ -39,44 +38,73 @@ example:
 
     <div>
     <code>
-    let img = createImage(66, 66);
-    img.loadPixels();
-    for (let x = 0; x < img.width; x += 1) {
-      for (let y = 0; y < img.height; y += 1) {
-        img.set(x, y, 0);
-      }
-    }
-    img.updatePixels();
-    image(img, 17, 17);
+    function setup() {
+      createCanvas(100, 100);
 
-    describe('A black square drawn in the middle of a gray square.');
+      background(200);
+
+      // Create a p5.Image object.
+      let img = createImage(66, 66);
+
+      // Load the image's pixels.
+      img.loadPixels();
+
+      // Set the pixels to black.
+      for (let x = 0; x < img.width; x += 1) {
+        for (let y = 0; y < img.height; y += 1) {
+          img.set(x, y, 0);
+        }
+      }
+
+      // Update the image.
+      img.updatePixels();
+
+      // Display the image.
+      image(img, 17, 17);
+
+      describe('A black square drawn in the middle of a gray square.');
+    }
     </code>
     </div>
 
     <div>
     <code>
-    let img = createImage(66, 66);
-    img.loadPixels();
-    let numPixels = 4 * img.width * img.height;
-    for (let i = 0; i < numPixels; i += 4) {
-      // Red.
-      img.pixels[i] = 0;
-      // Green.
-      img.pixels[i + 1] = 0;
-      // Blue.
-      img.pixels[i + 2] = 0;
-      // Alpha.
-      img.pixels[i + 3] = 255;
-    }
-    img.updatePixels();
-    image(img, 17, 17);
+    function setup() {
+      createCanvas(100, 100);
 
-    describe('A black square drawn in the middle of a gray square.');
+      background(200);
+
+      // Create a p5.Image object.
+      let img = createImage(66, 66);
+
+      // Load the image's pixels.
+      img.loadPixels();
+
+      // Set the pixels to black.
+      for (let i = 0; i < img.pixels.length; i += 4) {
+        // Red.
+        img.pixels[i] = 0;
+        // Green.
+        img.pixels[i + 1] = 0;
+        // Blue.
+        img.pixels[i + 2] = 0;
+        // Alpha.
+        img.pixels[i + 3] = 255;
+      }
+
+      // Update the image.
+      img.updatePixels();
+
+      // Display the image.
+      image(img, 17, 17);
+
+      describe('A black square drawn in the middle of a gray square.');
+    }
     </code>
     </div>
 class: p5.Image
 overloads:
-  - line: 358
+  - line: 462
     params:
       - name: x
         description: |
@@ -96,7 +124,7 @@ overloads:
         description: |
           <p>height of the subsection to update.</p>
         type: Integer
-  - line: 422
+  - line: 555
     params: []
 chainable: false
 ---
