@@ -1,5 +1,4 @@
 import { z, defineCollection } from "astro:content";
-import { image } from "../shared";
 
 const peopleCategories = ["lead", "mentor", "alumni", "contributor"] as const;
 

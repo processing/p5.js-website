@@ -1,7 +1,7 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
 import { getCollectionInDefaultLocale } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
+import PastEventLayout from "@/src/layouts/PastEventLayout.astro";
 
 export async function getStaticPaths() {
   // get all past events pages that are in the default locale
@@ -13,24 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
 ---
 
-<BaseLayout title={entry.data.title}>
-  {
-    entry.data.featuredImage ? (
-      <img
-        src={entry.data.featuredImage.url}
-        alt={entry.data.featuredImage.altText}
-      />
-    ) : null
-  }
-  <Content />
-
-  <h2>Related Past Events</h2>
-
-  <ul>
-    {/* TODO: make this into a proper link */}
-    {entry.data.relatedPastEvents?.map((relEx) => <li>{relEx.slug}</li>)}
-  </ul>
-</BaseLayout>
+<PastEventLayout entry={entry} title={entry.data.title} />
