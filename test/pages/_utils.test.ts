@@ -4,7 +4,7 @@ import {
   exampleContentSlugToLegacyWebsiteSlug,
   removeContentFileExt,
   removeLeadingSlash,
-  removeLocaleAndExtensionFromId,
+  removeLocaleAndExtension,
 } from "@pages/_utils";
 
 suite("exampleContentSlugToLegacyWebsiteSlug", () => {
@@ -63,7 +63,7 @@ suite("removeLeadingSlash", () => {
 
 suite("removeLocaleAndExtensionFromId", () => {
   test("removes locale and extension", () => {
-    expect(removeLocaleAndExtensionFromId("en/p5.AudioIn/amp.mdx")).toBe(
+    expect(removeLocaleAndExtension("en/p5.AudioIn/amp.mdx")).toBe(
       "p5.AudioIn/amp",
     );
   });

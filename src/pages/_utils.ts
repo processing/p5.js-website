@@ -112,7 +112,7 @@ export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
     : slug;
 };
 
-export const removeLocaleAndExtensionFromId = (id: string): string =>
+export const removeLocaleAndExtension = (id: string): string =>
   removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
 
 export const removeLeadingSlash = (path: string): string =>
