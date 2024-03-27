@@ -1,0 +1,192 @@
+---
+title: createCapture
+module: 문서 객체 모델 (DOM)
+submodule: 문서 객체 모델 (DOM)
+file: src/dom/dom.js
+description: "\n<p>웹캠 또는 마이크로부터 오디오/비디오 스트림을 캡처(capture)하는 <code><video></code> 요소를 생성합니다.</p>\n\n\n<p><code>createCapture()</code>는 새로운 \n<a href=\"/reference/p5/p5.MediaElement\">p5.MediaElement</a> 객체를 반환합니다. 비디오는 기본적으로 보여집니다.  <code>capture.hide()</code>를 호출하여 숨길 수 있으며, <a href=\"/reference/p5/image\">image()</a>를 사용하여 캔버스에 그려낼 수 있습니다.</p>\n\n\n<p>첫 번째 매개변수 <code>type</code>은 선택적(optional) 매개변수입니다. 이는 캡처 타입을 설정합니다. 기본적으로, <code>createCapture()</code>는 오디오와 비디오 모두를 캡처합니다. <code>createCapture(VIDEO)</code> 처럼\n<code>VIDEO</code>가 전달되는 경우, 오직 비디오만 캡처됩니다. <code>createCapture(AUDIO)</code> 처럼 <code>AUDIO</code>가 전달되는 경우, 오직 오디오만 캡처됩니다. 스트림을 커스터마이즈하기 위해 제약 조건을 담은 객체를 전달할 수도 있습니다.\n\n<a\nhref=\"http://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints\"\ntarget=\"_blank\">\n\n\nW3C documentation</a>에서 가능한 속성들을 살펴보세요. 브라우저마다 지원하는 속성이 다를 수 있습니다.</p>\n\n\n<p>'flipped' 속성은 <code>{flipped:true}</code>와 같이 사용되며, 비디오 출력을 반전시킬지 여부를 결정하는 선택적(optional) 속성입니다. true가 전달되면 비디오는 반전되어 나타나며, 기본값은 <code>false</code>입니다.</p>\n\n\n<p>두 번째 매개변수 <code>callback</code>는 선택적 매개변수입니다. 캡처를 사용할 준비가 끝났을 때 한 번 실행될 함수입니다. 콜백함수는 하나의 매개변수 <code>stream</code>를 받는데, 이는 <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MediaStream\"\ntarget=\"_blank\">MediaStream</a> 객체입니다.</p>\n\n\n<p>주의: <code>createCapture()</code>는 스케치가 로컬환경 또는 HTTPS 환경에서 실행될 때에만 작동합니다.\n\n더 자세한 내용은 \n<a\nhref=\"http://stackoverflow.com/questions/34197653/getusermedia-in-chrome-47-without-using-https\"\ntarget=\"_blank\">여기</a>와\n\n <a\nhref=\"https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia\"\ntarget=\"_blank\">여기</a>를 참고하세요.</p>"
+line: '2276'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |2-
+
+
+
+ "<div class='notest'>"
+
+  <code>
+
+  function setup() {
+
+ "noCanvas();"
+
+
+
+    // Create the video capture.
+
+ "createCapture(VIDEO);"
+
+
+
+ "describe('A video stream from the webcam.');"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+ "<div class='notest'>"
+
+  <code>
+
+ "let capture;"
+
+
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+    // Create the video capture and hide the element.
+
+ "capture = createCapture(VIDEO);"
+
+ "capture.hide();"
+
+
+
+ "describe('A video stream from the webcam with inverted colors.');"
+
+  }
+
+
+
+  function draw() {
+
+    // Draw the video capture within the canvas.
+
+ "image(capture, 0, 0, width, width * capture.height / capture.width);"
+
+
+
+    // Invert the colors in the stream.
+
+ "filter(INVERT);"
+
+  }
+
+  </code>
+
+  </div>
+
+ "<div class='notest'>"
+
+  <code>
+
+ "let capture;"
+
+
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+    // Create the video capture with mirrored output.
+
+    capture = createCapture(VIDEO,{ flipped:"true });"
+
+ "capture.size(100,100);"
+
+
+
+ "describe('A video stream from the webcam with flipped or mirrored output.');"
+
+  }
+
+
+
+  </code>
+
+  </div>
+
+
+
+ "<div class='notest norender'>"
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(480, 120);"
+
+
+
+    // Create a constraints object.
+
+    let constraints = {
+
+      video: {
+
+        mandatory: {
+
+          minWidth: 1280,
+
+          minHeight: 720
+
+        },
+
+        optional: "[{ maxFrameRate: 10 }]"
+
+      },
+
+      audio: false
+
+ "};"
+
+
+
+    // Create the video capture.
+
+ "createCapture(constraints);"
+
+
+
+ "describe('A video stream from the webcam.');"
+
+  }
+
+  </code>
+
+  </div>
+class: p5
+params:
+  - name: type
+  description: |2-
+
+    <p>캡처 타입(AUDIO 또는 VIDEO), 또는 제약조건 객체. 기본값은 비디오와 오디오 스트림 모두 캡처됨</p>
+  type: String|Constant|Object
+  optional: 'true'
+  - name: flipped
+  description: "\n<p>캡처된 비디오 출력의 반전 여부. \n<code>{flipped:true}</code>와 같이 사용. 기본값은 false</p>"
+  type: Object
+  optional: 'true'
+  - name: callback
+  description: |2-
+
+    <p>스트림이 준비되었을 때 한 번 실행될 함수</p>
+  type: Function
+  optional: 'true'
+return:
+  description: 새로 생성된 <a href="#/p5.MediaElement">p5.MediaElement</a> 객체
+  type: p5.MediaElement
+chainable: 'false'
+---
+
+# createCapture
