@@ -1,18 +1,6 @@
 import { z, defineCollection, reference } from "astro:content";
 
 /**
- * Schema for the Example content type.
- */
-export const exampleSchema = z.object({
-  // Title of the example
-  title: z.string(),
-  // Aria label used for the live example code
-  arialabel: z.string().optional(),
-  relatedContent: relatedContent().optional(),
-  featuredImage: z.string(),
-});
-
-/**
  * Content collection for the Examples section of the site.
  * Each file represents a single example.
  */
@@ -31,3 +19,20 @@ export const examplesCollection = defineCollection({
       featuredImageAlt: z.string().optional().default(""),
     }),
 });
+
+type ImageType = {
+  src: string;
+  width: number;
+  height: number;
+  format: "png" | "jpg" | "jpeg" | "tiff" | "webp" | "gif" | "svg" | "avif";
+};
+
+export interface ExampleData {
+  title: string;
+  arialabel?: string;
+  relatedContent?: {
+    references?: string[];
+    examples?: string[];
+  };
+  featuredImage: ImageType;
+}
