@@ -2,12 +2,27 @@
 import LocaleSwitcher from "@components/LocaleSwitcher/index.astro";
 import Footer from "@/src/components/Footer/index.astro";
 import SearchForm from "@components/SearchForm/index.astro";
+import RootPageHeader from "@components/RootPageHeader/index.astro";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
 import "@styles/base.scss";
 
-const { title, subHeading } = Astro.props;
+interface BaseLayoutProps {
+  title: string;
+  subtitle: string;
+  className?: string;
+  variant: "root" | "secondary";
+}
+
+const {
+  title,
+  subtitle,
+  className = "",
+  variant = "root",
+} = Astro.props as BaseLayoutProps;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
+const localizedTitle = t(title);
+const localizedSubtitle = t("briefPageDescriptions", title);
 ---
 
 <html>
@@ -15,7 +30,7 @@ const t = await useTranslations(currentLocale);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body>
+  <body class={`${title.toLowerCase()} ${className}`}>
     <nav>
       <ul>
         <a href="/">{t("Home")}</a>
@@ -33,11 +48,25 @@ const t = await useTranslations(currentLocale);
       <div>Language: {currentLocale}</div>
       <div>Accessibility</div>
     </div>
-    <h1 class="text-lg font-bold">{title}</h1>
-    <span>{subHeading}</span>
-    <main>
-      <slot />
-    </main>
-    <Footer />
+    <header>
+      {
+        variant === "root" ? (
+          <div>
+            <RootPageHeader
+              title={localizedTitle}
+              subtitle={localizedSubtitle}
+            />
+          </div>
+        ) : (
+          <div>
+            <h1>{title}</h1>
+          </div>
+        )
+      }
+      <main>
+        <slot />
+      </main>
+      <Footer />
+    </header>
   </body>
 </html>
