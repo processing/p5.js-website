@@ -112,12 +112,17 @@ export const writeFile = async (filePath: string, data: string) => {
  * @param filePath Path to the file
  * @returns string the content of the file
  */
-export const readFile = async (filePath: string) => {
+export const readFile = async (
+  filePath: string,
+  silent: boolean | undefined = false,
+) => {
   try {
     const fileContent = await fs.readFile(filePath, "utf8");
     return fileContent;
   } catch (err) {
-    console.error(`Error reading file: ${err}`);
+    if (!silent) {
+      console.error(`Error reading file: ${err}`);
+    }
   }
 };
 
