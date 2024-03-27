@@ -1,4 +1,6 @@
+import { readFile } from "@scripts/utils";
 import { supportedLocales, defaultLocale } from "./const";
+import matter from "gray-matter";
 
 /**
  * Checks if a collecion entry's slug begins with a locale prefix
@@ -76,3 +78,57 @@ export const getCurrentLocale = (path: undefined | string): string => {
  */
 export const localeMatchingRegex = () =>
   new RegExp(`^/?(?:${supportedLocales.join("|")})(?:/|$)`);
+
+/**
+ * Load a yaml file into an object
+ * @param filePath Path to the yaml file
+ * @returns GrayMatterFile<string> as Record<string, string>
+ */
+const loadYamlIntoObject = async (
+  filePath: string,
+): Promise<Record<string, string>> => {
+  try {
+    // Read the file with optional silent mode, this prevents
+    // console.errors during build with missing yaml. Silent mode can be removed
+    // after better translation coverage is achieved.
+    let fileContents = await readFile(filePath, true);
+    // Add fences so that graymatter can parse yaml into object.
+    // This is an alternative to using
+    // a dedicated yaml parser.
+    fileContents = `---\n${fileContents}\n---`;
+    return matter(fileContents).data as Record<string, string>;
+  } catch (e) {
+    throw new Error(`Failed to load yaml file: ${filePath}`);
+  }
+};
+
+/**
+ * Loads the translation files for a given locale and returns a function
+ * that can be used to get the localized value of a key.
+ * If the key is not found in the current locale, it will fallback to the
+ * default locale.
+ * If the key is not found in the default locale, it will return the key itself.
+ * @param lang The locale/language code
+ * @returns (key: string) => string - A function that takes a key and returns the localized value
+ */
+export const useTranslations = async (
+  lang: (typeof supportedLocales)[number],
+) => {
+  const currentLocaleDict = await loadYamlIntoObject(
+    `src/content/ui/${lang}.yaml`,
+  );
+  const defaultLocaleDict = await loadYamlIntoObject(
+    `src/content/ui/${defaultLocale}.yaml`,
+  );
+  if (!currentLocaleDict || !defaultLocaleDict) {
+    console.error("Failed to load translation files");
+  }
+  return function t(key: string) {
+    const val = currentLocaleDict[key] || defaultLocaleDict[key];
+    if (!val) {
+      console.warn(`Translation key not found: ${key}`);
+      return key;
+    }
+    return val;
+  };
+};
