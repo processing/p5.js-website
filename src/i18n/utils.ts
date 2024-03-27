@@ -1,4 +1,6 @@
+import { readFile } from "@scripts/utils";
 import { supportedLocales, defaultLocale } from "./const";
+import matter from "gray-matter";
 
 /**
  * Checks if a collecion entry's slug begins with a locale prefix
@@ -76,3 +78,45 @@ export const getCurrentLocale = (path: undefined | string): string => {
  */
 export const localeMatchingRegex = () =>
   new RegExp(`^/?(?:${supportedLocales.join("|")})(?:/|$)`);
+
+/**
+ * Load a yaml file into an object
+ * @param filePath Path to the yaml file
+ * @returns GrayMatterFile<string> as Record<string, string>
+ */
+const loadYamlIntoObject = async (
+  filePath: string,
+): Promise<Record<string, string>> => {
+  try {
+    let fileContents = await readFile(filePath);
+    // Add fences so that graymatter can parse yaml into object.
+    // This is an alternative to using
+    // a dedicated yaml parser.
+    fileContents = `---\n${fileContents}\n---`;
+    return matter(fileContents).data as Record<string, string>;
+  } catch (e) {
+    throw new Error(`Failed to load yaml file: ${filePath}`);
+  }
+};
+
+export const useTranslations = async (
+  lang: (typeof supportedLocales)[number],
+) => {
+  const currentLocaleDict = await loadYamlIntoObject(
+    `src/content/ui/${lang}.yaml`,
+  );
+  const defaultLocaleDict = await loadYamlIntoObject(
+    `src/content/ui/${defaultLocale}.yaml`,
+  );
+  if (!currentLocaleDict || !defaultLocaleDict) {
+    console.error("Failed to load translation files");
+  }
+  return function t(key: string) {
+    const val = currentLocaleDict[key] || defaultLocaleDict[key];
+    if (!val) {
+      console.warn(`Translation key not found: ${key}`);
+      return key;
+    }
+    return val;
+  };
+};
