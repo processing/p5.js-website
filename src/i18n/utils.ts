@@ -102,6 +102,15 @@ const loadYamlIntoObject = async (
   }
 };
 
+/**
+ * Loads the translation files for a given locale and returns a function
+ * that can be used to get the localized value of a key.
+ * If the key is not found in the current locale, it will fallback to the
+ * default locale.
+ * If the key is not found in the default locale, it will return the key itself.
+ * @param lang The locale/language code
+ * @returns (key: string) => string - A function that takes a key and returns the localized value
+ */
 export const useTranslations = async (
   lang: (typeof supportedLocales)[number],
 ) => {
