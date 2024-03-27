@@ -88,7 +88,10 @@ const loadYamlIntoObject = async (
   filePath: string,
 ): Promise<Record<string, string>> => {
   try {
-    let fileContents = await readFile(filePath);
+    // Read the file with optional silent mode, this prevents
+    // console.errors during build with missing yaml. Silent mode can be removed
+    // after better translation coverage is achieved.
+    let fileContents = await readFile(filePath, true);
     // Add fences so that graymatter can parse yaml into object.
     // This is an alternative to using
     // a dedicated yaml parser.
