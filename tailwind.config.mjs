@@ -2,6 +2,12 @@
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
+    // These values are mirrored in variables.scss
+    screens: {
+      md: "767px",
+      lg: "1024px",
+      xl: "1280px",
+    },
     extend: {
       colors: {
         "bg-yellow": "var(--bg-yellow)",

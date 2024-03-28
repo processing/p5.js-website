@@ -42,7 +42,7 @@ export const AccessibilitySettings = () => {
 
   if (open) {
     return (
-      <div>
+      <div className="text-accent-type-color">
         <button onClick={() => setOpen(!open)}>Accessibility Settings</button>
         <div>
           <label>
