@@ -1,9 +1,7 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import RootPageHeader from "@components/RootPageHeader/index.astro";
 import { removeLocaleAndExtension } from "@pages/_utils";
-import { useTranslations } from "../i18n/utils";
 
 type ReferenceEntry = CollectionEntry<"reference">;
 
@@ -12,19 +10,19 @@ interface Props {
   entries: ReferenceEntry[];
 }
 
-const { entries, title } = Astro.props;
+const { entries } = Astro.props;
 ---
 
 <BaseLayout title="Reference">
-  <ul>
+  <div class="content-grid">
     {
       entries.map((refEntry) => (
-        <li>
+        <div class="col-span-3 w-full overflow-hidden">
           <a href={`/reference/${removeLocaleAndExtension(refEntry.id)}`}>
             {refEntry.data.title}
           </a>
-        </li>
+        </div>
       ))
     }
-  </ul>
+  </div>
 </BaseLayout>
