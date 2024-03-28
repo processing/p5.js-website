@@ -1,0 +1,223 @@
+---
+title: noise
+module: 数学
+submodule: 噪声
+file: src/math/noise.js
+description: >
+  <p>返回可以调整以呈现自然感觉的随机数。</p>
+
+  <p>通过 <a href="/reference/p5/random">random()</a> 和 <a href="/reference/p5/randomGaussian">randomGaussian()</a> 返回的值，在函数调用之间可以有很大的变化。相比之下，<code>noise()</code> 返回的值可以被制成“平滑”的。对 <code>noise()</code> 的相似输入调用将产生相似的输出。<code>noise()</code> 用于创建纹理、运动、形状、地形等。Ken Perlin 在 1980 年代为最初的 <em>Tron</em> 电影制作动画时发明了 <code>noise()</code>。</p>
+
+  <p>><code>noise()</code> 总是返回 0 到 1 之间的值。在绘图运行时，它为给定的输入返回相同的值。<code>noise()</code> 每次绘图运行时产生不同的结果。<a href="/reference/p5/noiseSeed">noiseSeed()</a> 函数可以用来每次绘图运行时生成相同的 Perlin 噪声值序列。</p>
+
+  <p>可以通过两种方式调整噪声的特性。第一种方式是缩放输入。<code>noise()</code> 将输入解释为坐标。当输入坐标更接近时，噪声值的序列会更平滑。第二种方式是使用 <a href="/reference/p5/noiseDetail">noiseDetail()</a> 函数。</p>
+
+  <p>带有一个参数的 <code>noise()</code> 版本在一个维度上计算噪声值。这个维度可以被认为是空间，如 <code>noise(x)</code>，或时间，如<code>noise(t)</code>。</p>
+
+  <p>带有两个参数的 <code>noise()</code> 版本在两个维度上计算噪声值。这些维度可以被认为是空间，如 <code>noise(x, y)</code>，或空间和时间，如 <code>noise(x, t)</code>。</p>
+
+  <p>带有三个参数的 <code>noise()</code> 版本在三个维度上计算噪声值。这些维度可以被认为是空间，如 <code>noise(x, y, z)</code>，或空间和时间，如 <code>noise(x, y, t)</code>。</p>
+line: 36
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A black dot moves randomly on a gray square.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the coordinates.
+      let x = 100 * noise(0.005 * frameCount);
+      let y = 100 * noise(0.005 * frameCount + 10000);
+
+      // Draw the point.
+      strokeWeight(5);
+      point(x, y);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A black dot moves randomly on a gray square.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Set the noise level and scale.
+      let noiseLevel = 100;
+      let noiseScale = 0.005;
+
+      // Scale the input coordinate.
+      let nt = noiseScale * frameCount;
+
+      // Compute the noise values.
+      let x = noiseLevel * noise(nt);
+      let y = noiseLevel * noise(nt + 10000);
+
+      // Draw the point.
+      strokeWeight(5);
+      point(x, y);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A hilly terrain drawn in gray against a black sky.');
+    }
+
+    function draw() {
+      // Set the noise level and scale.
+      let noiseLevel = 100;
+      let noiseScale = 0.02;
+
+      // Scale the input coordinate.
+      let x = frameCount;
+      let nx = noiseScale * x;
+
+      // Compute the noise value.
+      let y = noiseLevel * noise(nx);
+
+      // Draw the line.
+      line(x, 0, x, y);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A calm sea drawn in gray against a black sky.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Set the noise level and scale.
+      let noiseLevel = 100;
+      let noiseScale = 0.002;
+
+      // Iterate from left to right.
+      for (let x = 0; x < 100; x += 1) {
+        // Scale the input coordinates.
+        let nx = noiseScale * x;
+        let nt = noiseScale * frameCount;
+
+        // Compute the noise value.
+        let y = noiseLevel * noise(nx, nt);
+
+        // Draw the line.
+        line(x, 0, x, y);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the noise level and scale.
+      let noiseLevel = 255;
+      let noiseScale = 0.01;
+
+      // Iterate from top to bottom.
+      for (let y = 0; y < 100; y += 1) {
+        // Iterate from left to right.
+        for (let x = 0; x < 100; x += 1) {
+          // Scale the input coordinates.
+          let nx = noiseScale * x;
+          let ny = noiseScale * y;
+
+          // Compute the noise value.
+          let c = noiseLevel * noise(nx, ny);
+
+          // Draw the point.
+          stroke(c);
+          point(x, y);
+        }
+      }
+
+      describe('A gray cloudy pattern.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A gray cloudy pattern that changes.');
+    }
+
+    function draw() {
+      // Set the noise level and scale.
+      let noiseLevel = 255;
+      let noiseScale = 0.009;
+
+      // Iterate from top to bottom.
+      for (let y = 0; y < 100; y += 1) {
+        // Iterate from left to right.
+        for (let x = 0; x < width; x += 1) {
+          // Scale the input coordinates.
+          let nx = noiseScale * x;
+          let ny = noiseScale * y;
+          let nt = noiseScale * frameCount;
+
+          // Compute the noise value.
+          let c = noiseLevel * noise(nx, ny, nt);
+
+          // Draw the point.
+          stroke(c);
+          point(x, y);
+        }
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: x
+    description: |
+      <p>噪声空间中的x坐标。</p>
+    type: 数字
+  - name: 'y'
+    description: |
+      <p>噪声空间中的y坐标。</p>
+    type: 数字
+    optional: true
+  - name: z
+    description: |
+      <p>噪声空间中的z坐标。</p>
+    type: 数字
+    optional: true
+return:
+  description: 指定坐标的 Perlin 噪声值。
+  type: 数字
+chainable: false
+---
+
+
+# noise
