@@ -8,181 +8,103 @@ line: '2276'
 isConstructor: 'false'
 itemtype: method
 example:
-  - |2-
-
-
-
- "<div class='notest'>"
-
-  <code>
-
-  function setup() {
-
- "noCanvas();"
-
-
-
-    // Create the video capture.
-
- "createCapture(VIDEO);"
-
-
-
- "describe('A video stream from the webcam.');"
-
-  }
-
-  </code>
-
-  </div>
-
-
-
- "<div class='notest'>"
-
-  <code>
-
- "let capture;"
-
-
-
-  function setup() {
-
- "createCanvas(100, 100);"
-
-
-
-    // Create the video capture and hide the element.
-
- "capture = createCapture(VIDEO);"
-
- "capture.hide();"
-
-
-
- "describe('A video stream from the webcam with inverted colors.');"
-
-  }
-
-
-
-  function draw() {
-
-    // Draw the video capture within the canvas.
-
- "image(capture, 0, 0, width, width * capture.height / capture.width);"
-
-
-
-    // Invert the colors in the stream.
-
- "filter(INVERT);"
-
-  }
-
-  </code>
-
-  </div>
-
- "<div class='notest'>"
-
-  <code>
-
- "let capture;"
-
-
-
-  function setup() {
-
- "createCanvas(100, 100);"
-
-
-
-    // Create the video capture with mirrored output.
-
-    capture = createCapture(VIDEO,{ flipped:"true });"
-
- "capture.size(100,100);"
-
-
-
- "describe('A video stream from the webcam with flipped or mirrored output.');"
-
-  }
-
-
-
-  </code>
-
-  </div>
-
-
-
- "<div class='notest norender'>"
-
-  <code>
-
-  function setup() {
-
- "createCanvas(480, 120);"
-
-
-
-    // Create a constraints object.
-
-    let constraints = {
-
-      video: {
-
-        mandatory: {
-
-          minWidth: 1280,
-
-          minHeight: 720
-
+  - |-
+
+    <div class='notest'>
+    <code>
+    function setup() {
+      noCanvas();
+
+      // Create the video capture.
+      createCapture(VIDEO);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture and hide the element.
+      capture = createCapture(VIDEO);
+      capture.hide();
+
+      describe('A video stream from the webcam with inverted colors.');
+    }
+
+    function draw() {
+      // Draw the video capture within the canvas.
+      image(capture, 0, 0, width, width * capture.height / capture.width);
+
+      // Invert the colors in the stream.
+      filter(INVERT);
+    }
+    </code>
+    </div>
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture with mirrored output.
+      capture = createCapture(VIDEO,{ flipped:true });
+      capture.size(100,100);
+
+      describe('A video stream from the webcam with flipped or mirrored output.');
+    }
+
+    </code>
+    </div>
+
+    <div class='notest norender'>
+    <code>
+    function setup() {
+      createCanvas(480, 120);
+
+      // Create a constraints object.
+      let constraints = {
+        video: {
+          mandatory: {
+            minWidth: 1280,
+            minHeight: 720
+          },
+          optional: [{ maxFrameRate: 10 }]
         },
+        audio: false
+      };
 
-        optional: "[{ maxFrameRate: 10 }]"
+      // Create the video capture.
+      createCapture(constraints);
 
-      },
-
-      audio: false
-
- "};"
-
-
-
-    // Create the video capture.
-
- "createCapture(constraints);"
-
-
-
- "describe('A video stream from the webcam.');"
-
-  }
-
-  </code>
-
-  </div>
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
 class: p5
 params:
   - name: type
-  description: |2-
+    description: |2-
 
-    <p>캡처 타입(AUDIO 또는 VIDEO), 또는 제약조건 객체. 기본값은 비디오와 오디오 스트림 모두 캡처됨</p>
-  type: String|Constant|Object
-  optional: 'true'
+      <p>캡처 타입(AUDIO 또는 VIDEO), 또는 제약조건 객체. 기본값은 비디오와 오디오 스트림 모두 캡처됨</p>
+    type: String|Constant|Object
+    optional: 'true'
   - name: flipped
-  description: "\n<p>캡처된 비디오 출력의 반전 여부. \n<code>{flipped:true}</code>와 같이 사용. 기본값은 false</p>"
-  type: Object
-  optional: 'true'
+    description: "\n<p>캡처된 비디오 출력의 반전 여부. \n<code>{flipped:true}</code>와 같이 사용. 기본값은 false</p>"
+    type: Object
+    optional: 'true'
   - name: callback
-  description: |2-
+    description: |2-
 
-    <p>스트림이 준비되었을 때 한 번 실행될 함수</p>
-  type: Function
-  optional: 'true'
+      <p>스트림이 준비되었을 때 한 번 실행될 함수</p>
+    type: Function
+    optional: 'true'
 return:
   description: 새로 생성된 <a href="#/p5.MediaElement">p5.MediaElement</a> 객체
   type: p5.MediaElement
