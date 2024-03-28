@@ -23,6 +23,9 @@ module.exports = {
     {
       files: ["*.ts", "*.tsx"],
       extends: ["plugin:@typescript-eslint/recommended"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+      },
     },
   ],
   parser: "@typescript-eslint/parser",
