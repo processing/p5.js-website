@@ -1,0 +1,174 @@
+---
+title: saveFrames
+module: Imagen
+submodule: Imagen
+file: src/image/image.js
+description: |-
+  <p>Captura una secuencia de fotogramas del lienzo que pueden ser guardados como imágenes.</p>
+
+  <p><code>saveFrames()</code> crea un array de objetos de fotograma. Cada fotograma se almacena como un objeto con su tipo de archivo, nombre de archivo y datos de imagen como una cadena. Por ejemplo, el primer fotograma guardado podría tener las siguientes propiedades:</p>
+
+  <p><code>{ ext: "'png', filenmame: 'frame0', imageData: 'data:image/octet-stream;base64, abc123' }</code>.</p>"
+
+ "<p>El primer parámetro, <code>filename</code>, establece el prefijo para los nombres de archivo. Por ejemplo, configurar el prefijo como <code>'frame'</code> generaría los archivos de imagen <code>frame0.png</code>, <code>frame1.png</code>, y así sucesivamente.</p>"
+
+ "<p>El segundo parámetro, <code>extension</code>, establece el tipo de archivo ya sea <code>'png'</code> o <code>'jpg'</code>.</p>"
+
+  <p>El tercer parámetro, <code>duration</code>, establece la duración a grabar en segundos. La duración máxima es de 15 segundos.</p>
+
+  <p>El cuarto parámetro, <code>framerate</code>, establece el número de fotogramas a grabar por segundo. El valor máximo de velocidad de fotogramas es 22. Se aplican límites a <code>duration</code> y <code>framerate</code> para evitar el uso excesivo de memoria. La grabación de lienzos grandes puede hacer que los bocetos se bloqueen fácilmente o incluso los navegadores web.</p>
+
+  <p>El quinto parámetro, <code>callback</code>, es opcional. Si se pasa una función, los archivos de imagen no se guardarán por defecto. La función <em>callback</em> puede ser utilizada para procesar un array que contiene los datos de cada fotograma capturado. El array de datos de imagen contiene una secuencia de objetos con tres propiedades para cada fotograma: <code>imageData</code>, <code>filename</code>, y <code>extension</code>.</p>
+
+  <p>Nota: Los fotogramas se descargan como archivos de imagen individuales por defecto.</p>
+line: '558'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |2-
+
+
+
+  <div>
+
+
+  <code>
+
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "describe('A square repeatedly changes color from blue to pink.');"
+
+  }
+
+
+
+
+  function draw() {
+
+ "let r = frameCount % 255;"
+
+ "let g = 50;"
+
+ "let b = 100;"
+
+ "background(r, g, b);"
+
+  }
+
+
+
+
+ "// Save the frames when the user presses the 's' key."
+
+
+  function keyPressed() {
+
+ "if (key === 's') {"
+
+ "saveFrames('frame', 'png', 1, 5);"
+
+    }
+
+  }
+
+
+  </code>
+
+
+  </div>
+
+
+
+
+  <div>
+
+
+  <code>
+
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "describe('A square repeatedly changes color from blue to pink.');"
+
+  }
+
+
+
+
+  function draw() {
+
+ "let r = frameCount % 255;"
+
+ "let g = 50;"
+
+ "let b = 100;"
+
+ "background(r, g, b);"
+
+  }
+
+
+
+
+  // Print 5 frames when the user presses the mouse.
+
+
+  function mousePressed() {
+
+ "saveFrames('frame', 'png', 1, 5, printFrames);"
+
+  }
+
+
+
+
+  // Prints an array of objects containing raw image data, filenames, and
+  extensions.
+
+
+  function printFrames(frames) {
+
+    for (let frame of frames) {
+
+ "print(frame);"
+
+    }
+
+  }
+
+
+  </code>
+
+
+  </div>
+class: p5
+params:
+  - name: filename
+  description: "<p>prefijo del nombre del archivo.</p>"
+  type: String
+  - name: extension
+  description: "<p>extensión del archivo, ya sea 'jpg' o 'png'.</p>"
+  type: String
+  - name: duration
+  description: "<p>duración en segundos para grabar. Este parámetro estará limitado a ser menor o igual a 15.</p>"
+  type: Number
+  - name: framerate
+  description: "<p>número de fotogramas para guardar por segundo. Este parámetro estará limitado a ser menor o igual a 22.</p>"
+  type: Number
+  - name: callback
+  description: "<p>función <em>callback</em> que se ejecutará para manejar los datos de la imagen. Esta función debe aceptar un array como argumento. El array contendrá el número especificado de fotogramas de objetos. Cada objeto tiene tres propiedades: <code>imageData</code>, <code>filename</code>, y <code>extension</code>.</p>"
+  type: Function(Array)
+  optional: 'true'
+chainable: 'false'
+---
+
+# saveFrames
