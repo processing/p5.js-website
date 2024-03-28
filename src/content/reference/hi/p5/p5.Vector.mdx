@@ -1,0 +1,843 @@
+---
+title: p5.Vector
+module: गणित
+submodule: वेक्टर
+file: src/math/p5.Vector.js
+description: |-
+  <p>दो या त्रि-आयामी वेक्टर का वर्णन करने के लिए एक वर्ग।</p>
+
+
+  <p>एक वेक्टर के बारे में विभिन्न तरीकों से सोचा जा सकता है। एक दृश्य में, एक वेक्टर अंतरिक्ष की ओर इशारा करते हुए एक तीर की तरह है। वेक्टर में परिमाण (लंबाई) और दिशा दोनों होते हैं।</p>
+
+
+  <p><code>p5.Vector</code> ऑब्जेक्ट का उपयोग अक्सर गति को प्रोग्राम करने के लिए किया जाता है क्योंकि वे गणित को सरल बनाते हैं। उदाहरण के लिए, एक चलती हुई गेंद की एक स्थिति और एक वेग होता है। स्थिति बताती है कि गेंद अंतरिक्ष में कहाँ है। गेंद की स्थिति वेक्टर मूल से गेंद के केंद्र तक फैली हुई है। वेग गेंद की गति और उसके घूमने की दिशा का वर्णन करता है। यदि गेंद सीधी ऊपर की ओर बढ़ रही है, तो इसका वेग वेक्टर सीधे ऊपर की ओर इंगित करता है। गेंद के वेग वेक्टर को उसकी स्थिति वेक्टर में जोड़ने से वह गतिमान हो जाती है, जैसा कि <code>pos.add(vel)</code> में है। वेक्टर गणित <code>p5.Vector</code> वर्ग</p> के अंदर के तरीकों पर निर्भर करता है
+
+
+  <p>ध्यान दें: <a href="/reference/p5/createVector">createVector()</a> इस वर्ग का उदाहरण बनाने का अनुशंसित तरीका है।</p>
+line: '11'
+isConstructor: 'true'
+params:
+  - name: x
+  description: |2-
+
+    <p>वेक्टर का x घटक।</p>
+  type: संख्या
+  optional: सत्य
+  - name: y
+  description: |2-
+
+    <p>वेक्टर का y घटक।</p>
+  type: संख्या
+  optional: सत्य
+  - name: z
+  description: |2-
+
+    <p>वेक्टर का z घटक।</p>
+  type: संख्या
+  optional: सत्य
+example:
+  - |2-
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "background(200);"
+
+
+
+    // Create p5.Vector objects.
+
+ "let p1 = createVector(25, 25);"
+
+ "let p2 = createVector(75, 75);"
+
+
+
+    // Style the points.
+
+ "strokeWeight(5);"
+
+
+
+    // Draw the first point using a p5.Vector.
+
+ "point(p1);"
+
+
+
+ "// Draw the second point using a p5.Vector's components."
+
+ "point(p2.x, p2.y);"
+
+
+
+ "describe('Two black dots on a gray square, one at the top left and the other at the bottom right.');"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+ "let pos;"
+
+ "let vel;"
+
+
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+    // Create p5.Vector objects.
+
+ "pos = createVector(50, 100);"
+
+ "vel = createVector(0, -1);"
+
+
+
+ "describe('A black dot moves from bottom to top on a gray square. The dot reappears at the bottom when it reaches the top.');"
+
+  }
+
+
+
+  function draw() {
+
+ "background(200);"
+
+
+
+    // Add velocity to position.
+
+ "pos.add(vel);"
+
+
+
+    // If the dot reaches the top of the canvas,
+
+    // restart from the bottom.
+
+    if (pos.y < 0) {
+
+ "pos.y = 100;"
+
+    }
+
+
+
+    // Draw the dot.
+
+ "strokeWeight(5);"
+
+ "point(pos);"
+
+  }
+
+  </code>
+
+  </div>
+methods:
+  toString:
+    description: |2-
+
+      <p>वेक्टर का एक स्ट्रिंग प्रतिनिधित्व लौटाता है।</p>
+
+
+      <p>कॉलिंग <code>toString()</code> वेक्टर को प्रिंट करने के लिए उपयोगी है
+      सांत्वना देते समय
+
+
+      डिबगिंग.</p>
+    path: p5.Vector/toString
+  set:
+    description: |2-
+
+      <p>वेक्टर के <code>x</code>, <code>y</code>, और <code>z</code> को सेट करता है
+      घटक.</p>
+
+
+      <p><code>set()</code> अलग-अलग संख्याओं का उपयोग कर सकता है, जैसे <code>v.set(1, 2,
+      3)</कोड>, ए
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट, जैसा कि
+      <code>v.set(v2)</code>, या an
+
+
+      संख्याओं की सारणी, जैसे <code>v.set([1, 2, 3])</code>।</p>
+
+
+      <p>यदि किसी घटक के लिए कोई मान प्रदान नहीं किया गया है, तो इसे 0 पर सेट किया जाएगा
+
+
+      उदाहरण के लिए, <code>v.set(4, 5)</code> <code>v.x</code> को 4 पर सेट करता है,
+      <code>v.y</code> से 5, और <code>v.z</code> से 0.
+
+
+      बिना किसी तर्क के <code>set()</code> को कॉल करना, जैसे <code>v.set()</code> में,
+      सभी वेक्टर सेट करता है
+
+
+      घटकों को 0.</p>
+    path: p5.Vector/set
+  copy:
+    description: |2-
+
+      <p> <a href="/reference/p5/p5.Vector">p5.Vector</a> की एक प्रति लौटाता है
+      वस्तु.</p>
+    path: p5.Vector/copy
+  add:
+    description: |2-
+
+      <p>वेक्टर के <code>x</code>, <code>y</code>, और <code>z</code> में जोड़ता है
+      घटक.</p>
+
+
+      <p><code>add()</code> अलग-अलग संख्याओं का उपयोग कर सकता है, जैसे <code>v.add(1, 2,
+      3)</कोड>,
+
+
+      अन्य <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट, जैसा कि
+      <code>v.add(v2)</code>, या संख्याओं की एक सारणी, जैसे <code>v.add([1, 2, 3])</code>.</p>
+
+
+      <p>यदि किसी घटक के लिए कोई मान प्रदान नहीं किया गया है, तो यह नहीं बदलेगा। उदाहरण के लिए, <code>v.add(4, 5)</code> <code>v.x</code> में 4 जोड़ता है, <code>v.x</code> में 5 जोड़ता है
+      <code>v.y</code>, और 0 से <code>v.z</code>.
+
+
+      बिना किसी तर्क के <code>add()</code> को कॉल करना, जैसे <code>v.add()</code> में,
+      कोई प्रभाव नहीं पड़ता.</p>
+
+
+      <p> <code>add()</code> का स्थिर संस्करण, जैसा कि <code>p5.Vector.add(v2,
+      v1)</कोड>, एक नया लौटाता है
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट और बदलता नहीं है मूल.</p>
+    path: p5.Vector/add
+  rem:
+    description: |2-
+
+      <p>वेक्टर के <code>x</code> के साथ मॉड्यूलो (शेष) विभाजन करता है,
+      <code>y<code>, और <code>z</code>
+      घटक.</p>
+
+
+      <p><code>rem()</code> अलग-अलग संख्याओं का उपयोग कर सकते हैं, जैसे <code>v.rem(1, 2,
+      3)</code>,
+
+
+      अन्य <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट, जैसा कि
+      <code>v.rem(v2)</code>, या
+
+
+      संख्याओं की एक सारणी, जैसे <code>v.rem([1, 2, 3])</code>.</p>
+
+
+      <p>यदि केवल एक मान प्रदान किया गया है, जैसे <code>v.rem(2)</code>, तो सभी
+      अवयव
+
+
+      उनके मानों मॉड्यूल 2 पर सेट किया जाएगा। यदि दो मान प्रदान किए गए हैं, जैसा कि अंदर है
+
+
+      <code>v.rem(2, 3)</code>, तो <code>v.z</code> नहीं बदलेगा। कॉलिंग
+      <code>rem()</code> नंबर के साथ तर्क, जैसे <code>v.rem()</code>, का कोई प्रभाव नहीं पड़ता।</p>
+
+
+      <p><code>rem()</code> का स्थिर संस्करण, जैसा कि <code>p5.Vector.rem(v2, v1)</code>, रिटर्न ए
+ "नया <a href='/reference/p5/p5.Vector'>p5.Vector</a> ऑब्जेक्ट और नहीं"
+      को बदलें
+
+
+      मूल.</p>
+    path: p5.Vector/rem
+  sub:
+    description: |2-
+
+      <p>एक वेक्टर के <code>x</code>, <code>y</code> से घटाता है, और
+      <code>z</code> घटक.</p>
+
+
+      <p><code>sub()</code> अलग-अलग संख्याओं का उपयोग कर सकते हैं, जैसे <code>v.sub(1, 2,
+      3)</कोड>, दूसरा
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट, जैसा कि
+      <code>v.sub(v2)</code>, या एक सरणी
+
+
+      संख्याओं का, जैसे <code>v.sub([1, 2, 3])</code>।</p>
+
+
+      <p>यदि किसी घटक के लिए कोई मान प्रदान नहीं किया गया है, तो यह नहीं बदलेगा। के लिए
+
+
+      उदाहरण के लिए, <code>v.sub(4, 5)</code> <code>v.x</code> में 4 जोड़ता है, <code>v.x</code> में 5 जोड़ता है
+      <code>v.y</code>, और 0 से <code>v.z</code>.
+
+
+      बिना किसी तर्क के <code>sub()</code> को कॉल करना, जैसे <code>v.sub()</code> में,
+      कोई प्रभाव नहीं पड़ता.</p>
+
+
+      <p><code>sub()</code> का स्थिर संस्करण, जैसा कि <code>p5.Vector.sub(v2,
+      v1)</कोड>, एक नया लौटाता है
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट और बदलता नहीं है
+
+
+
+      मूल.</p>
+    path: p5.Vector/sub
+  mult:
+    description: |2-
+
+      <p>वेक्टर के <code>x</code>, <code>y</code>, और को गुणा करता है
+      <code>z</code> घटक.</p>
+
+
+      <p><code>mult()</code> अलग-अलग संख्याओं का उपयोग कर सकते हैं, जैसे <code>v.mult(1, 2,
+      3)</कोड>, दूसरा
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट, जैसा कि
+      <code>v.mult(v2)</code>, या एक सरणी
+
+
+      संख्याओं का, जैसे <code>v.mult([1, 2, 3])</code>।</p>
+
+
+      <p>यदि केवल एक मान प्रदान किया गया है, जैसे <code>v.mult(2)</code>, तो सभी
+      अवयव
+
+
+      2 से गुणा किया जाएगा। यदि किसी घटक के लिए कोई मान प्रदान नहीं किया गया है, तो वह
+
+
+      नहीं बदलेगा. उदाहरण के लिए, <code>v.mult(4, 5)</code> गुणा करता है
+      <code>v.x</code> द्वारा, <code>v.y</code> द्वारा 5,
+
+
+      और <code>v.z</code> द्वारा 1. बिना किसी तर्क के <code>mult()</code> को कॉल करना,
+      जैसा कि <code>v.mult()</code> में है
+
+
+      कोई असर नहीं.</p>
+
+
+      <p><code>mult()</code> का स्थिर संस्करण, जैसा कि इसमें है
+      <code>p5.Vector.mult(v, 2)</code>, एक नया रिटर्न देता है
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट और बदलता नहीं है
+
+
+
+      मूल.</p>
+    path: p5.Vector/mult
+  div:
+    description: |2-
+
+      <p>वेक्टर के <code>x</code>, <code>y</code>, और <code>z</code> को विभाजित करता है
+      घटक.</p>
+
+
+      <p><code>div()</code> अलग-अलग संख्याओं का उपयोग कर सकते हैं, जैसे <code>v.div(1, 2,
+      3)</कोड>, दूसरा
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट, जैसा कि
+      <code>v.div(v2)</code>, या एक सरणी
+
+
+      संख्याओं का, जैसे <code>v.div([1, 2, 3])</code>.</p>
+
+
+      <p>यदि केवल एक मान प्रदान किया गया है, जैसे <code>v.div(2)</code>, तो सभी
+      अवयव
+
+
+      2 से विभाजित किया जाएगा। यदि किसी घटक के लिए कोई मान प्रदान नहीं किया गया है, तो वह
+
+
+      नहीं बदलेगा. उदाहरण के लिए, <code>v.div(4, 5)</code> विभाजित करता है
+      <code>v.x</code> द्वारा, <code>v.y</code> द्वारा 5,
+
+
+      और <code>v.z</code> द्वारा 1. बिना किसी तर्क के <code>div()</code> को कॉल करना,
+      जैसा कि <code>v.div()</code> में है
+
+
+      कोई असर नहीं.</p>
+
+
+      <p> <code>div()</code> का स्थिर संस्करण, जैसा कि <code>p5.Vector.div(v,
+      2)</कोड>, एक नया लौटाता है
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट और बदलता नहीं है
+
+
+
+      मूल.</p>
+    path: p5.Vector/div
+  mag:
+    description: |2-
+
+      <p>वेक्टर के परिमाण (लंबाई) की गणना करता है।</p>
+
+
+      <p>के परिमाण की गणना करने के लिए <a href="/reference/p5/mag">mag()</a> का उपयोग करें
+      एक 2D वेक्टर
+
+
+      <code>mag(x, y)</code></p> जैसे घटकों का उपयोग करना
+    path: p5.Vector/mag
+  magSq:
+    description: |2-
+
+      <p>वेक्टर वर्ग के परिमाण (लंबाई) की गणना करता है।</p>
+    path: p5.Vector/magSq
+  dot:
+    description: |2-
+
+      <p>दो वैक्टर के डॉट उत्पाद की गणना करता है।</p>
+
+
+      <p>डॉट उत्पाद एक संख्या है जो दो के बीच ओवरलैप का वर्णन करती है
+      वेक्टर
+
+
+      दृष्टिगत रूप से, डॉट उत्पाद को "छाया" एक वेक्टर के रूप में सोचा जा सकता है
+
+
+      दूसरे पर डालता है. दो वैक्टर होने पर डॉट उत्पाद का परिमाण सबसे बड़ा होता है
+
+
+      समान या विपरीत दिशा में इंगित करें। दो होने पर इसका परिमाण 0 होता है
+
+
+      सदिश एक समकोण बनाते हैं।</p>
+
+
+      <p>एक पैरामीटर के साथ <code>dot()</code> का संस्करण इसकी व्याख्या इस प्रकार करता है
+      एक और
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट।</p>
+
+
+      <p>कई मापदंडों के साथ <code>dot()</code> का संस्करण व्याख्या करता है
+      उन्हें के रूप में
+
+
+      <code>x</code>, <code>y</code>, और <code>z</code> दूसरे के घटक
+      वेक्टर.</p>
+
+
+      <p><code>dot()</code> का स्थिर संस्करण, जैसा कि <code>p5.Vector.dot(v1,
+      v2)</code>, वही है
+
+
+      <code>v1.dot(v2)</code> को कॉल करने के रूप में।</p>
+    path: p5.Vector/dot
+  cross:
+    description: |2-
+
+      <p>दो वैक्टरों के क्रॉस उत्पाद की गणना करता है।</p>
+
+
+      <p>क्रॉस उत्पाद एक वेक्टर है जो सीधे विमान से बाहर की ओर इंगित करता है
+      बनाया था
+
+
+      दो वैक्टर द्वारा. क्रॉस उत्पाद का परिमाण का क्षेत्रफल है
+      चतुर्भुज
+
+
+      मूल दो वैक्टर द्वारा निर्मित।</p>
+
+
+      <p>जैसा कि <code>cross()</code> का स्थिर संस्करण है
+      <code>p5.Vector.cross(v1, v2)</code>, वही है
+
+
+      <code>v1.cross(v2)</code> को कॉल करने के रूप में।</p>
+    path: p5.Vector/cross
+  dist:
+    description: |2-
+
+      <p>वेक्टर द्वारा दर्शाए गए दो बिंदुओं के बीच की दूरी की गणना करता है।</p>
+
+
+      <p>एक बिंदु के निर्देशांक को एक वेक्टर के घटकों द्वारा दर्शाया जा सकता है
+
+
+      जो उद्गम से बिंदु तक फैला हुआ है।</p>
+
+
+      <p>जैसा कि <code>dist()</code> का स्थिर संस्करण है
+      <code>p5.Vector.dist(v1, v2)</code>, वही है
+
+
+      <code>v1.dist(v2)</code> को कॉल करने के रूप में।</p>
+
+
+      <p>दूरी की गणना करने के लिए <a href="/reference/p5/dist">dist()</a> का उपयोग करें
+      बिंदुओं के बीच
+
+
+      <code>dist(x1, y1, x2, y2)</code> के अनुसार निर्देशांक का उपयोग करना।</p>
+    path: p5.Vector/dist
+  normalize:
+    description: |2-
+
+      <p>a <a के घटकों को मापता है
+ "href='/reference/p5/p5.Vector'>p5.Vector</a> पर आपत्ति है"
+
+
+      कि इसका परिमाण 1 है.</p>
+
+
+      <p>जैसा कि <कोड>सामान्यीकरण()</कोड> का स्थिर संस्करण है
+      <कोड>p5.वेक्टर.सामान्यीकरण(v)</कोड>,
+
+
+      एक नया <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट लौटाता है और
+      नहीं बदलता
+
+
+      मूल.</p>
+    path: p5.Vector/normalize
+  limit:
+    description: |2-
+
+      <p>वेक्टर के परिमाण को अधिकतम मान तक सीमित करता है।</p>
+
+
+      <p>जैसा कि <code>limit()</code> का स्थिर संस्करण है
+      <code>p5.Vector.limit(v, 5)</code>, एक रिटर्न देता है
+
+
+ "नया <a href='/reference/p5/p5.Vector'>p5.Vector</a> ऑब्जेक्ट और नहीं"
+      को बदलें
+
+
+      मूल.</p>
+    path: p5.Vector/limit
+  setMag:
+    description: |2-
+
+      <p>वेक्टर के परिमाण को किसी दिए गए मान पर सेट करता है।</p>
+
+
+      <p>जैसा कि <code>setMag()</code> का स्थिर संस्करण है
+      <code>p5.Vector.setMag(v, 10)</code>, रिटर्न
+
+
+      एक नया <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट और नहीं
+      को बदलें
+
+
+      मूल.</p>
+    path: p5.Vector/setMag
+  heading:
+    description: |2-
+
+      <p>धनात्मक x-अक्ष के साथ एक 2D वेक्टर द्वारा बनाए गए कोण की गणना करता है।</p>
+
+
+      <p>परंपरा के अनुसार, सकारात्मक x-अक्ष का कोण 0 होता है। कोण बढ़ते हैं
+      में
+
+
+      दक्षिणावर्त दिशा.</p>
+
+
+      <p>यदि वेक्टर के साथ बनाया गया था
+
+
+ "<a href='/reference/p5/createVector'>createVector()</a>,"
+      <code>heading()</code> कोण लौटाता है
+
+
+      वर्तमान की इकाइयों में <a
+ "href='/reference/p5/angelMode'>एंगलमोड()</a>.</p>"
+
+
+      <p>जैसा कि <code>heading()</code> का स्थिर संस्करण है
+      <code>p5.Vector.heading(v)</code>, काम करता है
+
+
+      उसी तरह.</p>
+    path: p5.Vector/heading
+  setHeading:
+    description: |2-
+
+      <p>2D वेक्टर को बिना बदले एक विशिष्ट कोण पर घुमाता है
+      परिमाण.</p>
+
+
+      <p>परंपरा के अनुसार, सकारात्मक x-अक्ष का कोण 0 होता है। कोण बढ़ते हैं
+      में
+
+
+      दक्षिणावर्त दिशा.</p>
+
+
+      <p>यदि वेक्टर के साथ बनाया गया था
+
+
+ "<a href='/reference/p5/createVector'>createVector()</a>,"
+      <code>setHeading()</code> का उपयोग करता है
+
+
+      वर्तमान की इकाइयाँ <a
+ "href='/reference/p5/angelMode'>एंगलमोड()</a>.</p>"
+    path: p5.Vector/setHeading
+  rotate:
+    description: |2-
+
+      <p>एक 2डी वेक्टर को उसके परिमाण को बदले बिना एक कोण से घुमाता है।</p>
+
+
+      <p>परंपरा के अनुसार, सकारात्मक x-अक्ष का कोण 0 होता है। कोण बढ़ते हैं
+      में
+
+
+      दक्षिणावर्त दिशा.</p>
+
+
+      <p>यदि वेक्टर के साथ बनाया गया था
+
+
+ "<a href='/reference/p5/createVector'>createVector()</a>,"
+      <code>rotate()</code> का उपयोग करता है
+
+
+      वर्तमान की इकाइयाँ <a
+ "href='/reference/p5/angelMode'>एंगलमोड()</a>.</p>"
+
+
+      <p>जैसा कि <code>rotate()</code> का स्थिर संस्करण है
+      <कोड>p5.वेक्टर.रोटेट(v, PI)</कोड>,
+
+
+      एक नया <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट लौटाता है और
+      नहीं बदलता
+
+
+      मूल.</p>
+    path: p5.Vector/rotate
+  angleBetween:
+    description: |2-
+
+      <p>दो वैक्टरों के बीच के कोण की गणना करता है।</p>
+
+
+      <p>लौटे गए कोणों पर हस्ताक्षर किए गए हैं, जिसका अर्थ है कि
+
+
+      <कोड>v1.एंगलबीच(v2) === -v2.एंगलबीच(v1)</कोड>.</p>
+
+
+      <p>यदि वेक्टर के साथ बनाया गया था
+
+
+ "<a href='/reference/p5/createVector'>createVector()</a>,"
+      <कोड>एंगलबिटवीन()</कोड> रिटर्न
+
+
+      धारा की इकाइयों में कोण
+
+
+      <a href="/reference/p5/angelMode">एंगलमोड()</a>.</p>
+    path: p5.Vector/angleBetween
+  lerp:
+    description: |2-
+
+      <p>नये <code>x</code>, <code>y</code>, और <code>z</code> की गणना करता है
+      घटक जो आनुपातिक रूप से हैं
+
+
+      दो वैक्टरों के बीच समान दूरी।</p>
+
+
+      <p><code>amt</code> पैरामीटर के बीच प्रक्षेप करने की मात्रा है
+      पुराने वेक्टर और
+
+
+      नया वेक्टर. 0.0 सभी घटकों को पुराने वेक्टर के बराबर रखता है, 0.5 है
+
+
+      आधे रास्ते के बीच, और 1.0 सभी घटकों को नए के बराबर सेट करता है
+      वेक्टर का.</p>
+
+
+      <p>जैसा कि <code>lerp()</code> का स्थिर संस्करण है
+      <कोड>p5.वेक्टर.lerp(v0, v1, 0.5)</कोड>,
+
+
+      एक नया <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट लौटाता है और
+      नहीं बदलता
+
+
+      मूल.</p>
+    path: p5.Vector/lerp
+  slerp:
+    description: |2-
+
+      <p>एक नए शीर्षक और परिमाण की गणना करता है जो दो के बीच है
+      वेक्टर.</p>
+
+
+      <p><code>amt</code> पैरामीटर के बीच प्रक्षेप करने की मात्रा है
+      पुराने वेक्टर और
+
+
+      नया वेक्टर. 0.0 शीर्षक और परिमाण को पुराने के बराबर रखता है
+
+
+      वेक्टर, 0.5 उन्हें बीच में आधा सेट करता है, और 1.0 शीर्षक और सेट करता है
+
+
+      नए वेक्टर के बराबर परिमाण।</p>
+
+
+      <p><code>slerp()</code> <a से भिन्न है
+ "href='/reference/p5.Vector/lerp'>lerp()</a> क्योंकि"
+
+
+      यह परिमाण को प्रक्षेपित करता है। <code>v0.slerp(v1, 0.5)</code> सेट को कॉल करना
+ "<code>v0</code>'s"
+
+
+      परिमाण अपने मूल परिमाण और के बीच के आधे मान तक
+ "<code>v1</code>'s."
+
+
+      <code>v0.lerp(v1, 0.5)</code> को कॉल करने से ऐसी कोई गारंटी नहीं मिलती।</p>
+
+
+      <p>जैसा कि <code>slerp()</code> का स्थिर संस्करण है
+      <कोड>p5.वेक्टर.slerp(v0, v1, 0.5)</code>,
+
+
+      एक नया <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट लौटाता है और
+      नहीं बदलता
+
+
+      मूल.</p>
+    path: p5.Vector/slerp
+  reflect:
+    description: |2-
+
+      <p>2डी में एक रेखा या 3डी में एक समतल के बारे में एक वेक्टर को दर्शाता है।</p>
+
+
+      <p>रेखा या तल का अभिविन्यास एक सामान्य वेक्टर द्वारा वर्णित किया गया है
+      वह
+
+
+      आकृति से दूर इंगित करता है.</p>
+
+
+      <p>जैसा कि <code>reflect()</code> का स्थिर संस्करण है
+      <कोड>p5.वेक्टर.रिफ्लेक्ट(v, n)</कोड>,
+
+
+      एक नया <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट लौटाता है और
+      नहीं बदलता
+
+
+      मूल.</p>
+    path: p5.Vector/reflect
+  array:
+    description: |2-
+
+      <p>वेक्टर के घटकों को संख्याओं की एक सरणी के रूप में लौटाता है।</p>
+    path: p5.Vector/array
+  equals:
+    description: |2-
+
+      <p>जांचता है कि वेक्टर के सभी घटक दूसरे के बराबर हैं या नहीं
+      वेक्टर का.</p>
+
+
+      <p><code>equals()</code> यदि वेक्टर है, तो <code>true</code> लौटाता है
+      सभी घटक दूसरे के समान हैं
+
+
+      वेक्टर और <code>गलत</code> यदि नहीं।</p>
+
+
+      <p>एक पैरामीटर के साथ <code>equals()</code> का संस्करण इसकी व्याख्या करता है
+      दूसरे के रूप में
+
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट।</p>
+
+
+      <p>कई मापदंडों के साथ <code>equals()</code> का संस्करण
+      उनकी व्याख्या इस प्रकार करता है
+
+
+      दूसरे वेक्टर के घटक। किसी भी लापता पैरामीटर को असाइन किया गया है
+      कीमत
+
+
+      0.</p>
+
+
+      <p>जैसा कि <code>equals()</code> का स्थिर संस्करण है
+      <code>p5.वेक्टर.बराबर(v0, v1)</code>,
+
+
+      दोनों पैरामीटरों की व्याख्या <a के रूप में करता है
+ "href='/reference/p5/p5.Vector'>p5.Vector</a> ऑब्जेक्ट।</p>"
+    path: p5.Vector/equals
+  fromAngle:
+    description: |2-
+
+      <p>एक कोण से एक नया 2डी वेक्टर बनाता है।</p>
+    path: p5.Vector/fromAngle
+  fromAngles:
+    description: |2-
+
+      <p>आईएसओ गोलाकार कोणों की एक जोड़ी से एक नया 3डी वेक्टर बनाता है।</p>
+    path: p5.Vector/fromAngles
+  random2D:
+    description: |2-
+
+      <p>यादृच्छिक शीर्षक के साथ एक नया 2डी यूनिट वेक्टर बनाता है।</p>
+    path: p5.Vector/random2D
+  random3D:
+    description: |2-
+
+      <p>यादृच्छिक शीर्षक के साथ एक नया 3D यूनिट वेक्टर बनाता है।</p>
+    path: p5.Vector/random3D
+chainable: 'false'
+---
+
+# p5.Vector
