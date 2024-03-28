@@ -1,0 +1,406 @@
+---
+title: noise
+module: गणित
+submodule: शोर
+file: src/math/noise.js
+description: |-
+  <p>रैंडम संख्याएँ लौटाता है जिन्हें ऑर्गेनिक महसूस करने के लिए ट्यून किया जा सकता है।</p>
+
+
+ "<p><a href='/reference/p5/random'>random()</a> द्वारा लौटाए गए मान और <a href='/reference/p5/randomGaussian'>randomGaussian()</a> द्वारा बदले जा सकते हैं फ़ंक्शन कॉल के बीच बड़ी मात्रा में। इसके विपरीत, <code>noise()</code> द्वारा लौटाए गए मानों को "सुचारू" बनाया जा सकता है। समान इनपुट के साथ <code>noise()</code> पर कॉल करने से समान आउटपुट प्राप्त होंगे। <कोड>शोर()</कोड> का उपयोग बनावट, गति, बनाने के लिए किया जाता है"
+  आकार, भू-भाग, इत्यादि। केन पेरलिन ने 1980 के दशक में मूल <em>ट्रॉन</em> फिल्म को एनिमेट करते समय <code>शोर()</code> का आविष्कार किया।</p>
+
+  <p><code>noise()</code> हमेशा 0 और 1 के बीच मान लौटाता है। स्केच चलने के दौरान यह दिए गए इनपुट के लिए समान मान लौटाता है। <code>noise()</code> हर बार स्केच चलने पर अलग-अलग परिणाम उत्पन्न करता है। <a href="/reference/p5/noiseSeed">noiseSeed()</a> फ़ंक्शन का उपयोग हर बार स्केच चलने पर पर्लिन शोर मानों का समान क्रम उत्पन्न करने के लिए किया जा सकता है।</p>
+
+
+  <p>शोर के चरित्र को दो तरीकों से समायोजित किया जा सकता है। पहला तरीका इनपुट को स्केल करना है। <code>noise()</code> इनपुट को निर्देशांक के रूप में व्याख्या करता है। जब इनपुट निर्देशांक करीब होंगे तो शोर मानों का क्रम सुचारू हो जाएगा। दूसरा तरीका <a href="/reference/p5/noiseDetail">noiseDetail()</a>फ़ंक्शन का उपयोग करना है।</p>
+
+
+  <p>एक पैरामीटर के साथ <code>शोर()</कोड> का संस्करण एक आयाम में शोर मानों की गणना करता है। इस आयाम को अंतरिक्ष के रूप में सोचा जा सकता है, जैसे कि <code>शोर(x)</code>, या समय, जैसा कि <code>शोर(t)</code> में।</p>
+
+
+  <p>दो मापदंडों के साथ <कोड>शोर()</कोड> का संस्करण दो आयामों में शोर मानों की गणना करता है। इन आयामों को अंतरिक्ष के रूप में सोचा जा सकता है, जैसे कि <code>शोर (x, y)</code>, या स्थान और समय, जैसा कि <code>शोर (x, t)</code> में।</p>
+
+
+  <p>तीन मापदंडों के साथ <कोड>शोर()</कोड> का संस्करण तीन आयामों में शोर मानों की गणना करता है। इन आयामों को अंतरिक्ष के रूप में सोचा जा सकता है, जैसे कि <कोड>शोर (x, y, z)</code>, या स्थान और समय, जैसा कि <code>शोर (x, y, t)</code> में। </p>
+line: '36'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |2-
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "describe('A black dot moves randomly on a gray square.');"
+
+  }
+
+
+
+  function draw() {
+
+ "background(200);"
+
+
+
+    // Calculate the coordinates.
+
+ "let x = 100 * noise(0.005 * frameCount);"
+
+ "let y = 100 * noise(0.005 * frameCount + 10000);"
+
+
+
+    // Draw the point.
+
+ "strokeWeight(5);"
+
+ "point(x, y);"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "describe('A black dot moves randomly on a gray square.');"
+
+  }
+
+
+
+  function draw() {
+
+ "background(200);"
+
+
+
+    // Set the noise level and scale.
+
+ "let noiseLevel = 100;"
+
+ "let noiseScale = 0.005;"
+
+
+
+    // Scale the input coordinate.
+
+ "let nt = noiseScale * frameCount;"
+
+
+
+    // Compute the noise values.
+
+ "let x = noiseLevel * noise(nt);"
+
+ "let y = noiseLevel * noise(nt + 10000);"
+
+
+
+    // Draw the point.
+
+ "strokeWeight(5);"
+
+ "point(x, y);"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "describe('A hilly terrain drawn in gray against a black sky.');"
+
+  }
+
+
+
+  function draw() {
+
+    // Set the noise level and scale.
+
+ "let noiseLevel = 100;"
+
+ "let noiseScale = 0.02;"
+
+
+
+    // Scale the input coordinate.
+
+ "let x = frameCount;"
+
+ "let nx = noiseScale * x;"
+
+
+
+    // Compute the noise value.
+
+ "let y = noiseLevel * noise(nx);"
+
+
+
+    // Draw the line.
+
+ "line(x, 0, x, y);"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "describe('A calm sea drawn in gray against a black sky.');"
+
+  }
+
+
+
+  function draw() {
+
+ "background(200);"
+
+
+
+    // Set the noise level and scale.
+
+ "let noiseLevel = 100;"
+
+ "let noiseScale = 0.002;"
+
+
+
+    // Iterate from left to right.
+
+ "for (let x = 0; x < 100; x += 1) {"
+
+      // Scale the input coordinates.
+
+ "let nx = noiseScale * x;"
+
+ "let nt = noiseScale * frameCount;"
+
+
+
+      // Compute the noise value.
+
+ "let y = noiseLevel * noise(nx, nt);"
+
+
+
+      // Draw the line.
+
+ "line(x, 0, x, y);"
+
+    }
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "background(200);"
+
+
+
+    // Set the noise level and scale.
+
+ "let noiseLevel = 255;"
+
+ "let noiseScale = 0.01;"
+
+
+
+    // Iterate from top to bottom.
+
+ "for (let y = 0; y < 100; y += 1) {"
+
+      // Iterate from left to right.
+
+ "for (let x = 0; x < 100; x += 1) {"
+
+        // Scale the input coordinates.
+
+ "let nx = noiseScale * x;"
+
+ "let ny = noiseScale * y;"
+
+
+
+        // Compute the noise value.
+
+ "let c = noiseLevel * noise(nx, ny);"
+
+
+
+        // Draw the point.
+
+ "stroke(c);"
+
+ "point(x, y);"
+
+      }
+
+    }
+
+
+
+ "describe('A gray cloudy pattern.');"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+ "describe('A gray cloudy pattern that changes.');"
+
+  }
+
+
+
+  function draw() {
+
+    // Set the noise level and scale.
+
+ "let noiseLevel = 255;"
+
+ "let noiseScale = 0.009;"
+
+
+
+    // Iterate from top to bottom.
+
+ "for (let y = 0; y < 100; y += 1) {"
+
+      // Iterate from left to right.
+
+ "for (let x = 0; x < width; x += 1) {"
+
+        // Scale the input coordinates.
+
+ "let nx = noiseScale * x;"
+
+ "let ny = noiseScale * y;"
+
+ "let nt = noiseScale * frameCount;"
+
+
+
+        // Compute the noise value.
+
+ "let c = noiseLevel * noise(nx, ny, nt);"
+
+
+
+        // Draw the point.
+
+ "stroke(c);"
+
+ "point(x, y);"
+
+      }
+
+    }
+
+  }
+
+  </code>
+
+  </div>
+class: p5
+params:
+  - name: x
+  description: |2-
+
+    <p>शोर स्थान में x-समन्वय।</p>
+  type: संख्या
+  - name: y
+  description: |2-
+
+    <p>y-शोर वाले स्थान में समन्वय।</p>
+  type: संख्या
+  optional: सत्य
+  - name: z
+  description: |2-
+
+    <p>शोर स्थान में z-समन्वय।</p>
+  type: Number
+  optional: 'true'
+return:
+  description: निर्दिष्ट निर्देशांक पर पर्लिन शोर मान।
+  type: संख्या
+chainable: 'false'
+---
+
+# noise
