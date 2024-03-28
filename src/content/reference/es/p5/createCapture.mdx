@@ -1,0 +1,186 @@
+---
+title: createCapture
+module: DOM
+submodule: DOM
+file: src/dom/dom.js
+description: >
+  <p>Crea un elemento <code><video></code> que "captura" el flujo de audio/video 
+  desde la 
+  
+  cámara web y el micrófono.</p>
+
+  <p><code>createCapture()</code> devuelve un nuevo objeto 
+  
+  <a href="/reference/p5/p5.MediaElement">p5.MediaElement</a>. Los videos se 
+  muestran de forma 
+  
+  predeterminada. Se pueden ocultar llamando a <code>capture.hide()</code> y dibujar 
+  en el 
+  
+  lienzo usando <a href="/reference/p5/image">image()</a>.</p>
+
+  <p>El primer parámetro, <code>type</code>, es opcional. Establece el tipo de 
+  captura a 
+  
+  utilizar. Por defecto, <code>createCapture()</code> captura tanto audio como video. 
+  Si se pasa <code>VIDEO</code>, 
+  
+  como en <code>createCapture(VIDEO)</code>, se capturará solo 
+  video. 
+  
+  Si se pasa <code>AUDIO</code>, como en <code>createCapture(AUDIO)</code>, se 
+  capturará solo 
+  
+  audio. También se puede pasar un objeto de restricciones para personalizar el flujo. 
+  
+  Consulta la <a 
+  href="http://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints" 
+  target="_blank">
+  
+  documentación del W3C</a> para ver las propiedades posibles. Diferentes navegadores admiten 
+  diferentes 
+
+  propiedades.</p>
+
+  <p>La propiedad 'flipped' es opcional y puede establecerse en 
+  <code>{flipped:true}</code> 
+  
+  para reflejar la salida del video. Si es verdadero, significa que el video se 
+  reflejará 
+  
+  o volteará y si no se menciona nada, por defecto será 
+  <code>false</code>.</p>
+
+  <p>El segundo parámetro, <code>callback</code>, es opcional. Es una función que se 
+  llama una vez 
+  
+  que la captura está lista para usarse. La función de devolución de llamada debe tener un 
+  
+  parámetro, <code>stream</code>, que es un objeto 
+  
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream" 
+  target="_blank">MediaStream</a>.</p>
+
+  <p>Nota: <code>createCapture()</code> solo funciona al ejecutar un sketch localmente 
+  o usando HTTPS. Obtén más información 
+  
+  <a 
+  href="http://stackoverflow.com/questions/34197653/getusermedia-in-chrome-47-without-using-https" t
+  arget="_blank">aquí</a> 
+  
+  y <a 
+  href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" 
+  target="_blank">aquí</a>.</p>
+line: 2276
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class='notest'>
+    <code>
+    function setup() {
+      noCanvas();
+
+      // Create the video capture.
+      createCapture(VIDEO);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture and hide the element.
+      capture = createCapture(VIDEO);
+      capture.hide();
+
+      describe('A video stream from the webcam with inverted colors.');
+    }
+
+    function draw() {
+      // Draw the video capture within the canvas.
+      image(capture, 0, 0, width, width * capture.height / capture.width);
+
+      // Invert the colors in the stream.
+      filter(INVERT);
+    }
+    </code>
+    </div>
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture with mirrored output.
+      capture = createCapture(VIDEO,{ flipped:true });
+      capture.size(100,100);
+
+      describe('A video stream from the webcam with flipped or mirrored output.');
+    }
+
+    </code>
+    </div>
+
+    <div class='notest norender'>
+    <code>
+    function setup() {
+      createCanvas(480, 120);
+
+      // Create a constraints object.
+      let constraints = {
+        video: {
+          mandatory: {
+            minWidth: 1280,
+            minHeight: 720
+          },
+          optional: [{ maxFrameRate: 10 }]
+        },
+        audio: false
+      };
+
+      // Create the video capture.
+      createCapture(constraints);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: type
+    description: |
+      <p>tipo de captura, ya sea AUDIO o VIDEO,
+                                        o un objeto de restricciones. Por defecto se 
+                                        capturan ambos flujos de audio y video.</p>
+    type: String|Constant|Object
+    optional: true
+  - name: flipped
+    description: >
+      <p>voltea el video capturado y refleja la salida con
+      <code>{flipped:true}</code>. Por
+                                        defecto es false.</p>
+    type: Object
+    optional: true
+  - name: callback
+    description: |
+      <p>función para llamar una vez que el flujo
+                                        se ha cargado.</p>
+    type: Function
+    optional: true
+return:
+  description: nuevo objeto <a href="#/p5.MediaElement">p5.MediaElement</a>.
+  type: p5.MediaElement
+chainable: false
+---
+
+
+# createCapture
