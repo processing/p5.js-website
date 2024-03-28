@@ -1,11 +1,26 @@
 ---
-import LocaleSwitcher from "@components/LocaleSwitcher/index.astro";
 import Footer from "@/src/components/Footer/index.astro";
-import SearchForm from "@components/SearchForm/index.astro";
+import Nav from "@components/Nav/index.astro";
+import Settings from "@components/Settings/index.astro";
+import RootPageHeader from "@components/RootPageHeader/index.astro";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
-const { title, subHeading } = Astro.props;
+import "@styles/base.scss";
+
+interface BaseLayoutProps {
+  title: string;
+  className?: string;
+  variant: "root" | "secondary";
+}
+
+const {
+  title,
+  className = "",
+  variant = "root",
+} = Astro.props as BaseLayoutProps;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
+const localizedTitle = t(title);
+const localizedSubtitle = t("briefPageDescriptions", title);
 ---
 
 <html>
@@ -13,29 +28,32 @@ const t = await useTranslations(currentLocale);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body>
-    <nav>
-      <ul>
-        <a href="/">{t("Home")}</a>
-        <a href="/reference">{t("Reference")}</a>
-        <a href="/tutorials">{t("Tutorials")}</a>
-        <a href="/examples">{t("Examples")}</a>
-        <a href="/community">{t("Community")}</a>
-        <a href="/about">{t("About")}</a>
-        <a href="/contribute">{t("Contribute")}</a>
-      </ul>
-    </nav>
-    <div class="flex space-x-2">
-      <LocaleSwitcher />
-      <div><SearchForm /></div>
-      <div>Language: {currentLocale}</div>
-      <div>Accessibility</div>
+  <body class={`${title.toLowerCase()} ${className}`}>
+    <div class="top-layout-grid">
+      <Nav />
+      <Settings />
+      <header>
+        {
+          variant === "root" ? (
+            <div>
+              <RootPageHeader
+                title={localizedTitle}
+                subtitle={localizedSubtitle}
+              />
+            </div>
+          ) : (
+            <div>
+              <h1 class="mt-3xl mx-lg">{title}</h1>
+            </div>
+          )
+        }
+      </header>
+      <main>
+        <div class="mx-lg">
+          <slot />
+          <Footer />
+        </div>
+      </main>
     </div>
-    <h1 class="text-lg font-bold">{title}</h1>
-    <span>{subHeading}</span>
-    <main>
-      <slot />
-    </main>
-    <Footer />
   </body>
 </html>
