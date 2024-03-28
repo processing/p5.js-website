@@ -1,0 +1,27 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={entry.data.title} variant="secondary">
+  {entry.data.authors && <h6>By {entry.data.authors.join(", ")}</h6>}
+  <Content />
+
+  <h2>Related examples</h2>
+  <ul>
+    {/* revise when schema for examples exists */}
+    {entry.data.relatedContent?.examples?.map((relEx: any) => <li>{relEx}</li>)}
+  </ul>
+
+  <h2>Related references</h2>
+  <ul>
+    {/* revise when schema for reference exists */}
+    {
+      entry.data.relatedContent?.references?.map((relRef: any) => (
+        <li>{relRef}</li>
+      ))
+    }
+  </ul>
+</BaseLayout>

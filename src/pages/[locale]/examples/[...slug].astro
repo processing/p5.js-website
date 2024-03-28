@@ -1,12 +1,12 @@
 ---
 import { nonDefaultSupportedLocales } from "@i18n/const";
-import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
   getCollectionInLocaleWithFallbacks,
 } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
 import { getExampleCode } from "@pages/_utils-node";
+import ExampleLayout from "@layouts/ExampleLayout.astro";
 
 export async function getStaticPaths() {
   const entries = await Promise.all(
@@ -37,11 +37,6 @@ export async function getStaticPaths() {
 }
 
 const { entry, code } = Astro.props;
-const { Content } = await entry.render();
 ---
 
-<BaseLayout title={entry.data.title}>
-  <p>{entry.data.arialabel}</p>
-  <Content />
-  <pre>{code}</pre>
-</BaseLayout>
+<ExampleLayout example={entry} code={code} />

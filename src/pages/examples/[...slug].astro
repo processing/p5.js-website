@@ -5,7 +5,7 @@ import {
 } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
 import { getExampleCode } from "@pages/_utils-node";
-import BaseLayout from "@layouts/BaseLayout.astro";
+import ExampleLayout from "@/src/layouts/ExampleLayout.astro";
 
 export async function getStaticPaths() {
   const examples = await getCollectionInDefaultLocale("examples");
@@ -24,11 +24,6 @@ export async function getStaticPaths() {
 }
 
 const { example, code } = Astro.props;
-const { Content } = await example.render();
 ---
 
-<BaseLayout title={example.data.title}>
-  <p>{example.data.arialabel}</p>
-  <Content />
-  <pre>{code}</pre>
-</BaseLayout>
+<ExampleLayout example={example} code={code} />

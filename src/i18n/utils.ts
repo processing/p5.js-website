@@ -120,15 +120,36 @@ export const useTranslations = async (
   const defaultLocaleDict = await loadYamlIntoObject(
     `src/content/ui/${defaultLocale}.yaml`,
   );
+
   if (!currentLocaleDict || !defaultLocaleDict) {
     console.error("Failed to load translation files");
+    return () => ""; // Return a dummy function to avoid further errors.
   }
-  return function t(key: string) {
-    const val = currentLocaleDict[key] || defaultLocaleDict[key];
-    if (!val) {
-      console.warn(`Translation key not found: ${key}`);
-      return key;
+
+  // Helper function to recursively find the translation.
+  const findTranslation = (keys: string[], dict: Record<string, any>) => {
+    return keys.reduce((acc, key) => {
+      return acc && acc[key] !== undefined ? acc[key] : undefined;
+    }, dict);
+  };
+
+  const t = (...args: string[]) => {
+    // Try finding the translation in the current locale.
+    let val = findTranslation(args, currentLocaleDict);
+
+    // If not found in the current locale, try the default locale.
+    if (val === undefined) {
+      val = findTranslation(args, defaultLocaleDict);
     }
+
+    // If still not found, log a warning and return the last key as a fallback.
+    if (val === undefined) {
+      console.warn(`Translation key not found: ${args.join(".")}`);
+      return args[args.length - 1];
+    }
+
     return val;
   };
+
+  return t;
 };
