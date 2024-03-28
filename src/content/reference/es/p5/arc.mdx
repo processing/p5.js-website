@@ -1,0 +1,266 @@
+---
+title: arc
+module: Forma
+submodule: Primitivas 2D
+file: src/core/shape/2d_primitives.js
+description: >
+  <p>Dibuja un arco.</p>
+
+  <p>Un arco es una sección de una elipse definida por los parametros <code>x</code>,
+  <code>y</code>, <code>w</code>,y
+
+  <code>h</code>. <code>x</code> y <code>y</code> establece la ubicación
+  del centro del arco. <code>w</code> y
+
+  <code>h</code> establecen el ancho y la altura del arco. Ver
+
+  <a href="/reference/p5/ellipse">ellipse()</a> y
+
+  <a href="/reference/p5/ellipseMode">ellipseMode()</a> para más detalles.</p>
+
+  <p>Los quinto y sexto parámetros, <code>start</code> y <code>stop</code>,
+  establecen los ángulos 
+
+  entre los cuales dibujar el arco. Los arcos siempre se dibujan en sentido horario desde
+
+  <code>start</code> a <code>stop</code>. Los ángulos siempre se dan en
+  radianes.</p>
+
+  <p>El séptimo parámetro, <code>mode</code>, es opcional, este determina el estilo
+  de relleno 
+
+  del arco. Los modos de relleno son un semicírculo (<code>OPEN</code>), un semicírculo
+  cerrado
+
+  (<code>CHORD</code>), o un segmento de pastel cerrado (<code>PIE</code>).</p>
+
+  <p>El octavo parámetro, <code>detail</code>, también es opcional. Este determina
+  cuántos
+
+  vértices se utilizan para dibujar el arco en el modo WebGL. El valor predeterminado es 25.</p>
+line: 102
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      arc(50, 50, 80, 80, 0, PI + HALF_PI);
+
+      describe('A white circle on a gray canvas. The top-right quarter of the circle is missing.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      arc(50, 50, 80, 40, 0, PI + HALF_PI);
+
+      describe('A white ellipse on a gray canvas. The top-right quarter of the ellipse is missing.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Bottom-right.
+      arc(50, 55, 50, 50, 0, HALF_PI);
+
+      noFill();
+
+      // Bottom-left.
+      arc(50, 55, 60, 60, HALF_PI, PI);
+
+      // Top-left.
+      arc(50, 55, 70, 70, PI, PI + QUARTER_PI);
+
+      // Top-right.
+      arc(50, 55, 80, 80, PI + QUARTER_PI, TWO_PI);
+
+      describe(
+        'A shattered outline of an circle with a quarter of a white circle at the bottom-right.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Default fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI);
+
+      describe('A white circle with the top-right third missing. The bottom is outlined in black.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // OPEN fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, OPEN);
+
+      describe(
+        'A white circle missing a section from the top-right. The bottom is outlined in black.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // CHORD fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, CHORD);
+
+      describe('A white circle with a black outline missing a section from the top-right.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // PIE fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, PIE);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // PIE fill mode.
+      arc(0, 0, 80, 80, 0, PI + QUARTER_PI, PIE);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // PIE fill mode with 5 vertices.
+      arc(0, 0, 80, 80, 0, PI + QUARTER_PI, PIE, 5);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A yellow circle on a black background. The circle opens and closes its mouth.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Style the arc.
+      noStroke();
+      fill(255, 255, 0);
+
+      // Update start and stop angles.
+      let biteSize = PI / 16;
+      let startAngle = biteSize * sin(frameCount * 0.1) + biteSize;
+      let endAngle = TWO_PI - startAngle;
+
+      // Draw the arc.
+      arc(50, 50, 80, 80, startAngle, endAngle, PIE);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: x
+    description: |
+      <p>coordenada x de la elipse del arco.</p>
+    type: Number
+  - name: 'y'
+    description: |
+      <p>coordenada y de la elipse del arco.</p>
+    type: Number
+  - name: w
+    description: |
+      <p>ancho predeterminado de la elipse del arco.</p>
+    type: Number
+  - name: h
+    description: |
+      <p>altura predeterminada de la elipse del arco.</p>
+    type: Number
+  - name: start
+    description: |
+      <p>ángulo para comenzar el arco, especificado en radianes.</p>
+    type: Number
+  - name: stop
+    description: |
+      <p>ángulo para detener el arco, especificado en radianes.</p>
+    type: Number
+  - name: mode
+    description: |
+      <p>parámetro opcional para determinar la forma de dibujar
+                              el arco. Puede ser CHORD, PIE, u OPEN.</p>
+    type: Constant
+    optional: true
+  - name: detail
+    description: |
+      <p>Parámetro opcional solo para el modo WebGL. Esto es para 
+                              especificar el número de vértices que conforman el
+                              perímetro del arco. El valor predeterminado es 25. No
+                              dibujará un trazo para un detalle de más de 50.</p>
+    type: Integer
+    optional: true
+chainable: true
+---
+
+
+# arc
