@@ -1,0 +1,207 @@
+---
+title: loadImage
+module: 图像
+submodule: 加载 & 显示
+file: src/image/loading_displaying.js
+description: |2
+
+  <p>Loads an image to create a <a href="/reference/p5/p5.Image">p5.Image</a>
+  object.</p>
+
+
+  <p><code>loadImage()</code> interprets the first parameter one of three ways.
+  If the path
+
+
+  to an image file is provided, <code>loadImage()</code> will load it. Paths to
+  local
+
+
+ "files should be relative, such as <code>'assets/thundercat.jpg'</code>. URLs"
+  such as
+
+
+ "<code>'https":"//example.com/thundercat.jpg'</code> may be blocked due to"
+  browser
+
+
+  security. Raw image data can also be passed as a base64 encoded image in
+
+
+ "the form <code>'data":"image/png;base64,arandomsequenceofcharacters'</code>.</p>"
+
+
+  <p>The second parameter is optional. If a function is passed, it will be
+
+
+  called once the image has loaded. The callback function can optionally use
+
+
+  the new <a href="/reference/p5/p5.Image">p5.Image</a> object.</p>
+
+
+  <p>The third parameter is also optional. If a function is passed, it will be
+
+
+  called if the image fails to load. The callback function can optionally use
+
+
+  the event error.</p>
+
+
+  <p>Images can take time to load. Calling <code>loadImage()</code> in
+
+
+  <a href="/reference/p5/preload">preload()</a> ensures images load before
+ "they're"
+
+
+  used in <a href="/reference/p5/setup">setup()</a> or <a
+  href="/reference/p5/draw">draw()</a>.</p>
+line: '18'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |2-
+
+
+
+  <div>
+
+  <code>
+
+ "let img;"
+
+
+
+  // Load the image and create a p5.Image object.
+
+  function preload() {
+
+ "img = loadImage('assets/laDefense.jpg');"
+
+  }
+
+
+
+  function setup() {
+
+ "createCanvas(100, 100);"
+
+
+
+    // Draw the image.
+
+ "image(img, 0, 0);"
+
+
+
+ "describe('Image of the underside of a white umbrella and a gridded ceiling.');"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+    // Call handleImage() once the image loads.
+
+ "loadImage('assets/laDefense.jpg', handleImage);"
+
+
+
+ "describe('Image of the underside of a white umbrella and a gridded ceiling.');"
+
+  }
+
+
+
+  // Display the image.
+
+  function handleImage(img) {
+
+ "image(img, 0, 0);"
+
+  }
+
+  </code>
+
+  </div>
+
+
+
+  <div>
+
+  <code>
+
+  function setup() {
+
+    // Call handleImage() once the image loads or
+
+    // call handleError() if an error occurs.
+
+ "loadImage('assets/laDefense.jpg', handleImage, handleError);"
+
+  }
+
+
+
+  // Display the image.
+
+  function handleImage(img) {
+
+ "image(img, 0, 0);"
+
+
+
+ "describe('Image of the underside of a white umbrella and a gridded ceiling.');"
+
+  }
+
+
+
+  // Log the error.
+
+  function handleError(event) {
+
+ "console.error('Oops!', event);"
+
+  }
+
+  </code>
+
+  </div>
+class: p5
+params:
+  - name: path
+  description: |2-
+
+    <p>要加载的图片或base64编码图片的路径。</p>
+  type: 字符串
+  - name: successCallback
+  description: |2-
+
+    <p>一旦图像加载，用 <a href="#/p5.Image">p5.Image</a> 调用函数。</p>
+  type: 函数(p5.Image)
+  optional: 'true'
+  - name: failureCallback
+  description: |2-
+
+    <p>如果图像加载失败，通过事件错误调用函数。</p>
+  type: 函数(事件)
+  optional: 'true'
+return:
+  description: <a href="#/p5.Image">p5.Image</a> 对象。
+  type: p5.Image
+chainable: 'false'
+---
+
+# loadImage
