@@ -1,0 +1,143 @@
+---
+title: pixels
+module: 图像
+submodule: 像素
+file: src/image/pixels.js
+description: |2-
+
+  <p>包含画布上每个像素颜色的数组。</p>
+
+
+  <p>颜色存储为代表红色、绿色、蓝色的数字和 Alpha (RGBA) 值。 <code>pixels</code> 是一个一维数组，用于提高性能。</p>
+
+  <p>每个像素在 <code>pixels</code> 数组中占用四个元素，一个元素对应
+  每个 RGBA 值。例如，坐标(0, 0)处的像素在 <code>pixels[0]</code>、<code>pixels[1]</code>、<code>pixels[2]</code> 和 <code>pixels[3]</code> 处存储其相应的 RGBA 值。
+
+
+  坐标 (1, 0) 处的下一个像素在 <code>pixels[4]</code>，<code>pixels[5]</code>、<code>pixels[6]</code> 和 <code>pixels[7]</code> 处存储 RGBA 值。
+  以此类推。100×100 画布的<code>pixels</code>数组，有 100 × 100 × 4 = 40,000 个元素。</p>
+
+
+  <p>某些显示器使用多个较小的像素在单点上设置颜色。 <a href="/reference/p5/pixelDensity">pixelDensity()</a> 函数
+  返回画布的像素密度。高密度显示器通常 <a href="/reference/p5/pixelDensity">pixelDensity()</a> 为 2。
+  在这类显示器中，100×100 画布的像素数组有 200 × 200 × 4 = 160,000 个元素。</p>
+
+  <p>访问画布上某个点的 RGBA 值需要一些数学知识
+
+
+  如下所示。 在访问 <code>pixels</code> 数组之前，必须调用 <a href="/reference/p5/loadPixels">loadPixels()</a> 函数。进行任何更改后必须调用 <a href="/reference/p5/updatePixels">updatePixels()</a> 函数。</p>
+line: '12'
+isConstructor: 'false'
+itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Load the pixels array.
+      loadPixels();
+
+      // Set the dot's coordinates.
+      let x = 50;
+      let y = 50;
+
+      // Get the pixel density.
+      let d = pixelDensity();
+
+      // Set the pixel(s) at the center of the canvas black.
+      for (let i = 0; i < d; i += 1) {
+        for (let j = 0; j < d; j += 1) {
+          let index = 4 * ((y * d + j) * width * d + (x * d + i));
+          // Red.
+          pixels[index] = 0;
+          // Green.
+          pixels[index + 1] = 0;
+          // Blue.
+          pixels[index + 2] = 0;
+          // Alpha.
+          pixels[index + 3] = 255;
+        }
+      }
+
+      // Update the canvas.
+      updatePixels();
+
+      describe('A black dot in the middle of a gray rectangle.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Load the pixels array.
+      loadPixels();
+
+      // Get the pixel density.
+      let d = pixelDensity();
+
+      // Calculate the halfway index in the pixels array.
+      let halfImage = 4 * (d * width) * (d * height / 2);
+
+      // Make the top half of the canvas red.
+      for (let i = 0; i < halfImage; i += 4) {
+        // Red.
+        pixels[i] = 255;
+        // Green.
+        pixels[i + 1] = 0;
+        // Blue.
+        pixels[i + 2] = 0;
+        // Alpha.
+        pixels[i + 3] = 255;
+      }
+
+      // Update the canvas.
+      updatePixels();
+
+      describe('A red rectangle drawn above a gray rectangle.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a p5.Color object.
+      let pink = color(255, 102, 204);
+
+      // Load the pixels array.
+      loadPixels();
+
+      // Get the pixel density.
+      let d = pixelDensity();
+
+      // Calculate the halfway index in the pixels array.
+      let halfImage = 4 * (d * width) * (d * height / 2);
+
+      // Make the top half of the canvas red.
+      for (let i = 0; i < halfImage; i += 4) {
+        pixels[i] = red(pink);
+        pixels[i + 1] = green(pink);
+        pixels[i + 2] = blue(pink);
+        pixels[i + 3] = alpha(pink);
+      }
+
+      // Update the canvas.
+      updatePixels();
+
+      describe('A pink rectangle drawn above a gray rectangle.');
+    }
+    </code>
+    </div>
+class: p5
+type: 数字[]
+---
+
+# pixels
