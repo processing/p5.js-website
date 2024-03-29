@@ -1,0 +1,202 @@
+---
+title: clip
+module: रंग
+submodule: सेटिंग
+file: src/color/setting.js
+description: >
+  <p>एक आकृति को परिभाषित करता है जो बाद में खींची गई किसी भी आकृति को छिपा देगी।</p>
+
+  <p>पहला पैरामीटर, <code>callback</code>, एक फ़ंक्शन है जो मुखौटा परिभाषित करता है। <code>callback</code> में खींची गई कोई भी आकृति मुखौटा आकार में जुड़ जाएगी।
+  <code>clip()</code> को कॉल करने के बाद खींची गई किसी भी चीज़ पर मास्क लागू होगा।</p>
+
+
+  <p>दूसरा पैरामीटर, <code>options</code>, वैकल्पिक है। यदि <code>invert</code> प्रॉपर्टी वाला कोई ऑब्जेक्ट पास किया जाता है, जैसे कि <code>beginClip({ invert: true })</code>, तो यह होगा
+  मास्किंग मोड सेट करने के लिए उपयोग किया जाता है। <code>{ invert: true }</code> मुखौटा को उलट देता है, जिससे छिपी हुई आकृतियों में छेद बन जाता है। <code>invert</code> डिफ़ॉल्ट रूप से <code>false</code> होता है।</p>
+
+  <p>मास्क को <a href="/reference/p5/push">push()</a> और <a href='/reference/p5/pop'>pop()</a> फ़ंक्शन के बीच समाहित किया जा सकता है।
+  ऐसा करने से नकाबपोश आकृतियों के बाद नकाबपोश आकृतियाँ बनाई जा सकती हैं।</p>
+
+  <p>मास्क को <ahref='/reference/p5/beginClip'>beginClip()</a> और <a href='/reference/p5/endClip'>endClip()</a> से भी परिभाषित किया जा सकता है।</p>
+line: 222
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a mask.
+      clip(mask);
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white triangle and circle on a gray background.');
+    }
+
+    // Declare a function that defines the mask.
+    function mask() {
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an inverted mask.
+      clip(mask, { invert: true });
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white square at the top-left corner of a gray square. The white square has a triangle and a circle cut out of it.');
+    }
+
+    // Declare a function that defines the mask.
+    function mask() {
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      noStroke();
+
+      // Draw a masked shape.
+      push();
+      // Create a mask.
+      clip(mask);
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw an inverted masked shape.
+      push();
+      // Create an inverted mask.
+      clip(mask, { invert: true });
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      describe('In the top left, a white triangle and circle. In the bottom right, a white square with a triangle and circle cut out of it.');
+    }
+
+    // Declare a function that defines the mask.
+    function mask() {
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored fuchsia.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      clip(mask);
+
+      // Draw a backing shape.
+      noStroke();
+      fill('fuchsia');
+      plane(100);
+    }
+
+    // Declare a function that defines the mask.
+    function mask() {
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored with a gradient from cyan to purple.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      clip(mask);
+
+      // Draw a backing shape.
+      noStroke();
+      beginShape(QUAD_STRIP);
+      fill(0, 255, 255);
+      vertex(-width / 2, -height / 2);
+      vertex(width / 2, -height / 2);
+      fill(100, 0, 100);
+      vertex(-width / 2, height / 2);
+      vertex(width / 2, height / 2);
+      endShape();
+    }
+
+    // Declare a function that defines the mask.
+    function mask() {
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: callback
+    description: |
+      <p>एक फ़ंक्शन जो मास्क का आकार बनाता है।</p>
+    type: Function
+  - name: options
+    description: |
+      <p>एक ऑब्जेक्ट जिसमें क्लिप सेटिंग है।</p>
+    type: Object
+    optional: true
+chainable: false
+---
+
+
+# clip
