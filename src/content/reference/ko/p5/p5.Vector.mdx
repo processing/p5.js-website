@@ -1,0 +1,260 @@
+---
+title: p5.Vector
+module: 수학
+submodule: 벡터
+file: src/math/p5.Vector.js
+description: >
+  <p>두 개 또는 세 개의 차원 벡터를 설명하는 클래스입니다.</p>
+  <p>벡터는 여러 가지 방식으로 생각할 수 있습니다. 한 관점에서 벡터는 공간을 가리키는 화살표와 같습니다. 벡터는 크기(길이)와 방향을 모두 가집니다.</p>
+  <p><code>p5.Vector</code> 객체는 수학을 단순화하기 때문에 운동 프로그래밍에 자주 사용됩니다. 예를 들어, 움직이는 공은 위치와 속도를 가집니다. 위치는 공이 공간에서 어디에 있는지를 설명합니다. 공의 위치 벡터는 원점에서 공의 중심까지 확장됩니다. 속도(velocity)는 공의 속력(speed)와 움직이는 방향을 설명합니다. 공이 직선으로 위로 움직이면, 그 속도 벡터는 바로 위를 가리킵니다. 공의 속도 벡터를 그 위치 벡터에 더하면 <code>pos.add(vel)</code>과 같이 이동합니다. 벡터 수학은 <code>p5.Vector</code> 클래스 내부의 메서드에 의존합니다.</p>
+  <p>참고: 이 클래스의 인스턴스(instance)를 만드는 권장 방법은 <a href="/reference/p5/createVector">createVector()</a>입니다.</p>
+line: 11
+isConstructor: true
+params:
+  - name: x
+    description: |
+      <p>벡터의 x 구성요소입니다.</p>
+    type: Number
+    optional: true
+  - name: 'y'
+    description: |
+      <p>벡터의 y 구성요소입니다.</p>
+    type: Number
+    optional: true
+  - name: z
+    description: |
+      <p>벡터의 z 구성요소입니다.</p>
+    type: Number
+    optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create p5.Vector objects.
+      let p1 = createVector(25, 25);
+      let p2 = createVector(75, 75);
+
+      // Style the points.
+      strokeWeight(5);
+
+      // Draw the first point using a p5.Vector.
+      point(p1);
+
+      // Draw the second point using a p5.Vector's components.
+      point(p2.x, p2.y);
+
+      describe('Two black dots on a gray square, one at the top left and the other at the bottom right.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let pos;
+    let vel;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create p5.Vector objects.
+      pos = createVector(50, 100);
+      vel = createVector(0, -1);
+
+      describe('A black dot moves from bottom to top on a gray square. The dot reappears at the bottom when it reaches the top.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Add velocity to position.
+      pos.add(vel);
+
+      // If the dot reaches the top of the canvas,
+      // restart from the bottom.
+      if (pos.y < 0) {
+        pos.y = 100;
+      }
+
+      // Draw the dot.
+      strokeWeight(5);
+      point(pos);
+    }
+    </code>
+    </div>
+methods:
+  toString:
+    description: >
+      <p>벡터의 문자열 표현을 반환합니다.</p> 
+      <p>디버깅하는 동안 콘솔에 벡터를 출력할 때 <code>toString()</code>을 호출하는 것이 유용합니다.</p>
+      path: p5.Vector/toString
+  set:
+    description: >
+      <p>벡터의 <code>x</code>, <code>y</code>, <code>z</code> 구성 요소를 설정합니다.</p> 
+      <p><code>set()</code>은 별도의 숫자를 사용할 수 있으며, 예를 들어 <code>v.set(1, 2, 3)</code>과 같이 사용할 수 있습니다. 또한 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 사용할 수 있으며, 예를 들어 <code>v.set(v2)</code>와 같이 사용하거나 숫자 배열을 사용할 수 있습니다. 예를 들어 <code>v.set([1, 2, 3])</code>과 같이 사용할 수 있습니다.</p>
+      <p>구성 요소에 대한 값이 제공되지 않으면 0으로 설정됩니다. 예를 들어, <code>v.set(4, 5)</code>는 <code>v.x</code>를 4로, <code>v.y</code>를 5로, <code>v.z</code>를 0으로 설정합니다. 인수 없이 <code>set()</code>을 호출하는 경우, 예를 들어 <code>v.set()</code>과 같이 호출하면, 모든 벡터 구성 요소가 0으로 설정됩니다.</p>
+    path: p5.Vector/set
+  copy:
+    description: >
+      <p><a href="/reference/p5/p5.Vector">p5.Vector</a> 객체의 복사본을 반환합니다.</p>
+    path: p5.Vector/copy
+  add:
+    description: >
+      <p>벡터의 <code>x</code>, <code>y</code>, <code>z</code> 구성 요소에 더합니다.</p>
+      <p><code>add()</code>는 별도의 숫자를 사용할 수 있으며, 예를 들어 <code>v.add(1, 2, 3)</code>과 같이 사용됩니다. 또한 다른 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 사용할 수 있으며, 예를 들어 <code>v.add(v2)</code>와 같이 사용됩니다. 또는 숫자 배열을 사용할 수 있으며, 예를 들어 <code>v.add([1, 2, 3])</code>와 같이 사용됩니다.</p> <p>구성 요소에 대한 값이 제공되지 않으면 변경되지 않습니다. 예를 들어, <code>v.add(4, 5)</code>는 <code>v.x</code>에 4를 더하고, <code>v.y</code>에 5를 더하며, <code>v.z</code>에는 0을 더합니다. 인자 없이 <code>add()</code>를 호출하는 것, 즉 <code>v.add()</code>는 아무런 효과가 없습니다.</p> 
+      <p><code>add()</code>의 정적 버전은 <code>p5.Vector.add(v1, v2)</code>와 같이 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하며 원본을 변경하지 않습니다.</p>
+    path: p5.Vector/add
+  rem:
+    description: >
+      <p>벡터의 <code>x</code>, <code>y</code>, <code>z</code> 구성 요소에 대해 모듈로(나머지) 연산을 수행합니다.</p> <p><code>rem()</code>은 별도의 숫자를 사용할 수 있으며, 예를 들어 <code>v.rem(1, 2, 3)</code>과 같이 사용됩니다. 또한 다른 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 사용할 수 있으며, 예를 들어 <code>v.rem(v2)</code>와 같이 사용됩니다. 또는 숫자 배열을 사용할 수 있으며, 예를 들어 <code>v.rem([1, 2, 3])</code>와 같이 사용됩니다.</p>
+      <p>하나의 값만 제공되는 경우, 예를 들어 <code>v.rem(2)</code>와 같이, 모든 구성 요소는 2로 나눈 나머지 값으로 설정됩니다. 두 값이 제공되는 경우, 예를 들어 <code>v.rem(2, 3)</code>과 같이, <code>v.z</code>는 변경되지 않습니다. 인자 없이 <code>rem()</code>를 호출하는 것, 즉 <code>v.rem()</code>는 아무런 효과가 없습니다.</p>
+      <p><code>rem()</code>의 정적 버전은 <code>p5.Vector.rem(v1, v2)</code>와 같이 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하며 원본을 변경하지 않습니다.</p>
+    path: p5.Vector/rem
+  sub:
+    description: >
+      <p>벡터의 <code>x</code>, <code>y</code>, <code>z</code> 구성 요소에서 뺍니다.</p> 
+      <p><code>sub()</code>는 별도의 숫자를 사용할 수 있으며, 예를 들어 <code>v.sub(1, 2, 3)</code>, 다른 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 사용할 수 있으며, 예를 들어 <code>v.sub(v2)</code>, 또는 숫자 배열을 사용할 수 있으며, 예를 들어 <code>v.sub([1, 2, 3])</code>와 같이 사용됩니다.</p>
+      <p>구성 요소에 대한 값이 제공되지 않으면 변경되지 않습니다. 예를 들어, <code>v.sub(4, 5)</code>는 <code>v.x</code>에서 4를 빼고, <code>v.y</code>에서 5를 빼며, <code>v.z</code>는 변경되지 않습니다. 인자 없이 <code>sub()</code>를 호출하는 것, 즉 <code>v.sub()</code>는 아무런 효과가 없습니다.</p>
+      <p><code>sub()</code>의 정적 버전은 <code>p5.Vector.sub(v1, v2)</code>와 같이 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하며 원본을 변경하지 않습니다.</p>
+    path: p5.Vector/sub
+  mult:
+    description: >
+      <p>벡터의 <code>x</code>, <code>y</code>, <code>z</code> 구성 요소를 곱합니다.</p>
+      <p><code>mult()</code>는 별도의 숫자를 사용할 수 있으며, 예를 들어 <code>v.mult(1, 2, 3)</code>, 다른 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 사용할 수 있으며, 예를 들어 <code>v.mult(v2)</code>, 또는 숫자 배열을 사용할 수 있으며, 예를 들어 <code>v.mult([1, 2, 3])</code>와 같이 사용됩니다.</p>
+      <p>하나의 값만 제공되는 경우, 예를 들어 <code>v.mult(2)</code>와 같이, 모든 구성 요소는 2를 곱한 값으로 설정됩니다. 구성 요소에 대한 값이 제공되지 않으면 변경되지 않습니다. 예를 들어, <code>v.mult(4, 5)</code>는 <code>v.x</code>를 4로 곱하고, <code>v.y</code>를 5로 곱하며, <code>v.z</code>는 1로 곱합니다. 인자 없이 <code>mult()</code>를 호출하는 것, 즉 <code>v.mult()</code>는 아무런 효과가 없습니다.</p>
+      <p><code>mult()</code>의 정적 버전은 <code>p5.Vector.mult(v, 2)</code>와 같이 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하며 원본을 변경하지 않습니다.</p>
+    path: p5.Vector/mult
+  div:
+    description: >
+      <p>벡터의 <code>x</code>, <code>y</code>, <code>z</code> 구성 요소를 나눕니다.</p>
+      <p><code>div()</code>는 별도의 숫자를 사용할 수 있으며, 예를 들어 <code>v.div(1, 2, 3)</code>, 다른 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 사용할 수 있으며, 예를 들어 <code>v.div(v2)</code>, 또는 숫자 배열을 사용할 수 있으며, 예를 들어 <code>v.div([1, 2, 3])</code>와 같이 사용됩니다.</p>
+      <p>하나의 값만 제공되는 경우, 예를 들어 <code>v.div(2)</code>와 같이, 모든 구성 요소는 2로 나눈 값으로 설정됩니다. 구성 요소에 대한 값이 제공되지 않으면 변경되지 않습니다. 예를 들어, <code>v.div(4, 5)</code>는 <code>v.x</code>를 4로 나누고, <code>v.y</code>를 5로 나누며, <code>v.z</code>는 1로 나눕니다. 인자 없이 <code>div()</code>를 호출하는 것, 즉 <code>v.div()</code>는 아무런 효과가 없습니다.</p>
+      <p><code>div()</code>의 정적 버전은 <code>p5.Vector.div(v, 2)</code>와 같이 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하며 원본을 변경하지 않습니다.</p>
+    path: p5.Vector/div
+  mag:
+    description: >
+      <p>벡터의 크기(길이)를 계산합니다.</p>
+      <p>2D 벡터의 크기를 계산하기 위해 <code>mag(x, y)</code>처럼 구성 요소를 사용하여 <a href="/reference/p5/mag">mag()</a>를 사용하세요.</p>
+    path: p5.Vector/mag
+  magSq:
+    description: |
+      <p>벡터의 크기(길이)의 제곱을 계산합니다.</p>
+    path: p5.Vector/magSq
+  dot:
+    description: >
+      <p>두 벡터의 내적을 계산합니다.</p>
+      <p>내적은 두 벡터 간의 겹침을 설명하는 숫자입니다. 시각적으로, 내적은 한 벡터가 다른 벡터에 던지는 "그림자"로 생각할 수 있습니다. 내적의 크기는 두 벡터가 같은 방향이나 반대 방향을 가리킬 때 가장 큽니다. 두 벡터가 직각을 이룰 때 그 크기는 0입니다.</p>
+      <p>하나의 매개변수를 가진 <code>dot()</code> 버전은 그것을 다른 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체로 해석합니다.</p>
+      <p>여러 매개변수를 가진 <code>dot()</code> 버전은 그것들을 다른 벡터의 <code>x</code>, <code>y</code>, <code>z</code> 구성 요소로 해석합니다.</p>
+      <p>정적 버전의 <code>dot()</code>, 즉 <code>p5.Vector.dot(v1, v2)</code>는 <code>v1.dot(v2)</code>를 호출하는 것과 동일합니다.</p>
+    path: p5.Vector/dot
+  cross:
+    description: >
+      <p>두 벡터의 외적을 계산합니다.</p>
+      <p>외적은 두 벡터로 생성된 평면에서 직접 나오는 벡터입니다. 외적의 크기는 원래 두 벡터로 형성된 평행사변형의 면적입니다.</p>
+      <p>정적 버전의 <code>cross()</code>, 즉 <code>p5.Vector.cross(v1, v2)</code>는 <code>v1.cross(v2)</code>를 호출하는 것과 동일합니다.</p>
+    path: p5.Vector/cross
+  dist:
+    description: >
+      <p>벡터로 표현된 두 점 사이의 거리를 계산합니다.</p>
+      <p>점의 좌표는 원점에서 해당 점까지 확장되는 벡터의 구성 요소로 표현될 수 있습니다.</p>
+      <p><code>dist()</code>의 정적 버전인 <code>p5.Vector.dist(v1, v2)</code>는 <code>v1.dist(v2)</code>를 호출하는 것과 동일합니다.</p>
+      <p>좌표를 사용하여 점 사이의 거리를 계산하려면 <code>dist(x1, y1, x2, y2)</code>처럼 <a href="/reference/p5/dist">dist()</a>를 사용하세요.</p>
+    path: p5.Vector/dist
+  normalize:
+    description: >
+      <p><a href="/reference/p5/p5.Vector">p5.Vector</a> 객체의 구성 요소를 스케일링하여 그 크기가 1이 되도록 합니다.</p>
+      <p><code>normalize()</code>의 정적 버전인 <code>p5.Vector.normalize(v)</code>는 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하고 원본은 변경하지 않습니다.</p>
+    path: p5.Vector/normalize
+  limit:
+    description: >
+      <p>벡터의 크기를 최대값으로 제한합니다.</p>
+      <p><code>limit()</code>의 정적 버전인 <code>p5.Vector.limit(v, 5)</code>는 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하고 원본은 변경하지 않습니다.</p>
+    path: p5.Vector/limit
+  setMag:
+    description: >
+      <p>벡터의 크기를 주어진 값으로 설정합니다.</p>
+      <p><code>setMag()</code>의 정적 버전인 <code>p5.Vector.setMag(v, 10)</code>은 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하고 원본은 변경하지 않습니다.</p>
+    path: p5.Vector/setMag
+  heading:
+    description: >
+      <p>2D 벡터가 양의 x축과 이루는 각도를 계산합니다.</p>
+      <p>관례에 따라, 양의 x축은 각도 0을 가집니다. 각도는 시계 방향으로 증가합니다.</p>
+      <p>벡터가 <a href="/reference/p5/createVector">createVector()</a>로 생성된 경우, <code>heading()</code>은 현재 <a href="/reference/p5/angleMode">angleMode()</a>의 단위로 각도를 반환합니다.</p>
+      <p><code>heading()</code>의 정적 버전인 <code>p5.Vector.heading(v)</code>도 같은 방식으로 작동합니다.</p>
+    path: p5.Vector/heading
+  setHeading:
+    description: >
+      <p>2D 벡터를 특정 각도로 회전시키되 그 크기는 변경하지 않습니다.</p>
+      <p>관례에 따라, 양의 x축은 각도 0을 가집니다. 각도는 시계 방향으로 증가합니다.</p>
+      <p>벡터가 <a href="/reference/p5/createVector">createVector()</a>로 생성된 경우, <code>setHeading()</code>은 현재 <a href="/reference/p5/angleMode">angleMode()</a>의 단위를 사용합니다.</p>
+    path: p5.Vector/setHeading
+  rotate:
+    description: >
+      <p>2D 벡터를 특정 각도만큼 회전시키되 그 크기는 변경하지 않습니다.</p>
+      <p>관례에 따라, 양의 x축은 각도 0을 가집니다. 각도는 시계 방향으로 증가합니다.</p>
+      <p>벡터가 <a href="/reference/p5/createVector">createVector()</a>로 생성된 경우, <code>rotate()</code>는 현재 <a href="/reference/p5/angleMode">angleMode()</a>의 단위를 사용합니다.</p>
+      <p><code>rotate()</code>의 정적 버전인 <code>p5.Vector.rotate(v, PI)</code>는 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하고 원본은 변경하지 않습니다.</p>
+    path: p5.Vector/rotate
+  angleBetween:
+    description: >
+      <p>두 벡터 사이의 각도를 계산합니다.</p>
+      <p>반환되는 각도는 부호가 있어, <code>v1.angleBetween(v2) === -v2.angleBetween(v1)</code>이 됩니다.</p>
+      <p>벡터가 <a href="/reference/p5/createVector">createVector()</a>로 생성된 경우, <code>angleBetween()</code>은 현재 <a href="/reference/p5/angleMode">angleMode()</a>의 단위로 각도를 반환합니다.</p>
+    path: p5.Vector/angleBetween
+  lerp:
+    description: >
+      <p>두 벡터 사이의 같은 비율로 새로운 <code>x</code>, <code>y</code>, 그리고 <code>z</code> 구성 요소를 계산합니다.</p><p><code>amt</code> 매개변수는 이전 벡터와 새 벡터 사이를 보간하는 정도입니다. 0.0은 모든 구성 요소를 이전 벡터의 값과 동일하게 유지하고, 0.5는 그 사이의 중간 지점이며, 1.0은 모든 구성 요소를 새 벡터의 값과 동일하게 설정합니다.</p>
+      <p><code>lerp()</code>의 정적 버전인 <code>p5.Vector.lerp(v0, v1, 0.5)</code>는 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하고 원본은 변경하지 않습니다.</p>
+    path: p5.Vector/lerp
+  slerp:
+    description: >
+      <p>두 벡터 사이의 새로운 방향과 크기를 계산합니다.</p>
+      <p><code>amt</code> 매개변수는 이전 벡터와 새 벡터 사이를 보간하는 정도입니다. 0.0은 방향과 크기를 이전 벡터와 동일하게 유지하고, 0.5는 그 사이의 중간 값을 설정하며, 1.0은 방향과 크기를 새 벡터와 동일하게 설정합니다.</p>
+      <p><code>slerp()</code>는 <a href="/reference/p5.Vector/lerp">lerp()</a>와 다릅니다. 왜냐하면 그것은 크기를 보간하기 때문입니다. <code>v0.slerp(v1, 0.5)</code>를 호출하면 <code>v0</code>의 크기를 원래 크기와 <code>v1</code>의 크기 사이의 중간 값으로 설정합니다. <code>v0.lerp(v1, 0.5)</code>를 호출하면 그러한 보장은 없습니다.</p>
+      <p><code>slerp()</code>의 정적 버전인 <code>p5.Vector.slerp(v0, v1, 0.5)</code>는 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하고 원본은 변경하지 않습니다.</p>
+    path: p5.Vector/slerp
+  reflect:
+    description: >
+      <p>2D에서는 선에 대해, 3D에서는 평면에 대해 벡터를 반사합니다.</p>
+      <p>선이나 평면의 방향은 모양에서 벗어나는 방향을 가리키는 정규 벡터에 의해 설명됩니다.</p>
+      <p><code>reflect()</code>의 정적 버전인 <code>p5.Vector.reflect(v, n)</code>은 새로운 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체를 반환하고 원본은 변경하지 않습니다.</p>
+    path: p5.Vector/reflect
+  array:
+    description: |
+      <p>벡터의 구성 요소를 숫자 배열로 반환합니다.</p>
+    path: p5.Vector/array
+  equals:
+    description: >
+      <p>벡터의 모든 구성 요소가 다른 벡터의 구성 요소와 동일한지 확인합니다.</p>
+      <p><code>equals()</code>는 벡터의 모든 구성 요소가 다른 벡터의 구성 요소와 동일하면 <code>true</code>를, 그렇지 않으면 <code>false</code>를 반환합니다.</p>
+      <p>하나의 매개변수를 가진 <code>equals()</code> 버전은 그것을 다른 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체로 해석합니다.</p>
+      <p>여러 매개변수를 가진 <code>equals()</code> 버전은 그것들을 다른 벡터의 구성 요소로 해석합니다. 누락된 매개변수는 값 0이 할당됩니다.</p>
+      <p><code>equals()</code>의 정적 버전인 <code>p5.Vector.equals(v0, v1)</code>은 두 매개변수 모두를 <a href="/reference/p5/p5.Vector">p5.Vector</a> 객체로 해석합니다.</p>
+    path: p5.Vector/equals
+  fromAngle:
+    description: |
+      <p>각도에서 새로운 2D 벡터를 생성합니다.</p>
+    path: p5.Vector/fromAngle
+  fromAngles:
+    description: |
+      <p>ISO(국제표준화기구) 구면 각도 쌍에서 새로운 3D 벡터를 생성합니다.</p>
+    path: p5.Vector/fromAngles
+  random2D:
+    description: |
+      <p>임의의 방향을 가진 새로운 2D 단위 벡터를 생성합니다.</p>
+    path: p5.Vector/random2D
+  random3D:
+    description: |
+      <p>임의의 방향을 가진 새로운 3D 단위 벡터를 생성합니다.</p>
+    path: p5.Vector/random3D
+chainable: false
+---
+
+
+# p5.Vector
