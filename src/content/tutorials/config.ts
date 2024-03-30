@@ -14,6 +14,8 @@ export const tutorialsCollection = defineCollection({
       title: z.string(),
       // People who wrote the tutorial
       authors: z.array(z.string()).optional(),
+      // Optional note explaining more context about the authors
+      authorsNode: z.string().optional(),
       description: z.string().optional(),
       category: z.enum(categories),
       // Image to use as a thumbnail for the tutorial
