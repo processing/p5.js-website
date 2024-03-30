@@ -1,0 +1,115 @@
+---
+title: loadFont
+module: Tipografía
+submodule: Cargando y Mostrando
+file: src/typography/loading_displaying.js
+description: >
+  <p>Carga una fuente y crea un objeto <a href="/reference/p5/p5.Font">p5.Font</a>.</p>
+  <p><code>loadFont()</code> puede cargar fuentes en formato .otf o .ttf. Las fuentes cargadas pueden ser utilizadas para dar estilo al texto en el lienzo y en elementos HTML.</p>
+  <p>El primer parámetro, <code>path</code>, es la ruta a un archivo de fuente. Las rutas a archivos locales deben ser relativas. Por ejemplo, <code>'assets/inconsolata.otf'</code>. La fuente Inconsolata utilizada en los siguientes ejemplos se puede descargar de forma gratuita <a href="https://www.fontsquirrel.com/fonts/inconsolata" target="_blank">aquí</a>. Las rutas a archivos remotos deben ser URL. Por ejemplo, <code>'https://example.com/inconsolata.otf'</code>. Las URL pueden estar bloqueadas debido a la seguridad del navegador.</p>
+  <p>El segundo parámetro, <code>successCallback</code>, es opcional. Si se pasa una función, se llamará una vez que se haya cargado la fuente. La función de devolución de llamada puede utilizar el nuevo objeto <a href="/reference/p5/p5.Font">p5.Font</a> si es necesario.</p>
+  <p>El tercer parámetro, <code>failureCallback</code>, también es opcional. Si se pasa una función, se llamará si la fuente no se carga correctamente. La función de devolución de llamada puede utilizar el objeto de error <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event" target="_blank">Event</a> si es necesario.</p>
+  <p>Las fuentes pueden tardar en cargarse. Llamar a <code>loadFont()</code> en <a href="/reference/p5/preload">preload()</a> asegura que las fuentes se carguen antes de ser utilizadas en <a href="/reference/p5/setup">setup()</a> o <a href="/reference/p5/draw">draw()</a>.</p>
+line: 16
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+
+    <div>
+    <code>
+    let font;
+
+    function preload() {
+      font = loadFont('assets/inconsolata.otf');
+    }
+
+    function setup() {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('El texto "p5*js" escrito en rosa sobre un fondo blanco.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('assets/inconsolata.otf', font => {
+        fill('deeppink');
+        textFont(font);
+        textSize(36);
+        text('p5*js', 10, 50);
+
+        describe('El texto "p5*js" escrito en rosa sobre un fondo blanco.');
+      });
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('assets/inconsolata.otf', success, failure);
+    }
+
+    function success(font) {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('El texto "p5*js" escrito en rosa sobre un fondo blanco.');
+    }
+
+    function failure(event) {
+      console.error('¡Oops!', event);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function preload() {
+      loadFont('assets/inconsolata.otf');
+    }
+
+    function setup() {
+      let p = createP('p5*js');
+      p.style('color', 'deeppink');
+      p.style('font-family', 'Inconsolata');
+      p.style('font-size', '36px');
+      p.position(10, 50);
+
+      describe('El texto "p5*js" escrito en rosa sobre un fondo blanco.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: path
+    description: >
+      <p>Ruta de la fuente a cargar.</p>
+    type: String
+  - name: successCallback
+    description: >
+      <p>Función llamada con el objeto <a href="#/p5.Font">p5.Font</a> una vez que se carga.</p>
+    type: Function
+    optional: true
+  - name: failureCallback
+    description: >
+      <p>Función llamada con el objeto de error <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event" target="_blank">Event</a> si la fuente no se carga correctamente.</p>
+    type: Function
+    optional: true
+return:
+  description: Objeto <a href="#/p5.Font">p5.Font</a>.
+  type: p5.Font
+chainable: false
+---
+
+
+# loadFont
