@@ -11,6 +11,16 @@ interface Props {
   entries: ReferenceEntry[];
 }
 
+function strCompare(a: string, b: string) {
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  return 0;
+}
+
 const { entries } = Astro.props;
 const categoryData = categories.map((category) => {
   // Get all reference entries in the module
@@ -29,25 +39,28 @@ const categoryData = categories.map((category) => {
   // Find the classes in this module. These will be turned into subcategories.
   const classes = directEntries.filter(
     (e) => e.data.isConstructor && e.data.module === category
-  ).sort((a, b) => a.name - b.name);
+  ).sort((a, b) => strCompare(a.data.title, b.data.title));
 
   // Return the data for each subcategory
   const subcatData = [
     {
+      name: undefined,
+      entry: undefined,
       entries: directEntries.filter(
         (e) =>
           !e.data.submodule &&
           !e.data.isConstructor &&
-          !classes.some((c) => c.title === e.class)
+          !classes.some((c) => c.data.title === e.data.class)
       )
     },
     ...subcats.map((subcat) => ({
       name: subcat,
+      entry: undefined,
       entries: directEntries.filter(
         (e) =>
           e.data.submodule === subcat &&
           !e.data.isConstructor &&
-          !classes.some((c) => c.data.title === e.class)
+          !classes.some((c) => c.data.title === e.data.class)
       )
     })),
     ...classes.map((entry) => ({
