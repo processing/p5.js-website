@@ -76,24 +76,22 @@ for (const attr of codeTag.attributes) {
   codeAttrs[attr.name] = attr.value;
 }
 ---
-    <table class="h-1">
-      <tbody>
-        {rows.map(row => {
-          const lineNodes = lines.slice(row.startLine, row.endLine);
-          return (
-            <tr class="[&>*]:align-top [&>*]:m-0 [&>*:not(:first-child)]:py-2 [&>*:not(:first-child)]:max-w-xl">
-              <td class="align-top" style="height:100%; margin:0">
-              <pre {...preAttrs} style={`${preStyle};height:100%`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
-              </td>
-              {props.columns ? (
-                <Fragment set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
-              ) : (
-                <td set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
-              )}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </code>
-</pre>
+  <table class="h-1">
+    <tbody>
+      {rows.map(row => {
+        const lineNodes = lines.slice(row.startLine, row.endLine);
+        return (
+          <tr class="[&>*]:align-top [&>*]:m-0 [&>*:not(:first-child)]:py-2 [&>*:not(:first-child)]:max-w-xl">
+            <td class="align-top" style="height:100%; margin:0">
+            <pre {...preAttrs} style={`${preStyle};height:100%`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
+            </td>
+            {props.columns ? (
+              <Fragment set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+            ) : (
+              <td set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+            )}
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
