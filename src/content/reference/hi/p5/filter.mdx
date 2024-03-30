@@ -1,0 +1,327 @@
+---
+title: filter
+module: छवि
+submodule: पिक्सल
+file: src/image/pixels.js
+description: >
+  <p>कैनवास पर एक छवि फ़िल्टर लागू करता है।</p>
+
+  <p>पूर्व निर्धारित विकल्प हैं:</p>
+
+  <p><code>उलटा</code>
+
+  छवि में रंगों को उलट देता है. किसी पैरामीटर का उपयोग नहीं किया गया है.</p>
+
+  <p><code>ग्रे</code>
+
+  छवि को ग्रेस्केल में परिवर्तित करता है। किसी पैरामीटर का उपयोग नहीं किया गया है.</p>
+
+  <p><code>सीमा</code>
+
+  छवि को काले और सफेद में परिवर्तित करता है। ग्रेस्केल मान वाले पिक्सेल
+
+  किसी दिए गए सीमा से ऊपर सफेद में परिवर्तित हो जाते हैं। बाकी को परिवर्तित कर दिया गया है
+
+  काला। सीमा 0.0 (काला) और 1.0 (सफ़ेद) के बीच होनी चाहिए। अगर कोई नहीं
+
+  मान निर्दिष्ट है, 0.5 का उपयोग किया गया है।</p>
+
+  <p><code>अपारदर्शी</code>
+
+  अल्फ़ा चैनल को पूरी तरह से अपारदर्शी पर सेट करता है। किसी पैरामीटर का उपयोग नहीं किया गया है.</p>
+
+  <p><code>पोस्टराइज़ करें</code>
+
+  छवि में रंगों की संख्या सीमित करता है. प्रत्येक रंग चैनल तक ही सीमित है
+
+  निर्दिष्ट रंगों की संख्या. 2 और 255 के बीच के मान मान्य हैं, लेकिन
+
+  परिणाम कम मूल्यों पर सबसे अधिक ध्यान देने योग्य होते हैं। डिफ़ॉल्ट मान 4 है.</p>
+
+  <p><code>धुंधला</code>
+
+  छवि को धुंधला कर देता है. धुंधलापन का स्तर धुंधला त्रिज्या द्वारा निर्दिष्ट किया जाता है। बड़ा
+
+  मान धुंधलापन बढ़ाते हैं। डिफ़ॉल्ट मान 4 है। गाऊसी ब्लर का उपयोग किया जाता है
+
+  <code>पी2डी</code> मोड में। <code>WEBGL</code> मोड</p> में एक बॉक्स ब्लर का उपयोग किया जाता है
+
+  <p><code>इरोड</code>
+
+  प्रकाश क्षेत्रों को कम करता है. किसी पैरामीटर का उपयोग नहीं किया गया है.</p>
+
+  <p><code>फैलाना</code>
+
+  प्रकाश क्षेत्रों को बढ़ाता है. किसी पैरामीटर का उपयोग नहीं किया गया है.</p>
+
+  <p><code>filter()</code> डिफ़ॉल्ट रूप से पृष्ठभूमि में WebGL का उपयोग करता है क्योंकि यह है
+  और तेज।
+
+  इसे <code>P2D</code> मोड में <code>false</code> जोड़कर अक्षम किया जा सकता है
+  तर्क, जैसा कि
+
+  <code>फ़िल्टर(BLUR, गलत)</code>। यह गणना को बंद रखने के लिए उपयोगी हो सकता है
+  जीपीयू
+
+  या WebGL समर्थन की कमी को दूर करने के लिए।</p>
+
+  <p>WebgL मोड में, <code>filter()</code> कस्टम शेडर्स का भी उपयोग कर सकता है। देखना
+
+  <a href="/reference/p5/createFilterShader">createFilterShader()</a> अधिक के लिए
+
+  जानकारी.</p>
+line: 442
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the INVERT filter.
+      filter(INVERT);
+
+      describe('A blue brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the GRAY filter.
+      filter(GRAY);
+
+      describe('A brick wall drawn in grayscale.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the THRESHOLD filter.
+      filter(THRESHOLD);
+
+      describe('A brick wall drawn in black and white.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the OPAQUE filter.
+      filter(OPAQUE);
+
+      describe('A red brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the POSTERIZE filter.
+      filter(POSTERIZE, 3);
+
+      describe('An image of a red brick wall drawn with limited color palette.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the BLUR filter.
+      filter(BLUR, 3);
+
+      describe('A blurry image of a red brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the DILATE filter.
+      filter(DILATE);
+
+      describe('A red brick wall with bright lines between each brick.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the ERODE filter.
+      filter(ERODE);
+
+      describe('A red brick wall with faint lines between each brick.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the BLUR filter.
+      // Don't use WebGL.
+      filter(BLUR, 3, false);
+
+      describe('A blurry image of a red brick wall.');
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 442
+    params:
+      - name: filterType
+        description: |
+          <p>either THRESHOLD, GRAY, OPAQUE, INVERT,
+                                         POSTERIZE, BLUR, ERODE, DILATE or BLUR.</p>
+        type: Constant
+      - name: filterParam
+        description: |
+          <p>प्रत्येक फ़िल्टर के लिए अद्वितीय पैरामीटर।</p>
+        type: Number
+        optional: true
+      - name: useWebGL
+        description: |
+          <p>तेजी से उपयोग करना है या नहीं यह नियंत्रित करने के लिए ध्वज
+                                         WebGL फ़िल्टर (GPU) या मूल छवि
+                                         फिल्टर (सीपीयू); डिफ़ॉल्ट <code>true</code>.</p>
+        type: Boolean
+        optional: true
+  - line: 715
+    params:
+      - name: filterType
+        description: ''
+        type: Constant
+      - name: useWebGL
+        description: ''
+        type: Boolean
+        optional: true
+  - line: 720
+    params:
+      - name: shaderFilter
+        description: |
+          <p>शेडर जिसे लोड किया गया है, के साथ
+                                            <code>tex0</code> वर्दी का उपयोग करते हुए फ्रैग शेडर।</p>
+        type: p5.Shader
+chainable: false
+---
+
+
+# filter
