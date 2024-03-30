@@ -13,7 +13,10 @@ interface Props {
 
 const { entries } = Astro.props;
 const categoryData = categories.map((category) => {
+  // Get all reference entries in the module
   const directEntries = entries.filter((e) => e.data.module === category);
+
+  // Get the names of all submodules
   const subcats = [
     ...new Set(
       directEntries
@@ -22,16 +25,19 @@ const categoryData = categories.map((category) => {
         .map((e) => e.data.submodule)
     ).values()
   ].sort();
+
+  // Find the classes in this module. These will be turned into subcategories.
   const classes = directEntries.filter(
     (e) => e.data.isConstructor && e.data.module === category
   ).sort((a, b) => a.name - b.name);
 
+  // Return the data for each subcategory
   const subcatData = [
     {
       entries: directEntries.filter(
         (e) =>
           !e.data.submodule &&
-          // !e.data.isConstructor &&
+          !e.data.isConstructor &&
           !classes.some((c) => c.title === e.class)
       )
     },
@@ -46,7 +52,7 @@ const categoryData = categories.map((category) => {
     })),
     ...classes.map((entry) => ({
       name: entry.data.title,
-      entry,
+      entry, // Include the class entry itself so we can make the header a link
       entries: directEntries.filter(
         (e) => e.data.class === entry.data.title
       )
