@@ -1,0 +1,268 @@
+---
+title: colorMode
+module: 색상
+submodule: 설정
+file: src/color/setting.js
+description: >
+  <p>색상 값이 해석되는 방식을 변경합니다.</p>
+
+  <p>기본적으로, <code>Number</code> 매개변수는 <a
+  href="/reference/p5/fill">fill()</a>,
+
+  <a href="/reference/p5/stroke">stroke()</a>,
+
+  <a href="/reference/p5/background">background()</a>, 그리고
+
+  <a href="/reference/p5/color">color()</a> 에 대한 RGB 색상 모델을 사용하여
+  0에서 255 
+
+  사이의 값으로 정의됩니다.  이것은
+
+  <code>colorMode(RGB, 255)</code>를 호출하는 것과 동일합니다. 순수 빨간색은 <code>color(255, 0, 0)</code>
+  입니다.</p>
+
+  <p><code>colorMode(RGB, 100)</code> 를 호출하면 색상이 0부터 100
+  사이의 RGB 색상 값으로
+
+  설정됩니다. 순수 빨간색은 <code>color(100, 0, 0)</code> 
+  이 모델입니다.</p>
+
+  <p><code>colorMode(HSB)</code> 또는 <code>colorMode(HSL)</code> 를 호출하면
+  RGB 대신
+
+  HSB 또는 HSL 시스템으로 변경됩니다. HSB에서 순수 빨간색은 <code>color(0, 100, 100)</code> 이고,
+
+  HSL에서는 <code>color(0, 100, 50)</code>를 사용합니다.</p>
+
+  <p><a href="/reference/p5/p5.Color">p5.Color</a> 객체는 
+  생성되었던 모드를
+
+  기억합니다. 모드를 변경해도 모양에는 영향을 미치지 않습니다.</p>
+line: 733
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Fill with pure red.
+      fill(255, 0, 0);
+
+      circle(50, 50, 25);
+
+      describe('A gray square with a red circle at its center.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Use RGB color with values in the range 0-100.
+      colorMode(RGB, 100);
+
+      // Fill with pure red.
+      fill(100, 0, 0);
+
+      circle(50, 50, 25);
+
+      describe('A gray square with a red circle at its center.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Use HSB color.
+      colorMode(HSB);
+
+      // Fill with pure red.
+      fill(0, 100, 100);
+
+      circle(50, 50, 25);
+
+      describe('A gray square with a red circle at its center.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Use HSL color.
+      colorMode(HSL);
+
+      // Fill with pure red.
+      fill(0, 100, 50);
+
+      circle(50, 50, 25);
+
+      describe('A gray square with a red circle at its center.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Use RGB color with values in the range 0-100.
+      colorMode(RGB, 100);
+
+      for (let x = 0; x < 100; x += 1) {
+        for (let y = 0; y < 100; y += 1) {
+          stroke(x, y, 0);
+          point(x, y);
+        }
+      }
+
+      describe(
+        'A diagonal green to red gradient from bottom-left to top-right with shading transitioning to black at top-left corner.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Use HSB color with values in the range 0-100.
+      colorMode(HSB, 100);
+
+      for (let x = 0; x < 100; x += 1) {
+        for (let y = 0; y < 100; y += 1) {
+          stroke(x, y, 100);
+          point(x, y);
+        }
+      }
+
+      describe('A rainbow gradient from left-to-right. Brightness transitions to white at the top.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a p5.Color object.
+      let myColor = color(180, 175, 230);
+      background(myColor);
+
+      // Use RGB color with values in the range 0-1.
+      colorMode(RGB, 1);
+
+      // Get the red, green, and blue color components.
+      let redValue = red(myColor);
+      let greenValue = green(myColor);
+      let blueValue = blue(myColor);
+
+      // Round the color components for display.
+      redValue = round(redValue, 2);
+      greenValue = round(greenValue, 2);
+      blueValue = round(blueValue, 2);
+
+      // Display the color components.
+      text(`Red: ${redValue}`, 10, 10, 80, 80);
+      text(`Green: ${greenValue}`, 10, 40, 80, 80);
+      text(`Blue: ${blueValue}`, 10, 70, 80, 80);
+
+      describe('A purple canvas with the red, green, and blue decimal values of the color written on it.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(255);
+
+      // Use RGB color with alpha values in the range 0-1.
+      colorMode(RGB, 255, 255, 255, 1);
+
+      noFill();
+      strokeWeight(4);
+      stroke(255, 0, 10, 0.3);
+      circle(40, 40, 50);
+      circle(50, 60, 50);
+
+      describe('Two overlapping translucent pink circle outlines.');
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 733
+    params:
+      - name: mode
+        description: |
+          <p>빨강/녹색/파랑 및 색조/채도/명도(또는 밝기)에 해당하는
+                                   RGB, HSB 또는 HSL 중 
+                                   하나입니다.</p>
+        type: Constant
+      - name: max
+        description: |
+          <p>모든 값에 대한 범위입니다.</p>
+        type: Number
+        optional: true
+    chainable: 1
+  - line: 938
+    params:
+      - name: mode
+        description: ''
+        type: Constant
+      - name: max1
+        description: |
+          <p>현재 색상 모드에 따른
+                                       빨간색 또는 색조 범위입니다.</p>
+        type: Number
+      - name: max2
+        description: |
+          <p>현재 색상 모드에 따른
+                                       초록색 또는 색조 범위입니다.</p>
+        type: Number
+      - name: max3
+        description: |
+          <p>현재 색상 모드에 따른
+                                       파란색 또는 밝기/명도 범위입니다.</p>
+        type: Number
+      - name: maxA
+        description: |
+          <p>알파(alpha) 범위입니다.</p>
+        type: Number
+        optional: true
+    chainable: 1
+chainable: true
+---
+
+
+# colorMode
