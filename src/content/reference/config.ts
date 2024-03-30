@@ -34,7 +34,7 @@ export const referenceSchema = z.object({
   submodule: z.string().optional(),
   file: z.string(),
   description: z.string(),
-  line: z.coerce.number(),
+  line: z.number().or(z.string().transform((v) => parseInt(v, 10))),
   params: z.array(paramSchema).optional(),
   itemtype: z.string().optional(),
   class: z.string().optional(),
