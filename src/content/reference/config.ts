@@ -5,23 +5,23 @@ import { relatedContent } from "../shared";
 // reading. Some bits that we haven't finished revising are moved lower down
 // until we revisit them.
 export const categories = [
-  'Shape',
-  'Color',
-  'Typography',
-  'Image',
-  'Transform',
-  'Environment', // TODO: make new category for accessibility
-  '3D',
-  'Rendering',
-  'Math',
-  'IO',
-  'Events',
-  'DOM',
-  'Data',
-  'Structure', // TODO: move to top once revised
-  'Constants',
-  'Foundation',
-] as const
+  "Shape",
+  "Color",
+  "Typography",
+  "Image",
+  "Transform",
+  "Environment", // TODO: make new category for accessibility
+  "3D",
+  "Rendering",
+  "Math",
+  "IO",
+  "Events",
+  "DOM",
+  "Data",
+  "Structure", // TODO: move to top once revised
+  "Constants",
+  "Foundation",
+] as const;
 
 const paramSchema = z.object({
   name: z.string(),
@@ -65,6 +65,11 @@ export const referenceSchema = z.object({
   example: z.array(exampleSchema).optional(),
   relatedContent: relatedContent().optional(),
   methods: z.record(methodSchema).optional(),
+  isConstructor: z
+    .boolean()
+    .or(z.literal("true").transform(() => true))
+    .or(z.literal("false").transform(() => false))
+    .optional(),
 });
 
 export const referenceCollection = defineCollection({
