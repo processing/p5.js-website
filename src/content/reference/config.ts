@@ -1,6 +1,28 @@
 import { z, defineCollection } from "astro:content";
 import { relatedContent } from "../shared";
 
+// Categories, ordered in a (rough) general-to-specific sequence for easier
+// reading. Some bits that we haven't finished revising are moved lower down
+// until we revisit them.
+export const categories = [
+  'Shape',
+  'Color',
+  'Typography',
+  'Image',
+  'Transform',
+  'Environment', // TODO: make new category for accessibility
+  '3D',
+  'Rendering',
+  'Math',
+  'IO',
+  'Events',
+  'DOM',
+  'Data',
+  'Structure', // TODO: move to top once revised
+  'Constants',
+  'Foundation',
+] as const
+
 const paramSchema = z.object({
   name: z.string(),
   description: z.string(),

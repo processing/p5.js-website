@@ -2,6 +2,7 @@
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
 import { removeLocaleAndExtension } from "@pages/_utils";
+import { categories } from '../content/reference/config'
 
 type ReferenceEntry = CollectionEntry<"reference">;
 
@@ -14,15 +15,23 @@ const { entries } = Astro.props;
 ---
 
 <BaseLayout title="Reference">
-  <div class="content-grid">
-    {
-      entries.map((refEntry) => (
-        <div class="col-span-3 w-full overflow-hidden">
-          <a href={`/reference/${removeLocaleAndExtension(refEntry.id)}`}>
-            {refEntry.data.title}
-          </a>
+  {
+    categories.map((category) => (
+      <>
+        <h3>{category}<a id={category}></a></h3>
+        <div class="content-grid">
+          {
+            entries.filter((e) => e.data.module === category).map((refEntry) => (
+              <div class="col-span-3 w-full overflow-hidden">
+                <a href={`/reference/${removeLocaleAndExtension(refEntry.id)}`}>
+                  {/* Needs set:html to render the entries for e.g. the > operator */}
+                  <span set:html={refEntry.data.title} />
+                </a>
+              </div>
+            ))
+          }
         </div>
-      ))
-    }
-  </div>
+      </>
+    ))
+  }
 </BaseLayout>
