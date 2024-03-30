@@ -1,6 +1,6 @@
 import type { z } from "astro/zod";
 import { referenceSchema } from "./reference/config";
-import type { ExampleData, examplesCollection } from "./examples/config";
+import type { ExampleData } from "./examples/config";
 import type { CollectionEntry } from "astro:content";
 
 type AstroBaseContentType<T = unknown> = {
