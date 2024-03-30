@@ -16,6 +16,8 @@ import type {
 } from "../../../types/builders.interface";
 import { sanitizeName } from "../utils";
 import path from "path";
+import { load } from "cheerio";
+import he from "he";
 
 /* Base path for the content directory */
 const prefix = "./src/content/reference/en/";
@@ -88,22 +90,6 @@ const addDocToModulePathTree = (
     // Add the doc to the modulePathTree under the appropriate treePath and subPath,
     // using the doc's name as the key and the constructed modulePath as the value.
     modulePathTree[treePath][subPath][doc.name] = itemPath;
-
-    /** Fix relative routing in JSDoc descriptions */
-    // If the link is to another class, it should go up and then down to the class
-    // doc.description = doc.description?.replaceAll(`#/p5.`, `./p5.`);
-    // If the link is to a method in this same class, it should be a sibling link
-    doc.description = doc.description?.replaceAll(`#/${doc.class}/`, "./");
-    // If the link is to this same class, it should be a sibling link
-    doc.description = doc.description?.replaceAll(
-      `/${doc.class}`,
-      `./${doc.class}`,
-    );
-    // Different linking strategy used in p5.Sound
-    doc.description = doc.description?.replaceAll(`reference/#/p5.`, `./p5.`);
-    // Since this reference is in a class, any link to the base p5 class
-    // should be "up" one level to the p5 module.
-    doc.description = doc.description?.replaceAll("#/p5/", "./p5/");
   } else {
     // If the doc is not a class item, it's handled here.
     // We default to adding it under the 'modules' category.
@@ -133,13 +119,42 @@ const addDocToModulePathTree = (
       // Add the module to the modulePathTree.
       modulePathTree.modules[modulePath][doc.name] = itemPath;
     }
+  }
+  if (doc?.description) {
+    const $ = load(doc.description, { xmlMode: true });
 
-    /** Fix relative routing in JSDoc descriptions */
-    // If the link is to another class, it should go up and then down to the class
-    doc.description = doc.description?.replaceAll(`#/p5.`, `./p5.`);
-    // Since this reference is not in a class, any link to the base p5 class
-    // should be in a sibling route.
-    doc.description = doc.description?.replaceAll("#/p5/", "./");
+    // Modify the href attributes of <a> tags so that authors don't
+    // have to worry about locale prefixes
+    $("a").each(function () {
+      let href = $(this).attr("href");
+      if (!href) return;
+      // If the href starts with the class prefix
+      if (href.startsWith("#/p5.")) {
+        const parts = href.split("/");
+        // Check to see if the last part of the href is a method class
+        if (parts[parts.length - 1].indexOf("p5.") === -1) {
+          // If it is a method class, replace the prefix with /reference/
+          href = href.replace("#/", "/reference/");
+        } else {
+          // If it is a class itself, replace the prefix with /reference/p5/
+          href = href.replace("#/", "/reference/p5/");
+        }
+      } else if (href.startsWith("#/")) {
+        // If the href starts with #/, replace it with /reference/
+        href = href.replace("#/", "/reference/");
+      } else if (href.startsWith("/reference/#")) {
+        // p5 sound sometimes uses /reference/#/ which is incorrect
+        // Replace it with /reference/
+        href = href.replace("/reference/#", "/reference/");
+      }
+      $(this).attr("href", href);
+    });
+
+    // Initially encode the document to XML
+    const output = $.xml();
+
+    // Decode entities using the 'he' library to revert escaped punctuation
+    doc.description = he.decode(output);
   }
 };
 
