@@ -1,0 +1,677 @@
+---
+title: p5.Vector
+module: Matemáticas
+submodule: Vector
+file: src/math/p5.Vector.js
+description: >
+  <p>Una clase para describir vectores de dos o tres dimensiones.</p>
+
+  <p>Existen varias maneras de pensar sobre los vectores. Una es como
+
+  flechas en el espacio, caracterizadas por su magnitud (longitud)
+
+  y dirección.</p>
+
+  <p>Los objetos <code>p5.Vector</code> se usan habitualmente para programar
+
+  movimiento por que simplifican algunos cálculos matemáticos. Por ejemplo,
+
+  una pelota en movimiento tiene una posición y una velocidad. La posición
+
+  describe la ubicación de la pelota en el espacio.
+
+  El vector de posición de la pelota se extiende desde el origen al centro de la
+
+  pelota. La velocidad describe la rapidez y dirección de su movimiento.
+
+  Si la pelota se mueve en línea recta hacia arriba, su vector de velocidad
+
+  apunta hacia arriba y su magnitud es proporcional a la rapidez del movimiento.
+
+  Sumar el vector de velocidad al vector de posición lo mueve, como en
+
+  <code>pos.add(vel)</code>. En esta clase se encuentran los métodos que definen
+
+  las operaciones matemáticas con vectores.</p>
+
+  <p>Nota: <a href="/reference/p5/createVector">createVector()</a> es la manera
+
+  recomendada para crear una instancia de esta clase.</p>
+line: 11
+isConstructor: true
+params:
+  - name: x
+    description: |
+      <p>componente x del vector.</p>
+    type: Number
+    optional: true
+  - name: 'y'
+    description: |
+      <p>componente y del vector.</p>
+    type: Number
+    optional: true
+  - name: z
+    description: |
+      <p>componente z del vector.</p>
+    type: Number
+    optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create p5.Vector objects.
+      let p1 = createVector(25, 25);
+      let p2 = createVector(75, 75);
+
+      // Style the points.
+      strokeWeight(5);
+
+      // Draw the first point using a p5.Vector.
+      point(p1);
+
+      // Draw the second point using a p5.Vector's components.
+      point(p2.x, p2.y);
+
+      describe('Two black dots on a gray square, one at the top left and the other at the bottom right.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let pos;
+    let vel;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create p5.Vector objects.
+      pos = createVector(50, 100);
+      vel = createVector(0, -1);
+
+      describe('A black dot moves from bottom to top on a gray square. The dot reappears at the bottom when it reaches the top.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Add velocity to position.
+      pos.add(vel);
+
+      // If the dot reaches the top of the canvas,
+      // restart from the bottom.
+      if (pos.y < 0) {
+        pos.y = 100;
+      }
+
+      // Draw the dot.
+      strokeWeight(5);
+      point(pos);
+    }
+    </code>
+    </div>
+methods:
+  toString:
+    description: >
+      <p>Devuelve la representación de un vector como cadena de caracteres.</p>
+
+      <p>LLamar <code>toString()</code> es útil para imprimir vectores a la
+
+      consola durante la depuración del código.</p>
+    path: p5.Vector/toString
+  set:
+    description: >
+      <p>Establece las componentes <code>x</code>, <code>y</code> y
+
+      <code>z</code> del vector.</p>
+
+      <p><code>set()</code> puede tomar como argumentos números separados,
+
+      como en <code>v.set(1, 2, 3)</code>;
+
+      un objeto <a href="/reference/p5/p5.Vector">p5.Vector</a>,
+
+      como en <code>v.set(v2)</code>; o un
+
+      arreglo de números, como en <code>v.set([1, 2, 3])</code>.</p>
+
+      <p>Si no se encuentra el valor de alguna componente,
+
+      será establecido en 0. Por ejemplo,
+
+      <code>v.set(4, 5)</code> establece <code>v.x</code> en 4,
+
+      <code>v.y</code> en 5 y <code>v.z</code> en 0.
+
+      Llamar <code>set()</code> sin argumentos, como en <code>v.set()</code>,
+
+      establece todas las componentes del vector en 0.</p>
+    path: p5.Vector/set
+  copy:
+    description: >
+      <p>Devuelve una copia del objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>.</p>
+    path: p5.Vector/copy
+  add:
+    description: >
+      <p>Suma los valores de entrada a las componentes <code>x</code>,
+
+      <code>y</code> y <code>z</code> del vector.</p>
+
+      <p><code>add()</code> puede tomar como argumento números separados, como en
+
+      <code>v.add(1, 2, 3)</code>;
+
+      otro objeto <a href="/reference/p5/p5.Vector">p5.Vector</a>, como en
+
+      <code>v.add(v2)</code>; o un arreglo de números, como en
+
+      <code>v.add([1, 2, 3])</code>.</p>
+
+      <p>Si no se encuentra un valor para determinada componente, esta no
+
+      cambiará. Por ejemplo, <code>v.add(4, 5)</code> suma 4 a <code>v.x</code>,
+
+      5 a <code>v.y</code> y 0 a <code>v.z</code>.
+
+      Llamar <code>add()</code> sin argumentos, como en <code>v.add()</code>,
+
+      no tiene efecto.</p>
+
+      <p>La versión estática de <code>add()</code>, como en
+
+      <code>p5.Vector.add(v2, v1)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar los originales.</p>
+    path: p5.Vector/add
+  rem:
+    description: >
+      <p>Hace la división modular (residuo) de las componentes
+
+      <code>x</code>, <code>y</code> y <code>z</code> del vector
+
+      por los valores de entrada.</p>
+
+      <p><code>rem()</code> puede tomar como argumento números separados, como en
+
+      <code>v.rem(1, 2, 3)</code>; otro objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>, como en
+
+      <code>v.rem(v2)</code>; o un arreglo de números, como en
+
+      <code>v.rem([1, 2, 3])</code>.</p>
+
+      <p>Si sólo se tiene un valor, como en <code>v.rem(2)</code>, entonces todas
+
+      las componentes serán establecidas a sus valores módulo 2. Si se tienen
+
+      dos valores, como en <code>v.rem(2, 3)</code>, entonces <code>v.z</code>
+
+      no cambiará. Llamar <code>rem()</code> sin argumentos como en
+
+      <code>v.rem()</code>, no tiene efecto.</p>
+
+      <p>La versión estática de <code>rem()</code>, como en
+
+      <code>p5.Vector.rem(v2, v1)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar los originales.</p>
+    path: p5.Vector/rem
+  sub:
+    description: >
+      <p>Resta los valores de entrada a las componentes <code>x</code>,
+
+      <code>y</code> y <code>z</code> del vector.</p>
+
+      <p><code>sub()</code> puede tomar como argumento números separados, como en
+
+      <code>v.sub(1, 2, 3)</code>; otro objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>, como en
+
+      <code>v.sub(v2)</code>; o un arreglo de números, como en
+
+      <code>v.sub([1, 2, 3])</code>.</p>
+
+      <p>Si se omite el valor correspondiente a una componente, esta no cambiará.
+
+      Por ejemplo, <code>v.sub(4, 5)</code> resta 4 a <code>v.x</code>, 5 a
+
+      <code>v.y</code> y 0 a <code>v.z</code>.
+
+      Llamar <code>sub()</code> sin argumentos, como en <code>v.sub()</code>,
+
+      no tiene efecto.</p>
+
+      <p>La versión estática de <code>sub()</code>, como en
+
+      <code>p5.Vector.sub(v2, v1)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar los originales.</p>
+    path: p5.Vector/sub
+  mult:
+    description: >
+      <p>Multiplica las componentes <code>x</code>, <code>y</code> y
+
+      <code>z</code> del vector por los valores de entrada.</p>
+
+      <p><code>mult()</code> puede tomar como argumento números separados, como en
+
+      <code>v.mult(1, 2, 3)</code>; otro objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>, como en
+
+      <code>v.mult(v2)</code>; o un arreglo de números, como en
+
+      <code>v.mult([1, 2, 3])</code>.</p>
+
+      <p>Si sólo hay un valor como argumento, por ejemplo <code>v.mult(2)</code>,
+
+      entonces todas las componentes son multiplicadas por este mismo.
+
+      Si no se encuentra el valor para una componente, entonces esta no cambiará.
+
+      Por ejemplo, <code>v.mult(4, 5)</code> multiplica <code>v.x</code> por 4,
+
+      <code>v.y</code> por 5 y <code>v.z</code> por 1. Llamar <code>mult()</code>
+
+      sin argumentos, como en <code>v.mult()</code>, no tiene efecto.</p>
+
+      <p>La versión estática de <code>mult()</code>, como en
+
+      <code>p5.Vector.mult(v, 2)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar los originales.</p>
+    path: p5.Vector/mult
+  div:
+    description: >
+      <p>Divide las componentes <code>x</code>, <code>y</code> y
+
+      <code>z</code> del vector por los valores de entrada.</p>
+
+      <p><code>div()</code> puede tomar como argumento números separados, como en
+
+      <code>v.div(1, 2, 3)</code>; otro objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>, como en
+
+      <code>v.div(v2)</code>; o un arreglo de números, como en
+
+      <code>v.div([1, 2, 3])</code>.</p>
+
+      <p>Si sólo hay un valor como argumento, por ejemplo <code>v.div(2)</code>,
+
+      entonces todas las componentes son divididas por este mismo.
+
+      Si no se encuentra el valor para una componente, entonces esta no cambiará.
+
+      Por ejemplo, <code>v.div(4, 5)</code> divide <code>v.x</code> por 4,
+
+      <code>v.y</code> por 5 y <code>v.z</code> por 1. Llamar <code>div()</code>
+
+      sin argumentos, como en <code>v.div()</code>, no tiene efecto.</p>
+
+      <p>La versión estática de <code>div()</code>, como en
+
+      <code>p5.Vector.div(v, 2)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar los originales.</p>
+    path: p5.Vector/div
+  mag:
+    description: >
+      <p>Calcula la magnitud (longitud) del vector.</p>
+
+      <p><a href="/reference/p5/mag">mag()</a> permite calcular la magnitud de
+
+      un vector bidimensional usando sus componentes,
+
+      como en <code>mag(x, y)</code>.</p>
+    path: p5.Vector/mag
+  magSq:
+    description: |
+      <p>Calcula la magnitud (longitud) al cuadrado del vector.</p>
+    path: p5.Vector/magSq
+  dot:
+    description: >
+      <p>Calcula el producto punto de dos vectores.</p>
+
+      <p>El producto punto es un número que describe el traslape entre dos
+
+      vectores.
+
+      Visualmente, el producto punto se puede pensar como la "sombra" que
+
+      un vector proyecta sobre el otro.
+
+      La magnitud del producto punto se maximiza cuando ambos vectores apuntan
+
+      en direcciones iguales u opuestas. Su magnitud es cero cuando los vectores
+
+      forman un ángulo recto.</p>
+
+      <p>La versión de <code>dot()</code> con un solo parámetro lo interpreta
+
+      como otro objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>.</p>
+
+      <p>La versión de <code>dot()</code> con múltiples parámetros los interpreta
+
+      como las componentes <code>x</code>, <code>y</code> y <code>z</code> de
+
+      otro vector.</p>
+
+      <p>La versión estática de <code>dot()</code>, como en
+
+      <code>p5.Vector.dot(v1, v2)</code>, equivale a llamar
+
+      <code>v1.dot(v2)</code>.</p>
+    path: p5.Vector/dot
+  cross:
+    description: >
+      <p>Calcula el producto cruz de dos vectores.</p>
+
+      <p>El producto cruz es un vector que apunta directamente hacia fuera del
+
+      plano generado por los dos vectores de argumento.
+
+      La magnitud del producto cruz es igual al area del paralelogramo descrito
+
+      por estos mismos vectores.</p>
+
+      <p>La versión estática de <code>cross()</code>, como en
+
+      <code>p5.Vector.cross(v1, v2)</code>, equivale a llamar
+
+      <code>v1.cross(v2)</code>.</p>
+    path: p5.Vector/cross
+  dist:
+    description: >
+      <p>Calcula la distancia entre dos puntos representados como vectores.</p>
+
+      <p>Las coordenadas de un punto en el espacio pueden ser representadas por
+
+      las componentes de un vector que se extiende del origen hasta el punto.</p>
+
+      <p> La versión estática de <code>dist()</code>, como en
+
+      <code>p5.Vector.dist(v1, v2)</code>, equivale a llamar
+
+      <code>v1.dist(v2)</code>.</p>
+
+      <p><a href="/reference/p5/dist">dist()</a> permite calcular la distancia
+
+      entre dos puntos utilizando sus coordenadas, como en
+
+      <code>dist(x1, y1, x2, y2)</code>.</p>
+    path: p5.Vector/dist
+  normalize:
+    description: >
+      <p>Escala las componentes de un objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      para que su magnitud sea 1.</p>
+
+      <p>La versión estática de <code>normalize()</code>, como en
+
+      <code>p5.Vector.normalize(v)</code>,
+
+      devuelve un nuevo objeto <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar el original.</p>
+    path: p5.Vector/normalize
+  limit:
+    description: >
+      <p>Establece un valor máximo para la magnitud del vector.</p>
+
+      <p>La versión estática de <code>limit()</code>, como en
+
+      <code>p5.Vector.limit(v, 5)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar el original.</p>
+    path: p5.Vector/limit
+  setMag:
+    description: >
+      <p>Establece la magnitud del vector en el valor dado.</p>
+
+      <p>La versión estática de <code>setMag()</code>, como en
+
+      <code>p5.Vector.setMag(v, 10)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar el original.</p>
+    path: p5.Vector/setMag
+  heading:
+    description: >
+      <p>Calcula el ángulo (polar) que forma un vector bidimensional con el eje x
+      positivo.</p>
+
+      <p>Por convención, el eje x positivo tiene un ángulo de 0 y los ángulos
+
+      incrementan en el sentido de las manecillas del reloj.</p>
+
+      <p>Si el vector fue creado utilizando
+
+      <a href="/reference/p5/createVector">createVector()</a>,
+
+      <code>heading()</code> devuelve el ángulo en las unidades del
+
+      <a href="/reference/p5/angleMode">angleMode()</a> actual.</p>
+
+      <p>La versión estática de <code>heading()</code>, como en
+
+      <code>p5.Vector.heading(v)</code>, funciona de la misma manera.</p>
+    path: p5.Vector/heading
+  setHeading:
+    description: >
+      <p>Rota un vector bidimensional por el ángulo específicado sin cambiar
+
+      su magnitud.</p>
+
+      <p>Por convención, el eje x positivo tiene un ángulo de 0 y los ángulos
+
+      incrementan en el sentido de las manecillas del reloj.</p>
+
+      <p>Si el vector fue creado utilizando
+
+      <a href="/reference/p5/createVector">createVector()</a>,
+
+      <code>setHeading()</code> devuelve el ángulo en las unidades del
+
+      <a href="/reference/p5/angleMode">angleMode()</a> actual.</p>
+    path: p5.Vector/setHeading
+  rotate:
+    description: >
+      <p>Rota un vector bidimensional por el ángulo específicado sin cambiar
+
+      su magnitud.</p>
+
+      <p>Por convención, el eje x positivo tiene un ángulo de 0 y los ángulos
+
+      incrementan en el sentido de las manecillas del reloj.</p>
+
+      <p>Si el vector fue creado utilizando
+
+      <a href="/reference/p5/createVector">createVector()</a>,
+
+      <code>rotate()</code> devuelve el ángulo en las unidades del
+
+      <a href="/reference/p5/angleMode">angleMode()</a> actual.</p>
+
+      <p>La versión estática de <code>rotate()</code>, como en
+
+      <code>p5.Vector.rotate(v, PI)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar el original.</p>
+    path: p5.Vector/rotate
+  angleBetween:
+    description: >
+      <p>Calcula el álgulo entre dos vectores.</p>
+
+      <p>El ángulo devuelto tiene orientación (es decir, signo);
+
+      esto significa que
+
+      <code>v1.angleBetween(v2) === -v2.angleBetween(v1)</code>.</p>
+
+      <p>Si el vector fue creado con
+
+      <a href="/reference/p5/createVector">createVector()</a>,
+
+      <code>angleBetween()</code> devuelve el ángulo en las unidades del
+
+      <a href="/reference/p5/angleMode">angleMode()</a> actual.</p>
+    path: p5.Vector/angleBetween
+  lerp:
+    description: >
+      <p>Calcula las componentes <code>x</code>, <code>y</code> y
+
+      <code>z</code> de un vector proporcional a la diferencia entre dos vectores.</p>
+
+      <p>El parámetro <code>amt</code> es la cantidad de interpolación entre
+
+      el primer y segundo vector. 0.0 mantiene todas las componentes iguales
+
+      al primer vector, 0.5 las establece a la mitad entre ambos y 1.0 establece
+
+      todas las componentes iguales a las del segundo vector.</p>
+
+      <p>La versión estática de <code>lerp()</code>, como en
+
+      <code>p5.Vector.lerp(v0, v1, 0.5)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar el original.</p>
+    path: p5.Vector/lerp
+  slerp:
+    description: >
+      <p>Calcula el ángulo polar y magnitud de un vector que está entre otros dos
+
+      vectores.</p>
+
+      <p>El parámetro <code>amt</code> es la cantidad de interpolación entre
+
+      el vector inicial y el vector final. 0.0 mantiene el ángulo polar y la magnitud iguales
+
+      a las del vector inicial, 0.5 las establece en la mitad y 1.0 establece
+
+      el ángulo polar y la magnitud iguales a las del vector final.</p>
+
+      <p><code>slerp()</code> difiere de
+
+      <a href="/reference/p5.Vector/lerp">lerp()</a> en que la primera
+
+      interpola magnitud. Llamar <code>v0.slerp(v1, 0.5)</code> establece
+
+      la magnitud de <code>v0</code> a un valor a mitad del camino entre
+
+      su magnitud original y la magnitud de <code>v1</code>.
+
+      Llamar <code>v0.lerp(v1, 0.5)</code> no tiene esta garantía.</p>
+
+      <p>La versión estática de  <code>slerp()</code>, como en
+
+      <code>p5.Vector.slerp(v0, v1, 0.5)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar el original.</p>
+    path: p5.Vector/slerp
+  reflect:
+    description: >
+      <p>Refleja el vector sobre una linea en dos dimensiones o un plano en tres
+
+      dimensiones.</p>
+
+      <p>La orientación de la linea o el plano esta descrito por un vector normal
+
+      que apunta alejandose del mismo.</p>
+
+      <p>La versión estática de <code>reflect()</code>, como en
+
+      <code>p5.Vector.reflect(v, n)</code>, devuelve un nuevo objeto
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      sin cambiar el original.</p>
+    path: p5.Vector/reflect
+  array:
+    description: |
+      <p>Devuelve las componentes del vector en un arreglo de números.</p>
+    path: p5.Vector/array
+  equals:
+    description: >
+      <p>Revisa que todas las componentes del vector sean iguales a las de otro
+
+      vector.</p>
+
+      <p><code>equals()</code> devuelve <code>true</code> si todas las
+
+      componentes del vector son iguales a las de otro vector y
+
+      <code>false</code> en caso contrario.</p>
+
+      <p>La versión de <code>equals()</code> con un parámetro lo interpreta como
+
+      otro objeto <a href="/reference/p5/p5.Vector">p5.Vector</a>.</p>
+
+      <p>La versión de <code>equals()</code> con multiples parámetros los
+
+      interpreta como las componentes de otro vector.
+
+      Los parámetros faltantes son asignados un valor de 0.</p>
+
+      <p>La versión estática de <code>equals()</code>, como en
+
+      <code>p5.Vector.equals(v0, v1)</code>,
+
+      interpreta ambos parámetros como objetos
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a>.</p>
+    path: p5.Vector/equals
+  fromAngle:
+    description: |
+      <p>Crea un nuevo vector bidimensional a partir de un ángulo.</p>
+    path: p5.Vector/fromAngle
+  fromAngles:
+    description: |
+      <p>Crea un nuevo vector tridimensional a partir de una pareja de ángulos esféricos ISO.</p>
+    path: p5.Vector/fromAngles
+  random2D:
+    description: |
+      <p>Crea un nuevo vector bidimensional unitario con un ángulo polar aleatorio.</p>
+    path: p5.Vector/random2D
+  random3D:
+    description: |
+      <p>Crea un nuevo vector tridimensional con un ángulo polar aleatorio.</p>
+    path: p5.Vector/random3D
+chainable: false
+---
+
+
+# p5.Vector

@@ -1,0 +1,205 @@
+---
+title: beginClip
+module: 색상
+submodule: 세팅
+file: src/color/setting.js
+description: >
+  <p>다음에 그려지는 모든 모양을 마스크할 모양으로 정의합니다.</p>
+
+  <p><code>beginClip()</code> 과
+
+  <a href="/reference/p5/endClip">endClip()</a> 사이에 그려진 모든 모양은 마스크 모양에 추가됩니다.
+  마스크는
+
+  <a
+  href="/reference/p5/endClip">endClip()</a>이후에 그려지는 모든 것에 적용됩니다.</p>
+
+  <p>매개변수, <code>options</code>, 는 선택 사항입니다. 
+  <code>invert</code> 속성이 포함된 객체가 전달되면,
+
+  예를 들어, <code>beginClip({ invert: true })</code>처럼
+  마스킹 모드를
+
+  설정하는 데 사용됩니다. <code>{ invert: true }</code> 는 마스크를 반전시켜, 
+  구멍을 만듭니다.
+
+  기본적으로, <code>invert</code>는 <code>false</code> 
+  입니다.</p>
+
+  <p>마스크는
+
+  <a href="/reference/p5/push">push()</a> 와 <a
+  href="/reference/p5/pop">pop()</a> 함수 사이에 포함될 수 있습니다.
+
+  이렇게 함으로써 마스크된 도형 이후에 마스크 되지 않은 도형을 그릴 수 있습니다.</p>
+
+  <p>마스크는
+
+  <a href="/reference/p5/clip">clip()</a>에 전달되는 콜백 함수 내에서도 정의될 수 있습니다.</p>
+line: 13
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white triangle and circle on a gray background.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an inverted mask.
+      beginClip({ invert: true });
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white square at the top-left corner of a gray square. The white square has a triangle and a circle cut out of it.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      noStroke();
+
+      // Draw a masked shape.
+      push();
+      // Create a mask.
+      beginClip();
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw an inverted masked shape.
+      push();
+      // Create an inverted mask.
+      beginClip({ invert: true });
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      describe('In the top left, a white triangle and circle. In the bottom right, a white square with a triangle and circle cut out of it.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored fuchsia.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+      endClip();
+
+      // Draw a backing shape.
+      noStroke();
+      fill('fuchsia');
+      plane(100);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored with a gradient from cyan to purple.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+      endClip();
+
+      // Draw a backing shape.
+      noStroke();
+      beginShape(QUAD_STRIP);
+      fill(0, 255, 255);
+      vertex(-width / 2, -height / 2);
+      vertex(width / 2, -height / 2);
+      fill(100, 0, 100);
+      vertex(-width / 2, height / 2);
+      vertex(width / 2, height / 2);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: options
+    description: |
+      <p>클립 설정을 포함하는 객체입니다.</p>
+    type: Object
+    optional: true
+chainable: false
+---
+
+
+# beginClip
