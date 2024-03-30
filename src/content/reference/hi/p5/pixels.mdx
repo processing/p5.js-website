@@ -1,0 +1,170 @@
+---
+title: pixels
+module: छवि
+submodule: पिक्सल
+file: src/image/pixels.js
+description: >
+  <p>एक सरणी जिसमें कैनवास पर प्रत्येक पिक्सेल का रंग होता है।</p>
+
+  <p>रंगों को लाल, हरा, नीला और अल्फा का प्रतिनिधित्व करने वाली संख्याओं के रूप में संग्रहीत किया जाता है
+
+  (आरजीबीए) मान। <code>पिक्सेल</code> प्रदर्शन के लिए एक आयामी सरणी है
+  कारण.</p>
+
+  <p>प्रत्येक पिक्सेल <code>पिक्सेल</code> सरणी में चार तत्वों को रखता है, एक के लिए
+  प्रत्येक आरजीबीए
+
+  कीमत। उदाहरण के लिए, निर्देशांक (0, 0) पर पिक्सेल अपने RGBA मानों को संग्रहीत करता है
+
+  <code>पिक्सेल[0]</code>, <code>पिक्सेल[1]</code>, <code>पिक्सेल[2]</code> पर, और
+  <code>पिक्सेल[3]</code>, क्रमशः।
+
+  निर्देशांक (1, 0) पर अगला पिक्सेल अपने RGBA मानों को संग्रहीत करता है
+  <code>पिक्सेल[4]</code>,
+
+  <code>पिक्सेल[5]</code>, <code>पिक्सेल[6]</code>, और <code>पिक्सेल[7]</code>।
+  और इसी तरह। <code>पिक्सेल</code> सरणी
+
+  100×100 कैनवास में 100 × 100 × 4 = 40,000 तत्व होते हैं।</p>
+
+  <p>कुछ डिस्प्ले एक ही रंग को सेट करने के लिए कई छोटे पिक्सेल का उपयोग करते हैं
+
+  बिंदु। <a href='/reference/p5/पिक्सेलडेंसिटी'>पिक्सेलडेंसिटी()</a> फ़ंक्शन
+  रिटर्न
+
+  कैनवास का पिक्सेल घनत्व. उच्च घनत्व वाले डिस्प्ले में अक्सर एक होता है
+
+  <a href="/reference/p5/पिक्सेलडेंसिटी">पिक्सेलडेंसिटी()</a> 2 में से।
+  प्रदर्शन,
+
+  100×100 कैनवास के लिए <code>पिक्सेल</code> सरणी में 200 × 200 × 4 = है
+
+  160,000 तत्व।</p>
+
+  <p>कैनवास पर एक बिंदु के लिए RGBA मानों तक पहुंचने के लिए थोड़े गणित की आवश्यकता होती है
+
+  जैसा कि नीचे दिया गया है। <a href='/reference/p5/loadPixels'>loadPixels()</a>
+  समारोह
+
+  <code>पिक्सेल</code> सरणी तक पहुंचने से पहले कॉल किया जाना चाहिए।
+
+  <a href='/reference/p5/updatePixels'>updatePixels()</a> फ़ंक्शन होना चाहिए
+  बुलाया
+
+  कोई भी बदलाव किए जाने के बाद.</p>
+line: 12
+isConstructor: false
+itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Load the pixels array.
+      loadPixels();
+
+      // Set the dot's coordinates.
+      let x = 50;
+      let y = 50;
+
+      // Get the pixel density.
+      let d = pixelDensity();
+
+      // Set the pixel(s) at the center of the canvas black.
+      for (let i = 0; i < d; i += 1) {
+        for (let j = 0; j < d; j += 1) {
+          let index = 4 * ((y * d + j) * width * d + (x * d + i));
+          // Red.
+          pixels[index] = 0;
+          // Green.
+          pixels[index + 1] = 0;
+          // Blue.
+          pixels[index + 2] = 0;
+          // Alpha.
+          pixels[index + 3] = 255;
+        }
+      }
+
+      // Update the canvas.
+      updatePixels();
+
+      describe('A black dot in the middle of a gray rectangle.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Load the pixels array.
+      loadPixels();
+
+      // Get the pixel density.
+      let d = pixelDensity();
+
+      // Calculate the halfway index in the pixels array.
+      let halfImage = 4 * (d * width) * (d * height / 2);
+
+      // Make the top half of the canvas red.
+      for (let i = 0; i < halfImage; i += 4) {
+        // Red.
+        pixels[i] = 255;
+        // Green.
+        pixels[i + 1] = 0;
+        // Blue.
+        pixels[i + 2] = 0;
+        // Alpha.
+        pixels[i + 3] = 255;
+      }
+
+      // Update the canvas.
+      updatePixels();
+
+      describe('A red rectangle drawn above a gray rectangle.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a p5.Color object.
+      let pink = color(255, 102, 204);
+
+      // Load the pixels array.
+      loadPixels();
+
+      // Get the pixel density.
+      let d = pixelDensity();
+
+      // Calculate the halfway index in the pixels array.
+      let halfImage = 4 * (d * width) * (d * height / 2);
+
+      // Make the top half of the canvas red.
+      for (let i = 0; i < halfImage; i += 4) {
+        pixels[i] = red(pink);
+        pixels[i + 1] = green(pink);
+        pixels[i + 2] = blue(pink);
+        pixels[i + 3] = alpha(pink);
+      }
+
+      // Update the canvas.
+      updatePixels();
+
+      describe('A pink rectangle drawn above a gray rectangle.');
+    }
+    </code>
+    </div>
+class: p5
+type: 'Number[]'
+---
+
+
+# pixels
