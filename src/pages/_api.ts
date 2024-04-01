@@ -7,7 +7,7 @@ const curationId = "78544";
 // see https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
 export type OpenProcessingCurationResponse = ReadonlyArray<
   // for some reason these aren't present in the curation response
-  Omit<OpenProcessingSketchResponse, "instructions" | "license">
+  Omit<OpenProcessingSketchResponse, "instructions" | "license" | "createdOn">
 >;
 
 export const getCurationSketches =
@@ -33,6 +33,7 @@ export type OpenProcessingSketchResponse = {
   /** Sketch Creator's full name */
   fullname: string;
   submittedOn: string;
+  createdOn: string;
 };
 
 /**
