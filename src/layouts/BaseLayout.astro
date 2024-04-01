@@ -10,18 +10,20 @@ import "@styles/base.scss";
 interface BaseLayoutProps {
   title: string;
   className?: string;
-  variant: "root" | "item";
+  variant: "root" | "secondary";
+  localize?: boolean;
 }
 
 const {
   title,
   className = "",
   variant = "root",
+  localize = true,
 } = Astro.props as BaseLayoutProps;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
-const localizedTitle = t(title);
-const localizedSubtitle = t("briefPageDescriptions", title);
+const localizedTitle = localize ? t(title) : title;
+const localizedSubtitle = localize ? t("briefPageDescriptions", title) : "";
 ---
 
 <html>

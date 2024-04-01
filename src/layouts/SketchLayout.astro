@@ -1,15 +1,15 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { getSketch } from "../pages/_api";
-import { defaultLocale } from "../i18n/const";
 import LinkButton from "@components/LinkButton/index.astro";
 import { getCurrentLocale, useTranslations } from "../i18n/utils";
 
 interface Props {
   sketchId: string;
+  authorName: string;
 }
 
-const { sketchId } = Astro.props;
+const { sketchId, authorName } = Astro.props;
 const sketchInfo = await getSketch(sketchId);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -20,8 +20,9 @@ const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
 ---
 
 <BaseLayout
-  title={`${sketchInfo.title} ${sketchInfo.fullname}`}
+  title={`${sketchInfo.title} ${authorName}`}
   variant="secondary"
+  localize={false}
 >
   <p>{dateString}</p>
   <iframe

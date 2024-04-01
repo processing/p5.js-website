@@ -4,13 +4,14 @@ import { getCurationSketches } from "../_api";
 
 export async function getStaticPaths() {
   const sketches = await getCurationSketches();
-  return sketches.map((entry) => ({
-    params: { slug: entry.visualID },
-    props: {},
+  return sketches.map((sketch) => ({
+    params: { slug: sketch.visualID },
+    props: { authorName: sketch.fullname },
   }));
 }
 
 const { slug } = Astro.params;
+const { authorName } = Astro.props;
 ---
 
-<SketchLayout sketchId={slug} />
+<SketchLayout sketchId={slug} authorName={authorName} />
