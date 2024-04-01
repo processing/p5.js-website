@@ -1,16 +1,13 @@
 ---
 import CodeEmbed from "../components/CodeEmbed";
 import { getCurrentLocale, useTranslations } from "../i18n/utils";
+import { separateReferenceExamples } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 
 const { entry } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
-const examples = entry.data.example
-  .flatMap((example: string) => example.split("</div>"))
-  .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
-  .filter((cleanExample: string) => cleanExample);
-
+const examples = separateReferenceExamples(entry.data.example);
 const t = await useTranslations(currentLocale);
 ---
 
