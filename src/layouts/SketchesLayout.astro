@@ -1,4 +1,5 @@
 ---
+import { getCurrentLocale, useTranslations } from "../i18n/utils";
 import type { OpenProcessingCurationResponse } from "../pages/_api";
 import BaseLayout from "./BaseLayout.astro";
 
@@ -11,18 +12,20 @@ const makethumbnailUrl = (id: string) =>
   `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}.jpg`;
 
 const { entries, title } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
 ---
 
 <BaseLayout title={title} variant="secondary">
+  <p>{t("briefPageDescriptions", "Sketches Archive")}</p>
   <ul>
     {
       entries.map((entry) => (
         <li>
           <a href={`/sketches/${entry.visualID}`}>
             <img src={makethumbnailUrl(entry.visualID)} />
-            <span>
-              {entry.title} by {entry.fullname}
-            </span>
+            <span>{entry.title}</span>
+            <span>{entry.fullname}</span>
           </a>
         </li>
       ))
