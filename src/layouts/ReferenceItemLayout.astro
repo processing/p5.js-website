@@ -1,9 +1,34 @@
 ---
+import CodeEmbed from "../components/CodeEmbed";
+import { getCurrentLocale, useTranslations } from "../i18n/utils";
 import BaseLayout from "./BaseLayout.astro";
 
 const { entry } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const examples = entry.data.example
+  .flatMap((example: string) => example.split("</div>"))
+  .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
+  .filter((cleanExample: string) => cleanExample);
+
+const t = await useTranslations(currentLocale);
 ---
 
 <BaseLayout title={entry.data.title} variant="item">
   <div set:html={entry.data.description} class="[&_a]:underline" />
+  <h3>{t("Examples")}</h3>
+  {
+    examples.map((exampleCode: string) => {
+      return (
+        <div>
+          <CodeEmbed
+            client:load
+            initialValue={exampleCode}
+            previewable
+            editable
+          />
+        </div>
+      );
+    })
+  }
 </BaseLayout>
