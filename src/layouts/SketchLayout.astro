@@ -1,0 +1,19 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getSketch } from "../pages/_api";
+
+interface Props {
+  sketchId: string;
+}
+
+const { sketchId } = Astro.props;
+const sketchInfo = await getSketch(sketchId);
+---
+
+<BaseLayout title={sketchInfo.title} variant="secondary">
+  <iframe
+    src={`https://openprocessing.org/sketch/${sketchInfo.visualID}/embed/`}
+    width="400"
+    height="400"></iframe>
+  <p>{sketchInfo.instructions}</p>
+</BaseLayout>
