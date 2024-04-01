@@ -1,0 +1,80 @@
+---
+title: noiseDetail
+module: 수학
+submodule: 노이즈
+file: src/math/noise.js
+description: >
+  <p><a href="/reference/p5/noise">noise()</a> 함수에 의해 생성된 노이즈의 특성을 조정합니다.</p>
+
+  <p>Perlin 노이즈 값은 노이즈의 여러 층을 더함으로써 생성됩니다. 노이즈 층, 옥타브라고 불리는 것은 음악에서의 하모닉스 주법(Harmonics)와 유사합니다. 낮은 옥타브는 출력 신호에 더 많이 기여합니다. 이들은 노이즈의 전반적인 강도를 정의합니다. 높은 옥타브는 더 세밀한 디테일을 만들어 냅니다.</p>
+
+  <p>기본적으로, 노이즈 값은 네 개의 옥타브를 결합하여 생성됩니다. 각각의 더 높은 옥타브는 그 전의 옥타브에 비해 절반만큼(50%만큼 덜) 기여합니다. 
+
+  <code>noiseDetail()</code>은 옥타브의 수와 감쇠량을 변경합니다.
+  예를 들어, <code>noiseDetail(6, 0.25)</code>를 호출하면
+
+  <a href="/reference/p5/noise">noise()</a>는 여섯 개의 옥타브를 사용하게 됩니다. 각각의 더 높은 옥타브는 그 전의 옥타브에 비해 25%만큼(75% 덜) 기여할 것입니다. 
+  0과 1 사이의 감쇠값이 유효합니다.
+  하지만, 0.5보다 큰 감쇠값은 1보다 큰 노이즈 값을 만들어 낼 수 있습니다.</p>
+line: 331
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Set the noise level and scale.
+      let noiseLevel = 255;
+      let noiseScale = 0.02;
+
+      // Iterate from top to bottom.
+      for (let y = 0; y < 100; y += 1) {
+        // Iterate from left to right.
+        for (let x = 0; x < 50; x += 1) {
+          // Scale the input coordinates.
+          let nx = noiseScale * x;
+          let ny = noiseScale * y;
+
+          // Compute the noise value with six octaves
+          // and a low falloff factor.
+          noiseDetail(6, 0.25);
+          let c = noiseLevel * noise(nx, ny);
+
+          // Draw the left side.
+          stroke(c);
+          point(x, y);
+
+          // Compute the noise value with four octaves
+          // and a high falloff factor.
+          noiseDetail(4, 0.5);
+          c = noiseLevel * noise(nx, ny);
+
+          // Draw the right side.
+          stroke(c);
+          point(x + 50, y);
+        }
+      }
+
+      describe('Two gray cloudy patterns. The pattern on the right is cloudier than the pattern on the left.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: lod
+    description: |
+      <p>노이즈에 사용될 옥타브의 수</p>
+    type: Number
+  - name: falloff
+    description: |
+      <p>각 옥타브의 감쇠 계수</p>
+    type: Number
+chainable: false
+---
+
+
+# noiseDetail
