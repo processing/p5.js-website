@@ -1,0 +1,31 @@
+---
+import type { OpenProcessingCurationResponse } from "../pages/_api";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  entries: OpenProcessingCurationResponse;
+  title: string;
+}
+
+const makethumbnailUrl = (id: string) =>
+  `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}.jpg`;
+
+const { entries, title } = Astro.props;
+---
+
+<BaseLayout title={title} variant="secondary">
+  <ul>
+    {
+      entries.map((entry) => (
+        <li>
+          <a href={`/sketches/${entry.visualID}`}>
+            <img src={makethumbnailUrl(entry.visualID)} />
+            <span>
+              {entry.title} by {entry.fullname}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
