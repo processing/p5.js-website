@@ -19,3 +19,5 @@ export const contentTypes = [
   "sketches",
   "tutorials",
 ] as const;
+
+export const p5VersionForEmbeds = "1.9.1" as const;
