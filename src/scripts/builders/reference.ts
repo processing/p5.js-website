@@ -53,13 +53,18 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
   if (!doc || !doc.name) return;
 
   let docClass: string;
+  let sortedModule = "";
+
+  if (doc.module === "Constants") {
+    sortedModule = "constants";
+  }
   if ("class" in doc && doc.class) {
     docClass = doc.class;
   } else {
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
-  return path.join(prefix, docClass);
+  return path.join(prefix, docClass, sortedModule);
 };
 
 /* Adds the doc to the module path tree */
