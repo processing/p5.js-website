@@ -6,13 +6,18 @@ category: introduction
 featuredImage: ../images/featured/VarThumb.jpg
 featuredImageAlt: A person juggles three balls as a car travels past behind them. A painting of a nighttime landscape with a tree, cloud and crescent moon hangs in the background.
 relatedExamples:
-  - 11_3D/04_Filter_Shader
-  - 11_3D/05_Adjusting_Positions_With_A_Shader
-  - 11_3D/06_Framebuffer_Blur
+  - 02_Animation_And_Variables/00_Drawing_Lines
 relatedReferences:
-  - createFilterShader
-  - loadShader
-  - p5.Shader
+  - p5/mouseX
+  - p5/mouseY
+  - p5/string
+  - p5/number
+  - p5/let
+  - p5/random
+  - p5/line
+  - p5/triangle
+  - p5/frameCount
+  - p5/frameRate
 authors:
   - Layla Quiñones
 ---
@@ -32,7 +37,7 @@ In this tutorial you will:
 - Add both linear and random motion in a p5.js project
 
 
-# Prerequisites:
+## Prerequisites:
 
 - [Setting Up Your Environment](/tutorials/setting-up-your-environment)
 - [Get Started](/tutorials/get-started)
@@ -51,7 +56,7 @@ Before you begin, you should be able to:
 - Read and address [error messages](/tutorials/field-guide-to-debugging)
 
 
-# Step 1: Choose where to start<a id="step-1"></a>
+## Step 1: Choose where to start<a id="step-1"></a>
 
 Log in to the [p5.js Web Editor](https://editor.p5js.org/) and choose one of the following options:
 
@@ -68,11 +73,11 @@ Log in to the [p5.js Web Editor](https://editor.p5js.org/) and choose one of the
   - You can also open a new p5.js project without the template, name it “Animated Landscape,” and save it. 
     - Copy the following lines into the [`draw()`](/reference/p5/draw) function if you want to use the helper code:
 
-    ```js
-    //displays the x and y position of the mouse on the canvas
-    fill(255) //white text
-    text(`${mouseX}, ${mouseY}`, 20, 20);
-    ```
+      ```js
+      //displays the x and y position of the mouse on the canvas
+      fill(255) //white text
+      text(`${mouseX}, ${mouseY}`, 20, 20);
+      ```
 
 <Callout title="Tip">
 Click *Play* and check the box next to “Auto-refresh” on the [p5.js Web Editor](https://editor.p5js.org/) to continuously update the canvas as you add more code to your project. With this box checked, you won’t need to press the *Play* button every time you make changes to your sketch. 
@@ -89,14 +94,13 @@ function draw() {
   background(220);
   //Place code here
 
-  /* places the x and y position of the mouse
-  on the canvas as a coordinate pair x, y */
+  // places the x and y position of the mouse on the canvas
   fill(0)
-  text(`${mouseX}, ${mouseY}`, 20, 20);
+  text(\`\${mouseX}, \${mouseY}\`, 20, 20);
 }
 `} />
 
-The line of code `text(\`${mouseX}, ${mouseY}\`, 20, 20);` displays the x- and y-coordinates for your mouse pointer as a coordinate pair x, y. The first number, the value in the variable [mouseX](/reference/p5/mouseX), represents the x-coordinate of your mouse pointer as it moves across the canvas. The second number, the value in the variable [mouseY](/reference/p5/mouseY), represents the y-coordinate of the mouse pointer.
+The line of code ``text(`${mouseX}, ${mouseY}`, 20, 20);`` displays the x- and y-coordinates for your mouse pointer as a coordinate pair x, y. The first number, the value in the variable [mouseX](/reference/p5/mouseX), represents the x-coordinate of your mouse pointer as it moves across the canvas. The second number, the value in the variable [mouseY](/reference/p5/mouseY), represents the y-coordinate of the mouse pointer.
 
 
 <Callout title="Tip">
@@ -108,7 +112,7 @@ To keep this text shown, make sure this code appears on the last lines in [`draw
 Visit this [reference](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript#comments) or watch [this video](https://www.youtube.com/watch?v=xJcrPJuem5Q) to learn more about comments.
 
 
-#### Variables
+##### Variables
 
 Variables store values in them that we can use in our sketch. **Variables are very helpful when adding elements to your sketch that will change over time.** They can be used in calculations, messages, as function arguments, and so much more!
 
@@ -117,7 +121,7 @@ Variables store values in them that we can use in our sketch. **Variables are ve
 In the template above, you use [`mouseX`](/reference/p5/mouseX) and [`mouseY`](/reference/p5/mouseY) to print the x- and y-coordinates of the mouse on the canvas using the [`text()`](/reference/p5/text) function. Variables can be displayed on the canvas alongside text using the [`text()`](/reference/p5/text) function and [string interpolation](https://www.geeksforgeeks.org/string-interpolation-in-javascript/) (example 2).
 
 
-#### String Interpolation
+##### String Interpolation
 
 In [Get Started,](/tutorials/get-started) you learned that strings are [data types](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures) that are always surrounded by quotation marks (`""`). To use variables and strings together, we can use [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to help us! Template literals begin and end with backticks (`\`\``) instead of quotation marks (`""`). You can type any character in between the backticks to generate a string like in [this example](https://editor.p5js.org/Msqcoding/sketches/pfSJLvxOB). You can include a variable in the string using the `${}` placeholder, and by placing the name of the variable inside the curly brackets like in [this example](https://editor.p5js.org/Msqcoding/sketches/8sM-h5Hd9).
 
@@ -128,10 +132,10 @@ Variables with [numbers](/reference/p5/number) in them can be used as arguments 
 </Callout>
 
 
-# Step 2: Create a background landscape<a id="step-2"></a>
+## Step 2: Create a background landscape<a id="step-2"></a>
 
 - Color the background. 
-- Add and color landscape shapes (a sun or moon, mountains, buildings, houses, trees, etc.).
+- Add and color landscape shapes (a sun or moon, mountains, buildings, houses, trees, etc.)
 - Add comments that describe each section of code.
 
 See [Steps 4 - 6 in Get Started](/tutorials/get-started) for more information on how to use color and shapes on the canvas.
@@ -166,10 +170,9 @@ function draw() {
   fill('rgb(50,76,50)');
   rect(0,300, 400, 100);
 
-  //displays the x and y position of the mouse
-  on the canvas
+  //displays the x and y position of the mouse on the canvas
   fill(255) //white text
-  text(`mouseX: ${mouseX}, mouseY: ${mouseY}`, 20, 20);  
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);  
 }
 `} />
 
@@ -192,15 +195,15 @@ Visit the following resources to learn more about using shapes and colors in you
 Be sure to avoid common errors highlighted in the [Field Guide to Debugging](/tutorials/field-guide-to-debugging) and [this video](https://www.youtube.com/watch?v=LuGsp5KeJMM\&list=PLRqwX-V7Uu6Zy51Q-x9tMWIv9cueOFTFA\&index=6) from The Coding Train.
 
 
-# Step 3: Draw shapes using custom variables<a id="step-3"></a>
+## Step 3: Draw shapes using custom variables<a id="step-3"></a>
 
 - Place a white cloud in the sky on your canvas using the [`ellipse()`](/reference/p5/ellipse)` `method.
   - Add these lines of text directly under the code for the grass:
 
     ```js
-      //cloud
-      fill(255);
-      ellipse(50, 50, 80, 40);
+    //cloud
+    fill(255);
+    ellipse(50, 50, 80, 40);
     ```
 
 - Create a custom variable named `cloudOneX` and store the number 50 in it – this variable will store the value for the x-coordinate of the white cloud throughout the program.
@@ -257,7 +260,7 @@ function draw() {
 
   //displays the x and y position of the mouse on the canvas
   fill(255) //white text
-  text(`mouseX: ${mouseX}, mouseY: ${mouseY}`, 20, 20);
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
 } 
 `} />
 
@@ -268,7 +271,7 @@ function draw() {
 In the code above, the cloud is drawn using [`ellipse()`](/reference/p5/ellipse) with `cloudOneX` (which stores the number 50) as its x-coordinate, 50 as a y-coordinate, a width of 80 pixels, and a height of 40 pixels.
 
 
-#### Custom Variables
+##### Custom Variables
 
 Custom variables store values, like [numbers](/reference/p5/number) or [strings](/reference/p5/string), that can change later. Since custom variables store values that can change, we can use them to change the x- or y-coordinates and size of shapes on the canvas. When the x- or y-coordinate of a shape changes, it appears to be moving. In this step:
 
@@ -285,7 +288,7 @@ Custom variables store values, like [numbers](/reference/p5/number) or [strings]
 Finally, you can use the variable name `cloudOneX` as the argument for the x-coordinate in [`ellipse()`](/reference/p5/ellipse). Since the variable `cloudOneX` has the number 50 stored in it, we can use `cloudOneX` as an argument in any function that requires a number. Here, you used it as the x-coordinate of the white cloud by replacing the number 50 with the variable name `cloudOneX`: `ellipse(cloudOneX, 50, 80, 40);`.
 
 
-#### Variable Scope
+##### Variable Scope
 
 A *variable’s scope* describes where the variable can be used in a program. It is often useful to declare custom variables outside of [`setup()`](/reference/p5/setup) and [`draw()`](/reference/p5/draw) because it allows the variables to have a *global scope*. A variable with a *global scope* can be used anywhere in the program. Global variables are often declared on the very first lines of code. This helps programmers get an understanding of what is changing, makes the code easier to maintain, and avoids confusion further down in code. Built-in variables such as [`mouseX`](/reference/p5/mouseX), [`mouseY`](/reference/p5/mouseY), [`width`](/reference/p5/width), and [`height`](/reference/p5/height) do not have to be declared because they are built into the p5.js library, and you can use them anywhere in your code because they have global scope! 
 
@@ -294,7 +297,7 @@ Variables declared inside of other functions (like [`draw()`](/reference/p5/draw
 Visit these p5.js reference pages to learn more about declaring, initializing, and using custom variables: [`let`](/reference/p5/let), [numbers](/reference/p5/number), & [strings](/reference/p5/string).
 
 
-#### Using Variables for Animation
+##### Using Variables for Animation
 
 A shape on the canvas appears to be moving when its x- or y-coordinates change. We can use variables in place for the x- or y-coordinates of anything that appears on the canvas. In the example:
 
@@ -305,7 +308,7 @@ A shape on the canvas appears to be moving when its x- or y-coordinates change. 
 In the next step, we will change the value in `cloudOneX` so that the cloud appears to be moving horizontally on the canvas.
 
 
-# Step 4: Add horizontal motion,<a id="step-4"></a>
+## Step 4: Add horizontal motion,<a id="step-4"></a>
 
 - In the line under the white cloud, add these lines of code:
 
@@ -355,20 +358,19 @@ function draw() {
   //resets at left edge
   cloudOneX = frameCount % width
 
-  //displays the x and y position of the mouse
-  on the canvas
+  //displays the x and y position of the mouse on the canvas
   fill(255) //white text
-  text(`mouseX: ${mouseX}, mouseY: ${mouseY}`, 20, 20);  
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);  
 }
 `} />
 
 
-In the step above, you set `cloudOneX` to the value of `frameCount \% width`. Recall that [`draw()`](/reference/p5/draw) runs over and over again, in a loop:
+In the step above, you set `cloudOneX` to the value of `frameCount % width`. Recall that [`draw()`](/reference/p5/draw) runs over and over again, in a loop:
 
 - [`frameCount`](/reference/p5/frameCount) is a built-in variable that saves the number of times [`draw()`](/reference/p5/draw) runs. This value continues to increase as long as your program is running.
   - See [this example](https://editor.p5js.org/p5Master718/sketches/hT1KJ-RF4) to view the values stored in [`frameCount`](/reference/p5/frameCount).
 - [`width`](/reference/p5/width) is a built-in variable that stores the width of the canvas defined in [`createCanvas()`](/reference/p5/createCanvas). We can see that in this example, the [`width`](/reference/p5/width) is 400 and the [`height`](/reference/p5/height) is 400.
-- [`\%`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) is the remainder operator (also referred to as modulo) – it divides a number on the left ([`frameCount`](/reference/p5/frameCount)) by a number on the right (400), and returns the remainder. Refer to the table below, which displays how [`frameCount`](/reference/p5/frameCount) and `frameCount \% width` change while the program is running (**when [`width`](/reference/p5/width) is 400**):
+- [`%`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) is the remainder operator (also referred to as modulo) – it divides a number on the left ([`frameCount`](/reference/p5/frameCount)) by a number on the right (400), and returns the remainder. Refer to the table below, which displays how [`frameCount`](/reference/p5/frameCount) and `frameCount % width` change while the program is running (**when [`width`](/reference/p5/width) is 400**):
 
 <table>
 
@@ -382,7 +384,7 @@ In the step above, you set `cloudOneX` to the value of `frameCount \% width`. Re
 
 <th>
 
-`frameCount \% width`
+`frameCount % width`
 
 </th>
 
@@ -502,14 +504,14 @@ In the step above, you set `cloudOneX` to the value of `frameCount \% width`. Re
 
 </table>
 
-- For `cloudOneX = frameCount \% width`:
+- For `cloudOneX = frameCount % width`:
   - If [`frameCount`](/reference/p5/frameCount) is less than 400, `frameCount % width` will return the value in [`frameCount`](/reference/p5/frameCount). 
     - For example: when [`frameCount`](/reference/p5/frameCount) is 40, then `frameCount % width` will return 40 and store it in `cloudOneX`.` `This moves the white cloud to the x-coordinate 40. 
   - As [`frameCount`](/reference/p5/frameCount) increases, new values will be stored in `cloudOneX`, and the white cloud will appear to move to the right (a higher x-coordinate).
-  - When [`frameCount`](/reference/p5/frameCount) is equal to [`width`](/reference/p5/width), `frameCount \% width` will return 0. This will reset the position of the cloud back to the x-coordinate 0 – the left edge of the canvas.
+  - When [`frameCount`](/reference/p5/frameCount) is equal to [`width`](/reference/p5/width), `frameCount % width` will return 0. This will reset the position of the cloud back to the x-coordinate 0 – the left edge of the canvas.
   - When [`frameCount`](/reference/p5/frameCount) is greater than [`width`](/reference/p5/width), `frameCount % width` will return the values in [`frameCount`](/reference/p5/frameCount) again.
-    - For example: when [`frameCount`](/reference/p5/frameCount) is 440, then `frameCount \% width` will return 40 and store it in `cloudOneX`.
-  - When [`frameCount`](/reference/p5/frameCount) reaches any multiple of [`width`](/reference/p5/width), `frameCount \% width` will be 0 and it will appear as if the cloud has reset its position back to the left edge of the canvas (where the x-coordinate is 0).
+    - For example: when [`frameCount`](/reference/p5/frameCount) is 440, then `frameCount % width` will return 40 and store it in `cloudOneX`.
+  - When [`frameCount`](/reference/p5/frameCount) reaches any multiple of [`width`](/reference/p5/width), `frameCount % width` will be 0 and it will appear as if the cloud has reset its position back to the left edge of the canvas (where the x-coordinate is 0).
 
 When the program runs:
 
@@ -518,16 +520,16 @@ When the program runs:
 - The first time [`draw()`](/reference/p5/draw) runs:
   - the background and all shapes on the landscape are drawn on the canvas;
   - the cloud is drawn with an x-coordinate `cloudOneX` (which stores the number 50);
-  - `cloudOneX` stores the remainder in the operation `frameCount \% width`.
+  - `cloudOneX` stores the remainder in the operation `frameCount % width`.
 - The second time [`draw()`](/reference/p5/draw) runs:
   - all shapes are covered when the background and landscape are drawn on the canvas again;
   - a new cloud is drawn on top with the new value for `cloudOneX`, creating the illusion that it has moved from an x-coordinate of 0 to 400, then resets;
   - this pattern continues until [`draw()`](/reference/p5/draw) is stopped.
 
-See [this example](https://editor.p5js.org/p5Master718/sketches/wpAhQK9WN), which displays values for [`frameCount`](/reference/p5/frameCount) and `frameCount \% width` as shapes move across the canvas. Visit the [Remainder reference on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) to learn more!
+See [this example](https://editor.p5js.org/p5Master718/sketches/wpAhQK9WN), which displays values for [`frameCount`](/reference/p5/frameCount) and `frameCount % width` as shapes move across the canvas. Visit the [Remainder reference on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) to learn more!
 
 
-#### Animation and draw()
+##### Animation and draw()
 
 The [`draw()`](/reference/p5/draw) function runs code repeatedly and behaves much like a flipbook when animating a series of still drawings. 
 
@@ -541,120 +543,82 @@ Each time [`draw()`](/reference/p5/draw) reads the lines of code for the backgro
 - These examples show how new shapes are drawn at a new location every time the [`draw()`](/reference/p5/draw) function runs: [horizontal motion](https://editor.p5js.org/p5Master718/sketches/hSv6uLFvv) | [vertical motion](https://editor.p5js.org/p5Master718/sketches/Xk_MUZ9yT) | [random motion](https://editor.p5js.org/Msqcoding/sketches/yLtbuqPIG)
   - In these examples, [`background()`](/reference/p5/background) is removed to eliminate the “flipbook” illusion that [`draw()`](/reference/p5/draw) provides. Now we can see every new shape drawn because the background is not there to cover it.
 
-Visit the p5.js reference for [`draw()`](/reference/p5/draw)` `for more information.
+Visit the p5.js reference for [`draw()`](/reference/p5/draw) for more information.
 
 
-#### `frameRate()`, `frameCount` & `console.log()`
+##### `frameRate()`, `frameCount` and `console.log()`
 
-The number of times [`draw()`](/reference/p5/draw) runs is stored in the variable [`frameCount`](/reference/p5/frameCount), and the number of times [`draw()`](/reference/p5/draw) runs in 1 second is known as the *frame rate*. By default, the frame rate is set by your computer, which is about 60 for most computers. This indicates that the code appearing in` `[`draw()`](/reference/p5/draw) will run about 60 times in a second.  
+The number of times [`draw()`](/reference/p5/draw) runs is stored in the variable [`frameCount`](/reference/p5/frameCount), and the number of times [`draw()`](/reference/p5/draw) runs in 1 second is known as the *frame rate*. By default, the frame rate is set by your computer, which is about 60 for most computers. This indicates that the code appearing in [`draw()`](/reference/p5/draw) will run about 60 times in a second.  
 
-We can set and display the value for [`draw()`](/reference/p5/draw)’s *frame rate* using the [`frameRate()`](/reference/p5/frameRate)` `function. We can view the value for the frame rate and [`frameCount`](/reference/p5/frameCount) using [`console.log()`](/reference/console/log) to display the values and messages in the console.
+We can set and display the value for [`draw()`](/reference/p5/draw)’s *frame rate* using the [`frameRate()`](/reference/p5/frameRate) function. We can view the value for the frame rate and [`frameCount`](/reference/p5/frameCount) using [`console.log()`](/reference/console/log) to display the values and messages in the console.
 
 - [This example](https://editor.p5js.org/p5Master718/sketches/7j0u_pljk) shows a random circle animation and prints the frame rate in the console. 
 - [This example](https://editor.p5js.org/p5Master718/sketches/CH2Nmbzwz) shows a random circle animation, sets the frame rate to a new value, and displays it in the console.
 
-For more information, visit the following p5.js reference pages: [f`rameRate()`](/reference/p5/frameRate)`  |  `[`frameCount`](/reference/p5/frameCount)`  |  `[`console.log()`](/reference/console/log)
+For more information, visit the following p5.js reference pages: [`frameRate()`](/reference/p5/frameRate)  |  [`frameCount`](/reference/p5/frameCount)  |  [`console.log()`](/reference/console/log)
 
 
-# Step 5: Add more moving clouds & change frame rate
+## Step 5: Add more moving clouds & change frame rate<a id="step-5"></a>
 
-- Slow down the animation by setting the frame rate to 10:
+- Slow down the animation by setting the frame rate to 15:
   - Add this in the line under [`background()`](/reference/p5/background): `frameRate(15); //set frame rate to 15`
-- Repeat [Step 4](https://docs.google.com/document/d/14aXzLhuSJv9RXVrayPgv_EVPTsTVbxl7n1Fo3vXXabM/edit#heading=h.8t2tbcn2hswh) to add more clouds to your landscape with different x and y values. 
+- Repeat [Step 4](#step-4) to add more clouds to your landscape with different x and y values. 
   - You can add this text under the first cloud:
 
-```
-  ellipse(cloudOneX - 40, 100, 60, 20);
-  ellipse(cloudOneX + 20, 150, 40, 10);
-```
+    ```js
+    ellipse(cloudOneX - 40, 100, 60, 20);
+    ellipse(cloudOneX + 20, 150, 40, 10);
+    ```
 
 Your code can look like this:
 
----
-
-```
+<EditableSketch code={`
 //custom variable for x coordinate of clouds
-
 let cloudOneX = 50;
 
 function setup() {
-
   createCanvas(400, 400);
-
 }
 
 function draw() {
-
   background('navy'); //navy background
-
   frameRate(15); //set frame rate to 15
-
   
-
   //moon
-
   fill(255);
-
   stroke(0);
-
   circle(350, 50, 100);
 
   //overlap by navy circle for crescent moon
-
   stroke("navy");   
-
   fill("navy");
-
   circle(320,50,100);
 
   //big gray mountains
-
   stroke(0);
-
   fill(80);
-
   triangle(-40,300,75,100, 250,300);
-
   triangle(100,300,300,100, 500,300);
 
-  
-
   //grass
-
   fill('rgb(50,76,50)');
-
   rect(0,300, 400, 100);
 
-  
-
   //clouds
-
   fill(255);
-
   ellipse(cloudOneX, 50, 80, 40);
-
   ellipse(cloudOneX - 40, 100, 60, 20);
-
   ellipse(cloudOneX + 20, 150, 40, 10);
 
   //sets the x coordinate to the frame count
-
   //resets at left edge
-
   cloudOneX = frameCount % width
 
   //displays the x and y position of the mouse on the canvas
-
   fill(255) //white text
-
-  text(`mouseX: ${mouseX}, mouseY: ${mouseY}`, 20, 20);
-
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
 }
-
-	
-```
-
----
+`} />
 
 In the step above, you added:
 
@@ -663,349 +627,243 @@ In the step above, you added:
 - A third cloud at an x-coordinate `cloudOneX + 20` and y-coordinate `150`
   - This draws a third cloud 20 pixels to the right and 70 pixels below the first cloud.
 
-Here, we used `cloudOneX `as a *reference point*` `– the point used as a guide when placing shapes on the canvas that move together. 
+Here, we used `cloudOneX` as a *reference point* – the point used as a guide when placing shapes on the canvas that move together. 
 
 - [This example](https://editor.p5js.org/p5Master718/sketches/FiePhOrbF) illustrates how a reference point (x, y) can be used to change the location of multiple shapes at once.
 
 
-# Step 6: Add vertical motion
+## Step 6: Add vertical motion
 
 Add a tree (or another object) to the landscape that moves vertically (up or down).
 
 - Draw a tree on the canvas.
   - Add this text in between the code where the clouds are drawn and the code where variables increase:
 
-```
-//growing tree
-//trunk
-fill("rgb(118,80,72)");
-rect(40, 270, 15, 50);
-//leaves
-fill("green");
-triangle(25, 270, 45, 240, 70, 270);
-```
+    ```js
+    //growing tree
+    //trunk
+    fill("rgb(118,80,72)");
+    rect(40, 270, 15, 50);
+    //leaves
+    fill("green");
+    triangle(25, 270, 45, 240, 70, 270);
+    ```
 
-- Subtract the top angle of a triangle that draws leaves (240) by `frameCount % 290 `– the value stored in `cloudOneX`:
-  - Modify the value for y<sub>2</sub> in the triangle above by subtracting it by [`frameCount`](/reference/p5/framecount)` % 290`:
+- Subtract the top angle of a triangle that draws leaves (240) by `frameCount % 290` – the value stored in `cloudOneX`:
+  - Modify the value for y<sub>2</sub> in the triangle above by subtracting it by `frameCount % 290`:
 
-```
-//leaves
-fill("green");
-triangle(25, 270, 45, 240 - frameCount % 290, 70, 270);
-```
+    ```js
+    //leaves
+    fill("green");
+    triangle(25, 270, 45, 240 - frameCount % 290, 70, 270);
+    ```
 
 - Add more trees that grow the same way.
   - Add this line of text under the first tree:
 
-```
- //trunk
- fill("rgb(118,80,72)");
- rect(340, 330, 15, 50);
- //leaves
- fill("green");
- triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
-```
+    ```js
+    //trunk
+    fill("rgb(118,80,72)");
+    rect(340, 330, 15, 50);
+    //leaves
+    fill("green");
+    triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
+    ```
 
 Your code can look like this:
 
----
-
-```
+<EditableSketch code={`
 //custom variable for x coordinate of clouds
-
 let cloudOneX = 50;
 
 function setup() {
-
   createCanvas(400, 400);
-
 }
 
 function draw() {
-
   background('navy'); //navy background
-
   frameRate(15); //set frame rate to 15
 
-  
-
   //moon
-
   fill(255);
-
   stroke(0);
-
   circle(350, 50, 100);
 
   //overlap by navy circle for crescent moon
-
   stroke("navy");   
-
   fill("navy");
-
   circle(320,50,100);
 
   //big gray mountains
-
   stroke(0);
-
   fill(80);
-
   triangle(-40,300,75,100, 250,300);
-
   triangle(100,300,300,100, 500,300);
 
-  
-
   //grass
-
   fill('rgb(50,76,50)');
-
   rect(0,300, 400, 100);
 
-  
-
   //clouds
-
   fill(255);
-
   ellipse(cloudOneX, 50, 80, 40);
-
   ellipse(cloudOneX - 40, 100, 60, 20);
-
   ellipse(cloudOneX + 20, 150, 40, 10);
 
   //growing trees
 
   //trunk
-
   fill("rgb(118,80,72)");
-
   rect(40, 270, 15, 50);
 
   //leaves
-
   fill("green");
-
   triangle(25, 270, 45, 240 - frameCount % 2900,70, 270);
 
   //trunk
-
   fill("rgb(118,80,72)");
-
   rect(340, 330, 15, 50);
 
   //leaves
-
   fill("green");
-
   triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
 
   //sets the x coordinate to the frame count
-
   //resets at left edge
 
   cloudOneX = frameCount % width
 
-  //displays the x and y position of the mouse
-
-  on the canvas
-
+  //displays the x and y position of the mouse on the canvas
   fill(255) //white text
-
-  text(`mouseX: ${mouseX}, mouseY: ${mouseY}`, 20, 20);
-
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
 }
-
-	
-```
-
----
+`} />
 
 In this step, you:
 
 - added a tree made of a rectangle (tree trunk) and a triangle (leaves);
-- modified the value for the y-coordinate of the top corner of the triangle (`y2`) by subtracting it by [`frameCount`](/reference/p5/framecount)` % 290 (`see [triangle()](/reference/p5/triangle) Diagram for a reminder of `y2`)`:`
+- modified the value for the y-coordinate of the top corner of the triangle (`y2`) by subtracting it by `frameCount % 290` (see [triangle()](/reference/p5/triangle) Diagram for a reminder of `y2`):
   - Since you want the tree leaves to grow, the top corner of the triangle needs to move up on the canvas each time [`draw()`](/reference/p5/draw) runs. As seen in [this example](https://editor.p5js.org/p5Master718/sketches/605MEWNxh), the y-coordinate (`y2`) of the point that moves up on the canvas decreases. 
-  - To achieve this motion, you modified the value for `y2` by subtracting `240 - `[`frameCount`](/reference/p5/framecount)` % 290`. This decreases `y2` by the remainder when [`frameCount`](/reference/p5/framecount) is divided by 290. 
-  - As you saw in [Step 5](https://docs.google.com/document/d/14aXzLhuSJv9RXVrayPgv_EVPTsTVbxl7n1Fo3vXXabM/edit#heading=h.s78uuj5sxk1z), each time the [`draw()`](/reference/p5/draw) function runs, the value returned by [`frameCount`](/reference/p5/framecount)`  % 290  `increases by `1` so that `y2 `also changes.
-    - Before [`draw()`](/reference/p5/draw) runs, `y2 `is `240`.
-    - The first time [`draw()`](/reference/p5/draw) runs, the value from [`frameCount`](/reference/p5/framecount)` % 290` is `1`, and `y2 `becomes `239`.
-    - The second time [`draw()`](/reference/p5/draw) runs, the value from [`frameCount`](/reference/p5/framecount)`  % 290  `is` 2`, and `y2 `becomes `238`.
-    - The third time [`draw()`](/reference/p5/draw) runs, the value in [`frameCount`](/reference/p5/framecount)`  % 290  `is` 3`, and `y2 `becomes `237`.
-    - Once [`frameCount`](/reference/p5/framecount) becomes a number that is a multiple of `290`,` `the value in [`frameCount`](/reference/p5/framecount)`  % 290  `is` 0`, and `y2 `is set back to its original value of `240`.
+  - To achieve this motion, you modified the value for `y2` by subtracting `240 - frameCount % 290`. This decreases `y2` by the remainder when [`frameCount`](/reference/p5/framecount) is divided by 290. 
+  - As you saw in [Step 5](#step-5), each time the [`draw()`](/reference/p5/draw) function runs, the value returned by `frameCount % 290` increases by `1` so that `y2` also changes.
+    - Before [`draw()`](/reference/p5/draw) runs, `y2` is `240`.
+    - The first time [`draw()`](/reference/p5/draw) runs, the value from `frameCount % 290` is `1`, and `y2` becomes `239`.
+    - The second time [`draw()`](/reference/p5/draw) runs, the value from `frameCount % 290` is `2`, and `y2` becomes `238`.
+    - The third time [`draw()`](/reference/p5/draw) runs, the value in `frameCount % 290` is `3`, and `y2` becomes `237`.
+    - Once [`frameCount`](/reference/p5/framecount) becomes a number that is a multiple of `290`, the value in `frameCount % 290` is `0`, and `y2` is set back to its original value of `240`.
     - This pattern continues until [`draw()`](/reference/p5/draw) is stopped.
 
-Visit the following p5.js reference pages for more information: [`frameRate()`](/reference/p5/frameRate)`  |  `[`frameCount`](/reference/p5/frameCount) | [`triangle()`](/reference/p5/triangle)
+Visit the following p5.js reference pages for more information: [`frameRate()`](/reference/p5/frameRate)  |  [`frameCount`](/reference/p5/frameCount) | [`triangle()`](/reference/p5/triangle)
 
 
-# Step 7: Add random motion
+## Step 7: Add random motion<a id="step-7"></a>
 
 - Add shooting stars that appear at random locations in the sky.
-  - Declare two variables,` lineXone` and `lineYone`, and initialize them with `0` by adding these lines of text before [`setup()`](/reference/p5/setup):
+  - Declare two variables, `lineXone` and `lineYone`, and initialize them with `0` by adding these lines of text before [`setup()`](/reference/p5/setup):
 
-```
-//custom variable for shooting stars
-let lineXone = 0;
-let lineYone = 0;
-```
+    ```js
+    //custom variable for shooting stars
+    let lineXone = 0;
+    let lineYone = 0;
+    ```
 
 - Draw a line that will represent a shooting star by adding this text under `frameRate(15)`:
 
-```
- //shooting star
- stroke("yellow");
- line(lineXone, lineYone, lineXone + 30, lineYone - 30);
-```
+  ```js
+  //shooting star
+  stroke("yellow");
+  line(lineXone, lineYone, lineXone + 30, lineYone - 30);
+  ```
 
-- Set `lineXone` and `lineYone` to random values by adding this text after the line of code where `cloudOneX `is assigned to` frameCount % width`:
+- Set `lineXone` and `lineYone` to random values by adding this text after the line of code where `cloudOneX` is assigned to `frameCount % width`:
 
-```
- //set shooting star to random location
- lineXone = random(0, width);
- lineYone = random(0, height/2);
-```
+  ```js
+  //set shooting star to random location
+  lineXone = random(0, width);
+  lineYone = random(0, height/2);
+  ```
 
 - Delete the lines of code at the bottom of `draw()` that show the x- and y-coordinates of the mouse pointer to view your final project.
 - Share with your friends!
 
 Your code should look like this:
 
----
-
-```
+<EditableSketch code={`
 //custom variable for x coordinate of clouds
-
 let cloudOneX = 50;
 
 //custom variable for shooting stars
-
 let lineXone = 0;
-
 let lineYone = 0;
 
 function setup() {
-
   createCanvas(400, 400);
-
 }
 
 function draw() {
-
   background('navy'); //navy background
-
   frameRate(15); //set frame rate to 15
 
   //shooting star
-
   stroke("yellow");
-
   line(lineXone, lineYone, lineXone + 30, lineYone - 30);
 
-  
-
   //moon
-
   fill(255);
-
   stroke(0);
-
   circle(350, 50, 100);
 
   //overlap by navy circle for crescent moon
-
   stroke("navy");   
-
   fill("navy");
-
   circle(320,50,100);
 
   //big gray mountains
-
   stroke(0);
-
   fill(80);
-
   triangle(-40,300,75,100, 250,300);
-
   triangle(100,300,300,100, 500,300);
 
-  
-
   //grass
-
   fill('rgb(50,76,50)');
-
   rect(0,300, 400, 100);
 
-  
-
   //clouds
-
   fill(255);
-
   ellipse(cloudOneX, 50, 80, 40);
-
   ellipse(cloudOneX - 40, 100, 60, 20);
-
   ellipse(cloudOneX + 20, 150, 40, 10);
 
   //growing trees
-
   //trunk
-
   fill("rgb(118,80,72)");
-
   rect(40, 270, 15, 50);
 
   //leaves
-
   fill("green");
-
   triangle(25, 270, 45, 240 - frameCount % 2900,70, 270);
 
   //trunk
-
   fill("rgb(118,80,72)");
-
   rect(340, 330, 15, 50);
 
   //leaves
-
   fill("green");
-
   triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
 
   //sets the x coordinate to the frame count
-
   //resets at left edge
-
   cloudOneX = frameCount % width
 
- //set shooting star to random location
-
- lineXone = random(0, width);
-
- lineYone = random(0, height/2); 
-
+  //set shooting star to random location
+  lineXone = random(0, width);
+  lineYone = random(0, height/2); 
 }
-
-	
-```
-
----
+`} />
 
 In the step above, you created two new variables, `lineXone` and `lineYone`, which are used to draw a line representing a shooting star in the sky. The line is drawn using the [`line()`](/reference/p5/line) function (see diagram below).
 
-[`line()`](/reference/p5/line) Diagram
-
-![A diagram of a line with endpoints (x1,y1) and (x2, y2). The syntax for the line function is displayed above the diagram as: “line(x1, y1, x2, y2);”.](https://lh7-us.googleusercontent.com/9utO1mNtYYbBmLIp5ETv2RsrILKvy7OKoeQwFdQdc2BehfL2a18JmJklw6fxsXQ3AwvZhfTIJpb6awck0oYQAyLJKYcW6R_LfbgIyApqNUW78Lp81-3Wj6p3H4F7WOnhsYl4Kc9JgKwkGoFxA3LjBE4)
-
-[Link to image](https://drive.google.com/file/d/1id4Mu0NrufxwdWvfZFtkCcMxtZw3JZxN/view?usp=sharing)
-
-[Link to p5.js sketch](https://editor.p5js.org/p5Master718/sketches/aVbny4TU0)
-
-Alt text: A diagram of a line with endpoints (x1,y1) and (x2, y2). The syntax for the line function is displayed above the diagram as: “line(x1, y1, x2, y2);”.
+![A diagram of a line with endpoints (x1,y1) and (x2, y2). The syntax for the line function is displayed above the diagram as: “line(x1, y1, x2, y2);”.](../images/introduction/line-diagram.png)
 
 [`line()`](/reference/p5/line) needs 4 numbers to appear on the canvas. The first two numbers are the coordinates of the first point (x<sub>1</sub>,y<sub>1</sub>) – x<sub>1 </sub>is the x-coordinate and y<sub>1 </sub>the y-coordinate. The last two numbers are the coordinates of the second point (x<sub>2</sub>,y<sub>2</sub>), where x<sub>2 </sub>is the x-coordinate and y<sub>2</sub> is the y-coordinate. 
 
@@ -1032,29 +890,29 @@ When [`draw()`](/reference/p5/draw) runs:
 - The background is set.
 - The shooting star is placed on the canvas along with the rest of the landscape, and `cloudOneX` is changed.
 - `lineXone` is changed to a random number between `0` and [`width`](/reference/p5/width) (so that it always appears on the canvas).
-- `lineYone `is changed to a random number between `0 `and` `[`height`](/reference/p5/height)`/2`.
-  - [`height`](/reference/p5/height)`/2 `indicates that the shooting star can only appear on the top half of the canvas.
+- `lineYone` is changed to a random number between `0` and [`height`](/reference/p5/height)`/2`.
+  - [`height`](/reference/p5/height)`/2` indicates that the shooting star can only appear on the top half of the canvas.
 
 When [`draw()`](/reference/p5/draw) runs again, the same process occurs, and the shooting star is placed at a new random location within the top half of the canvas. This continues until [`draw()`](/reference/p5/draw) is stopped.
 
 
-#### Error Messages
+##### Error Messages
 
-p5.js uses the console to communicate with programmers about lines of code that it does not understand. These are called [error messages.](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors) Programmers use this to locate and fix “*bugs*” in their code. Read the [Field Guide to Debugging](https://docs.google.com/document/d/1Uc5Uey4_UDgix6-O0ez-pcRD-FZQSOaRD9TAGZYzD6c/edit?usp=sharing) or watch [this video](https://www.youtube.com/watch?v=LuGsp5KeJMM\&list=PLRqwX-V7Uu6Zy51Q-x9tMWIv9cueOFTFA\&index=6) to learn more!
-
-
-# Next Step
-
-- [Conditions and Interactivity](https://docs.google.com/document/d/1n5y27rdwp6hvZ296WZ5WiorQOcfd0aVW6exb8RIm4Io/edit#heading=h.57fjv6kgd059)
+p5.js uses the console to communicate with programmers about lines of code that it does not understand. These are called [error messages.](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors) Programmers use this to locate and fix “*bugs*” in their code. Read the [Field Guide to Debugging](/tutorials/field-guide-to-debugging) or watch [this video](https://www.youtube.com/watch?v=LuGsp5KeJMM\&list=PLRqwX-V7Uu6Zy51Q-x9tMWIv9cueOFTFA\&index=6) to learn more!
 
 
-# Previous Steps
+## Next Step
 
-- [Get Started](https://docs.google.com/document/u/0/d/1q5x5QiPm8N6yRdjks1B-8KQBCzK9vTWQtEvxKiP4o_c/edit)
-- [Setting Up Your Environment](https://docs.google.com/document/u/0/d/12AAGiuV1hS2BGacyQdFX6hH4FjrhbVGG7oJ7XYSQHbE/edit)
+- [Conditions and Interactivity](/tutorials/conditions-and-interactivity)
 
 
-# Resources
+## Previous Steps
+
+- [Get Started](/tutorials/get-started)
+- [Setting Up Your Environment](/tutorials/setting-up-your-environment)
+
+
+## Resources
 
 - [Coding Train Video Tutorials: ](https://thecodingtrain.com/tracks/code-programming-with-p5-js)
   - [1.5 - Errors](https://www.youtube.com/watch?v=LuGsp5KeJMM)
@@ -1063,21 +921,7 @@ p5.js uses the console to communicate with programmers about lines of code that 
   - [2.2 - Variables](https://www.youtube.com/watch?v=dRhXIIFp-ys)
   - [2.4 - random()](https://www.youtube.com/watch?v=POn4cZ0jL-o)
 - [Grow Flipbook Video](https://www.youtube.com/watch?v=J2xrN5WQuxw)
-* [p5.js reference pages](https://p5js.org/reference/)
-  - [mouseX](/reference/p5/mouseX)
-  - [mouseY](/reference/p5/mouseY)
-  - [width](/reference/p5/width)
-  - [height](/reference/p5/height)
-  - [string](/reference/p5/string)
-  - [number](/reference/p5/number)
-  - [let](/reference/p5/let)
-  - [random()](/reference/p5/random)
-  - [line()](/reference/p5/line)
-  - [triangle()](/reference/p5/triangle)
-  - [frameCount](/reference/p5/frameCount)
-  - [frameRate()](/reference/p5/frameRate)
-* [p5.js Overview](https://github.com/processing/p5.js/wiki/p5.js-overview)
 * [Guidelines for writing JavaScript code](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript#comments)
 * [Template Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
-* [Remainder (%)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder)
+* [Remainder (`%`)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder)
 * [String Interpolation in JavaScript](https://www.geeksforgeeks.org/string-interpolation-in-javascript/)

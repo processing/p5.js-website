@@ -15,7 +15,11 @@ import { CodeFrame } from "./frame";
 export const CodeEmbed = (props) => {
   const [rendered, setRendered] = useState(false);
   const initialCode = props.initialValue ?? "";
-  const [codeString, setCodeString] = useState(initialCode);
+  // Source code from Google Docs sometimes uses a unicode non-breaking space
+  // instead of a normal one, but these break the code frame, so we replace them here.
+  // We also replace them in CodeFrame, but replacing here too ensures people don't
+  // accidentally copy-and-paste them out of the embedded editor.
+  const [codeString, setCodeString] = useState(initialCode.replace(/\u00A0/g, ' '));
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
   useEffect(() => {
