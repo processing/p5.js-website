@@ -1,0 +1,26 @@
+---
+interface Props {
+  name: string;
+  params: ReferenceParam[];
+}
+
+import { type ReferenceParam } from "@/types/parsers.interface.ts";
+import CodeContainer from "@components/CodeContainer/index.astro";
+import { CopyCodeButton } from "../CopyCodeButton";
+const { params, name } = Astro.props;
+const formattedParams = params
+  ?.map((param: ReferenceParam) =>
+    param.optional ? `[${param.name}]` : `${param.name}`
+  )
+  .join(", ");
+const signature = `${name}(${formattedParams})`;
+---
+
+<CodeContainer>
+  <span>
+    {signature}
+  </span>
+  <div class="absolute top-xs right-xs">
+    <CopyCodeButton client:load textToCopy={signature} />
+  </div>
+</CodeContainer>

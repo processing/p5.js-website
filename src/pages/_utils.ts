@@ -148,3 +148,15 @@ export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
  */
 export const getLibraryLink = (library: CollectionEntry<"libraries">) =>
   library.data.websiteUrl ?? library.data.sourceUrl;
+
+/**
+ * Some reference examples have multiple examples in one string separated by <div></div>
+ * This function separates the examples into individual strings
+ * @param examples Reference example strings from MDX
+ * @returns The examples separated into individual strings
+ */
+export const separateReferenceExamples = (examples: string[]): string[] =>
+  examples
+    ?.flatMap((example: string) => example.split("</div>"))
+    .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
+    .filter((cleanExample: string) => cleanExample);
