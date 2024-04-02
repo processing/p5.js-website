@@ -18,14 +18,22 @@ export type OpenProcessingCurationResponse = ReadonlyArray<{
   fullname: string;
 }>;
 
-export const getCurationSketches =
-  async (): Promise<OpenProcessingCurationResponse> => {
-    const response = await fetch(
-      `${openProcessingEndpoint}curation/${curationId}/sketches`,
-    );
-    const payload = await response.json();
-    return payload as OpenProcessingCurationResponse;
-  };
+/**
+ * Get basic info for the sketches contained in a Curation
+ *
+ * @param limit max number of sketches to return
+ * @returns sketches
+ */
+export const getCurationSketches = async (
+  limit?: number,
+): Promise<OpenProcessingCurationResponse> => {
+  const limitParam = limit ? `limit=${limit}` : "";
+  const response = await fetch(
+    `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
+  );
+  const payload = await response.json();
+  return payload as OpenProcessingCurationResponse;
+};
 
 // see https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
 export type OpenProcessingSketchResponse = {
