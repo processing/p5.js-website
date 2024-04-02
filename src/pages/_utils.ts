@@ -155,6 +155,9 @@ export const getExampleCategory = (slug: string): string =>
 export const normalizeReferenceRoute = (route: string): string =>
   removeNestedReferencePaths(removeLocaleAndExtension(route));
 
+export const normalizeReferenceRoute = (route: string): string =>
+  removeLocaleAndExtension(route).replace("constants/", "");
+
 export const removeLocaleAndExtension = (id: string): string =>
   removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
 
