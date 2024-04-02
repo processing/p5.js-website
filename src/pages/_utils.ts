@@ -112,6 +112,9 @@ export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
     : slug;
 };
 
+export const normalizeReferenceRoute = (route: string): string =>
+  removeLocaleAndExtension(route).replace("constants/", "");
+
 export const removeLocaleAndExtension = (id: string): string =>
   removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
 

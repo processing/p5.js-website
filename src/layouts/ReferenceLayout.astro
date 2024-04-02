@@ -1,8 +1,8 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import { removeLocaleAndExtension } from "@pages/_utils";
-import { categories } from '../content/reference/config'
+import { normalizeReferenceRoute } from "@pages/_utils";
+import { categories } from "../content/reference/config";
 
 type ReferenceEntry = CollectionEntry<"reference">;
 
@@ -33,13 +33,13 @@ const categoryData = categories.map((category) => {
         // Ignore classes here, they will be added later
         .filter((e) => e.data.submodule && !e.data.isConstructor)
         .map((e) => e.data.submodule)
-    ).values()
+    ).values(),
   ].sort();
 
   // Find the classes in this module. These will be turned into subcategories.
-  const classes = directEntries.filter(
-    (e) => e.data.isConstructor && e.data.module === category
-  ).sort((a, b) => strCompare(a.data.title, b.data.title));
+  const classes = directEntries
+    .filter((e) => e.data.isConstructor && e.data.module === category)
+    .sort((a, b) => strCompare(a.data.title, b.data.title));
 
   // Return the data for each subcategory
   const subcatData = [
@@ -51,7 +51,7 @@ const categoryData = categories.map((category) => {
           !e.data.submodule &&
           !e.data.isConstructor &&
           !classes.some((c) => c.data.title === e.data.class)
-      )
+      ),
     },
     ...subcats.map((subcat) => ({
       name: subcat,
@@ -60,60 +60,64 @@ const categoryData = categories.map((category) => {
         (e) =>
           e.data.submodule === subcat &&
           !e.data.isConstructor &&
+          e.data.description !== "" &&
           !classes.some((c) => c.data.title === e.data.class)
-      )
+      ),
     })),
     ...classes.map((entry) => ({
       name: entry.data.title,
       entry, // Include the class entry itself so we can make the header a link
-      entries: directEntries.filter(
-        (e) => e.data.class === entry.data.title
-      )
-    }))
-  ]
+      entries: directEntries.filter((e) => e.data.class === entry.data.title),
+    })),
+  ];
 
   return {
     name: category,
-    subcats: subcatData
-  }
+    subcats: subcatData,
+  };
 });
-
 ---
 
 <BaseLayout title="Reference">
   {
     categoryData.map((category) => (
       <>
-        <h3>{category.name}<a id={category.name}></a></h3>
-        {
-          category.subcats.map((subcat) => (
-            <>
-              {subcat.name && (
-                subcat.entry ? (
-                  <h4>
-                    <a id={subcat.name} href={`/reference/${removeLocaleAndExtension(subcat.entry.id)}`}>
-                      {subcat.name}
-                    </a>
-                  </h4>
-                ) : (
-                  <h4>{subcat.name}<a id={subcat.name}></a></h4>
-                )
-              )}
-              <div class="content-grid">
-                {
-                  subcat.entries.map((refEntry) => (
-                    <div class="col-span-3 w-full overflow-hidden">
-                      <a href={`/reference/${removeLocaleAndExtension(refEntry.id)}`}>
-                        {/* Needs set:html to render the entries for e.g. the > operator */}
-                        <span set:html={refEntry.data.title} />
-                      </a>
-                    </div>
-                  ))
-                }
-              </div>
-            </>
-          ))
-        }
+        <h3>
+          {category.name}
+          <a id={category.name} />
+        </h3>
+        {category.subcats.map((subcat) => (
+          <>
+            {subcat.name &&
+              (subcat.entry ? (
+                <h4>
+                  <a
+                    id={subcat.name}
+                    href={`/reference/${normalizeReferenceRoute(subcat.entry.id)}`}
+                  >
+                    {subcat.name}
+                  </a>
+                </h4>
+              ) : (
+                <h4>
+                  {subcat.name}
+                  <a id={subcat.name} />
+                </h4>
+              ))}
+            <div class="content-grid">
+              {subcat.entries.map((refEntry) => (
+                <div class="col-span-3 w-full overflow-hidden">
+                  <a
+                    href={`/reference/${normalizeReferenceRoute(refEntry.id)}`}
+                  >
+                    {/* Needs set:html to render the entries for e.g. the > operator */}
+                    <span set:html={refEntry.data.title} />
+                  </a>
+                </div>
+              ))}
+            </div>
+          </>
+        ))}
       </>
     ))
   }
