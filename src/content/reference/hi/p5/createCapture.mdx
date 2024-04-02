@@ -1,0 +1,129 @@
+---
+title: createCapture
+module: डोम
+submodule: डोम
+file: src/dom/dom.js
+description: >
+  <p>एक <code><video></code> तत्व बनाता है जो वेबकैम और माइक्रोफ़ोन से ऑडियो/वीडियो स्ट्रीम "कैप्चर" करता है | </p>
+
+  <p><code>createCapture()</code>  एक नया <a href="#/p5.MediaElement">p5.MediaElement</a>  ऑब्जेक्ट देता है। वीडियो डिफ़ॉल्ट रूप से दिखाए जाते हैं। उन्हें  <code>capture.hide()</code> कॉल करके छिपाया जा सकता है और <a href="./image">image()</a> का उपयोग करके कैनवास पर उकेरा जा सकता है | </p>
+
+  <p>पहला पैरामीटर, <code>type</code>, वैकल्पिक है। यह कैप्चर का प्रकार निर्धारित करता है |  डिफ़ॉल्ट रूप से, <code>createCapture()</code> ऑडियो और वीडियो दोनों को कैप्चर करता है। यदि <code>VIDEO</code> पास करते है, जैसे <code>createCapture(VIDEO)</code> में, केवल वीडियो कैप्चर होगा। यदि <code>AUDIO</code> पास करते है, जैसे कि <code>createCapture(AUDIO)</code>, में, केवल ऑडियो कैप्चर होगा। स्ट्रीम को अनुकूलित करने के लिए एक बाधा वस्तु को भी पारित किया जा सकता है।संभावित संपत्तियों के लिए <a href="http://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints"
+  target="_blank"> W3C दस्तावेज़ </a> देखें। अलग-अलग ब्राउज़र अलग-अलग गुणों का समर्थन करते हैं | </p>
+
+  <p>"flipped" प्रॉपर्टी एक वैकल्पिक प्रॉपर्टी है जिसे <code>{flipped:true}</code> सेट किया जा सकता है वीडियो आउटपुट को मिरर करने के लिए। अगर यह सत्य है तो इसका मतलब है कि वीडियो फ़्लिप कारा हुआ होगा और यदि कुछ भी उल्लेख नहीं किया गया है तो डिफ़ॉल्ट रूप से यह <code>false</code>होगा | </p>
+
+  <p>दूसरा पैरामीटर, <code>callback</code>, वैकल्पिक है। यह फ़ंक्शन तब कॉल किया जाता है जब कैप्चर उपयोग के लिए तैयार हो | कॉलबैक फ़ंक्शन में एक पैरामीटर, <code>stream</code>, होना चाहिए, जो एक <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream" target="_blank">MediaStream</a> ऑब्जेक्ट है।</p>
+
+  <p>ध्यान दें: <code>createCapture()</code>  केवल स्थानीय स्तर पर स्केच चलाने पर या <code>HTTPS</code> का उपयोग करने पर काम करता है | और अधिक जानकारी के लिए <a href="http://stackoverflow.com/questions/34197653/getusermedia-in-chrome-47-without-using-https"
+  target="_blank">यहाँ</a> और <a
+  href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia"
+  target="_blank">यहाँ</a> जाए |</p>
+line: 2276
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div class='notest'>
+    <code>
+    function setup() {
+      noCanvas();
+
+      // Create the video capture.
+      createCapture(VIDEO);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture and hide the element.
+      capture = createCapture(VIDEO);
+      capture.hide();
+
+      describe('A video stream from the webcam with inverted colors.');
+    }
+
+    function draw() {
+      // Draw the video capture within the canvas.
+      image(capture, 0, 0, width, width * capture.height / capture.width);
+
+      // Invert the colors in the stream.
+      filter(INVERT);
+    }
+    </code>
+    </div>
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture with mirrored output.
+      capture = createCapture(VIDEO,{ flipped:true });
+      capture.size(100,100);
+
+      describe('A video stream from the webcam with flipped or mirrored output.');
+    }
+
+    </code>
+    </div>
+
+    <div class='notest norender'>
+    <code>
+    function setup() {
+      createCanvas(480, 120);
+
+      // Create a constraints object.
+      let constraints = {
+        video: {
+          mandatory: {
+            minWidth: 1280,
+            minHeight: 720
+          },
+          optional: [{ maxFrameRate: 10 }]
+        },
+        audio: false
+      };
+
+      // Create the video capture.
+      createCapture(constraints);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: type
+    description: |
+      <p>कैप्चर का प्रकार, ऑडियो या वीडियो, या एक बाधा वस्तु। डिफ़ॉल्ट रूप से वीडियो और ऑडियो दोनों स्ट्रीम कैप्चर की जाती हैं।</p>
+    type: स्ट्रिंग | कांस्टेंट | ऑब्जेक्ट
+    optional: true
+  - name: flipped
+    description: >
+      <p><code>{flipped:true}</code> द्वारा कैप्चरिंग वीडियो को पलटें और आउटपुट को मिरर करें।डिफ़ॉल्ट रूप से यह असत्य है | </p>
+    type: ऑब्जेक्ट
+    optional: true
+  - name: callback
+    description: |
+      <p>स्ट्रीम लोड होने पर कॉल होने वाला फंक्शन।</p>
+    type: फंक्शन
+    optional: true
+return:
+  description: नया <a href='#/p5.MediaElement'>p5.MediaElement</a> ऑब्जेक्ट।
+  type: p5.MediaElement
+chainable: false
+---
+
+
+# createCapture
