@@ -53,13 +53,18 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
   if (!doc || !doc.name) return;
 
   let docClass: string;
+  let sortedModule = "";
+
+  if (doc.module === "Constants") {
+    sortedModule = "constants";
+  }
   if ("class" in doc && doc.class) {
     docClass = doc.class;
   } else {
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
-  return path.join(prefix, docClass);
+  return path.join(prefix, docClass, sortedModule);
 };
 
 /* Adds the doc to the module path tree */
@@ -120,42 +125,52 @@ const addDocToModulePathTree = (
       modulePathTree.modules[modulePath][doc.name] = itemPath;
     }
   }
-  if (doc?.description) {
-    const $ = load(doc.description, { xmlMode: true });
+};
 
-    // Modify the href attributes of <a> tags so that authors don't
-    // have to worry about locale prefixes
-    $("a").each(function () {
-      let href = $(this).attr("href");
-      if (!href) return;
-      // If the href starts with the class prefix
-      if (href.startsWith("#/p5.")) {
-        const parts = href.split("/");
-        // Check to see if the last part of the href is a method class
-        if (parts[parts.length - 1].indexOf("p5.") === -1) {
-          // If it is a method class, replace the prefix with /reference/
-          href = href.replace("#/", "/reference/");
-        } else {
-          // If it is a class itself, replace the prefix with /reference/p5/
-          href = href.replace("#/", "/reference/p5/");
-        }
-      } else if (href.startsWith("#/")) {
-        // If the href starts with #/, replace it with /reference/
-        href = href.replace("#/", "/reference/");
-      } else if (href.startsWith("/reference/#")) {
-        // p5 sound sometimes uses /reference/#/ which is incorrect
-        // Replace it with /reference/
-        href = href.replace("/reference/#", "/reference/");
-      }
-      $(this).attr("href", href);
-    });
-
-    // Initially encode the document to XML
-    const output = $.xml();
-
-    // Decode entities using the 'he' library to revert escaped punctuation
-    doc.description = he.decode(output);
+/**
+ * Corrects relative links in the description of a doc
+ * @param description doc.description from the parsed JSON
+ * @returns description with relative links corrected
+ */
+const correctRelativeLinksInDescription = (description: string | undefined) => {
+  if (!description) {
+    return "";
   }
+
+  const $ = load(description, { xmlMode: true });
+
+  // Modify the href attributes of <a> tags so that authors don't
+  // have to worry about locale prefixes
+  $("a").each(function () {
+    let href = $(this).attr("href");
+    if (!href) return;
+    // If the href starts with the class prefix
+    if (href.startsWith("#/p5.")) {
+      const parts = href.split("/");
+      // Check to see if the last part of the href is a method class
+      if (parts[parts.length - 1].indexOf("p5.") === -1) {
+        // If it is a method class, replace the prefix with /reference/
+        href = href.replace("#/", "/reference/");
+      } else {
+        // If it is a class itself, replace the prefix with /reference/p5/
+        href = href.replace("#/", "/reference/p5/");
+      }
+    } else if (href.startsWith("#/")) {
+      // If the href starts with #/, replace it with /reference/
+      href = href.replace("#/", "/reference/");
+    } else if (href.startsWith("/reference/#")) {
+      // p5 sound sometimes uses /reference/#/ which is incorrect
+      // Replace it with /reference/
+      href = href.replace("/reference/#", "/reference/");
+    }
+    $(this).attr("href", href);
+  });
+
+  // Initially encode the document to XML
+  const output = $.xml();
+
+  // Decode entities using the 'he' library to revert escaped punctuation
+  return he.decode(output);
 };
 
 /* Type guards to check the type of the doc */
@@ -324,6 +339,7 @@ const convertDocsToMDX = async (
             return;
           }
           addDocToModulePathTree(doc, savePath);
+          doc.description = correctRelativeLinksInDescription(doc.description);
           const mdx = await convertToMDX(doc);
 
           return mdx ? { mdx, savePath, name: doc.name } : null;
