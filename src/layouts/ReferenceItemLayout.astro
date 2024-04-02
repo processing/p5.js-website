@@ -20,42 +20,46 @@ const t = await useTranslations(currentLocale);
         set:html={entry.data.description}
         class="[&_a]:text-type-magenta mb-xl"
       />
-      <div class="mb-xl">
-        <h3>{t("Examples")}</h3>
-        {
-          examples.map((exampleCode: string) => {
-            return (
-              <div>
-                <CodeEmbed
-                  client:load
-                  initialValue={exampleCode}
-                  previewable
-                  editable
-                />
-              </div>
-            );
-          })
-        }
-      </div>
+      {
+        examples && (
+          <div class="mb-xl">
+            <h3>{t("Examples")}</h3>
+            {examples.map((exampleCode: string) => {
+              return (
+                <div>
+                  <CodeEmbed
+                    client:load
+                    initialValue={exampleCode}
+                    previewable
+                    editable
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
       <div class="mb-xl">
         <h3>{t("Syntax")}</h3>
         <MethodSignature params={entry.data.params} name={entry.data.title} />
       </div>
-      <div class="mb-xl">
-        <h3>{t("Parameters")}</h3>
-        {
-          entry.data.params?.map((param: ReferenceParam) => (
-            <div class="grid grid-cols-9 gap-[40px] text-body">
-              <h4 class="col-span-1">{param.name}</h4>
-              <span
-                class="col-span-3 [&_p]:m-0"
-                set:html={param.description}
-                class="[&_a]:underline"
-              />
-            </div>
-          ))
-        }
-      </div>
+      {
+        entry.data.params && (
+          <div class="mb-xl">
+            <h3>{t("Parameters")}</h3>
+            {entry.data.params?.map((param: ReferenceParam) => (
+              <div class="grid grid-cols-9 gap-[40px] text-body">
+                <h4 class="col-span-1">{param.name}</h4>
+                <span
+                  class="col-span-3 [&_p]:m-0"
+                  set:html={param.description}
+                  class="[&_a]:underline"
+                />
+              </div>
+            ))}
+          </div>
+        )
+      }
     </div>
   </div>
 </BaseLayout>

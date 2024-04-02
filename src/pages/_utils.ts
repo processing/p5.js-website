@@ -154,6 +154,6 @@ export const getLibraryLink = (library: CollectionEntry<"libraries">) =>
  */
 export const separateReferenceExamples = (examples: string[]): string[] =>
   examples
-    .flatMap((example: string) => example.split("</div>"))
+    ?.flatMap((example: string) => example.split("</div>"))
     .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
     .filter((cleanExample: string) => cleanExample);
