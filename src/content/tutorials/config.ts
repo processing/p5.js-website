@@ -1,7 +1,13 @@
 import { z, defineCollection } from "astro:content";
 import { relatedContent } from "../shared";
 
-const categories = ["introduction", "webgl", "web-design", "advanced"] as const;
+const categories = [
+  "introduction",
+  "webgl",
+  "web-design",
+  "accessibility",
+  "advanced",
+] as const;
 
 /**
  * Content collection for the Sketches showcase section of the site.
