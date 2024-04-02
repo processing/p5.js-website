@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { getSketch } from "@/src/api/OpenProcessing";
+import { getSketch, makeSketchLinkUrl } from "@/src/api/OpenProcessing";
 import LinkButton from "@components/LinkButton/index.astro";
 import { getCurrentLocale, useTranslations } from "../i18n/utils";
 
@@ -31,12 +31,15 @@ const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
     height="400"></iframe>
   <p>{sketchInfo.description}</p>
   <p>{sketchInfo.instructions}</p>
-  <LinkButton>{t("Show Code")}</LinkButton>
-  <LinkButton>OpenProcessing</LinkButton>
+  <LinkButton variant="code" url={makeSketchLinkUrl(sketchInfo.visualID)}
+    >{t("Show Code")}</LinkButton
+  >
+  <LinkButton variant="link" url="https://openprocessing.org"
+    >OpenProcessing</LinkButton
+  >
   <p>
-    This <a href={`https://openprocessing.org/sketch/${sketchInfo.visualID}`}
-      >sketch</a
-    > is ported from the <a href="https://openprocessing.org">OpenProcessing</a>
+    This <a href={makeSketchLinkUrl(sketchInfo.visualID)}>sketch</a> is ported from
+    the <a href="https://openprocessing.org">OpenProcessing</a>
     sketch archive.
   </p>
   <h2>{t("More Sketches")}</h2>

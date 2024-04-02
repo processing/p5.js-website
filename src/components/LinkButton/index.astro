@@ -1,5 +1,18 @@
 ---
-interface Props {}
+import { Icon } from "../Icon";
+interface Props {
+  variant?: "link" | "code" | "bare";
+  url: string;
+}
+
+const { variant = "bare", url } = Astro.props;
 ---
 
-<a class="outline p-2"><slot /></a>
+<a class="outline p-2 flex flex-nowrap space-x-2 w-fit" href={url}>
+  <slot />
+  {
+    variant !== "bare" ? (
+      <Icon kind={variant === "link" ? "arrow" : "code-brackets"} />
+    ) : null
+  }
+</a>

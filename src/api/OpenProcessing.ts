@@ -64,5 +64,8 @@ export const getSketch = async (
   return payload as OpenProcessingSketchResponse;
 };
 
+export const makeSketchLinkUrl = (id: string) =>
+  `https://openprocessing.org/sketch/${id}`;
+
 export const makethumbnailUrl = (id: string) =>
   `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}.jpg`;
