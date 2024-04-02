@@ -1,9 +1,65 @@
 ---
+import CodeEmbed from "@components/CodeEmbed";
+import { getCurrentLocale, useTranslations } from "@i18n/utils";
+import { separateReferenceExamples } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
+import MethodSignature from "@components/MethodSignature/index.astro";
+import type { ReferenceParam } from "@/types/parsers.interface";
 
 const { entry } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const examples = separateReferenceExamples(entry.data.example);
+const t = await useTranslations(currentLocale);
 ---
 
-<BaseLayout title={entry.data.title} variant="secondary">
-  <div set:html={entry.data.description} class="[&_a]:underline" />
+<BaseLayout title={entry.data.title} variant="item">
+  <div class="content-grid mt-0">
+    <div class="col-span-9">
+      <div
+        set:html={entry.data.description}
+        class="[&_a]:text-type-magenta mb-xl"
+      />
+      {
+        examples && (
+          <div class="mb-xl">
+            <h3>{t("Examples")}</h3>
+            {examples.map((exampleCode: string) => {
+              return (
+                <div>
+                  <CodeEmbed
+                    client:load
+                    initialValue={exampleCode}
+                    previewable
+                    editable
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      <div class="mb-xl">
+        <h3>{t("Syntax")}</h3>
+        <MethodSignature params={entry.data.params} name={entry.data.title} />
+      </div>
+      {
+        entry.data.params && (
+          <div class="mb-xl">
+            <h3>{t("Parameters")}</h3>
+            {entry.data.params?.map((param: ReferenceParam) => (
+              <div class="grid grid-cols-9 gap-[40px] text-body">
+                <h4 class="col-span-1">{param.name}</h4>
+                <span
+                  class="col-span-3 [&_p]:m-0"
+                  set:html={param.description}
+                  class="[&_a]:underline"
+                />
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
 </BaseLayout>
