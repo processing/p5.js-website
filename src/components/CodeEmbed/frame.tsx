@@ -30,7 +30,7 @@ ${code.css || ""}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${code.js || ""}</script>
 <script src="${p5LibraryUrl}"></script>
-`;
+`.replace(/\u00A0/g, ' ');
 
 export interface CodeFrameProps {
   jsCode: string;
