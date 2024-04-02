@@ -24,5 +24,4 @@ export type ExampleDocContentItem = AstroBaseContentType<ExampleData>;
  */
 export type ArchiveCollectionEntry =
   | CollectionEntry<"contributor-docs">
-  | CollectionEntry<"past-events">
-  | CollectionEntry<"sketches">;
+  | CollectionEntry<"past-events">;

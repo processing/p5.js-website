@@ -55,3 +55,6 @@ export const getSketch = async (
   const payload = await response.json();
   return payload as OpenProcessingSketchResponse;
 };
+
+export const makethumbnailUrl = (id: string) =>
+  `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}.jpg`;
