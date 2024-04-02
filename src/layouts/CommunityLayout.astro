@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { getLibraryLink, removeLocaleAndExtension } from "../pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import { Image } from "astro:assets";
+import { getCurrentLocale, useTranslations } from "@i18n/utils";
 
 interface Props {
   sketches: CollectionEntry<"sketches">[];
@@ -11,10 +12,12 @@ interface Props {
 }
 
 const { sketches, libraries, pastEvents } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
 ---
 
 <BaseLayout title="Community">
-  <h2>Sketches</h2>
+  <h2>{t("Sketches")}</h2>
   {
     sketches.map((entry) => (
       <li>
@@ -32,7 +35,7 @@ const { sketches, libraries, pastEvents } = Astro.props;
   }
   <a href="/sketches">See Sketches Archive</a>
 
-  <h2>Libraries</h2>
+  <h2>{t("Libraries")}</h2>
   {
     libraries.map((entry) => (
       <li>
@@ -43,7 +46,7 @@ const { sketches, libraries, pastEvents } = Astro.props;
 
   <a href="/libraries">See Libraries Archive</a>
 
-  <h2>Past Events</h2>
+  <h2>{t("Events")}</h2>
   {
     pastEvents.map((entry) => (
       <li>
