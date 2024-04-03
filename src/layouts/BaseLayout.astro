@@ -1,5 +1,5 @@
 ---
-import Footer from "@/src/components/Footer/index.astro";
+import Footer from "@components/Footer/index.astro";
 import Nav from "@components/Nav/index.astro";
 import Settings from "@components/Settings/index.astro";
 import RootPageHeader from "@components/RootPageHeader/index.astro";
@@ -7,17 +7,13 @@ import ItemPageHeader from "@components/ItemPageHeader/index.astro";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
 import "@styles/base.scss";
 
-interface BaseLayoutProps {
+interface Props {
   title: string;
   className?: string;
-  variant: "root" | "item";
+  variant?: "root" | "item";
 }
 
-const {
-  title,
-  className = "",
-  variant = "root",
-} = Astro.props as BaseLayoutProps;
+const { title, className = "", variant = "root" } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
 const localizedTitle = t(title);

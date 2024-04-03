@@ -1,0 +1,30 @@
+---
+import {
+  makeThumbnailUrl,
+  type OpenProcessingCurationResponse,
+} from "../api/OpenProcessing";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  entries: OpenProcessingCurationResponse;
+  title: string;
+}
+
+const { entries, title } = Astro.props;
+---
+
+<BaseLayout title={title} variant="root">
+  <ul>
+    {
+      entries.map((entry) => (
+        <li>
+          <a href={`/sketches/${entry.visualID}`}>
+            <img src={makeThumbnailUrl(entry.visualID)} />
+            <div>{entry.title}</div>
+            <div>{entry.fullname}</div>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

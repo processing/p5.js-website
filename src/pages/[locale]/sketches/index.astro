@@ -1,22 +1,23 @@
 ---
+import SketchesLayout from "@/src/layouts/SketchesLayout.astro";
 import { nonDefaultSupportedLocales } from "@i18n/const";
-import ArchiveLayout from "@layouts/ArchiveLayout.astro";
-import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import { getCurationSketches } from "@/src/api/OpenProcessing";
 
 export async function getStaticPaths() {
+  const sketches = await getCurationSketches();
   const pages = nonDefaultSupportedLocales.map(async (locale) => ({
     params: {
       locale,
     },
     props: {
-      entries: await getCollectionInLocaleWithFallbacks("sketches", locale),
+      sketches,
     },
   }));
 
   return await Promise.all(pages);
 }
 
-const { entries } = Astro.props;
+const { sketches } = Astro.props;
 ---
 
-<ArchiveLayout title="Community" entries={entries} />
+<SketchesLayout title="Sketches" entries={sketches} />
