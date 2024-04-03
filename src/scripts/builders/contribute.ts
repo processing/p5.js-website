@@ -1,6 +1,5 @@
-import { readdir } from "fs/promises";
+import { readdir, rm } from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 import {
   cloneLibraryRepo,
   copyDirectory,
@@ -10,7 +9,7 @@ import {
   repoRootPath,
   rewriteRelativeMdLinks,
   writeFile,
-} from "./utils";
+} from "../utils";
 import type { Dirent } from "fs";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
@@ -18,17 +17,19 @@ import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
+import { nonDefaultSupportedLocales } from "@/src/i18n/const";
 
-/* Absolute path to the folder this file is in */
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /* Repo to pull the contributor documentation from */
 const docsRepoUrl = "https://github.com/processing/p5.js.git";
 /* Where to clone the repo to */
-const clonedRepoPath = path.join(__dirname, "../../in/p5.js/");
+const clonedRepoPath = path.join(repoRootPath, "in/p5.js/");
 /* Absolute path to docs (within the cloned repo) */
 const sourceDirectory = path.join(clonedRepoPath, "contributor_docs/");
 /* Where the docs will be output for the website */
-const outputDirectory = path.join(__dirname, "../content/contributor-docs/");
+const outputDirectory = path.join(
+  repoRootPath,
+  "src/content/contributor-docs/",
+);
 /* Name of the folder within `sourceDirectory` folder where static assets are found */
 const assetsSubFolder = "images";
 /* Base URL to refer to assets from final mdx docs*/
@@ -43,7 +44,7 @@ const assetsOutputDirectory = path.join(
 /* Directories that are translations
  * TODO: tie this to supported languages in astro config
  */
-const langDirs = ["ar", "es", "hi", "ko", "pt-br", "sk", "zh"];
+const langDirs = nonDefaultSupportedLocales;
 
 /**
  * Moves a markdown file to a new location, converting into MDX along the way
@@ -75,9 +76,11 @@ const convertMdtoMdx = async (
   // this means the read file failed for some reason
   if (contents === undefined) return;
 
-  const contentWithRewrittenLinksAndComments = rewriteRelativeImageLinks(
-    rewriteRelativeMdLinks(contents),
-    assetsOutputBaseUrl,
+  const contentWithRewrittenLinksAndComments = convertMarkdownCommentsToMDX(
+    rewriteRelativeImageLinks(
+      rewriteRelativeMdLinks(contents),
+      assetsOutputBaseUrl,
+    ),
   );
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
 
@@ -148,6 +151,14 @@ export const rewriteRelativeImageLinks = (
   });
 };
 
+export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
+  const regexPattern: RegExp = /<!--([\S\s]*?)-->/g;
+  return markdownText.replace(
+    regexPattern,
+    (match, commentContent) => `{/*${commentContent}*/}`,
+  );
+};
+
 /**
  * Moves a list of files or a folder of files to a new location,
  * converting all .md files into .mdx
@@ -183,6 +194,17 @@ const buildContributorDocs = async () => {
 
   await cloneLibraryRepo(clonedRepoPath, docsRepoUrl);
 
+  // Clean out previous files
+  console.log("Cleaning out current content collection...");
+  await Promise.all(
+    langDirs.map((lang) =>
+      rm(path.join(outputDirectory, lang), {
+        recursive: true,
+        force: true,
+      }),
+    ),
+  );
+
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
 
@@ -207,7 +229,7 @@ const buildContributorDocs = async () => {
       console.debug(`Moving regular folder into 'en' (${tlf.name})`);
       await moveContentDirectory(tlf, path.join(outputDirectory, "en", base));
     } else if (!isDirectory && ext === ".md") {
-      console.debug(`Converting Markdown file into MDC in 'en' (${tlf.name})`);
+      console.debug(`Converting Markdown file into MDX in 'en' (${tlf.name})`);
       await convertMdtoMdx(fullFilePath, path.join(outputDirectory, "en"));
     } else {
       console.debug(`Copying file into 'en' (${tlf.name})`);
