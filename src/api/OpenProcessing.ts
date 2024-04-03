@@ -34,7 +34,8 @@ export type OpenProcessingCurationResponse = ReadonlyArray<{
  * @returns sketches
  */
 export const getCurationSketches = async (
-  limit?: number,
+  // TODO: Remove when we have real data
+  limit: number = 25,
 ): Promise<OpenProcessingCurationResponse> => {
   const limitParam = limit ? `limit=${limit}` : "";
   const response = await fetch(
