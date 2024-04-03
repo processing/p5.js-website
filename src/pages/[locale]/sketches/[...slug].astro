@@ -1,39 +1,23 @@
 ---
+import SketchLayout from "@/src/layouts/SketchLayout.astro";
 import { nonDefaultSupportedLocales } from "@i18n/const";
-import BaseLayout from "@layouts/BaseLayout.astro";
-import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
-import { removeLocalePrefix } from "@i18n/utils";
+import { getCurationSketches } from "@/src/api/OpenProcessing";
 
 export async function getStaticPaths() {
+  const sketches = await getCurationSketches();
   const entries = await Promise.all(
     nonDefaultSupportedLocales.map(async (locale) => {
-      const localeEntries = await getCollectionInLocaleWithFallbacks(
-        "sketches",
-        locale
-      );
-      return localeEntries.map((entry) => ({
-        params: { locale, slug: removeLocalePrefix(entry.id) },
-        props: { entry },
+      return sketches.map((sketch) => ({
+        params: { locale, slug: sketch.visualID },
+        props: { authorName: sketch.fullname },
       }));
     })
   );
 
   return entries.flat();
 }
-
-const { entry } = Astro.props;
-const { title, author, embed, license, relatedSketches } = entry.data;
+const { slug } = Astro.params;
+const { authorName } = Astro.props;
 ---
 
-<BaseLayout title={title}>
-  <iframe src={embed.url} width={embed.width} height={embed.height}></iframe>
-
-  By {author.name}, licensed as {license.name}
-
-  <h2>Related Sketches</h2>
-
-  <ul>
-    {/* TODO: make this into a proper link */}
-    {relatedSketches?.map((relEx) => <li>{relEx.id}</li>)}
-  </ul>
-</BaseLayout>
+<SketchLayout sketchId={slug} authorName={authorName} />

@@ -1,0 +1,41 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getSketch, makeSketchLinkUrl } from "@/src/api/OpenProcessing";
+import LinkButton from "@components/LinkButton/index.astro";
+import { getCurrentLocale, useTranslations } from "../i18n/utils";
+
+interface Props {
+  sketchId: string;
+  authorName: string;
+}
+
+const { sketchId, authorName } = Astro.props;
+const sketchInfo = await getSketch(sketchId);
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
+const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
+  currentLocale
+);
+---
+
+<BaseLayout title={`${sketchInfo.title}\n${authorName}`} variant="item">
+  <p>{dateString}</p>
+  <iframe
+    src={`https://openprocessing.org/sketch/${sketchInfo.visualID}/embed/`}
+    width="400"
+    height="400"></iframe>
+  <p>{sketchInfo.description}</p>
+  <p>{sketchInfo.instructions}</p>
+  <LinkButton variant="code" url={makeSketchLinkUrl(sketchInfo.visualID)}
+    >{t("Show Code")}</LinkButton
+  >
+  <LinkButton variant="link" url="https://openprocessing.org"
+    >OpenProcessing</LinkButton
+  >
+  <p>
+    This <a href={makeSketchLinkUrl(sketchInfo.visualID)}>sketch</a> is ported from
+    the <a href="https://openprocessing.org">OpenProcessing</a>
+    sketch archive.
+  </p>
+</BaseLayout>
