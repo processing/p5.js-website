@@ -2,9 +2,17 @@
 // SEE https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#intro
 
 const openProcessingEndpoint = "https://openprocessing.org/api/";
+/**
+ * ID of the OpenProcessing Curation we pull sketches from.
+ * Currently a placeholder (https://openprocessing.org/curation/78544/)
+ */
 const curationId = "78544";
 
-// see https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
+/**
+ * API Response from a call to the Curation Sketches endpoint
+ *
+ * see https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
+ */
 export type OpenProcessingCurationResponse = ReadonlyArray<{
   /** Sketch ID used for constructing URLs */
   visualID: string;
@@ -20,6 +28,7 @@ export type OpenProcessingCurationResponse = ReadonlyArray<{
 
 /**
  * Get basic info for the sketches contained in a Curation
+ * from the OpenProcessing API
  *
  * @param limit max number of sketches to return
  * @returns sketches
@@ -35,7 +44,11 @@ export const getCurationSketches = async (
   return payload as OpenProcessingCurationResponse;
 };
 
-// see https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
+/**
+ * API Response from a call to the Sketch endpoint
+ *
+ * see https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
+ */
 export type OpenProcessingSketchResponse = {
   /** Sketch ID used for constructing URLs */
   visualID: string;
@@ -51,6 +64,7 @@ export type OpenProcessingSketchResponse = {
 };
 
 /**
+ * Get info about a specific sketch from the OpenProcessing API
  *
  * https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
  * @param id
@@ -67,5 +81,5 @@ export const getSketch = async (
 export const makeSketchLinkUrl = (id: string) =>
   `https://openprocessing.org/sketch/${id}`;
 
-export const makethumbnailUrl = (id: string) =>
+export const makeThumbnailUrl = (id: string) =>
   `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}.jpg`;
