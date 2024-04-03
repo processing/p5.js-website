@@ -144,7 +144,7 @@ export const useTranslations = async (
 
     // If still not found, log a warning and return the last key as a fallback.
     if (val === undefined) {
-      console.warn(`Translation key not found: ${args.join(".")}`);
+      // console.warn(`Translation key not found: ${args.join(".")}`);
       return args[args.length - 1];
     }
 
