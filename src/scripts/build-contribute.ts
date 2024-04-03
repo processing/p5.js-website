@@ -75,9 +75,11 @@ const convertMdtoMdx = async (
   // this means the read file failed for some reason
   if (contents === undefined) return;
 
-  const contentWithRewrittenLinksAndComments = rewriteRelativeImageLinks(
-    rewriteRelativeMdLinks(contents),
-    assetsOutputBaseUrl,
+  const contentWithRewrittenLinksAndComments = convertMarkdownCommentsToMDX(
+    rewriteRelativeImageLinks(
+      rewriteRelativeMdLinks(contents),
+      assetsOutputBaseUrl,
+    ),
   );
   const newFilePath = path.join(destinationFolder, `${name}.mdx`);
 
@@ -148,6 +150,14 @@ export const rewriteRelativeImageLinks = (
   });
 };
 
+export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
+  const regexPattern: RegExp = /<!--([\S\s]*?)-->/g;
+  return markdownText.replace(
+    regexPattern,
+    (match, commentContent) => `{/*${commentContent}*/}`,
+  );
+};
+
 /**
  * Moves a list of files or a folder of files to a new location,
  * converting all .md files into .mdx
@@ -207,7 +217,7 @@ const buildContributorDocs = async () => {
       console.debug(`Moving regular folder into 'en' (${tlf.name})`);
       await moveContentDirectory(tlf, path.join(outputDirectory, "en", base));
     } else if (!isDirectory && ext === ".md") {
-      console.debug(`Converting Markdown file into MDC in 'en' (${tlf.name})`);
+      console.debug(`Converting Markdown file into MDX in 'en' (${tlf.name})`);
       await convertMdtoMdx(fullFilePath, path.join(outputDirectory, "en"));
     } else {
       console.debug(`Copying file into 'en' (${tlf.name})`);
