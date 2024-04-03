@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import {
   convertMarkdownCommentsToMDX,
   rewriteRelativeImageLinks,
-} from "../../src/scripts/build-contribute";
+} from "../../src/scripts/builders/contribute";
 
 test("rewriteRelativeImageLinks", () => {
   expect(

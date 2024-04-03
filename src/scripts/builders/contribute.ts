@@ -1,4 +1,4 @@
-import { readdir } from "fs/promises";
+import { readdir, rm } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
@@ -10,7 +10,7 @@ import {
   repoRootPath,
   rewriteRelativeMdLinks,
   writeFile,
-} from "./utils";
+} from "../utils";
 import type { Dirent } from "fs";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
@@ -18,17 +18,21 @@ import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
+import { nonDefaultSupportedLocales } from "@/src/i18n/const";
 
 /* Absolute path to the folder this file is in */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /* Repo to pull the contributor documentation from */
 const docsRepoUrl = "https://github.com/processing/p5.js.git";
 /* Where to clone the repo to */
-const clonedRepoPath = path.join(__dirname, "../../in/p5.js/");
+const clonedRepoPath = path.join(__dirname, repoRootPath, "in/p5.js/");
 /* Absolute path to docs (within the cloned repo) */
 const sourceDirectory = path.join(clonedRepoPath, "contributor_docs/");
 /* Where the docs will be output for the website */
-const outputDirectory = path.join(__dirname, "../content/contributor-docs/");
+const outputDirectory = path.join(
+  repoRootPath,
+  "src/content/contributor-docs/",
+);
 /* Name of the folder within `sourceDirectory` folder where static assets are found */
 const assetsSubFolder = "images";
 /* Base URL to refer to assets from final mdx docs*/
@@ -43,7 +47,7 @@ const assetsOutputDirectory = path.join(
 /* Directories that are translations
  * TODO: tie this to supported languages in astro config
  */
-const langDirs = ["ar", "es", "hi", "ko", "pt-br", "sk", "zh"];
+const langDirs = nonDefaultSupportedLocales;
 
 /**
  * Moves a markdown file to a new location, converting into MDX along the way
@@ -192,6 +196,17 @@ const buildContributorDocs = async () => {
   console.log("Building contributor docs...");
 
   await cloneLibraryRepo(clonedRepoPath, docsRepoUrl);
+
+  // Clean out previous files
+  console.log("Cleaning out current content collection...");
+  await Promise.all(
+    langDirs.map((lang) =>
+      rm(path.join(outputDirectory, lang), {
+        recursive: true,
+        force: true,
+      }),
+    ),
+  );
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
