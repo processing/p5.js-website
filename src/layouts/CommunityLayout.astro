@@ -4,12 +4,19 @@ import { getLibraryLink, removeLocaleAndExtension } from "../pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import { Image } from "astro:assets";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
+import {
+  makeThumbnailUrl,
+  type OpenProcessingCurationResponse,
+} from "../api/OpenProcessing";
 
 interface Props {
-  sketches: CollectionEntry<"sketches">[];
+  sketches: OpenProcessingCurationResponse;
   libraries: CollectionEntry<"libraries">[];
   pastEvents: CollectionEntry<"past-events">[];
 }
+
+// Max number of sketches we will show on this page
+const sketchLimit = 10;
 
 const { sketches, libraries, pastEvents } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -19,17 +26,20 @@ const t = await useTranslations(currentLocale);
 <BaseLayout title="Community">
   <h2>{t("Sketches")}</h2>
   {
-    sketches.map((entry) => (
+    sketches.slice(0, sketchLimit).map((sk) => (
       <li>
+        {
+          // This isn't alt text ideal but we have no way of knowing what
+          // the thumbnail looks like, and the OpenProcessing API
+          // doesn't include that information
+        }
         <Image
-          src={entry.data.thumbnailImage}
-          alt={entry.data.thumbnailImageAlt}
+          src={makeThumbnailUrl(sk.visualID)}
+          alt="Screenshot of sketch"
           width={200}
           height={200}
         />
-        <a href={`/sketches/${removeLocaleAndExtension(entry.id)}`}>
-          {removeLocaleAndExtension(entry.id)}
-        </a>
+        <a href={`/sketches/${sk.visualID}`}>{sk.title}</a>
       </li>
     ))
   }
