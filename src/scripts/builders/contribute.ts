@@ -20,12 +20,10 @@ import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
 import { nonDefaultSupportedLocales } from "@/src/i18n/const";
 
-/* Absolute path to the folder this file is in */
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /* Repo to pull the contributor documentation from */
 const docsRepoUrl = "https://github.com/processing/p5.js.git";
 /* Where to clone the repo to */
-const clonedRepoPath = path.join(__dirname, repoRootPath, "in/p5.js/");
+const clonedRepoPath = path.join(repoRootPath, "in/p5.js/");
 /* Absolute path to docs (within the cloned repo) */
 const sourceDirectory = path.join(clonedRepoPath, "contributor_docs/");
 /* Where the docs will be output for the website */
