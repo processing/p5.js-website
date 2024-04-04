@@ -6,6 +6,7 @@ import {
 } from "astro:content";
 import { defaultLocale } from "@i18n/const";
 import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
+import type { ReferenceDocContentItem } from "../content/types";
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
@@ -51,7 +52,7 @@ export const getCollectionInLocaleWithFallbacks = async <
 };
 
 /**
- * Retreives all the entries in the given collection, filtered to only include
+ * Retrieves all the entries in the given collection, filtered to only include
  * those in *non-default* locales (languages).
  *
  * @param collectionName
@@ -67,7 +68,7 @@ export const getCollectionInNonDefaultLocales = async <
   );
 
 /**
- * Retreives all the entries in the given collection, filtered to only include
+ * Retrieves all the entries in the given collection, filtered to only include
  * those in a the given *non-default* locale (language).
  *
  * @param collectionName
@@ -160,3 +161,14 @@ export const separateReferenceExamples = (examples: string[]): string[] =>
     ?.flatMap((example: string) => example.split("</div>"))
     .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
     .filter((cleanExample: string) => cleanExample);
+
+/**
+ * Returns the title concatenated with parentheses if the reference entry is a constructor or method
+ * This could be handled in the reference parsing and authoring process instead
+ * @param referenceEntry Reference entry
+ * @returns The title concatenated with parentheses if the reference entry is a constructor or method
+ */
+export const getRefEntryTitleConcatWithParen = (
+  referenceEntry: ReferenceDocContentItem,
+) =>
+  `${referenceEntry.data.title}${referenceEntry.data.isConstructor || referenceEntry.data.itemtype === "method" ? "()" : ""}`;

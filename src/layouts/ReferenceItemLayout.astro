@@ -1,7 +1,10 @@
 ---
 import CodeEmbed from "@components/CodeEmbed";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
-import { separateReferenceExamples } from "@pages/_utils";
+import {
+  getRefEntryTitleConcatWithParen,
+  separateReferenceExamples,
+} from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import MethodSignature from "@components/MethodSignature/index.astro";
 import type { ReferenceParam } from "@/types/parsers.interface";
@@ -13,9 +16,10 @@ const examples = separateReferenceExamples(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
   .map((example) => example.trim());
 const t = await useTranslations(currentLocale);
+const title = getRefEntryTitleConcatWithParen(entry);
 ---
 
-<BaseLayout title={entry.data.title} variant="item">
+<BaseLayout title={title} variant="item">
   <div class="content-grid mt-0">
     <div class="col-span-9 xl:min-w-[1000px]">
       <div
