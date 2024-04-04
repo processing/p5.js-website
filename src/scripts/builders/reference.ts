@@ -128,13 +128,23 @@ const addDocToModulePathTree = (
 };
 
 /**
- * Corrects relative links in the example assets
+ * Corrects relative links to the example assets
+ * Made to be used with any string or string[] field on the doc
+ * such as example or description
  * Could be removed if new upstream authoring practices are adopted
- * @param example doc.example from the parsed JSON
+ * @param content doc.example from the parsed JSON
  * @returns example with relative links corrected
  */
-const correctRelativeLinksToExampleAssets = (example: string[] | undefined) =>
-  example ? example.map((ex) => ex.replaceAll("assets/", "/assets/")) : example;
+const correctRelativeLinksToExampleAssets = (
+  content: string | string[] | undefined,
+) => {
+  if (!content) {
+    return content;
+  }
+  return Array.isArray(content)
+    ? content.map((ex) => ex.replaceAll("assets/", "/assets/"))
+    : content.replaceAll("assets/", "/assets/");
+};
 
 /**
  * Corrects relative links in the description of a doc
@@ -349,7 +359,12 @@ const convertDocsToMDX = async (
           }
           addDocToModulePathTree(doc, savePath);
           doc.description = correctRelativeLinksInDescription(doc.description);
-          doc.example = correctRelativeLinksToExampleAssets(doc.example);
+          doc.description = correctRelativeLinksToExampleAssets(
+            doc.description,
+          ) as string | undefined;
+          doc.example = correctRelativeLinksToExampleAssets(
+            doc.example,
+          ) as string[];
           const mdx = await convertToMDX(doc);
 
           return mdx ? { mdx, savePath, name: doc.name } : null;
