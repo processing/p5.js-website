@@ -128,6 +128,15 @@ const addDocToModulePathTree = (
 };
 
 /**
+ * Corrects relative links in the example assets
+ * Could be removed if new upstream authoring practices are adopted
+ * @param example doc.example from the parsed JSON
+ * @returns example with relative links corrected
+ */
+const correctRelativeLinksToExampleAssets = (example: string[] | undefined) =>
+  example ? example.map((ex) => ex.replaceAll("assets/", "/assets/")) : example;
+
+/**
  * Corrects relative links in the description of a doc
  * @param description doc.description from the parsed JSON
  * @returns description with relative links corrected
@@ -340,6 +349,7 @@ const convertDocsToMDX = async (
           }
           addDocToModulePathTree(doc, savePath);
           doc.description = correctRelativeLinksInDescription(doc.description);
+          doc.example = correctRelativeLinksToExampleAssets(doc.example);
           const mdx = await convertToMDX(doc);
 
           return mdx ? { mdx, savePath, name: doc.name } : null;
