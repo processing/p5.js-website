@@ -10,7 +10,7 @@ import type {
   ReferenceClassItemProperty,
 } from "../../../types/parsers.interface";
 import type {
-  ReferenceClassMethodPreviews,
+  ReferenceClassPreviews as ReferenceClassPreviews,
   ReferenceMDXDoc,
   ReferenceModulePathTree,
 } from "../../../types/builders.interface";
@@ -23,7 +23,7 @@ import he from "he";
 const prefix = "./src/content/reference/en/";
 
 /* Object to store class method previews, for transfer from the method records to the class records */
-const memberMethodPreviews: ReferenceClassMethodPreviews = {};
+const classMethodAndPropertyPreviews: ReferenceClassPreviews = {};
 
 /* Object to store the module path tree, needed for indicating relationships between records */
 const modulePathTree = {
@@ -233,13 +233,14 @@ const convertToMDX = async (
       ...getClassItemFrontmatter(doc),
       ...getMethodFrontmatter(doc),
     };
-    addMemberMethodPreviewsToClassDocs(doc);
+    addMethodAndPropertyPreviewsToClassDocs(doc);
   } else if (isPropertyClassItem(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
       ...getClassItemFrontmatter(doc),
       ...getPropertyFrontmatter(doc),
     };
+    addMethodAndPropertyPreviewsToClassDocs(doc);
   } else if (isClassDefinition(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
@@ -305,6 +306,8 @@ const getPropertyFrontmatter = (doc: ReferenceClassItemProperty) => {
 
 const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
   const { description, module, submodule, params, example } = doc;
+  const methods = classMethodAndPropertyPreviews[doc.name]?.methods;
+  const properties = classMethodAndPropertyPreviews[doc.name]?.properties;
   return {
     description,
     isConstructor: true,
@@ -312,19 +315,22 @@ const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
     submodule,
     params,
     example,
-    methods: { ...memberMethodPreviews[doc.name] },
+    methods,
+    properties,
     chainable: doc.chainable === 1,
   };
 };
 
 /* Adds description and path for member methods to the class docs */
-const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
+const addMethodAndPropertyPreviewsToClassDocs = (
+  doc: ReferenceClassItemMethod | ReferenceClassItemProperty,
+) => {
   // Skip p5 methods which are "global" and not part of a class from the perspective of the reference
   if (doc.class === "p5") return;
 
   // If the class doesn't exist in the memberMethodPreviews object, initialize it
-  if (!memberMethodPreviews[doc.class]) {
-    memberMethodPreviews[doc.class] = {};
+  if (!classMethodAndPropertyPreviews[doc.class]) {
+    classMethodAndPropertyPreviews[doc.class] = {};
   }
 
   // If the method doesn't exist in the class, log a warning and skip it
@@ -336,8 +342,19 @@ const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
   // Construct the path to the class method
   const classMethodPath = `${modulePathTree.classes[doc.class][doc.name]}`;
 
+  const kindPath = doc.itemtype === "method" ? "methods" : "properties";
+
+  // If the previews don't have methods or properties yet, initialize the relevant one
+  if (!classMethodAndPropertyPreviews[doc.class][kindPath]) {
+    classMethodAndPropertyPreviews[doc.class][kindPath] = {};
+  }
+
+  if (!classMethodAndPropertyPreviews[doc.class][kindPath]) {
+    return;
+  }
+
   // Add the method to the memberMethodPreviews object, this is used to add previews to the class docs
-  memberMethodPreviews[doc.class][doc.name] = {
+  classMethodAndPropertyPreviews[doc.class][kindPath]![doc.name] = {
     description: doc.description,
     path: classMethodPath,
   };
@@ -411,7 +428,7 @@ buildReference();
 
 export const testingExports = {
   modulePathTree,
-  memberMethodPreviews,
+  memberMethodPreviews: classMethodAndPropertyPreviews,
   addDocToModulePathTree,
-  addMemberMethodPreviewsToClassDocs,
+  addMemberMethodPreviewsToClassDocs: addMethodAndPropertyPreviewsToClassDocs,
 };
