@@ -147,6 +147,25 @@ const addDocToModulePathTree = (
 };
 
 /**
+ * Corrects relative links to the example assets
+ * Made to be used with any string or string[] field on the doc
+ * such as example or description
+ * Could be removed if new upstream authoring practices are adopted
+ * @param content doc.example from the parsed JSON
+ * @returns example with relative links corrected
+ */
+const correctRelativeLinksToExampleAssets = (
+  content: string | string[] | undefined,
+) => {
+  if (!content) {
+    return content;
+  }
+  return Array.isArray(content)
+    ? content.map((ex) => ex.replaceAll("assets/", "/assets/"))
+    : content.replaceAll("assets/", "/assets/");
+};
+
+/**
  * Corrects relative links in the description of a doc
  * @param description doc.description from the parsed JSON
  * @returns description with relative links corrected
