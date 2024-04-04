@@ -1,14 +1,17 @@
 ---
 import CodeEmbed from "@components/CodeEmbed";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
-import { separateReferenceExamples } from "@pages/_utils";
+import {
+  escapeCodeTagsContent,
+  separateReferenceExamples,
+} from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import MethodSignature from "@components/MethodSignature/index.astro";
 import type { ReferenceParam } from "@/types/parsers.interface";
 
 const { entry } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
-
+const description = escapeCodeTagsContent(entry.data.description);
 const examples = separateReferenceExamples(entry.data.example);
 const t = await useTranslations(currentLocale);
 ---
@@ -16,10 +19,7 @@ const t = await useTranslations(currentLocale);
 <BaseLayout title={entry.data.title} variant="item">
   <div class="content-grid mt-0">
     <div class="col-span-9">
-      <div
-        set:html={entry.data.description}
-        class="[&_a]:text-type-magenta mb-xl"
-      />
+      <div set:html={description} class="[&_a]:text-type-magenta mb-xl" />
       {
         examples && (
           <div class="mb-xl">
