@@ -9,6 +9,11 @@ export default {
       xl: "1280px",
     },
     extend: {
+      maxWidth: (theme) => ({
+        "screen-md": theme("screens.md"),
+        "screen-lg": theme("screens.lg"),
+        "screen-xl": theme("screens.xl"),
+      }),
       colors: {
         "bg-yellow": "var(--bg-yellow)",
         "bg-taupe": "var(--bg-taupe)",
