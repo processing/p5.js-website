@@ -1,5 +1,5 @@
 interface IconProps {
-  kind: "arrow" | "code-brackets" | "refresh";
+  kind: "arrow" | "code-brackets" | "refresh" | "play" | "stop";
   className?: string;
 }
 /**
@@ -66,6 +66,30 @@ export const Icon = (props: IconProps) => {
             d="M3.3684 18.4804L4.52046 22.7801C4.59193 23.0468 4.43363 23.321 4.1669 23.3924C3.90017 23.4639 3.626 23.3056 3.55453 23.0389L1.94508 17.0321L7.95183 15.4225C8.21856 15.3511 8.49274 15.5093 8.56421 15.7761C8.63568 16.0428 8.47739 16.317 8.21066 16.3885L3.83466 17.5611C5.17757 18.7638 6.95034 19.4945 8.8946 19.4945C13.085 19.4945 16.482 16.0974 16.4821 11.907C16.4821 11.6308 16.7059 11.407 16.9821 11.407C17.2582 11.407 17.4821 11.6308 17.4821 11.907C17.482 16.6497 13.6373 20.4945 8.8946 20.4945C6.79 20.4945 4.86161 19.7369 3.3684 18.4804Z"
             fill="black"
           />
+        </svg>
+      );
+    case "play":
+      return (
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M15.5 8L0.5 15.5L0.499999 0.500001L15.5 8Z" fill="black" />
+        </svg>
+      );
+    case "stop":
+      return (
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="0.5" y="0.5" width="15" height="15" fill="black" />
         </svg>
       );
     default:

@@ -45,26 +45,25 @@ export const CodeEmbed = (props) => {
             width={props.previewWidth}
             height={props.previewHeight}
           />
-          {/* TODO: Actual button styles */}
-          <button
-            className="rounded-full bg-bg-gray-40 p-xs"
-            onClick={() => {
-              console.log("updating code");
-              setPreviewCodeString(codeString);
-            }}
-          >
-            Run
-          </button>
-          <button
-            className="rounded-full bg-bg-gray-40 p-xs"
-            onClick={() => {
-              console.log("resetting code");
-              setCodeString(initialCode);
-              setPreviewCodeString(initialCode);
-            }}
-          >
-            Reset
-          </button>
+          {/* Looks more visually balanced with a slight leftward nudge */}
+          <div className="flex gap-xs">
+            <CircleButton
+              className="ml-[-2px] rounded-full !bg-bg-gray-40 !p-sm"
+              onClick={() => {
+                setPreviewCodeString(codeString);
+              }}
+            >
+              <Icon kind="play" />
+            </CircleButton>
+            <CircleButton
+              className="rounded-full !bg-bg-gray-40 !p-sm"
+              onClick={() => {
+                setPreviewCodeString("");
+              }}
+            >
+              <Icon kind="stop" />
+            </CircleButton>
+          </div>
         </div>
       ) : null}
       <div className="relative w-full md:w-[calc(100%-150px)]">
@@ -99,6 +98,7 @@ export const CodeEmbed = (props) => {
               setCodeString(initialCode);
               setPreviewCodeString(initialCode);
             }}
+            ariaLabel="Reset code to initial value"
           >
             <Icon kind="refresh" />
           </CircleButton>
