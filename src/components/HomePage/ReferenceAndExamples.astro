@@ -1,0 +1,28 @@
+---
+import { getCurrentLocale, useTranslations } from "@i18n/utils";
+import LinkButton from "@components/LinkButton/index.astro";
+import SketchThumb from "./SketchThumb.astro";
+
+interface Props {
+  referenceHeaderText: string;
+  examplesHeaderText: string;
+}
+
+const { referenceHeaderText, examplesHeaderText } = Astro.props;
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
+---
+
+<div class="grid">
+  <div class="order-first">
+    <h2>{referenceHeaderText}</h2>
+    <LinkButton variant="link" url="/reference">{t("Reference")}</LinkButton>
+  </div>
+  <div class="order-2 sm:order-4">
+    <h2>{examplesHeaderText}</h2>
+    <LinkButton variant="link" url="/examples">{t("Examples")}</LinkButton>
+  </div>
+  <SketchThumb number={1} class="order-3 sm:order-2" />
+  <SketchThumb number={2} class="order-4 sm:order-3" />
+</div>
