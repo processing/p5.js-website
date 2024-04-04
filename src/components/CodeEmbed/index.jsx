@@ -37,18 +37,18 @@ export const CodeEmbed = (props) => {
   if (!rendered) return <div className="code-placeholder" />;
 
   return (
-    <div className="mb-md flex w-full flex-col overflow-hidden md:flex-row">
+    <div className="mb-md flex w-full flex-col overflow-hidden lg:flex-row">
       {props.previewable ? (
-        <div>
+        <div className="flex lg:flex-col">
           <CodeFrame
             jsCode={previewCodeString}
             width={props.previewWidth}
             height={props.previewHeight}
           />
           {/* Looks more visually balanced with a slight leftward nudge */}
-          <div className="flex gap-xs">
+          <div className="gap-xs lg:flex">
             <CircleButton
-              className="ml-[-2px] rounded-full !bg-bg-gray-40 !p-sm"
+              className="!bg-bg-gray-40 !p-sm lg:ml-[-2px]"
               onClick={() => {
                 setPreviewCodeString(codeString);
               }}
@@ -56,7 +56,7 @@ export const CodeEmbed = (props) => {
               <Icon kind="play" />
             </CircleButton>
             <CircleButton
-              className="rounded-full !bg-bg-gray-40 !p-sm"
+              className="!bg-bg-gray-40 !p-sm"
               onClick={() => {
                 setPreviewCodeString("");
               }}
