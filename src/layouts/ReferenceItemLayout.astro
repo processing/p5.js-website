@@ -72,12 +72,17 @@ const t = await useTranslations(currentLocale);
               };
 
               return (
-                <div class="text-body">
-                  <p class="text-body-large">{key}</p>
-                  <p
-                    set:html={propertyValue.description}
-                    class="[&_a]:underline"
-                  />
+                <div class="text-body my-lg">
+                  <a
+                    href={propertyValue.path}
+                    class="text-body-large underline"
+                  >
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {propertyValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
                 </div>
               );
             })}
@@ -86,7 +91,7 @@ const t = await useTranslations(currentLocale);
       }
       {
         entry.data.properties && (
-          <div class="mb-xl">
+          <div class="my-xl">
             <h3>{t("Methods")}</h3>
             {Object.entries(entry.data.methods).map(([key, value]) => {
               const methodValue = value as {
@@ -95,12 +100,14 @@ const t = await useTranslations(currentLocale);
               };
 
               return (
-                <div class="text-body">
-                  <p class="text-body-large">{key}</p>
-                  <p
-                    set:html={methodValue.description}
-                    class="[&_a]:underline"
-                  />
+                <div class="text-body my-lg">
+                  <a href={methodValue.path} class="text-body-large">
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {methodValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
                 </div>
               );
             })}
