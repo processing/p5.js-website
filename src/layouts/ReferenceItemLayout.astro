@@ -12,7 +12,6 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 const examples = separateReferenceExamples(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
   .map((example) => example.trim());
-
 const t = await useTranslations(currentLocale);
 ---
 
@@ -54,12 +53,57 @@ const t = await useTranslations(currentLocale);
               <div class="grid grid-cols-6 gap-[40px] text-body">
                 <h4 class="col-span-1">{param.name}</h4>
                 <span
-                  class="col-span-5 [&_p]:m-0"
+                  class="col-span-5 [&_p]:m-0 [&_a]:underline"
                   set:html={param.description}
-                  class="[&_a]:underline"
                 />
               </div>
             ))}
+          </div>
+        )
+      }
+      {
+        entry.data.properties && (
+          <div class="mb-xl">
+            <h3>{t("Fields")}</h3>
+            {Object.entries(entry.data.properties).map(([key, value]) => {
+              const propertyValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body">
+                  <p class="text-body-large">{key}</p>
+                  <p
+                    set:html={propertyValue.description}
+                    class="[&_a]:underline"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        entry.data.properties && (
+          <div class="mb-xl">
+            <h3>{t("Methods")}</h3>
+            {Object.entries(entry.data.methods).map(([key, value]) => {
+              const methodValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body">
+                  <p class="text-body-large">{key}</p>
+                  <p
+                    set:html={methodValue.description}
+                    class="[&_a]:underline"
+                  />
+                </div>
+              );
+            })}
           </div>
         )
       }

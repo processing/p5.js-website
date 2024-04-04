@@ -46,6 +46,14 @@ const methodSchema = z.object({
 });
 
 /**
+ * Property schema for properties associated with a class in the Reference collection.
+ */
+const propertySchema = z.object({
+  description: z.string(),
+  path: z.string(),
+});
+
+/**
  * Content collection for the Reference pages of the site.
  */
 export const referenceSchema = z.object({
@@ -65,6 +73,7 @@ export const referenceSchema = z.object({
   example: z.array(exampleSchema).optional(),
   relatedContent: relatedContent().optional(),
   methods: z.record(methodSchema).optional(),
+  properties: z.record(propertySchema).optional(),
   isConstructor: z
     .boolean()
     .or(z.literal("true").transform(() => true))
