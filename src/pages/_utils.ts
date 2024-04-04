@@ -6,6 +6,8 @@ import {
 } from "astro:content";
 import { defaultLocale } from "@i18n/const";
 import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
+import { load } from "cheerio";
+import he from "he";
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
@@ -160,3 +162,24 @@ export const separateReferenceExamples = (examples: string[]): string[] =>
     ?.flatMap((example: string) => example.split("</div>"))
     .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
     .filter((cleanExample: string) => cleanExample);
+
+/**
+ * Function to escape HTML content within <code> tags
+ * @param htmlString String with HTML content
+ * @returns String with HTML content where the content inside <code> tags is escaped
+ */
+export const escapeCodeTagsContent = (htmlString: string): string => {
+  // Load the HTML string into Cheerio
+  const $ = load(htmlString);
+  // Loop through all <code> tags
+  $("code").each(function () {
+    // Get the current text and HTML inside the <code> tag
+    const currentHtml = $(this).html() ?? "";
+    // Use he to escape HTML entities
+    const escapedHtml = he.escape(currentHtml);
+    // Update the <code> tag content with the escaped HTML
+    $(this).html(escapedHtml);
+  });
+  // Return the modified HTML as a string
+  return $.html();
+};
