@@ -3,9 +3,10 @@ import { relatedContent } from "../shared";
 
 const categories = [
   "introduction",
-  "webgl",
+  "drawing",
   "web-design",
   "accessibility",
+  "webgl",
   "advanced",
 ] as const;
 
