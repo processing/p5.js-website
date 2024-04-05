@@ -10,7 +10,7 @@ import type {
   ReferenceClassItemProperty,
 } from "../../../types/parsers.interface";
 import type {
-  ReferenceClassPreviews as ReferenceClassPreviews,
+  ReferenceClassPreviews,
   ReferenceMDXDoc,
   ReferenceModulePathTree,
 } from "../../../types/builders.interface";
