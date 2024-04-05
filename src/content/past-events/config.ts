@@ -12,8 +12,8 @@ export const pastEventsCollection = defineCollection({
       // Where the event takes place
       location: z.string().optional(),
       description: z.string().optional(),
-      featuredImage: image().optional(),
-      featuredImageAlt: z.string().optional(),
+      featuredImage: image(),
+      featuredImageAlt: z.string(),
       relatedPastEvents: z.array(reference("past-events")).optional(),
     }),
 });
