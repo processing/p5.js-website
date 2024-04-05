@@ -34,15 +34,18 @@ const buttonClasses = "mt-lg";
 <BaseLayout title="Community">
   <section class={sectionClasses}>
     <h2 class={h2Classes}>{t("Sketches")}</h2>
-    <ul class="grid grid-cols-2 gap-y-xl gap-x-md">
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
         sketches.slice(0, sketchLimit).map((sk, i) => (
           <li
-            class={
-              i === 0 || i === 3 || i === sketchLimit - 1
-                ? "col-span-2 row-span-2"
-                : ""
-            }
+            class={(() => {
+              if (i === 0)
+                return "col-span-2 row-span-2 md:col-span-3 md:row-span-3";
+              if (i === 1) return "md:row-span-3";
+              if (i === 2) return "col-span-2 row-span-2";
+              if (i === librariesLimit - 1) return "row-span-2 col-span-2";
+              else return "md:row-span-2";
+            })()}
           >
             <a href={`/sketches/${sk.visualID}`}>
               {
@@ -71,7 +74,7 @@ const buttonClasses = "mt-lg";
   <hr />
   <section class={sectionClasses}>
     <h2 class={h2Classes}>{t("Libraries")}</h2>
-    <ul class="grid grid-cols-2 gap-y-xl gap-x-md">
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
         libraries.slice(0, librariesLimit).map((entry, i) => (
           <li>
@@ -95,11 +98,16 @@ const buttonClasses = "mt-lg";
   <hr />
   <section class={sectionClasses}>
     <h2 class={h2Classes}>{t("Events")}</h2>
-    <ul class="grid grid-cols-2 gap-y-xl gap-x-md">
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
         pastEvents.slice(0, eventsLimit).map((entry, i) => (
           <li
-            class={i === 0 || i === 5 || i === 8 ? "col-span-2 row-span-2" : ""}
+            class={(() => {
+              if (i === 0 || i === 5) return "col-span-2 row-span-2";
+              if (i > 0 && i < 5) return "md:row-span-2";
+              if (i === 8)
+                return "col-span-2 row-span-2 md:row-span-1 md:col-span-1";
+            })()}
           >
             <a href={`/past-events/${removeLocaleAndExtension(entry.id)}`}>
               <Image
