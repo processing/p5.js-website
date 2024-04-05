@@ -5,7 +5,17 @@ import type { JSX } from "preact";
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
     path: string;
+    title: string;
+    description: string;
   };
+};
+
+type FilteredCategoryData = {
+  name: string;
+  subcats: {
+    name: string;
+    entries: ReferenceDirectoryEntry[];
+  }[];
 };
 
 type ReferenceDirectoryWithFilterProps = {
