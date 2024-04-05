@@ -11,9 +11,15 @@ interface Props {
   title: string;
   className?: string;
   variant?: "root" | "item";
+  mainContentParentClass?: string;
 }
 
-const { title, className = "", variant = "root" } = Astro.props;
+const {
+  title,
+  className = "",
+  variant = "root",
+  mainContentParentClass = "mx-lg",
+} = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
 const localizedTitle = t(title);
@@ -42,7 +48,7 @@ const localizedSubtitle = t("briefPageDescriptions", title);
         }
       </header>
       <main>
-        <div class="mx-lg">
+        <div class={mainContentParentClass}>
           <slot />
           <Footer />
         </div>
