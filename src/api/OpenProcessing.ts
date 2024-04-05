@@ -83,4 +83,4 @@ export const makeSketchLinkUrl = (id: string) =>
   `https://openprocessing.org/sketch/${id}`;
 
 export const makeThumbnailUrl = (id: string) =>
-  `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}.jpg`;
+  `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}@2x.jpg`;
