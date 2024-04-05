@@ -6,8 +6,13 @@ import {
 } from "astro:content";
 import { defaultLocale } from "@i18n/const";
 import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
+import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
 import he from "he";
+
+interface EntryWithId {
+  id: string;
+}
 
 /**
  * Retreives all the entries in the given collection, filtered to only include
@@ -19,9 +24,10 @@ import he from "he";
 export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
   collectionName: C,
 ): Promise<CollectionEntry<C>[]> =>
-  await getCollection(collectionName, ({ id }) =>
-    id.startsWith(`${defaultLocale}/`),
-  );
+  await getCollection(collectionName, (entry: unknown) => {
+    const { id } = entry as EntryWithId;
+    return id.startsWith(`${defaultLocale}/`);
+  });
 
 /**
  * Retreives all the entries in the given collection for a given locale, and
@@ -41,19 +47,22 @@ export const getCollectionInLocaleWithFallbacks = async <
   const defaultLocaleCollection =
     await getCollectionInDefaultLocale(collectionName);
   const filteredDefaultEntries = defaultLocaleCollection.filter(
-    (defaultEntry) =>
-      !localizedEntries.some(
-        (localeEntry) =>
-          removeLocalePrefix(localeEntry.id) ===
-          removeLocalePrefix(defaultEntry.id),
-      ),
+    (defaultEntry) => {
+      const { id: defaultLocaleId } = defaultEntry as EntryWithId;
+      return !localizedEntries.some((localeEntry: unknown) => {
+        const { id: localeId } = localeEntry as EntryWithId;
+        return (
+          removeLocalePrefix(localeId) === removeLocalePrefix(defaultLocaleId)
+        );
+      });
+    },
   );
   // Merge the locale entries with the filtered default entries
   return [...localizedEntries, ...filteredDefaultEntries];
 };
 
 /**
- * Retreives all the entries in the given collection, filtered to only include
+ * Retrieves all the entries in the given collection, filtered to only include
  * those in *non-default* locales (languages).
  *
  * @param collectionName
@@ -64,12 +73,13 @@ export const getCollectionInNonDefaultLocales = async <
 >(
   collectionName: C,
 ): Promise<CollectionEntry<C>[]> =>
-  await getCollection(collectionName, ({ id }) =>
-    startsWithSupportedLocale(id),
-  );
+  await getCollection(collectionName, (entry: unknown) => {
+    const { id } = entry as EntryWithId;
+    return startsWithSupportedLocale(id);
+  });
 
 /**
- * Retreives all the entries in the given collection, filtered to only include
+ * Retrieves all the entries in the given collection, filtered to only include
  * those in a the given *non-default* locale (language).
  *
  * @param collectionName
@@ -80,7 +90,10 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
   collectionName: C,
   locale: string,
 ): Promise<CollectionEntry<C>[]> =>
-  await getCollection(collectionName, ({ id }) => id.startsWith(`${locale}/`));
+  await getCollection(collectionName, (entry: unknown) => {
+    const { id } = entry as EntryWithId;
+    return id.startsWith(`${locale}/`);
+  });
 
 /**
  * Astro automatically uses the directory structure for slug information
@@ -144,7 +157,7 @@ export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
 };
 
 /**
- * Returns the correct URL to link to for a libary entry
+ * Returns the correct URL to link to for a library entry
  * @param library
  * @returns
  */
@@ -164,7 +177,17 @@ export const separateReferenceExamples = (examples: string[]): string[] =>
     .filter((cleanExample: string) => cleanExample);
 
 /**
- * Function to escape HTML content within <code> tags
+ * Returns the title concatenated with parentheses if the reference entry is a constructor or method
+ * This could be handled in the reference parsing and authoring process instead
+ * @param referenceEntry Reference entry
+ * @returns The title concatenated with parentheses if the reference entry is a constructor or method
+ */
+export const getRefEntryTitleConcatWithParen = (
+  referenceEntry: ReferenceDocContentItem,
+) =>
+  `${referenceEntry.data.title}${referenceEntry.data.isConstructor || referenceEntry.data.itemtype === "method" ? "()" : ""}`;
+
+/* Function to escape HTML content within <code> tags
  * @param htmlString String with HTML content
  * @returns String with HTML content where the content inside <code> tags is escaped
  */

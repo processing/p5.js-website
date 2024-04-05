@@ -74,15 +74,35 @@ describe("modulePathTree with method previews", () => {
   test("should add a method preview correctly", () => {
     doc.class = "p5.TestClass";
     doc.name = "exampleClassMethod";
-    doc.description = "test description";
+    doc.itemtype = "method";
+    doc.description = "test method description";
     const expectedPath = `${path}/exampleClassMethod`;
     addDocToModulePathTree(doc, path);
     addMemberMethodPreviewsToClassDocs(doc);
     expect(
-      memberMethodPreviews["p5.TestClass"]["exampleClassMethod"].description,
-    ).toBe("test description");
+      memberMethodPreviews["p5.TestClass"].methods?.["exampleClassMethod"]
+        .description,
+    ).toBe("test method description");
     expect(
-      memberMethodPreviews["p5.TestClass"]["exampleClassMethod"].path,
+      memberMethodPreviews["p5.TestClass"].methods?.["exampleClassMethod"].path,
+    ).toBe(expectedPath);
+  });
+
+  test("should add a property preview correctly", () => {
+    doc.class = "p5.TestClass";
+    doc.name = "exampleClassProperty";
+    doc.itemtype = "property";
+    doc.description = "test property description";
+    const expectedPath = `${path}/exampleClassProperty`;
+    addDocToModulePathTree(doc, path);
+    addMemberMethodPreviewsToClassDocs(doc);
+    expect(
+      memberMethodPreviews["p5.TestClass"].properties?.["exampleClassProperty"]
+        .description,
+    ).toBe("test property description");
+    expect(
+      memberMethodPreviews["p5.TestClass"].properties?.["exampleClassProperty"]
+        .path,
     ).toBe(expectedPath);
   });
 });

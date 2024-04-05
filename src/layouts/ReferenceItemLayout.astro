@@ -2,6 +2,7 @@
 import CodeEmbed from "@components/CodeEmbed";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
 import {
+  getRefEntryTitleConcatWithParen,
   escapeCodeTagsContent,
   separateReferenceExamples,
 } from "@pages/_utils";
@@ -11,14 +12,18 @@ import type { ReferenceParam } from "@/types/parsers.interface";
 
 const { entry } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const examples = separateReferenceExamples(entry.data.example)
+  // Remove empty lines at the beginning and end of the examples
+  ?.map((example) => example.trim());
 const description = escapeCodeTagsContent(entry.data.description);
-const examples = separateReferenceExamples(entry.data.example);
 const t = await useTranslations(currentLocale);
+const title = getRefEntryTitleConcatWithParen(entry);
 ---
 
-<BaseLayout title={entry.data.title} variant="item">
+<BaseLayout title={title} variant="item">
   <div class="content-grid mt-0">
-    <div class="col-span-9">
+    <div class="col-span-9 xl:min-w-[1000px]">
       <div set:html={description} class="[&_a]:text-type-magenta mb-xl" />
       {
         examples && (
@@ -26,14 +31,14 @@ const t = await useTranslations(currentLocale);
             <h3>{t("Examples")}</h3>
             {examples.map((exampleCode: string) => {
               return (
-                <div>
-                  <CodeEmbed
-                    client:load
-                    initialValue={exampleCode}
-                    previewable
-                    editable
-                  />
-                </div>
+                <CodeEmbed
+                  client:load
+                  initialValue={exampleCode}
+                  previewable
+                  editable
+                  previewHeight="120px"
+                  previewWidth="120px"
+                />
               );
             })}
           </div>
@@ -48,15 +53,67 @@ const t = await useTranslations(currentLocale);
           <div class="mb-xl">
             <h3>{t("Parameters")}</h3>
             {entry.data.params?.map((param: ReferenceParam) => (
-              <div class="grid grid-cols-9 gap-[40px] text-body">
+              <div class="grid grid-cols-6 gap-[40px] text-body">
                 <h4 class="col-span-1">{param.name}</h4>
                 <span
-                  class="col-span-3 [&_p]:m-0"
+                  class="col-span-5 [&_p]:m-0 [&_a]:underline"
                   set:html={param.description}
-                  class="[&_a]:underline"
                 />
               </div>
             ))}
+          </div>
+        )
+      }
+      {
+        entry.data.properties && (
+          <div class="mb-xl">
+            <h3>{t("Fields")}</h3>
+            {Object.entries(entry.data.properties).map(([key, value]) => {
+              const propertyValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={propertyValue.path}
+                    class="text-body-large underline"
+                  >
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {propertyValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        entry.data.methods && (
+          <div class="my-xl">
+            <h3>{t("Methods")}</h3>
+            {Object.entries(entry.data.methods).map(([key, value]) => {
+              const methodValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a href={methodValue.path} class="text-body-large">
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {methodValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         )
       }

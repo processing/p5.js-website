@@ -1,3 +1,5 @@
+import CircleButton from "../CircleButton";
+
 interface CopyCodeButtonProps {
   textToCopy: string;
 }
@@ -10,10 +12,9 @@ export const CopyCodeButton = ({ textToCopy }: CopyCodeButtonProps) => {
   };
 
   return (
-    <button
+    <CircleButton
       onClick={copyTextToClipboard}
-      aria-label="Copy Code"
-      className="rounded-full bg-bg-white p-xs"
+      ariaLabel="Copy code to clipboard"
     >
       <svg
         width="18"
@@ -37,6 +38,6 @@ export const CopyCodeButton = ({ textToCopy }: CopyCodeButtonProps) => {
           fill="black"
         />
       </svg>
-    </button>
+    </CircleButton>
   );
 };

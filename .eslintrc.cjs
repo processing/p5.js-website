@@ -25,6 +25,7 @@ module.exports = {
       extends: ["plugin:@typescript-eslint/recommended"],
       rules: {
         "@typescript-eslint/no-explicit-any": "off",
+        "react/no-danger": "off",
       },
     },
   ],
