@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { getLibraryLink, removeLocaleAndExtension } from "../pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
+import LinkButton from "@components/LinkButton/index.astro";
 import { Image } from "astro:assets";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
 import {
@@ -16,55 +17,104 @@ interface Props {
 }
 
 // Max number of sketches we will show on this page
-const sketchLimit = 10;
+const sketchLimit = 8;
+// Max number of libraries we will show on this page
+const librariesLimit = 8;
+// Max number of libraries we will show on this page
+const eventsLimit = 9;
 
 const { sketches, libraries, pastEvents } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
+const sectionClasses = "mt-md mb-xl";
+const h2Classes = "mb-lg";
+const buttonClasses = "mt-lg";
 ---
 
 <BaseLayout title="Community">
-  <h2>{t("Sketches")}</h2>
-  {
-    sketches.slice(0, sketchLimit).map((sk) => (
-      <li>
-        {
-          // This isn't alt text ideal but we have no way of knowing what
-          // the thumbnail looks like, and the OpenProcessing API
-          // doesn't include that information
-        }
-        <Image
-          src={makeThumbnailUrl(sk.visualID)}
-          alt="Screenshot of sketch"
-          width={200}
-          height={200}
-        />
-        <a href={`/sketches/${sk.visualID}`}>{sk.title}</a>
-      </li>
-    ))
-  }
-  <a href="/sketches">See Sketches Archive</a>
+  <section class={sectionClasses}>
+    <h2 class={h2Classes}>{t("Sketches")}</h2>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md">
+      {
+        sketches.slice(0, sketchLimit).map((sk, i) => (
+          <li
+            class={
+              i === 0 || i === 3 || i === sketchLimit - 1
+                ? "col-span-2 row-span-2"
+                : ""
+            }
+          >
+            <a href={`/sketches/${sk.visualID}`}>
+              {
+                // This isn't alt text ideal but we have no way of knowing what
+                // the thumbnail looks like, and the OpenProcessing API
+                // doesn't include that information
+              }
+              <Image
+                src={makeThumbnailUrl(sk.visualID)}
+                alt="Screenshot of sketch"
+                width={400}
+                height={400}
+                class="w-full h-auto"
+              />
+              <div class="text-lg mt-xs">{sk.title}</div>
+              <div class="text-sm">{sk.fullname}</div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <LinkButton url="/sketches" variant="link" class={buttonClasses}
+      >{t("All Sketches")}</LinkButton
+    >
+  </section>
+  <section class={sectionClasses}>
+    <h2 class={h2Classes}>{t("Libraries")}</h2>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md">
+      {
+        libraries.slice(0, librariesLimit).map((entry, i) => (
+          <li>
+            <a href={getLibraryLink(entry)}>
+              <Image
+                src={entry.data.featuredImage}
+                alt={entry.data.featuredImageAlt}
+              />
 
-  <h2>{t("Libraries")}</h2>
-  {
-    libraries.map((entry) => (
-      <li>
-        <a href={getLibraryLink(entry)}>{removeLocaleAndExtension(entry.id)}</a>
-      </li>
-    ))
-  }
-
-  <a href="/libraries">See Libraries Archive</a>
-
-  <h2>{t("Events")}</h2>
-  {
-    pastEvents.map((entry) => (
-      <li>
-        <a href={`/past-events/${removeLocaleAndExtension(entry.id)}`}>
-          {removeLocaleAndExtension(entry.id)}
-        </a>
-      </li>
-    ))
-  }
-  <a href="/past-events">See Past Events Archive</a>
+              <div class="text-lg mt-xs">{entry.data.name}</div>
+              <div class="text-sm">{entry.data.description}</div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <LinkButton url="/libraries" variant="link" class={buttonClasses}
+      >{t("All Libraries")}</LinkButton
+    >
+  </section>
+  <section class={sectionClasses}>
+    <h2 class={h2Classes}>{t("Events")}</h2>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md">
+      {
+        pastEvents.slice(0, eventsLimit).map((entry, i) => (
+          <li
+            class={i === 0 || i === 5 || i === 8 ? "col-span-2 row-span-2" : ""}
+          >
+            <a href={`/past-events/${removeLocaleAndExtension(entry.id)}`}>
+              <Image
+                src={entry.data.featuredImage}
+                alt={entry.data.featuredImageAlt}
+              />
+              <div class="text-lg mt-xs">{entry.data.title}</div>
+              <div class="text-sm">
+                {new Date(entry.data.date).toLocaleDateString(currentLocale)}
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <LinkButton url="/past-events" variant="link" class={buttonClasses}
+      >{t("All Events")}</LinkButton
+    >
+  </section>
 </BaseLayout>
