@@ -19,6 +19,10 @@ interface EntryWithId {
   id: string;
 }
 
+interface EntryWithId {
+  id: string;
+}
+
 /**
  * Retreives all the entries in the given collection, filtered to only include
  * those in the default locale (language).

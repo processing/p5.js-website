@@ -254,6 +254,59 @@ const seenParams: Record<string, true> = {};
           </div>
         )
       }
+      {
+        entry.data.properties && (
+          <div class="mb-xl">
+            <h3>{t("Fields")}</h3>
+            {Object.entries(entry.data.properties).map(([key, value]) => {
+              const propertyValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={propertyValue.path}
+                    class="text-body-large underline"
+                  >
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {propertyValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        entry.data.methods && (
+          <div class="my-xl">
+            <h3>{t("Methods")}</h3>
+            {Object.entries(entry.data.methods).map(([key, value]) => {
+              const methodValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a href={methodValue.path} class="text-body-large">
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {methodValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
     </div>
   </div>
   <RelatedItems

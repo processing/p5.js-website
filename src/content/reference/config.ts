@@ -54,6 +54,14 @@ const propertySchema = z.object({
 });
 
 /**
+ * Property schema for properties associated with a class in the Reference collection.
+ */
+const propertySchema = z.object({
+  description: z.string(),
+  path: z.string(),
+});
+
+/**
  * Content collection for the Reference pages of the site.
  */
 export const referenceSchema = z.object({
