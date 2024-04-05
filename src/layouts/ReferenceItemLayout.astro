@@ -3,6 +3,7 @@ import CodeEmbed from "@components/CodeEmbed";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
 import {
   getRefEntryTitleConcatWithParen,
+  escapeCodeTagsContent,
   separateReferenceExamples,
 } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
@@ -15,6 +16,7 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 const examples = separateReferenceExamples(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
   .map((example) => example.trim());
+const description = escapeCodeTagsContent(entry.data.description);
 const t = await useTranslations(currentLocale);
 const title = getRefEntryTitleConcatWithParen(entry);
 ---
@@ -22,10 +24,7 @@ const title = getRefEntryTitleConcatWithParen(entry);
 <BaseLayout title={title} variant="item">
   <div class="content-grid mt-0">
     <div class="col-span-9 xl:min-w-[1000px]">
-      <div
-        set:html={entry.data.description}
-        class="[&_a]:text-type-magenta mb-xl"
-      />
+      <div set:html={description} class="[&_a]:text-type-magenta mb-xl" />
       {
         examples && (
           <div class="mb-xl">
