@@ -1,7 +1,9 @@
+import type { JSX } from "preact";
+
 type CircleButtonProps = {
   onClick?: (ev: MouseEvent) => void;
   ariaLabel: string;
-  children: Element | JSX.Element | JSX.Element[] | string | null | undefined;
+  children: Element | JSX.Element;
   className?: string;
 };
 
