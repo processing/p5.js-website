@@ -1,14 +1,12 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getLibraryLink, removeLocaleAndExtension } from "../pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import LinkButton from "@components/LinkButton/index.astro";
-import { Image } from "astro:assets";
+import GridItemSketch from "@components/GridItem/Sketch.astro";
+import GridItemLibrary from "@components/GridItem/Library.astro";
+import GridItemEvent from "@components/GridItem/Event.astro";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
-import {
-  makeThumbnailUrl,
-  type OpenProcessingCurationResponse,
-} from "../api/OpenProcessing";
+import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
 
 interface Props {
   sketches: OpenProcessingCurationResponse;
@@ -44,22 +42,7 @@ const t = await useTranslations(currentLocale);
               else return "md:row-span-2";
             })()}
           >
-            <a href={`/sketches/${sk.visualID}`}>
-              {
-                // This isn't alt text ideal but we have no way of knowing what
-                // the thumbnail looks like, and the OpenProcessing API
-                // doesn't include that information
-              }
-              <Image
-                src={makeThumbnailUrl(sk.visualID)}
-                alt="Screenshot of sketch"
-                width={400}
-                height={400}
-                class="w-full h-auto"
-              />
-              <div class="text-lg mt-xs">{sk.title}</div>
-              <div class="text-sm">{sk.fullname}</div>
-            </a>
+            <GridItemSketch item={sk} />
           </li>
         ))
       }
@@ -73,17 +56,9 @@ const t = await useTranslations(currentLocale);
     <h2 class="mb-lg">{t("Libraries")}</h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
-        libraries.slice(0, librariesLimit).map((entry) => (
+        libraries.slice(0, librariesLimit).map((lib) => (
           <li>
-            <a href={getLibraryLink(entry)}>
-              <Image
-                src={entry.data.featuredImage}
-                alt={entry.data.featuredImageAlt}
-              />
-
-              <div class="text-lg mt-xs">{entry.data.name}</div>
-              <div class="text-sm">{entry.data.description}</div>
-            </a>
+            <GridItemLibrary item={lib} />
           </li>
         ))
       }
@@ -97,7 +72,7 @@ const t = await useTranslations(currentLocale);
     <h2 class="mb-lg">{t("Events")}</h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
-        pastEvents.slice(0, eventsLimit).map((entry, i) => (
+        pastEvents.slice(0, eventsLimit).map((event, i) => (
           <li
             class={(() => {
               if (i === 0 || i === 5) return "col-span-2 row-span-2";
@@ -106,16 +81,7 @@ const t = await useTranslations(currentLocale);
                 return "col-span-2 row-span-2 md:row-span-1 md:col-span-1";
             })()}
           >
-            <a href={`/past-events/${removeLocaleAndExtension(entry.id)}`}>
-              <Image
-                src={entry.data.featuredImage}
-                alt={entry.data.featuredImageAlt}
-              />
-              <div class="text-lg mt-xs">{entry.data.title}</div>
-              <div class="text-sm">
-                {new Date(entry.data.date).toLocaleDateString(currentLocale)}
-              </div>
-            </a>
+            <GridItemEvent item={event} />
           </li>
         ))
       }
