@@ -1,0 +1,206 @@
+---
+title: createSelect
+module: 文档对象模型
+submodule: 文档对象模型
+file: src/dom/dom.js
+description: >
+  <p>创建一个下拉菜单<code>&lt;select&gt;&lt;/select&gt;</code>元素。</p>
+
+  <p>参数是可选的。如果传递了<code>true</code>，如<code>let mySelect = createSelect(true)</code>，则下拉菜单将支持多选。如果传递了一个现有的<code>&lt;select&gt;&lt;/select&gt;</code>元素，如<code>let mySelect = createSelect(otherSelect)</code>，则现有元素将被包装在一个新的<a href="#/p5.Element">p5.Element</a>对象中。</p>
+
+  <p>下拉菜单扩展了<a href="#/p5.Element">p5.Element</a>类，增加了一些管理选项的有用方法：</p>
+
+  <ul>
+
+  <li><code>mySelect.option(name, [value])</code>向菜单添加一个选项。第一个参数，<code>name</code>，是一个字符串，设置选项的名称和值。第二个参数，<code>value</code>，是可选的。如果提供了，它将设置对应于键<code>name</code>的值。如果一个选项的<code>name</code>已经存在，其值将被更改为<code>value</code>。</li>
+
+  <li><code>mySelect.value()</code>返回当前选中选项的值。</li>
+
+  <li><code>mySelect.selected()</code>返回当前选中的选项。</li>
+
+  <li><code>mySelect.selected(option)</code>默认选择给定的选项。</li>
+
+  <li><code>mySelect.disable()</code>将整个下拉菜单元素标记为禁用。</li>
+
+  <li><code>mySelect.disable(option)</code>将给定的选项标记为禁用。</li>
+
+  <li><code>mySelect.enable()</code>将整个下拉菜单元素标记为启用。</li>
+
+  <li><code>mySelect.enable(option)</code>将给定的选项标记为启用。</li>
+
+  </ul>
+line: 1158
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and place it beneath the canvas.
+      mySelect = createSelect();
+      mySelect.position(0, 100);
+
+      // Add color options.
+      mySelect.option('red');
+      mySelect.option('green');
+      mySelect.option('blue');
+      mySelect.option('yellow');
+
+      // Set the selected option to "red".
+      mySelect.selected('red');
+
+      describe('A red square with a dropdown menu beneath it. The square changes color when a new color is selected.');
+    }
+
+    function draw() {
+      // Use the selected value to paint the background.
+      let c = mySelect.selected();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and place it beneath the canvas.
+      mySelect = createSelect();
+      mySelect.position(0, 100);
+
+      // Add color options.
+      mySelect.option('red');
+      mySelect.option('green');
+      mySelect.option('blue');
+      mySelect.option('yellow');
+
+      // Set the selected option to "red".
+      mySelect.selected('red');
+
+      // Disable the "yellow" option.
+      mySelect.disable('yellow');
+
+      describe('A red square with a dropdown menu beneath it. The square changes color when a new color is selected.');
+    }
+
+    function draw() {
+      // Use the selected value to paint the background.
+      let c = mySelect.selected();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and place it beneath the canvas.
+      mySelect = createSelect();
+      mySelect.position(0, 100);
+
+      // Add color options with names and values.
+      mySelect.option('one', 'red');
+      mySelect.option('two', 'green');
+      mySelect.option('three', 'blue');
+      mySelect.option('four', 'yellow');
+
+      // Set the selected option to "one".
+      mySelect.selected('one');
+
+      describe('A red square with a dropdown menu beneath it. The square changes color when a new color is selected.');
+    }
+
+    function draw() {
+      // Use the selected value to paint the background.
+      let c = mySelect.selected();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Hold CTRL to select multiple options on Windows and Linux.
+    // Hold CMD to select multiple options on macOS.
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and allow multiple selections.
+      // Place it beneath the canvas.
+      mySelect = createSelect(true);
+      mySelect.position(0, 100);
+
+      // Add color options.
+      mySelect.option('red');
+      mySelect.option('green');
+      mySelect.option('blue');
+      mySelect.option('yellow');
+
+      describe('A gray square with a dropdown menu beneath it. Colorful circles appear when their color is selected.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Use the selected value(s) to draw circles.
+      let colors = mySelect.selected();
+      for (let i = 0; i < colors.length; i += 1) {
+        // Calculate the x-coordinate.
+        let x = 10 + i * 20;
+
+        // Access the color.
+        let c = colors[i];
+
+        // Draw the circle.
+        fill(c);
+        circle(x, 50, 20);
+      }
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: 新的<a href="#/p5.Element">p5.Element</a>对象。
+  type: p5.Element
+overloads:
+  - line: 1158
+    params:
+      - name: multiple
+        description: |
+          <p>支持多选。</p>
+        type: 布尔
+        optional: true
+    return:
+      description: 新的<a href="#/p5.Element">p5.Element</a>对象。
+      type: p5.Element
+  - line: 1323
+    params:
+      - name: existing
+        description: >
+          <p>要包装的现有select元素，可以是<a
+          href="#/p5.Element">p5.Element</a>或
+                                   <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement" target="_blank">HTMLSelectElement</a>。</p>
+        type: 对象
+    return:
+      description: ''
+      type: p5.Element
+chainable: false
+---
+
+
+# createSelect
