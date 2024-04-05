@@ -1,0 +1,201 @@
+---
+title: createRadio
+module: 文档对象模型
+submodule: 文档对象模型
+file: src/dom/dom.js
+description: >
+  <p>创建一个单选按钮元素。</p>
+
+  <p>参数是可选的。如果传递了一个字符串，如
+
+  <code>let myRadio = createSelect('food')</code>，那么每个单选选项将
+
+  有 <code>"food"</code> 作为其 <code>name</code> 参数：<code>&lt;input
+  name="food"&gt;&lt;/input&gt;</code>。
+
+  如果传递了一个现有的 <code>&lt;div&gt;&lt;/div&gt;</code> 或
+  <code>&lt;span&gt;&lt;/span&gt;</code>
+
+  元素，如 <code>let myRadio = createSelect(container)</code>，
+  它将
+
+  成为单选按钮的父元素。</p>
+
+  <p>单选按钮扩展了 <a href="#/p5.Element">p5.Element</a> 类，增加了一些
+
+  有用的方法来管理选项：</p>
+
+  <ul>
+
+  <li><code>myRadio.option(value, [label])</code> 向菜单添加一个选项。
+  第一个参数，<code>value</code>，是一个字符串，设置选项的
+  值和标签。第二个参数，<code>label</code>，是可选的。如果提供，它设置显示的标签为 <code>value</code>。如果一个选项
+  的 <code>value</code> 已经存在，其标签将被更改��返回其值。</li>
+
+  <li><code>myRadio.value()</code> 返回当前选中选项的
+  值。</li>
+
+  <li><code>myRadio.selected()</code> 返回当前选中的
+  选项。</li>
+
+  <li><code>myRadio.selected(value)</code> 选择给定的选项并将
+  它作为一个 <a
+  href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement"
+  target="_blank"><code>HTMLInputElement</code></a> 返回。</li>
+
+  <li><code>myRadio.disable(shouldDisable)</code> 如果传递 <code>true</code> 则启用整个单选按钮，如果传递 <code>false</code> 则禁用它。</li>
+
+  </ul>
+line: 1439
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let myRadio;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a radio button element and place it
+      // in the top-left corner.
+      myRadio = createRadio();
+      myRadio.position(0, 0);
+      myRadio.size(60);
+
+      // Add a few color options.
+      myRadio.option('red');
+      myRadio.option('yellow');
+      myRadio.option('blue');
+
+      // Choose a default option.
+      myRadio.selected('yellow');
+
+      describe('A yellow square with three color options listed, "red", "yellow", and "blue". The square changes color when the user selects a new option.');
+    }
+
+    function draw() {
+      // Set the background color using the radio button.
+      let g = myRadio.value();
+      background(g);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myRadio;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a radio button element and place it
+      // in the top-left corner.
+      myRadio = createRadio();
+      myRadio.position(0, 0);
+      myRadio.size(50);
+
+      // Add a few color options.
+      // Color values are labeled with
+      // emotions they evoke.
+      myRadio.option('red', 'love');
+      myRadio.option('yellow', 'joy');
+      myRadio.option('blue', 'trust');
+
+      // Choose a default option.
+      myRadio.selected('yellow');
+
+      describe('A yellow square with three options listed, "love", "joy", and "trust". The square changes color when the user selects a new option.');
+    }
+
+    function draw() {
+      // Set the background color using the radio button.
+      let c = myRadio.value();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myRadio;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a radio button element and place it
+      // in the top-left corner.
+      myRadio = createRadio();
+      myRadio.position(0, 0);
+      myRadio.size(50);
+
+      // Add a few color options.
+      myRadio.option('red');
+      myRadio.option('yellow');
+      myRadio.option('blue');
+
+      // Choose a default option.
+      myRadio.selected('yellow');
+
+      // Create a button and place it beneath the canvas.
+      let btn = createButton('disable');
+      btn.position(0, 100);
+
+      // Call disableRadio() when btn is pressed.
+      btn.mousePressed(disableRadio);
+
+      describe('A yellow square with three options listed, "red", "yellow", and "blue". The square changes color when the user selects a new option. A "disable" button beneath the canvas disables the color options when pressed.');
+    }
+
+    function draw() {
+      // Set the background color using the radio button.
+      let c = myRadio.value();
+      background(c);
+    }
+
+    // Disable myRadio.
+    function disableRadio() {
+      myRadio.disable(true);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: 新的 <a href="#/p5.Element">p5.Element</a> 对象。
+  type: p5.Element
+overloads:
+  - line: 1439
+    params:
+      - name: containerElement
+        description: >
+          <p>容器 HTML 元素，可以是
+          <code>&lt;div&gt;&lt;/div&gt;</code>
+
+          或 <code>&lt;span&gt;&lt;/span&gt;</code>。</p>
+        type: 对象
+        optional: true
+    return:
+      description: 新的 <a href="#/p5.Element">p5.Element</a> 对象。
+      type: p5.Element
+  - line: 1573
+    params:
+      - name: name
+        description: >
+          <p>分配给每个选项的 <code>&lt;input&gt;&lt;/input&gt;</code> 元素的 name 参数。</p>
+        type: 字符串
+        optional: true
+    return:
+      description: 新的 <a href="#/p5.Element">p5.Element</a> 对象。
+      type: p5.Element
+  - line: 1578
+    params: []
+    return:
+      description: 新的 <a href="#/p5.Element">p5.Element</a> 对象。
+      type: p5.Element
+chainable: false
+---
+
+
+# createRadio
