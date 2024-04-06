@@ -9,6 +9,7 @@ interface CodeBundle {
   css?: string;
   htmlBody?: string;
   js?: string;
+  base?: string;
 }
 
 /*
@@ -18,6 +19,7 @@ interface CodeBundle {
 const wrapInMarkup = (code: CodeBundle) =>
   `<!DOCTYPE html>
 <meta charset="utf8" />
+<base href="${code.base || "/assets/"}" />
 <style type='text/css'>
 html, body {
   margin: 0;
