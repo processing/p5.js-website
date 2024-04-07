@@ -1,0 +1,104 @@
+---
+title: loadImage
+module: Imagen
+submodule: Cargando y Mostrando
+file: src/image/loading_displaying.js
+description: |-
+  <p>Carga una imagen para crear un objeto <a href="/reference/p5/p5.Image">p5.Image</a>.</p>
+
+  "<p><code>loadImage()</code> interpreta el primer parámetro de tres formas diferentes. Si se proporciona la ruta a un archivo de imagen, <code>loadImage()</code> lo cargará. Las rutas a archivos locales deben ser relativas, como <code>'/assets/thundercat.jpg'</code>. Las URL como <code>'https":"//ejemplo.com/thundercat.jpg'</code> pueden ser bloqueadas debido a la seguridad del navegador. También se puede pasar datos de imagen en bruto como una imagen codificada en base64 en la forma <code>'data:image/png;base64,secuenciaderandomcharacters'</code>.</p>"
+
+  <p>El segundo parámetro es opcional. Si se pasa una función, se llamará una vez que se haya cargado la imagen. La función <em>callback</em> puede usar opcionalmente el nuevo objeto <a href="/reference/p5/p5.Image">p5.Image</a>.</p>
+
+  <p>El tercer parámetro también es opcional. Si se pasa una función, se llamará si la imagen no se carga correctamente. La función <em>callback</em> puede usar opcionalmente el evento de error.</p>
+
+  <p>Las imágenes pueden tardar en cargarse. Llamar a <code>loadImage()</code> en <a href="/reference/p5/preload">preload()</a> asegura que las imágenes se carguen antes de ser utilizadas en <a href="/reference/p5/setup">setup()</a> o <a href="/reference/p5/draw">draw()</a>.</p>
+line: '18'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image and create a p5.Image object.
+    function preload() {
+      img = loadImage('/assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Draw the image.
+      image(img, 0, 0);
+
+      describe('Image of the underside of a white umbrella and a gridded ceiling.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      // Call handleImage() once the image loads.
+      loadImage('/assets/laDefense.jpg', handleImage);
+
+      describe('Image of the underside of a white umbrella and a gridded ceiling.');
+    }
+
+    // Display the image.
+    function handleImage(img) {
+      image(img, 0, 0);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      // Call handleImage() once the image loads or
+      // call handleError() if an error occurs.
+      loadImage('/assets/laDefense.jpg', handleImage, handleError);
+    }
+
+    // Display the image.
+    function handleImage(img) {
+      image(img, 0, 0);
+
+      describe('Image of the underside of a white umbrella and a gridded ceiling.');
+    }
+
+    // Log the error.
+    function handleError(event) {
+      console.error('Oops!', event);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: path
+    description: |2-
+  
+      <p>ruta de la imagen a cargar o imagen codificada en base64.</p>
+    type: String
+  - name: successCallback
+    description: |2-
+  
+      <p>función llamada con <a href="#/p5.Image">p5.Image</a> una vez que se cargue.</p>
+    type: function(p5.Image)
+    optional: true
+  - name: failureCallback
+    description: |2-
+  
+      <p>función llamada con el evento de error si la imagen no se carga correctamente.</p>
+    type: Function(Event)
+    optional: true
+return:
+  description: el objeto <a href="#/p5.Image">p5.Image</a>.
+  type: p5.Image
+chainable: false
+---
+
+# loadImage

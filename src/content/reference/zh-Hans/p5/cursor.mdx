@@ -1,0 +1,120 @@
+---
+title: cursor
+module: 环境
+submodule: 环境
+file: src/core/environment.js
+description: |2-
+
+  <p>改变光标样式。</p>
+
+
+  <p>第一个参数，<code>type</code>，设置要显示的光标类型。内置选项有： <code>ARROW</code>、<code>CROSS</code>、
+  <code>HAND</code>、<code>MOVE</code>、<code>TEXT</code>和
+  <code>WAIT</code>。
+
+
+  "<code>cursor()</code> 也可以识别以字符串形式传递的标准 CSS 光标属性： <code>'help'</code>，<code>'wait'</code>，<code>'crosshair'</code>，"
+  "<code>'not-allowed'</code>，<code>'zoom-in'</code> 和  <code>'grab'</code>。"
+
+  如果传递的是图像路径，例如：
+  "<code>cursor('/assets/target.png')</code>，那么光标将以图像的形式展现出来。"
+
+  图像格式必须是 .cur、.gif、.jpg、.jpeg 或 .png，要以这样的形式传递： <a
+  href="https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#icon_size_limits">，最高像素为 32x32。</a></p>
+
+
+  参数 <p><code>x</code> 和 <code>y</code> 都是可选项。如果用图像作光标，<code>x</code> 和 <code>y</code> 用来设置图像中指向的位置。 它们初始值都是 0，此时光标指向图像左上角。并且 <code>x</code> 和 <code>y</code> 的值必须分别小于图像的宽高。</p>
+line: '209'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A gray square. The cursor appears as crosshairs.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Set the cursor to crosshairs: +
+      cursor(CROSS);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A gray square divided into quadrants. The cursor image changes when the mouse moves to each quadrant.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Divide the canvas into quadrants.
+      line(50, 0, 50, 100);
+      line(0, 50, 100, 50);
+
+      // Change cursor based on mouse position.
+      if (mouseX < 50 && mouseY < 50) {
+        cursor(CROSS);
+      } else if (mouseX > 50 && mouseY < 50) {
+        cursor('progress');
+      } else if (mouseX > 50 && mouseY > 50) {
+        cursor('https://avatars0.githubusercontent.com/u/1617169?s=16');
+      } else {
+        cursor('grab');
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('An image of three purple curves follows the mouse. The image shifts when the mouse is pressed.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Change the cursor's active spot
+      // when the mouse is pressed.
+      if (mouseIsPressed === true) {
+        cursor('https://avatars0.githubusercontent.com/u/1617169?s=16', 8, 8);
+      } else {
+        cursor('https://avatars0.githubusercontent.com/u/1617169?s=16');
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: type
+    description: "\n<p>内置：ARROW、CROSS、HAND、MOVE、TEXT、 WAIT\n\n                              \n原生 CSS 属性：'grab'、'progress'等\n\n                              \n光标图片路径</p>"
+    type: 字符串|常量
+  - name: x
+    description: |2-
+  
+      <p>光标在水平方向的位置</p>
+    type: 数字
+    optional: true
+  - name: y
+    description: |2-
+  
+      <p>光标在垂直方向的位置</p>
+    type: 数字
+    optional: true
+chainable: false
+---
+
+# cursor

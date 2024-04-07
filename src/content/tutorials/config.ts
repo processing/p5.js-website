@@ -1,7 +1,14 @@
 import { z, defineCollection } from "astro:content";
 import { relatedContent } from "../shared";
 
-const categories = ["introduction", "webgl"] as const;
+const categories = [
+  "introduction",
+  "drawing",
+  "web-design",
+  "accessibility",
+  "webgl",
+  "advanced",
+] as const;
 
 /**
  * Content collection for the Sketches showcase section of the site.
@@ -14,6 +21,8 @@ export const tutorialsCollection = defineCollection({
       title: z.string(),
       // People who wrote the tutorial
       authors: z.array(z.string()).optional(),
+      // Optional note explaining more context about the authors
+      authorsNote: z.string().optional(),
       description: z.string().optional(),
       category: z.enum(categories),
       // Image to use as a thumbnail for the tutorial

@@ -1,0 +1,171 @@
+---
+title: createCapture
+module: 文档对象模型
+submodule: 文档对象模型
+file: src/dom/dom.js
+description: >
+  <p>创建一个 <code>&lt;video&gt;</code> 元素，用于“捕获”来自
+
+  网络摄像头和麦克风的音频/视频流。</p>
+
+  <p><code>createCapture()</code> 返回一个新的
+
+  <a href="#/p5.MediaElement">p5.MediaElement</a> 对象。视频默认显示，
+
+  可以通过调用 <code>capture.hide()</code> 来隐藏，并使用 <a href="./image">image()</a> 绘制到
+
+  画布上。</p>
+
+  <p>第一个参数，<code>type</code>，是可选的。它设置要使用的捕获类型。
+
+  默认情况下，<code>createCapture()</code> 捕获音频和视频。
+  如果传入 <code>VIDEO</code>，
+
+  如 <code>createCapture(VIDEO)</code>，则只捕获视频。
+
+  如果传入 <code>AUDIO</code>，如 <code>createCapture(AUDIO)</code>，则只捕获
+
+  音频。也可以传入一个约束对象来自定义流。
+
+  查看 <a
+  href="http://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints"
+  target="_blank">
+
+  W3C 文档</a> 了解可能的属性。不同的浏览器支持
+
+  不同的属性。</p>
+
+  <p>'flipped' 属性是一个可选属性，可以设置为
+  <code>{flipped:true}</code>
+
+  来镜像视频输出。如果为 true，则意味着视频将被
+
+  镜像或翻转，如果没有提及，则默认为 <code>false</code>。</p>
+
+  <p>第二个参数，<code>callback</code>，是可选的。它是一个准备好使用时调用的函数。回调函数应该有一个
+
+  参数，<code>stream</code>，是一个
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream"
+  target="_blank">MediaStream</a> 对象。</p>
+
+  <p>注意：<code>createCapture()</code> 只在本地运行草图或使用 HTTPS 时有效。了解更多
+
+  <a
+  href="http://stackoverflow.com/questions/34197653/getusermedia-in-chrome-47-without-using-https"
+  target="_blank">这里</a>
+
+  和 <a
+  href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia"
+  target="_blank">这里</a>。</p>
+line: 2276
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class='notest'>
+    <code>
+    function setup() {
+      noCanvas();
+
+      // Create the video capture.
+      createCapture(VIDEO);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture and hide the element.
+      capture = createCapture(VIDEO);
+      capture.hide();
+
+      describe('A video stream from the webcam with inverted colors.');
+    }
+
+    function draw() {
+      // Draw the video capture within the canvas.
+      image(capture, 0, 0, width, width * capture.height / capture.width);
+
+      // Invert the colors in the stream.
+      filter(INVERT);
+    }
+    </code>
+    </div>
+    <div class='notest'>
+    <code>
+    let capture;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the video capture with mirrored output.
+      capture = createCapture(VIDEO,{ flipped:true });
+      capture.size(100,100);
+
+      describe('A video stream from the webcam with flipped or mirrored output.');
+    }
+
+    </code>
+    </div>
+
+    <div class='notest norender'>
+    <code>
+    function setup() {
+      createCanvas(480, 120);
+
+      // Create a constraints object.
+      let constraints = {
+        video: {
+          mandatory: {
+            minWidth: 1280,
+            minHeight: 720
+          },
+          optional: [{ maxFrameRate: 10 }]
+        },
+        audio: false
+      };
+
+      // Create the video capture.
+      createCapture(constraints);
+
+      describe('A video stream from the webcam.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: type
+    description: |
+      <p>捕获的类型，可以是 AUDIO 或 VIDEO，
+                                        或一个约束对象。默认情况下，视频和音频
+                                        流都被捕获。</p>
+    type: 字符串|常数|对象
+    optional: true
+  - name: flipped
+    description: >
+      <p>翻转捕获的视频并镜像输出，
+      <code>{flipped:true}</code>。默认情况下为 false。</p>
+    type: 对象
+    optional: true
+  - name: callback
+    description: |
+      <p>流加载完成后调用的函数。</p>
+    type: 函数
+    optional: true
+return:
+  description: 新的 <a href="#/p5.MediaElement">p5.MediaElement</a> 对象。
+  type: p5.MediaElement
+chainable: false
+---
+
+
+# createCapture

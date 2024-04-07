@@ -1,0 +1,273 @@
+---
+title: p5.Image
+module: Imagen
+submodule: Imagen
+file: src/image/p5.Image.js
+description: |-
+  <p>Una clase para describir una imagen.</p>
+
+  <p>Las imágenes son cuadrículas rectangulares de píxeles que pueden ser mostradas y modificadas.</p>
+
+  <p>Imágenes existentes pueden ser cargadas llamando a <a href="/reference/p5/loadImage">loadImage()</a>. Imágenes en blanco pueden ser creadas llamando a <a href="/reference/p5/createImage">createImage()</a>. Los objetos <code>p5.Image</code> tienen métodos para tareas comunes como aplicar filtros y modificar valores de píxeles.</p>
+line: '21'
+isConstructor: 'true'
+params:
+  - name: width
+    description: ''
+    type: Number
+  - name: height
+    description: ''
+    type: Number
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      describe('An image of a brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Apply the GRAY filter.
+      img.filter(GRAY);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      describe('A grayscale image of a brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Image object.
+      let img = createImage(66, 66);
+
+      // Load the image's pixels.
+      img.loadPixels();
+
+      // Set the pixels to black.
+      for (let x = 0; x < img.width; x += 1) {
+        for (let y = 0; y < img.height; y += 1) {
+          img.set(x, y, 0);
+        }
+      }
+
+      // Update the image.
+      img.updatePixels();
+
+      // Display the image.
+      image(img, 17, 17);
+
+      describe('A black square drawn in the middle of a gray square.');
+    }
+    </code>
+    </div>
+methods:
+  pixelDensity:
+    description: |2-
+
+      <p>Obtiene o establece la densidad de píxeles para pantallas de alta densidad de píxeles.</p>
+
+      <p>Por defecto, la densidad se establecerá en 1.</p>
+
+      <p>Llama a este método sin argumentos para obtener la densidad predeterminada, o pasa un número para establecer la densidad. Si se proporciona un número no positivo, se establece en 1 por defecto.</p>
+    path: p5.Image/pixelDensity
+  loadPixels:
+    description: |2-
+
+      <p>Carga el valor actual de cada píxel en la imagen en el array <code>img.pixels</code>.</p>
+
+      <p><code>img.loadPixels()</code> debe ser llamado antes de leer o modificar los valores de los píxeles.</p>
+    path: p5.Image/loadPixels
+  updatePixels:
+    description: |-
+      <p>Actualiza el lienzo con los valores RGBA en el array <a href="/reference/p5.Image/pixels">img.pixels</a>.</p>
+
+      <p><code>img.updatePixels()</code> solo necesita ser llamado después de cambiar los valores en el array <a href="/reference/p5.Image/pixels">img.pixels</a>. Tales cambios pueden ser realizados directamente después de llamar a <a href="/reference/p5.Image/loadPixels">img.loadPixels()</a> o llamando a <a href="/reference/p5.Image/set">img.set()</a>.</p>
+
+      <p>Los parámetros opcionales <code>x</code>, <code>y</code>, <code>width</code> y <code>height</code> definen una subsección de la imagen para actualizar. Hacerlo puede mejorar el rendimiento en algunos casos.</p>
+
+      <p>Si la imagen fue cargada desde un GIF, entonces llamar a <code>img.updatePixels()</code> actualizará los píxeles en el fotograma actual.</p>
+    path: p5.Image/updatePixels
+  get:
+    description: |2-
+
+      <p>Obtiene un píxel o una región de píxeles de la imagen.</p>
+
+      <p><code>img.get()</code> es fácil de usar pero no es tan rápido como <a href="/reference/p5.Image/pixels">img.pixels</a>. Utiliza <a href="/reference/p5.Image/pixels">img.pixels</a> para leer muchos valores de píxeles.</p>
+
+      <p>La versión de <code>img.get()</code> sin parámetros devuelve la imagen completa.</p>
+
+      <p>La versión de <code>img.get()</code> con dos parámetros, como en <code>img.get(10, 20)</code>, se interpreta como coordenadas. Devuelve un array con los valores <code>[R, G, B, A]</code> del píxel en el punto dado.</p>
+
+      <p>La versión de <code>img.get()</code> con cuatro parámetros, como en <code>img.get(10, 20, 50, 90)</code>, se interpreta como coordenadas y dimensiones. Los dos primeros parámetros son las coordenadas de la esquina superior izquierda de la subsección. Los dos últimos parámetros son el ancho y la altura de la subsección. Devuelve una subsección del lienzo en un nuevo objeto <a href="/reference/p5/p5.Image">p5.Image</a>.</p>
+
+      <p>Utiliza <code>img.get()</code> en lugar de <a href="/reference/p5/get">get()</a> para trabajar directamente con imágenes.</p>
+    path: p5.Image/get
+  set:
+    description: |-
+      <p>Establece el color de uno o más píxeles dentro de una imagen.</p>
+
+      <p><code>img.set()</code> es fácil de usar pero no es tan rápido como <a href="/reference/p5.Image/pixels">img.pixels</a>. Utiliza <a href="/reference/p5.Image/pixels">img.pixels</a> para establecer muchos valores de píxeles.</p>
+
+      <p><code>img.set()</code> interpreta los dos primeros parámetros como coordenadas x e y. Interpreta el último parámetro como un valor de escala de grises, un array de píxel <code>[R, G, B, A]</code>, un objeto <a href="/reference/p5/p5.Color">p5.Color</a>, u otro objeto <a href="/reference/p5/p5.Image">p5.Image</a>.</p>
+
+      <p><a href="/reference/p5.Image/updatePixels">img.updatePixels()</a> debe ser llamado después de usar <code>img.set()</code> para que los cambios aparezcan.</p>
+    path: p5.Image/set
+  resize:
+    description: |-
+      <p>Redimensiona la imagen a un ancho y alto dados.</p>
+
+      <p>El aspecto original de la imagen puede ser mantenido pasando 0 para cualquiera de <code>width</code> o <code>height</code>. Por ejemplo, llamar a <code>img.resize(50, 0)</code> en una imagen que era de 500 × 300 píxeles la redimensionará a 50 × 30 píxeles.</p>
+    path: p5.Image/resize
+  copy:
+    description: |2-
+
+      <p>Copia píxeles de una imagen fuente en esta.</p>
+
+      <p>El primer parámetro, <code>srcImage</code>, es un objeto opcional <a href="/reference/p5/p5.Image">p5.Image</a> para copiar. Si no se pasa una imagen fuente, entonces <code>img.copy()</code> puede copiar una región de esta imagen a otra región.</p>
+
+      <p>Los siguientes cuatro parámetros, <code>sx</code>, <code>sy</code>, <code>sw</code> y <code>sh</code>, determinan la región para copiar desde la imagen fuente. <code>(sx, sy)</code> es la esquina superior izquierda de la región. <code>sw</code> y <code>sh</code> son el ancho y alto de la región.</p>
+
+      <p>Los siguientes cuatro parámetros, <code>dx</code>, <code>dy</code>, <code>dw</code> y <code>dh</code>, determinan la región de esta imagen para copiar. <code>(dx, dy)</code> es la esquina superior izquierda de la región. <code>dw</code> y <code>dh</code> son el ancho y alto de la región.</p>
+
+      <p>Llamar a <code>img.copy()</code> escalará píxeles desde la región fuente si no es del mismo tamaño que la región de destino.</p>
+    path: p5.Image/copy
+  mask:
+    description: |2-
+
+      <p>Aplica una máscara a una parte de la imagen con otra.</p>
+
+      <p><code>img.mask()</code> utiliza el canal alfa de otro objeto <a href="/reference/p5/p5.Image">p5.Image</a> como el canal alfa para esta imagen. Las máscaras son acumulativas y no se pueden eliminar una vez aplicadas.</p>
+    path: p5.Image/mask
+  filter:
+    description: |2-
+
+      <p>Aplica un filtro de imagen a la imagen.</p>
+
+      <p>Las opciones predefinidas son:</p>
+
+      <p><code>INVERT</code></p>
+      <p>Invierte los colores en la imagen. No se utiliza ningún parámetro.</p>
+
+      <p><code>GRAY</code></p>
+      <p>Convierte la imagen a escala de grises. No se utiliza ningún parámetro.</p>
+
+      <p><code>THRESHOLD</code></p>
+      <p>Convierte la imagen a blanco y negro. Los píxeles con un valor de escala de grises por encima de un umbral dado se convierten en blanco. El resto se convierte en negro. El umbral debe estar entre 0.0 (negro) y 1.0 (blanco). Si no se especifica ningún valor, se utiliza 0.5.</p>
+
+      <p><code>OPAQUE</code></p>
+      <p>Establece el canal alfa para que sea completamente opaco. No se utiliza ningún parámetro.</p>
+
+      <p><code>POSTERIZE</code></p>
+      <p>Limita el número de colores en la imagen. Cada canal de color se limita al número de colores especificado. Los valores entre 2 y 255 son válidos, pero los resultados son más notables con valores más bajos. El valor predeterminado es 4.</p>
+
+      <p><code>BLUR</code></p>
+      <p>Difumina la imagen. El nivel de difuminado se especifica mediante un radio de desenfoque. Valores más grandes aumentan el desenfoque. El valor predeterminado es 4. Se utiliza un desenfoque gaussiano en modo <code>P2D</code>. Se utiliza un desenfoque de caja en modo <code>WEBGL</code>.</p>
+
+      <p><code>ERODE</code></p>
+      <p>Reduce las áreas claras. No se utiliza ningún parámetro.</p>
+
+      <p><code>DILATE</code></p>
+      <p>Aumenta las áreas claras. No se utiliza ningún parámetro.</p>
+    path: p5.Image/filter
+  blend:
+    description: |2-
+
+      <p>Copia una región de píxeles de otra imagen en esta.</p>
+
+      <p>El primer parámetro, <code>srcImage</code>, es el objeto <a href="/reference/p5/p5.Image">p5.Image</a> para mezclar.</p>
+
+      <p>Los siguientes cuatro parámetros, <code>sx</code>, <code>sy</code>, <code>sw</code> y <code>sh</code>, determinan la región para mezclar desde la imagen fuente. <code>(sx, sy)</code> es la esquina superior izquierda de la región. <code>sw</code> y <code>sh</code> son el ancho y alto de la región.</p>
+
+      <p>Los siguientes cuatro parámetros, <code>dx</code>, <code>dy</code>, <code>dw</code> y <code>dh</code>, determinan la región del lienzo para mezclar. <code>(dx, dy)</code> es la esquina superior izquierda de la región. <code>dw</code> y <code>dh</code> son el ancho y alto de la región.</p>
+
+      <p>El décimo parámetro, <code>blendMode</code>, establece el efecto utilizado para mezclar los colores de las imágenes. Las opciones son <code>BLEND</code>, <code>DARKEST</code>, <code>LIGHTEST</code>, <code>DIFFERENCE</code>, <code>MULTIPLY</code>, <code>EXCLUSION</code>, <code>SCREEN</code>, <code>REPLACE</code>, <code>OVERLAY</code>, <code>HARD_LIGHT</code>, <code>SOFT_LIGHT</code>, <code>DODGE</code>, <code>BURN</code>, <code>ADD</code> o <code>NORMAL</code>.</p>
+    path: p5.Image/blend
+  save:
+    description: |2-
+
+      <p>Guarda la imagen en un archivo.</p>
+
+      <p>Por defecto, <code>img.save()</code> guarda la imagen como un archivo PNG llamado <code>untitled.png</code>.</p>
+
+      "<p>El primer parámetro, <code>filename</code>, es opcional. Es una cadena que establece el nombre del archivo. Si se incluye una extensión de archivo, como en <code>img.save('drawing.png')</code>, entonces la imagen se guardará utilizando ese formato.</p>"
+
+      "<p>El segundo parámetro, <code>extension</code>, también es opcional. Establece el formato de los archivos. Se puede usar <code>'png'</code> o <code>'jpg'</code>. Por ejemplo, <code>img.save('drawing', 'jpg')</code> guarda el lienzo en un archivo llamado <code>drawing.jpg</code>.</p>"
+
+      <p>Nota: El navegador guardará el archivo inmediatamente o solicitará al usuario una ventana de diálogo.</p>
+
+      <p>La imagen solo se descargará como un GIF animado si se cargó desde un archivo GIF. Consulta <a href="/reference/p5/saveGif">saveGif()</a> para crear nuevos GIF.</p>
+    path: p5.Image/save
+  reset:
+    description: |2-
+
+      <p>Reinicia un GIF animado en su primer fotograma.</p>
+    path: p5.Image/reset
+  getCurrentFrame:
+    description: "<p>Obtiene el índice del fotograma actual en un GIF animado.</p>"
+    path: p5.Image/getCurrentFrame
+  setFrame:
+    description: "<p>Establece el fotograma actual en un GIF animado.</p>"
+    path: p5.Image/setFrame
+  numFrames:
+    description: |2-
+
+      <p>Devuelve el número de fotogramas en un GIF animado.</p>
+    path: p5.Image/numFrames
+  play:
+    description: |2-
+
+      <p>Reproduce un GIF animado que fue pausado con <a href="/reference/p5.Image/pause">img.pause()</a>.</p>
+    path: p5.Image/play
+  pause:
+    description: |2-
+
+      <p>Pausa un GIF animado.</p>
+
+      <p>El GIF puede ser reanudado llamando a <a href="/reference/p5.Image/play">img.play()</a>.</p>
+    path: p5.Image/pause
+  delay:
+    description: |-
+      <p>Cambia el intervalo entre fotogramas en un GIF animado.</p>
+
+      <p>El primer parámetro, <code>delay</code>, es la duración del intervalo en milisegundos.</p>
+
+      <p>El segundo parámetro, <code>index</code>, es opcional. Si se proporciona, solo el fotograma en <code>index</code> tendrá su intervalo modificado. Todos los demás fotogramas mantendrán su intervalo predeterminado.</p>
+    path: p5.Image/delay
+chainable: false
+---
+
+# p5.Image

@@ -1,0 +1,335 @@
+---
+title: filter
+module: 图像
+submodule: 像素
+file: src/image/pixels.js
+description: |2-
+
+  <p>将图像滤镜应用到画布上。</p>
+
+
+  <p>预设选项是：</p>
+
+
+  <p><code>INVERT</code>
+
+
+  反转图像中的颜色。不使用任何参数。</p>
+
+
+  <p><code>GRAY</code>
+
+
+  将图像转换为灰度图像。不使用任何参数。</p>
+
+
+  <p><code>THRESHOLD</code>
+
+
+  将图像转换为黑白图像。高于给定阈值具有灰度值的像素将转换为白色。其余的都转换为
+
+
+  黑色的。阈值必须介于 0.0（黑色）和 1.0（白色）之间。如果不指定值时，使用 0.5。</p>
+
+
+  <p><code>OPAQUE</code>
+
+
+  将 alpha 通道设置为完全不透明。不使用任何参数。</p>
+
+
+  <p><code>POSTERIZE</code>
+
+
+  限制图像中的颜色数量。每个颜色通道仅限于
+
+
+  指定的颜色数量。 2 到 255 之间的值是有效的，但是
+
+
+  值越低，结果越显著。默认值为 4。</p>
+
+
+  <p><code>BLUR</code>
+
+
+  模糊图像。模糊程度由模糊半径指定。较大
+
+
+  值会增加模糊度。默认值为 4。在 <code>P2D</code> 模式中，使用高斯模糊。在 <code>WEBGL</code> 模式中，使用框模糊 。</p>
+
+
+  <p><code>ERODE</code>
+
+
+  减少光照区域。不使用任何参数。</p>
+
+
+  <p><code>DILATE</code>
+
+
+  增加光照区域。不使用任何参数。</p>
+
+
+  <p>默认情况下，因为更快， <code>filter()</code> 使用 WebGL 处理背景。
+
+
+  在 <code>P2D</code> 模式下 ，如可以通过添加 <code>false</code> 论证，禁用此功能例如 <code>filter(BLUR, false)</code>。这可能有助于关闭图形处理器计算或者解决缺乏 WebGL 支持的问题。</p>
+
+
+  <p>在 WebGL 模式下，<code>filter()</code> 还可以用于定义着色器。参考 <a href="/reference/p5/createFilterShader">createFilterShader()</a> 了解更多信息。</p>
+line: '442'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the INVERT filter.
+      filter(INVERT);
+
+      describe('A blue brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the GRAY filter.
+      filter(GRAY);
+
+      describe('A brick wall drawn in grayscale.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the THRESHOLD filter.
+      filter(THRESHOLD);
+
+      describe('A brick wall drawn in black and white.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the OPAQUE filter.
+      filter(OPAQUE);
+
+      describe('A red brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the POSTERIZE filter.
+      filter(POSTERIZE, 3);
+
+      describe('An image of a red brick wall drawn with limited color palette.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the BLUR filter.
+      filter(BLUR, 3);
+
+      describe('A blurry image of a red brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the DILATE filter.
+      filter(DILATE);
+
+      describe('A red brick wall with bright lines between each brick.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the ERODE filter.
+      filter(ERODE);
+
+      describe('A red brick wall with faint lines between each brick.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      // Apply the BLUR filter.
+      // Don't use WebGL.
+      filter(BLUR, 3, false);
+
+      describe('A blurry image of a red brick wall.');
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: '442'
+    params:
+      - name: filterType
+        description: |2-
+    
+          <p>THRESHOLD、 GRAY、OPAQUE、INVERT、             POSTERIZE、BLUR、ERODE、DILATE 或 BLUR。</p>
+        type: 常量
+      - name: filterParam
+        description: |2-
+    
+          <p>每个过滤器独有的参数。</p>
+        type: 数字
+        optional: true
+      - name: useWebGL
+        description: |2-
+    
+          <p>控制是否使用快的                         WebGL (GPU) 滤镜或原始图像滤镜的标志              过滤器（CPU）；默认为 <code>true</code>。</p>
+        type: 布尔
+        optional: true
+  - line: '715'
+    params:
+      - name: filterType
+        description: ''
+        type: 常量
+      - name: useWebGL
+        description: ''
+        type: 布尔
+        optional: true
+  - line: '720'
+    params:
+      - name: shaderFilter
+        description: |2-
+    
+          <p>
+          已加载的着色器，                           其中片段着色器使用了一个 <code>tex0</code> 统一变量。</p>
+        type: p5.Shader
+chainable: false
+---
+
+# filter

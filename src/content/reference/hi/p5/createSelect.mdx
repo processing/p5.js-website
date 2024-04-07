@@ -1,0 +1,206 @@
+---
+title: createSelect
+module: डोम
+submodule: डोम
+file: src/dom/dom.js
+description: >
+  <p>एक ड्रॉपडाउन मेनू <code><select></select></code> तत्व बनाता है।</p>
+
+  <p>पैरामीटर वैकल्पिक है. यदि <code>true</code> पास हो जाता है, जैसे कि <code>let mySelect = createSelect(true)</code>, तो ड्रॉपडाउन कई चयनों का समर्थन करेगा। यदि कोई मौजूदा <code><select></select></code> तत्व पारित किया गया है, जैसा कि <code>let mySelect = createSelect(otherSelect)</code> में है, तो
+  मौजूदा तत्व को एक नए <a href='/reference/p5/p5.Element'>p5.Element</a> ऑब्जेक्ट में लपेटा जाएगा।</p>
+
+  <p>ड्रॉपडाउन विकल्पों को प्रबंधित करने के लिए कुछ उपयोगी तरीकों के साथ <a href="/reference/p5/p5.Element">p5.Element</a> क्लास का विस्तार करते हैं:</p>
+
+  <ul>
+
+  <li><code>mySelect.option(name, [value])</code> मेनू में एक विकल्प जोड़ता है। पहला पैरामीटर, <code>name</code>, एक स्ट्रिंग है जो विकल्प का नाम और मान सेट करता है। दूसरा पैरामीटर, <code>value</code>, वैकल्पिक है। यदि प्रदान किया गया है, तो यह कुंजी <code>name</code> से संबंधित मान सेट करता है। अगर
+  <code>name</code> वाला एक विकल्प पहले से मौजूद है, इसका मान <code>value</code> में बदल दिया गया है।</li>
+
+  <li><code>mySelect.value()</code> वर्तमान में चयनित विकल्प का मान लौटाता है।</li>
+
+  <li><code>mySelect.selected()</code> वर्तमान में चयनित विकल्प लौटाता है।</li>
+
+  <li><code>mySelect.selected(option)</code> डिफ़ॉल्ट रूप से दिए गए विकल्प का चयन करता है।</li>
+
+  <li><code>mySelect.disable()</code> संपूर्ण ड्रॉपडाउन तत्व को अक्षम के रूप में चिह्नित करता है।</li>
+
+  <li><code>mySelect.disable(option)</code> किसी दिए गए विकल्प को अक्षम के रूप में चिह्नित करता है।</li>
+
+  <li><code>mySelect.enable()</code> संपूर्ण ड्रॉपडाउन तत्व को सक्षम के रूप में चिह्नित करता है।</li>
+
+  <li><code>mySelect.enable(option)</code> किसी दिए गए विकल्प को सक्षम के रूप में चिह्नित करता है।</li>
+
+  </ul>
+line: 1158
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and place it beneath the canvas.
+      mySelect = createSelect();
+      mySelect.position(0, 100);
+
+      // Add color options.
+      mySelect.option('red');
+      mySelect.option('green');
+      mySelect.option('blue');
+      mySelect.option('yellow');
+
+      // Set the selected option to "red".
+      mySelect.selected('red');
+
+      describe('A red square with a dropdown menu beneath it. The square changes color when a new color is selected.');
+    }
+
+    function draw() {
+      // Use the selected value to paint the background.
+      let c = mySelect.selected();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and place it beneath the canvas.
+      mySelect = createSelect();
+      mySelect.position(0, 100);
+
+      // Add color options.
+      mySelect.option('red');
+      mySelect.option('green');
+      mySelect.option('blue');
+      mySelect.option('yellow');
+
+      // Set the selected option to "red".
+      mySelect.selected('red');
+
+      // Disable the "yellow" option.
+      mySelect.disable('yellow');
+
+      describe('A red square with a dropdown menu beneath it. The square changes color when a new color is selected.');
+    }
+
+    function draw() {
+      // Use the selected value to paint the background.
+      let c = mySelect.selected();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and place it beneath the canvas.
+      mySelect = createSelect();
+      mySelect.position(0, 100);
+
+      // Add color options with names and values.
+      mySelect.option('one', 'red');
+      mySelect.option('two', 'green');
+      mySelect.option('three', 'blue');
+      mySelect.option('four', 'yellow');
+
+      // Set the selected option to "one".
+      mySelect.selected('one');
+
+      describe('A red square with a dropdown menu beneath it. The square changes color when a new color is selected.');
+    }
+
+    function draw() {
+      // Use the selected value to paint the background.
+      let c = mySelect.selected();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Hold CTRL to select multiple options on Windows and Linux.
+    // Hold CMD to select multiple options on macOS.
+    let mySelect;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a dropdown and allow multiple selections.
+      // Place it beneath the canvas.
+      mySelect = createSelect(true);
+      mySelect.position(0, 100);
+
+      // Add color options.
+      mySelect.option('red');
+      mySelect.option('green');
+      mySelect.option('blue');
+      mySelect.option('yellow');
+
+      describe('A gray square with a dropdown menu beneath it. Colorful circles appear when their color is selected.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Use the selected value(s) to draw circles.
+      let colors = mySelect.selected();
+      for (let i = 0; i < colors.length; i += 1) {
+        // Calculate the x-coordinate.
+        let x = 10 + i * 20;
+
+        // Access the color.
+        let c = colors[i];
+
+        // Draw the circle.
+        fill(c);
+        circle(x, 50, 20);
+      }
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: नया <a href='#/p5.Element'>p5.Element</a> ऑब्जेक्ट।
+  type: p5.Element
+overloads:
+  - line: 1158
+    params:
+      - name: multiple
+        description: |
+          <p>एकाधिक चयन का समर्थन।</p>
+        type: बूलियन
+        optional: true
+    return:
+      description: नया <a href='#/p5.Element'>p5.Element</a> ऑब्जेक्ट।
+      type: p5.Element
+  - line: 1323
+    params:
+      - name: existing
+        description: >
+          <p>घेरने के लिए तत्व का चयन करें, या तो <a href='#/p5.Element'>p5.Element</a> के रूप में या एक <a href='https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement' target='_blank'>HTMLSelectElement</a> के रूप में |</p>
+        type: ऑब्जेक्ट
+    return:
+      description: ''
+      type: p5.Element
+chainable: false
+---
+
+
+# createSelect
