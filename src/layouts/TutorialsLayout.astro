@@ -6,27 +6,41 @@ import Image from "@components/Image/index.astro";
 type TutorialEntry = CollectionEntry<"tutorials">;
 
 const { entries } = Astro.props;
+
+const sections = categories.map((slug) => {
+  const name = categoryNames[slug];
+  const sectionEntries = entries
+    .filter((e) => e.data.category === slug)
+    .sort((a, b) => (a.data.categoryIndex ?? 1000) - (b.data.categoryIndex ?? 1000));
+
+  return { slug, name, sectionEntries };
+})
 ---
 
 <BaseLayout title="Tutorials">
-  <ul>
-    {
-      entries.map((entry: TutorialEntry) => (
-        <li>
-          <a href={`/tutorials/${entry.slug}`}>
-            {" "}
-            {entry.data.featuredImageAlt && entry.data.featuredImage && (
-              <Image
-                src={entry.data.featuredImage}
-                alt={entry.data.featuredImageAlt}
-                width={200}
-                height={200}
-              />
-            )}
-            {entry.data.title}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  {sections.map(({ slug, name, sectionEntries }) => (
+    <>
+      <h3 id={slug}>{name}</h3>
+      <ul>
+        {
+          sectionEntries.map((entry: TutorialEntry) => (
+            <li>
+              <a href={`/tutorials/${entry.slug}`}>
+                {" "}
+                {entry.data.featuredImageAlt && entry.data.featuredImage && (
+                  <Image
+                    src={entry.data.featuredImage}
+                    alt={entry.data.featuredImageAlt}
+                    width={200}
+                    height={200}
+                  />
+                )}
+                {entry.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </>
+  ))}
 </BaseLayout>
