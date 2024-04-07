@@ -1,12 +1,10 @@
 // TODO: layout vertically when the screen is small?
 export const Columns = (props) => (
-  <div class="flex flex-row items-start justify-start">
+  <div class="mt-md flex flex-col flex-wrap max-w-[100%] items-stretch justify-start lg:flex-row lg:items-start">
     {props.children}
   </div>
-)
+);
 
 export const Column = (props) => (
-  <div class="flex-1">
-    {props.children}
-  </div>
-)
+  <div class={`mb-md mr-md flex-1 max-w-[100%] ${props.class || ''} ${props.fixed ? 'grow-0' : 'min-w-[400px]'}`}>{props.children}</div>
+);
