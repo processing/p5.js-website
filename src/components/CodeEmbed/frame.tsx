@@ -60,6 +60,8 @@ export const CodeFrame = (props: CodeFrameProps) => {
   // animations only to start when they become visible.
   useLayoutEffect(() => {
     if (!containerRef.current) return;
+    const { IntersectionObserver } = window;
+    if (!IntersectionObserver) return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
