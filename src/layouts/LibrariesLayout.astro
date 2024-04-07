@@ -4,37 +4,123 @@ import { getLibraryLink } from "@pages/_utils";
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
 import { Image } from "astro:assets";
+import { categories, categoryNames } from '../content/libraries/config';
+import LibrarySourceLink from '../components/LibrarySourceLink/index.astro';
 
+type LibraryEntry = CollectionEntry<"libraries">
 interface Props {
-  entries: CollectionEntry<"libraries">[];
+  entries: LibraryEntry[];
   title: string;
 }
 
 const { entries } = Astro.props;
+
+async function npmInfo(lib: LibraryEntry) {
+  try {
+    const res = await fetch(`https://registry.npmjs.org/${lib.data.npm}`);
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    console.error(`Could not fetch ${lib.data.name} on npm via ${lib.data.npm}!`)
+    throw e;
+  }
+}
+
+function cdnLink(lib: LibraryEntry, data: any) {
+  const latestVersion = data['dist-tags'].latest
+  let link = `https://cdn.jsdelivr.net/npm/${lib.data.npm}@${latestVersion}`;
+  if (lib.data.npmFilePath) {
+    link += `/${lib.data.npmFilePath}`;
+  }
+  return link;
+}
+
+function strCompare(a: string, b: string) {
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  return 0;
+}
+
+function descriptionString(lib: LibraryEntry) {
+  let result = lib.data.description.trim();
+  if (/\w$/.test(result)) {
+    result += ', by';
+  } else if (/[\.!?]$/.test(result)) {
+    result += ' By';
+  } else {
+    result += '. By';
+  }
+  return result;
+}
+
+const libraryTag = 'p-1 rounded-full border-solid border-black border mb-1 mr-1 inline-block text-xs'
+
+const sections = await Promise.all(categories.map(async (slug) => {
+  const name = categoryNames[slug];
+  const sectionEntries = await Promise.all(
+    entries
+      .filter((e: LibraryEntry) => e.data.category === slug)
+      .sort((a: LibraryEntry, b: LibraryEntry) => strCompare(a.data.name, b.data.name))
+      .map(async (lib: LibraryEntry) => {
+        if (lib.data.npm) {
+          const data = await npmInfo(lib);
+          const modifiedDate = new Date(data.time.modified);
+          const npmData = {
+            link: cdnLink(lib, data),
+            lastUpdated: `${modifiedDate.toLocaleString('default', { month: 'short' })} ${modifiedDate.getFullYear()}`,
+          };
+          const license = lib.data.license || data.license;
+          return { lib, npmData, license };
+        } else {
+          return { lib, npmData: undefined, license: lib.data.license };
+        }
+      })
+  );
+
+  return { slug, name, sectionEntries };
+}));
 ---
 
 <BaseLayout title="Libraries">
-  <ul>
-    {
-      entries.map((lib) => (
-        <li>
-          <a href={getLibraryLink(lib)}>
-            {lib.data.featuredImageAlt && lib.data.featuredImage && (
-              <Image
-                src={lib.data.featuredImage}
-                alt={lib.data.featuredImageAlt}
-                width={1500}
-                height={1000}
-              />
-            )}
-            <span>{lib.data.name}</span>
-            {lib.data.description}
-            Created by:{" "}
-            {lib.data.author.map((a: { name: string }) => a.name).join(", ")}
-          </a>
-        </li>
-      ))
-    }
-    }
-  </ul>
+  {sections.map(({ slug, name, sectionEntries }) => (
+    <>
+      <h3 id={slug}>{name}</h3>
+      <ul>
+        {sectionEntries.map(({ lib, npmData, license }) => (
+          <li>
+            <a href={getLibraryLink(lib)}>
+              {lib.data.featuredImageAlt && lib.data.featuredImage && (
+                <Image
+                  src={lib.data.featuredImage}
+                  alt={lib.data.featuredImageAlt}
+                  width={150}
+                  height={100}
+                />
+              )}
+              <h4>{lib.data.name}</h4>
+            </a>
+            <p>
+              {descriptionString(lib)}
+              {lib.data.author.map((a: { name: string, url?: string }, i) => (
+                <>
+                  <a href={a.url}>{a.name}</a>{i < lib.data.author.length-1 ? ', ' : ''}
+                </>
+              ))}
+            </p>
+            <ul>
+              {npmData && <li class={libraryTag}>Updated {npmData.lastUpdated}</li>}
+              <li class={libraryTag}><a href={lib.data.sourceUrl}>Source</a></li>
+              {license && <li class={libraryTag}>{license} License</li>}
+              {lib.data.npm && <li class={libraryTag}><a href={`https://www.npmjs.com/package/${lib.data.npm}`}>NPM</a></li>}
+              {npmData && <li class={libraryTag}><LibrarySourceLink link={npmData.link}>Copy Script Tag</LibrarySourceLink></li>}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </>
+  ))}
 </BaseLayout>

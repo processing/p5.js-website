@@ -1,7 +1,7 @@
 import { z, defineCollection } from "astro:content";
 import { author } from "../shared";
 
-const categories = [
+export const categories = [
   "drawing",
   "color",
   "ui",
@@ -20,6 +20,26 @@ const categories = [
   "export",
   "utils",
 ] as const;
+
+export const categoryNames: { [key in (typeof categories)[number] ]: string } = {
+  drawing: 'Drawing',
+  color: 'Color',
+  ui: 'User Interface',
+  math: 'Math',
+  physics: 'Physics',
+  algorithms: 'Algorithms',
+  '3d': '3D',
+  'ai-ml-cv': 'AI, ML, and CV',
+  animation: 'Animation',
+  shaders: 'Shaders',
+  language: 'Language',
+  hardware: 'Hardware',
+  sound: 'Sound',
+  data: 'Data',
+  networking: 'Networking',
+  export: 'Export',
+  utils: 'Utilities',
+}
 
 /**
  * Content collection for the Libraries section of the site.
