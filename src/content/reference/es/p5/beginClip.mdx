@@ -1,0 +1,205 @@
+---
+title: beginClip
+module: Color
+submodule: Setting
+file: src/color/setting.js
+description: >
+  <p>Starts defining a shape that will mask any shapes drawn afterward.</p>
+
+  <p>Any shapes drawn between <code>beginClip()</code> and
+
+  <a href="/reference/p5/endClip">endClip()</a> will add to the mask shape. The
+  mask
+
+  will apply to anything drawn after <a
+  href="/reference/p5/endClip">endClip()</a>.</p>
+
+  <p>The parameter, <code>options</code>, is optional. If an object with an
+  <code>invert</code>
+
+  property is passed, as in <code>beginClip({ invert: true })</code>, it will be
+  used to
+
+  set the masking mode. <code>{ invert: true }</code> inverts the mask, creating
+  holes
+
+  in shapes that are masked. <code>invert</code> is <code>false</code> by
+  default.</p>
+
+  <p>Masks can be contained between the
+
+  <a href="/reference/p5/push">push()</a> and <a
+  href="/reference/p5/pop">pop()</a> functions.
+
+  Doing so allows unmasked shapes to be drawn after masked shapes.</p>
+
+  <p>Masks can also be defined in a callback function that's passed to
+
+  <a href="/reference/p5/clip">clip()</a>.</p>
+line: 13
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white triangle and circle on a gray background.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an inverted mask.
+      beginClip({ invert: true });
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white square at the top-left corner of a gray square. The white square has a triangle and a circle cut out of it.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      noStroke();
+
+      // Draw a masked shape.
+      push();
+      // Create a mask.
+      beginClip();
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw an inverted masked shape.
+      push();
+      // Create an inverted mask.
+      beginClip({ invert: true });
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      describe('In the top left, a white triangle and circle. In the bottom right, a white square with a triangle and circle cut out of it.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored fuchsia.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+      endClip();
+
+      // Draw a backing shape.
+      noStroke();
+      fill('fuchsia');
+      plane(100);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored with a gradient from cyan to purple.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+      endClip();
+
+      // Draw a backing shape.
+      noStroke();
+      beginShape(QUAD_STRIP);
+      fill(0, 255, 255);
+      vertex(-width / 2, -height / 2);
+      vertex(width / 2, -height / 2);
+      fill(100, 0, 100);
+      vertex(-width / 2, height / 2);
+      vertex(width / 2, height / 2);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: options
+    description: |
+      <p>an object containing clip settings.</p>
+    type: Object
+    optional: true
+chainable: false
+---
+
+
+# beginClip
