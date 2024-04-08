@@ -1,23 +1,51 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import { removeLocaleAndExtension } from "../pages/_utils";
+import { getCurrentLocale, useTranslations } from "@i18n/utils";
+import GridItemContributorDoc from "@components/GridItem/ContributorDoc.astro";
 
-type ContributeEntry = CollectionEntry<"contributor-docs">;
+interface Props {
+  entries: CollectionEntry<"contributor-docs">[];
+}
 
 const { entries } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
 ---
 
 <BaseLayout title="Contribute">
-  <ul>
+  <h2>{t("Contributor Docs")}</h2>
+  <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
     {
-      entries.map((entry: ContributeEntry) => (
+      entries.map((entry) => (
         <li>
-          <a href={`/contribute/${removeLocaleAndExtension(entry.slug)}`}>
-            {removeLocaleAndExtension(entry.slug)}
-          </a>
+          <GridItemContributorDoc item={entry} />
         </li>
       ))
     }
+  </ul>
+  <hr />
+  <h2>{t("Donate")}</h2>
+  <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
+    <li>
+      <a href="/donate">
+        <div class="text-lg mt-xs bg-bg-blue w-44 h-24">
+          {t("Donate to Processing Foundation")}
+        </div>
+        <div class="text-sm">
+          {t("Donate to Processing Foundation Description")}
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/donate">
+        <div class="text-lg mt-xs bg-bg-blue w-44 h-24">
+          {t("Frequently Asked Questions")}
+        </div>
+        <div class="text-sm">
+          {t("Frequently Asked Questions Description")}
+        </div>
+      </a>
+    </li>
   </ul>
 </BaseLayout>
