@@ -167,12 +167,15 @@ export const extractFrontmatter = async (markdownText: string) => {
 
   // get the comment at the top of the document
   // or the first paragraph in the document
-  const description =
+  const rawDescription =
     firstLineComment !== null
       ? firstLineComment[1]
       : firstParagraph !== null
-        ? String(await remark().use(strip).process(firstParagraph[0]))
+        ? firstParagraph[0]
         : "Couldn't find a description";
+
+  // Strip any markdown formatting that might be included
+  const description = String(await remark().use(strip).process(rawDescription));
 
   return {
     title,
