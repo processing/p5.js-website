@@ -23,4 +23,9 @@ export default defineConfig({
       ignored: ["src/scripts/**/*.ts"],
     },
   },
+  vite: {
+    rollupOptions: {
+      external: ["/src/scripts/*"],
+    },
+  },
 });
