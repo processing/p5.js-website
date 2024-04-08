@@ -1,6 +1,10 @@
 ---
 import { defaultLocale, supportedLocales } from "@/src/i18n/const";
-import { getCurrentLocale, removeLocalePrefix } from "@/src/i18n/utils";
+import {
+  getCurrentLocale,
+  removeLocalePrefix,
+  useTranslations,
+} from "@/src/i18n/utils";
 import { AccessibilitySettings } from "@components/AccessibilitySettings/";
 import SearchForm from "@components/SearchForm/index.astro";
 import { LocaleSelect } from "@components/LocaleSelect";
@@ -32,17 +36,42 @@ localeOptions.sort((a, b) => {
   return 0;
 });
 
-const options = localeOptions.map(({ locale, label, url }) => ({
+const localeOptionProps = localeOptions.map(({ locale, label, url }) => ({
   value: url,
   label,
   id: locale,
 }));
+
+const t = await useTranslations(currentLocale);
+
+const a11ySettingsProps = [
+  {
+    value: "dark-theme",
+    label: t("Dark Mode"),
+  },
+  {
+    value: "monochrome-theme",
+    label: t("Monochrome Mode"),
+  },
+  {
+    value: "show-alt-text",
+    label: t("View Alt Text"),
+  },
+  {
+    value: "reduced-motion",
+    label: t("Reduced Motion"),
+  },
+];
 ---
 
 <div
   class="settings bg-accent-color flex flex-col md:flex-row gap-sm items-start space-x-2 md:p-sm md:px-lg [&>*]:px-sm"
 >
-  <LocaleSelect locale={currentLocale} options={options} client:load />
-  <AccessibilitySettings client:only />
+  <LocaleSelect
+    locale={currentLocale}
+    options={localeOptionProps}
+    client:load
+  />
+  <AccessibilitySettings client:only options={a11ySettingsProps} />
   <SearchForm />
 </div>
