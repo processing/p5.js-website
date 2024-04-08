@@ -17,7 +17,7 @@ import remarkGfm from "remark-gfm";
 import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
-import { nonDefaultSupportedLocales } from "@/src/i18n/const";
+import { nonDefaultSupportedLocales, supportedLocales } from "@/src/i18n/const";
 
 /* Repo to pull the contributor documentation from */
 const docsRepoUrl = "https://github.com/processing/p5.js.git";
@@ -41,9 +41,7 @@ const assetsOutputDirectory = path.join(
   assetsOutputBaseUrl,
 );
 
-/* Directories that are translations
- * TODO: tie this to supported languages in astro config
- */
+/* Directories that are translations */
 const langDirs = nonDefaultSupportedLocales;
 
 /**
@@ -93,10 +91,10 @@ const convertMdtoMdx = async (
       .toString();
 
     // All MDX content with frontmatter as a string
-    const fullFileContent = matter.stringify(
-      newContent,
-      frontmatterObject ?? {},
-    );
+    const fullFileContent = matter.stringify(newContent, {
+      ...extractFrontmatter(newContent),
+      ...frontmatterObject,
+    });
 
     // Check that generated content can be compiled by MDX
     // (sometimes this catches different problems)
@@ -159,6 +157,19 @@ export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
   );
 };
 
+export const extractFrontmatter = (markdownText: string) => {
+  return {
+    // get first title string in the document
+    title: markdownText.match(/^#+ ([\S\s]+?)$/im)?.[1] ?? "Untitled",
+    // get the comment at the top of the document
+    // or the first paragraph in the document
+    description:
+      markdownText.match(/^\{\/\*\s?([\S\s]+?)\s?\*\/\}\s?[\n\r]/i)?.[1] ??
+      markdownText.match(/^[^\s#{][\s\S]*?$/im)?.[0] ??
+      "Couldn't find a description",
+  };
+};
+
 /**
  * Moves a list of files or a folder of files to a new location,
  * converting all .md files into .mdx
@@ -197,7 +208,7 @@ const buildContributorDocs = async () => {
   // Clean out previous files
   console.log("Cleaning out current content collection...");
   await Promise.all(
-    langDirs.map((lang) =>
+    supportedLocales.map((lang) =>
       rm(path.join(outputDirectory, lang), {
         recursive: true,
         force: true,
