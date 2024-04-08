@@ -123,9 +123,11 @@ export const Dropdown = ({
       <div className={styles.icon}>
         <Icon kind={iconKind} />
       </div>
-      {dropdownLabel ||
-        options.find((option) => isSelected(option))?.label ||
-        "Select..."}
+      <span>
+        {dropdownLabel ||
+          options.find((option) => isSelected(option))?.label ||
+          "Select..."}
+      </span>
       <div className={styles.chevron}>
         <Icon kind="chevron-down" className={styles.chevron} />
       </div>
@@ -158,9 +160,15 @@ export const Dropdown = ({
           </button>
         </li>
       ))}
-      <div className={styles.chevron}>
-        <Icon kind="chevron-up" className={styles.chevron} />
-      </div>
+      {variant === "radio" ? (
+        <button onClick={() => setIsOpen(false)} className={styles.chevron}>
+          <Icon kind="chevron-up" />
+        </button>
+      ) : (
+        <div className={styles.chevron}>
+          <Icon kind="chevron-up" />
+        </div>
+      )}
     </ul>
   );
 
