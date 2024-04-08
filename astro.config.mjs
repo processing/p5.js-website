@@ -23,4 +23,7 @@ export default defineConfig({
       ignored: ["src/scripts/**/*.ts"],
     },
   },
+  image: {
+    domains: ["openprocessing.org"],
+  },
 });
