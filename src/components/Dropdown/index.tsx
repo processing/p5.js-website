@@ -11,15 +11,17 @@ export type DropdownOption = {
 
 type DropdownProps = {
   options: DropdownOption[];
-  initialSelected: string;
+  initialSelected: string | string[];
   onChange: (option: DropdownOption) => void;
   iconKind: IconKind;
   variant?: "dropdown" | "radio";
+  dropdownLabel?: string;
 };
 
 export const Dropdown = ({
   options,
   initialSelected,
+  dropdownLabel,
   onChange,
   iconKind,
   variant = "dropdown",
@@ -28,6 +30,15 @@ export const Dropdown = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef();
   const optionRefs = useRef<HTMLButtonElement[]>([]);
+
+  // In order to support instant update of the selected option
+  // the selected state can be updated in this component
+  // There are instances where the parent component controls it
+  // instead (asynchronous loading of localStorage setting, etc)
+  // Support updating the selected option from the parent component
+  useEffect(() => {
+    setSelected(initialSelected);
+  }, [initialSelected]);
 
   const handleDropdownClick = () => {
     setIsOpen(!isOpen);
@@ -47,9 +58,19 @@ export const Dropdown = ({
 
   // Handle option selection
   const handleOptionClick = (option: DropdownOption) => {
-    setSelected(option.value);
+    if (variant === "dropdown") {
+      setSelected(option.value);
+      setIsOpen(false);
+    }
+
+    // With a radio variant, multiple options can be selected
+    if (variant === "radio" && Array.isArray(selected)) {
+      const newSelected = selected.includes(option.value)
+        ? selected.filter((value) => value !== option.value)
+        : [...selected, option.value];
+      setSelected(newSelected);
+    }
     onChange(option);
-    setIsOpen(false);
   };
 
   // Handle keyboard navigation
@@ -83,8 +104,12 @@ export const Dropdown = ({
   }, [isOpen]);
 
   // Determine if an option is selected
-  const isSelected = (option: DropdownOption) =>
-    selected === option.value || selected === option.id;
+  const isSelected = (option: DropdownOption) => {
+    if (variant === "dropdown") {
+      return selected === option.value || selected === option.id;
+    }
+    return selected.includes(option.value);
+  };
 
   // Render the collapsed dropdown button
   const renderCollapsedDropdown = () => (
@@ -98,7 +123,9 @@ export const Dropdown = ({
       <div className={styles.icon}>
         <Icon kind={iconKind} />
       </div>
-      {options.find((option) => isSelected(option))?.label || "Select..."}
+      {dropdownLabel ||
+        options.find((option) => isSelected(option))?.label ||
+        "Select..."}
       <div className={styles.chevron}>
         <Icon kind="chevron-down" className={styles.chevron} />
       </div>
@@ -127,7 +154,7 @@ export const Dropdown = ({
             ref={(el) => (optionRefs.current[index] = el as HTMLButtonElement)}
             onBlur={handleBlur}
           >
-            {option.label}
+            <span>{option.label}</span>
           </button>
         </li>
       ))}
