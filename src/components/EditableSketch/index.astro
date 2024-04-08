@@ -3,9 +3,21 @@ import CodeEmbed from "../CodeEmbed";
 
 interface Props {
   code: string;
+  width?: number;
+  height?: number;
+  base?: string;
 }
 
 const { props } = Astro;
+
+let previewWidth = props.width;
+let previewHeight = props.height;
+const match = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(props.code);
+if (match) {
+  previewWidth = previewWidth || parseFloat(match[1]);
+  previewHeight = previewHeight || parseFloat(match[2]);
+}
+
 ---
 
-<CodeEmbed client:load initialValue={props.code.trim()} previewable editable />
+<CodeEmbed client:load initialValue={props.code.trim()} previewWidth={previewWidth} previewHeight={previewHeight} base={props.base} previewable editable />
