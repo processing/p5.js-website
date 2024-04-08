@@ -15,13 +15,15 @@ interface Props {
 }
 
 // Max number of sketches we will show on this page
-const sketchLimit = 8;
+const sketchesLimit = 8;
 // Max number of libraries we will show on this page
 const librariesLimit = 8;
 // Max number of libraries we will show on this page
 const eventsLimit = 9;
 
-const { sketches, libraries, pastEvents } = Astro.props;
+const sketches = Astro.props.sketches.slice(0, sketchesLimit),
+  libraries = Astro.props.libraries.slice(0, librariesLimit),
+  events = Astro.props.pastEvents.slice(0, eventsLimit);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
 ---
@@ -31,7 +33,7 @@ const t = await useTranslations(currentLocale);
     <h2 class="mb-lg">{t("Sketches")}</h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
-        sketches.slice(0, sketchLimit).map((sk, i) => (
+        sketches.map((sk, i) => (
           <li
             class={(() => {
               if (i === 0)
@@ -72,7 +74,7 @@ const t = await useTranslations(currentLocale);
     <h2 class="mb-lg">{t("Events")}</h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
-        pastEvents.slice(0, eventsLimit).map((event, i) => (
+        events.map((event, i) => (
           <li
             class={(() => {
               if (i === 0 || i === 5) return "col-span-2 row-span-2";
