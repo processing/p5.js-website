@@ -159,7 +159,7 @@ export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
 
 export const extractFrontmatter = async (markdownText: string) => {
   // get first title string in the document
-  const title = markdownText.match(/^#+ ([\S\s]+?)$/im)?.[1] ?? "Untitled";
+  const firstTitle = markdownText.match(/^#+ ([\S\s]+?)$/im)?.[1] ?? "Untitled";
   const firstLineComment = markdownText.match(
     /^\{\/\*\s?([\S\s]+?)\s?\*\/\}\s?[\n\r]/i,
   );
@@ -176,6 +176,7 @@ export const extractFrontmatter = async (markdownText: string) => {
 
   // Strip any markdown formatting that might be included
   const description = String(await remark().use(strip).process(rawDescription));
+  const title = String(await remark().use(strip).process(firstTitle));
 
   return {
     title,
