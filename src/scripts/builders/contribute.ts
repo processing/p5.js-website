@@ -90,11 +90,15 @@ const convertMdtoMdx = async (
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
 
+    const description = await extractDescription(newContent);
+    const { title, markdownText: newContentWithoutTitle } =
+      await extractTitle(newContent);
+
     // All MDX content with frontmatter as a string
-    const fullFileContent = matter.stringify(
-      newContent,
-      await extractFrontmatter(newContent),
-    );
+    const fullFileContent = matter.stringify(newContentWithoutTitle, {
+      title,
+      description,
+    });
 
     // Check that generated content can be compiled by MDX
     // (sometimes this catches different problems)
@@ -157,9 +161,39 @@ export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
   );
 };
 
-export const extractFrontmatter = async (markdownText: string) => {
-  // get first title string in the document
-  const firstTitle = markdownText.match(/^#+ ([\S\s]+?)$/im)?.[1] ?? "Untitled";
+/**
+ * Extracts the title from the markdown document and
+ * returns the text without the title inline
+ * This is because rendering the title will be handled with
+ * the frontmatter title data
+ *
+ * @param markdownText
+ * @returns
+ */
+export const extractTitle = async (
+  markdownText: string,
+): Promise<{ title: string; markdownText: string }> => {
+  // gets the first title string in the document
+  const regexPattern: RegExp = /^#+ ([\S\s]+?)$/im;
+  const firstTitleMatch = regexPattern.exec(markdownText);
+  if (!firstTitleMatch) {
+    return { title: "Untitled", markdownText };
+  }
+
+  return {
+    // Strip any markdown formatting that might be included
+    title: String(await remark().use(strip).process(firstTitleMatch[1])),
+    markdownText: markdownText.replace(regexPattern, ""),
+  };
+};
+
+/**
+ * Extracts a description from the markdown document.
+ *
+ * @param markdownText
+ * @returns
+ */
+export const extractDescription = async (markdownText: string) => {
   const firstLineComment = markdownText.match(
     /^\{\/\*\s?([\S\s]+?)\s?\*\/\}\s?[\n\r]/i,
   );
@@ -175,13 +209,7 @@ export const extractFrontmatter = async (markdownText: string) => {
         : "Couldn't find a description";
 
   // Strip any markdown formatting that might be included
-  const description = String(await remark().use(strip).process(rawDescription));
-  const title = String(await remark().use(strip).process(firstTitle));
-
-  return {
-    title,
-    description,
-  };
+  return String(await remark().use(strip).process(rawDescription));
 };
 
 /**
