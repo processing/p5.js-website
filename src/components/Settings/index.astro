@@ -1,13 +1,48 @@
 ---
+import { defaultLocale, supportedLocales } from "@/src/i18n/const";
+import { getCurrentLocale, removeLocalePrefix } from "@/src/i18n/utils";
 import { AccessibilitySettings } from "@components/AccessibilitySettings/";
 import SearchForm from "@components/SearchForm/index.astro";
-import LocaleSwitcher from "@components/LocaleSwitcher/index.astro";
+import { LocaleSelect } from "@components/LocaleSelect";
+
+const currentLocation = removeLocalePrefix(Astro.url.pathname);
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+// Generate the correct URL for all supported locales
+const localeOptions = supportedLocales.map((locale) => {
+  // No url prefix for the default locale
+  const targetLocale = locale === defaultLocale ? "" : locale;
+  return {
+    locale,
+    // displays the language associated with a
+    // locale code in its own language
+    label: new Intl.DisplayNames([locale], { type: "language" }).of(locale),
+    // The url for the default locale does not need a leading slash
+    url: `${locale === defaultLocale ? "" : "/"}${targetLocale}${currentLocation}`,
+  };
+});
+
+// move the current locale to the front of the array
+localeOptions.sort((a, b) => {
+  if (a.locale === currentLocale) {
+    return -1;
+  }
+  if (b.locale === currentLocale) {
+    return 1;
+  }
+  return 0;
+});
+
+const options = localeOptions.map(({ locale, label, url }) => ({
+  value: url,
+  label,
+  id: locale,
+}));
 ---
 
 <div
-  class="settings flex flex-col md:flex-row gap-sm items-center space-x-2 md:p-sm [&>*]:px-sm md:fixed w-full z-10 top-0"
+  class="settings bg-accent-color flex flex-col md:flex-row gap-sm items-start space-x-2 md:p-sm md:px-lg [&>*]:px-sm"
 >
-  <LocaleSwitcher />
-  <SearchForm />
+  <LocaleSelect locale={currentLocale} options={options} client:load />
   <AccessibilitySettings client:only />
+  <SearchForm />
 </div>
