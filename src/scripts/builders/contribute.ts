@@ -14,6 +14,7 @@ import type { Dirent } from "fs";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import remarkGfm from "remark-gfm";
+import strip from "strip-markdown";
 import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
@@ -58,7 +59,6 @@ const langDirs = nonDefaultSupportedLocales;
 const convertMdtoMdx = async (
   sourceFile: string,
   destinationFolder: string,
-  frontmatterObject?: { [key: string]: string },
 ) => {
   const { name, ext } = path.parse(sourceFile);
 
@@ -91,10 +91,10 @@ const convertMdtoMdx = async (
       .toString();
 
     // All MDX content with frontmatter as a string
-    const fullFileContent = matter.stringify(newContent, {
-      ...extractFrontmatter(newContent),
-      ...frontmatterObject,
-    });
+    const fullFileContent = matter.stringify(
+      newContent,
+      await extractFrontmatter(newContent),
+    );
 
     // Check that generated content can be compiled by MDX
     // (sometimes this catches different problems)
@@ -153,20 +153,30 @@ export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
   const regexPattern: RegExp = /<!--([\S\s]*?)-->/g;
   return markdownText.replace(
     regexPattern,
-    (match, commentContent) => `{/*${commentContent}*/}`,
+    (_match, commentContent) => `{/*${commentContent}*/}`,
   );
 };
 
-export const extractFrontmatter = (markdownText: string) => {
+export const extractFrontmatter = async (markdownText: string) => {
+  // get first title string in the document
+  const title = markdownText.match(/^#+ ([\S\s]+?)$/im)?.[1] ?? "Untitled";
+  const firstLineComment = markdownText.match(
+    /^\{\/\*\s?([\S\s]+?)\s?\*\/\}\s?[\n\r]/i,
+  );
+  const firstParagraph = markdownText.match(/^[^\s#{][\s\S]*?$/im);
+
+  // get the comment at the top of the document
+  // or the first paragraph in the document
+  const description =
+    firstLineComment !== null
+      ? firstLineComment[1]
+      : firstParagraph !== null
+        ? String(await remark().use(strip).process(firstParagraph[0]))
+        : "Couldn't find a description";
+
   return {
-    // get first title string in the document
-    title: markdownText.match(/^#+ ([\S\s]+?)$/im)?.[1] ?? "Untitled",
-    // get the comment at the top of the document
-    // or the first paragraph in the document
-    description:
-      markdownText.match(/^\{\/\*\s?([\S\s]+?)\s?\*\/\}\s?[\n\r]/i)?.[1] ??
-      markdownText.match(/^[^\s#{][\s\S]*?$/im)?.[0] ??
-      "Couldn't find a description",
+    title,
+    description,
   };
 };
 
