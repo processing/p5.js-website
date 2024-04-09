@@ -8,6 +8,7 @@ import {
 import { AccessibilitySettings } from "@components/AccessibilitySettings/";
 import SearchForm from "@components/SearchForm/index.astro";
 import { LocaleSelect } from "@components/LocaleSelect";
+import styles from "./styles.module.scss";
 
 const currentLocation = removeLocalePrefix(Astro.url.pathname);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -64,14 +65,98 @@ const a11ySettingsProps = [
 ];
 ---
 
-<div
-  class="settings bg-accent-color flex flex-col md:flex-row gap-sm items-start space-x-2 md:p-sm md:px-lg [&>*]:px-sm"
->
-  <LocaleSelect
-    locale={currentLocale}
-    options={localeOptionProps}
-    client:load
-  />
-  <AccessibilitySettings client:load options={a11ySettingsProps} />
-  <SearchForm />
+<div id="settings-hitbox" class={styles.hitbox}></div>
+<div id="settings-container" class={`${styles.container} settings`}>
+  <div class={styles.localeselect}>
+    <LocaleSelect
+      locale={currentLocale}
+      options={localeOptionProps}
+      client:load
+    />
+  </div>
+  <div class={styles.a11yselect}>
+    <AccessibilitySettings client:load options={a11ySettingsProps} />
+  </div>
+  <div class={styles.searchform}>
+    <SearchForm />
+  </div>
 </div>
+<script>
+  const hitBox = document.getElementById("settings-hitbox");
+  const settingsContainer = document.getElementById("settings-container");
+  let isHovering = false;
+  let lastScrollTop = 0;
+  const SCROLL_THRESHOLD = 50;
+  let interactionTimeout; // Timeout for opening and closing the settings container
+  let isContainerVisible = false; // Flag to track visibility of settings container
+  // Observer callback to toggle isContainerVisible based on intersection with viewport
+  const observerCallback = (entries) => {
+    entries.forEach((entry) => {
+      isContainerVisible = entry.isIntersecting;
+    });
+  };
+
+  // Create an observer instance.
+  // This will be used to track the visibility of the settings container
+  // So we can avoid opening it when it's already visible
+  const observer = new IntersectionObserver(observerCallback);
+  observer.observe(settingsContainer);
+
+  function openSettings(scroll = false) {
+    if (isContainerVisible) return; // Don't open if already visible
+    settingsContainer?.classList.add("open");
+    if (!scroll) {
+      isHovering = true;
+    }
+    resetInteractionTimeout();
+  }
+
+  function closeSettings() {
+    clearTimeout(interactionTimeout);
+    if (!isHovering) settingsContainer?.classList.remove("open");
+  }
+
+  function resetInteractionTimeout() {
+    clearTimeout(interactionTimeout);
+    interactionTimeout = setTimeout(closeSettings, 2000);
+  }
+
+  hitBox?.addEventListener(
+    "mouseenter",
+    () => !isContainerVisible && openSettings()
+  );
+  settingsContainer?.addEventListener(
+    "mouseenter",
+    () => !isContainerVisible && openSettings()
+  );
+
+  hitBox?.addEventListener("mouseleave", () => {
+    isHovering = false;
+    interactionTimeout = setTimeout(closeSettings, 600);
+  });
+  settingsContainer?.addEventListener("mouseleave", () => {
+    isHovering = false;
+    interactionTimeout = setTimeout(closeSettings, 600);
+  });
+
+  settingsContainer?.addEventListener("mousemove", resetInteractionTimeout);
+  settingsContainer?.addEventListener("click", resetInteractionTimeout);
+
+  // When the user scrolls up, open the settings container
+  window.addEventListener(
+    "scroll",
+    () => {
+      let currentScroll =
+        window.pageYOffset || document.documentElement.scrollTop;
+      if (
+        lastScrollTop > currentScroll &&
+        lastScrollTop - currentScroll > SCROLL_THRESHOLD &&
+        !isContainerVisible // Only trigger on scroll if the container is not visible
+      ) {
+        openSettings(true);
+      }
+      lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    },
+    false
+  );
+</script>
