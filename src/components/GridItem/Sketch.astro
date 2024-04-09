@@ -1,0 +1,31 @@
+---
+import Image from "@components/Image/index.astro";
+import {
+  makeThumbnailUrl,
+  thumbnailDimensions,
+  type OpenProcessingCurationResponse,
+} from "@/src/api/OpenProcessing";
+
+interface Props {
+  item: OpenProcessingCurationResponse[number];
+}
+
+const { item } = Astro.props;
+---
+
+<a href={`/sketches/${item.visualID}`}>
+  {
+    // This isn't alt text ideal but we have no way of knowing what
+    // the thumbnail looks like, and the OpenProcessing API
+    // doesn't include that information
+  }
+  <Image
+    src={makeThumbnailUrl(item.visualID)}
+    alt="Screenshot of sketch"
+    width={thumbnailDimensions}
+    height={thumbnailDimensions}
+    class="w-full h-auto"
+  />
+  <div class="text-lg mt-xs">{item.title}</div>
+  <div class="text-sm">{item.fullname}</div>
+</a>
