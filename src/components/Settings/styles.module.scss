@@ -7,13 +7,13 @@
 
   padding: var(--spacing-sm) var(--spacing-lg);
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-template-rows: 35px 35px;
+  grid-template-rows: repeat(2, var(--settings-container-height-touch));
   gap: 20px;
 
   @media (min-width: $breakpoint-laptop) {
     grid-template-columns: repeat(9, minmax(0, 1fr));
     gap: 40px;
-    grid-template-rows: 40px;
+    grid-template-rows: var(--settings-container-height-laptop);
   }
 
   @media (min-width: $breakpoint-desktop) {
@@ -55,10 +55,25 @@
   width: 100%;
   height: 20px;
   position: fixed;
-  background-color: red;
+  z-index: 9999;
+}
+
+.placeholder {
+  height: var(--settings-container-height-touch);
+  position: absolute;
+  @media (min-width: $breakpoint-laptop) {
+    height: var(--settings-container-height-laptop);
+  }
+}
+
+.container:global(.scrolled-outside-view) {
+  position: fixed;
+  top: -60px;
+  transition:
+    top 0.3s,
+    position 0.3s;
 }
 
 .container:global(.open) {
-  position: fixed;
   top: 0;
 }

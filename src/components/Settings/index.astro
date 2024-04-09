@@ -65,6 +65,7 @@ const a11ySettingsProps = [
 ];
 ---
 
+<div id="settings-placeholder" class={styles.placeholder}></div>
 <div id="settings-hitbox" class={styles.hitbox}></div>
 <div id="settings-container" class={`${styles.container} settings`}>
   <div class={styles.localeselect}>
@@ -84,6 +85,7 @@ const a11ySettingsProps = [
 <script>
   const hitBox = document.getElementById("settings-hitbox");
   const settingsContainer = document.getElementById("settings-container");
+  const settingsPlaceholder = document.getElementById("settings-placeholder");
   let isHovering = false;
   let lastScrollTop = 0;
   const SCROLL_THRESHOLD = 50;
@@ -93,14 +95,21 @@ const a11ySettingsProps = [
   const observerCallback = (entries) => {
     entries.forEach((entry) => {
       isContainerVisible = entry.isIntersecting;
+      if (isContainerVisible) {
+        console.log("Settings container is visible");
+        settingsContainer.classList.remove("scrolled-outside-view");
+      } else {
+        console.log("Settings container is not visible");
+        settingsContainer.classList.add("scrolled-outside-view");
+      }
     });
   };
 
   // Create an observer instance.
-  // This will be used to track the visibility of the settings container
-  // So we can avoid opening it when it's already visible
+  // This will be used to track the visibility of the settings container placeholder
+  // So we can avoid opening the settings container when the top of the page is reached
   const observer = new IntersectionObserver(observerCallback);
-  observer.observe(settingsContainer);
+  observer.observe(settingsPlaceholder);
 
   function openSettings(scroll = false) {
     if (isContainerVisible) return; // Don't open if already visible
