@@ -33,6 +33,7 @@ export const AccessibilitySettings = ({
       }
     }
     setSelectedSettings(storedSettings);
+    document.body.classList.add(...storedSettings);
   }, []);
 
   const toggleSetting = (setting: PossibleA11ySettings) => {
