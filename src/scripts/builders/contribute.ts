@@ -14,10 +14,11 @@ import type { Dirent } from "fs";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import remarkGfm from "remark-gfm";
+import strip from "strip-markdown";
 import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
-import { nonDefaultSupportedLocales } from "@/src/i18n/const";
+import { nonDefaultSupportedLocales, supportedLocales } from "@/src/i18n/const";
 
 /* Repo to pull the contributor documentation from */
 const docsRepoUrl = "https://github.com/processing/p5.js.git";
@@ -41,9 +42,7 @@ const assetsOutputDirectory = path.join(
   assetsOutputBaseUrl,
 );
 
-/* Directories that are translations
- * TODO: tie this to supported languages in astro config
- */
+/* Directories that are translations */
 const langDirs = nonDefaultSupportedLocales;
 
 /**
@@ -60,7 +59,6 @@ const langDirs = nonDefaultSupportedLocales;
 const convertMdtoMdx = async (
   sourceFile: string,
   destinationFolder: string,
-  frontmatterObject?: { [key: string]: string },
 ) => {
   const { name, ext } = path.parse(sourceFile);
 
@@ -92,11 +90,15 @@ const convertMdtoMdx = async (
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
 
+    const description = await extractDescription(newContent);
+    const { title, markdownText: newContentWithoutTitle } =
+      await extractTitle(newContent);
+
     // All MDX content with frontmatter as a string
-    const fullFileContent = matter.stringify(
-      newContent,
-      frontmatterObject ?? {},
-    );
+    const fullFileContent = matter.stringify(newContentWithoutTitle, {
+      title,
+      description,
+    });
 
     // Check that generated content can be compiled by MDX
     // (sometimes this catches different problems)
@@ -155,8 +157,59 @@ export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
   const regexPattern: RegExp = /<!--([\S\s]*?)-->/g;
   return markdownText.replace(
     regexPattern,
-    (match, commentContent) => `{/*${commentContent}*/}`,
+    (_match, commentContent) => `{/*${commentContent}*/}`,
   );
+};
+
+/**
+ * Extracts the title from the markdown document and
+ * returns the text without the title inline
+ * This is because rendering the title will be handled with
+ * the frontmatter title data
+ *
+ * @param markdownText
+ * @returns
+ */
+export const extractTitle = async (
+  markdownText: string,
+): Promise<{ title: string; markdownText: string }> => {
+  // gets the first title string in the document
+  const regexPattern: RegExp = /^#+ ([\S\s]+?)$/im;
+  const firstTitleMatch = regexPattern.exec(markdownText);
+  if (!firstTitleMatch) {
+    return { title: "Untitled", markdownText };
+  }
+
+  return {
+    // Strip any markdown formatting that might be included
+    title: String(await remark().use(strip).process(firstTitleMatch[1])),
+    markdownText: markdownText.replace(regexPattern, ""),
+  };
+};
+
+/**
+ * Extracts a description from the markdown document.
+ *
+ * @param markdownText
+ * @returns
+ */
+export const extractDescription = async (markdownText: string) => {
+  const firstLineComment = markdownText.match(
+    /^\{\/\*\s?([\S\s]+?)\s?\*\/\}\s?[\n\r]/i,
+  );
+  const firstParagraph = markdownText.match(/^[^\s#{][\s\S]*?$/im);
+
+  // get the comment at the top of the document
+  // or the first paragraph in the document
+  const rawDescription =
+    firstLineComment !== null
+      ? firstLineComment[1]
+      : firstParagraph !== null
+        ? firstParagraph[0]
+        : "Couldn't find a description";
+
+  // Strip any markdown formatting that might be included
+  return String(await remark().use(strip).process(rawDescription));
 };
 
 /**
@@ -197,7 +250,7 @@ const buildContributorDocs = async () => {
   // Clean out previous files
   console.log("Cleaning out current content collection...");
   await Promise.all(
-    langDirs.map((lang) =>
+    supportedLocales.map((lang) =>
       rm(path.join(outputDirectory, lang), {
         recursive: true,
         force: true,
