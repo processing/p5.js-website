@@ -1,8 +1,8 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import { Image } from "astro:assets";
-import { categories, categoryNames } from '../content/tutorials/config';
+import Image from "@components/Image/index.astro";
+import { categories, categoryNames } from "../content/tutorials/config";
 
 type TutorialEntry = CollectionEntry<"tutorials">;
 
@@ -12,21 +12,22 @@ const sections = categories.map((slug) => {
   const name = categoryNames[slug];
   const sectionEntries = entries
     .filter((e: TutorialEntry) => e.data.category === slug)
-    .sort((a: TutorialEntry, b: TutorialEntry) =>
-      (a.data.categoryIndex ?? 1000) - (b.data.categoryIndex ?? 1000)
+    .sort(
+      (a: TutorialEntry, b: TutorialEntry) =>
+        (a.data.categoryIndex ?? 1000) - (b.data.categoryIndex ?? 1000)
     );
 
   return { slug, name, sectionEntries };
-})
+});
 ---
 
 <BaseLayout title="Tutorials">
-  {sections.map(({ slug, name, sectionEntries }) => (
-    <>
-      <h3 id={slug}>{name}</h3>
-      <ul>
-        {
-          sectionEntries.map((entry: TutorialEntry) => (
+  {
+    sections.map(({ slug, name, sectionEntries }) => (
+      <>
+        <h3 id={slug}>{name}</h3>
+        <ul>
+          {sectionEntries.map((entry: TutorialEntry) => (
             <li>
               <a href={`/tutorials/${entry.slug}`}>
                 {" "}
@@ -41,9 +42,9 @@ const sections = categories.map((slug) => {
                 {entry.data.title}
               </a>
             </li>
-          ))
-        }
-      </ul>
-    </>
-  ))}
+          ))}
+        </ul>
+      </>
+    ))
+  }
 </BaseLayout>
