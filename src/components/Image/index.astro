@@ -1,14 +1,18 @@
 ---
+import type { ComponentProps } from "astro/types";
 import { Image } from "astro:assets";
-const { src, alt, width, height } = Astro.props;
+type Props = ComponentProps<typeof Image>;
+const { props } = Astro;
 ---
 
 <div class="relative w-fit h-fit">
-  <Image src={src} alt={alt} width={width} height={height} />
+  <!-- The props are identical but the lack of "IntrinsicAttributes" gives an errant ts error -->
+  <!-- @ts-ignore -->
+  <Image {...props} />
   <p
     aria-hidden
     class="renderable-alt bg-bg-gray-40 line-clamp-3 absolute top-0 mt-sm mx-sm px-[7.5px] pb-[2.5px] rounded-xl text-body-caption text-ellipsis"
   >
-    {alt}
+    {props.alt}
   </p>
 </div>
