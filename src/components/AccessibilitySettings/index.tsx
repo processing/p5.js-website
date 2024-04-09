@@ -41,6 +41,7 @@ export const AccessibilitySettings = ({
       : [...selectedSettings, setting];
     setSelectedSettings(newSettings);
     localStorage.setItem(setting, newSettings.includes(setting).toString());
+    document.body.classList.toggle(setting, newSettings.includes(setting));
   };
 
   return (
