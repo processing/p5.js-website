@@ -1,23 +1,76 @@
 ---
 import { type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import ContributeImage from "@content/ui/images/contribute.png";
 import BaseLayout from "./BaseLayout.astro";
-import { removeLocaleAndExtension } from "../pages/_utils";
+import { getCurrentLocale, useTranslations } from "@i18n/utils";
+import GridItemContributorDoc from "@components/GridItem/ContributorDoc.astro";
 
-type ContributeEntry = CollectionEntry<"contributor-docs">;
+interface Props {
+  entries: CollectionEntry<"contributor-docs">[];
+}
 
 const { entries } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
+const donateSectionItems = [
+  {
+    title: t("Donate to Processing Foundation"),
+    url: "/donate",
+    description: t("contributePage", "DonateDescription"),
+  },
+  {
+    title: t("Frequently Asked Questions"),
+    url: "",
+    description: t("contributePage", "FaqDescription"),
+  },
+];
 ---
 
 <BaseLayout title="Contribute">
-  <ul>
-    {
-      entries.map((entry: ContributeEntry) => (
-        <li>
-          <a href={`/contribute/${removeLocaleAndExtension(entry.slug)}`}>
-            {removeLocaleAndExtension(entry.slug)}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <section class="mt-md mb-xl">
+    <h2 class="mb-lg">{t("Contributor Docs")}</h2>
+    <div class="mb-md grid grid-cols-1 gap-x-md md:grid-cols-2">
+      <div>
+        <Image
+          src={ContributeImage}
+          alt={t("contributePage", "ImageAltText") as string}
+        />
+        <p class="mt-sm text-sm">{t("contributePage", "ImageCaption")}</p>
+      </div>
+      <p class="mt-0 text-base">{t("contributePage", "Statement")}</p>
+    </div>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
+      {
+        entries.map((entry) => (
+          <li>
+            <GridItemContributorDoc item={entry} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <hr />
+  <section class="mt-md mb-xl">
+    <h2 class="mt-md mb-lg">{t("Donate")}</h2>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
+      {
+        // This is the same markup as in ContributorDocItem
+        donateSectionItems.map((it) => (
+          <li>
+            <a href={it.url}>
+              <div class="grid place-content-center mt-xs bg-bg-blue h-32 p-4 mb-2">
+                <span class="text-lg text-center align-middle line-clamp-3 text-pretty">
+                  {it.title}
+                </span>
+              </div>
+              <div class="text-sm text-ellipsis line-clamp-3 text-pretty">
+                {it.description}
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </BaseLayout>
