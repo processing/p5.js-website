@@ -3,65 +3,46 @@ import { getCurrentLocale, useTranslations } from "@/src/i18n/utils";
 import { Logo } from "@components/Logo";
 import LinkButton from "@components/LinkButton/index.astro";
 import { Icon } from "../Icon";
+import { jumpToState } from "@/src/globals/state";
+import { JumpToLinks } from "./JumpToLinks";
+import { MainNavLinks } from "./MainNavLinks";
+import styles from "./styles.module.scss";
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 // We force the logo to the accent color only on the homepage
 const pathMinusLocale = Astro.url.pathname.replace(`/${currentLocale}`, "");
 const isHomepage = pathMinusLocale === "/";
 const t = await useTranslations(currentLocale);
+
+const mainLinks = [
+  { url: "/reference", label: t("Reference") },
+  { url: "/tutorials", label: t("Tutorials") },
+  { url: "/examples", label: t("Examples") },
+  { url: "/contribute", label: t("Contribute") },
+  { url: "/community", label: t("Community") },
+  { url: "/about", label: t("About") },
+] as { url: string; label: string }[];
+
+const editorButtonLabel = t("Start Coding");
+const donateButtonLabel = t("Donate");
 ---
 
-<nav class="border-r border-sidebar-type-color">
+<nav class={styles.container}>
   <a href="#main-content" class="skip-to-main">
     {t("Skip to main content")}
   </a>
-  <div class="flex w-full h-full flex-col justify-between">
-    <ul class="px-md py-sm">
-      <li class="inline-block md:block w-[120px] mb-sm">
-        <a
-          href="/"
-          class={`${isHomepage ? "text-logo-color" : "text-sidebar-type-color"}`}
-        >
-          <Logo />
-        </a>
-      </li>
-      <li class="inline-block md:block">
-        <a href="/reference">{t("Reference")}</a>
-      </li>
-      <li class="inline-block md:block">
-        <a href="/tutorials">{t("Tutorials")}</a>
-      </li>
-      <li class="inline-block md:block">
-        <a href="/examples">{t("Examples")}</a>
-      </li>
-      <li class="inline-block md:block">
-        <a href="/contribute">{t("Contribute")}</a>
-      </li>
-      <li class="inline-block md:block">
-        <a href="/community">{t("Community")}</a>
-      </li>
-      <li class="inline-block md:block"><a href="/about">{t("About")}</a></li>
-    </ul>
-    <ul class="px-md py-sm">
-      <li class="mb-sm">
-        <LinkButton
-          className="w-full px-[0.3rem]"
-          url="https://editor.p5js.org"
-        >
-          <div class="mr-xxs">
-            <Icon kind="code-brackets" />
-          </div>
-          {t("Start Coding")}
-        </LinkButton>
-      </li>
-      <li>
-        <LinkButton className="w-full px-[0.3rem]" url="/donate">
-          <div class="mr-xxs">
-            <Icon kind="heart" />
-          </div>
-          {t("Donate")}
-        </LinkButton>
-      </li>
-    </ul>
+  <MainNavLinks
+    links={mainLinks}
+    isHomepage={isHomepage}
+    editorButtonLabel={editorButtonLabel as string}
+    donateButtonLabel={donateButtonLabel as string}
+    client:idle
+  />
+  <div>
+    <JumpToLinks
+      heading={jumpToState?.heading || (t("Jump To") as string)}
+      links={jumpToState?.links}
+      client:idle
+    />
   </div>
 </nav>
