@@ -5,9 +5,10 @@ export const homepageCollection = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      logoImage: image(),
-      heroImage: image(),
       heroText: z.string(),
+      logoImage: image(),
+      heroImageDesktop: image(),
+      heroImageMobile: image(),
       heroImageAltText: z.string(),
       heroImageCaption: z.string(),
       referenceHeaderText: z.string(),

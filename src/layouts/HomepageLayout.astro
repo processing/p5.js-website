@@ -35,11 +35,17 @@ const sketches = data.sketchIds.map(
       <Image src={data.logoImage} alt="" aria-hidden class="col-span-1" />
     </div>
     <p class="text-body-caption mb-sm">{data.heroImageCaption}</p>
-    <Image
-      src={data.heroImage}
-      alt={data.heroImageAltText}
-      class="full-bleed-image"
-    />
+    <!-- This lets us swap image url based on screen size -->
+    <picture>
+      <!-- have to hard code these because css, see variables.scss for source of truth -->
+      <source media="(max-width: 767px)" srcset={data.heroImageMobile.src} />
+      <source media="(min-width: 768px)" srcset={data.heroImageDesktop.src} />
+      <img
+        class="full-bleed-image"
+        src={data.heroImageMobile.src}
+        alt={data.heroImageAltText}
+      />
+    </picture>
   </div>
 
   <div class="grid grid-cols-2 md:grid-cols-4 gap-x-lg gap-y-xl mb-xl">
