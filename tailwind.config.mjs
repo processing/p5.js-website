@@ -31,6 +31,7 @@ export default {
         "type-magenta": "var(--type-magenta)",
         "type-blue": "var(--type-blue)",
         "type-gray": "var(--type-gray)",
+        "logo-color": "var(--logo-color)",
         "bg-color": "var(--bg-color)",
         "type-color": "var(--type-color)",
         "sidebar-bg-color": "var(--sidebar-bg-color)",
