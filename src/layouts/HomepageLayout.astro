@@ -1,0 +1,109 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import LinkButton from "@components/LinkButton/index.astro";
+import GridItemSketch from "@components/GridItem/Sketch.astro";
+import { getCurrentLocale, useTranslations } from "../i18n/utils";
+import { getCurationSketches } from "../api/OpenProcessing";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  config: CollectionEntry<"homepage">;
+}
+
+const {
+  config: { data },
+} = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
+
+const curationSketches = await getCurationSketches();
+const sketches = data.sketchIds.map(
+  (id, i) =>
+    curationSketches.find((sk) => id.toString() === sk.visualID) ??
+    curationSketches[i]
+);
+---
+
+<BaseLayout title="">
+  <div class="mt-sm mb-xl">
+    <div class="grid grid-cols-4 gap-md mb-xl">
+      <p class="col-span-3 mt-0">
+        {data.heroText}
+      </p>
+      <!-- No alt text because this image is purely ornamental -->
+      <Image src={data.logoImage} alt="" aria-hidden class="col-span-1" />
+    </div>
+    <p class="text-body-caption mb-sm">{data.heroImageCaption}</p>
+    <Image
+      src={data.heroImage}
+      alt={data.heroImageAltText}
+      class="full-bleed-image"
+    />
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-x-lg gap-y-xl mb-xl">
+    <div
+      class="col-span-2 md:col-span-3 order-1 grid grid-cols-subgrid content-start"
+    >
+      <h2 class="col-span-3">{data.referenceHeaderText}</h2>
+      <LinkButton class="col-span-1 w-full" variant="link" url="/reference"
+        >{t("Reference")}</LinkButton
+      >
+    </div>
+    <div
+      class="col-span-2 md:col-span-3 order-2 md:order-4 grid grid-cols-subgrid content-start"
+    >
+      <h2 class="col-span-3">{data.examplesHeaderText}</h2>
+      <LinkButton class="col-span-1 w-full" variant="link" url="/examples"
+        >{t("Examples")}</LinkButton
+      >
+    </div>
+    <div class="col-span-1 order-3 md:order-2">
+      <GridItemSketch item={sketches[0]} />
+    </div>
+    <div class="col-span-1 order-4 md:order-3">
+      <GridItemSketch item={sketches[1]} />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-x-lg gap-y-xl mb-xl">
+    <div class="col-span-2 md:col-span-3 grid grid-cols-subgrid content-start">
+      <h2 class="col-span-3">{data.communityHeaderText}</h2>
+      <LinkButton class="col-span-1 w-full" variant="link" url="/community"
+        >{t("Community")}</LinkButton
+      >
+    </div>
+    <div class="">
+      <GridItemSketch item={sketches[2]} />
+    </div>
+    <GridItemSketch item={sketches[3]} />
+    <div class="">
+      <GridItemSketch item={sketches[4]} />
+    </div>
+    <div class="col-span-2 row-span-2">
+      <GridItemSketch item={sketches[5]} />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-x-sm mb-xl">
+    <div>
+      <h2>{t("Donate to p5.js")}</h2>
+      <LinkButton class="w-full md:w-fit" variant="link" url="/donate"
+        >{t("Donate")}</LinkButton
+      >
+    </div>
+    <div>
+      <h2>{t("Download p5.js")}</h2>
+      <LinkButton class="w-full md:w-fit" variant="link" url="/download"
+        >{t("Download Library")}</LinkButton
+      >
+    </div>
+  </div>
+</BaseLayout>
+
+<style lang="scss">
+  h2 {
+    @apply mb-sm mt-0;
+  }
+</style>
