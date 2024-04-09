@@ -1,4 +1,3 @@
-import { h } from "preact";
 import { useState, useRef, useEffect } from "preact/hooks";
 import styles from "./styles.module.scss";
 import { Icon, type IconKind } from "../Icon";
@@ -28,7 +27,7 @@ export const Dropdown = ({
 }: DropdownProps) => {
   const [selected, setSelected] = useState(initialSelected);
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef();
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<HTMLButtonElement[]>([]);
 
   // In order to support instant update of the selected option
@@ -74,7 +73,7 @@ export const Dropdown = ({
   };
 
   // Handle keyboard navigation
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       setIsOpen(false);
     } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
