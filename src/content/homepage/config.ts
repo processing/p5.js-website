@@ -6,7 +6,6 @@ export const homepageCollection = defineCollection({
     z.object({
       title: z.string(),
       heroText: z.string(),
-      logoImage: image(),
       heroImageDesktop: image(),
       heroImageMobile: image(),
       heroImageAltText: z.string(),
