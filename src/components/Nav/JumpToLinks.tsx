@@ -1,37 +1,38 @@
-import type { JumpToLink } from "@/src/globals/state";
 import styles from "./styles.module.scss";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { Icon } from "../Icon";
+
 type JumpToLinksProps = {
-  links?: JumpToLink[];
+  links?: {
+    label: string;
+    url: string;
+  }[];
   heading: string;
 };
 
 export const JumpToLinks = ({ links, heading }: JumpToLinksProps) => {
   const [open, setOpen] = useState(true);
 
-  const jumpToContainer = useRef<HTMLDivElement>(null);
-
   const handleClick = () => {
     setOpen(!open);
-    document.documentElement.style.setProperty("--my-variable", "new-value");
-    jumpToContainer.current?.classList.toggle("open");
   };
+
+  // Defaults to closed on mobile, open on desktop
+  // Have to do this in a lifecycle method
+  // so that we can still server-side render
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    setOpen(!isMobile);
+  }, []);
 
   if (!links || links?.length <= 0) return null;
 
   return (
-    <div
-      class={`${styles.jumpto} open`}
-      ref={jumpToContainer}
-      aria-expanded={open}
-    >
+    <div class={`${styles.jumpto} ${open && "open"}`} aria-expanded={open}>
       <button class={styles.toggle} onClick={handleClick}>
-        <div class="flex justify-between px-md pt-md">
-          <span>{heading}</span>
-          <div class="pt-xs">
-            <Icon kind={open ? "chevron-down" : "chevron-up"} />
-          </div>
+        <span>{heading}</span>
+        <div class="pt-xs">
+          <Icon kind={open ? "chevron-up" : "chevron-down"} />
         </div>
       </button>
       {open && (
