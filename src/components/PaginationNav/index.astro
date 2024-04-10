@@ -15,18 +15,20 @@ const { maxNumItems, itemsPerPage, sectionUrlPrefix, currentPage } =
 const numPages = getPaginationMax(itemsPerPage, maxNumItems);
 ---
 
-<ul class="flex gap-xs my-sm">
-  {
-    Array.from({ length: numPages }).map((_, i) => (
-      <li>
-        <CircleButton
-          ariaLabel={`Go to page ${i + 1}`}
-          href={`${sectionUrlPrefix}/page/${i + 1}`}
-          className={`${currentPage === i + 1 && "text-sidebar-bg-color bg-sidebar-type-color"} text-3xl border border-sidebar-type-color !w-[50px] !h-[50px] flex items-center justify-center`}
-        >
-          <span>{i + 1}</span>
-        </CircleButton>
-      </li>
-    ))
-  }
-</ul>
+{
+  numPages > 1 && (
+    <ul class="flex gap-xs my-sm">
+      {Array.from({ length: numPages }).map((_, i) => (
+        <li>
+          <CircleButton
+            ariaLabel={`Go to page ${i + 1}`}
+            href={`${sectionUrlPrefix}/page/${i + 1}`}
+            className={`${currentPage === i + 1 && "text-sidebar-bg-color bg-sidebar-type-color"} text-3xl border border-sidebar-type-color !w-[50px] !h-[50px] flex items-center justify-center`}
+          >
+            <span>{i + 1}</span>
+          </CircleButton>
+        </li>
+      ))}
+    </ul>
+  )
+}
