@@ -8,6 +8,7 @@ import {
   makeThumbnailUrl,
   type OpenProcessingCurationResponse,
 } from "../api/OpenProcessing";
+import { setJumpToState } from "../globals/state";
 
 interface Props {
   sketches: OpenProcessingCurationResponse;
@@ -21,10 +22,19 @@ const sketchLimit = 10;
 const { sketches, libraries, pastEvents } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
+
+setJumpToState({
+  heading: t("Community") as string,
+  links: [
+    { label: t("Sketches") as string, url: "#sketches" },
+    { label: t("Libraries") as string, url: "#libraries" },
+    { label: t("Events") as string, url: "#events" },
+  ],
+});
 ---
 
 <BaseLayout title="Community">
-  <h2>{t("Sketches")}</h2>
+  <h2>{t("Sketches")} <a id="sketches"></a></h2>
   {
     sketches.slice(0, sketchLimit).map((sk) => (
       <li>
@@ -45,7 +55,7 @@ const t = await useTranslations(currentLocale);
   }
   <a href="/sketches">See Sketches Archive</a>
 
-  <h2>{t("Libraries")}</h2>
+  <h2>{t("Libraries")} <a id="libraries"></a></h2>
   {
     libraries.map((entry) => (
       <li>
@@ -56,7 +66,7 @@ const t = await useTranslations(currentLocale);
 
   <a href="/libraries">See Libraries Archive</a>
 
-  <h2>{t("Events")}</h2>
+  <h2>{t("Events")} <a id="events"></a></h2>
   {
     pastEvents.map((entry) => (
       <li>

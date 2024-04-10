@@ -2,29 +2,57 @@
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
 import Image from "@components/Image/index.astro";
+import { setJumpToState, type JumpToLink } from "../globals/state";
 
 type TutorialEntry = CollectionEntry<"tutorials">;
 
 const { entries } = Astro.props;
+
+const categories = entries.map((entry: TutorialEntry) => entry.data.category);
+const uniqueCategories = Array.from(new Set(categories));
+const entriesByCategory = uniqueCategories.map((category) => ({
+  name: category,
+  entries: entries.filter(
+    (entry: TutorialEntry) => entry.data.category === category
+  ),
+}));
+
+const pageJumpToLinks = uniqueCategories.map((category) => ({
+  url: `#${category}`,
+  label: category,
+}));
+
+setJumpToState({
+  heading: "Jump to",
+  links: pageJumpToLinks as JumpToLink[],
+});
 ---
 
 <BaseLayout title="Tutorials">
   <ul>
     {
-      entries.map((entry: TutorialEntry) => (
+      entriesByCategory.map((category) => (
         <li>
-          <a href={`/tutorials/${entry.slug}`}>
-            {" "}
-            {entry.data.featuredImageAlt && entry.data.featuredImage && (
-              <Image
-                src={entry.data.featuredImage}
-                alt={entry.data.featuredImageAlt}
-                width={200}
-                height={200}
-              />
-            )}
-            {entry.data.title}
-          </a>
+          <h2>
+            {category.name} <a id={category.name as string} />
+          </h2>
+          <ul>
+            {category.entries.map((entry: TutorialEntry) => (
+              <li>
+                <a href={`/tutorials/${entry.slug}`}>
+                  {entry.data.featuredImageAlt && entry.data.featuredImage && (
+                    <Image
+                      src={entry.data.featuredImage}
+                      alt={entry.data.featuredImageAlt}
+                      width={200}
+                      height={200}
+                    />
+                  )}
+                  {entry.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
         </li>
       ))
     }
