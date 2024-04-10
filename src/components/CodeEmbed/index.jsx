@@ -59,10 +59,9 @@ export const CodeEmbed = (props) => {
             base={props.base}
             frameRef={codeFrameRef}
           />
-          {/* Looks more visually balanced with a slight leftward nudge */}
           <div className="gap-xs lg:flex">
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm lg:ml-[-2px]"
+              className="!bg-bg-gray-40 !p-sm"
               onClick={updateOrReRun}
             >
               <Icon kind="play" />
