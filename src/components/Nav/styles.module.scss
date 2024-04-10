@@ -80,7 +80,18 @@
   border-top-width: 1px;
   height: 40px;
 
+  /* Hide scrollbar */
+  // Chrome, Safari, Edge, Opera
+  &::-webkit-scrollbar {
+    width: 0; /* Remove scrollbar space */
+    background: transparent; /* Ensure the scrollbar is completely invisible */
+  }
+  // Firefox
+  -ms-overflow-styles: none;
+  scrollbar-width: none;
+
   ul {
+    overflow-x: hidden;
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: var(--spacing-sm) var(--spacing-md);
@@ -98,10 +109,14 @@
 
   @media (min-width: $breakpoint-tablet) {
     height: 85px;
-    overflow: hidden;
 
+    &:global(.open) {
+      height: 100%;
+      overflow-y: scroll;
+    }
     ul {
       display: inline-block;
+      height: 100%;
     }
   }
 }
@@ -122,6 +137,16 @@
 /* Interaction */
 
 .jumpto:global(.open) {
-  height: unset;
   flex-grow: 1;
+  height: unset;
+
+  @media (min-width: $breakpoint-tablet) {
+    height: 100%;
+    overflow-y: scroll;
+
+    ul {
+      display: inline-block;
+      height: 100%;
+    }
+  }
 }
