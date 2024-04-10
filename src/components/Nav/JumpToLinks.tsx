@@ -1,6 +1,6 @@
 import type { JumpToLink } from "@/src/globals/state";
 import styles from "./styles.module.scss";
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { Icon } from "../Icon";
 type JumpToLinksProps = {
   links?: JumpToLink[];
@@ -14,6 +14,7 @@ export const JumpToLinks = ({ links, heading }: JumpToLinksProps) => {
 
   const handleClick = () => {
     setOpen(!open);
+    document.documentElement.style.setProperty("--my-variable", "new-value");
     jumpToContainer.current?.classList.toggle("open");
   };
 
@@ -33,13 +34,15 @@ export const JumpToLinks = ({ links, heading }: JumpToLinksProps) => {
           </div>
         </div>
       </button>
-      <ul>
-        {links?.map((link) => (
-          <li key={link.label}>
-            <a href={link.url}>{link.label}</a>
-          </li>
-        ))}
-      </ul>
+      {open && (
+        <ul>
+          {links?.map((link) => (
+            <li key={link.label}>
+              <a href={link.url}>{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
