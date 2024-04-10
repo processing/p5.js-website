@@ -1,12 +1,10 @@
 import styles from "./styles.module.scss";
 import { useEffect, useState } from "preact/hooks";
 import { Icon } from "../Icon";
+import type { JumpToLink } from "@/src/globals/state";
 
 type JumpToLinksProps = {
-  links?: {
-    label: string;
-    url: string;
-  }[];
+  links?: JumpToLink[];
   heading: string;
 };
 
@@ -38,7 +36,13 @@ export const JumpToLinks = ({ links, heading }: JumpToLinksProps) => {
       {open && (
         <ul>
           {links?.map((link) => (
-            <li key={link.label}>
+            <li
+              key={link.label}
+              class={`
+              ${link.size === "small" ? "text-body-caption" : "text-body"}
+                ${link.current ? "underline" : ""}
+                `}
+            >
               <a href={link.url}>{link.label}</a>
             </li>
           ))}
