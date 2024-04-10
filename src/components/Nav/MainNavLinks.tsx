@@ -1,7 +1,7 @@
 import styles from "./styles.module.scss";
 import { Logo } from "../Logo";
 import { Icon } from "../Icon";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 type MainNavLinksProps = {
   links: {
@@ -19,14 +19,21 @@ export const MainNavLinks = ({
   editorButtonLabel,
   isHomepage = false,
 }: MainNavLinksProps) => {
-  const [open, setOpen] = useState(true);
-
-  const mainLinksContainer = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [open, setOpen] = useState(!isMobile);
 
   const handleClick = () => {
     setOpen(!open);
-    mainLinksContainer.current?.classList.toggle("open");
   };
+
+  // Defaults to closed on mobile, open on desktop
+  // Have to do this in a lifecycle method
+  // so that we can still server-side render
+  useEffect(() => {
+    const _isMobile = window.innerWidth <= 768;
+    setIsMobile(_isMobile);
+    setOpen(!_isMobile);
+  }, []);
 
   if (!links || links?.length <= 0) return null;
 
@@ -39,22 +46,15 @@ export const MainNavLinks = ({
         <Logo />
       </a>
       <button class={styles.toggle} onClick={handleClick}>
-        <Icon kind={open ? "chevron-down" : "chevron-up"} />
+        <Icon kind={open ? "chevron-up" : "chevron-down"} />
       </button>
     </div>
   );
 
-  const isMobile = window && window.innerWidth < 768;
-
   return (
-    <div
-      class={`${styles.mainlinks} open`}
-      ref={mainLinksContainer}
-      aria-expanded={open}
-    >
-      {isMobile && renderLogo()}
+    <div class={`${styles.mainlinks} ${open && "open"}`} aria-expanded={open}>
+      {renderLogo()}
       <ul>
-        {!isMobile && renderLogo()}
         {open &&
           links.map((link) => (
             <li key={link.label}>
