@@ -1,7 +1,48 @@
 ---
+import { setJumpToState, type JumpToState } from "../globals/state";
+import {
+  getCurrentLocale,
+  removeLocalePrefix,
+  useTranslations,
+} from "../i18n/utils";
+import {
+  exampleContentSlugToLegacyWebsiteSlug,
+  getExampleCategory,
+} from "../pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 
-const { example, code } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
+
+const { example, code, relatedExamples } = Astro.props;
+
+const jumpToLinks = relatedExamples.map((relEx: any) => {
+  const relExSlug = exampleContentSlugToLegacyWebsiteSlug(
+    removeLocalePrefix(relEx.slug)
+  );
+  console.log(example.slug, relExSlug);
+  return {
+    label: relEx.data.title,
+    url: `/examples${relExSlug}`,
+    size: "small",
+    current: example.slug === relEx.slug,
+  };
+});
+
+const category = getExampleCategory(example.slug);
+
+jumpToLinks.unshift({
+  label: category,
+  url: `/examples/#${category}`,
+});
+
+const jumpToState = {
+  heading: t("Examples"),
+  links: jumpToLinks,
+} as JumpToState;
+
+setJumpToState(jumpToState);
+
 const { Content } = await example.render();
 ---
 

@@ -2,6 +2,7 @@
 import {
   exampleContentSlugToLegacyWebsiteSlug,
   getCollectionInDefaultLocale,
+  getExampleCategory,
 } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
 import { getExampleCode } from "@pages/_utils-node";
@@ -13,9 +14,16 @@ export async function getStaticPaths() {
     examples.map(async (example) => {
       const unPrefixSlug = removeLocalePrefix(example.slug);
       const code = await getExampleCode(example.id);
+      const category = getExampleCategory(example.id);
       return {
         params: { slug: exampleContentSlugToLegacyWebsiteSlug(unPrefixSlug) },
-        props: { example, code },
+        props: {
+          example,
+          code,
+          relatedExamples: examples.filter(
+            (e) => getExampleCategory(e.id) === category
+          ),
+        },
       };
     })
   );
@@ -23,7 +31,11 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { example, code } = Astro.props;
+const { example, code, relatedExamples } = Astro.props;
 ---
 
-<ExampleLayout example={example} code={code} />
+<ExampleLayout
+  example={example}
+  code={code}
+  relatedExamples={relatedExamples}
+/>
