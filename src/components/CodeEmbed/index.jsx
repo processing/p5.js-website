@@ -33,12 +33,12 @@ export const CodeEmbed = (props) => {
 
   const updateOrReRun = () => {
     if (codeString === previewCodeString) {
-      setPreviewCodeString('');
+      setPreviewCodeString("");
       requestAnimationFrame(() => setPreviewCodeString(codeString));
     } else {
       setPreviewCodeString(codeString);
     }
-  }
+  };
 
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
@@ -51,7 +51,7 @@ export const CodeEmbed = (props) => {
   return (
     <div className="my-md flex w-full flex-col overflow-hidden lg:flex-row">
       {props.previewable ? (
-        <div className="flex lg:flex-col">
+        <div className="ml-0 flex lg:flex-col">
           <CodeFrame
             jsCode={previewCodeString}
             width={props.previewWidth}
@@ -59,10 +59,9 @@ export const CodeEmbed = (props) => {
             base={props.base}
             frameRef={codeFrameRef}
           />
-          {/* Looks more visually balanced with a slight leftward nudge */}
           <div className="gap-xs lg:flex">
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm lg:ml-[-2px]"
+              className="!bg-bg-gray-40 !p-sm"
               onClick={updateOrReRun}
             >
               <Icon kind="play" />
@@ -78,7 +77,7 @@ export const CodeEmbed = (props) => {
           </div>
         </div>
       ) : null}
-      <div className="relative ml-md w-full md:w-[calc(100%-150px)]">
+      <div className="relative w-full md:w-[calc(100%-var(--spacing-md))] lg:ml-md">
         <CodeMirror
           value={codeString}
           theme="light"
@@ -103,7 +102,7 @@ export const CodeEmbed = (props) => {
             (editorView.contentDOM.ariaLabel = "Code Editor")
           }
         />
-        <div className="absolute right-0 top-0 flex gap-xs p-xs">
+        <div className="absolute right-0 top-0 flex flex-col gap-xs p-xs md:flex-row">
           <CopyCodeButton textToCopy={codeString || initialCode} />
           <CircleButton
             onClick={() => {
