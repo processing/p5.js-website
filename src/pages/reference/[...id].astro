@@ -14,11 +14,14 @@ export async function getStaticPaths() {
     },
     props: {
       entry,
+      relatedEntries: referenceEntries.filter((relatedEntry) => {
+        return relatedEntry.data.submodule === entry.data.submodule;
+      }),
     },
   }));
 }
 
-const { entry } = Astro.props;
+const { entry, relatedEntries } = Astro.props;
 ---
 
-<ReferenceItemLayout entry={entry} />
+<ReferenceItemLayout entry={entry} relatedEntries={relatedEntries} />
