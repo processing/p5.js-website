@@ -15,7 +15,12 @@ export async function getStaticPaths() {
         const slug = removeLocalePrefix(entry.slug);
         return {
           params: { locale, slug },
-          props: { entry },
+          props: {
+            entry,
+            relatedEntries: localeEntries.filter(
+              (e) => e.data.category === entry.data.category
+            ),
+          },
         };
       });
     })
@@ -24,7 +29,7 @@ export async function getStaticPaths() {
   return entries.flat();
 }
 
-const { entry } = Astro.props;
+const { entry, relatedEntries } = Astro.props;
 ---
 
-<TutorialLayout entry={entry} />
+<TutorialLayout entry={entry} relatedEntries={relatedEntries} />
