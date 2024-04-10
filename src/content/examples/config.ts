@@ -11,6 +11,7 @@ export const examplesCollection = defineCollection({
     z.object({
       // Title of the example
       title: z.string(),
+      oneLineDescription: z.string(),
       // Aria label used for the live example code
       arialabel: z.string().optional(),
       relatedContent: relatedContent().optional(),
