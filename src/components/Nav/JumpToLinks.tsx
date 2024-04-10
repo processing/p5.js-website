@@ -3,10 +3,7 @@ import { Icon } from "../Icon";
 import type { JumpToLink } from "@/src/globals/state";
 
 type JumpToLinksProps = {
-  links?: {
-    label: string;
-    url: string;
-  }[];
+  links?: JumpToLink[];
   heading: string;
   handleToggle: () => void;
   isOpen: boolean;
