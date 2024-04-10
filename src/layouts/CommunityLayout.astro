@@ -6,6 +6,8 @@ import GridItemSketch from "@components/GridItem/Sketch.astro";
 import GridItemLibrary from "@components/GridItem/Library.astro";
 import GridItemEvent from "@components/GridItem/Event.astro";
 import { getCurrentLocale, useTranslations } from "@i18n/utils";
+import { makeThumbnailUrl } from "../api/OpenProcessing";
+import { setJumpToState } from "../globals/state";
 import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
 
 interface Props {
@@ -26,11 +28,20 @@ const sketches = Astro.props.sketches.slice(0, sketchesLimit),
   events = Astro.props.pastEvents.slice(0, eventsLimit);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
+
+setJumpToState({
+  heading: t("Community") as string,
+  links: [
+    { label: t("Sketches") as string, url: "#sketches" },
+    { label: t("Libraries") as string, url: "#libraries" },
+    { label: t("Events") as string, url: "#events" },
+  ],
+});
 ---
 
 <BaseLayout title="Community">
   <section class="mt-md mb-xl">
-    <h2 class="mb-lg">{t("Sketches")}</h2>
+    <h2 class="mb-lg">{t("Sketches")}<a id="sketches"></a></h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
         sketches.map((sk, i) => (
@@ -55,7 +66,7 @@ const t = await useTranslations(currentLocale);
   </section>
   <hr />
   <section class="mt-md mb-xl">
-    <h2 class="mb-lg">{t("Libraries")}</h2>
+    <h2 class="mb-lg">{t("Libraries")}<a id="libraries"></a></h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
         libraries.slice(0, librariesLimit).map((lib) => (
@@ -71,7 +82,7 @@ const t = await useTranslations(currentLocale);
   </section>
   <hr />
   <section class="mt-md mb-xl">
-    <h2 class="mb-lg">{t("Events")}</h2>
+    <h2 class="mb-lg">{t("Events")}<a id="events"></a></h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
         events.map((event, i) => (

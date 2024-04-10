@@ -1,13 +1,37 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
+import type { MarkdownHeading } from "astro";
+import {
+  setJumpToState,
+  type JumpToLink,
+  type JumpToState,
+} from "../globals/state";
+import { getCurrentLocale, useTranslations } from "../i18n/utils";
 
 interface Props {
   entry: CollectionEntry<"contributor-docs">;
 }
 
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await useTranslations(currentLocale);
+
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
+
+const jumpToLinks = headings
+  .filter((heading: MarkdownHeading) => heading.depth <= 3)
+  .map((heading: MarkdownHeading) => ({
+    label: heading.text,
+    url: `#${heading.slug}`,
+  }));
+
+const jumpToState = {
+  links: jumpToLinks as JumpToLink[],
+  heading: t("Contributor Docs"),
+} as JumpToState;
+
+setJumpToState(jumpToState);
 ---
 
 <BaseLayout title={entry.data.title} variant="item">

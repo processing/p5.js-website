@@ -1,5 +1,6 @@
 ---
 import { getCurrentLocale, useTranslations } from "@/src/i18n/utils";
+import { Icon } from "../Icon";
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await useTranslations(currentLocale);
@@ -9,15 +10,21 @@ const t = await useTranslations(currentLocale);
   action={`${currentLocale === "en" ? "" : `/${currentLocale}`}/search`}
   method="GET"
   role="search"
+  class="relative w-full h-full bg-accent-color border-accent-type-color border rounded-[20px] !mx-0"
 >
+  <div class="absolute top-[10px] left-[15px]">
+    <Icon kind="search" />
+  </div>
   <input
     id="search-term"
     type="search"
     placeholder={t("Search") as string}
     name="term"
-    class="border border-black p-xxs"
+    class="placeholder-accent-type-color bg-transparent pl-[40px] py-[8px] w-full"
     aria-label="Search through site content"
     required
   />
-  <button type="submit">></button>
+  <button type="submit" class="absolute px-[22px] right-0 top-0 py-[13px]"
+    ><Icon kind="search-submit" /></button
+  >
 </form>
