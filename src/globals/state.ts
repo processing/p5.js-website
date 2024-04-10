@@ -4,6 +4,8 @@
 export type JumpToLink = {
   label: string;
   url: string;
+  size?: "small" | "medium" | "large";
+  current?: boolean;
 };
 
 export type JumpToState = {

@@ -5,12 +5,14 @@ import {
   getRefEntryTitleConcatWithParen,
   escapeCodeTagsContent,
   separateReferenceExamples,
+  normalizeReferenceRoute,
 } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import MethodSignature from "@components/MethodSignature/index.astro";
 import type { ReferenceParam } from "@/types/parsers.interface";
+import { setJumpToState } from "../globals/state";
 
-const { entry } = Astro.props;
+const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
 const examples = separateReferenceExamples(entry.data.example)
@@ -19,6 +21,28 @@ const examples = separateReferenceExamples(entry.data.example)
 const description = escapeCodeTagsContent(entry.data.description);
 const t = await useTranslations(currentLocale);
 const title = getRefEntryTitleConcatWithParen(entry);
+
+const jumpToLinks = relatedEntries.map((relatedEntry: any) => {
+  return {
+    label: getRefEntryTitleConcatWithParen(relatedEntry),
+    url: `/reference/${normalizeReferenceRoute(relatedEntry.id)}`,
+    size: "small",
+    current: relatedEntry.id === entry.id,
+  };
+});
+
+// Add link for submodule itself
+jumpToLinks.unshift({
+  label: entry.data.submodule,
+  url: `/reference/#${entry.data.submodule}`,
+});
+
+const jumpToState = {
+  heading: t("Reference") as string,
+  links: jumpToLinks,
+};
+
+setJumpToState(jumpToState);
 ---
 
 <BaseLayout title={title} variant="item">

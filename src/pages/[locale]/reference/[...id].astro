@@ -18,7 +18,12 @@ export async function getStaticPaths() {
           locale,
           id: normalizeReferenceRoute(entry.id),
         },
-        props: { entry },
+        props: {
+          entry,
+          relatedEntries: localeEntries.filter((relatedEntry) => {
+            return relatedEntry.data.submodule === entry.data.submodule;
+          }),
+        },
       }));
     })
   );
@@ -26,7 +31,7 @@ export async function getStaticPaths() {
   return entries.flat();
 }
 
-const { entry } = Astro.props;
+const { entry, relatedEntries } = Astro.props;
 ---
 
-<ReferenceItemLayout entry={entry} />
+<ReferenceItemLayout entry={entry} relatedEntries={relatedEntries} />
