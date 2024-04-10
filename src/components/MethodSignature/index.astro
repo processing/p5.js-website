@@ -1,26 +1,41 @@
 ---
 interface Props {
   name: string;
-  params: ReferenceParam[];
+  params?: ReferenceParam[];
+  overloads?: ReferenceOverloads;
 }
 
-import { type ReferenceParam } from "@/types/parsers.interface.ts";
+import {
+  type ReferenceOverloads,
+  type ReferenceParam,
+} from "@/types/parsers.interface.ts";
 import CodeContainer from "@components/CodeContainer/index.astro";
 import { CopyCodeButton } from "../CopyCodeButton";
-const { params, name } = Astro.props;
-const formattedParams = params
-  ?.map((param: ReferenceParam) =>
-    param.optional ? `[${param.name}]` : `${param.name}`
-  )
-  .join(", ");
+const { params, name, overloads } = Astro.props;
+
+const formatParam = (param: ReferenceParam) =>
+  param.optional ? `[${param.name}]` : `${param.name}`;
+
+let formattedParams = [];
+
+if (params) {
+  formattedParams.push(params.map(formatParam).join(", "));
+} else if (overloads) {
+  for (const overload of overloads) {
+    formattedParams.push(overload.params.map(formatParam).join(", "));
+  }
+}
+
 const signature = `${name}(${formattedParams})`;
 ---
 
-<CodeContainer>
-  <span>
-    {signature}
-  </span>
-  <div class="absolute top-xs right-xs">
-    <CopyCodeButton client:load textToCopy={signature} />
-  </div>
-</CodeContainer>
+{
+  formattedParams.map((params) => (
+    <CodeContainer>
+      <span>{`${name}(${params})`}</span>
+      <div class="absolute top-xs right-xs">
+        <CopyCodeButton client:load textToCopy={signature} />
+      </div>
+    </CodeContainer>
+  ))
+}
