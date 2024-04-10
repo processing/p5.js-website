@@ -57,7 +57,7 @@ function descriptionString(lib: LibraryEntry) {
   return result;
 }
 
-const libraryTag = 'p-1 rounded-full border-solid border-black border mb-1 mr-1 inline-block text-xs'
+const libraryTag = 'py-1 px-2 rounded-lg bg-[var(--accent-color)] mb-1 mr-1 block text-xs'
 
 const sections = await Promise.all(categories.map(async (slug) => {
   const name = categoryNames[slug];
@@ -91,7 +91,7 @@ const sections = await Promise.all(categories.map(async (slug) => {
       <h3 id={slug}>{name}</h3>
       <ul>
         {sectionEntries.map(({ lib, npmData, license }) => (
-          <li>
+          <li class="mb-3">
             <a href={getLibraryLink(lib)}>
               {lib.data.featuredImageAlt && lib.data.featuredImage && (
                 <Image
@@ -103,7 +103,7 @@ const sections = await Promise.all(categories.map(async (slug) => {
               )}
               <h4>{lib.data.name}</h4>
             </a>
-            <p>
+            <p class="mt-1">
               {descriptionString(lib)}
               {lib.data.author.map((a: { name: string, url?: string }, i) => (
                 <>
@@ -111,10 +111,10 @@ const sections = await Promise.all(categories.map(async (slug) => {
                 </>
               ))}
             </p>
-            <ul>
+            <ul class="list-none flex mt-1">
               {npmData && <li class={libraryTag}>Updated {npmData.lastUpdated}</li>}
               <li class={libraryTag}><a href={lib.data.sourceUrl}>Source</a></li>
-              {license && <li class={libraryTag}>{license} License</li>}
+              {/*license && <li class={libraryTag}>{license} License</li>*/}
               {lib.data.npm && <li class={libraryTag}><a href={`https://www.npmjs.com/package/${lib.data.npm}`}>NPM</a></li>}
               {npmData && <li class={libraryTag}><LibrarySourceLink link={npmData.link}>Copy Script Tag</LibrarySourceLink></li>}
             </ul>
