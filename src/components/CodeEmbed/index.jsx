@@ -67,7 +67,7 @@ export const CodeEmbed = (props) => {
               <Icon kind="play" />
             </CircleButton>
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm"
+              className="!bg-bg-gray-40 !p-sm "
               onClick={() => {
                 setPreviewCodeString("");
               }}

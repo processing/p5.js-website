@@ -16,7 +16,7 @@ export const CircleButton = ({
   <button
     onClick={onClick}
     aria-label={ariaLabel}
-    className={`rounded-full bg-bg-white p-xs ${className}`}
+    className={`rounded-full bg-bg-white p-xs hover:border-type-white hover:!bg-bg-black hover:text-type-white hover:outline ${className}`}
   >
     {children}
   </button>
