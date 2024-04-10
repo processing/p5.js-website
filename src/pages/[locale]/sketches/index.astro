@@ -7,20 +7,25 @@ import { sketchesPerPage } from "@/src/globals/globals";
 export async function getStaticPaths() {
   // First page on paginated route so we slice the first page
   const allSketches = await getCurationSketches();
-  const sketches = allSketches.slice(0, sketchesPerPage);
   const pages = nonDefaultSupportedLocales.map(async (locale) => ({
     params: {
       locale,
     },
     props: {
-      sketches,
+      allSketches,
     },
   }));
 
   return await Promise.all(pages);
 }
 
-const { sketches } = Astro.props;
+// First page on paginated route so we slice the first page
+const { allSketches } = Astro.props;
+const sketches = allSketches.slice(0, sketchesPerPage);
 ---
 
-<SketchesLayout entries={sketches} />
+<SketchesLayout
+  entries={sketches}
+  totalNumSketches={allSketches.length}
+  currentPage={1}
+/>

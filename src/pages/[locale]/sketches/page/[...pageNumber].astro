@@ -14,18 +14,24 @@ export async function getStaticPaths() {
       paths.push({
         params: { locale, pageNumber: i.toString() },
         props: {
-          sketches: sketches.slice(
-            (i - 1) * sketchesPerPage,
-            i * sketchesPerPage
-          ),
+          allSketches: sketches,
+          pageNumber: i,
         },
       });
     }
   }
   return paths;
 }
-
-const { sketches } = Astro.props;
+const { allSketches, pageNumber } = Astro.props;
+let totalNumSketches = allSketches.length;
+const sketches = allSketches.slice(
+  (pageNumber - 1) * sketchesPerPage,
+  pageNumber * sketchesPerPage
+);
 ---
 
-<SketchesLayout entries={sketches} />
+<SketchesLayout
+  entries={sketches}
+  totalNumSketches={totalNumSketches}
+  currentPage={pageNumber}
+/>
