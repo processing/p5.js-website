@@ -159,6 +159,9 @@ export const getExampleCategory = (slug: string): string =>
 export const normalizeReferenceRoute = (route: string): string =>
   removeNestedReferencePaths(removeLocaleAndExtension(route));
 
+export const getExampleCategory = (slug: string): string =>
+  slug.split("/")[1].split("_").splice(1).join(" ");
+
 export const normalizeReferenceRoute = (route: string): string =>
   removeLocaleAndExtension(route).replace("constants/", "");
 
