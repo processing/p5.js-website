@@ -23,4 +23,4 @@ export const contentTypes = [
 export const p5VersionForEmbeds = "1.9.1" as const;
 
 export const sketchesPerPage = 12 as const;
-export const eventsPerPage = 3 as const;
+export const eventsPerPage = 12 as const;
