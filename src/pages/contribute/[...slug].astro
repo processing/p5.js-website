@@ -1,17 +1,13 @@
 ---
-import ContributeItemLayout from "@/src/layouts/ContributeItemLayout.astro";
-import {
-  convertContributorDocIndexSlugIfNeeded,
-  getCollectionInDefaultLocale,
-} from "@pages/_utils";
+import ContributorDocLayout from "@/src/layouts/ContributorDocLayout.astro";
+import { getCollectionInDefaultLocale } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
 
 export async function getStaticPaths() {
   const contributorDocs =
     await getCollectionInDefaultLocale("contributor-docs");
   return contributorDocs.map((entry) => {
-    const unPrefixSlug = removeLocalePrefix(entry.slug);
-    const slug = convertContributorDocIndexSlugIfNeeded(unPrefixSlug);
+    const slug = removeLocalePrefix(entry.slug);
     return {
       params: {
         slug,
@@ -24,4 +20,4 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 ---
 
-<ContributeItemLayout entry={entry} />
+<ContributorDocLayout entry={entry} />
