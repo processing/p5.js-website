@@ -66,6 +66,7 @@ export const referenceSchema = z.object({
   description: z.string(),
   line: z.number().or(z.string().transform((v) => parseInt(v, 10))),
   params: z.array(paramSchema).optional(),
+  overloads: z.array(z.object({ params: z.array(paramSchema) })).optional(),
   itemtype: z.string().optional(),
   class: z.string().optional(),
   chainable: z.coerce.boolean().optional(),
