@@ -5,14 +5,13 @@ import { defaultLocale, nonDefaultSupportedLocales } from "@i18n/const";
 import { setJumpToState } from "@/src/globals/state";
 
 export const getStaticPaths = async () => {
+  const defaultLocaleHomePageConfig = await getEntry(
+    "homepage",
+    defaultLocale
+  )!;
   const pages = await Promise.all(
     nonDefaultSupportedLocales.map(async (locale) => {
       const homePageConfig = await getEntry("homepage", locale);
-      const defaultLocaleHomePageConfig = await getEntry(
-        "homepage",
-        defaultLocale
-      )!;
-
       return {
         params: { locale },
         props: {
