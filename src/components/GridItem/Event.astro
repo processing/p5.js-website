@@ -1,0 +1,21 @@
+---
+import { getCurrentLocale } from "@/src/i18n/utils";
+import { removeLocaleAndExtension } from "@/src/pages/_utils";
+import Image from "@components/Image/index.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  item: CollectionEntry<"past-events">;
+}
+
+const { item } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+---
+
+<a href={`/past-events/${removeLocaleAndExtension(item.slug)}`}>
+  <Image src={item.data.featuredImage} alt={item.data.featuredImageAlt} />
+  <div class="text-lg mt-xs">{item.data.title}</div>
+  <div class="text-sm">
+    {new Date(item.data.date).toLocaleDateString(currentLocale)}
+  </div>
+</a>

@@ -16,6 +16,7 @@ export const categories = [
   "hardware",
   "sound",
   "data",
+  "teaching",
   "networking",
   "export",
   "utils",
