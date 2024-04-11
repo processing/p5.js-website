@@ -271,13 +271,7 @@ export const Icon = (props: IconProps) => {
       );
     case "asterisk-thick":
       return (
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 28 28"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             fill="currentColor"
             d="M16.909,10.259l8.533-2.576l1.676,5.156l-8.498,2.899l5.275,7.48
