@@ -5,12 +5,14 @@ import {
   thumbnailDimensions,
   type OpenProcessingCurationResponse,
 } from "@/src/api/OpenProcessing";
+import { generateOPThumb } from '../../scripts/builders/generateOPThumb';
 
 interface Props {
   item: OpenProcessingCurationResponse[number];
 }
 
 const { item } = Astro.props;
+const thumbURL = await generateOPThumb(item.visualID);
 ---
 
 <a href={`/sketches/${item.visualID}`}>
@@ -20,7 +22,7 @@ const { item } = Astro.props;
     // doesn't include that information
   }
   <Image
-    src={makeThumbnailUrl(item.visualID)}
+    src={thumbURL}
     alt="Screenshot of sketch"
     width={thumbnailDimensions}
     height={thumbnailDimensions}
