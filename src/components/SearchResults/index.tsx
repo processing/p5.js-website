@@ -24,22 +24,54 @@ const SearchResults = ({
 }: SearchResultProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [placeholder, setPlaceholder] = useState(searchTerm);
+  const [currentFilter, setCurrentFilter] = useState("");
 
-  const uniqueCategories = useMemo(() => {
+  const allUniqueCategoriesForResults = useMemo(() => {
     const categories = results.map((result) => result.category);
     return [...new Set(categories)];
   }, [results]);
+
+  const uniqueCategories = useMemo(() => {
+    if (currentFilter) {
+      return [currentFilter];
+    }
+    return allUniqueCategoriesForResults;
+  }, [currentFilter, allUniqueCategoriesForResults]);
+
+  const toggleFilter = (category: string) => {
+    if (currentFilter === category) {
+      setCurrentFilter("");
+    } else {
+      setCurrentFilter(category);
+    }
+  };
 
   useEffect(() => {
     setPlaceholder(searchTerm);
   }, [searchTerm]);
 
   const renderFilterByOptions = () => {
-    return uniqueCategories.map((category) => (
-      <option key={category} value={category}>
-        {category}
-      </option>
-    ));
+    return (
+      <div className="flex py-lg">
+        <p className="mt-0">Filter by:</p>
+        <ul className="ml-sm flex gap-sm">
+          {allUniqueCategoriesForResults.map((category) => (
+            <li
+              key={category}
+              className={`${currentFilter === category ? "bg-sidebar-type-color text-sidebar-bg-color" : "bg-sidebar-bg-color text-sidebar-type-color"} rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-sidebar-bg-color`}
+            >
+              <button
+                value={category}
+                className="capitalize"
+                onClick={() => toggleFilter(category)}
+              >
+                {category}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   };
 
   const clearInput = () => {
