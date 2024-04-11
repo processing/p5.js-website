@@ -16,6 +16,8 @@ import { Icon } from "../Icon";
  *   previewHeight?: number;
  *   previewWidth?: number;
  *   base?: string;
+ *   TODO: refactor this prop behavior
+ *   allowSideBySide?: boolean
  * }
  */
 export const CodeEmbed = (props) => {
@@ -49,9 +51,11 @@ export const CodeEmbed = (props) => {
   if (!rendered) return <div className="code-placeholder" />;
 
   return (
-    <div className="my-md flex w-full flex-col overflow-hidden lg:flex-row">
+    <div
+      className={`my-md flex w-full flex-col gap-md overflow-hidden ${props.allowSideBySide && "lg:flex-row"}`}
+    >
       {props.previewable ? (
-        <div className="ml-0 flex lg:flex-col">
+        <div className="ml-0 flex w-fit lg:flex-col">
           <CodeFrame
             jsCode={previewCodeString}
             width={props.previewWidth}
@@ -77,7 +81,7 @@ export const CodeEmbed = (props) => {
           </div>
         </div>
       ) : null}
-      <div className="relative w-full md:w-[calc(100%-var(--spacing-md))] lg:ml-md">
+      <div className="relative w-full">
         <CodeMirror
           value={codeString}
           theme="light"
