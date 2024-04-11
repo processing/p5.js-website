@@ -1,6 +1,5 @@
 import type { z } from "astro/zod";
 import { referenceSchema } from "./reference/config";
-import type { ExampleData } from "./examples/config";
 
 type AstroBaseContentType<T = unknown> = {
   id: string;
@@ -14,6 +13,3 @@ type AstroBaseContentType<T = unknown> = {
 export type ReferenceDocContentItem = AstroBaseContentType<
   z.infer<typeof referenceSchema>
 >;
-
-// Define the type for content items that include data according to exampleSchema
-export type ExampleDocContentItem = AstroBaseContentType<ExampleData>;
