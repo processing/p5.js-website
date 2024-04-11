@@ -14,13 +14,14 @@ type SearchResultProps = {
   searchTerm: string;
   currentLocale: string;
   onSearchChange: JSX.GenericEventHandler<HTMLInputElement>;
+  uiTranslations: Record<string, string>;
 };
 
 const SearchResults = ({
   results,
   searchTerm,
-  currentLocale,
   onSearchChange,
+  uiTranslations,
 }: SearchResultProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [placeholder, setPlaceholder] = useState(searchTerm);
@@ -65,7 +66,11 @@ const SearchResults = ({
                 className="capitalize"
                 onClick={() => toggleFilter(category)}
               >
-                {category}
+                {
+                  uiTranslations[
+                    category.slice(0, 1).toUpperCase() + category.slice(1)
+                  ]
+                }
               </button>
             </li>
           ))}
@@ -113,6 +118,14 @@ const SearchResults = ({
     );
   };
 
+  if (results.length === 0) {
+    return (
+      <div class="py-2xl md:py-3xl">
+        <p class="text-body-large pb-xs">No results found</p>
+      </div>
+    );
+  }
+
   return (
     <div className="py-2xl md:py-3xl">
       <p className="pb-xs">{results.length} results found for</p>
@@ -123,7 +136,13 @@ const SearchResults = ({
       <hr />
       {uniqueCategories.map((category) => (
         <div key={category}>
-          <h2 className="capitalize">{category}</h2>
+          <h2>
+            {
+              uiTranslations[
+                category.slice(0, 1).toUpperCase() + category.slice(1)
+              ]
+            }
+          </h2>
           <ul className="mb-4xl mt-lg">
             {results
               .filter((result) => result.category === category)

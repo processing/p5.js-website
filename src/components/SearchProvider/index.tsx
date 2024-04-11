@@ -4,6 +4,7 @@ import SearchResults from "../SearchResults";
 
 interface SearchProviderProps {
   currentLocale?: string;
+  uiTranslations: Record<string, string>;
 }
 
 type SearchResult = {
@@ -20,7 +21,10 @@ type SearchResult = {
  * It then uses Fuse.js to search the index and display the results.
  * @param {string} currentLocale - The current locale
  */
-const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
+const SearchProvider = ({
+  currentLocale,
+  uiTranslations,
+}: SearchProviderProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
 
@@ -102,6 +106,7 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
       searchTerm={searchTerm}
       currentLocale={currentLocale as string}
       onSearchChange={handleSearchTermChange}
+      uiTranslations={uiTranslations}
     />
   );
 };
