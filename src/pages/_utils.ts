@@ -209,3 +209,6 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
   // Return the modified HTML as a string
   return $.html();
 };
+
+export const getPaginationMax = (numPerPage: number, numItems: number) =>
+  Math.ceil(numItems / numPerPage);

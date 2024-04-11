@@ -3,16 +3,26 @@ import type { CollectionEntry } from "astro:content";
 
 import BaseLayout from "./BaseLayout.astro";
 import GridItemEvent from "@components/GridItem/Event.astro";
+import PaginationNav from "@components/PaginationNav/index.astro";
+import { eventsPerPage } from "../globals/globals";
 
 interface Props {
   entries: CollectionEntry<"past-events">[];
+  totalNumEvents: number;
+  currentPage: number;
 }
 
-const { entries } = Astro.props;
+const { entries, totalNumEvents, currentPage } = Astro.props;
 ---
 
 <BaseLayout title="Events" variant="root">
   <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
     {entries.map((entry) => <GridItemEvent item={entry} />)}
   </ul>
+  <PaginationNav
+    maxNumItems={totalNumEvents}
+    itemsPerPage={eventsPerPage}
+    currentPage={currentPage}
+    sectionUrlPrefix="/past-events"
+  />
 </BaseLayout>
