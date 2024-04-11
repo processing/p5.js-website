@@ -69,6 +69,9 @@ export default {
       animation: {
         "spin-slow": "spin 4s linear infinite",
       },
+      aspectRatio: {
+        photo: "3 / 2",
+      },
     },
   },
   plugins: [],
