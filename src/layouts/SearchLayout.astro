@@ -1,12 +1,17 @@
 ---
 import SearchProvider from "@components/SearchProvider";
-import { getCurrentLocale } from "@i18n/utils";
+import { getCurrentLocale, getUiTranslationWithFallback } from "@i18n/utils";
 import BaseLayout from "./BaseLayout.astro";
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const { title } = Astro.props;
+const uiTranslations = await getUiTranslationWithFallback(currentLocale);
 ---
 
-<BaseLayout title={title} variant="item">
-  <SearchProvider client:only currentLocale={currentLocale} />
+<BaseLayout title={title} variant="search">
+  <SearchProvider
+    client:only
+    currentLocale={currentLocale}
+    uiTranslations={uiTranslations}
+  />
 </BaseLayout>

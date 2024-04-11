@@ -3,13 +3,17 @@ import { defaultLocale, supportedLocales } from "@/src/i18n/const";
 import {
   getCurrentLocale,
   removeLocalePrefix,
-  useTranslations,
+  getUiTranslator,
 } from "@/src/i18n/utils";
 import { AccessibilitySettings } from "@components/AccessibilitySettings/";
 import SearchForm from "@components/SearchForm/index.astro";
 import { LocaleSelect } from "@components/LocaleSelect";
 import styles from "./styles.module.scss";
 import type { DropdownOption } from "../Dropdown";
+
+interface Props {
+  hideSearch?: boolean;
+}
 
 const currentLocation = removeLocalePrefix(Astro.url.pathname);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -44,7 +48,7 @@ const localeOptionProps = localeOptions.map(({ locale, label, url }) => ({
   id: locale,
 })) as DropdownOption[];
 
-const t = await useTranslations(currentLocale);
+const t = await getUiTranslator(currentLocale);
 
 const a11ySettingsProps = [
   {
@@ -64,6 +68,8 @@ const a11ySettingsProps = [
     label: t("Reduced Motion"),
   },
 ] as DropdownOption[];
+
+const { hideSearch } = Astro.props;
 ---
 
 <div class={styles.container}>
@@ -80,9 +86,13 @@ const a11ySettingsProps = [
     <div class={styles.a11yselect}>
       <AccessibilitySettings options={a11ySettingsProps} client:load />
     </div>
-    <div class={styles.searchform}>
-      <SearchForm />
-    </div>
+    {
+      !hideSearch && (
+        <div class={styles.searchform}>
+          <SearchForm />
+        </div>
+      )
+    }
   </div>
 </div>
 <script src="./script.js"></script>

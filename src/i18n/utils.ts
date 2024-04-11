@@ -111,15 +111,11 @@ const loadYamlIntoObject = async (
  * @param lang The locale/language code
  * @returns (key: string) => string - A function that takes a key and returns the localized value
  */
-export const useTranslations = async (
+export const getUiTranslator = async (
   lang: (typeof supportedLocales)[number],
 ) => {
-  const currentLocaleDict = await loadYamlIntoObject(
-    `src/content/ui/${lang}.yaml`,
-  );
-  const defaultLocaleDict = await loadYamlIntoObject(
-    `src/content/ui/${defaultLocale}.yaml`,
-  );
+  const currentLocaleDict = await getTranslationObject(lang);
+  const defaultLocaleDict = await getTranslationObject(defaultLocale);
 
   if (!currentLocaleDict || !defaultLocaleDict) {
     console.error("Failed to load translation files");
@@ -152,4 +148,19 @@ export const useTranslations = async (
   };
 
   return t;
+};
+
+export const getUiTranslationWithFallback = async (locale: string) => {
+  const currentLocaleDict = await getTranslationObject(locale);
+  const defaultLocaleDict = await getTranslationObject(defaultLocale);
+  return { ...defaultLocaleDict, ...currentLocaleDict };
+};
+
+const getTranslationObject = async (
+  locale: string,
+): Promise<Record<string, any>> => {
+  const translationObject = await loadYamlIntoObject(
+    `src/content/ui/${locale}.yaml`,
+  );
+  return translationObject;
 };

@@ -4,13 +4,13 @@ import Nav from "@components/Nav/index.astro";
 import Settings from "@components/Settings/index.astro";
 import RootPageHeader from "@components/RootPageHeader/index.astro";
 import ItemPageHeader from "@components/ItemPageHeader/index.astro";
-import { getCurrentLocale, useTranslations } from "@i18n/utils";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import "@styles/base.scss";
 
 interface Props {
   title: string;
   className?: string;
-  variant?: "root" | "item";
+  variant?: "root" | "item" | "search";
   mainContentParentClass?: string;
 }
 
@@ -21,7 +21,7 @@ const {
   mainContentParentClass = "mx-md md:mx-lg",
 } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
-const t = await useTranslations(currentLocale);
+const t = await getUiTranslator(currentLocale);
 const localizedTitle = t(title);
 const localizedSubtitle = t("briefPageDescriptions", title);
 ---
@@ -34,7 +34,7 @@ const localizedSubtitle = t("briefPageDescriptions", title);
   <body class={`${title.toLowerCase()} ${className}`}>
     <div class="top-layout-grid">
       <Nav />
-      <Settings />
+      <Settings hideSearch={variant === "search"} />
       <header>
         {
           variant === "root" ? (
@@ -43,7 +43,7 @@ const localizedSubtitle = t("briefPageDescriptions", title);
               subtitle={localizedSubtitle}
             />
           ) : (
-            <ItemPageHeader title={title} />
+            variant === "item" && <ItemPageHeader title={title} />
           )
         }
       </header>
