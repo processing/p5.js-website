@@ -28,6 +28,16 @@ const fallbackLanguages = Object.fromEntries(
   nonDefaultSupportedLocales.map((l) => [l, defaultLocale]),
 );
 
+// Allow skipping compression step for faster test build times
+// DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
+const shouldSkipCompress = Boolean(
+  process.env.SKIP_BUILD_COMPRESS && process.env.SKIP_BUILD_COMPRESS.length > 0,
+);
+
+if (shouldSkipCompress) {
+  console.log("WILL SKIP COMPRESS BUILD STEP");
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://p5js.org',
