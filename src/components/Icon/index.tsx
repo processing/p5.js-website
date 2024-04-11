@@ -12,7 +12,8 @@ export type IconKind =
   | "search-submit"
   | "option-selected"
   | "option-unselected"
-  | "heart";
+  | "heart"
+  | "asterisk-thick";
 interface IconProps {
   kind: IconKind;
   className?: string;
@@ -267,7 +268,25 @@ export const Icon = (props: IconProps) => {
           />
         </svg>
       );
+    case "asterisk-thick":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28">
+          <path
+            fill="currentColor"
+            d="M16.909,10.259l8.533-2.576l1.676,5.156l-8.498,2.899l5.275,7.48
+        l-4.447,3.225l-5.553-7.348L8.487,26.25l-4.318-3.289l5.275-7.223L0.88,12.647l1.678-5.16l8.598,2.771V1.364h5.754V10.259z"
+          />
+        </svg>
+      );
     default:
-      return null;
+      return assertNever(props.kind);
   }
 };
+
+/** Ensure that we don't miss implementing an icon */
+export function assertNever(value: never, noThrow?: boolean): never {
+  if (noThrow) {
+    return value;
+  }
+  throw new Error(`Missing icon: ${value}`);
+}

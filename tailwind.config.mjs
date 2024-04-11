@@ -55,6 +55,9 @@ export default {
         "4xl": "var(--spacing-4xl)",
         "5xl": "var(--spacing-5xl)",
       },
+      animation: {
+        "spin-slow": "spin 4s linear infinite",
+      },
     },
   },
   plugins: [],
