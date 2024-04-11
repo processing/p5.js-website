@@ -19,20 +19,3 @@ export const examplesCollection = defineCollection({
       featuredImageAlt: z.string().optional().default(""),
     }),
 });
-
-type ImageType = {
-  src: string;
-  width: number;
-  height: number;
-  format: "png" | "jpg" | "jpeg" | "tiff" | "webp" | "gif" | "svg" | "avif";
-};
-
-export interface ExampleData {
-  title: string;
-  arialabel?: string;
-  relatedContent?: {
-    references?: string[];
-    examples?: string[];
-  };
-  featuredImage: ImageType;
-}
