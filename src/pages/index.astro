@@ -1,15 +1,11 @@
 ---
 import { getEntry } from "astro:content";
-import BaseLayout from "@layouts/BaseLayout.astro";
+import HomepageLayout from "../layouts/HomepageLayout.astro";
+import { defaultLocale } from "../i18n/const";
 import { setJumpToState } from "../globals/state";
 
-// this is the slug for en/index.mdx in the content collection
-const homePage = await getEntry("text-detail", "en");
-const { title } = homePage.data;
-const { Content } = await homePage.render();
 setJumpToState(null);
+const homePageConfig = await getEntry("homepage", defaultLocale);
 ---
 
-<BaseLayout title={title}>
-  <Content />
-</BaseLayout>
+<HomepageLayout config={homePageConfig} />
