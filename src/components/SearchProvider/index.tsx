@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import Fuse, { type FuseResult } from "fuse.js";
+import SearchResults from "../SearchResults";
 
 interface SearchProviderProps {
   currentLocale?: string;
@@ -29,9 +30,11 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
     let flatId = 0;
     Object.entries(data).forEach(([category, entries]) => {
       Object.entries(entries).forEach(([title, docDetails]) => {
+        const relativeUrl = docDetails.relativeUrl;
+        docDetails.relativeUrl = `/${currentLocale}/${relativeUrl}`;
         flatData.push({
           id: flatId++,
-          category,
+          category: category.replace("-fallback", ""),
           title,
           ...docDetails,
         });
@@ -85,33 +88,21 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
       );
   }, [searchTerm, currentLocale]);
 
-  const renderSearchResults = () => {
-    if (!results) {
-      return <p>Searching ...</p>;
+  const handleSearchTermChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const { value } = target;
+    if (value) {
+      setSearchTerm(target.value);
     }
-
-    if (results.length === 0) {
-      return <p>No results found</p>;
-    }
-
-    return (
-      <ul>
-        {results.map((result) => (
-          <li key={result.id}>
-            <a href={result.relativeUrl}>{result.title}</a>
-          </li>
-        ))}
-      </ul>
-    );
   };
 
-  if (!searchTerm) return null;
-
   return (
-    <div>
-      <h2>Search Results for: {searchTerm}</h2>
-      {renderSearchResults()}
-    </div>
+    <SearchResults
+      results={results}
+      searchTerm={searchTerm}
+      currentLocale={currentLocale as string}
+      onSearchChange={handleSearchTermChange}
+    />
   );
 };
 

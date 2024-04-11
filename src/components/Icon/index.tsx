@@ -12,8 +12,9 @@ export type IconKind =
   | "search-submit"
   | "option-selected"
   | "option-unselected"
-  | "heart"
-  | "asterisk-thick";
+  | "asterisk-thick"
+  | "close"
+  | "heart";
 interface IconProps {
   kind: IconKind;
   className?: string;
@@ -270,11 +271,34 @@ export const Icon = (props: IconProps) => {
       );
     case "asterisk-thick":
       return (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28">
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 28 28"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             fill="currentColor"
             d="M16.909,10.259l8.533-2.576l1.676,5.156l-8.498,2.899l5.275,7.48
         l-4.447,3.225l-5.553-7.348L8.487,26.25l-4.318-3.289l5.275-7.223L0.88,12.647l1.678-5.16l8.598,2.771V1.364h5.754V10.259z"
+          />
+        </svg>
+      );
+    case "close":
+      return (
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 34 34"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M1.31207 0.607871C1.11681 0.412609 0.819562 0.42983 0.648156 0.646335C0.476749 0.86284 0.496088 1.19664 0.69135 1.39191L16.2994 16.9999L0.691347 32.608C0.496085 32.8032 0.476746 33.137 0.648152 33.3535C0.819558 33.57 1.1168 33.5873 1.31206 33.392L17.0017 17.7023L32.6913 33.3918C32.8865 33.5871 33.1838 33.5699 33.3552 33.3534C33.5266 33.1369 33.5073 32.8031 33.312 32.6078L17.7041 16.9999L33.312 1.39205C33.5073 1.19679 33.5266 0.862985 33.3552 0.64648C33.1838 0.429975 32.8865 0.412754 32.6913 0.608017L17.0017 16.2976L1.31207 0.607871Z"
+            fill="currentColor"
           />
         </svg>
       );
