@@ -111,7 +111,7 @@ const loadYamlIntoObject = async (
  * @param lang The locale/language code
  * @returns (key: string) => string - A function that takes a key and returns the localized value
  */
-export const useTranslations = async (
+export const getUiTranslator = async (
   lang: (typeof supportedLocales)[number],
 ) => {
   const currentLocaleDict = await loadYamlIntoObject(

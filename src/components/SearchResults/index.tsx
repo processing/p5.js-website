@@ -52,13 +52,13 @@ const SearchResults = ({
 
   const renderFilterByOptions = () => {
     return (
-      <div className="flex py-lg">
-        <p className="mt-0">Filter by:</p>
+      <div className="flex w-fit py-lg">
+        <p className="mt-0 w-fit text-nowrap">Filter by</p>
         <ul className="ml-sm flex gap-sm">
           {allUniqueCategoriesForResults.map((category) => (
             <li
               key={category}
-              className={`${currentFilter === category ? "bg-sidebar-type-color text-sidebar-bg-color" : "bg-sidebar-bg-color text-sidebar-type-color"} rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-sidebar-bg-color`}
+              className={`${currentFilter === category ? "bg-sidebar-type-color text-sidebar-bg-color" : "bg-sidebar-bg-color text-sidebar-type-color"} h-[25px] rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-sidebar-bg-color md:h-[30px]`}
             >
               <button
                 value={category}
@@ -84,8 +84,6 @@ const SearchResults = ({
   const renderBigSearchForm = () => {
     return (
       <search
-        action={`${currentLocale === "en" ? "" : `/${currentLocale}`}/search`}
-        method="GET"
         role="search"
         class="relative flex h-[64px] w-full items-center rounded-[50px] border border-sidebar-type-color bg-sidebar-bg-color"
       >
@@ -94,7 +92,6 @@ const SearchResults = ({
           type="search"
           ref={inputRef}
           placeholder={placeholder}
-          name="term"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -117,19 +114,21 @@ const SearchResults = ({
   };
 
   return (
-    <div className="pt-3xl">
-      <p>{results.length} results found for</p>
+    <div className="py-2xl md:py-3xl">
+      <p className="pb-xs">{results.length} results found for</p>
       {renderBigSearchForm()}
-      {renderFilterByOptions()}
+      <div className="no-scrollbar w-full overflow-x-scroll">
+        {renderFilterByOptions()}
+      </div>
       <hr />
       {uniqueCategories.map((category) => (
         <div key={category}>
           <h2 className="capitalize">{category}</h2>
-          <ul>
+          <ul className="mb-4xl mt-lg">
             {results
               .filter((result) => result.category === category)
               .map((result) => (
-                <li key={result.id}>
+                <li key={result.id} className="text-body-large my-sm">
                   <a href={result.relativeUrl}>{result.title}</a>
                 </li>
               ))}
