@@ -1,17 +1,27 @@
 ---
 import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
+import { sketchesPerPage } from "../globals/globals";
 import BaseLayout from "./BaseLayout.astro";
 import GridItemSketch from "@components/GridItem/Sketch.astro";
+import PaginationNav from "@components/PaginationNav/index.astro";
 
 interface Props {
   entries: OpenProcessingCurationResponse;
+  totalNumSketches: number;
+  currentPage: number;
 }
 
-const { entries } = Astro.props;
+const { entries, totalNumSketches, currentPage } = Astro.props;
 ---
 
 <BaseLayout title="Sketches" variant="root">
   <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
     {entries.map((entry) => <GridItemSketch item={entry} />)}
   </ul>
+  <PaginationNav
+    maxNumItems={totalNumSketches}
+    itemsPerPage={sketchesPerPage}
+    sectionUrlPrefix="/sketches"
+    currentPage={currentPage}
+  />
 </BaseLayout>
