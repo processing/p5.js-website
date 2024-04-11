@@ -1,0 +1,42 @@
+---
+import {
+  getCollectionInLocaleWithFallbacks,
+  getPaginationMax,
+} from "@pages/_utils";
+import { eventsPerPage } from "@/src/globals/globals";
+import { nonDefaultSupportedLocales } from "@/src/i18n/const";
+import EventsLayout from "@/src/layouts/EventsLayout.astro";
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const locale of nonDefaultSupportedLocales) {
+    const events = await getCollectionInLocaleWithFallbacks(
+      "past-events",
+      locale
+    );
+    const paginationMax = getPaginationMax(eventsPerPage, events.length);
+    for (let i = 1; i <= paginationMax; i++) {
+      paths.push({
+        params: { locale, pageNumber: i.toString() },
+        props: {
+          allEvents: events,
+          pageNumber: i,
+        },
+      });
+    }
+  }
+  console.log("PATHS", paths);
+  return paths;
+}
+const { allEvents, pageNumber } = Astro.props;
+const events = allEvents.slice(
+  (pageNumber - 1) * eventsPerPage,
+  pageNumber * eventsPerPage
+);
+---
+
+<EventsLayout
+  entries={events}
+  totalNumEvents={allEvents.length}
+  currentPage={pageNumber}
+/>
