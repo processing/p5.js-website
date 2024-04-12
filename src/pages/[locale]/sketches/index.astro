@@ -2,22 +2,30 @@
 import SketchesLayout from "@/src/layouts/SketchesLayout.astro";
 import { nonDefaultSupportedLocales } from "@i18n/const";
 import { getCurationSketches } from "@/src/api/OpenProcessing";
+import { sketchesPerPage } from "@/src/globals/globals";
 
 export async function getStaticPaths() {
-  const sketches = await getCurationSketches();
+  // First page on paginated route so we slice the first page
+  const allSketches = await getCurationSketches();
   const pages = nonDefaultSupportedLocales.map(async (locale) => ({
     params: {
       locale,
     },
     props: {
-      sketches,
+      allSketches,
     },
   }));
 
   return await Promise.all(pages);
 }
 
-const { sketches } = Astro.props;
+// First page on paginated route so we slice the first page
+const { allSketches } = Astro.props;
+const sketches = allSketches.slice(0, sketchesPerPage);
 ---
 
-<SketchesLayout title="Sketches" entries={sketches} />
+<SketchesLayout
+  entries={sketches}
+  totalNumSketches={allSketches.length}
+  currentPage={1}
+/>

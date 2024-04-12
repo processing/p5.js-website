@@ -31,6 +31,7 @@ export default {
         "type-magenta": "var(--type-magenta)",
         "type-blue": "var(--type-blue)",
         "type-gray": "var(--type-gray)",
+        "logo-color": "var(--logo-color)",
         "bg-color": "var(--bg-color)",
         "type-color": "var(--type-color)",
         "sidebar-bg-color": "var(--sidebar-bg-color)",
@@ -53,6 +54,12 @@ export default {
         "3xl": "var(--spacing-3xl)",
         "4xl": "var(--spacing-4xl)",
         "5xl": "var(--spacing-5xl)",
+      },
+      animation: {
+        "spin-slow": "spin 4s linear infinite",
+      },
+      aspectRatio: {
+        photo: "3 / 2",
       },
     },
   },

@@ -5,6 +5,8 @@ import { z, defineCollection } from "astro:content";
  */
 export const contributorDocsCollection = defineCollection({
   type: "content",
-  // No frontmatter config is used so far.
-  schema: z.object({}),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
 });

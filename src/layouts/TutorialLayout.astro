@@ -1,8 +1,32 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { setJumpToState } from "../globals/state";
 
-const { entry } = Astro.props;
+const { entry, relatedEntries } = Astro.props;
 const { Content } = await entry.render();
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+const jumpToLinks = relatedEntries.map((relEntry: any) => ({
+  label: relEntry.data.title,
+  url: `/tutorials/${relEntry.slug}`,
+  size: "small",
+  current: relEntry.slug === entry.slug,
+}));
+
+jumpToLinks.unshift({
+  label: entry.data.category,
+  url: `/tutorials#${entry.data.category}`,
+});
+
+const jumpToState = {
+  title: t("Tutorials"),
+  links: jumpToLinks,
+};
+
+setJumpToState(jumpToState);
 ---
 
 <BaseLayout title={entry.data.title} variant="item">
