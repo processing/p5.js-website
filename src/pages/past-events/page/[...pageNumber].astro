@@ -1,0 +1,33 @@
+---
+import { eventsPerPage } from "@/src/globals/globals";
+import { getCollectionInDefaultLocale, getPaginationMax } from "../../_utils";
+import EventsLayout from "@/src/layouts/EventsLayout.astro";
+
+export async function getStaticPaths() {
+  const pastEvents = await getCollectionInDefaultLocale("past-events");
+  const paginationMax = getPaginationMax(eventsPerPage, pastEvents.length);
+  const paths = [];
+  for (let i = 1; i <= paginationMax; i++) {
+    paths.push({
+      params: { pageNumber: i.toString() },
+      props: {
+        allPastEvents: pastEvents,
+        pageNumber: i,
+      },
+    });
+  }
+  return paths;
+}
+
+const { allPastEvents, pageNumber } = Astro.props;
+const events = allPastEvents.slice(
+  (pageNumber - 1) * eventsPerPage,
+  pageNumber * eventsPerPage
+);
+---
+
+<EventsLayout
+  entries={events}
+  totalNumEvents={allPastEvents.length}
+  currentPage={pageNumber}
+/>

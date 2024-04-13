@@ -1,8 +1,15 @@
 ---
+import { sketchesPerPage } from "@/src/globals/globals";
 import SketchesLayout from "@/src/layouts/SketchesLayout.astro";
 import { getCurationSketches } from "@src/api/OpenProcessing";
 
-const sketches = await getCurationSketches();
+// This route is a fallback for the first page on paginated route so we slice the first page
+const allSketches = await getCurationSketches();
+const sketches = allSketches.slice(0, sketchesPerPage);
 ---
 
-<SketchesLayout title="Sketches" entries={sketches} />
+<SketchesLayout
+  entries={sketches}
+  totalNumSketches={allSketches.length}
+  currentPage={1}
+/>

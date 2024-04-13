@@ -1,13 +1,23 @@
 import { z, defineCollection } from "astro:content";
 import { relatedContent } from "../shared";
 
-const categories = [
+export const categories = [
   "introduction",
-  "webgl",
+  "drawing",
   "web-design",
   "accessibility",
+  "webgl",
   "advanced",
 ] as const;
+
+export const categoryNames: { [key in (typeof categories)[number]]: string } = {
+  introduction: 'Introduction to p5.js',
+  drawing: 'Drawing',
+  'web-design': 'Web Design',
+  accessibility: 'Accessibility',
+  webgl: 'WebGL',
+  'advanced': 'Advanced Topics',
+};
 
 /**
  * Content collection for the Sketches showcase section of the site.
@@ -24,6 +34,7 @@ export const tutorialsCollection = defineCollection({
       authorsNote: z.string().optional(),
       description: z.string().optional(),
       category: z.enum(categories),
+      categoryIndex: z.number().optional(),
       // Image to use as a thumbnail for the tutorial
       featuredImage: image().optional(),
       featuredImageAlt: z.string().optional(),

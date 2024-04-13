@@ -3,7 +3,8 @@ import { getLibraryLink } from "@pages/_utils";
 
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import { Image } from "astro:assets";
+import Image from "@components/Image/index.astro";
+import { setJumpToState } from "../globals/state";
 
 interface Props {
   entries: CollectionEntry<"libraries">[];
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const { entries } = Astro.props;
+
+setJumpToState(null);
 ---
 
 <BaseLayout title="Libraries">
@@ -18,6 +21,9 @@ const { entries } = Astro.props;
     {
       entries.map((lib) => (
         <li>
+          {
+            // TODO: Fold into GridItemLibrary as a variant
+          }
           <a href={getLibraryLink(lib)}>
             {lib.data.featuredImageAlt && lib.data.featuredImage && (
               <Image

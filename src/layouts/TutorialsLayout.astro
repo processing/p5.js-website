@@ -1,32 +1,67 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import { Image } from "astro:assets";
+import Image from "@components/Image/index.astro";
+import { setJumpToState, type JumpToLink } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { categories, categoryNames } from "../content/tutorials/config";
 
 type TutorialEntry = CollectionEntry<"tutorials">;
 
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
 const { entries } = Astro.props;
+
+const sections = categories.map((slug) => {
+  const name = categoryNames[slug];
+  const sectionEntries = entries
+    .filter((e: TutorialEntry) => e.data.category === slug)
+    .sort(
+      (a: TutorialEntry, b: TutorialEntry) =>
+        (a.data.categoryIndex ?? 1000) - (b.data.categoryIndex ?? 1000)
+    );
+
+  return { slug, name, sectionEntries };
+});
+
+const pageJumpToLinks = categories.map((category) => ({
+  url: `#${category}`,
+  label: category
+    .split("-")
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" "),
+}));
+
+setJumpToState({
+  heading: t("Tutorials") as string,
+  links: pageJumpToLinks as JumpToLink[],
+});
 ---
 
 <BaseLayout title="Tutorials">
-  <ul>
-    {
-      entries.map((entry: TutorialEntry) => (
-        <li>
-          <a href={`/tutorials/${entry.slug}`}>
-            {" "}
-            {entry.data.featuredImageAlt && entry.data.featuredImage && (
-              <Image
-                src={entry.data.featuredImage}
-                alt={entry.data.featuredImageAlt}
-                width={200}
-                height={200}
-              />
-            )}
-            {entry.data.title}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  {
+    sections.map(({ slug, name, sectionEntries }) => (
+      <>
+        <h3 id={slug}>{name}</h3>
+        <ul>
+          {sectionEntries.map((entry: TutorialEntry) => (
+            <li>
+              <a href={`/tutorials/${entry.slug}`}>
+                {entry.data.featuredImageAlt && entry.data.featuredImage && (
+                  <Image
+                    src={entry.data.featuredImage}
+                    alt={entry.data.featuredImageAlt}
+                    width={200}
+                    height={200}
+                  />
+                )}
+                {entry.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    ))
+  }
 </BaseLayout>

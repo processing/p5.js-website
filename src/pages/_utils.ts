@@ -127,6 +127,9 @@ export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
     : slug;
 };
 
+export const getExampleCategory = (slug: string): string =>
+  slug.split("/")[1].split("_").splice(1).join(" ");
+
 export const normalizeReferenceRoute = (route: string): string =>
   removeLocaleAndExtension(route).replace("constants/", "");
 
@@ -206,3 +209,6 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
   // Return the modified HTML as a string
   return $.html();
 };
+
+export const getPaginationMax = (numPerPage: number, numItems: number) =>
+  Math.ceil(numItems / numPerPage);
