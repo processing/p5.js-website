@@ -33,7 +33,6 @@ export const AccessibilitySettings = ({
       }
     }
     setSelectedSettings(storedSettings);
-    document.body.classList.add(...storedSettings);
   }, []);
 
   const toggleSetting = (setting: PossibleA11ySettings) => {
@@ -42,7 +41,11 @@ export const AccessibilitySettings = ({
       : [...selectedSettings, setting];
     setSelectedSettings(newSettings);
     localStorage.setItem(setting, newSettings.includes(setting).toString());
-    document.body.classList.toggle(setting, newSettings.includes(setting));
+    applySetting(setting);
+  };
+
+  const applySetting = (setting: PossibleA11ySettings) => {
+    document.documentElement.classList.toggle(setting);
   };
 
   return (
