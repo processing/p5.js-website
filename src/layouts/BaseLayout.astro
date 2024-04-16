@@ -26,12 +26,29 @@ const localizedTitle = t(title);
 const localizedSubtitle = t("briefPageDescriptions", title);
 ---
 
-<html>
+<html class={title.toLowerCase()}>
   <head>
+    <script is:inline>
+      // Get any theme settings and apply before load
+      const settings = [
+        "dark-theme",
+        "monochrome-theme",
+        "show-alt-text",
+        "reduced-motion",
+      ];
+      const storedSettings = settings.filter(
+        (setting) => localStorage.getItem(setting) === "true"
+      );
+      if (storedSettings.length === 0) {
+        storedSettings.push("light-theme");
+      }
+      const htmlElement = document.documentElement;
+      htmlElement.className = `${storedSettings.join(" ")} ${htmlElement.className}`;
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body class={`${title.toLowerCase()} ${className}`}>
+  <body class={className}>
     <div class="top-layout-grid">
       <Nav />
       <Settings hideSearch={variant === "search"} />
