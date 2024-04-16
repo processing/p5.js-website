@@ -234,6 +234,7 @@ const generateSearchIndex = async (
         break;
       case "reference":
         title = data.title;
+        // Skip items without a description
         if (!data.description) {
           continue;
         }
