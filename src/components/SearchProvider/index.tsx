@@ -62,6 +62,15 @@ const SearchProvider = ({
     if (query) setSearchTerm(query);
   }, []);
 
+  // Update query param on search term update
+  useEffect(() => {
+    if (searchTerm) {
+      const params = new URLSearchParams(window.location.search);
+      params.set("term", searchTerm);
+      history.replaceState(null, "", `${window.location.pathname}?${params}`);
+    }
+  }, [searchTerm]);
+
   // Fetch the search index for the current locale and search for the search term
   // This effect runs whenever the search term or the current locale changes
   useEffect(() => {
