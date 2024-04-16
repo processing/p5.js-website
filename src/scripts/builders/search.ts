@@ -234,6 +234,9 @@ const generateSearchIndex = async (
         break;
       case "reference":
         title = data.title;
+        if (!data.description) {
+          continue;
+        }
         break;
       case "libraries":
         title = data.name;
