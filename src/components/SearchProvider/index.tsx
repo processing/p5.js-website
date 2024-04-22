@@ -1,6 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import Fuse, { type FuseResult } from "fuse.js";
 import SearchResults from "../SearchResults";
+import { defaultLocale } from "@/src/i18n/const";
 
 interface SearchProviderProps {
   currentLocale?: string;
@@ -34,8 +35,14 @@ const SearchProvider = ({
     let flatId = 0;
     Object.entries(data).forEach(([category, entries]) => {
       Object.entries(entries).forEach(([title, docDetails]) => {
-        const relativeUrl = docDetails.relativeUrl;
-        docDetails.relativeUrl = `/${currentLocale}/${relativeUrl}`;
+        // Since we are generating these links with Javascript and the
+        // middleware doesn't prefix the locale automatically, we need to
+        // do it manually here.
+        const relativeUrl =
+          currentLocale === defaultLocale
+            ? docDetails.relativeUrl
+            : `/${currentLocale}${docDetails.relativeUrl}`;
+        docDetails.relativeUrl = relativeUrl;
         flatData.push({
           id: flatId++,
           category: category.replace("-fallback", ""),
@@ -54,6 +61,15 @@ const SearchProvider = ({
     const query = params.get("term");
     if (query) setSearchTerm(query);
   }, []);
+
+  // Update query param on search term update
+  useEffect(() => {
+    if (searchTerm) {
+      const params = new URLSearchParams(window.location.search);
+      params.set("term", searchTerm);
+      history.replaceState(null, "", `${window.location.pathname}?${params}`);
+    }
+  }, [searchTerm]);
 
   // Fetch the search index for the current locale and search for the search term
   // This effect runs whenever the search term or the current locale changes

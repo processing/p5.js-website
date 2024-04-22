@@ -15,7 +15,9 @@ export const LocaleSelect = (props: LocaleSelectProps) => {
         if (option.id === props.locale) {
           return;
         }
-        window.location.href = option.value;
+        const currentUrl = new URL(window.location.href);
+        currentUrl.pathname = option.value;
+        window.location.href = currentUrl.href;
       }}
     />
   );
