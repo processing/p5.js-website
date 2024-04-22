@@ -25,22 +25,35 @@ const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
 ---
 
 <BaseLayout title={`${sketchInfo.title}\n${authorName}`} variant="item">
-  <p>{dateString}</p>
+  <p class="text-xl lg:text-3xl">{dateString}</p>
   <iframe
     src={`https://openprocessing.org/sketch/${sketchInfo.visualID}/embed/`}
     width="400"
-    height="400"></iframe>
-  <p>{sketchInfo.description}</p>
-  <p>{sketchInfo.instructions}</p>
-  <LinkButton variant="code" url={makeSketchLinkUrl(sketchInfo.visualID)}
-    >{t("Show Code")}</LinkButton
-  >
-  <LinkButton variant="link" url="https://openprocessing.org"
-    >OpenProcessing</LinkButton
-  >
-  <p>
-    This <a href={makeSketchLinkUrl(sketchInfo.visualID)}>sketch</a> is ported from
-    the <a href="https://openprocessing.org">OpenProcessing</a>
+    height="400"
+    class="py-md"></iframe>
+  <div class="grid gap-y-sm md:gap-y-md">
+    <LinkButton variant="code" url={makeSketchLinkUrl(sketchInfo.visualID)}
+      >{t("Show Code")}</LinkButton
+    >
+    <LinkButton variant="link" url="https://openprocessing.org"
+      >OpenProcessing</LinkButton
+    >
+  </div>
+
+  {
+    sketchInfo.instructions && (
+      <p class="text-md my-sm md:my-lg">{sketchInfo.instructions}</p>
+    )
+  }
+
+  <p class="text-xs">
+    This <a
+      class="text-type-magenta"
+      href={makeSketchLinkUrl(sketchInfo.visualID)}>sketch</a
+    > is ported from the <a
+      class="text-type-magenta"
+      href="https://openprocessing.org">OpenProcessing</a
+    >
     sketch archive.
   </p>
 </BaseLayout>
