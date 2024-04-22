@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  topic?: string;
+}
+
+const pathname = Astro.url.pathname;
+
+const splitPathname = pathname.split("/");
+const topic =
+  Astro.props.topic === undefined ? splitPathname[-1] : Astro.props.topic;
+
+const { title, subtitle } = Astro.props;
+---
+
+<div class="px-lg pt-5xl lg:pt-3xl pb-sm">
+  <!-- if no title is passed, don't render the breadcrumbs or title area -->
+  <!-- we still render the container for spacing -->
+  <div class="[&>*]:pr-sm pb-xs">
+    <a href=`/${topic}` class="capitalize">{topic}</a>
+    <span>{">"}</span>
+    <span>{title}</span>
+  </div>
+  <h1 class="whitespace-pre-line">{title}</h1>
+  <p class="text-3xl">{subtitle}</p>
+</div>
