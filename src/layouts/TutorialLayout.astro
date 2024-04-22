@@ -1,10 +1,14 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import TutorialWrapper from "@components/TutorialWrapper/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { setJumpToState } from "../globals/state";
+import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
+import CodeContainerWithCopy from "../components/CodeContainer/CodeContainerWithCopy.astro";
+import PreCodeWrapper from "@components/PreCodeWrapper/index.astro";
 
 const { entry, relatedEntries } = Astro.props;
-const { Content } = await entry.render();
+const { Content, components } = await entry.render();
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -32,7 +36,14 @@ setJumpToState(jumpToState);
 <BaseLayout title={entry.data.title} variant="item">
   {entry.data.authors && <h6>By {entry.data.authors.join(", ")}</h6>}
   {entry.data.authorsNote && <h7>{entry.data.authorsNote}</h7>}
-  <Content />
+  <TutorialWrapper>
+    <Content
+      components={{
+        ...components,
+        img: FreeRatioImage,
+      }}
+    />
+  </TutorialWrapper>
 
   <h2>Related examples</h2>
   <ul>
