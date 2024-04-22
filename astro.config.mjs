@@ -46,6 +46,10 @@ export default defineConfig({
       },
     }),
   ],
+  prefetch: {
+    defaultStrategy: "viewport",
+    prefetchAll: true,
+  },
   trailingSlash: "ignore",
   build: {
     format: "directory",
