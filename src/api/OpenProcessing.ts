@@ -6,7 +6,7 @@ const openProcessingEndpoint = "https://openprocessing.org/api/";
  * ID of the OpenProcessing Curation we pull sketches from.
  * Currently a placeholder (https://openprocessing.org/curation/78544/)
  */
-const curationId = "78544";
+const curationId = "87649";
 
 /**
  * API Response from a call to the Curation Sketches endpoint
@@ -34,8 +34,7 @@ export type OpenProcessingCurationResponse = ReadonlyArray<{
  * @returns sketches
  */
 export const getCurationSketches = async (
-  // TODO: Remove when we have real data
-  limit: number = 25,
+  limit?: number,
 ): Promise<OpenProcessingCurationResponse> => {
   const limitParam = limit ? `limit=${limit}` : "";
   const response = await fetch(
