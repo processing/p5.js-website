@@ -1,4 +1,5 @@
 ---
+import { getCurrentLocale } from "@/src/i18n/utils";
 import { getLibraryLink } from "@/src/pages/_utils";
 import Image from "@components/Image/index.astro";
 import type { CollectionEntry } from "astro:content";
@@ -8,6 +9,17 @@ interface Props {
 }
 
 const { item } = Astro.props;
+
+const authorsFormatter = new Intl.ListFormat(
+  getCurrentLocale(Astro.url.pathname),
+  {
+    style: "long",
+    type: "conjunction",
+  }
+);
+const authorsString = authorsFormatter.format(
+  item.data.author.map((a) => a.name)
+);
 ---
 
 <a href={getLibraryLink(item)}>
@@ -19,5 +31,7 @@ const { item } = Astro.props;
   <div class="text-xl mt-xs text-wrap break-words break-keep">
     {item.data.name}
   </div>
-  <div class="text-sm">{item.data.description}</div>
+  <div class="text-sm">
+    {item.data.description} By {authorsString}
+  </div>
 </a>
