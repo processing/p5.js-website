@@ -18,8 +18,14 @@ interface DisplayedEntries {
   featured: CollectionEntry<"people">[];
 }
 
-const sortedEntries = entries.sort((a, b) => a.data.order - b.data.order);
-
+// Sort entries first, handling possibly undefined 'order'
+const sortedEntries = entries.sort((a, b) => {
+  const orderA =
+    a.data.order !== undefined ? a.data.order : Number.MAX_SAFE_INTEGER;
+  const orderB =
+    b.data.order !== undefined ? b.data.order : Number.MAX_SAFE_INTEGER;
+  return orderA - orderB;
+});
 const filteredEntries = sortedEntries.reduce<DisplayedEntries>(
   (acc, item) => {
     const key = item.data.displayed as keyof DisplayedEntries; // 'gallery' or 'featured'
