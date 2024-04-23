@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, useEffect } from "preact/hooks";
+import { useRef, useLayoutEffect } from "preact/hooks";
 import { p5VersionForEmbeds } from "@/src/globals/globals";
 
 /*
@@ -33,20 +33,7 @@ ${code.css || ""}
 </style>
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${code.js || ""}</script>
-<script type="text/javascript">
-  // Listen for p5.min.js text content and include in iframe's head as script
-  window.addEventListener("message", event => {
-    // Include check to prevent p5.min.js from being loaded twice
-    const scriptExists = !!document.getElementById("p5ScriptTagInIframe");
-    if (!scriptExists && event.data?.sender === '${p5LibraryUrl}') {
-      const p5ScriptElement = document.createElement('script');
-      p5ScriptElement.id = "p5ScriptTagInIframe";
-      p5ScriptElement.type = 'text/javascript';
-      p5ScriptElement.textContent = event.data.message;
-      document.head.appendChild(p5ScriptElement);
-    }
-  })
-</script>
+<script src="${p5LibraryUrl}"></script>
 `.replace(/\u00A0/g, " ");
 
 export interface CodeFrameProps {
@@ -62,10 +49,9 @@ export interface CodeFrameProps {
  * Component that uses an iframe to run code with the p5 library included.
  *
  */
-export const CodeFrame = (props: CodeFrameProps) => {
+export const CodeFrameForServer = (props: CodeFrameProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const p5ScriptTag = document.getElementById("p5ScriptTag") as HTMLScriptElement;
 
   // For performance, set the iframe to display:none when
   // not visible on the page. This will stop the browser
@@ -91,36 +77,6 @@ export const CodeFrame = (props: CodeFrameProps) => {
 
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (!p5ScriptTag || !iframeRef.current) return;
-
-      /*
-       * Uses postMessage to receive the text content of p5.min.js, to be included
-       * in a script so p5.js functions can be called.
-       *
-       * Rather than including the script with <script src=p5LibraryUrl>, this had
-       * to be done because caching this resource with the service worker or browser
-       * cache, so the cached version could be used by an iframe isn't currently
-       * supported on all major browsers.
-       * It would instead, cause multiple downloads of p5.min.js on page load for
-       * each example, and on re-running a CodeFrame.
-       *
-       * See https://github.com/w3c/ServiceWorker/issues/765.
-       */
-      try {
-        const p5ScriptText = await fetch(p5ScriptTag.src).then((res) => res.text());
-        iframeRef.current.contentWindow?.postMessage({
-          sender: p5LibraryUrl,
-          message: p5ScriptText
-        }, '*');
-      } catch (e) {
-        console.error(`Error loading ${p5ScriptTag.src}`);
-        return;
-      }
-    })();
-  }, [props.jsCode]);
 
   return (
     <div ref={containerRef} style={{ width: props.width, height: props.height }}>
