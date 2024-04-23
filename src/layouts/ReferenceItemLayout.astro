@@ -72,31 +72,21 @@ setJumpToState(jumpToState);
           </div>
         )
       }
-      <div class="mb-xl">
-        <h3>{t("Syntax")}</h3>
-        <MethodSignature
-          params={entry.data.params}
-          overloads={entry.data.overloads}
-          name={entry.data.title}
-        />
-      </div>
       {
         (entry.data.params || entry.data.overloads) && (
-          <div class="mb-xl">
-            <h3 class="mb-md">{t("Parameters")}</h3>
-            {entry.data.params &&
-              entry.data.params.map((param: ReferenceParam) => (
-                <div class="grid grid-cols-6 gap-[40px] text-body">
-                  <h4 class="col-span-1">{param.name}</h4>
-                  <span
-                    class="col-span-5 [&_p]:m-0 [&_a]:underline"
-                    set:html={param.description}
-                  />
-                </div>
-              ))}
-            {entry.data.overloads &&
-              entry.data.overloads.map((overload: ReferenceOverload) =>
-                overload.params.map((param: ReferenceParam) => (
+          <>
+            <div class="mb-xl">
+              <h3>{t("Syntax")}</h3>
+              <MethodSignature
+                params={entry.data.params}
+                overloads={entry.data.overloads}
+                name={entry.data.title}
+              />
+            </div>
+            <div class="mb-xl">
+              <h3 class="mb-md">{t("Parameters")}</h3>
+              {entry.data.params &&
+                entry.data.params.map((param: ReferenceParam) => (
                   <div class="grid grid-cols-6 gap-[40px] text-body">
                     <h4 class="col-span-1">{param.name}</h4>
                     <span
@@ -104,9 +94,21 @@ setJumpToState(jumpToState);
                       set:html={param.description}
                     />
                   </div>
-                ))
-              )}
-          </div>
+                ))}
+              {entry.data.overloads &&
+                entry.data.overloads.map((overload: ReferenceOverload) =>
+                  overload.params.map((param: ReferenceParam) => (
+                    <div class="grid grid-cols-6 gap-[40px] text-body">
+                      <h4 class="col-span-1">{param.name}</h4>
+                      <span
+                        class="col-span-5 [&_p]:m-0 [&_a]:underline"
+                        set:html={param.description}
+                      />
+                    </div>
+                  ))
+                )}
+            </div>
+          </>
         )
       }
       {
