@@ -9,6 +9,7 @@ import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
 import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
 import he from "he";
+import { JSDOM } from "jsdom";
 
 interface EntryWithId {
   id: string;
@@ -237,3 +238,15 @@ export const getTopicInfo = (topic?: PageTopic) => {
  */
 export const capitalize = (str: string): string =>
   str ? str[0].toUpperCase() + str.slice(1) : "";
+
+// Function to decode HTML content and strip HTML tags
+export const decodeHtml = (html: string) => {
+  // Create a new JSDOM instance with the provided HTML
+  const dom = new JSDOM(html);
+  const document = dom.window.document;
+
+  // Extract text content from the parsed HTML
+  const textContent = document.body.textContent || "";
+
+  return textContent.trim(); // remove blank space at the beginning
+};
