@@ -105,6 +105,28 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
     return id.startsWith(`${locale}/`);
   });
 
+export const getRelatedEntriesinCollection = async <
+  C extends keyof ContentEntryMap,
+>(
+  collectionName: C,
+  locale: string,
+  relatedSlugs: string[],
+): Promise<CollectionEntry<C>[]> => {
+  const collection = await getCollectionInLocaleWithFallbacks(
+    collectionName,
+    locale,
+  );
+  const foundEntries = relatedSlugs.map((relatedSlug) =>
+    collection.find(
+      (collectionItem) =>
+        removeLocaleAndExtension(collectionItem.slug) ===
+        removeLocaleAndExtension(relatedSlug),
+    ),
+  );
+  // silly typescript isn't understanding filter
+  return foundEntries.filter((el) => el !== undefined) as CollectionEntry<C>[];
+};
+
 /**
  *  Gets related entries from a collection utilizing our locale fallback logic.
  *  Astro doesn't do this for us when it constructs the entries at the route level,
