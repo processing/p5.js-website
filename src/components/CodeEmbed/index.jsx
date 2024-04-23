@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
+import { p5VersionForEmbeds } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -44,8 +45,19 @@ export const CodeEmbed = (props) => {
 
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
+  /*
+   * Url to fetch the p5.js library from
+   */
+  const p5LibraryUrl = `https://cdnjs.cloudflare.com/ajax/libs/p5.js/${p5VersionForEmbeds}/p5.min.js`;
+
   useEffect(() => {
     setRendered(true);
+
+    // Includes p5.min.js script to be used by `CodeFrame` iframe(s)
+    const p5ScriptElement = document.createElement('script');
+    p5ScriptElement.id = "p5ScriptTag";
+    p5ScriptElement.src = p5LibraryUrl;
+    document.head.appendChild(p5ScriptElement);
   }, []);
 
   if (!rendered) return <div className="code-placeholder" />;
