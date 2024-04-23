@@ -226,6 +226,8 @@ export const getTopicInfo = (topic?: PageTopic) => {
       return { name: "Contribute", url: "/contribute" };
     case "about":
       return { name: "About", url: "/about" };
+    default:
+      return { name: "p5.js", url: "/" };
   }
 };
 
