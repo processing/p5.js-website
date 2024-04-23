@@ -109,11 +109,16 @@ export const CodeFrame = (props: CodeFrameProps) => {
        *
        * See https://github.com/w3c/ServiceWorker/issues/765.
        */
-      const p5ScriptText = await fetch(p5ScriptTag.src).then((res) => res.text());
-      iframeRef.current.contentWindow?.postMessage({
-        sender: p5LibraryUrl,
-        message: p5ScriptText
-      }, '*');
+      try {
+        const p5ScriptText = await fetch(p5ScriptTag.src).then((res) => res.text());
+        iframeRef.current.contentWindow?.postMessage({
+          sender: p5LibraryUrl,
+          message: p5ScriptText
+        }, '*');
+      } catch (e) {
+        console.error(`Error loading ${p5ScriptTag.src}`);
+        return;
+      }
     })()
   }, [props.jsCode])
 
