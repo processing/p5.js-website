@@ -9,6 +9,7 @@ import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
 import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
 import he from "he";
+import { JSDOM } from "jsdom";
 
 interface EntryWithId {
   id: string;
@@ -212,3 +213,40 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
 
 export const getPaginationMax = (numPerPage: number, numItems: number) =>
   Math.ceil(numItems / numPerPage);
+
+export type PageTopic = "community" | "reference" | "contribute" | "about";
+
+export const getTopicInfo = (topic?: PageTopic) => {
+  switch (topic) {
+    case "community":
+      return { name: "Community", url: "/community" };
+    case "reference":
+      return { name: "Reference", url: "/reference" };
+    case "contribute":
+      return { name: "Contribute", url: "/contribute" };
+    case "about":
+      return { name: "About", url: "/about" };
+  }
+};
+
+/**
+ * Capitalize the first letter of a string
+ * (really only makes sense for English strings)
+ *
+ * @param str
+ * @returns
+ */
+export const capitalize = (str: string): string =>
+  str ? str[0].toUpperCase() + str.slice(1) : "";
+
+// Function to decode HTML content and strip HTML tags
+export const decodeHtml = (html: string) => {
+  // Create a new JSDOM instance with the provided HTML
+  const dom = new JSDOM(html);
+  const document = dom.window.document;
+
+  // Extract text content from the parsed HTML
+  const textContent = document.body.textContent || "";
+
+  return textContent.trim(); // remove blank space at the beginning
+};
