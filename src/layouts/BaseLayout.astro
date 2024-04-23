@@ -4,18 +4,24 @@ import Nav from "@components/Nav/index.astro";
 import Settings from "@components/Settings/index.astro";
 import RootPageHeader from "@/src/components/PageHeader/RootPage.astro";
 import ItemPageHeader from "@/src/components/PageHeader/ItemPage.astro";
+import HomePageHeader from "@/src/components/PageHeader/HomePage.astro";
+import SubRootPageHeader from "@/src/components/PageHeader/SubRootPage.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
 import "@styles/base.scss";
 
 interface Props {
   title: string;
+  subtitle?: string;
   className?: string;
-  variant?: "root" | "item" | "search";
+  variant?: "root" | "item" | "search" | "homepage" | "subroot";
+  topic?: PageTopic;
   mainContentParentClass?: string;
 }
 
 const {
   title,
+  subtitle,
   className = "",
   variant = "root",
   mainContentParentClass = "mx-md md:mx-lg",
@@ -23,7 +29,15 @@ const {
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 const localizedTitle = t(title);
-const localizedSubtitle = t("briefPageDescriptions", title);
+const localizedSubtitle = subtitle
+  ? t(subtitle)
+  : t("briefPageDescriptions", title);
+const topic = getTopicInfo(Astro.props.topic);
+const splitPathname = Astro.url.pathname.split("/");
+const fallbackTopic = splitPathname[splitPathname.length - 2];
+const headerTopic = topic
+  ? { name: t(topic.name) as string, url: topic.url }
+  : { name: t(capitalize(fallbackTopic)) as string, url: `/${fallbackTopic}` };
 ---
 
 <html class={title.toLowerCase()}>
@@ -59,8 +73,22 @@ const localizedSubtitle = t("briefPageDescriptions", title);
               title={localizedTitle}
               subtitle={localizedSubtitle}
             />
+          ) : variant === "item" ? (
+            <ItemPageHeader
+              title={title}
+              subtitle={subtitle}
+              topic={headerTopic}
+            />
+          ) : variant === "homepage" ? (
+            <HomePageHeader />
           ) : (
-            variant === "item" && <ItemPageHeader title={title} />
+            variant === "subroot" && (
+              <SubRootPageHeader
+                title={localizedTitle as string}
+                subtitle={localizedSubtitle as string}
+                topic={headerTopic}
+              />
+            )
           )
         }
       </header>
