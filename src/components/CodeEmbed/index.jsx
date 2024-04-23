@@ -50,6 +50,11 @@ export const CodeEmbed = (props) => {
 
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
+  /*
+   * Url to fetch the p5.js library from
+   */
+  const p5LibraryUrl = `https://cdnjs.cloudflare.com/ajax/libs/p5.js/${p5VersionForEmbeds}/p5.min.js`;
+
   useEffect(() => {
     setRendered(true);
 
