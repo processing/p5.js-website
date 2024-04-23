@@ -19,5 +19,7 @@ export const peopleCollection = defineCollection({
       imageAlt: z.string(),
       // How this person should be displayed on the people page
       displayed: z.enum(displayTypes),
+      // The role that this person had with the project
+      role: z.string().optional(),
     }),
 });
