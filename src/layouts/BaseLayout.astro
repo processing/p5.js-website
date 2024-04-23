@@ -2,36 +2,66 @@
 import Footer from "@components/Footer/index.astro";
 import Nav from "@components/Nav/index.astro";
 import Settings from "@components/Settings/index.astro";
-import RootPageHeader from "@components/RootPageHeader/index.astro";
-import ItemPageHeader from "@components/ItemPageHeader/index.astro";
+import RootPageHeader from "@/src/components/PageHeader/RootPage.astro";
+import ItemPageHeader from "@/src/components/PageHeader/ItemPage.astro";
+import HomePageHeader from "@/src/components/PageHeader/HomePage.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
 import "@styles/base.scss";
 
 interface Props {
   title: string;
+  subtitle?: string;
   className?: string;
-  variant?: "root" | "item" | "search";
+  variant?: "root" | "item" | "search" | "homepage";
+  topic?: PageTopic;
   mainContentParentClass?: string;
 }
 
 const {
   title,
+  subtitle,
   className = "",
   variant = "root",
-  mainContentParentClass = "mx-md md:mx-lg",
+  mainContentParentClass = "mx-md md:mx-lg pb-4xl mt-md",
 } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 const localizedTitle = t(title);
-const localizedSubtitle = t("briefPageDescriptions", title);
+const localizedSubtitle = subtitle
+  ? t(subtitle)
+  : t("briefPageDescriptions", title);
+const topic = getTopicInfo(Astro.props.topic);
+const splitPathname = Astro.url.pathname.split("/");
+const fallbackTopic = splitPathname[splitPathname.length - 2];
+const headerTopic = topic
+  ? { name: t(topic.name) as string, url: topic.url }
+  : { name: t(capitalize(fallbackTopic)) as string, url: `/${fallbackTopic}` };
 ---
 
-<html>
+<html class={title.toLowerCase()}>
   <head>
+    <script is:inline>
+      // Get any theme settings and apply before load
+      const settings = [
+        "dark-theme",
+        "monochrome-theme",
+        "show-alt-text",
+        "reduced-motion",
+      ];
+      const storedSettings = settings.filter(
+        (setting) => localStorage.getItem(setting) === "true"
+      );
+      if (storedSettings.length === 0) {
+        storedSettings.push("light-theme");
+      }
+      const htmlElement = document.documentElement;
+      htmlElement.className = `${storedSettings.join(" ")} ${htmlElement.className}`;
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body class={`${title.toLowerCase()} ${className}`}>
+  <body class={className}>
     <div class="top-layout-grid">
       <Nav />
       <Settings hideSearch={variant === "search"} />
@@ -42,8 +72,14 @@ const localizedSubtitle = t("briefPageDescriptions", title);
               title={localizedTitle}
               subtitle={localizedSubtitle}
             />
+          ) : variant === "item" ? (
+            <ItemPageHeader
+              title={title}
+              subtitle={subtitle}
+              topic={headerTopic}
+            />
           ) : (
-            variant === "item" && <ItemPageHeader title={title} />
+            variant === "homepage" && <HomePageHeader />
           )
         }
       </header>
