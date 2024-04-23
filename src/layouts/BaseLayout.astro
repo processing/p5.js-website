@@ -5,7 +5,6 @@ import Settings from "@components/Settings/index.astro";
 import RootPageHeader from "@/src/components/PageHeader/RootPage.astro";
 import ItemPageHeader from "@/src/components/PageHeader/ItemPage.astro";
 import HomePageHeader from "@/src/components/PageHeader/HomePage.astro";
-import SubRootPageHeader from "@/src/components/PageHeader/SubRootPage.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
 import "@styles/base.scss";
@@ -14,7 +13,7 @@ interface Props {
   title: string;
   subtitle?: string;
   className?: string;
-  variant?: "root" | "item" | "search" | "homepage" | "subroot";
+  variant?: "root" | "item" | "search" | "homepage";
   topic?: PageTopic;
   mainContentParentClass?: string;
 }
@@ -79,16 +78,8 @@ const headerTopic = topic
               subtitle={subtitle}
               topic={headerTopic}
             />
-          ) : variant === "homepage" ? (
-            <HomePageHeader />
           ) : (
-            variant === "subroot" && (
-              <SubRootPageHeader
-                title={localizedTitle as string}
-                subtitle={localizedSubtitle as string}
-                topic={headerTopic}
-              />
-            )
+            variant === "homepage" && <HomePageHeader />
           )
         }
       </header>
