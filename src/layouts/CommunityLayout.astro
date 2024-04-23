@@ -19,7 +19,10 @@ const librariesLimit = 8;
 const eventsLimit = 9;
 
 const sketches = Astro.props.sketches.slice(0, sketchesLimit),
-  libraries = Astro.props.libraries.slice(0, librariesLimit),
+  libraries = Astro.props.libraries
+    .filter(lib => lib.data.featured)
+    .slice(0, librariesLimit)
+    .sort(() => Math.random() < 0.5 ? -1 : 1),
   events = Astro.props.pastEvents.slice(0, eventsLimit);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -64,7 +67,7 @@ setJumpToState({
     <h2 class="mb-lg">{t("Libraries")}</h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
-        libraries.slice(0, librariesLimit).map((lib) => (
+        libraries.map((lib) => (
           <li>
             <GridItemLibrary item={lib} />
           </li>
