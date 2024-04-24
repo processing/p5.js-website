@@ -6,8 +6,10 @@ import {
   escapeCodeTagsContent,
   separateReferenceExamples,
   normalizeReferenceRoute,
+  getRelatedEntriesinCollection,
 } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
 import MethodSignature from "@components/MethodSignature/index.astro";
 import type {
   ReferenceOverload,
@@ -46,6 +48,22 @@ const jumpToState = {
 };
 
 setJumpToState(jumpToState);
+
+// get whatever related entries might be specified in the collection entry data
+const relatedReferencesFromEntryData =
+  entry.data.relatedContent?.references !== undefined
+    ? await getRelatedEntriesinCollection(
+        "reference",
+        currentLocale,
+        entry.data.relatedContent.references.map((r: any) => r.slug)
+      )
+    : [];
+
+// then make a list of four, backfilled with entries from the jumpTo links
+const relatedReferences = [
+  ...relatedReferencesFromEntryData,
+  ...relatedEntries,
+].slice(0, 4);
 ---
 
 <BaseLayout title={title} variant="item">
@@ -166,4 +184,8 @@ setJumpToState(jumpToState);
       }
     </div>
   </div>
+  <RelatedItems
+    title={t("Related References") as string}
+    items={relatedReferences}
+  />
 </BaseLayout>
