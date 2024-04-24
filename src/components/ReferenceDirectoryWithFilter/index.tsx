@@ -96,7 +96,7 @@ export const ReferenceDirectoryWithFilter = ({
 
   return (
     <>
-      <div class="bg-accent-color px-lg pb-lg">
+      <div class="border-b border-sidebar-type-color bg-accent-color px-lg pb-lg">
         <div class="max-w-screen-md">
           <input
             type="text"
