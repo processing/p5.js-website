@@ -4,47 +4,73 @@ module: Events
 submodule: Mouse
 file: src/events/mouse.js
 description: >
-  <p>The function <a
-  href="/reference/p5/requestPointerLock">requestPointerLock()</a>
+  <p>Locks the mouse pointer to its current position and makes it invisible.</p>
 
-  locks the pointer to its current position and makes it invisible.
+  <p><code>requestPointerLock()</code> allows the mouse to move forever without
+  leaving the
 
-  Use <a href="/reference/p5/movedX">movedX</a> and <a
-  href="/reference/p5/movedY">movedY</a> to get the difference the mouse was
-  moved since
+  screen. Calling <code>requestPointerLock()</code> locks the values of
 
-  the last call of draw.
+  <a href="/reference/p5/mouseX">mouseX</a>, <a
+  href="/reference/p5/mouseY">mouseY</a>,
 
-  Note that not all browsers support this feature.
+  <a href="/reference/p5/pmouseX">pmouseX</a>, and <a
+  href="/reference/p5/pmouseY">pmouseY</a>.
 
-  This enables you to create experiences that aren't limited by the mouse moving
-  out of the screen
+  <a href="/reference/p5/movedX">movedX</a> and <a
+  href="/reference/p5/movedY">movedY</a>
 
-  even if it is repeatedly moved into one direction.
+  continue updating and can be used to get the distance the mouse moved since
 
-  For example, a first person perspective experience.</p>
-line: 960
+  the last frame was drawn. Calling
+
+  <a href="/reference/p5/exitPointerLock">exitPointerLock()</a> resumes updating
+  the
+
+  mouse system variables.</p>
+
+  <p>Note: Most browsers require an input, such as a click, before calling
+
+  <code>requestPointerLock()</code>. It’s recommended to call
+  <code>requestPointerLock()</code> in
+
+  an event function such as <a
+  href="/reference/p5/doubleClicked">doubleClicked()</a>.</p>
+line: 1866
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class="notest">
+    <div>
     <code>
-    let cam;
+    let score = 0;
+
     function setup() {
-      createCanvas(100, 100, WEBGL);
-      requestPointerLock();
-      cam = createCamera();
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with the text "Score: X" at its center. The score increases when the user moves the mouse upward. It decreases when the user moves the mouse downward.'
+      );
     }
 
     function draw() {
-      background(255);
-      cam.pan(-movedX * 0.001);
-      cam.tilt(movedY * 0.001);
-      sphere(25);
-      describe(`3D scene moves according to mouse mouse movement in a
-        first person perspective`);
+      background(200);
+
+      // Update the score.
+      score -= movedY;
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Display the score.
+      text(`Score: ${score}`, 50, 50);
+    }
+
+    // Lock the pointer when the user double-clicks.
+    function doubleClicked() {
+      requestPointerLock();
     }
     </code>
     </div>

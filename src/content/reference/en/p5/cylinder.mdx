@@ -4,18 +4,70 @@ module: Shape
 submodule: 3D Primitives
 file: src/webgl/3d_primitives.js
 description: >
-  <p>Draw a cylinder with given radius and height</p>
+  <p>Draws a cylinder.</p>
 
-  <p>DetailX and detailY determines the number of subdivisions in the
-  x-dimension
+  <p>A cylinder is a 3D shape with triangular faces that connect a flat bottom
 
-  and the y-dimension of a cylinder. More subdivisions make the cylinder seem
-  smoother.
+  to a flat top. Cylinders with few faces look like boxes. Cylinders with
 
-  The recommended maximum value for detailX is 24. Using a value greater than 24
+  many faces have smooth surfaces.</p>
 
-  may cause a warning or slow down the browser.</p>
-line: 583
+  <p>The first parameter, <code>radius</code>, is optional. If a
+  <code>Number</code> is passed, as in
+
+  <code>cylinder(20)</code>, it sets the radius of the cylinder’s base. By
+  default,
+
+  <code>radius</code> is 50.</p>
+
+  <p>The second parameter, <code>height</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>cylinder(20, 30)</code>, it sets the cylinder’s height. By
+  default,
+
+  <code>height</code> is set to the cylinder’s <code>radius</code>.</p>
+
+  <p>The third parameter, <code>detailX</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>cylinder(20, 30, 5)</code>, it sets the number of edges used to
+  form the
+
+  cylinder's top and bottom. Using more edges makes the top and bottom look
+
+  more like circles. By default, <code>detailX</code> is 24.</p>
+
+  <p>The fourth parameter, <code>detailY</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>cylinder(20, 30, 5, 2)</code>, it sets the number of triangle
+  subdivisions
+
+  to use along the y-axis, between cylinder's the top and bottom. All 3D
+
+  shapes are made by connecting triangles to form their surfaces. By default,
+
+  <code>detailY</code> is 1.</p>
+
+  <p>The fifth parameter, <code>bottomCap</code>, is also optional. If a
+  <code>false</code> is passed,
+
+  as in <code>cylinder(20, 30, 5, 2, false)</code> the cylinder’s bottom won’t
+  be drawn.
+
+  By default, <code>bottomCap</code> is <code>true</code>.</p>
+
+  <p>The sixth parameter, <code>topCap</code>, is also optional. If a
+  <code>false</code> is passed, as
+
+  in <code>cylinder(20, 30, 5, 2, false, false)</code> the cylinder’s top won’t
+  be
+
+  drawn. By default, <code>topCap</code> is <code>true</code>.</p>
+
+  <p>Note: <code>cylinder()</code> can only be used in WebGL mode.</p>
+line: 1477
 isConstructor: false
 itemtype: method
 example:
@@ -23,64 +75,166 @@ example:
 
     <div>
     <code>
-    // draw a spinning cylinder
-    // with radius 20 and height 50
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('a rotating white cylinder');
+
+      describe('A white cylinder on a gray background.');
     }
 
     function draw() {
-      background(205, 105, 94);
-      rotateX(frameCount * 0.01);
-      rotateZ(frameCount * 0.01);
-      cylinder(20, 50);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cylinder.
+      cylinder();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    // slide to see how detailX works
-    let detailX;
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      detailX = createSlider(3, 24, 3);
-      detailX.position(10, height + 5);
-      detailX.style('width', '80px');
-      describe(
-        'a rotating white cylinder with limited X detail, with a slider that adjusts detailX'
-      );
+
+      describe('A white cylinder on a gray background.');
     }
 
     function draw() {
-      background(205, 105, 94);
-      rotateY(millis() / 1000);
-      cylinder(20, 75, detailX.value(), 1);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cylinder.
+      // Set its radius and height to 30.
+      cylinder(30);
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    // slide to see how detailY works
-    let detailY;
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      detailY = createSlider(1, 16, 1);
-      detailY.position(10, height + 5);
-      detailY.style('width', '80px');
-      describe(
-        'a rotating white cylinder with limited Y detail, with a slider that adjusts detailY'
-      );
+
+      describe('A white cylinder on a gray background.');
     }
 
     function draw() {
-      background(205, 105, 94);
-      rotateY(millis() / 1000);
-      cylinder(20, 75, 16, detailY.value());
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cylinder.
+      // Set its radius to 30 and height to 50.
+      cylinder(30, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white box on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cylinder.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 5.
+      cylinder(30, 50, 5);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cylinder on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cylinder.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 24 and detailY to 2.
+      cylinder(30, 50, 24, 2);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cylinder on a gray background. Its top is missing.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cylinder.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 24 and detailY to 1.
+      // Don't draw its bottom.
+      cylinder(30, 50, 24, 1, false);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cylinder on a gray background. Its top and bottom are missing.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cylinder.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 24 and detailY to 1.
+      // Don't draw its bottom or top.
+      cylinder(30, 50, 24, 1, false, false);
     }
     </code>
     </div>
@@ -88,34 +242,34 @@ class: p5
 params:
   - name: radius
     description: |
-      <p>radius of the surface</p>
+      <p>radius of the cylinder. Defaults to 50.</p>
     type: Number
     optional: true
   - name: height
-    description: |
-      <p>height of the cylinder</p>
+    description: >
+      <p>height of the cylinder. Defaults to the value of
+      <code>radius</code>.</p>
     type: Number
     optional: true
   - name: detailX
     description: |
-      <p>number of subdivisions in x-dimension;
-                                    default is 24</p>
+      <p>number of edges along the top and bottom. Defaults to 24.</p>
     type: Integer
     optional: true
   - name: detailY
     description: |
-      <p>number of subdivisions in y-dimension;
-                                    default is 1</p>
+      <p>number of triangle subdivisions along the y-axis. Defaults to 1.</p>
     type: Integer
     optional: true
   - name: bottomCap
-    description: |
-      <p>whether to draw the bottom of the cylinder</p>
+    description: >
+      <p>whether to draw the cylinder's bottom. Defaults to
+      <code>true</code>.</p>
     type: Boolean
     optional: true
   - name: topCap
     description: |
-      <p>whether to draw the top of the cylinder</p>
+      <p>whether to draw the cylinder's top. Defaults to <code>true</code>.</p>
     type: Boolean
     optional: true
 chainable: true

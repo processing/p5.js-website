@@ -3,50 +3,68 @@ title: noLights
 module: 3D
 submodule: Lights
 file: src/webgl/light.js
-description: |
-  <p>Removes all lights present in a sketch.</p>
-  <p>All subsequent geometry is rendered without lighting (until a new
-  light is created with a call to one of the lighting functions
-  (<a href="/reference/p5/lights">lights()</a>,
+description: >
+  <p>Removes all lights from the sketch.</p>
+
+  <p>Calling <code>noLights()</code> removes any lights created with
+
+  <a href="/reference/p5/lights">lights()</a>,
+
   <a href="/reference/p5/ambientLight">ambientLight()</a>,
+
   <a href="/reference/p5/directionalLight">directionalLight()</a>,
-  <a href="/reference/p5/pointLight">pointLight()</a>,
-  <a href="/reference/p5/spotLight">spotLight()</a>).</p>
-line: 1155
+
+  <a href="/reference/p5/pointLight">pointLight()</a>, or
+
+  <a href="/reference/p5/spotLight">spotLight()</a>. These functions may be
+  called
+
+  after <code>noLights()</code> to create a new lighting scheme.</p>
+line: 1686
 isConstructor: false
 itemtype: method
-alt: |-
-  Three white spheres. Each appears as a different
-  color due to lighting.
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe(
-        'Three white spheres. Each appears as a different color due to lighting.'
-      );
+
+      describe('Two spheres drawn against a gray background. The top sphere is white and the bottom sphere is red.');
     }
+
     function draw() {
-      background(200);
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the spheres.
       noStroke();
 
-      ambientLight(255, 0, 0);
-      translate(-30, 0, 0);
-      ambientMaterial(255);
-      sphere(13);
+      // Draw the top sphere.
+      push();
+      translate(0, -25, 0);
+      sphere(20);
+      pop();
 
+      // Turn off the lights.
       noLights();
-      translate(30, 0, 0);
-      ambientMaterial(255);
-      sphere(13);
 
-      ambientLight(0, 255, 0);
-      translate(30, 0, 0);
-      ambientMaterial(255);
-      sphere(13);
+      // Add a red directional light that points into the screen.
+      directionalLight(255, 0, 0, 0, 0, -1);
+
+      // Draw the bottom sphere.
+      push();
+      translate(0, 25, 0);
+      sphere(20);
+      pop();
     }
     </code>
     </div>

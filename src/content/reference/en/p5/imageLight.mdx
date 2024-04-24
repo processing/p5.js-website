@@ -3,97 +3,69 @@ title: imageLight
 module: 3D
 submodule: Lights
 file: src/webgl/light.js
-description: |
-  <p>Creates an image light with the given image.</p>
-  <p>The image light simulates light from all the directions.
-  This is done by using the image as a texture for an infinitely
-  large sphere light. This sphere contains
-  or encapsulates the whole scene/drawing.
-  It will have different effect for varying shininess of the
-  object in the drawing.
-  Under the hood it is mainly doing 2 types of calculations,
-  the first one is creating an irradiance map the
-  environment map of the input image.
-  The second one is managing reflections based on the shininess
-  or roughness of the material used in the scene.</p>
-  <p>Note: The image's diffuse light will be affected by fill()
-  and the specular reflections will be affected by specularMaterial()
-  and shininess().</p>
-line: 497
+description: >
+  <p>Creates an ambient light from an image.</p>
+
+  <p><code>imageLight()</code> simulates a light shining from all directions.
+  The effect is
+
+  like placing the sketch at the center of a giant sphere that uses the image
+
+  as its texture. The image's diffuse light will be affected by
+
+  <a href="/reference/p5/fill">fill()</a> and the specular reflections will be
+
+  affected by <a href="/reference/p5/specularMaterial">specularMaterial()</a>
+  and
+
+  <a href="/reference/p5/shininess">shininess()</a>.</p>
+
+  <p>The parameter, <code>img</code>, is the <a
+  href="/reference/p5/p5.Image">p5.Image</a> object to
+
+  use as the light source.</p>
+line: 955
 isConstructor: false
 itemtype: method
-alt: light with slider having a slider for varying roughness
 example:
   - |-
 
     <div class="notest">
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     let img;
 
-    function preload() {
-      img = loadImage('/assets/outdoor_image.jpg');
-    }
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0 ,1, 0);
-      perspective(PI/3, 1, 5, 500);
-    }
-    function draw() {
-      background(220);
-
-      push();
-      camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
-      ortho(-1, 1, -1, 1, 0, 1);
-      noLights();
-      noStroke();
-      texture(img);
-      plane(2);
-      pop();
-
-      ambientLight(50);
-      imageLight(img);
-      specularMaterial(20);
-      noStroke();
-      rotateX(frameCount * 0.005);
-      rotateY(frameCount * 0.005);
-      box(50);
-    }
-    </code>
-    </div>
-  - |-
-
-    <div class="notest">
-    <code>
-    let img;
-    let slider;
-
+    // Load an image and create a p5.Image object.
     function preload() {
       img = loadImage('/assets/outdoor_spheremap.jpg');
     }
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      slider = createSlider(0, 400, 100, 1);
-      slider.position(0, height);
-      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0 ,1, 0);
-      perspective(PI/3, 1, 5, 500);
+
+      describe('A sphere floating above a landscape. The surface of the sphere reflects the landscape.');
     }
+
     function draw() {
-      background(220);
+      // Enable orbiting with the mouse.
+      orbitControl();
 
-      push();
-      camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
-      ortho(-1, 1, -1, 1, 0, 1);
-      noLights();
-      noStroke();
-      texture(img);
-      plane(2);
-      pop();
+      // Draw the image as a panorama (360˚ background).
+      panorama(img);
 
+      // Add a soft ambient light.
       ambientLight(50);
+
+      // Add light from the image.
       imageLight(img);
+
+      // Style the sphere.
       specularMaterial(20);
-      shininess(slider.value());
+      shininess(100);
       noStroke();
+
+      // Draw the sphere.
       sphere(30);
     }
     </code>
@@ -102,7 +74,7 @@ class: p5
 params:
   - name: img
     description: |
-      <p>image for the background</p>
+      <p>image to use as the light source.</p>
     type: p5.image
 chainable: false
 ---

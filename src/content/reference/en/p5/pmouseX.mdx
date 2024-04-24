@@ -4,17 +4,41 @@ module: Events
 submodule: Mouse
 file: src/events/mouse.js
 description: >
-  <p>The system variable pmouseX always contains the horizontal position of
+  <p>A <code>Number</code> system variable that tracks the mouse's previous
+  horizontal
 
-  the mouse or finger in the frame previous to the current frame, relative to
+  position.</p>
 
-  (0, 0) of the canvas. The value at the top-left corner is (0, 0) for 2-D and
+  <p>In 2D mode, <code>pmouseX</code> keeps track of the mouse's position
+  relative to the
 
-  (-width/2, -height/2) for WebGL. Note: pmouseX will be reset to the current
-  mouseX
+  top-left corner of the canvas. Its value is
+
+  <a href="/reference/p5/mouseX">mouseX</a> from the previous frame. For
+  example, if
+
+  the mouse was 50 pixels from the left edge of the canvas during the last
+
+  frame, then <code>pmouseX</code> will be 50.</p>
+
+  <p>In WebGL mode, <code>pmouseX</code> keeps track of the mouse's position
+  relative to the
+
+  center of the canvas. For example, if the mouse was 50 pixels to the right
+
+  of the canvas' center during the last frame, then <code>pmouseX</code> will be
+  50.</p>
+
+  <p>If touch is used instead of the mouse, then <code>pmouseX</code> will hold
+  the
+
+  x-coordinate of the last touch point.</p>
+
+  <p>Note: <code>pmouseX</code> is reset to the current <a
+  href="/reference/p5/mouseX">mouseX</a>
 
   value at the start of each touch event.</p>
-line: 128
+line: 331
 isConstructor: false
 itemtype: property
 example:
@@ -22,18 +46,43 @@ example:
 
     <div>
     <code>
-    // Move the mouse across the canvas to leave a trail
     function setup() {
-      //slow down the frameRate to make it more visible
+      createCanvas(100, 100);
+
+      // Slow the frame rate.
       frameRate(10);
+
+      describe('A line follows the mouse as it moves. The line grows longer with faster movements.');
     }
 
     function draw() {
-      background(244, 248, 252);
-      line(mouseX, mouseY, pmouseX, pmouseY);
-      print(pmouseX + ' -> ' + mouseX);
-      describe(`line trail is created from cursor movements.
-        faster movement make longer line.`);
+      background(200);
+
+      line(pmouseX, pmouseY, mouseX, mouseY);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A line follows the mouse as it moves. The line grows longer with faster movements.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Adjust coordinates for WebGL mode.
+      // The origin (0, 0) is at the center of the canvas.
+      let pmx = pmouseX - 50;
+      let pmy = pmouseY - 50;
+      let mx = mouseX - 50;
+      let my = mouseY - 50;
+
+      // Draw the line.
+      line(pmx, pmy, mx, my);
     }
     </code>
     </div>

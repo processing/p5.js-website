@@ -4,99 +4,274 @@ module: Shape
 submodule: Vertex
 file: src/core/shape/vertex.js
 description: >
-  <p>Specifies vertex coordinates for quadratic Bezier curves. Each call to
+  <p>Adds a quadratic Bézier curve segment to a custom shape.</p>
 
-  quadraticVertex() defines the position of one control points and one
+  <p><code>quadraticVertex()</code> adds a curved segment to custom shapes. The
+  Bézier
 
-  anchor point of a Bezier curve, adding a new segment to a line or shape.
+  curve segments it creates are similar to those made by the
 
-  The first time quadraticVertex() is used within a <a
-  href="/reference/p5/beginShape">beginShape()</a> call, it
+  <a href="/reference/p5/bezierVertex">bezierVertex()</a> function.
 
-  must be prefaced with a call to <a href="/reference/p5/vertex">vertex()</a> to
-  set the first anchor point.
+  <code>quadraticVertex()</code> must be called between the
 
-  For WebGL mode quadraticVertex() can be used in 2D as well as 3D mode.
+  <a href="/reference/p5/beginShape">beginShape()</a> and
 
-  2D mode expects 4 parameters, while 3D mode expects 6 parameters
+  <a href="/reference/p5/endShape">endShape()</a> functions. The curved segment
+  uses
 
-  (including z coordinates).</p>
+  the previous vertex as the first anchor point, so there must be at least
 
-  <p>This function must be used between <a
-  href="/reference/p5/beginShape">beginShape()</a> and <a
-  href="/reference/p5/endShape">endShape()</a>
+  one call to <a href="/reference/p5/vertex">vertex()</a> before
+  <code>quadraticVertex()</code> can
 
-  and only when there is no MODE or POINTS parameter specified to
+  be used.</p>
+
+  <p>The first two parameters, <code>cx</code> and <code>cy</code>, set the
+  curve’s control point.
+
+  The control point "pulls" the curve towards its.</p>
+
+  <p>The last two parameters, <code>x3</code>, and <code>y3</code>, set the last
+  anchor point. The
+
+  last anchor point is where the curve ends.</p>
+
+  <p>Bézier curves can also be drawn in 3D using WebGL mode. The 3D version of
+
+  <code>bezierVertex()</code> has eight arguments because each point has x-, y-,
+  and
+
+  z-coordinates.</p>
+
+  <p>Note: <code>quadraticVertex()</code> won’t work when an argument is passed
+  to
 
   <a href="/reference/p5/beginShape">beginShape()</a>.</p>
-line: 772
+line: 1569
 isConstructor: false
 itemtype: method
-alt: |-
-  arched-shaped black line with 4 pixel thick stroke weight.
-  backwards s-shaped black line with 4 pixel thick stroke weight.
 example:
   - |-
 
     <div>
     <code>
-    strokeWeight(5);
-    point(20, 20);
-    point(80, 20);
-    point(50, 50);
+    function setup() {
+      createCanvas(100, 100);
 
-    noFill();
-    strokeWeight(1);
-    beginShape();
-    vertex(20, 20);
-    quadraticVertex(80, 20, 50, 50);
-    endShape();
+      background(200);
+
+      // Style the curve.
+      noFill();
+
+      // Draw the curve.
+      beginShape();
+      vertex(20, 20);
+      quadraticVertex(80, 20, 50, 50);
+      endShape();
+
+      describe('A black curve drawn on a gray square. The curve starts at the top-left corner and ends at the center.');
+    }
     </code>
     </div>
 
     <div>
     <code>
-    strokeWeight(5);
-    point(20, 20);
-    point(80, 20);
-    point(50, 50);
+    function setup() {
+      createCanvas(100, 100);
 
-    point(20, 80);
-    point(80, 80);
-    point(80, 60);
+      background(200);
 
-    noFill();
-    strokeWeight(1);
-    beginShape();
-    vertex(20, 20);
-    quadraticVertex(80, 20, 50, 50);
-    quadraticVertex(20, 80, 80, 80);
-    vertex(80, 60);
-    endShape();
+      // Draw the curve.
+      noFill();
+      beginShape();
+      vertex(20, 20);
+      quadraticVertex(80, 20, 50, 50);
+      endShape();
+
+      // Draw red lines from the anchor points to the control point.
+      stroke(255, 0, 0);
+      line(20, 20, 80, 20);
+      line(50, 50, 80, 20);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(20, 20);
+      point(50, 50);
+
+      // Draw the control point in red.
+      stroke(255, 0, 0);
+      point(80, 20);
+
+      describe('A black curve that starts at the top-left corner and ends at the center. Its anchor and control points are marked with dots. Red lines connect both anchor points to the control point.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the mouse near the red dot in the top-right corner
+    // and drag to change the curve's shape.
+
+    let x2 = 80;
+    let y2 = 20;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A black curve that starts at the top-left corner and ends at the center. Its anchor and control points are marked with dots. Red lines connect both anchor points to the control point.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+
+      // Draw the curve.
+      beginShape();
+      vertex(20, 20);
+      quadraticVertex(x2, y2, 50, 50);
+      endShape();
+
+      // Draw red lines from the anchor points to the control point.
+      stroke(255, 0, 0);
+      line(20, 20, x2, y2);
+      line(50, 50, x2, y2);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(20, 20);
+      point(50, 50);
+
+      // Draw the control point in red.
+      stroke(255, 0, 0);
+      point(x2, y2);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x2, y2) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x2 = mouseX;
+        y2 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the curved segments.
+      vertex(20, 20);
+      quadraticVertex(80, 20, 50, 50);
+      quadraticVertex(20, 80, 80, 80);
+
+      // Add the straight segments.
+      vertex(80, 10);
+      vertex(20, 10);
+      vertex(20, 20);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('A white puzzle piece drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the and drag the mouse to view the scene from a different angle.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white puzzle piece on a dark gray background. When the user clicks and drags the scene, the outline of a second puzzle piece is revealed.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the first puzzle piece.
+      noStroke();
+      fill(255);
+
+      // Draw the first puzzle piece.
+      beginShape();
+      vertex(-30, -30, 0);
+      quadraticVertex(30, -30, 0, 0, 0, 0);
+      quadraticVertex(-30, 30, 0, 30, 30, 0);
+      vertex(30, -40, 0);
+      vertex(-30, -40, 0);
+      vertex(-30, -30, 0);
+      endShape();
+
+      // Style the second puzzle piece.
+      stroke(255);
+      noFill();
+
+      // Draw the second puzzle piece.
+      beginShape();
+      vertex(-30, -30, -20);
+      quadraticVertex(30, -30, -20, 0, 0, -20);
+      quadraticVertex(-30, 30, -20, 30, 30, -20);
+      vertex(30, -40, -20);
+      vertex(-30, -40, -20);
+      vertex(-30, -30, -20);
+      endShape();
+    }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 772
+  - line: 1569
     params:
       - name: cx
         description: |
-          <p>x-coordinate for the control point</p>
+          <p>x-coordinate of the control point.</p>
         type: Number
       - name: cy
         description: |
-          <p>y-coordinate for the control point</p>
+          <p>y-coordinate of the control point.</p>
         type: Number
       - name: x3
         description: |
-          <p>x-coordinate for the anchor point</p>
+          <p>x-coordinate of the anchor point.</p>
         type: Number
       - name: y3
         description: |
-          <p>y-coordinate for the anchor point</p>
+          <p>y-coordinate of the anchor point.</p>
         type: Number
     chainable: 1
-  - line: 837
+  - line: 1801
     params:
       - name: cx
         description: ''
@@ -106,7 +281,7 @@ overloads:
         type: Number
       - name: cz
         description: |
-          <p>z-coordinate for the control point (for WebGL mode)</p>
+          <p>z-coordinate of the control point.</p>
         type: Number
       - name: x3
         description: ''
@@ -116,9 +291,8 @@ overloads:
         type: Number
       - name: z3
         description: |
-          <p>z-coordinate for the anchor point (for WebGL mode)</p>
+          <p>z-coordinate of the anchor point.</p>
         type: Number
-    chainable: 1
 chainable: true
 ---
 

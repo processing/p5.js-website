@@ -4,87 +4,81 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: |
-  <p>Restores the default shaders. Code that runs after resetShader()
-  will not be affected by the shader previously set by
-  <a href="/reference/p5/shader">shader()</a></p>
-line: 440
+  <p>Restores the default shaders.</p>
+  <p><code>resetShader()</code> deactivates any shaders previously applied by
+  <a href="/reference/p5/shader">shader()</a>.</p>
+  <p>Note: Shaders can only be used in WebGL mode.</p>
+line: 773
 isConstructor: false
 itemtype: method
-alt: >-
-  Two rotating cubes. The left one is painted using a custom (user-defined)
-  shader,
-
-  while the right one is painted using the default fill shader.
 example:
   - |-
 
     <div>
     <code>
-    // This variable will hold our shader object
-    let shaderProgram;
-
-    // This variable will hold our vertex shader source code
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
     let vertSrc = `
-       attribute vec3 aPosition;
-       attribute vec2 aTexCoord;
-       uniform mat4 uProjectionMatrix;
-       uniform mat4 uModelViewMatrix;
-       varying vec2 vTexCoord;
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    uniform mat4 uProjectionMatrix;
+    uniform mat4 uModelViewMatrix;
+    varying vec2 vTexCoord;
 
-       void main() {
-         vTexCoord = aTexCoord;
-         vec4 position = vec4(aPosition, 1.0);
-         gl_Position = uProjectionMatrix * uModelViewMatrix * position;
-       }
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 position = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * position;
+    }
     `;
 
-    // This variable will hold our fragment shader source code
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
     let fragSrc = `
-       precision mediump float;
+    precision mediump float;
+    varying vec2 vTexCoord;
 
-       varying vec2 vTexCoord;
-
-       void main() {
-         vec2 uv = vTexCoord;
-         vec3 color = vec3(uv.x, uv.y, min(uv.x + uv.y, 1.0));
-         gl_FragColor = vec4(color, 1.0);
-       }
+    void main() {
+      vec2 uv = vTexCoord;
+      vec3 color = vec3(uv.x, uv.y, min(uv.x + uv.y, 1.0));
+      gl_FragColor = vec4(color, 1.0);
+    }
     `;
+
+    let myShader;
 
     function setup() {
-      // Shaders require WEBGL mode to work
       createCanvas(100, 100, WEBGL);
 
-      // Create our shader
-      shaderProgram = createShader(vertSrc, fragSrc);
+      // Create a p5.Shader object.
+      myShader = createShader(vertSrc, fragSrc);
 
       describe(
-        'Two rotating cubes. The left one is painted using a custom (user-defined) shader, while the right one is painted using the default fill shader.'
+        'Two rotating cubes on a gray background. The left one has a blue-purple gradient on each face. The right one is red.'
       );
     }
 
     function draw() {
-      // Clear the scene
       background(200);
 
-      // Draw a box using our shader
-      // shader() sets the active shader with our shader
-      shader(shaderProgram);
+      // Draw a box using the p5.Shader.
+      // shader() sets the active shader to myShader.
+      shader(myShader);
       push();
-      translate(-width / 4, 0, 0);
-      rotateX(millis() * 0.00025);
-      rotateY(millis() * 0.0005);
+      translate(-25, 0, 0);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
       box(width / 4);
       pop();
 
-      // Draw a box using the default fill shader
-      // resetShader() restores the default fill shader
+      // Draw a box using the default fill shader.
+      // resetShader() restores the default fill shader.
       resetShader();
       fill(255, 0, 0);
       push();
-      translate(width / 4, 0, 0);
-      rotateX(millis() * 0.00025);
-      rotateY(millis() * 0.0005);
+      translate(25, 0, 0);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
       box(width / 4);
       pop();
     }

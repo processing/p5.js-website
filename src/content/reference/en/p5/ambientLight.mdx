@@ -3,69 +3,172 @@ title: ambientLight
 module: 3D
 submodule: Lights
 file: src/webgl/light.js
-description: |
-  <p>Creates an ambient light with the given color.</p>
-  <p>Ambient light does not come from a specific direction.
-  Objects are evenly lit from all sides. Ambient lights are
-  almost always used in combination with other types of lights.</p>
-  <p>Note: lights need to be called (whether directly or indirectly)
-  within draw() to remain persistent in a looping program.
-  Placing them in setup() will cause them to only have an effect
-  the first time through the loop.</p>
+description: >
+  <p>Creates a light that shines from all directions.</p>
+
+  <p>Ambient light does not come from one direction. Instead, 3D shapes are
+
+  lit evenly from all sides. Ambient lights are almost always used in
+
+  combination with other types of lights.</p>
+
+  <p>There are three ways to call <code>ambientLight()</code> with optional
+  parameters to
+
+  set the light’s color.</p>
+
+  <p>The first way to call <code>ambientLight()</code> has two parameters,
+  <code>gray</code> and
+
+  <code>alpha</code>. <code>alpha</code> is optional. Grayscale and alpha values
+  between 0 and 255
+
+  can be passed to set the ambient light’s color, as in
+  <code>ambientLight(50)</code> or
+
+  <code>ambientLight(50, 30)</code>.</p>
+
+  <p>The second way to call <code>ambientLight()</code> has one parameter,
+  color. A
+
+  <a href="/reference/p5/p5.Color">p5.Color</a> object, an array of color
+  values, or a
+
+  CSS color string, as in <code>ambientLight('magenta')</code>, can be passed to
+  set the
+
+  ambient light’s color.</p>
+
+  <p>The third way to call <code>ambientLight()</code> has four parameters,
+  <code>v1</code>, <code>v2</code>,
+
+  <code>v3</code>, and <code>alpha</code>. <code>alpha</code> is optional. RGBA,
+  HSBA, or HSLA values can be
+
+  passed to set the ambient light’s colors, as in <code>ambientLight(255, 0,
+  0)</code>
+
+  or <code>ambientLight(255, 0, 0, 30)</code>. Color values will be interpreted
+  using
+
+  the current <a href="/reference/p5/colorMode">colorMode()</a>.</p>
 line: 10
 isConstructor: false
 itemtype: method
-alt: pink ambient material cube under the ambient light
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click the canvas to turn on the light.
+
+    let isLit = false;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      noStroke();
-      describe('sphere with coral color under black light');
+
+      describe('A sphere drawn against a gray background. The sphere appears to change color when the user double-clicks.');
     }
+
     function draw() {
-      background(100);
-      ambientLight(0); // black light (no light)
-      ambientMaterial(255, 127, 80); // coral material
-      sphere(40);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Control the light.
+      if (isLit === true) {
+        // Use a grayscale value of 80.
+        ambientLight(80);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the ambient light when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      noStroke();
-      describe('sphere with coral color under white light');
+
+      describe('A faded magenta sphere drawn against a gray background.');
     }
+
     function draw() {
-      background(100);
-      ambientLight(255); // white light
-      ambientMaterial(255, 127, 80); // coral material
-      sphere(40);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      // Use a p5.Color object.
+      let c = color('orchid');
+      ambientLight(c);
+
+      // Draw the sphere.
+      sphere();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
-      createCanvas(100,100,WEBGL);
-      camera(0,-100,300);
+      createCanvas(100, 100, WEBGL);
+
+      describe('A faded magenta sphere drawn against a gray background.');
     }
+
     function draw() {
-      background(230);
-      ambientMaterial(237,34,93); //Pink Material
-      ambientLight(mouseY);
-      //As you move the mouse up to down it changes from no ambient light to full ambient light.
-      rotateY(millis()/2000);
-      box(100);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      // Use a CSS color string.
+      ambientLight('#DA70D6');
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A faded magenta sphere drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      // Use RGB values
+      ambientLight(218, 112, 214);
+
+      // Draw the sphere.
+      sphere(30);
     }
     </code>
     </div>
@@ -75,58 +178,57 @@ overloads:
     params:
       - name: v1
         description: |
-          <p>red or hue value relative to
-                                            the current color range</p>
+          <p>red or hue value in the current
+                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v2
         description: |
-          <p>green or saturation value
-                                            relative to the current color range</p>
+          <p>green or saturation value in the current
+                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v3
         description: |
-          <p>blue or brightness value
-                                            relative to the current color range</p>
+          <p>blue, brightness, or lightness value in the current
+                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: alpha
         description: |
-          <p>alpha value relative to current
-                                            color range (default is 0-255)</p>
+          <p>alpha (transparency) value in the current
+                                          <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
         optional: true
     chainable: 1
-  - line: 92
+  - line: 164
     params:
       - name: gray
         description: |
-          <p>number specifying value between
-                                           white and black</p>
+          <p>grayscale value between 0 and 255.</p>
         type: Number
       - name: alpha
         description: ''
         type: Number
         optional: true
     chainable: 1
-  - line: 100
+  - line: 171
     params:
       - name: value
         description: |
-          <p>a color string</p>
+          <p>color as a CSS string.</p>
         type: String
     chainable: 1
-  - line: 106
+  - line: 177
     params:
       - name: values
         description: |
-          <p>an array containing the red,green,blue &
-                                           and alpha components of the color</p>
+          <p>color as an array of RGBA, HSBA, or HSLA
+                                          values.</p>
         type: 'Number[]'
     chainable: 1
-  - line: 113
+  - line: 184
     params:
       - name: color
         description: |
-          <p>color as a <a href="#/p5.Color">p5.Color</a></p>
+          <p>color as a <a href="#/p5.Color">p5.Color</a> object.</p>
         type: p5.Color
     chainable: 1
 chainable: true

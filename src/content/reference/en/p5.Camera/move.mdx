@@ -4,54 +4,82 @@ module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
 description: >
-  <p>Move camera along its local axes while maintaining current camera
+  <p>Moves the camera along its "local" axes without changing its
   orientation.</p>
-line: 1508
+
+  <p>The parameters, <code>x</code>, <code>y</code>, and <code>z</code>, are the
+  distances the camera should
+
+  move. For example, calling <code>myCamera.move(10, 20, 30)</code> moves the
+  camera 10
+
+  pixels to the right, 20 pixels down, and 30 pixels backward in its "local"
+
+  space.</p>
+line: 2923
 isConstructor: false
 itemtype: method
-alt: |-
-  camera view moves along a series of 3D boxes, maintaining the same
-  orientation throughout the move
 example:
   - |-
 
     <div>
     <code>
-    // see the camera move along its own axes while maintaining its orientation
+    // Click the canvas to begin detecting key presses.
+
     let cam;
-    let delta = 0.5;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      normalMaterial();
+
+      // Create the first camera.
+      // Keep its default settings.
       cam = createCamera();
-      cam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+
+      // Place the camera at the top-right.
+      cam.setPosition(400, -400, 800);
+
+      // Point it at the origin.
+      cam.lookAt(0, 0, 0);
+
+      describe(
+        'A white cube drawn against a gray background. The cube appears to move when the user presses certain keys.'
+      );
     }
 
     function draw() {
       background(200);
 
-      // move the camera along its local axes
-      cam.move(delta, delta, 0);
+      // Move the camera along its "local" axes
+      // when the user presses certain keys.
+      if (keyIsPressed === true) {
 
-      // every 100 frames, switch direction
-      if (frameCount % 150 === 0) {
-        delta *= -1;
+        // Move horizontally.
+        if (keyCode === LEFT_ARROW) {
+          cam.move(-1, 0, 0);
+        }
+        if (keyCode === RIGHT_ARROW) {
+          cam.move(1, 0, 0);
+        }
+
+        // Move vertically.
+        if (keyCode === UP_ARROW) {
+          cam.move(0, -1, 0);
+        }
+        if (keyCode === DOWN_ARROW) {
+          cam.move(0, 1, 0);
+        }
+
+        // Move in/out of the screen.
+        if (key === 'i') {
+          cam.move(0, 0, -1);
+        }
+        if (key === 'o') {
+          cam.move(0, 0, 1);
+        }
       }
 
-      translate(-10, -10, 0);
-      box(50, 8, 50);
-      translate(15, 15, 0);
-      box(50, 8, 50);
-      translate(15, 15, 0);
-      box(50, 8, 50);
-      translate(15, 15, 0);
-      box(50, 8, 50);
-      translate(15, 15, 0);
-      box(50, 8, 50);
-      translate(15, 15, 0);
-      box(50, 8, 50);
+      // Draw the box.
+      box();
     }
     </code>
     </div>
@@ -59,15 +87,15 @@ class: p5.Camera
 params:
   - name: x
     description: |
-      <p>amount to move along camera's left-right axis</p>
+      <p>distance to move along the camera’s "local" x-axis.</p>
     type: Number
   - name: 'y'
     description: |
-      <p>amount to move along camera's up-down axis</p>
+      <p>distance to move along the camera’s "local" y-axis.</p>
     type: Number
   - name: z
     description: |
-      <p>amount to move along camera's forward-backward axis</p>
+      <p>distance to move along the camera’s "local" z-axis.</p>
     type: Number
 chainable: false
 ---

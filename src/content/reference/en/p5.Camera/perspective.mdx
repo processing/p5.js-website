@@ -3,54 +3,233 @@ title: perspective
 module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
-description: |
-  <p>Sets a perspective projection.
-  Accepts the same parameters as the global
-  <a href="/reference/p5/perspective">perspective()</a>.
-  More information on this function can be found there.</p>
-line: 853
+description: >
+  <p>Sets a perspective projection for the camera.</p>
+
+  <p>In a perspective projection, shapes that are further from the camera appear
+
+  smaller than shapes that are near the camera. This technique, called
+
+  foreshortening, creates realistic 3D scenes. It’s applied by default in new
+
+  <code>p5.Camera</code> objects.</p>
+
+  <p><code>myCamera.perspective()</code> changes the camera’s perspective by
+  changing its
+
+  viewing frustum. The frustum is the volume of space that’s visible to the
+
+  camera. The frustum’s shape is a pyramid with its top cut off. The camera
+
+  is placed where the top of the pyramid should be and points towards the
+
+  base of the pyramid. It views everything within the frustum.</p>
+
+  <p>The first parameter, <code>fovy</code>, is the camera’s vertical field of
+  view. It’s
+
+  an angle that describes how tall or narrow a view the camera has. For
+
+  example, calling <code>myCamera.perspective(0.5)</code> sets the camera’s
+  vertical
+
+  field of view to 0.5 radians. By default, <code>fovy</code> is calculated
+  based on the
+
+  sketch’s height and the camera’s default z-coordinate, which is 800. The
+
+  formula for the default <code>fovy</code> is <code>2 * atan(height / 2 /
+  800)</code>.</p>
+
+  <p>The second parameter, <code>aspect</code>, is the camera’s aspect ratio.
+  It’s a number
+
+  that describes the ratio of the top plane’s width to its height. For
+
+  example, calling <code>myCamera.perspective(0.5, 1.5)</code> sets the camera’s
+  field
+
+  of view to 0.5 radians and aspect ratio to 1.5, which would make shapes
+
+  appear thinner on a square canvas. By default, <code>aspect</code> is set to
+
+  <code>width / height</code>.</p>
+
+  <p>The third parameter, <code>near</code>, is the distance from the camera to
+  the near
+
+  plane. For example, calling <code>myCamera.perspective(0.5, 1.5, 100)</code>
+  sets the
+
+  camera’s field of view to 0.5 radians, its aspect ratio to 1.5, and places
+
+  the near plane 100 pixels from the camera. Any shapes drawn less than 100
+
+  pixels from the camera won’t be visible. By default, <code>near</code> is set
+  to
+
+  <code>0.1 * 800</code>, which is 1/10th the default distance between the
+  camera and
+
+  the origin.</p>
+
+  <p>The fourth parameter, <code>far</code>, is the distance from the camera to
+  the far
+
+  plane. For example, calling <code>myCamera.perspective(0.5, 1.5, 100,
+  10000)</code>
+
+  sets the camera’s field of view to 0.5 radians, its aspect ratio to 1.5,
+
+  places the near plane 100 pixels from the camera, and places the far plane
+
+  10,000 pixels from the camera. Any shapes drawn more than 10,000 pixels
+
+  from the camera won’t be visible. By default, <code>far</code> is set to
+  <code>10 * 800</code>,
+
+  which is 10 times the default distance between the camera and the origin.</p>
+line: 1862
 isConstructor: false
 itemtype: method
-alt: 'two colored 3D boxes move back and forth, rotating as mouse is dragged.'
 example:
   - |-
 
     <div>
     <code>
-    // drag the mouse to look around!
+    // Double-click to toggle between cameras.
 
-    let cam;
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      // create a camera
-      cam = createCamera();
-      cam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      // give it a perspective projection
-      cam.perspective(PI / 3.0, width / height, 0.1, 500);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right.
+      cam2.camera(400, -400, 800);
+
+      // Set its fovy to 0.2.
+      // Set its aspect to 1.5.
+      // Set its near to 600.
+      // Set its far to 1200.
+      cam2.perspective(0.2, 1.5, 600, 1200);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A white cube on a gray background. The camera toggles between a frontal view and a skewed aerial view when the user double-clicks.');
     }
 
     function draw() {
       background(200);
-      orbitControl();
-      normalMaterial();
 
-      rotateX(-0.3);
-      rotateY(-0.2);
-      translate(0, 0, -50);
+      // Draw the box.
+      box();
+    }
 
-      push();
-      translate(-15, 0, sin(frameCount / 30) * 65);
-      box(30);
-      pop();
-      push();
-      translate(15, 0, sin(frameCount / 30 + PI) * 65);
-      box(30);
-      pop();
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right.
+      cam2.camera(400, -400, 800);
+
+      // Set its fovy to 0.2.
+      // Set its aspect to 1.5.
+      // Set its near to 600.
+      // Set its far to 1200.
+      cam2.perspective(0.2, 1.5, 600, 1200);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A white cube moves left and right on a gray background. The camera toggles between a frontal and a skewed aerial view when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin left and right.
+      let x = 100 * sin(frameCount * 0.01);
+      translate(x, 0, 0);
+
+      // Draw the box.
+      box();
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
     }
     </code>
     </div>
 class: p5.Camera
+params:
+  - name: fovy
+    description: |
+      <p>camera frustum vertical field of view. Defaults to
+                                <code>2 * atan(height / 2 / 800)</code>.</p>
+    type: Number
+    optional: true
+  - name: aspect
+    description: |
+      <p>camera frustum aspect ratio. Defaults to
+                                <code>width / height</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>distance from the camera to the near clipping plane.
+                                Defaults to <code>0.1 * 800</code>.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: |
+      <p>distance from the camera to the far clipping plane.
+                                Defaults to <code>10 * 800</code>.</p>
+    type: Number
+    optional: true
 chainable: false
 ---
 

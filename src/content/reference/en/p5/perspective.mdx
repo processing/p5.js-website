@@ -4,94 +4,157 @@ module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
 description: >
-  <p>Sets a perspective projection for the current camera in a 3D sketch.
+  <p>Sets a perspective projection for the current camera in a 3D sketch.</p>
 
-  This projection represents depth through foreshortening: objects
+  <p>In a perspective projection, shapes that are further from the camera appear
 
-  that are close to the camera appear their actual size while those
+  smaller than shapes that are near the camera. This technique, called
 
-  that are further away from the camera appear smaller.</p>
+  foreshortening, creates realistic 3D scenes. It’s applied by default in
 
-  <p>The parameters to this function define the viewing frustum
+  WebGL mode.</p>
 
-  (the truncated pyramid within which objects are seen by the camera) through
+  <p><code>perspective()</code> changes the camera’s perspective by changing its
+  viewing
 
-  vertical field of view, aspect ratio (usually width/height), and near and far
+  frustum. The frustum is the volume of space that’s visible to the camera.
 
-  clipping planes.</p>
+  Its shape is a pyramid with its top cut off. The camera is placed where
 
-  <p>If no parameters are given, the default values are used as:</p>
+  the top of the pyramid should be and views everything between the frustum’s
 
-  <ul>
+  top (near) plane and its bottom (far) plane.</p>
 
-  <li><code>fov</code> : The default field of view for the camera is such that
-  the full height of renderer is visible when it is positioned at a default
-  distance of 800 units from the camera.</li>
+  <p>The first parameter, <code>fovy</code>, is the camera’s vertical field of
+  view. It’s
 
-  <li><code>aspect</code> : The default aspect ratio is the ratio of renderer's
-  width to renderer's height.</li>
+  an angle that describes how tall or narrow a view the camera has. For
 
-  <li><code>near</code> : The default value for the near clipping plane is 80,
-  which is 0.1 times the default distance from the camera to its subject.</li>
+  example, calling <code>perspective(0.5)</code> sets the camera’s vertical
+  field of
 
-  <li><code>far</code> : The default value for the far clipping plane is 8000,
-  which is 10 times the default distance from the camera to its subject.</li>
+  view to 0.5 radians. By default, <code>fovy</code> is calculated based on the
+  sketch’s
 
-  </ul>
+  height and the camera’s default z-coordinate, which is 800. The formula for
 
-  <p>If you prefer a fixed field of view, follow these steps:</p>
+  the default <code>fovy</code> is <code>2 * atan(height / 2 / 800)</code>.</p>
 
-  <ol>
+  <p>The second parameter, <code>aspect</code>, is the camera’s aspect ratio.
+  It’s a number
 
-  <li>Choose your desired field of view angle (<code>fovy</code>). This is how
-  wide the camera can see.</li>
+  that describes the ratio of the top plane’s width to its height. For
 
-  <li>To ensure that you can see the entire width across horizontally and height
-  across vertically, place the camera a distance of <code>(height / 2) /
-  tan(fovy / 2)</code> back from its subject.</li>
+  example, calling <code>perspective(0.5, 1.5)</code> sets the camera’s field of
+  view to
 
-  <li>Call perspective with the chosen field of view, canvas aspect ratio, and
-  near/far values:
+  0.5 radians and aspect ratio to 1.5, which would make shapes appear thinner
 
-  <code>perspective(fovy, width / height, cameraDistance / 10, cameraDistance *
-  10);</code></li>
+  on a square canvas. By default, aspect is set to <code>width /
+  height</code>.</p>
 
-  </ol>
-line: 121
+  <p>The third parameter, <code>near</code>, is the distance from the camera to
+  the near
+
+  plane. For example, calling <code>perspective(0.5, 1.5, 100)</code> sets the
+  camera’s
+
+  field of view to 0.5 radians, its aspect ratio to 1.5, and places the near
+
+  plane 100 pixels from the camera. Any shapes drawn less than 100 pixels
+
+  from the camera won’t be visible. By default, near is set to <code>0.1 *
+  800</code>,
+
+  which is 1/10th the default distance between the camera and the origin.</p>
+
+  <p>The fourth parameter, <code>far</code>, is the distance from the camera to
+  the far
+
+  plane. For example, calling <code>perspective(0.5, 1.5, 100, 10000)</code>
+  sets the
+
+  camera’s field of view to 0.5 radians, its aspect ratio to 1.5, places the
+
+  near plane 100 pixels from the camera, and places the far plane 10,000
+
+  pixels from the camera. Any shapes drawn more than 10,000 pixels from the
+
+  camera won’t be visible. By default, far is set to <code>10 * 800</code>,
+  which is 10
+
+  times the default distance between the camera and the origin.</p>
+
+  <p>Note: <code>perspective()</code> can only be used in WebGL mode.</p>
+line: 148
 isConstructor: false
 itemtype: method
-alt: 'two colored 3D boxes move back and forth, rotating as mouse is dragged.'
 example:
   - |-
 
     <div>
     <code>
-    //drag the mouse to look around!
+    // Double-click to squeeze the box.
+
+    let isSqueezed = false;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      perspective(PI / 3.0, width / height, 0.1, 500);
-      describe(
-        'two colored 3D boxes move back and forth, rotating as mouse is dragged.'
-      );
+
+      describe('A white rectangular prism on a gray background. The box appears to become thinner when the user double-clicks.');
     }
+
     function draw() {
       background(200);
-      orbitControl();
-      normalMaterial();
 
-      rotateX(-0.3);
-      rotateY(-0.2);
-      translate(0, 0, -50);
+      // Place the camera at the top-right.
+      camera(400, -400, 800);
 
-      push();
-      translate(-15, 0, sin(frameCount / 30) * 65);
-      box(30);
-      pop();
-      push();
-      translate(15, 0, sin(frameCount / 30 + PI) * 65);
-      box(30);
-      pop();
+      if (isSqueezed === true) {
+        // Set fovy to 0.2.
+        // Set aspect to 1.5.
+        perspective(0.2, 1.5);
+      }
+
+      // Draw the box.
+      box();
+    }
+
+    // Change the camera's perspective when the user double-clicks.
+    function doubleClicked() {
+      isSqueezed = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white rectangular prism on a gray background. The prism moves away from the camera until it disappears.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Place the camera at the top-right.
+      camera(400, -400, 800);
+
+      // Set fovy to 0.2.
+      // Set aspect to 1.5.
+      // Set near to 600.
+      // Set far to 1200.
+      perspective(0.2, 1.5, 600, 1200);
+
+      // Move the origin away from the camera.
+      let x = -frameCount;
+      let y = frameCount;
+      let z = -2 * frameCount;
+      translate(x, y, z);
+
+      // Draw the box.
+      box();
     }
     </code>
     </div>
@@ -99,23 +162,26 @@ class: p5
 params:
   - name: fovy
     description: |
-      <p>camera frustum vertical field of view,
-                                from bottom to top of view, in <a href="#/p5/angleMode">angleMode</a> units</p>
+      <p>camera frustum vertical field of view. Defaults to
+                                <code>2 * atan(height / 2 / 800)</code>.</p>
     type: Number
     optional: true
   - name: aspect
     description: |
-      <p>camera frustum aspect ratio</p>
+      <p>camera frustum aspect ratio. Defaults to
+                                <code>width / height</code>.</p>
     type: Number
     optional: true
   - name: near
     description: |
-      <p>frustum near plane length</p>
+      <p>distance from the camera to the near clipping plane.
+                                Defaults to <code>0.1 * 800</code>.</p>
     type: Number
     optional: true
   - name: far
     description: |
-      <p>frustum far plane length</p>
+      <p>distance from the camera to the far clipping plane.
+                                Defaults to <code>10 * 800</code>.</p>
     type: Number
     optional: true
 chainable: true

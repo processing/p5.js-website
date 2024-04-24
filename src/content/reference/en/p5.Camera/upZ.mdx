@@ -4,27 +4,114 @@ module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
 description: |
-  <p>z component of direction 'up' from camera</p>
-line: 825
+  <p>The z-component of the camera's "up" vector.</p>
+  <p>The camera's "up" vector orients its y-axis. By default, the "up" vector is
+  <code>(0, 1, 0)</code>, so its z-component is 0 in "local" space.</p>
+line: 1747
 isConstructor: false
 itemtype: property
-alt: An example showing the use of camera object properties
 example:
   - |-
 
-    <div class='norender'><code>
-    let cam, div;
+    <div>
+    <code>
+    let cam;
+    let font;
+
+    // Load a font and create a p5.Font object.
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      background(255);
+
+      // Create a p5.Camera object.
       cam = createCamera();
-      div = createDiv('upZ = ' + cam.upZ);
-      div.position(0, 0);
-      div.style('color', 'blue');
-      div.style('font-size', '18px');
-      describe('An example showing the use of camera object properties');
+
+      // Place the camera at the top-right: (100, -400, 800)
+      // Point it at the origin: (0, 0, 0)
+      // Set its "up" vector: (0, 1, 0).
+      cam.camera(100, -400, 800, 0, 0, 0, 0, 1, 0);
+
+      describe(
+        'A white cube on a gray background. The text "upZ: 0" is written in black beneath it.'
+      );
     }
-    </code></div>
+
+    function draw() {
+      background(200);
+
+      // Style the box.
+      fill(255);
+
+      // Draw the box.
+      box();
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+      textFont(font);
+      fill(0);
+
+      // Display the value of upZ, rounded to the nearest tenth.
+      text(`upZ: ${round(cam.upZ, 1)}`, 0, 55);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let cam;
+    let font;
+
+    // Load a font and create a p5.Font object.
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Camera object.
+      cam = createCamera();
+
+      // Place the camera at the top-right: (100, -400, 800)
+      // Point it at the origin: (0, 0, 0)
+      // Set its "up" vector: (0, 1, 0).
+      cam.camera(100, -400, 800, 0, 0, 0, 0, 1, 0);
+
+      describe(
+        'A white cube on a gray background. The cube appears to rock back and forth. The text "upZ: Z" is written in black beneath it. Z oscillates between -1 and 1.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the box.
+      fill(255);
+
+      // Draw the box.
+      box();
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+      textFont(font);
+      fill(0);
+
+      // Calculate the z-component.
+      let z = sin(frameCount * 0.01);
+
+      // Update the camera's "up" vector.
+      cam.camera(100, -400, 800, 0, 0, 0, 0, 1, z);
+
+      // Display the value of upZ, rounded to the nearest tenth.
+      text(`upZ: ${round(cam.upZ, 1)}`, 0, 55);
+    }
+    </code>
+    </div>
 class: p5.Camera
 type: Number
 ---
