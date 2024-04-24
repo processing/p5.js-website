@@ -5,6 +5,7 @@ import ContributeImage from "@content/ui/images/contribute.png";
 import BaseLayout from "./BaseLayout.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import GridItemContributorDoc from "@components/GridItem/ContributorDoc.astro";
+import { setJumpToState, type JumpToLink } from "../globals/state";
 
 interface Props {
   entries: CollectionEntry<"contributor-docs">[];
@@ -25,11 +26,26 @@ const donateSectionItems = [
     description: t("contributePage", "FaqDescription"),
   },
 ];
+
+const jumpToLinks = [
+  {
+    label: t("Contributor Docs"),
+    url: "#docs",
+  },
+  {
+    label: t("Donate"),
+    url: "#donate",
+  },
+];
+
+setJumpToState({
+  links: jumpToLinks as JumpToLink[],
+});
 ---
 
 <BaseLayout title="Contribute">
   <section class="mt-md mb-xl">
-    <h2 class="mb-lg">{t("Contributor Docs")}</h2>
+    <h2 class="mb-lg" id="docs">{t("Contributor Docs")}</h2>
     <div class="mb-md grid grid-cols-1 gap-x-md md:grid-cols-2">
       <div>
         <Image
@@ -52,7 +68,7 @@ const donateSectionItems = [
   </section>
   <hr />
   <section class="mt-md mb-xl">
-    <h2 class="mt-md mb-lg">{t("Donate")}</h2>
+    <h2 class="mt-md mb-lg" id="donate">{t("Donate")}</h2>
     <ul class="grid grid-cols-2 gap-y-xl gap-x-md md:grid-cols-4">
       {
         // This is the same markup as in ContributorDocItem
