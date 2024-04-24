@@ -3,27 +3,57 @@ title: camera
 module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
-description: |
-  <p>Sets the position of the current camera in a 3D sketch.
-  Parameters for this function define the camera's position,
-  the center of the sketch (where the camera is pointing),
-  and an up direction (the orientation of the camera).</p>
-  <p>This function simulates the movements of the camera, allowing objects to be
-  viewed from various angles. Remember, it does not move the objects themselves
-  but the camera instead. For example when the centerX value is positive,
-  and the camera is rotating to the right side of the sketch,
-  the object will seem like it's moving to the left.</p>
-  <p>See this <a href="https://www.openprocessing.org/sketch/740258">example</a>
-  to view the position of your camera.</p>
-  <p>If no parameters are given, the following default is used:
-  camera(0, 0, 800, 0, 0, 0, 0, 1, 0)</p>
+description: >
+  <p>Sets the position and orientation of the current camera in a 3D sketch.</p>
+
+  <p><code>camera()</code> allows objects to be viewed from different angles. It
+  has nine
+
+  parameters that are all optional.</p>
+
+  <p>The first three parameters, <code>x</code>, <code>y</code>, and
+  <code>z</code>, are the coordinates of the
+
+  camera’s position. For example, calling <code>camera(0, 0, 0)</code> places
+  the camera
+
+  at the origin <code>(0, 0, 0)</code>. By default, the camera is placed at
+
+  <code>(0, 0, 800)</code>.</p>
+
+  <p>The next three parameters, <code>centerX</code>, <code>centerY</code>, and
+  <code>centerZ</code> are the
+
+  coordinates of the point where the camera faces. For example, calling
+
+  <code>camera(0, 0, 0, 10, 20, 30)</code> places the camera at the origin
+  <code>(0, 0, 0)</code>
+
+  and points it at <code>(10, 20, 30)</code>. By default, the camera points at
+  the
+
+  origin <code>(0, 0, 0)</code>.</p>
+
+  <p>The last three parameters, <code>upX</code>, <code>upY</code>, and
+  <code>upZ</code> are the components of
+
+  the "up" vector. The "up" vector orients the camera’s y-axis. For example,
+
+  calling <code>camera(0, 0, 0, 10, 20, 30, 0, -1, 0)</code> places the camera
+  at the
+
+  origin <code>(0, 0, 0)</code>, points it at <code>(10, 20, 30)</code>, and
+  sets the "up" vector
+
+  to <code>(0, -1, 0)</code> which is like holding it upside-down. By default,
+  the "up"
+
+  vector is <code>(0, 1, 0)</code>.</p>
+
+  <p>Note: <code>camera()</code> can only be used in WebGL mode.</p>
 line: 13
 isConstructor: false
 itemtype: method
-alt: |-
-  White square repeatedly grows to fill canvas and then shrinks.
-  An interactive example of a red cube with 3 sliders for moving it across x, y,
-  z axis and 3 sliders for shifting its center.
 example:
   - |-
 
@@ -31,64 +61,85 @@ example:
     <code>
     function setup() {
       createCanvas(100, 100, WEBGL);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      describe('a square moving closer and then away from the camera.');
+
+      describe('A white cube on a gray background.');
     }
+
     function draw() {
-      background(204);
-      //move the camera away from the plane by a sin wave
-      camera(0, 0, 20 + sin(frameCount * 0.01) * 10, 0, 0, 0, 0, 1, 0);
-      plane(10, 10);
+      background(200);
+
+      // Move the camera to the top-right.
+      camera(200, -400, 800);
+
+      // Draw the box.
+      box();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    //move slider to see changes!
-    //sliders control the first 6 parameters of camera()
-    let sliderGroup = [];
-    let X;
-    let Y;
-    let Z;
-    let centerX;
-    let centerY;
-    let centerZ;
-    let h = 20;
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube apperas to sway left and right on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the camera's x-coordinate.
+      let x = 400 * cos(frameCount * 0.01);
+
+      // Orbit the camera around the box.
+      camera(x, -400, 800);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Adjust the range sliders to change the camera's position.
+
+    let xSlider;
+    let ySlider;
+    let zSlider;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      //create sliders
-      for (var i = 0; i < 6; i++) {
-        if (i === 2) {
-          sliderGroup[i] = createSlider(10, 400, 200);
-        } else {
-          sliderGroup[i] = createSlider(-400, 400, 0);
-        }
-        h = map(i, 0, 6, 5, 85);
-        sliderGroup[i].position(10, height + h);
-        sliderGroup[i].style('width', '80px');
-      }
+
+      // Create slider objects to set the camera's coordinates.
+      xSlider = createSlider(-400, 400, 400);
+      xSlider.position(0, 100);
+      xSlider.size(100);
+      ySlider = createSlider(-400, 400, -200);
+      ySlider.position(0, 120);
+      ySlider.size(100);
+      zSlider = createSlider(0, 1600, 800);
+      zSlider.position(0, 140);
+      zSlider.size(100);
+
       describe(
-        'White square repeatedly grows to fill canvas and then shrinks. An interactive example of a red cube with 3 sliders for moving it across x, y, z axis and 3 sliders for shifting its center.'
+        'A white cube drawn against a gray background. Three range sliders appear beneath the image. The camera position changes when the user moves the sliders.'
       );
     }
 
     function draw() {
-      background(60);
-      // assigning sliders' value to each parameters
-      X = sliderGroup[0].value();
-      Y = sliderGroup[1].value();
-      Z = sliderGroup[2].value();
-      centerX = sliderGroup[3].value();
-      centerY = sliderGroup[4].value();
-      centerZ = sliderGroup[5].value();
-      camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
-      stroke(255);
-      fill(255, 102, 94);
-      box(85);
+      background(200);
+
+      // Get the camera's coordinates from the sliders.
+      let x = xSlider.value();
+      let y = ySlider.value();
+      let z = zSlider.value();
+
+      // Move the camera.
+      camera(x, y, z);
+
+      // Draw the box.
+      box();
     }
     </code>
     </div>
@@ -96,47 +147,47 @@ class: p5
 params:
   - name: x
     description: |
-      <p>camera position value on x axis</p>
+      <p>x-coordinate of the camera. Defaults to 0.</p>
     type: Number
     optional: true
   - name: 'y'
     description: |
-      <p>camera position value on y axis</p>
+      <p>y-coordinate of the camera. Defaults to 0.</p>
     type: Number
     optional: true
   - name: z
     description: |
-      <p>camera position value on z axis</p>
+      <p>z-coordinate of the camera. Defaults to 800.</p>
     type: Number
     optional: true
   - name: centerX
     description: |
-      <p>x coordinate representing center of the sketch</p>
+      <p>x-coordinate of the point the camera faces. Defaults to 0.</p>
     type: Number
     optional: true
   - name: centerY
     description: |
-      <p>y coordinate representing center of the sketch</p>
+      <p>y-coordinate of the point the camera faces. Defaults to 0.</p>
     type: Number
     optional: true
   - name: centerZ
     description: |
-      <p>z coordinate representing center of the sketch</p>
+      <p>z-coordinate of the point the camera faces. Defaults to 0.</p>
     type: Number
     optional: true
   - name: upX
     description: |
-      <p>x component of direction 'up' from camera</p>
+      <p>x-component of the camera’s "up" vector. Defaults to 0.</p>
     type: Number
     optional: true
   - name: upY
     description: |
-      <p>y component of direction 'up' from camera</p>
+      <p>y-component of the camera’s "up" vector. Defaults to 1.</p>
     type: Number
     optional: true
   - name: upZ
     description: |
-      <p>z component of direction 'up' from camera</p>
+      <p>z-component of the camera’s "up" vector. Defaults to 0.</p>
     type: Number
     optional: true
 chainable: true

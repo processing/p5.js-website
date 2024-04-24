@@ -4,35 +4,142 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-  <p>Rotates a shape around Z axis by the amount specified in angle parameter.
+  <p>Rotates the coordinate system about the z-axis in WebGL mode.</p>
 
-  The angles can be entered in either RADIANS or DEGREES.</p>
+  <p>The parameter, <code>angle</code>, is the amount to rotate. For example,
+  calling
 
-  <p>This method works in WEBGL mode only.</p>
+  <code>rotateZ(1)</code> rotates the coordinate system about the z-axis by 1
+  radian.
 
-  <p>Objects are always rotated around their relative position to the
+  <code>rotateZ()</code> interprets angle values using the current
 
-  origin and positive numbers rotate objects in a clockwise direction.
+  <a href="/reference/p5/angleMode">angleMode()</a>.</p>
 
-  All transformations are reset when <a href="/reference/p5/draw">draw()</a>
-  begins again.</p>
-line: 337
+  <p>By default, transformations accumulate. For example, calling
+  <code>rotateZ(1)</code>
+
+  twice has the same effect as calling <code>rotateZ(2)</code> once. The
+
+  <a href="/reference/p5/push">push()</a> and <a
+  href="/reference/p5/pop">pop()</a> functions
+
+  can be used to isolate transformations within distinct drawing groups.</p>
+
+  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
+
+  <code>rotateZ(1)</code> inside the <a href="/reference/p5/draw">draw()</a>
+  function won't cause
+
+  shapes to spin.</p>
+line: 743
 isConstructor: false
 itemtype: method
-alt: 3d box rotating around the z axis.
 example:
   - |-
 
-    <div modernizr='webgl'>
+    <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+
+      describe('A white cube on a gray background.');
     }
+
     function draw() {
-      background(255);
-      rotateZ(millis() / 1000);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/8 turn.
+      rotateZ(QUARTER_PI);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/16 turn.
+      rotateZ(QUARTER_PI / 2);
+
+      // Rotate the coordinate system 1/16 turn.
+      rotateZ(QUARTER_PI / 2);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/8 turn.
+      rotateZ(45);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube rotates slowly against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      rotateZ(angle);
+
+      // Draw a box.
       box();
     }
     </code>
@@ -40,9 +147,9 @@ example:
 class: p5
 params:
   - name: angle
-    description: |
-      <p>the angle of rotation, specified in radians
-                             or degrees, depending on current angleMode</p>
+    description: >
+      <p>angle of rotation in the current <a
+      href="#/p5/angleMode">angleMode()</a>.</p>
     type: Number
 chainable: true
 ---

@@ -4,136 +4,92 @@ module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
 description: >
-  <p>For the cameras cam0 and cam1 with the given arguments, their view are
-  combined
+  <p>Sets the camera’s position and orientation to values that are in-between
 
-  with the parameter amt that represents the quantity, and the obtained view is
-  applied.
+  those of two other cameras.</p>
 
-  For example, if cam0 is looking straight ahead and cam1 is looking straight
+  <p><code>myCamera.slerp()</code> uses spherical linear interpolation to
+  calculate a
 
-  to the right and amt is 0.5, the applied camera will look to the halfway
+  position and orientation that’s in-between two other cameras. Doing so is
 
-  between front and right.
+  helpful for transitioning smoothly between two perspectives.</p>
 
-  If the applied camera is active, the applied result will be reflected on the
-  screen.
+  <p>The first two parameters, <code>cam0</code> and <code>cam1</code>, are the
+  <code>p5.Camera</code> objects
 
-  When applying this function, all cameras involved must have exactly the same
-  projection
+  that should be used to set the current camera.</p>
 
-  settings. For example, if one is perspective, ortho, frustum, the other two
-  must also be
+  <p>The third parameter, <code>amt</code>, is the amount to interpolate between
+  <code>cam0</code> and
 
-  perspective, ortho, frustum respectively. However, if all cameras have ortho
-  settings,
+  <code>cam1</code>. 0.0 keeps the camera’s position and orientation equal to
+  <code>cam0</code>’s,
 
-  interpolation is possible if the ratios of left, right, top and bottom are
-  equal to each other.
+  0.5 sets them halfway between <code>cam0</code>’s and <code>cam1</code>’s ,
+  and 1.0 sets the
 
-  For example, when it is changed by orbitControl().</p>
-line: 1719
+  position and orientation equal to <code>cam1</code>’s.</p>
+
+  <p>For example, calling <code>myCamera.slerp(cam0, cam1, 0.1)</code> sets
+  cam’s position
+
+  and orientation very close to <code>cam0</code>’s. Calling
+
+  <code>myCamera.slerp(cam0, cam1, 0.9)</code> sets cam’s position and
+  orientation very
+
+  close to <code>cam1</code>’s.</p>
+
+  <p>Note: All of the cameras must use the same projection.</p>
+line: 3252
 isConstructor: false
 itemtype: method
-alt: >-
-  There is a camera, drawing a cube. The camera can be moved freely with
-
-  orbitControl(). Double-click to smoothly return the camera to its initial
-  state.
-
-  The camera cannot be moved during that time.
 example:
   - |-
 
     <div>
     <code>
-    let cam0, cam1, cam;
+    let cam;
+    let cam0;
+    let cam1;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      strokeWeight(3);
 
-      // camera for slerp.
+      // Create the main camera.
+      // Keep its default settings.
       cam = createCamera();
-      cam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      // cam0 is looking at the cube from the front.
-      cam0 = createCamera();
-      cam0.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam0.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      // cam1 is pointing straight to the right in the cube
-      // at the same position as cam0 by doing a pan(-PI/2).
-      cam1 = createCamera();
-      cam1.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam1.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      cam1.pan(-PI/2);
 
-      // we only use cam.
+      // Create the first camera.
+      // Keep its default settings.
+      cam0 = createCamera();
+
+      // Create the second camera.
+      cam1 = createCamera();
+
+      // Place it at the top-right.
+      cam1.setPosition(400, -400, 800);
+
+      // Point it at the origin.
+      cam1.lookAt(0, 0, 0);
+
+      // Set the current camera to cam.
       setCamera(cam);
+
+      describe('A white cube drawn against a gray background. The camera slowly oscillates between a frontal view and an aerial view.');
     }
 
     function draw() {
-      // calculate amount.
-      const amt = 0.5 - 0.5 * cos(frameCount * TAU / 120);
-      // slerp cam0 and cam1 with amt, set to cam.
-      // When amt moves from 0 to 1, cam moves from cam0 to cam1,
-      // shaking the camera to the right.
+      background(200);
+
+      // Calculate the amount to interpolate between cam0 and cam1.
+      let amt = 0.5 * sin(frameCount * 0.01) + 0.5;
+
+      // Update the main camera's position and orientation.
       cam.slerp(cam0, cam1, amt);
 
-      background(255);
-      // Every time the camera turns right, the cube drifts left.
-      box(40);
-    }
-    </code>
-    </div>
-  - |-
-
-    <div>
-    <code>
-    let cam, lastCam, initialCam;
-    let countForReset = 30;
-    // This sample uses orbitControl() to move the camera.
-    // Double-clicking the canvas restores the camera to its initial state.
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-      strokeWeight(3);
-
-      // main camera
-      cam = createCamera();
-      cam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      // Camera for recording loc info before reset
-      lastCam = createCamera();
-      lastCam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      lastCam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      // Camera for recording the initial state
-      initialCam = createCamera();
-      initialCam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      initialCam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-
-      setCamera(cam); // set main camera
-    }
-
-    function draw() {
-      if (countForReset < 30) {
-        // if the reset count is less than 30,
-        // it will move closer to the original camera as it increases.
-        countForReset++;
-        cam.slerp(lastCam, initialCam, countForReset / 30);
-      } else {
-        // if the count is 30,
-        // you can freely move the main camera with orbitControl().
-        orbitControl();
-      }
-
-      background(255);
-      box(40);
-    }
-    // A double-click sets countForReset to 0 and initiates a reset.
-    function doubleClicked() {
-      if (countForReset === 30) {
-        countForReset = 0;
-        lastCam.set(cam);
-      }
+      box();
     }
     </code>
     </div>
@@ -141,15 +97,16 @@ class: p5.Camera
 params:
   - name: cam0
     description: |
-      <p>first p5.Camera</p>
+      <p>first camera.</p>
     type: p5.Camera
   - name: cam1
     description: |
-      <p>second p5.Camera</p>
+      <p>second camera.</p>
     type: p5.Camera
   - name: amt
-    description: |
-      <p>amount to use for interpolation during slerp</p>
+    description: >
+      <p>amount of interpolation between 0.0 (<code>cam0</code>) and 1.0
+      (<code>cam1</code>).</p>
     type: Number
 chainable: false
 ---
