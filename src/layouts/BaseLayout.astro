@@ -11,7 +11,7 @@ import "@styles/base.scss";
 
 interface Props {
   title: string;
-  subtitle?: string;
+  subtitle?: string | null;
   className?: string;
   variant?: "root" | "item" | "search" | "homepage";
   topic?: PageTopic;
@@ -30,7 +30,9 @@ const t = await getUiTranslator(currentLocale);
 const localizedTitle = t(title);
 const localizedSubtitle = subtitle
   ? t(subtitle)
-  : t("briefPageDescriptions", title);
+  : subtitle === undefined
+    ? t("briefPageDescriptions", title)
+    : undefined;
 const topic = getTopicInfo(Astro.props.topic);
 const splitPathname = Astro.url.pathname.split("/");
 const fallbackTopic = splitPathname[splitPathname.length - 2];
@@ -74,8 +76,8 @@ const headerTopic = topic
             />
           ) : variant === "item" ? (
             <ItemPageHeader
-              title={title}
-              subtitle={subtitle}
+              title={localizedTitle as string}
+              subtitle={localizedSubtitle as string}
               topic={headerTopic}
             />
           ) : (

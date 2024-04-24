@@ -27,32 +27,28 @@ function strCompare(a: string, b: string) {
   return 0;
 }
 
-const sections = categories.map((slug) => {
-  const name =  t("libraryCategories", slug);
-  const sectionEntries = entries
-    .filter((e: LibraryEntry) => e.data.category === slug)
-    .sort(
-      (a: LibraryEntry, b: LibraryEntry) =>
+const sections = categories
+  .map((slug) => {
+    const name = t("libraryCategories", slug);
+    const sectionEntries = entries
+      .filter((e: LibraryEntry) => e.data.category === slug)
+      .sort((a: LibraryEntry, b: LibraryEntry) =>
         strCompare(a.data.name.toLowerCase(), b.data.name.toLowerCase())
-    );
+      );
 
-  return { slug, name, sectionEntries };
-}).filter(section => section.sectionEntries.length > 0);
+    return { slug, name, sectionEntries };
+  })
+  .filter((section) => section.sectionEntries.length > 0);
 
 const pageJumpToLinks = categories.map((category) => ({
-  url: `#${category}`,
-  label: category
-    .split("-")
-    .map((word) => word[0].toUpperCase() + word.slice(1))
-    .join(" "),
+  url: `/libraries#${category}`,
+  label: t("libraryCategories", category),
 }));
 
 setJumpToState({
-  heading: t("Tutorials") as string,
+  heading: t("Libraries") as string,
   links: pageJumpToLinks as JumpToLink[],
 });
-
-setJumpToState(null);
 ---
 
 <BaseLayout title="Libraries" variant="item" topic="community">
