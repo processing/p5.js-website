@@ -4,9 +4,11 @@ import TutorialWrapper from "@components/TutorialWrapper/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { setJumpToState, type JumpToLink } from "../globals/state";
 import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
-import CodeContainerWithCopy from "../components/CodeContainer/CodeContainerWithCopy.astro";
 import CodeBlockWrapper from "@components/CodeBlockWrapper/index.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
 import type { MarkdownHeading } from "astro";
+import { getRelatedEntriesinCollection } from "../pages/_utils";
+import { categoryNames } from "../content/tutorials/config";
 
 const { entry, relatedEntries } = Astro.props;
 const { Content, components, headings } = await entry.render();
@@ -16,7 +18,7 @@ const t = await getUiTranslator(currentLocale);
 
 const jumpToLinks = [
   {
-    label: entry.data.category,
+    label: categoryNames[entry.data.category as keyof typeof categoryNames],
     url: `/tutorials#${entry.data.category}`,
     current: true,
   },
@@ -45,9 +47,26 @@ const jumpToState = {
 };
 
 setJumpToState(jumpToState);
+
+const relatedReferences =
+  entry.data.relatedContent?.references !== undefined
+    ? await getRelatedEntriesinCollection(
+        "reference",
+        currentLocale,
+        entry.data.relatedContent.references.map((r: any) => r.slug)
+      )
+    : [];
+const relatedExamples =
+  entry.data.relatedContent?.examples !== undefined
+    ? await getRelatedEntriesinCollection(
+        "examples",
+        currentLocale,
+        entry.data.relatedContent.examples.map((r: any) => r.slug)
+      )
+    : [];
 ---
 
-<BaseLayout title={entry.data.title} variant="item">
+<BaseLayout title={entry.data.title} variant="item" topic="tutorials">
   {entry.data.authors && <h6>By {entry.data.authors.join(", ")}</h6>}
   {entry.data.authorsNote && <h7>{entry.data.authorsNote}</h7>}
   <TutorialWrapper>
@@ -60,19 +79,22 @@ setJumpToState(jumpToState);
     />
   </TutorialWrapper>
 
-  <h2>Related examples</h2>
-  <ul>
-    {/* revise when schema for examples exists */}
-    {entry.data.relatedContent?.examples?.map((relEx: any) => <li>{relEx}</li>)}
-  </ul>
-
-  <h2>Related references</h2>
-  <ul>
-    {/* revise when schema for reference exists */}
+  <div class="grid gap-y-lg mt-2xl">
     {
-      entry.data.relatedContent?.references?.map((relRef: any) => (
-        <li>{relRef}</li>
-      ))
+      relatedReferences && (
+        <RelatedItems
+          title={t("Related References") as string}
+          items={relatedReferences}
+        />
+      )
     }
-  </ul>
+    {
+      relatedExamples.length > 0 && (
+        <RelatedItems
+          title={t("Related Examples") as string}
+          items={relatedExamples}
+        />
+      )
+    }
+  </div>
 </BaseLayout>

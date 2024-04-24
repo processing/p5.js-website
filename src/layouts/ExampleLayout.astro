@@ -12,14 +12,12 @@ import {
 } from "../i18n/utils";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
-  getCollectionInLocaleWithFallbacks,
   getExampleCategory,
+  getRelatedEntriesinCollection,
 } from "../pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import EditableSketch from "@components/EditableSketch/index.astro";
-import GridItemExample from "@components/GridItem/Example.astro";
-import GridItemReference from "@components/GridItem/Reference.astro";
-import { getEntries } from "astro:content";
+import RelatedItems from "@components/RelatedItems/index.astro";
 
 interface Props {
   example: CollectionEntry<"examples">;
@@ -59,19 +57,19 @@ const jumpToState = {
 
 setJumpToState(jumpToState);
 
-const referenceCollection = await getCollectionInLocaleWithFallbacks(
-  "reference",
-  currentLocale
-);
-const relatedReference =
-  example.data.relatedReference
-    ?.map((re) => referenceCollection.find((rc) => rc.slug === re.slug))
-    .filter((el) => el !== undefined) ?? [];
+const relatedReferences =
+  example.data.relatedReference !== undefined
+    ? await getRelatedEntriesinCollection(
+        "reference",
+        currentLocale,
+        example.data.relatedReference.map((r) => r.slug)
+      )
+    : [];
 
 const { Content } = await example.render();
 ---
 
-<BaseLayout title={example.data.title} variant="item">
+<BaseLayout title={example.data.title} variant="item" topic="examples">
   <div class="mt-xl mb-4xl lg:mb-3xl">
     <div class="rendered-markdown">
       <Content />
@@ -79,24 +77,18 @@ const { Content } = await example.render();
     <EditableSketch code={code} />
     <p>{example.data.arialabel}</p>
   </div>
-  {
-    relatedReference && (
-      <div class="mb-4xl lg:mb-3xl">
-        <hr />
-        <h2 class="mt-md mb-2xl lg:mb-lg">{t("Related Reference")}</h2>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-md">
-          {relatedReference.map((relRef) => (
-            <GridItemReference item={relRef as CollectionEntry<"reference">} />
-          ))}
-        </div>
-      </div>
-    )
-  }
-  <div class="mb-4xl lg:mb-3xl">
-    <hr />
-    <h2 class="mt-md mb-2xl lg:mb-lg">{t("Related Examples")}</h2>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-md">
-      {relatedExamples.map((relEx) => <GridItemExample item={relEx} />)}
-    </div>
+  <div class="grid gap-y-4xl lg:gap-y-mb-3xl mt-2xl">
+    {
+      relatedReferences.length > 0 ? (
+        <RelatedItems
+          title={t("Related Reference") as string}
+          items={relatedReferences}
+        />
+      ) : null
+    }
+    <RelatedItems
+      title={t("Related Examples") as string}
+      items={relatedExamples}
+    />
   </div>
 </BaseLayout>

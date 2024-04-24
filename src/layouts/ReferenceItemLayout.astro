@@ -6,8 +6,10 @@ import {
   escapeCodeTagsContent,
   separateReferenceExamples,
   normalizeReferenceRoute,
+  getRelatedEntriesinCollection,
 } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
 import MethodSignature from "@components/MethodSignature/index.astro";
 import type {
   ReferenceOverload,
@@ -46,9 +48,25 @@ const jumpToState = {
 };
 
 setJumpToState(jumpToState);
+
+// get whatever related entries might be specified in the collection entry data
+const relatedReferencesFromEntryData =
+  entry.data.relatedContent?.references !== undefined
+    ? await getRelatedEntriesinCollection(
+        "reference",
+        currentLocale,
+        entry.data.relatedContent.references.map((r: any) => r.slug)
+      )
+    : [];
+
+// then make a list of four, backfilled with entries from the jumpTo links
+const relatedReferences = [
+  ...relatedReferencesFromEntryData,
+  ...relatedEntries,
+].slice(0, 4);
 ---
 
-<BaseLayout title={title} variant="item">
+<BaseLayout title={title} variant="item" topic="reference">
   <div class="content-grid mt-0">
     <div class="col-span-9 xl:min-w-[1000px]">
       <div set:html={description} class="[&_a]:text-type-magenta mb-xl" />
@@ -72,31 +90,21 @@ setJumpToState(jumpToState);
           </div>
         )
       }
-      <div class="mb-xl">
-        <h3>{t("Syntax")}</h3>
-        <MethodSignature
-          params={entry.data.params}
-          overloads={entry.data.overloads}
-          name={entry.data.title}
-        />
-      </div>
       {
         (entry.data.params || entry.data.overloads) && (
-          <div class="mb-xl">
-            <h3 class="mb-md">{t("Parameters")}</h3>
-            {entry.data.params &&
-              entry.data.params.map((param: ReferenceParam) => (
-                <div class="grid grid-cols-6 gap-[40px] text-body">
-                  <h4 class="col-span-1">{param.name}</h4>
-                  <span
-                    class="col-span-5 [&_p]:m-0 [&_a]:underline"
-                    set:html={param.description}
-                  />
-                </div>
-              ))}
-            {entry.data.overloads &&
-              entry.data.overloads.map((overload: ReferenceOverload) =>
-                overload.params.map((param: ReferenceParam) => (
+          <>
+            <div class="mb-xl">
+              <h3>{t("Syntax")}</h3>
+              <MethodSignature
+                params={entry.data.params}
+                overloads={entry.data.overloads}
+                name={entry.data.title}
+              />
+            </div>
+            <div class="mb-xl">
+              <h3 class="mb-md">{t("Parameters")}</h3>
+              {entry.data.params &&
+                entry.data.params.map((param: ReferenceParam) => (
                   <div class="grid grid-cols-6 gap-[40px] text-body">
                     <h4 class="col-span-1">{param.name}</h4>
                     <span
@@ -104,9 +112,21 @@ setJumpToState(jumpToState);
                       set:html={param.description}
                     />
                   </div>
-                ))
-              )}
-          </div>
+                ))}
+              {entry.data.overloads &&
+                entry.data.overloads.map((overload: ReferenceOverload) =>
+                  overload.params.map((param: ReferenceParam) => (
+                    <div class="grid grid-cols-6 gap-[40px] text-body">
+                      <h4 class="col-span-1">{param.name}</h4>
+                      <span
+                        class="col-span-5 [&_p]:m-0 [&_a]:underline"
+                        set:html={param.description}
+                      />
+                    </div>
+                  ))
+                )}
+            </div>
+          </>
         )
       }
       {
@@ -164,4 +184,8 @@ setJumpToState(jumpToState);
       }
     </div>
   </div>
+  <RelatedItems
+    title={t("Related References") as string}
+    items={relatedReferences}
+  />
 </BaseLayout>

@@ -1,5 +1,5 @@
 ---
-import Image from "@components/Image/index.astro";
+import { normalizeReferenceRoute } from "@/src/pages/_utils";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
@@ -9,8 +9,10 @@ interface Props {
 const { item } = Astro.props;
 ---
 
-<a href={`/reference/${item.slug}`}>
-  <div class="text-xl mt-xs text-body-mono">{item.data.title}</div>
+<a href={`/reference/${normalizeReferenceRoute(item.id)}`}>
+  <div class="text-xl mt-xs text-body-mono break-words break-keep">
+    {item.data.title}
+  </div>
   <p class="text-sm mt-0">
     {
       `${item.data.description.replace(/<[^>]*>/g, "").split(/\.(\s|$)/, 1)[0]}.`
