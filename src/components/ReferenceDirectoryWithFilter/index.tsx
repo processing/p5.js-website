@@ -1,6 +1,7 @@
 import type { ReferenceDocContentItem } from "@/src/content/types";
 import { useMemo, useState } from "preact/hooks";
 import type { JSX } from "preact";
+import { getOneLineDescription } from "@/src/pages/_utils";
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -65,7 +66,7 @@ export const ReferenceDirectoryWithFilter = ({
           <a href={`/reference/${entry.data.path}`} class="text-body-mono">
             <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />
           </a>
-          <p>{`${entry.data.description.replace(/<[^>]*>/g, "").split(/\.(\s|$)/, 1)[0]}.`}</p>
+          <p>{`${getOneLineDescription(entry.data.description)}`}</p>
         </div>
       ))}
     </div>
