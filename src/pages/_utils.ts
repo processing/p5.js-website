@@ -97,6 +97,38 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
   });
 
 /**
+ *  Gets related entries from a collection utilizing our locale fallback logic.
+ *  Astro doesn't do this for us when it constructs the entries at the route level,
+ *  so we need to backfill this information in the page itself.
+ *
+ * @param collectionName
+ * @param locale
+ * @param relatedSlugs
+ * @returns
+ */
+export const getRelatedEntriesinCollection = async <
+  C extends keyof ContentEntryMap,
+>(
+  collectionName: C,
+  locale: string,
+  relatedSlugs: string[],
+): Promise<CollectionEntry<C>[]> => {
+  const collection = await getCollectionInLocaleWithFallbacks(
+    collectionName,
+    locale,
+  );
+  const foundEntries = relatedSlugs.map((relatedSlug) =>
+    collection.find(
+      (collectionItem) =>
+        removeLocaleAndExtension(collectionItem.slug) ===
+        removeLocaleAndExtension(relatedSlug),
+    ),
+  );
+  // silly typescript isn't understanding filter
+  return foundEntries.filter((el) => el !== undefined) as CollectionEntry<C>[];
+};
+
+/**
  * Astro automatically uses the directory structure for slug information
  * Historically the p5 website has used a different structure for example file vs. webpage routing
  * This function transforms the Astro slug to the appropriate webpage route to avoid breaking
@@ -111,22 +143,6 @@ export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
     .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2")
     // Third transformation: Replace all remaining underscores in the slug with hyphens.
     .replace(/_/g, "-");
-
-/**
- * If the given slug is the slug of the entry in the contributor doc
- * collection that we want to use as the index page, this returns a
- * '/' slug for routing purposes. Otherwise, just returns the slug given,
- * unchanged.
- *
- * For example: `contributor-docs/es/` will show
- * the content from `contributor-docs/es/readme`
- */
-export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
-  const contributorDocIndexPageName = "readme";
-  return slug.endsWith(contributorDocIndexPageName)
-    ? `/${slug.slice(0, -contributorDocIndexPageName.length)}`
-    : slug;
-};
 
 export const getExampleCategory = (slug: string): string =>
   slug.split("/")[1].split("_").splice(1).join(" ");

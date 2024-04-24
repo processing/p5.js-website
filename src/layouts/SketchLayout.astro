@@ -1,6 +1,11 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { getSketch, makeSketchLinkUrl } from "@/src/api/OpenProcessing";
+import RelatedItems from "@components/RelatedItems/index.astro";
+import {
+  getRandomCurationSketches,
+  getSketch,
+  makeSketchLinkUrl,
+} from "@/src/api/OpenProcessing";
 import LinkButton from "@components/LinkButton/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { setJumpToState } from "../globals/state";
@@ -25,6 +30,7 @@ const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
 );
 
 setJumpToState(null);
+const moreSketches = await getRandomCurationSketches(4);
 ---
 
 <BaseLayout
@@ -53,7 +59,7 @@ setJumpToState(null);
     )
   }
 
-  <p class="text-xs">
+  <p class="text-xs mb-3xl">
     This <a
       class="text-type-magenta"
       href={makeSketchLinkUrl(sketchInfo.visualID)}>sketch</a
@@ -63,4 +69,5 @@ setJumpToState(null);
     >
     sketch archive.
   </p>
+  <RelatedItems title={t("More Sketches") as string} items={moreSketches} />
 </BaseLayout>
