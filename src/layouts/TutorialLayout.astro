@@ -1,49 +1,28 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import TutorialWrapper from "@components/TutorialWrapper/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
-import { setJumpToState, type JumpToLink } from "../globals/state";
+import { setJumpToState } from "../globals/state";
 import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
 import CodeBlockWrapper from "@components/CodeBlockWrapper/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
-import type { MarkdownHeading } from "astro";
-import { getRelatedEntriesinCollection } from "../pages/_utils";
+import {
+  generateJumpToState,
+  getRelatedEntriesinCollection,
+} from "../pages/_utils";
 
-const { entry, relatedEntries } = Astro.props;
-const { Content, components, headings } = await entry.render();
+const { entry } = Astro.props;
+const { Content, components } = await entry.render();
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const jumpToLinks = [
-  {
-    label: t("tutorialCategories", entry.data.category),
-    url: `/tutorials#${entry.data.category}`,
-    current: true,
-  },
-] as JumpToLink[];
-
-const currentTutorialHeadings = headings
-  .filter((heading: MarkdownHeading) => heading.depth <= 2)
-  .map((heading: MarkdownHeading) => ({
-    label: heading.text,
-    url: `#${heading.slug}`,
-    size: "small",
-  }));
-
-jumpToLinks.push(...currentTutorialHeadings);
-
-for (const relEntry of relatedEntries) {
-  jumpToLinks.push({
-    label: relEntry.data.title,
-    url: `/tutorials/${relEntry.slug}`,
-  });
-}
-
-const jumpToState = {
-  title: t("Tutorials"),
-  links: jumpToLinks,
-};
+const jumpToState = await generateJumpToState(
+  "tutorials",
+  entry.slug,
+  "Tutorials",
+  t,
+  currentLocale
+);
 
 setJumpToState(jumpToState);
 
@@ -65,10 +44,15 @@ const relatedExamples =
     : [];
 ---
 
-<BaseLayout title={entry.data.title} variant="item" topic="tutorials">
+<BaseLayout
+  title={entry.data.title}
+  variant="item"
+  topic="tutorials"
+  className="tutorials"
+>
   {entry.data.authors && <h6>By {entry.data.authors.join(", ")}</h6>}
   {entry.data.authorsNote && <h7>{entry.data.authorsNote}</h7>}
-  <TutorialWrapper>
+  <div class="rendered-markdown !max-w-screen-lg">
     <Content
       components={{
         ...components,
@@ -76,7 +60,7 @@ const relatedExamples =
         pre: CodeBlockWrapper,
       }}
     />
-  </TutorialWrapper>
+  </div>
 
   <div class="grid gap-y-lg mt-2xl">
     {

@@ -4,12 +4,13 @@ import {
   type AnyEntryMap,
   type ContentEntryMap,
 } from "astro:content";
-import { defaultLocale } from "@i18n/const";
+import { defaultLocale, supportedLocales } from "@i18n/const";
 import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
 import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
 import he from "he";
 import { JSDOM } from "jsdom";
+import type { JumpToLink, JumpToState } from "../globals/state";
 
 interface EntryWithId {
   id: string;
@@ -277,4 +278,137 @@ export const decodeHtml = (html: string) => {
   const textContent = document.body.textContent || "";
 
   return textContent.trim(); // remove blank space at the beginning
+};
+
+/**
+ * Generate jumpToLinks for an entire category of collection entries
+ * Highlight the currently viewed entry
+ * @param collectionType The type of collection
+ * @param currentEntrySlug The id of the currently viewed entry
+ * @param jumpToHeading The heading for the jumpToLinks
+ * @returns JumpToState object
+ */
+export const generateJumpToState = async (
+  collectionType: keyof ContentEntryMap,
+  currentEntrySlug: string,
+  jumpToHeading: string,
+  t: (...args: string[]) => string | Record<string, any>,
+  currentLocale: (typeof supportedLocales)[number],
+): Promise<JumpToState> => {
+  // Get all entries in the collection in the default locale
+  // We can use the default locale because the links are automatically
+  // prefixed and there is fallback to the default locale
+  const localeEntries = await getCollectionInLocaleWithFallbacks(
+    collectionType,
+    currentLocale,
+  );
+
+  // Get categories for the collection
+  let categories: Set<string> | undefined;
+
+  // Get the categories based on the collection type
+  switch (collectionType) {
+    case "reference":
+      // @ts-expect-error - We know that the category exists because of the collection type
+      categories = new Set(localeEntries.map((entry) => entry.data.category));
+      break;
+    case "tutorials":
+      // @ts-expect-error - We know that the category exists because of the collection type
+      categories = new Set(localeEntries.map((entry) => entry.data.category));
+      break;
+    case "examples":
+      categories = new Set(
+        localeEntries.map((entry) => getExampleCategory(entry.slug)),
+      );
+      break;
+    default:
+      break;
+  }
+
+  const jumpToLinks = [] as JumpToLink[];
+
+  // Function to get the label for a category, these are different for each collection type
+  const getCategoryLabel = (category: string) => {
+    switch (collectionType) {
+      case "reference":
+        return category;
+      case "tutorials":
+        return t("tutorialCategories", category) as string;
+      case "examples":
+        return category;
+      default:
+        return "";
+    }
+  };
+
+  // Loop through each category and add entries to the jumpToLinks
+  for (const category of categories ?? []) {
+    const categoryLinks = [] as JumpToLink[];
+    categoryLinks.push({
+      label: getCategoryLabel(category),
+      url: `/${collectionType}#${category}`,
+      current: false,
+    });
+
+    // Examples are a special case where subentries are only shown if they are in the current category
+    if (
+      collectionType !== "examples" ||
+      category === getExampleCategory(currentEntrySlug)
+    ) {
+      // Get all entries in the current category
+      const currentCategoryEntries = localeEntries.filter(
+        (entry) =>
+          category ===
+          (collectionType === "examples"
+            ? getExampleCategory(entry.slug)
+            : // @ts-expect-error - We know that the category exists because of the collection type
+              entry.data.category ?? ""),
+      );
+
+      // Add the entries in the category to the jumpToLinks
+      categoryLinks.push(
+        ...currentCategoryEntries.map(
+          (entry) =>
+            ({
+              label: entry.data.title,
+              url: getUrl(entry, collectionType),
+              size: "small",
+              current:
+                removeLocalePrefix(entry.slug) ===
+                removeLocalePrefix(currentEntrySlug),
+            }) as JumpToLink,
+        ),
+      );
+
+      const hasCurrent = categoryLinks.some((link) => link.current);
+      // If the current entry is in this category, move this category to the top
+      if (hasCurrent) {
+        jumpToLinks.unshift(...categoryLinks);
+      } else {
+        jumpToLinks.push(...categoryLinks);
+      }
+    }
+  }
+
+  // Return the JumpToState object
+  return {
+    heading: t(jumpToHeading) as string,
+    links: jumpToLinks,
+  };
+};
+
+const getUrl = (
+  entry: CollectionEntry<keyof ContentEntryMap>,
+  collectionType: keyof ContentEntryMap,
+) => {
+  switch (collectionType) {
+    case "reference":
+      return `/reference/${entry.slug}`;
+    case "tutorials":
+      return `/tutorials/${removeLocalePrefix(entry.slug)}`;
+    case "examples":
+      return `/examples${exampleContentSlugToLegacyWebsiteSlug(removeLocalePrefix(entry.slug))}`;
+    default:
+      return "";
+  }
 };

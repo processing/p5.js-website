@@ -12,6 +12,7 @@ import {
 } from "../i18n/utils";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
+  generateJumpToState,
   getExampleCategory,
   getRelatedEntriesinCollection,
 } from "../pages/_utils";
@@ -30,30 +31,13 @@ const { example, code, relatedExamples } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const jumpToLinks: JumpToLink[] = relatedExamples.map((relEx) => {
-  const relExSlug = exampleContentSlugToLegacyWebsiteSlug(
-    removeLocalePrefix(relEx.slug)
-  );
-
-  return {
-    label: relEx.data.title,
-    url: `/examples${relExSlug}`,
-    size: "small",
-    current: example.slug === relEx.slug,
-  };
-});
-
-const category = getExampleCategory(example.slug);
-
-jumpToLinks.unshift({
-  label: category,
-  url: `/examples/#${category}`,
-});
-
-const jumpToState = {
-  heading: t("Examples"),
-  links: jumpToLinks,
-} as JumpToState;
+const jumpToState = await generateJumpToState(
+  "examples",
+  example.slug,
+  "Examples",
+  t,
+  currentLocale
+);
 
 setJumpToState(jumpToState);
 
@@ -62,7 +46,7 @@ const relatedReferences =
     ? await getRelatedEntriesinCollection(
         "reference",
         currentLocale,
-        example.data.relatedReference.map((r) => r.slug)
+        example.data.relatedReference.map((r: any) => r.slug)
       )
     : [];
 
