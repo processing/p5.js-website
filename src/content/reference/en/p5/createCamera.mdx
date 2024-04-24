@@ -9,72 +9,85 @@ description: >
 
   as the current (active) camera.</p>
 
-  <p>The new camera is initialized with a default position
+  <p>The new camera is initialized with a default position <code>(0, 0,
+  800)</code> and a
 
-  (see <a href="/reference/p5.Camera/camera">camera()</a>)
+  default perspective projection. Its properties can be controlled with
 
-  and a default perspective projection
+  <a href="/reference/p5/p5.Camera">p5.Camera</a> methods such as
 
-  (see <a href="/reference/p5.Camera/perspective">perspective()</a>).
-
-  Its properties can be controlled with the <a
-  href="/reference/p5/p5.Camera">p5.Camera</a>
-
-  methods.</p>
+  <code>myCamera.lookAt(0, 0, 0)</code>.</p>
 
   <p>Note: Every 3D sketch starts with a default camera initialized.
 
-  This camera can be controlled with the global methods
+  This camera can be controlled with the functions
 
   <a href="/reference/p5/camera">camera()</a>,
 
-  <a href="/reference/p5/perspective">perspective()</a>, <a
-  href="/reference/p5/ortho">ortho()</a>,
+  <a href="/reference/p5/perspective">perspective()</a>,
 
-  and <a href="/reference/p5/frustum">frustum()</a> if it is the only camera
+  <a href="/reference/p5/ortho">ortho()</a>, and
 
-  in the scene.</p>
-line: 441
+  <a href="/reference/p5/frustum">frustum()</a> if it's the only camera in the
+  scene.</p>
+
+  <p>Note: <code>createCamera()</code> can only be used in WebGL mode.</p>
+line: 638
 isConstructor: false
 itemtype: method
-alt: An example that creates a camera and moves it around the box.
 example:
   - |-
 
-    <div><code>
-    // Creates a camera object and animates it around a box.
-    let camera;
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let usingCam1 = true;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      background(0);
-      camera = createCamera();
-      camera.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      camera.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      describe('An example that creates a camera and moves it around the box.');
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      // Place it at the top-left.
+      // Point it at the origin.
+      cam2 = createCamera();
+      cam2.setPosition(400, -400, 800);
+      cam2.lookAt(0, 0, 0);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A white cube on a gray background. The camera toggles between frontal and aerial views when the user double-clicks.');
     }
 
     function draw() {
-      background(0);
-      // The camera will automatically
-      // rotate to look at [0, 0, 0].
-      camera.lookAt(0, 0, 0);
+      background(200);
 
-      // The camera will move on the
-      // x axis.
-      camera.setPosition(sin(frameCount / 60) * 200, 0, 100);
-      box(20);
-
-      // A 'ground' box to give the viewer
-      // a better idea of where the camera
-      // is looking.
-      translate(0, 50, 0);
-      rotateX(HALF_PI);
-      box(150, 150, 20);
+      // Draw the box.
+      box();
     }
-    </code></div>
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (usingCam1 === true) {
+        setCamera(cam2);
+        usingCam1 = false;
+      } else {
+        setCamera(cam1);
+        usingCam1 = true;
+      }
+    }
+    </code>
+    </div>
 class: p5
 return:
-  description: The newly created camera object.
+  description: the new camera.
   type: p5.Camera
 chainable: false
 ---

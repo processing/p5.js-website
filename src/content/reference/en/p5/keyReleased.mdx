@@ -4,19 +4,68 @@ module: Events
 submodule: Keyboard
 file: src/events/keyboard.js
 description: >
-  <p>The <a href="/reference/p5/keyReleased">keyReleased()</a> function is
-  called once every time a key is released.
+  <p>A function that's called once when any key is released.</p>
 
-  See <a href="/reference/p5/key">key</a> and <a
-  href="/reference/p5/keyCode">keyCode</a> for more information.<br><br>
+  <p>Declaring the function <code>keyReleased()</code> sets a code block to run
+  once
 
-  Browsers may have different default
+  automatically when the user releases any key:</p>
 
-  behaviors attached to various key events. To prevent any default
+  <code>
 
-  behavior for this event, add "return false" to the end of the
-  function.</br></br></p>
-line: 185
+  function keyReleased() {
+    // Code to run.
+  }
+
+  </code>
+
+
+  <p>The <a href="/reference/p5/key">key</a> and <a
+  href="/reference/p5/keyCode">keyCode</a>
+
+  variables will be updated with the most recently released value when
+
+  <code>keyReleased()</code> is called by p5.js:</p>
+
+  <code>
+
+  function keyReleased() {
+    if (key === 'c') {
+      // Code to run.
+    }
+
+  <p>  if (keyCode === ENTER) {
+      // Code to run.
+    }
+  }
+
+  </p></code>
+
+  <p>The parameter, <code>event</code>, is optional. <code>keyReleased()</code>
+  is always passed a
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent"
+  target="_blank">KeyboardEvent</a>
+
+  object with properties that describe the key press event:</p>
+
+  <code>
+
+  function keyReleased(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+
+  <p>Browsers may have default behaviors attached to various key events. To
+
+  prevent any default behavior for this event, add <code>return false;</code> to
+  the end
+
+  of the function.</p>
+line: 461
 isConstructor: false
 itemtype: method
 example:
@@ -24,20 +73,109 @@ example:
 
     <div>
     <code>
+    // Click on the canvas to begin detecting key presses.
+
     let value = 0;
-    function draw() {
-      fill(value);
-      rect(25, 25, 50, 50);
-      describe(`black rect center. turns white when key pressed and black
-        when pressed again`);
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square changes color when the user releases a key.'
+      );
     }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Toggle value when the user releases a key.
     function keyReleased() {
       if (value === 0) {
         value = 255;
       } else {
         value = 0;
       }
-      return false; // prevent any default behavior
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square becomes white when the user releases the "w" key.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Set value to 255 the user releases the 'w' key.
+    function keyReleased() {
+      if (key === 'w') {
+        value = 255;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square turns white when the user presses and releases the left arrow key. It turns black when the user presses and releases the right arrow key.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Toggle the background color when the user releases an arrow key.
+    function keyReleased() {
+      if (keyCode === LEFT_ARROW) {
+        value = 255;
+      } else if (keyCode === RIGHT_ARROW) {
+        value = 0;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
     }
     </code>
     </div>
@@ -45,7 +183,7 @@ class: p5
 params:
   - name: event
     description: |
-      <p>optional KeyboardEvent callback argument.</p>
+      <p>optional <code>KeyboardEvent</code> callback argument.</p>
     type: KeyboardEvent
     optional: true
 chainable: false

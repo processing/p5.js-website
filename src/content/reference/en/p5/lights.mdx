@@ -11,27 +11,68 @@ description: |
   within draw() to remain persistent in a looping program.
   Placing them in setup() will cause them to only have an effect
   the first time through the loop.</p>
-line: 649
+line: 1076
 isConstructor: false
 itemtype: method
-alt: the light is partially ambient and partially directional
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to turn on the lights.
+
+    let isLit = false;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      describe('the light is partially ambient and partially directional');
+
+      describe('A white box drawn against a gray background. The quality of the light changes when the user double-clicks.');
     }
+
     function draw() {
-      background(0);
-      lights();
-      rotateX(millis() / 1000);
-      rotateY(millis() / 1000);
-      rotateZ(millis() / 1000);
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Control the lights.
+      if (isLit === true) {
+        lights();
+      }
+
+      // Draw the box.
+      box();
+    }
+
+    // Turn on the lights when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white box drawn against a gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      ambientLight(128, 128, 128);
+      directionalLight(128, 128, 128, 0, 0, -1);
+
+      // Draw the box.
       box();
     }
     </code>

@@ -4,28 +4,35 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Sets the <a href="/reference/p5/p5.Shader">p5.Shader</a> object to
+  <p>Sets the <a href="/reference/p5/p5.Shader">p5.Shader</a> object to apply
+  while drawing.</p>
 
-  be used to render subsequent shapes.</p>
+  <p>Shaders are programs that run on the graphics processing unit (GPU). They
 
-  <p>Shaders can alter the positioning of shapes drawn with them.
+  can process many pixels or vertices at the same time, making them fast for
 
-  To ensure consistency in rendering, it's recommended to use the vertex shader
-  in the <a href="/reference/p5/createShader">createShader example</a>.</p>
+  many graphics tasks. They’re written in a language called
 
-  <p>Custom shaders can be created using the
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
+  target="_blank">GLSL</a>
+
+  and run along with the rest of the code in a sketch.
+
+  <a href="/reference/p5/p5.Shader">p5.Shader</a> objects can be created using
+  the
 
   <a href="/reference/p5/createShader">createShader()</a> and
 
   <a href="/reference/p5/loadShader">loadShader()</a> functions.</p>
 
-  <p>Use <a href="/reference/p5/resetShader">resetShader()</a> to
+  <p>The parameter, <code>s</code>, is the <a
+  href="/reference/p5/p5.Shader">p5.Shader</a> object to
 
-  restore the default shaders.</p>
+  apply. For example, calling <code>shader(myShader)</code> applies
+  <code>myShader</code> to
 
-  <p>Additional Information:
-
-  The shader will be used for:</p>
+  process each pixel on the canvas. The shader will be used for:</p>
 
   <ul>
 
@@ -43,39 +50,131 @@ description: >
 
   <li>Fills whenever there are no lights or textures.</li>
 
-  <li>Strokes if it includes the uniform <code>uStrokeWeight</code>.
-
-  Note: This behavior is considered experimental, and changes are planned in
-  future releases.</li>
+  <li>Strokes if it includes the uniform <code>uStrokeWeight</code>.</li>
 
   </ul>
 
-  <p>Note, shaders can only be used in WEBGL mode.</p>
-line: 331
+  <p>The source code from a <a href="/reference/p5/p5.Shader">p5.Shader</a>
+  object's
+
+  fragment and vertex shaders will be compiled the first time it's passed to
+
+  <code>shader()</code>. See
+
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/compileShader"
+  target="_blank">MDN</a>
+
+  for more information about compiling shaders.</p>
+
+  <p>Calling <a href="/reference/p5/resetShader">resetShader()</a> restores a
+  sketch’s
+
+  default shaders.</p>
+
+  <p>Note: Shaders can only be used in WebGL mode.</p>
+line: 571
 isConstructor: false
 itemtype: method
-alt: >-
-  canvas toggles between a circular gradient of orange and blue vertically. and
-  a circular gradient of red and green moving horizontally when mouse is
-  clicked/pressed.
 example:
   - |-
 
     <div modernizr='webgl'>
     <code>
-    // Click within the image to toggle
-    // the shader used by the quad shape
-    // Note: for an alternative approach to the same example,
-    // involving changing uniforms please refer to:
-    // https://p5js.org/reference/#/p5.Shader/setUniform
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+
+    void main() {
+      // Set each pixel's RGBA value to yellow.
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let shaderProgram = createShader(vertSrc, fragSrc);
+
+      // Apply the p5.Shader object.
+      shader(shaderProgram);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A yellow square.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
+    }
+
+    function draw() {
+      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
+
+      // Add a quad as a display surface for the shader.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
 
     let redGreen;
     let orangeBlue;
     let showRedGreen = false;
 
+    // Load the shader and create two separate p5.Shader objects.
     function preload() {
-      // note that we are using two instances
-      // of the same vertex and fragment shaders
       redGreen = loadShader('/assets/shader.vert', '/assets/shader-gradient.frag');
       orangeBlue = loadShader('/assets/shader.vert', '/assets/shader-gradient.frag');
     }
@@ -83,39 +182,47 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // initialize the colors for redGreen shader
+      // Initialize the redGreen shader.
       shader(redGreen);
+
+      // Set the redGreen shader's center and background color.
       redGreen.setUniform('colorCenter', [1.0, 0.0, 0.0]);
       redGreen.setUniform('colorBackground', [0.0, 1.0, 0.0]);
 
-      // initialize the colors for orangeBlue shader
+      // Initialize the orangeBlue shader.
       shader(orangeBlue);
+
+      // Set the orangeBlue shader's center and background color.
       orangeBlue.setUniform('colorCenter', [1.0, 0.5, 0.0]);
       orangeBlue.setUniform('colorBackground', [0.226, 0.0, 0.615]);
 
-      noStroke();
-
       describe(
-        'canvas toggles between a circular gradient of orange and blue vertically. and a circular gradient of red and green moving horizontally when mouse is clicked/pressed.'
+        'The scene toggles between two circular gradients when the user double-clicks. An orange and blue gradient vertically, and red and green gradient moves horizontally.'
       );
     }
 
     function draw() {
-      // update the offset values for each shader,
-      // moving orangeBlue in vertical and redGreen
-      // in horizontal direction
-      orangeBlue.setUniform('offset', [0, sin(millis() / 2000) + 1]);
-      redGreen.setUniform('offset', [sin(millis() / 2000), 1]);
+      // Update the offset values for each shader.
+      // Move orangeBlue vertically.
+      // Move redGreen horizontally.
+      orangeBlue.setUniform('offset', [0, sin(frameCount * 0.01) + 1]);
+      redGreen.setUniform('offset', [sin(frameCount * 0.01), 1]);
 
       if (showRedGreen === true) {
         shader(redGreen);
       } else {
         shader(orangeBlue);
       }
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a quad as a drawing surface.
       quad(-1, -1, 1, -1, 1, 1, -1, 1);
     }
 
-    function mouseClicked() {
+    // Toggle between shaders when the user double-clicks.
+    function doubleClicked() {
       showRedGreen = !showRedGreen;
     }
     </code>
@@ -124,8 +231,8 @@ class: p5
 params:
   - name: s
     description: |
-      <p>the <a href="#/p5.Shader">p5.Shader</a> object
-      to use for rendering shapes.</p>
+      <p><a href="#/p5.Shader">p5.Shader</a> object
+                           to apply.</p>
     type: p5.Shader
 chainable: true
 ---

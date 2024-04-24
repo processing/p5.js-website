@@ -4,34 +4,69 @@ module: Events
 submodule: Mouse
 file: src/events/mouse.js
 description: >
-  <p>The function <a href="/reference/p5/exitPointerLock">exitPointerLock()</a>
+  <p>Exits a pointer lock started with
 
-  exits a previously triggered <a
-  href="/reference/p5/requestPointerLock">pointer Lock</a>
+  <a href="/reference/p5/requestPointerLock">requestPointerLock</a>.</p>
 
-  for example to make ui elements usable etc</p>
-line: 1005
+  <p>Calling <code>requestPointerLock()</code> locks the values of
+
+  <a href="/reference/p5/mouseX">mouseX</a>, <a
+  href="/reference/p5/mouseY">mouseY</a>,
+
+  <a href="/reference/p5/pmouseX">pmouseX</a>, and <a
+  href="/reference/p5/pmouseY">pmouseY</a>.
+
+  Calling <code>exitPointerLock()</code> resumes updating the mouse system
+  variables.</p>
+
+  <p>Note: Most browsers require an input, such as a click, before calling
+
+  <code>requestPointerLock()</code>. It’s recommended to call
+  <code>requestPointerLock()</code> in
+
+  an event function such as <a
+  href="/reference/p5/doubleClicked">doubleClicked()</a>.</p>
+line: 1932
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class="notest">
+    <div>
     <code>
-    //click the canvas to lock the pointer
-    //click again to exit (otherwise escape)
-    let locked = false;
-    function draw() {
-      background(237, 34, 93);
-      describe('cursor gets locked / unlocked on mouse-click');
+    let isLocked = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a word at its center. The word changes between "Unlocked" and "Locked" when the user double-clicks.'
+      );
     }
-    function mouseClicked() {
-      if (!locked) {
-        locked = true;
-        requestPointerLock();
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Tell the user whether the pointer is locked.
+      if (isLocked === true) {
+        text('Locked', 50, 50);
       } else {
+        text('Unlocked', 50, 50);
+      }
+    }
+
+    // Toggle the pointer lock when the user double-clicks.
+    function doubleClicked() {
+      if (isLocked === true) {
         exitPointerLock();
-        locked = false;
+        isLocked = false;
+      } else {
+        requestPointerLock();
+        isLocked = true;
       }
     }
     </code>

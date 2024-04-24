@@ -4,35 +4,57 @@ module: Events
 submodule: Mouse
 file: src/events/mouse.js
 description: >
-  <p>The variable movedX contains the horizontal movement of the mouse since the
-  last frame</p>
+  <p>A <code>Number</code> system variable that tracks the mouse's horizontal
+  movement.</p>
+
+  <p><code>movedX</code> tracks how many pixels the mouse moves left or right
+  between
+
+  frames. <code>movedX</code> will have a negative value if the mouse moves left
+  between
+
+  frames and a positive value if it moves right. <code>movedX</code> can be
+  calculated
+
+  as <code>mouseX - pmouseX</code>.</p>
+
+  <p>Note: <code>movedX</code> continues updating even when
+
+  <a href="/reference/p5/requestPointerLock">requestPointerLock()</a> is
+  active.</p>
 line: 12
 isConstructor: false
 itemtype: property
 example:
-  - |2-
+  - |-
 
-     <div class="notest">
-     <code>
-     let x = 50;
-     function setup() {
-       rectMode(CENTER);
-     }
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. The text ">>" appears when the user moves the mouse to the right. The text "<<" appears when the user moves the mouse to the left.'
+      );
+    }
+
     function draw() {
-       if (x > 48) {
-         x -= 2;
-       } else if (x < 48) {
-         x += 2;
-       }
-       x += floor(movedX / 5);
-       background(237, 34, 93);
-       fill(0);
-       rect(x, 50, 50, 50);
-       describe(`box moves left and right according to mouse movement
-         then slowly back towards the center`);
-     }
-     </code>
-     </div>
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Display >> when movedX is positive and
+      // << when it's negative.
+      if (movedX > 0) {
+        text('>>', 50, 50);
+      } else if (movedX < 0) {
+        text('<<', 50, 50);
+      }
+    }
+    </code>
+    </div>
 class: p5
 type: Number
 ---

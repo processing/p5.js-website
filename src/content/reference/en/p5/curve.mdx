@@ -4,113 +4,222 @@ module: Shape
 submodule: Curves
 file: src/core/shape/curves.js
 description: >
-  <p>Draws a curved line on the screen between two points, given as the
+  <p>Draws a curve using a Catmull-Rom spline.</p>
 
-  middle four parameters. The first two parameters are a control point, as
+  <p>Spline curves can form shapes and curves that slope gently. They’re like
 
-  if the curve came from this point even though it's not drawn. The last
+  cables that are attached to a set of points. Splines are defined by two
 
-  two parameters similarly describe the other control point. <br/><br/>
+  anchor points and two control points.</p>
 
-  Longer curves can be created by putting a series of <a
-  href="/reference/p5/curve">curve()</a> functions
+  <p>The first two parameters, <code>x1</code> and <code>y1</code>, set the
+  first control point. This
 
-  together or using <a href="/reference/p5/curveVertex">curveVertex()</a>. An
-  additional function called
+  point isn’t drawn and can be thought of as the curve’s starting point.</p>
 
-  <a href="/reference/p5/curveTightness">curveTightness()</a> provides control
-  for the visual quality of the curve.
+  <p>The next four parameters, <code>x2</code>, <code>y2</code>,
+  <code>x3</code>, and <code>y3</code>, set the two anchor
 
-  The <a href="/reference/p5/curve">curve()</a> function is an implementation of
-  Catmull-Rom splines.</p>
-line: 265
+  points. The anchor points are the start and end points of the curve’s
+
+  visible segment.</p>
+
+  <p>The seventh and eighth parameters, <code>x4</code> and <code>y4</code>, set
+  the last control
+
+  point. This point isn’t drawn and can be thought of as the curve’s ending
+
+  point.</p>
+
+  <p>Spline curves can also be drawn in 3D using WebGL mode. The 3D version of
+
+  <code>curve()</code> has twelve arguments because each point has x-, y-, and
+
+  z-coordinates.</p>
+line: 570
 isConstructor: false
 itemtype: method
-alt: |-
-  horseshoe shape with orange ends facing left and black curved center.
-  horseshoe shape with orange ends facing left and black curved center.
-  curving black and orange lines.
 example:
   - |-
 
     <div>
     <code>
-    noFill();
-    stroke(255, 102, 0);
-    curve(5, 26, 5, 26, 73, 24, 73, 61);
-    stroke(0);
-    curve(5, 26, 73, 24, 73, 61, 15, 65);
-    stroke(255, 102, 0);
-    curve(73, 24, 73, 61, 15, 65, 15, 65);
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(5, 26, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(5, 26, 5, 26, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(5, 26);
+      point(15, 65);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
     </code>
     </div>
 
     <div>
     <code>
-    // Define the curve points as JavaScript objects
-    let p1 = { x: 5, y: 26 };
-    let p2 = { x: 73, y: 24 };
-    let p3 = { x: 73, y: 61 };
-    let p4 = { x: 15, y: 65 };
-    noFill();
-    stroke(255, 102, 0);
-    curve(p1.x, p1.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
-    stroke(0);
-    curve(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
-    stroke(255, 102, 0);
-    curve(p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, p4.x, p4.y);
+    let x1 = 5;
+    let y1 = 26;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(x1, y1, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(x1, y1, x1, y1, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x1, y1);
+      point(15, 65);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x1, y1) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x1 = mouseX;
+        y1 = mouseY;
+      }
+    }
     </code>
     </div>
 
     <div>
     <code>
-    noFill();
-    stroke(255, 102, 0);
-    curve(5, 26, 0, 5, 26, 0, 73, 24, 0, 73, 61, 0);
-    stroke(0);
-    curve(5, 26, 0, 73, 24, 0, 73, 61, 0, 15, 65, 0);
-    stroke(255, 102, 0);
-    curve(73, 24, 0, 73, 61, 0, 15, 65, 0, 15, 65, 0);
+    function setup() {
+      createCanvas(100, 100);
+
+      background('skyblue');
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-150, 275, 50, 60, 50, 60, 250, 275);
+
+      // Draw the balloon string.
+      line(50, 60, 50, 80);
+
+      describe('A red balloon in a blue sky.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red balloon in a blue sky.');
+    }
+
+    function draw() {
+      background('skyblue');
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-200, 225, 0, 0, 10, 0, 0, 10, 0, 200, 225, 0);
+
+      // Draw the balloon string.
+      line(0, 10, 0, 0, 30, 0);
+    }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 265
+  - line: 570
     params:
       - name: x1
         description: |
-          <p>x-coordinate for the beginning control point</p>
+          <p>x-coordinate of the first control point.</p>
         type: Number
       - name: y1
         description: |
-          <p>y-coordinate for the beginning control point</p>
+          <p>y-coordinate of the first control point.</p>
         type: Number
       - name: x2
         description: |
-          <p>x-coordinate for the first point</p>
+          <p>x-coordinate of the first anchor point.</p>
         type: Number
       - name: y2
         description: |
-          <p>y-coordinate for the first point</p>
+          <p>y-coordinate of the first anchor point.</p>
         type: Number
       - name: x3
         description: |
-          <p>x-coordinate for the second point</p>
+          <p>x-coordinate of the second anchor point.</p>
         type: Number
       - name: y3
         description: |
-          <p>y-coordinate for the second point</p>
+          <p>y-coordinate of the second anchor point.</p>
         type: Number
       - name: x4
         description: |
-          <p>x-coordinate for the ending control point</p>
+          <p>x-coordinate of the second control point.</p>
         type: Number
       - name: y4
         description: |
-          <p>y-coordinate for the ending control point</p>
+          <p>y-coordinate of the second control point.</p>
         type: Number
     chainable: 1
-  - line: 333
+  - line: 746
     params:
       - name: x1
         description: ''
@@ -120,7 +229,7 @@ overloads:
         type: Number
       - name: z1
         description: |
-          <p>z-coordinate for the beginning control point</p>
+          <p>z-coordinate of the first control point.</p>
         type: Number
       - name: x2
         description: ''
@@ -130,7 +239,7 @@ overloads:
         type: Number
       - name: z2
         description: |
-          <p>z-coordinate for the first point</p>
+          <p>z-coordinate of the first anchor point.</p>
         type: Number
       - name: x3
         description: ''
@@ -140,7 +249,7 @@ overloads:
         type: Number
       - name: z3
         description: |
-          <p>z-coordinate for the second point</p>
+          <p>z-coordinate of the second anchor point.</p>
         type: Number
       - name: x4
         description: ''
@@ -150,7 +259,7 @@ overloads:
         type: Number
       - name: z4
         description: |
-          <p>z-coordinate for the ending control point</p>
+          <p>z-coordinate of the second control point.</p>
         type: Number
     chainable: 1
 chainable: true
