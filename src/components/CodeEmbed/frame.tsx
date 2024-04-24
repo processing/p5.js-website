@@ -160,7 +160,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
           htmlBody: props.htmlBodyCode,
           base: props.base,
         })}
-        sandbox="allow-scripts allow-popups allow-modals allow-forms"
+        sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
         title="Code Preview"
         height={props.height}

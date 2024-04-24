@@ -336,12 +336,13 @@ export const generateJumpToLinks = async (
       const currentCategoryEntries = defaultLocaleEntries.filter(
         (entry) => category === getExampleCategory(entry.slug),
       );
+
       jumpToLinks.push(
         ...currentCategoryEntries.map(
           (entry) =>
             ({
               label: entry.data.title,
-              url: `#${entry.slug}`,
+              url: getUrl(entry, collectionType),
               size: "small",
               current: entry.slug === currentEntrySlug,
             }) as JumpToLink,
@@ -355,4 +356,20 @@ export const generateJumpToLinks = async (
     heading: jumpToHeading,
     links: jumpToLinks,
   };
+};
+
+const getUrl = (
+  entry: CollectionEntry<keyof ContentEntryMap>,
+  collectionType: keyof ContentEntryMap,
+) => {
+  switch (collectionType) {
+    case "reference":
+      return `/reference/${entry.slug}`;
+    case "tutorials":
+      return `/tutorials/${entry.slug}`;
+    case "examples":
+      return `/examples${exampleContentSlugToLegacyWebsiteSlug(removeLocalePrefix(entry.slug))}`;
+    default:
+      return "";
+  }
 };
