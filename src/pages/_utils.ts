@@ -10,6 +10,7 @@ import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
 import he from "he";
 import { JSDOM } from "jsdom";
+import type { JumpToLink, JumpToState } from "../globals/state";
 
 interface EntryWithId {
   id: string;
@@ -277,4 +278,81 @@ export const decodeHtml = (html: string) => {
   const textContent = document.body.textContent || "";
 
   return textContent.trim(); // remove blank space at the beginning
+};
+
+/**
+ * Generate jumpToLinks for an entire category of collection entries
+ * Highlight the currently viewed entry
+ * @param collectionType The type of collection
+ * @param currentEntrySlug The id of the currently viewed entry
+ * @param jumpToHeading The heading for the jumpToLinks
+ * @returns JumpToState object
+ */
+export const generateJumpToLinks = async (
+  collectionType: keyof ContentEntryMap,
+  currentEntrySlug: string,
+  jumpToHeading: string,
+): Promise<JumpToState> => {
+  // Get all entries in the collection in the default locale
+  // We can use the default locale because the links are automatically
+  // prefixed and there is fallback to the default locale
+  const defaultLocaleEntries =
+    await getCollectionInDefaultLocale(collectionType);
+
+  // Get categories for the collection
+  let categories: Set<string> | undefined;
+
+  switch (collectionType) {
+    case "reference":
+      categories = new Set(
+        defaultLocaleEntries.map((entry) => entry.data.category),
+      );
+      break;
+    case "tutorials":
+      categories = new Set(
+        defaultLocaleEntries.map((entry) => entry.data.topic),
+      );
+      break;
+    case "examples":
+      categories = new Set(
+        defaultLocaleEntries.map((entry) => getExampleCategory(entry.slug)),
+      );
+      break;
+    default:
+      break;
+  }
+
+  const jumpToLinks = [] as JumpToLink[];
+
+  for (const category of categories ?? []) {
+    const isCurrent = category === getExampleCategory(currentEntrySlug);
+    jumpToLinks.push({
+      label: category,
+      url: `/${collectionType}#${category}`,
+      current: false,
+    });
+
+    if (isCurrent) {
+      const currentCategoryEntries = defaultLocaleEntries.filter(
+        (entry) => category === getExampleCategory(entry.slug),
+      );
+      jumpToLinks.push(
+        ...currentCategoryEntries.map(
+          (entry) =>
+            ({
+              label: entry.data.title,
+              url: `#${entry.slug}`,
+              size: "small",
+              current: entry.slug === currentEntrySlug,
+            }) as JumpToLink,
+        ),
+      );
+    }
+  }
+
+  // Return the JumpToState object
+  return {
+    heading: jumpToHeading,
+    links: jumpToLinks,
+  };
 };
