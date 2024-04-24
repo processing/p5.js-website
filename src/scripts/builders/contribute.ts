@@ -32,15 +32,16 @@ const outputDirectory = path.join(
   "src/content/contributor-docs/",
 );
 /* Name of the folder within `sourceDirectory` folder where static assets are found */
-const assetsSubFolder = "images";
-/* Base URL to refer to assets from final mdx docs*/
-const assetsOutputBaseUrl = path.join("/images/contributor-docs");
-/* Where the image assets will be output for the website */
-const assetsOutputDirectory = path.join(
-  repoRootPath,
-  "public",
-  assetsOutputBaseUrl,
+const sourceAssetsSubFolder = "images";
+/* Name of the folder within `outputDirectory` folder where static assets will be copied to */
+const outputAssetsSubFolder = "images";
+/* Base URL to refer to assets from final mdx docs */
+const assetsOutputBaseUrl = path.join(
+  "src/content/contributor-docs/",
+  outputAssetsSubFolder,
 );
+/* Where the image assets will be output for the website */
+const assetsOutputDirectory = path.join(outputDirectory, "images");
 
 /* Directories that are translations */
 const langDirs = nonDefaultSupportedLocales;
@@ -257,6 +258,11 @@ const buildContributorDocs = async () => {
       }),
     ),
   );
+  // and the images folder
+  await rm(path.join(outputDirectory, outputAssetsSubFolder), {
+    recursive: true,
+    force: true,
+  });
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
@@ -267,7 +273,7 @@ const buildContributorDocs = async () => {
     const { ext, base } = path.parse(tlf.name);
     const isDirectory = tlf.isDirectory();
 
-    if (isDirectory && base === assetsSubFolder) {
+    if (isDirectory && base === sourceAssetsSubFolder) {
       console.debug("Copying images folder");
       await moveAssetsFolder(fullFilePath);
     } else if (isDirectory && langDirs.includes(base)) {
