@@ -42,12 +42,14 @@ const assetsOutputBaseUrl = path.join(
 );
 /* Where the image assets will be output for the website */
 const assetsOutputDirectory = path.join(outputDirectory, "images");
+/* Directories that are translations */
+const langDirs = nonDefaultSupportedLocales;
 
 /*
- * Directories that are translations, including languages
- * that are not supported by the overall website
+ * Folders we want to ignore and **not** copy, including languages that the
+ * p5 website doesn't support but are translated in the contributor docs
  */
-const langDirs = [...nonDefaultSupportedLocales, "ar", "sk", "pt-br"];
+const ignoredFolders = ["archive", "project_wrapups", "ar", "sk", "pt-br"];
 
 /**
  * Moves a markdown file to a new location, converting into MDX along the way
@@ -253,19 +255,22 @@ const buildContributorDocs = async () => {
 
   // Clean out previous files
   console.log("Cleaning out current content collection...");
-  await Promise.all(
-    supportedLocales.map((lang) =>
-      rm(path.join(outputDirectory, lang), {
-        recursive: true,
-        force: true,
-      }),
-    ),
-  );
-  // and the images folder
-  await rm(path.join(outputDirectory, outputAssetsSubFolder), {
-    recursive: true,
-    force: true,
+
+  // Delete all the folders
+  // (Astro has a top level config file that needs to be left)
+  const oldTopLevelFiles = await readdir(outputDirectory, {
+    withFileTypes: true,
   });
+  await Promise.all(
+    oldTopLevelFiles
+      .filter((file) => file.isDirectory())
+      .map((file) =>
+        rm(fullPathFromDirent(file), {
+          recursive: true,
+          force: true,
+        }),
+      ),
+  );
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
@@ -276,7 +281,10 @@ const buildContributorDocs = async () => {
     const { ext, base } = path.parse(tlf.name);
     const isDirectory = tlf.isDirectory();
 
-    if (isDirectory && base === sourceAssetsSubFolder) {
+    if (ignoredFolders.includes(base)) {
+      console.debug(`Skipping ignored folder (${tlf.name})`);
+      continue;
+    } else if (isDirectory && base === sourceAssetsSubFolder) {
       console.debug("Copying images folder");
       await moveAssetsFolder(fullFilePath);
     } else if (isDirectory && langDirs.includes(base)) {
