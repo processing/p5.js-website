@@ -6,33 +6,24 @@ import { setJumpToState, type JumpToLink } from "../globals/state";
 import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
 import CodeBlockWrapper from "@components/CodeBlockWrapper/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
-import { getRelatedEntriesinCollection } from "../pages/_utils";
+import {
+  generateJumpToState,
+  getRelatedEntriesinCollection,
+} from "../pages/_utils";
 
-const { entry, relatedEntries } = Astro.props;
+const { entry } = Astro.props;
 const { Content, components } = await entry.render();
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const jumpToLinks = [
-  {
-    label: t("tutorialCategories", entry.data.category),
-    url: `/tutorials#${entry.data.category}`,
-    current: true,
-  },
-] as JumpToLink[];
-
-for (const relEntry of relatedEntries) {
-  jumpToLinks.push({
-    label: relEntry.data.title,
-    url: `/tutorials/${relEntry.slug}`,
-  });
-}
-
-const jumpToState = {
-  heading: t("Tutorials") as string,
-  links: jumpToLinks,
-};
+const jumpToState = await generateJumpToState(
+  "tutorials",
+  entry.slug,
+  "Tutorials",
+  t,
+  currentLocale
+);
 
 setJumpToState(jumpToState);
 
