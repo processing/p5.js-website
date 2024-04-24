@@ -284,6 +284,11 @@ const buildContributorDocs = async () => {
         }),
       ),
   );
+  // and the images folder
+  await rm(path.join(outputDirectory, outputAssetsSubFolder), {
+    recursive: true,
+    force: true,
+  });
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
