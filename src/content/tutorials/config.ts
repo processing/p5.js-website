@@ -10,15 +10,6 @@ export const categories = [
   "advanced",
 ] as const;
 
-export const categoryNames: { [key in (typeof categories)[number]]: string } = {
-  introduction: 'Introduction to p5.js',
-  drawing: 'Drawing',
-  'web-design': 'Web Design',
-  accessibility: 'Accessibility',
-  webgl: 'WebGL',
-  'advanced': 'Advanced Topics',
-};
-
 /**
  * Content collection for the Sketches showcase section of the site.
  */
