@@ -12,7 +12,7 @@ import {
 } from "../i18n/utils";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
-  generateJumpToLinks,
+  generateJumpToState,
   getExampleCategory,
   getRelatedEntriesinCollection,
 } from "../pages/_utils";
@@ -31,10 +31,12 @@ const { example, code, relatedExamples } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const jumpToState = await generateJumpToLinks(
+const jumpToState = await generateJumpToState(
   "examples",
   example.slug,
-  t("Examples") as string
+  "Examples",
+  t,
+  currentLocale
 );
 
 setJumpToState(jumpToState);
@@ -44,7 +46,7 @@ const relatedReferences =
     ? await getRelatedEntriesinCollection(
         "reference",
         currentLocale,
-        example.data.relatedReference.map((r) => r.slug)
+        example.data.relatedReference.map((r: any) => r.slug)
       )
     : [];
 

@@ -4,7 +4,7 @@ import {
   type AnyEntryMap,
   type ContentEntryMap,
 } from "astro:content";
-import { defaultLocale } from "@i18n/const";
+import { defaultLocale, supportedLocales } from "@i18n/const";
 import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
 import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
@@ -288,34 +288,34 @@ export const decodeHtml = (html: string) => {
  * @param jumpToHeading The heading for the jumpToLinks
  * @returns JumpToState object
  */
-export const generateJumpToLinks = async (
+export const generateJumpToState = async (
   collectionType: keyof ContentEntryMap,
   currentEntrySlug: string,
   jumpToHeading: string,
+  t: (...args: string[]) => string | Record<string, any>,
+  currentLocale: (typeof supportedLocales)[number],
 ): Promise<JumpToState> => {
   // Get all entries in the collection in the default locale
   // We can use the default locale because the links are automatically
   // prefixed and there is fallback to the default locale
-  const defaultLocaleEntries =
-    await getCollectionInDefaultLocale(collectionType);
+  const localeEntries = await getCollectionInLocaleWithFallbacks(
+    collectionType,
+    currentLocale,
+  );
 
   // Get categories for the collection
   let categories: Set<string> | undefined;
 
   switch (collectionType) {
     case "reference":
-      categories = new Set(
-        defaultLocaleEntries.map((entry) => entry.data.category),
-      );
+      categories = new Set(localeEntries.map((entry) => entry.data.category));
       break;
     case "tutorials":
-      categories = new Set(
-        defaultLocaleEntries.map((entry) => entry.data.topic),
-      );
+      categories = new Set(localeEntries.map((entry) => entry.data.category));
       break;
     case "examples":
       categories = new Set(
-        defaultLocaleEntries.map((entry) => getExampleCategory(entry.slug)),
+        localeEntries.map((entry) => getExampleCategory(entry.slug)),
       );
       break;
     default:
@@ -324,17 +324,36 @@ export const generateJumpToLinks = async (
 
   const jumpToLinks = [] as JumpToLink[];
 
+  const getCategoryLabel = (category: string) => {
+    switch (collectionType) {
+      case "reference":
+        return category;
+      case "tutorials":
+        return t("tutorialCategories", category) as string;
+      case "examples":
+        return category;
+      default:
+        return "";
+    }
+  };
+
   for (const category of categories ?? []) {
-    const isCurrent = category === getExampleCategory(currentEntrySlug);
     jumpToLinks.push({
-      label: category,
+      label: getCategoryLabel(category),
       url: `/${collectionType}#${category}`,
       current: false,
     });
 
-    if (isCurrent) {
-      const currentCategoryEntries = defaultLocaleEntries.filter(
-        (entry) => category === getExampleCategory(entry.slug),
+    if (
+      collectionType !== "examples" ||
+      category === getExampleCategory(currentEntrySlug)
+    ) {
+      const currentCategoryEntries = localeEntries.filter(
+        (entry) =>
+          category ===
+          (collectionType === "examples"
+            ? getExampleCategory(entry.slug)
+            : entry.data.category),
       );
 
       jumpToLinks.push(
@@ -344,7 +363,9 @@ export const generateJumpToLinks = async (
               label: entry.data.title,
               url: getUrl(entry, collectionType),
               size: "small",
-              current: entry.slug === currentEntrySlug,
+              current:
+                removeLocalePrefix(entry.slug) ===
+                removeLocalePrefix(currentEntrySlug),
             }) as JumpToLink,
         ),
       );
@@ -353,7 +374,7 @@ export const generateJumpToLinks = async (
 
   // Return the JumpToState object
   return {
-    heading: jumpToHeading,
+    heading: t(jumpToHeading) as string,
     links: jumpToLinks,
   };
 };
@@ -366,7 +387,7 @@ const getUrl = (
     case "reference":
       return `/reference/${entry.slug}`;
     case "tutorials":
-      return `/tutorials/${entry.slug}`;
+      return `/tutorials/${removeLocalePrefix(entry.slug)}`;
     case "examples":
       return `/examples${exampleContentSlugToLegacyWebsiteSlug(removeLocalePrefix(entry.slug))}`;
     default:
