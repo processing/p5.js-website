@@ -43,8 +43,11 @@ const assetsOutputBaseUrl = path.join(
 /* Where the image assets will be output for the website */
 const assetsOutputDirectory = path.join(outputDirectory, "images");
 
-/* Directories that are translations */
-const langDirs = nonDefaultSupportedLocales;
+/*
+ * Directories that are translations, including languages
+ * that are not supported by the overall website
+ */
+const langDirs = [...nonDefaultSupportedLocales, "ar", "sk", "pt-br"];
 
 /**
  * Moves a markdown file to a new location, converting into MDX along the way
