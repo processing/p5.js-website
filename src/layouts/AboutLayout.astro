@@ -5,16 +5,41 @@ import LinkButton from "@components/LinkButton/index.astro";
 import GridItemPerson from "@components/GridItem/Person.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getCollectionInLocaleWithFallbacks } from "../pages/_utils";
+import { setJumpToState } from "../globals/state";
 
 interface Props {
   entry: CollectionEntry<"text-detail">;
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { headings, Content } = await entry.render();
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
+
+const markdownJumpToLinks = headings
+  .filter((h) => h.depth === 2)
+  .map((h) => ({ url: `${Astro.url.pathname}#${h.slug}`, label: h.text }));
+
+const pageJumpToLinks = [
+  {
+    url: `${Astro.url.pathname}#people`,
+    label: t("People") as string,
+  },
+  {
+    url: `${Astro.url.pathname}#contact`,
+    label: t("Contact") as string,
+  },
+  {
+    url: `${Astro.url.pathname}#processing-foundation`,
+    label: t("Processing Foundation") as string,
+  },
+];
+
+setJumpToState({
+  heading: t("About") as string,
+  links: [...markdownJumpToLinks, ...pageJumpToLinks],
+});
 
 const people = await getCollectionInLocaleWithFallbacks(
   "people",
@@ -29,7 +54,7 @@ const featuredPeople = people.filter((p) => p.data.displayed === "featured");
   </section>
   <hr />
   <section class="pb-2xl lg:pb-xl">
-    <h2>{t("People")}</h2>
+    <h2 id="people">{t("People")}</h2>
     <ul class="content-grid my-xl">
       {
         featuredPeople.map((fp) => (
@@ -45,7 +70,7 @@ const featuredPeople = people.filter((p) => p.data.displayed === "featured");
   </section>
   <hr />
   <section class="pb-3xl lg:pb-2xl">
-    <h2>{t("Contact")}</h2>
+    <h2 id="contact">{t("Contact")}</h2>
     <div class="text-2xl grid grid-cols-6 lg:grid-cols-9 gap-x-md mt-xl">
       <div class="col-span-2 lg:col-span-3">Email</div><div
         class="col-span-4 lg:col-span-6"
@@ -67,7 +92,7 @@ const featuredPeople = people.filter((p) => p.data.displayed === "featured");
   </section>
   <hr />
   <section>
-    <h2>Processing Foundation</h2>
+    <h2 id="processing-foundation">Processing Foundation</h2>
     <ul class="text-2xl mt-xl">
       <li>
         <a href="https://processingfoundation.org">Processing Foundation</a>
