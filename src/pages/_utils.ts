@@ -412,3 +412,33 @@ const getUrl = (
       return "";
   }
 };
+
+/**
+ * Convert Reference description to one-line description
+ * @param description String description
+ * @returns One-line description
+ */
+export const getOneLineDescription = (description: string): string => {
+  const stopCharacters = getStopCharacters();
+  const fullStopRegex = new RegExp(`[${stopCharacters.join("")}]`, "g");
+  const cleanedDescription = description
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/\n/g, " ");
+  const [oneLineDescription] = cleanedDescription.split(fullStopRegex, 1);
+  return `${oneLineDescription.trim()}.`;
+};
+
+export const getFullStopPunctuation = (locale: string): string => {
+  switch (locale) {
+    case "zh-Hans":
+      return "。";
+    case "hi":
+      return "।";
+    default:
+      return ".";
+  }
+};
+
+export const getStopCharacters = (): string[] => {
+  return ["\\.|\\?|!|।|。"];
+};
