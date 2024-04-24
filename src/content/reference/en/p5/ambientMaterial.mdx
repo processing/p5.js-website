@@ -3,112 +3,259 @@ title: ambientMaterial
 module: 3D
 submodule: Material
 file: src/webgl/material.js
-description: |
-  <p>Sets the ambient color of the material.</p>
-  <p>The ambientMaterial() color represents the components
-  of the <strong>ambientLight()</strong> color that the object reflects.</p>
-  <p>Consider an ambientMaterial() with the color yellow (255, 255, 0).
-  If the ambientLight() emits the color white (255, 255, 255), then the object
-  will appear yellow as it will reflect the red and green components
-  of the light. If the ambientLight() emits the color red (255, 0, 0), then
-  the object will appear red as it will reflect the red component
-  of the light. If the ambientLight() emits the color blue (0, 0, 255),
-  then the object will appear black, as there is no component of
-  the light that it can reflect.</p>
-  <p>You can view more materials in this
-  <a href="https://p5js.org/examples/3d-materials.html">example</a>.</p>
-line: 869
+description: >
+  <p>Sets the ambient color of shapes’ surface material.</p>
+
+  <p>The <code>ambientMaterial()</code> color sets the components of the
+
+  <a href="/reference/p5/ambientLight">ambientLight()</a> color that shapes will
+
+  reflect. For example, calling <code>ambientMaterial(255, 255, 0)</code> would
+  cause a
+
+  shape to reflect red and green light, but not blue light.</p>
+
+  <p><code>ambientMaterial()</code> can be called three ways with different
+  parameters to
+
+  set the material’s color.</p>
+
+  <p>The first way to call <code>ambientMaterial()</code> has one parameter,
+  <code>gray</code>.
+
+  Grayscale values between 0 and 255, as in <code>ambientMaterial(50)</code>,
+  can be
+
+  passed to set the material’s color. Higher grayscale values make shapes
+
+  appear brighter.</p>
+
+  <p>The second way to call <code>ambientMaterial()</code> has one parameter,
+  <code>color</code>. A
+
+  <a href="/reference/p5/p5.Color">p5.Color</a> object, an array of color
+  values, or a
+
+  CSS color string, as in <code>ambientMaterial('magenta')</code>, can be passed
+  to set
+
+  the material’s color.</p>
+
+  <p>The third way to call <code>ambientMaterial()</code> has three parameters,
+  <code>v1</code>, <code>v2</code>,
+
+  and <code>v3</code>. RGB, HSB, or HSL values, as in <code>ambientMaterial(255,
+  0, 0)</code>, can
+
+  be passed to set the material’s colors. Color values will be interpreted
+
+  using the current <a href="/reference/p5/colorMode">colorMode()</a>.</p>
+
+  <p>Note: <code>ambientMaterial()</code> can only be used in WebGL mode.</p>
+line: 1561
 isConstructor: false
 itemtype: method
-alt: box reflecting no light
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('sphere reflecting red, blue, and green light');
+
+      describe('A magenta cube drawn on a gray background.');
     }
+
     function draw() {
-      background(0);
-      noStroke();
-      ambientLight(255);
-      ambientMaterial(70, 130, 230);
-      sphere(40);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on a magenta ambient light.
+      ambientLight(255, 0, 255);
+
+      // Draw the box.
+      box();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    // ambientLight is both red and blue (magenta),
-    // so object only reflects it's red and blue components
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('box reflecting only red and blue light');
+
+      describe('A purple cube drawn on a gray background.');
     }
+
     function draw() {
-      background(70);
-      ambientLight(255, 0, 255); // magenta light
-      ambientMaterial(255); // white material
-      box(30);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on a magenta ambient light.
+      ambientLight(255, 0, 255);
+
+      // Add a dark gray ambient material.
+      ambientMaterial(150);
+
+      // Draw the box.
+      box();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    // ambientLight is green. Since object does not contain
-    // green, it does not reflect any light
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('box reflecting no light');
+
+      describe('A red cube drawn on a gray background.');
     }
+
     function draw() {
-      background(70);
-      ambientLight(0, 255, 0); // green light
-      ambientMaterial(255, 0, 255); // magenta material
-      box(30);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on a magenta ambient light.
+      ambientLight(255, 0, 255);
+
+      // Add a yellow ambient material using RGB values.
+      ambientMaterial(255, 255, 0);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red cube drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on a magenta ambient light.
+      ambientLight(255, 0, 255);
+
+      // Add a yellow ambient material using a p5.Color object.
+      let c = color(255, 255, 0);
+      ambientMaterial(c);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red cube drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on a magenta ambient light.
+      ambientLight(255, 0, 255);
+
+      // Add a yellow ambient material using a color string.
+      ambientMaterial('yellow');
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A yellow cube drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on a white ambient light.
+      ambientLight(255, 255, 255);
+
+      // Add a yellow ambient material using a color string.
+      ambientMaterial('yellow');
+
+      // Draw the box.
+      box();
     }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 869
+  - line: 1561
     params:
       - name: v1
         description: |
-          <p>red or hue value relative to the current
-                                color range</p>
+          <p>red or hue value in the current
+                                <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v2
         description: |
-          <p>green or saturation value relative to the
-                                current color range</p>
+          <p>green or saturation value in the
+                               current <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v3
         description: |
-          <p>blue or brightness value relative to the
-                                current color range</p>
+          <p>blue, brightness, or lightness value in the
+                               current <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
     chainable: 1
-  - line: 955
+  - line: 1766
     params:
       - name: gray
         description: |
-          <p>number specifying value between
-                                  white and black</p>
+          <p>grayscale value between 0 (black) and 255 (white).</p>
         type: Number
     chainable: 1
-  - line: 962
+  - line: 1772
     params:
       - name: color
         description: |
-          <p>color as a <a href="#/p5.Color">p5.Color</a>,
-                     as an array, or as a CSS string</p>
+          <p>color as a <a href="#/p5.Color">p5.Color</a> object,
+                     an array of color values, or a CSS string.</p>
         type: 'p5.Color|Number[]|String'
     chainable: 1
 chainable: true

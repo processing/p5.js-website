@@ -4,44 +4,70 @@ module: Events
 submodule: Keyboard
 file: src/events/keyboard.js
 description: >
-  <p>The <a href="/reference/p5/keyPressed">keyPressed()</a> function is called
-  once every time a key is pressed. The
+  <p>A function that's called once when any key is pressed.</p>
 
-  keyCode for the key that was pressed is stored in the <a
-  href="/reference/p5/keyCode">keyCode</a> variable.</p>
+  <p>Declaring the function <code>keyPressed()</code> sets a code block to run
+  once
 
-  <p>For non-ASCII keys, use the keyCode variable. You can check if the keyCode
+  automatically when the user presses any key:</p>
 
-  equals BACKSPACE, DELETE, ENTER, RETURN, TAB, ESCAPE, SHIFT, CONTROL,
+  <code>
 
-  OPTION, ALT, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW.</p>
+  function keyPressed() {
+    // Code to run.
+  }
 
-  <p>For ASCII keys, the key that was pressed is stored in the key variable.
-  However, it
+  </code>
 
-  does not distinguish between uppercase and lowercase. For this reason, it
 
-  is recommended to use <a href="/reference/p5/keyTyped">keyTyped()</a> to read
-  the key variable, in which the
+  <p>The <a href="/reference/p5/key">key</a> and <a
+  href="/reference/p5/keyCode">keyCode</a>
 
-  case of the variable will be distinguished.</p>
+  variables will be updated with the most recently typed value when
 
-  <p>Because of how operating systems handle key repeats, holding down a key
+  <code>keyPressed()</code> is called by p5.js:</p>
 
-  may cause multiple calls to <a href="/reference/p5/keyTyped">keyTyped()</a>
-  (and <a href="/reference/p5/keyReleased">keyReleased()</a> as well). The
+  <code>
 
-  rate of repeat is set by the operating system and how each computer is
+  function keyPressed() {
+    if (key === 'c') {
+      // Code to run.
+    }
 
-  configured.<br><br>
+  <p>  if (keyCode === ENTER) {
+      // Code to run.
+    }
+  }
 
-  Browsers may have different default
+  </p></code>
 
-  behaviors attached to various key events. To prevent any default
+  <p>The parameter, <code>event</code>, is optional. <code>keyPressed()</code>
+  is always passed a
 
-  behavior for this event, add "return false" to the end of the
-  method.</br></br></p>
-line: 98
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent"
+  target="_blank">KeyboardEvent</a>
+
+  object with properties that describe the key press event:</p>
+
+  <code>
+
+  function keyPressed(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+
+  <p>Browsers may have default behaviors attached to various key events. For
+
+  example, some browsers may jump to the bottom of a web page when the
+
+  <code>SPACE</code> key is pressed. To prevent any default behavior for this
+  event, add
+
+  <code>return false;</code> to the end of the function.</p>
+line: 284
 isConstructor: false
 itemtype: method
 example:
@@ -49,45 +75,111 @@ example:
 
     <div>
     <code>
+    // Click on the canvas to begin detecting key presses.
+
     let value = 0;
-    function draw() {
-      fill(value);
-      rect(25, 25, 50, 50);
-      describe(`black rect center. turns white when key pressed and black
-        when released.`);
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square changes color when the user presses a key.'
+      );
     }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Toggle the background color when the user presses a key.
     function keyPressed() {
       if (value === 0) {
         value = 255;
       } else {
         value = 0;
       }
+      // Uncomment to prevent any default behavior.
+      // return false;
     }
     </code>
     </div>
+
     <div>
     <code>
+    // Click on the canvas to begin detecting key presses.
+
     let value = 0;
-    function draw() {
-      fill(value);
-      rect(25, 25, 50, 50);
-      describe(`black rect center. turns white when left arrow pressed and
-        black when right.`);
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a white square at its center. The inner square turns black when the user presses the "b" key. It turns white when the user presses the "a" key.'
+      );
     }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Reassign value when the user presses the 'a' or 'b' key.
+    function keyPressed() {
+      if (key === 'a') {
+        value = 255;
+      } else if (key === 'b') {
+        value = 0;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square turns white when the user presses the left arrow key. It turns black when the user presses the right arrow key.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Toggle the background color when the user presses an arrow key.
     function keyPressed() {
       if (keyCode === LEFT_ARROW) {
         value = 255;
       } else if (keyCode === RIGHT_ARROW) {
         value = 0;
       }
-    }
-    </code>
-    </div>
-    <div class="norender">
-    <code>
-    function keyPressed() {
-      // Do something
-      return false; // prevent any default behaviour
+      // Uncomment to prevent any default behavior.
+      // return false;
     }
     </code>
     </div>
@@ -95,7 +187,7 @@ class: p5
 params:
   - name: event
     description: |
-      <p>optional KeyboardEvent callback argument.</p>
+      <p>optional <code>KeyboardEvent</code> callback argument.</p>
     type: KeyboardEvent
     optional: true
 chainable: false

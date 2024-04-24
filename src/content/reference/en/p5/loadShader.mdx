@@ -4,46 +4,135 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Creates a new <a href="/reference/p5/p5.Shader">p5.Shader</a> object
+  <p>Loads vertex and fragment shaders to create a
 
-  from the provided vertex and fragment shader files.</p>
+  <a href="/reference/p5/p5.Shader">p5.Shader</a> object.</p>
 
-  <p>The shader files are loaded asynchronously in the
+  <p>Shaders are programs that run on the graphics processing unit (GPU). They
 
-  background, so this method should be used in <a
-  href="/reference/p5/preload">preload()</a>.</p>
+  can process many pixels at the same time, making them fast for many
 
-  <p>Shaders can alter the positioning of shapes drawn with them.
+  graphics tasks. They’re written in a language called
 
-  To ensure consistency in rendering, it's recommended to use the vertex shader
-  in the <a href="/reference/p5/createShader">createShader example</a>.</p>
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
+  target="_blank">GLSL</a>
 
-  <p>Note, shaders can only be used in WEBGL mode.</p>
+  and run along with the rest of the code in a sketch.</p>
+
+  <p>Once the <a href="/reference/p5/p5.Shader">p5.Shader</a> object is created,
+  it can be
+
+  used with the <a href="/reference/p5/shader">shader()</a> function, as in
+
+  <code>shader(myShader)</code>. A shader program consists of two files, a
+  vertex shader
+
+  and a fragment shader. The vertex shader affects where 3D geometry is drawn
+
+  on the screen and the fragment shader affects color.</p>
+
+  <p><code>loadShader()</code> loads the vertex and fragment shaders from their
+  <code>.vert</code> and
+
+  <code>.frag</code> files. For example, calling
+
+  <code>loadShader('/assets/shader.vert', '/assets/shader.frag')</code> loads
+  both
+
+  required shaders and returns a <a href="/reference/p5/p5.Shader">p5.Shader</a>
+  object.</p>
+
+  <p>The third parameter, <code>successCallback</code>, is optional. If a
+  function is
+
+  passed, it will be called once the shader has loaded. The callback function
+
+  can use the new <a href="/reference/p5/p5.Shader">p5.Shader</a> object as its
+
+  parameter.</p>
+
+  <p>The fourth parameter, <code>failureCallback</code>, is also optional. If a
+  function is
+
+  passed, it will be called if the shader fails to load. The callback
+
+  function can use the event error as its parameter.</p>
+
+  <p>Shaders can take time to load. Calling <code>loadShader()</code> in
+
+  <a href="/reference/p5/preload">preload()</a> ensures shaders load before
+  they're
+
+  used in <a href="/reference/p5/setup">setup()</a> or <a
+  href="/reference/p5/draw">draw()</a>.</p>
+
+  <p>Note: Shaders can only be used in WebGL mode.</p>
 line: 12
 isConstructor: false
 itemtype: method
-alt: 'zooming Mandelbrot set. a colorful, infinitely detailed fractal.'
 example:
   - |-
 
     <div modernizr='webgl'>
     <code>
-    let mandel;
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
     function preload() {
-      // load the shader definitions from files
-      mandel = loadShader('/assets/shader.vert', '/assets/shader.frag');
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
     }
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      // use the shader
-      shader(mandel);
-      noStroke();
-      mandel.setUniform('p', [-0.74364388703, 0.13182590421]);
-      describe('zooming Mandelbrot set. a colorful, infinitely detailed fractal.');
+
+      // Compile and apply the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      // Set the shader uniform r to the value 1.5.
+      mandelbrot.setUniform('r', 1.5);
+
+      // Add a quad as a display surface for the shader.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+
+      describe('A black fractal image on a magenta background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
     }
 
     function draw() {
-      mandel.setUniform('r', 1.5 * exp(-6.5 * (1 + sin(millis() / 2000))));
+      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
+
+      // Add a quad as a display surface for the shader.
       quad(-1, -1, 1, -1, 1, 1, -1, 1);
     }
     </code>
@@ -52,33 +141,26 @@ class: p5
 params:
   - name: vertFilename
     description: |
-      <p>path to file containing vertex shader
-      source code</p>
+      <p>path of the vertex shader to be loaded.</p>
     type: String
   - name: fragFilename
     description: |
-      <p>path to file containing fragment shader
-      source code</p>
+      <p>path of the fragment shader to be loaded.</p>
     type: String
-  - name: callback
-    description: >
-      <p>callback to be executed after loadShader
-
-      completes. On success, the p5.Shader object is passed as the first
-      argument.</p>
+  - name: successCallback
+    description: |
+      <p>function to call once the shader is loaded. Can be passed the
+                                          <a href="#/p5.Shader">p5.Shader</a> object.</p>
     type: Function
     optional: true
-  - name: errorCallback
+  - name: failureCallback
     description: |
-      <p>callback to be executed when an error
-      occurs inside loadShader. On error, the error is passed as the first
-      argument.</p>
+      <p>function to call if the shader fails to load. Can be passed an
+                                          <code>Error</code> event object.</p>
     type: Function
     optional: true
 return:
-  description: |-
-    a shader object created from the provided
-    vertex and fragment shader files.
+  description: new shader created from the vertex and fragment shader files.
   type: p5.Shader
 chainable: false
 ---

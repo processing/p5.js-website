@@ -4,146 +4,213 @@ module: 3D
 submodule: Lights
 file: src/webgl/light.js
 description: >
-  <p>Creates a spot light with the given color, position,
+  <p>Creates a light that shines from a point in one direction.</p>
 
-  light direction, angle, and concentration.</p>
+  <p>Spot lights are like flashlights that shine in one direction creating a
 
-  <p>Like a <a href="/reference/p5/pointLight">pointLight()</a>, a spotLight()
+  cone of light. The shape of the cone can be controlled using the angle and
 
-  emits light from a specific point (position). It has a different effect
+  concentration parameters. A maximum of 5 spot lights can be active at
+  once.</p>
 
-  when it is positioned farther vs. nearer an object.</p>
+  <p>There are eight ways to call <code>spotLight()</code> with parameters to
+  set the
 
-  <p>However, unlike a pointLight(), the light is emitted in <strong>one
-  direction</strong>
+  light’s color, position, direction. For example,
 
-  along a conical shape. The shape of the cone can be controlled using
+  <code>spotLight(255, 0, 0, 0, 0, 0, 1, 0, 0)</code> creates a red <code>(255,
+  0, 0)</code> light
 
-  the <code>angle</code> and <code>concentration</code> parameters.</p>
+  at the origin <code>(0, 0, 0)</code> that points to the right <code>(1, 0,
+  0)</code>.</p>
 
-  <p>The <code>angle</code> parameter is used to
+  <p>The <code>angle</code> parameter is optional. It sets the radius of the
+  light cone.
 
-  determine the radius of the cone. And the <code>concentration</code>
+  For example, <code>spotLight(255, 0, 0, 0, 0, 0, 1, 0, 0, PI / 16)</code>
+  creates a
 
-  parameter is used to focus the light towards the center of
+  red <code>(255, 0, 0)</code> light at the origin <code>(0, 0, 0)</code> that
+  points to the right
 
-  the cone. Both parameters are optional, however if you want
+  <code>(1, 0, 0)</code> with an angle of <code>PI / 16</code> radians. By
+  default, <code>angle</code> is
 
-  to specify <code>concentration</code>, you must also specify
-  <code>angle</code>.
+  <code>PI / 3</code> radians.</p>
 
-  The minimum concentration value is 1.</p>
+  <p>The <code>concentration</code> parameter is also optional. It focuses the
+  light
 
-  <p>A maximum of <strong>5</strong> spot lights can be active at once.</p>
+  towards the center of the light cone. For example,
 
-  <p>Note: lights need to be called (whether directly or indirectly)
+  <code>spotLight(255, 0, 0, 0, 0, 0, 1, 0, 0, PI / 16, 50)</code> creates a red
 
-  within draw() to remain persistent in a looping program.
+  <code>(255, 0, 0)</code> light at the origin <code>(0, 0, 0)</code> that
+  points to the right
 
-  Placing them in setup() will cause them to only have an effect
+  <code>(1, 0, 0)</code> with an angle of <code>PI / 16</code> radians at
+  concentration of 50. By
 
-  the first time through the loop.</p>
-line: 794
+  default, <code>concentration</code> is 100.</p>
+line: 1271
 isConstructor: false
 itemtype: method
-alt: |-
-  scene with sphere and spot light. The position of
-  the light is controlled with the mouse position.
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to adjust the spotlight.
+
+    let isLit = false;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe(
-        'scene with sphere and spot light. The position of the light is controlled with the mouse position.'
-      );
+
+      describe('A white sphere drawn on a gray background. A red spotlight starts shining when the user double-clicks.');
     }
+
     function draw() {
-      background(0);
-      // move your mouse to change light position
-      let locX = mouseX - width / 2;
-      let locY = mouseY - height / 2;
-      // to set the light position,
-      // think of the world's coordinate as:
-      // -width/2,-height/2 ----------- width/2,-height/2
-      //                   |           |
-      //                   |    0,0    |
-      //                   |           |
-      //  -width/2,height/2 ----------- width/2,height/2
-      ambientLight(50);
-      spotLight(0, 250, 0, locX, locY, 100, 0, 0, -1, Math.PI / 16);
-      noStroke();
-      sphere(40);
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Control the spotlight.
+      if (isLit === true) {
+        // Add a red spot light that shines into the screen.
+        // Set its angle to PI / 32 radians.
+        spotLight(255, 0, 0, 0, 0, 100, 0, 0, -1, PI / 32);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the spotlight when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to adjust the spotlight.
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white sphere drawn on a gray background. A red spotlight starts shining when the user double-clicks.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Control the spotlight.
+      if (isLit === true) {
+        // Add a red spot light that shines into the screen.
+        // Set its angle to PI / 3 radians (default).
+        // Set its concentration to 1000.
+        let c = color(255, 0, 0);
+        let position = createVector(0, 0, 100);
+        let direction = createVector(0, 0, -1);
+        spotLight(c, position, direction, PI / 3, 1000);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the spotlight when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
     }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 794
+  - line: 1271
     params:
       - name: v1
         description: |
-          <p>red or hue value relative to the current color range</p>
+          <p>red or hue value in the current
+                                               <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v2
         description: |
-          <p>green or saturation value relative to the current color range</p>
+          <p>green or saturation value in the current
+                                               <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v3
         description: |
-          <p>blue or brightness value relative to the current color range</p>
+          <p>blue, brightness, or lightness value in the current
+                                               <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: x
         description: |
-          <p>x component of position</p>
+          <p>x-coordinate of the light.</p>
         type: Number
       - name: 'y'
         description: |
-          <p>y component of position</p>
+          <p>y-coordinate of the light.</p>
         type: Number
       - name: z
         description: |
-          <p>z component of position</p>
+          <p>z-coordinate of the light.</p>
         type: Number
       - name: rx
         description: |
-          <p>x component of light direction (inclusive range of -1 to 1)</p>
+          <p>x-component of light direction between -1 and 1.</p>
         type: Number
       - name: ry
         description: |
-          <p>y component of light direction (inclusive range of -1 to 1)</p>
+          <p>y-component of light direction between -1 and 1.</p>
         type: Number
       - name: rz
         description: |
-          <p>z component of light direction (inclusive range of -1 to 1)</p>
+          <p>z-component of light direction between -1 and 1.</p>
         type: Number
       - name: angle
         description: |
-          <p>angle of cone. Defaults to PI/3</p>
+          <p>angle of the light cone. Defaults to <code>PI / 3</code>.</p>
         type: Number
         optional: true
       - name: concentration
         description: |
-          <p>concentration of cone. Defaults to 100</p>
+          <p>concentration of the light. Defaults to 100.</p>
         type: Number
         optional: true
     chainable: 1
-  - line: 867
+  - line: 1398
     params:
       - name: color
         description: |
-          <p>color as a <a href="#/p5.Color">p5.Color</a>,
-                                                              as an array, or as a CSS string</p>
+          <p>color as a <a href="#/p5.Color">p5.Color</a> object,
+                                                       an array of color values, or a CSS string.</p>
         type: 'p5.Color|Number[]|String'
       - name: position
-        description: |
-          <p>position of light as a <a href="#/p5.Vector">p5.Vector</a></p>
+        description: >
+          <p>position of the light as a <a href="#/p5.Vector">p5.Vector</a>
+          object.</p>
         type: p5.Vector
       - name: direction
-        description: |
-          <p>direction of light as a <a href="#/p5.Vector">p5.Vector</a></p>
+        description: >
+          <p>direction of light as a <a href="#/p5.Vector">p5.Vector</a>
+          object.</p>
         type: p5.Vector
       - name: angle
         description: ''
@@ -153,7 +220,7 @@ overloads:
         description: ''
         type: Number
         optional: true
-  - line: 876
+  - line: 1407
     params:
       - name: v1
         description: ''
@@ -178,7 +245,7 @@ overloads:
         description: ''
         type: Number
         optional: true
-  - line: 886
+  - line: 1417
     params:
       - name: color
         description: ''
@@ -203,7 +270,7 @@ overloads:
         description: ''
         type: Number
         optional: true
-  - line: 896
+  - line: 1427
     params:
       - name: color
         description: ''
@@ -228,7 +295,7 @@ overloads:
         description: ''
         type: Number
         optional: true
-  - line: 906
+  - line: 1437
     params:
       - name: v1
         description: ''
@@ -259,7 +326,7 @@ overloads:
         description: ''
         type: Number
         optional: true
-  - line: 918
+  - line: 1449
     params:
       - name: v1
         description: ''
@@ -290,7 +357,7 @@ overloads:
         description: ''
         type: Number
         optional: true
-  - line: 930
+  - line: 1461
     params:
       - name: color
         description: ''

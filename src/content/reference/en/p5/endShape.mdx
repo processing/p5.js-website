@@ -4,70 +4,123 @@ module: Shape
 submodule: Vertex
 file: src/core/shape/vertex.js
 description: >
-  <p>The <a href="/reference/p5/endShape">endShape()</a> function is the
-  companion to <a href="/reference/p5/beginShape">beginShape()</a> and may only
-  be
+  <p>Begins adding vertices to a custom shape.</p>
 
-  called after <a href="/reference/p5/beginShape">beginShape()</a>. When <a
-  href="/reference/p5/endshape">endShape()</a> is called, all of the image
+  <p>The <a href="/reference/p5/beginShape">beginShape()</a> and
+  <code>endShape()</code> functions
 
-  data defined since the previous call to <a
-  href="/reference/p5/beginShape">beginShape()</a> is written into the image
+  allow for creating custom shapes in 2D or 3D.
 
-  buffer. The constant CLOSE is the value for the <code>mode</code> parameter to
-  close
+  <a href="/reference/p5/beginShape">beginShape()</a> begins adding vertices to
+  a
 
-  the shape (to connect the beginning and the end).
+  custom shape and <code>endShape()</code> stops adding them.</p>
 
-  When using instancing with <a href="/reference/p5/endShape">endShape()</a> the
-  instancing will not apply to the strokes.
+  <p>The first parameter, <code>mode</code>, is optional. By default, the first
+  and last
 
-  When the count parameter is used with a value greater than 1, it enables
-  instancing for shapes built when in WEBGL mode. Instancing
+  vertices of a shape aren't connected. If the constant <code>CLOSE</code> is
+  passed, as
 
-  is a feature that allows the GPU to efficiently draw multiples of the same
-  shape. It's often used for particle effects or other
+  in <code>endShape(CLOSE)</code>, then the first and last vertices will be
+  connected.</p>
 
-  times when you need a lot of repetition. In order to take advantage of
-  instancing, you will also need to write your own custom
+  <p>The second parameter, <code>count</code>, is also optional. In WebGL mode,
+  it’s more
 
-  shader using the gl_InstanceID keyword. You can read more about instancing
+  efficient to draw many copies of the same shape using a technique called
 
   <a
-  href="https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html">here</a>
-  or by working from the example on this
+  href="https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html"
+  target="_blank">instancing</a>.
 
-  page.</p>
-line: 591
+  The <code>count</code> parameter tells WebGL mode how many copies to draw. For
+
+  example, calling <code>endShape(CLOSE, 400)</code> after drawing a custom
+  shape will
+
+  make it efficient to draw 400 copies. This feature requires
+
+  <a href="https://p5js.org/learn/getting-started-in-webgl-shaders.html"
+  target="_blank">writing a custom shader</a>.</p>
+
+  <p>After calling <a href="/reference/p5/beginShape">beginShape()</a>, shapes
+  can be
+
+  built by calling <a href="/reference/p5/vertex">vertex()</a>,
+
+  <a href="/reference/p5/bezierVertex">bezierVertex()</a>,
+
+  <a href="/reference/p5/quadraticVertex">quadraticVertex()</a>, and/or
+
+  <a href="/reference/p5/curveVertex">curveVertex()</a>. Calling
+
+  <code>endShape()</code> will stop adding vertices to the
+
+  shape. Each shape will be outlined with the current stroke color and filled
+
+  with the current fill color.</p>
+
+  <p>Transformations such as <a href="/reference/p5/translate">translate()</a>,
+
+  <a href="/reference/p5/rotate">rotate()</a>, and
+
+  <a href="/reference/p5/scale">scale()</a> don't work between
+
+  <a href="/reference/p5/beginShape">beginShape()</a> and
+  <code>endShape()</code>. It's also not
+
+  possible to use other shapes, such as <a
+  href="/reference/p5/ellipse">ellipse()</a> or
+
+  <a href="/reference/p5/rect">rect()</a>, between
+
+  <a href="/reference/p5/beginShape">beginShape()</a> and
+  <code>endShape()</code>.</p>
+line: 1344
 isConstructor: false
 itemtype: method
-alt: Triangle line shape with smallest interior angle on bottom and upside-down L.
 example:
   - |-
 
     <div>
     <code>
-    noFill();
+    function setup() {
+      createCanvas(100, 100);
 
-    beginShape();
-    vertex(20, 20);
-    vertex(45, 20);
-    vertex(45, 80);
-    endShape(CLOSE);
+      background(200);
 
-    beginShape();
-    vertex(50, 20);
-    vertex(75, 20);
-    vertex(75, 80);
-    endShape();
+      // Style the shapes.
+      noFill();
+
+      // Left triangle.
+      beginShape();
+      vertex(20, 20);
+      vertex(45, 20);
+      vertex(45, 80);
+      endShape(CLOSE);
+
+      // Right triangle.
+      beginShape();
+      vertex(50, 20);
+      vertex(75, 20);
+      vertex(75, 80);
+      endShape();
+
+      describe(
+        'Two sets of black lines drawn on a gray background. The three lines on the left form a right triangle. The two lines on the right form a right angle.'
+      );
+    }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    let fx;
-    let vs = `#version 300 es
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `#version 300 es
 
     precision mediump float;
 
@@ -79,21 +132,24 @@ example:
 
     void main() {
 
-      // copy the instance ID to the fragment shader
+      // Copy the instance ID to the fragment shader.
       instanceID = gl_InstanceID;
       vec4 positionVec4 = vec4(aPosition, 1.0);
 
-      // gl_InstanceID represents a numeric value for each instance
-      // using gl_InstanceID allows us to move each instance separately
-      // here we move each instance horizontally by id * 23
+      // gl_InstanceID represents a numeric value for each instance.
+      // Using gl_InstanceID allows us to move each instance separately.
+      // Here we move each instance horizontally by ID * 23.
       float xOffset = float(gl_InstanceID) * 23.0;
 
-      // apply the offset to the final position
+      // Apply the offset to the final position.
       gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -
         vec4(xOffset, 0.0, 0.0, 0.0));
     }
     `;
-    let fs = `#version 300 es
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `#version 300 es
 
     precision mediump float;
 
@@ -105,30 +161,35 @@ example:
       vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
       vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
 
-      // Normalize the instance id
+      // Normalize the instance ID.
       float normId = float(instanceID) / numInstances;
 
-      // Mix between two colors using the normalized instance id
+      // Mix between two colors using the normalized instance ID.
       outColor = mix(red, blue, normId);
     }
     `;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      fx = createShader(vs, fs);
-    }
 
-    function draw() {
+      // Create a p5.Shader object.
+      let myShader = createShader(vertSrc, fragSrc);
+
       background(220);
 
-      // strokes aren't instanced, and are rather used for debug purposes
-      shader(fx);
-      fx.setUniform('numInstances', 4);
+      // Compile and apply the p5.Shader.
+      shader(myShader);
 
-      // this doesn't have to do with instancing, this is just for centering the squares
+      // Set the numInstances uniform.
+      myShader.setUniform('numInstances', 4);
+
+      // Translate the origin to help align the drawing.
       translate(25, -10);
 
-      // here we draw the squares we want to instance
+      // Style the shapes.
+      noStroke();
+
+      // Draw the shapes.
       beginShape();
       vertex(0, 0);
       vertex(0, 20);
@@ -137,7 +198,7 @@ example:
       vertex(0, 0);
       endShape(CLOSE, 4);
 
-      resetShader();
+      describe('A row of four squares. Their colors transition from purple on the left to red on the right');
     }
     </code>
     </div>

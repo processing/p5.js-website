@@ -3,12 +3,41 @@ title: pwinMouseX
 module: Events
 submodule: Mouse
 file: src/events/mouse.js
-description: |
-  <p>The system variable pwinMouseX always contains the horizontal position
-  of the mouse in the frame previous to the current frame, relative to
-  (0, 0) of the window. Note: pwinMouseX will be reset to the current winMouseX
-  value at the start of each touch event.</p>
-line: 263
+description: >
+  <p>A <code>Number</code> variable that tracks the mouse's previous horizontal
+  position
+
+  within the browser.</p>
+
+  <p><code>pwinMouseX</code> keeps track of the mouse's position relative to the
+  top-left
+
+  corner of the browser window. Its value is
+
+  <a href="/reference/p5/winMouseX">winMouseX</a> from the previous frame. For
+
+  example, if the mouse was 50 pixels from
+
+  the left edge of the browser during the last frame, then
+  <code>pwinMouseX</code> will
+
+  be 50.</p>
+
+  <p>On a touchscreen device, <code>pwinMouseX</code> will hold the x-coordinate
+  of the most
+
+  recent touch point. <code>pwinMouseX</code> is reset to the current
+
+  <a href="/reference/p5/winMouseX">winMouseX</a> value at the start of each
+  touch
+
+  event.</p>
+
+  <p>Note: Use <a href="/reference/p5/pmouseX">pmouseX</a> to track the mouse’s
+  previous
+
+  x-coordinate within the canvas.</p>
+line: 551
 isConstructor: false
 itemtype: property
 example:
@@ -16,27 +45,46 @@ example:
 
     <div>
     <code>
-    let myCanvas;
-
     function setup() {
-      //use a variable to store a pointer to the canvas
-      myCanvas = createCanvas(100, 100);
-      noStroke();
-      fill(237, 34, 93);
+      createCanvas(100, 100);
+
+      // Slow the frame rate.
+      frameRate(10);
+
+      describe('A gray square. A white circle at its center grows larger when the mouse moves horizontally.');
     }
 
     function draw() {
-      clear();
-      //the difference between previous and
-      //current x position is the horizontal mouse speed
-      let speed = abs(winMouseX - pwinMouseX);
-      //change the size of the circle
-      //according to the horizontal speed
-      ellipse(50, 50, 10 + speed * 5, 10 + speed * 5);
-      //move the canvas to the mouse position
-      myCanvas.position(winMouseX + 1, winMouseY + 1);
-      describe(`fuchsia ellipse moves with mouse x and y.
-        Grows and shrinks with mouse speed`);
+      background(200);
+
+      // Calculate the circle's diameter.
+      let d = winMouseX - pwinMouseX;
+
+      // Draw the circle.
+      circle(50, 50, d);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      // Create the canvas and set its position.
+      let cnv = createCanvas(100, 100);
+      cnv.position(20, 20);
+
+      describe('A gray square with a number at its center. The number changes as the user moves the mouse vertically.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Display pwinMouseX.
+      text(pwinMouseX, 50, 50);
     }
     </code>
     </div>

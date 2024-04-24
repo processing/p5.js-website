@@ -4,26 +4,143 @@ module: Shape
 submodule: 3D Primitives
 file: src/webgl/3d_primitives.js
 description: >
-  <p>Clears the resources of a model to free up browser memory. A model whose
+  <p>Clears a <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object from
+  the graphics
 
-  resources have been cleared can still be drawn, but the first time it is
+  processing unit (GPU) memory.</p>
 
-  drawn again, it might take longer.</p>
+  <p><a href="/reference/p5/p5.Geometry">p5.Geometry</a> objects can contain
+  lots of data
 
-  <p>This method works on models generated with
+  about their vertices, surface normals, colors, and so on. Complex 3D shapes
 
-  <a href="/reference/p5/buildGeometry">buildGeometry()</a> as well as those
-  loaded
+  can use lots of memory which is a limited resource in many GPUs. Calling
 
-  from <a href="/reference/p5/loadModel">loadModel()</a>.</p>
-line: 167
+  <code>freeGeometry()</code> can improve performance by freeing a
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object’s resources from
+  GPU memory.
+
+  <code>freeGeometry()</code> works with <a
+  href="/reference/p5/p5.Geometry">p5.Geometry</a> objects
+
+  created with <a href="/reference/p5/beginGeometry">beginGeometry()</a> and
+
+  <a href="/reference/p5/endGeometry">endGeometry()</a>,
+
+  <a href="/reference/p5/buildGeometry">buildGeometry()</a>, and
+
+  <a href="/reference/p5/loadModel">loadModel()</a>.</p>
+
+  <p>The parameter, <code>geometry</code>, is the <a
+  href="/reference/p5/p5.Geometry">p5.Geometry</a>
+
+  object to be freed.</p>
+
+  <p>Note: A <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object can
+  still be drawn
+
+  after its resources are cleared from GPU memory. It may take longer to draw
+
+  the first time it’s redrawn.</p>
+
+  <p>Note: <code>freeGeometry()</code> can only be used in WebGL mode.</p>
+line: 748
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Create a p5.Geometry object.
+      beginGeometry();
+      cone();
+      let shape = endGeometry();
+
+      // Draw the shape.
+      model(shape);
+
+      // Free the shape's resources.
+      freeGeometry(shape);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let button;
+    let particles;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a button to reset the particle system.
+      button = createButton('Reset');
+
+      // Call resetModel() when the user presses the button.
+      button.mousePressed(resetModel);
+
+      // Add the original set of particles.
+      resetModel();
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the particles.
+      noStroke();
+
+      // Draw the particles.
+      model(particles);
+    }
+
+    function resetModel() {
+      // If the p5.Geometry object has already been created,
+      // free those resources.
+      if (particles) {
+        freeGeometry(particles);
+      }
+
+      // Create a new p5.Geometry object with random spheres.
+      particles = buildGeometry(createParticles);
+    }
+
+    function createParticles() {
+      for (let i = 0; i < 60; i += 1) {
+        // Calculate random coordinates.
+        let x = randomGaussian(0, 20);
+        let y = randomGaussian(0, 20);
+        let z = randomGaussian(0, 20);
+
+        push();
+        // Translate to the particle's coordinates.
+        translate(x, y, z);
+        // Draw the particle.
+        sphere(5);
+        pop();
+      }
+    }
+    </code>
+    </div>
 class: p5
 params:
   - name: geometry
     description: |
-      <p>The geometry whose resources should be freed</p>
+      <p>3D shape whose resources should be freed.</p>
     type: p5.Geometry
 chainable: false
 ---

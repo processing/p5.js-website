@@ -4,62 +4,121 @@ module: Shape
 submodule: Vertex
 file: src/core/shape/vertex.js
 description: >
-  <p>Use the <a href="/reference/p5/beginContour">beginContour()</a> and <a
-  href="/reference/p5/endContour">endContour()</a> functions to create negative
+  <p>Stops creating a hole within a flat shape.</p>
 
-  shapes within shapes such as the center of the letter 'O'. <a
-  href="/reference/p5/beginContour">beginContour()</a>
+  <p>The <a href="/reference/p5/beginContour">beginContour()</a> and
+  <code>endContour()</code>
 
-  begins recording vertices for the shape and <a
-  href="/reference/p5/endContour">endContour()</a> stops recording.
+  functions allow for creating negative space within custom shapes that are
 
-  The vertices that define a negative shape must "wind" in the opposite
+  flat. <a href="/reference/p5/beginContour">beginContour()</a> begins adding
+  vertices
 
-  direction from the exterior shape. First draw vertices for the exterior
+  to a negative space and <code>endContour()</code> stops adding them.
 
-  clockwise order, then for internal shapes, draw vertices
+  <a href="/reference/p5/beginContour">beginContour()</a> and
+  <code>endContour()</code> must be
 
-  shape in counter-clockwise.</p>
+  called between <a href="/reference/p5/beginShape">beginShape()</a> and
 
-  <p>These functions can only be used within a <a
-  href="/reference/p5/beginShape">beginShape()</a>/<a
-  href="/reference/p5/endShape">endShape()</a> pair and
+  <a href="/reference/p5/endShape">endShape()</a>.</p>
 
-  transformations such as <a href="/reference/p5/translate">translate()</a>, <a
-  href="/reference/p5/rotate">rotate()</a>, and <a
-  href="/reference/p5/scale">scale()</a> do not work
+  <p>Transformations such as <a href="/reference/p5/translate">translate()</a>,
 
-  within a <a href="/reference/p5/beginContour">beginContour()</a>/<a
-  href="/reference/p5/endContour">endContour()</a> pair. It is also not possible
-  to use
+  <a href="/reference/p5/rotate">rotate()</a>, and <a
+  href="/reference/p5/scale">scale()</a>
 
-  other shapes, such as <a href="/reference/p5/ellipse">ellipse()</a> or <a
-  href="/reference/p5/rect">rect()</a> within.</p>
-line: 528
+  don't work between <a href="/reference/p5/beginContour">beginContour()</a> and
+
+  <code>endContour()</code>. It's also not possible to use other shapes, such as
+
+  <a href="/reference/p5/ellipse">ellipse()</a> or <a
+  href="/reference/p5/rect">rect()</a>,
+
+  between <a href="/reference/p5/beginContour">beginContour()</a> and
+  <code>endContour()</code>.</p>
+
+  <p>Note: The vertices that define a negative space must "wind" in the opposite
+
+  direction from the outer shape. First, draw vertices for the outer shape
+
+  clockwise order. Then, draw vertices for the negative space in
+
+  counter-clockwise order.</p>
+line: 1224
 isConstructor: false
 itemtype: method
-alt: white rect and smaller grey rect with red outlines in center of canvas.
 example:
   - |-
 
     <div>
     <code>
-    translate(50, 50);
-    stroke(255, 0, 0);
-    beginShape();
-    // Exterior part of shape, clockwise winding
-    vertex(-40, -40);
-    vertex(40, -40);
-    vertex(40, 40);
-    vertex(-40, 40);
-    // Interior part of shape, counter-clockwise winding
-    beginContour();
-    vertex(-20, -20);
-    vertex(-20, 20);
-    vertex(20, 20);
-    vertex(20, -20);
-    endContour();
-    endShape(CLOSE);
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Exterior vertices, clockwise winding.
+      vertex(10, 10);
+      vertex(90, 10);
+      vertex(90, 90);
+      vertex(10, 90);
+
+      // Interior vertices, counter-clockwise winding.
+      beginContour();
+      vertex(30, 30);
+      vertex(30, 70);
+      vertex(70, 70);
+      vertex(70, 30);
+      endContour();
+
+      // Stop drawing the shape.
+      endShape(CLOSE);
+
+      describe('A white square with a square hole in its center drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white square with a square hole in its center drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Exterior vertices, clockwise winding.
+      vertex(-40, -40);
+      vertex(40, -40);
+      vertex(40, 40);
+      vertex(-40, 40);
+
+      // Interior vertices, counter-clockwise winding.
+      beginContour();
+      vertex(-20, -20);
+      vertex(-20, 20);
+      vertex(20, 20);
+      vertex(20, -20);
+      endContour();
+
+      // Stop drawing the shape.
+      endShape(CLOSE);
+    }
     </code>
     </div>
 class: p5

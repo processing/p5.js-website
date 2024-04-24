@@ -61,12 +61,12 @@ export const cloneLibraryRepo = async (
  * @param [hoursAgo] Number of hours ago to compare the file's modification time to, default = 24
  * @returns boolean whether the file was modified within the given time frame
  */
-export const fileModifiedSince = async (path: string, hoursAgo = 1000) => {
+export const fileModifiedSince = async (path: string, hoursAgo = 72) => {
   try {
     const stats = await fs.stat(path);
     const modifiedTime = stats.mtime.getTime();
     const currentTime = Date.now();
-    const threshold = currentTime - hoursAgo * 60 * 60 * 1000; // 24 hours in milliseconds
+    const threshold = currentTime - hoursAgo * 60 * 60 * 1000; // hours ago in milliseconds
 
     return modifiedTime >= threshold;
   } catch (err) {

@@ -9,52 +9,70 @@ description: >
 
   and <a href="/reference/p5/spotLight">spotLight()</a>.</p>
 
-  <p>lightFalloff() affects only the lights which are created after it
+  <p>A light’s falloff describes the intensity of its beam at a distance. For
 
-  in the code.</p>
+  example, a lantern has a slow falloff, a flashlight has a medium falloff,
 
-  <p>The <code>constant</code>, <code>linear</code>, an <code>quadratic</code>
-  parameters are used to calculate falloff as follows:</p>
+  and a laser pointer has a sharp falloff.</p>
 
-  <p>d = distance from light position to vertex position</p>
+  <p><code>lightFalloff()</code> has three parameters, <code>constant</code>,
+  <code>linear</code>, and
 
-  <p>falloff = 1 / (CONSTANT + d * LINEAR + (d * d) * QUADRATIC)</p>
-line: 693
+  <code>quadratic</code>. They’re numbers used to calculate falloff at a
+  distance, <code>d</code>,
+
+  as follows:</p>
+
+  <p><code>falloff = 1 / (constant + d * linear + (d * d) *
+  quadratic)</code></p>
+
+  <p>Note: <code>constant</code>, <code>linear</code>, and
+  <code>quadratic</code> should always be set to values
+
+  greater than 0.</p>
+line: 1160
 isConstructor: false
 itemtype: method
-alt: Two spheres with different falloff values show different intensity of light
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to change the falloff rate.
+
+    let useFalloff = false;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      noStroke();
-      describe(
-        'Two spheres with different falloff values show different intensity of light'
-      );
+
+      describe('A sphere drawn against a gray background. The intensity of the light changes when the user double-clicks.');
     }
+
     function draw() {
-      background(125);
+      background(50);
 
-      let locX = mouseX - width / 2;
-      let locY = mouseY - height / 2;
-      locX /= 2; // half scale
+      // Enable orbiting with the mouse.
+      orbitControl();
 
-      lightFalloff(1, 0, 0);
-      push();
-      translate(-25, 0, 0);
-      pointLight(250, 250, 250, locX - 25, locY, 50);
-      sphere(20);
-      pop();
+      // Set the light falloff.
+      if (useFalloff === true) {
+        lightFalloff(2, 0, 0);
+      }
 
-      lightFalloff(0.97, 0.03, 0);
-      push();
-      translate(25, 0, 0);
-      pointLight(250, 250, 250, locX + 25, locY, 50);
-      sphere(20);
-      pop();
+      // Add a white point light from the front.
+      pointLight(255, 255, 255, 0, 0, 100);
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Change the falloff value when the user double-clicks.
+    function doubleClicked() {
+      useFalloff = true;
     }
     </code>
     </div>
@@ -62,15 +80,15 @@ class: p5
 params:
   - name: constant
     description: |
-      <p>CONSTANT value for determining falloff</p>
+      <p>constant value for calculating falloff.</p>
     type: Number
   - name: linear
     description: |
-      <p>LINEAR value for determining falloff</p>
+      <p>linear value for calculating falloff.</p>
     type: Number
   - name: quadratic
     description: |
-      <p>QUADRATIC value for determining falloff</p>
+      <p>quadratic value for calculating falloff.</p>
     type: Number
 chainable: true
 ---

@@ -3,13 +3,29 @@ title: mouseX
 module: Events
 submodule: Mouse
 file: src/events/mouse.js
-description: |
-  <p>The system variable mouseX always contains the current horizontal
-  position of the mouse, relative to (0, 0) of the canvas. The value at
-  the top-left corner is (0, 0) for 2-D and (-width/2, -height/2) for WebGL.
-  If touch is used instead of mouse input, mouseX will hold the x value
-  of the most recent touch point.</p>
-line: 80
+description: >
+  <p>A <code>Number</code> system variable that tracks the mouse's horizontal
+  position.</p>
+
+  <p>In 2D mode, <code>mouseX</code> keeps track of the mouse's position
+  relative to the
+
+  top-left corner of the canvas. For example, if the mouse is 50 pixels from
+
+  the left edge of the canvas, then <code>mouseX</code> will be 50.</p>
+
+  <p>In WebGL mode, <code>mouseX</code> keeps track of the mouse's position
+  relative to the
+
+  center of the canvas. For example, if the mouse is 50 pixels to the right
+
+  of the canvas' center, then <code>mouseX</code> will be 50.</p>
+
+  <p>If touch is used instead of the mouse, then <code>mouseX</code> will hold
+  the
+
+  x-coordinate of the most recent touch point.</p>
+line: 109
 isConstructor: false
 itemtype: property
 example:
@@ -17,11 +33,91 @@ example:
 
     <div>
     <code>
-    // Move the mouse across the canvas
+    function setup() {
+      createCanvas(100, 100);
+
+      describe("A vertical black line moves left and right following the mouse's x-position.");
+    }
+
     function draw() {
-      background(244, 248, 252);
+      background(200);
+
+      // Draw a vertical line that follows the mouse's x-coordinate.
       line(mouseX, 0, mouseX, 100);
-      describe('horizontal black line moves left and right with mouse x-position');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe("A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Display the mouse's coordinates.
+      text(`x: ${mouseX} y: ${mouseY}`, 50, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe("A vertical black line moves left and right following the mouse's x-position.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Adjust coordinates for WebGL mode.
+      // The origin (0, 0) is at the center of the canvas.
+      let mx = mouseX - 50;
+
+      // Draw the line.
+      line(mx, -50, mx, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let font;
+
+    // Load a font for WebGL mode.
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        "A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+      textFont(font);
+      fill(0);
+
+      // Display the mouse's coordinates.
+      text(`x: ${mouseX} y: ${mouseY}`, 0, 0);
     }
     </code>
     </div>

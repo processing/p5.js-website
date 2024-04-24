@@ -4,22 +4,83 @@ module: Events
 submodule: Mouse
 file: src/events/mouse.js
 description: >
-  <p>The <a href="/reference/p5/mouseDragged">mouseDragged()</a> function is
-  called once every time the mouse moves and
+  <p>A function that's called when the mouse moves while a button is
+  pressed.</p>
 
-  a mouse button is pressed. If no <a
-  href="/reference/p5/mouseDragged">mouseDragged()</a> function is defined, the
+  <p>Declaring the function <code>mouseDragged()</code> sets a code block to run
 
-  <a href="/reference/p5/touchMoved">touchMoved()</a> function will be called
-  instead if it is defined.<br><br>
+  automatically when the user clicks and drags the mouse:</p>
 
-  Browsers may have different default
+  <code>
 
-  behaviors attached to various mouse events. To prevent any default
+  function mouseDragged() {
+    // Code to run.
+  }
 
-  behavior for this event, add "return false" to the end of the
-  function.</br></br></p>
-line: 521
+  </code>
+
+
+  <p>The mouse system variables, such as <a
+  href="/reference/p5/mouseX">mouseX</a> and
+
+  <a href="/reference/p5/mouseY">mouseY</a>, will be updated with their most
+  recent
+
+  value when <code>mouseDragged()</code> is called by p5.js:</p>
+
+  <code>
+
+  function mouseDragged() {
+    if (mouseX < 50) {
+      // Code to run if the mouse is on the left.
+    }
+
+  <p>  if (mouseY > 50) {
+      // Code to run if the mouse is near the bottom.
+    }
+  }
+
+  </p></code>
+
+  <p>The parameter, <code>event</code>, is optional. <code>mouseDragged()</code>
+  is always passed a
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent"
+  target="_blank">MouseEvent</a>
+
+  object with properties that describe the mouse drag event:</p>
+
+  <code>
+
+  function mouseDragged(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+
+  <p>On touchscreen devices, <code>mouseDragged()</code> will run when a user
+  moves a touch
+
+  point if <a href="/reference/p5/touchMoved">touchMoved()</a> isn’t declared.
+  If
+
+  <a href="/reference/p5/touchMoved">touchMoved()</a> is declared, then
+
+  <a href="/reference/p5/touchMoved">touchMoved()</a> will run when a user moves
+  a
+
+  touch point and <code>mouseDragged()</code> won’t.</p>
+
+  <p>Browsers may have default behaviors attached to various mouse events. For
+
+  example, some browsers highlight text when the user moves the mouse while
+
+  pressing a mouse button. To prevent any default behavior for this event,
+
+  add <code>return false;</code> to the end of the function.</p>
+line: 968
 isConstructor: false
 itemtype: method
 example:
@@ -27,41 +88,36 @@ example:
 
     <div>
     <code>
-    // Drag the mouse across the page
-    // to change its value
-
     let value = 0;
-    function draw() {
-      fill(value);
-      rect(25, 25, 50, 50);
-      describe(`black 50-by-50 rect turns lighter with mouse click and
-        drag until white, resets`);
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square becomes lighter as the user drags the mouse.'
+      );
     }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
     function mouseDragged() {
-      value = value + 5;
+      // Update the grayscale value.
+      value += 5;
+
+      // Reset the grayscale value.
       if (value > 255) {
         value = 0;
       }
-    }
-    </code>
-    </div>
-
-    <div class="norender">
-    <code>
-    function mouseDragged() {
-      ellipse(mouseX, mouseY, 5, 5);
-      // prevent default
-      return false;
-    }
-    </code>
-    </div>
-
-    <div class="norender">
-    <code>
-    // returns a MouseEvent object
-    // as a callback argument
-    function mouseDragged(event) {
-      console.log(event);
+      // Uncomment to prevent any default behavior.
+      // return false;
     }
     </code>
     </div>
@@ -69,7 +125,7 @@ class: p5
 params:
   - name: event
     description: |
-      <p>optional MouseEvent callback argument.</p>
+      <p>optional <code>MouseEvent</code> argument.</p>
     type: MouseEvent
     optional: true
 chainable: false

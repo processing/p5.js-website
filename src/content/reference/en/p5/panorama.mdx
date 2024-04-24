@@ -4,55 +4,59 @@ module: 3D
 submodule: Lights
 file: src/webgl/light.js
 description: >
-  <p>The <code>panorama(img)</code> method transforms images containing
+  <p>Creates an immersive 3D background.</p>
 
-  360-degree content, such as maps or HDRIs, into immersive
+  <p><code>panorama()</code> transforms images containing 360˚ content, such as
+  maps or
 
-  3D backgrounds that surround your scene. This is similar to calling
+  HDRIs, into immersive 3D backgrounds that surround a sketch. Exploring the
 
-  <code>background(color)</code>; call <code>panorama(img)</code> before drawing
-  your
+  space requires changing the camera's perspective with functions such as
 
-  scene to create a 360-degree background from your image. It
+  <a href="/reference/p5/orbitControl">orbitControl()</a> or
 
-  operates on the concept of sphere mapping, where the image is
-
-  mapped onto an infinitely large sphere based on the angles of the
-
-  camera.</p>
-
-  <p>To enable 360-degree viewing, either use <code>orbitControl()</code> or try
-  changing
-
-  the orientation of the camera to see different parts of the background.</p>
-line: 602
+  <a href="/reference/p5/camera">camera()</a>.</p>
+line: 1020
 isConstructor: false
 itemtype: method
-alt: The image transformed into a panoramic scene.
 example:
   - |-
 
     <div class="notest">
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     let img;
+
+    // Load an image and create a p5.Image object.
     function preload() {
       img = loadImage('/assets/outdoor_spheremap.jpg');
     }
+
     function setup() {
       createCanvas(100 ,100 ,WEBGL);
+
+      describe('A sphere floating above a landscape. The surface of the sphere reflects the landscape. The full landscape is viewable in 3D as the user drags the mouse.');
     }
+
     function draw() {
+      // Add the panorama.
       panorama(img);
-      imageMode(CENTER);
+
+      // Enable orbiting with the mouse.
       orbitControl();
-      noStroke();
-      push();
+
+      // Use the image as a light source.
       imageLight(img);
-      specularMaterial('green');
+
+      // Style the sphere.
+      noStroke();
+      specularMaterial(50);
       shininess(200);
       metalness(100);
-      sphere(25);
-      pop();
+
+      // Draw the sphere.
+      sphere(30);
     }
     </code>
     </div>
@@ -60,7 +64,7 @@ class: p5
 params:
   - name: img
     description: |
-      <p>A 360-degree image to use as a background panorama</p>
+      <p>360˚ image to use as the background.</p>
     type: p5.Image
 chainable: false
 ---

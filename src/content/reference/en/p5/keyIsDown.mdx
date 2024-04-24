@@ -4,91 +4,135 @@ module: Events
 submodule: Keyboard
 file: src/events/keyboard.js
 description: >
-  <p>The <a href="/reference/p5/keyIsDown">keyIsDown()</a> function checks if
-  the key is currently down, i.e. pressed.
+  <p>Returns <code>true</code> if the key it’s checking is pressed and
+  <code>false</code> if not.</p>
 
-  It can be used if you have an object that moves, and you want several keys
+  <p><code>keyIsDown()</code> is helpful when checking for multiple different
+  key presses.
 
-  to be able to affect its behaviour simultaneously, such as moving a
+  For example, <code>keyIsDown()</code> can be used to check if both
+  <code>LEFT_ARROW</code> and
 
-  sprite diagonally. You can put in any number representing the keyCode of
+  <code>UP_ARROW</code> are pressed:</p>
 
-  the key, or use any of the variable <a
-  href="/reference/p5/keyCode">keyCode</a> names listed
+  <code>
 
-  <a href="http://p5js.org/reference/#p5/keyCode">here</a>.</p>
-line: 301
+  if (keyIsDown(LEFT_ARROW) && keyIsDown(UP_ARROW)) {
+    // Move diagonally.
+  }
+
+  </code>
+
+
+  <p><code>keyIsDown()</code> can check for key presses using
+
+  <a href="/reference/p5/keyCode">keyCode</a> values, as in
+  <code>keyIsDown(37)</code> or
+
+  <code>keyIsDown(LEFT_ARROW)</code>. Key codes can be found on websites such as
+
+  <a href="https://keycode.info" target="_blank">keycode.info</a>.</p>
+line: 795
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div><code>
-    let x = 100;
-    let y = 100;
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+
+    let x = 50;
+    let y = 50;
 
     function setup() {
-      createCanvas(512, 512);
-      fill(255, 0, 0);
+      createCanvas(100, 100);
+
+      background(200);
+
+      describe(
+        'A gray square with a black circle at its center. The circle moves when the user presses an arrow key. It leaves a trail as it moves.'
+      );
     }
 
     function draw() {
-      if (keyIsDown(LEFT_ARROW)) {
-        x -= 5;
+      // Update x and y if an arrow key is pressed.
+      if (keyIsDown(LEFT_ARROW) === true) {
+        x -= 1;
       }
 
-      if (keyIsDown(RIGHT_ARROW)) {
-        x += 5;
+      if (keyIsDown(RIGHT_ARROW) === true) {
+        x += 1;
       }
 
-      if (keyIsDown(UP_ARROW)) {
-        y -= 5;
+      if (keyIsDown(UP_ARROW) === true) {
+        y -= 1;
       }
 
-      if (keyIsDown(DOWN_ARROW)) {
-        y += 5;
+      if (keyIsDown(DOWN_ARROW) === true) {
+        y += 1;
       }
 
-      clear();
-      ellipse(x, y, 50, 50);
-      describe(`50-by-50 red ellipse moves left, right, up, and
-        down with arrow presses.`);
+      // Style the circle.
+      fill(0);
+
+      // Draw the circle.
+      circle(x, y, 5);
     }
-    </code></div>
+    </code>
+    </div>
 
-    <div><code>
-    let diameter = 50;
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+
+    let x = 50;
+    let y = 50;
 
     function setup() {
-      createCanvas(512, 512);
+      createCanvas(100, 100);
+
+      background(200);
+
+      describe(
+        'A gray square with a black circle at its center. The circle moves when the user presses an arrow key. It leaves a trail as it moves.'
+      );
     }
 
     function draw() {
-      // 107 and 187 are keyCodes for "+"
-      if (keyIsDown(107) || keyIsDown(187)) {
-        diameter += 1;
+      // Update x and y if an arrow key is pressed.
+      if (keyIsDown(37) === true) {
+        x -= 1;
       }
 
-      // 109 and 189 are keyCodes for "-"
-      if (keyIsDown(109) || keyIsDown(189)) {
-        diameter -= 1;
+      if (keyIsDown(39) === true) {
+        x += 1;
       }
 
-      clear();
-      fill(255, 0, 0);
-      ellipse(50, 50, diameter, diameter);
-      describe(`50-by-50 red ellipse gets bigger or smaller when
-        + or - are pressed.`);
+      if (keyIsDown(38) === true) {
+        y -= 1;
+      }
+
+      if (keyIsDown(40) === true) {
+        y += 1;
+      }
+
+      // Style the circle.
+      fill(0);
+
+      // Draw the circle.
+      circle(x, y, 5);
     }
-    </code></div>
+    </code>
+    </div>
 class: p5
 params:
   - name: code
     description: |
-      <p>The key to check for.</p>
+      <p>key to check.</p>
     type: Number
 return:
-  description: whether key is down or not
+  description: whether the key is down or not.
   type: Boolean
 chainable: false
 ---

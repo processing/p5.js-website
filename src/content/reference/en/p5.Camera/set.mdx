@@ -3,62 +3,71 @@ title: set
 module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
-description: |
-  <p>Copies information about the argument camera's view and projection to
-  the target camera. If the target camera is active, it will be reflected
-  on the screen.</p>
-line: 1646
+description: >
+  <p>Sets the camera’s position, orientation, and projection by copying another
+
+  camera.</p>
+
+  <p>The parameter, <code>cam</code>, is the <code>p5.Camera</code> object to
+  copy. For example, calling
+
+  <code>cam2.set(cam1)</code> will set <code>cam2</code> using
+  <code>cam1</code>’s configuration.</p>
+line: 3174
 isConstructor: false
 itemtype: method
-alt: |-
-  Prepare two cameras. One is the camera that sets the initial state,
-  and the other is the camera that moves with interaction.
-  Draw a plane and a box on top of it, operate the camera using orbitControl().
-  Double-click to set the camera in the initial state and return to
-  the initial state.
 example:
   - |-
 
     <div>
     <code>
-    let cam, initialCam;
+    // Double-click to "reset" the camera zoom.
+
+    let cam1;
+    let cam2;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      strokeWeight(3);
 
-      // Set the initial state to initialCamera and set it to the camera
-      // used for drawing. Then set cam to be the active camera.
-      cam = createCamera();
-      cam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      initialCam = createCamera();
-      initialCam.camera(100, 100, 100, 0, 0, 0, 0, 0, -1);
-      initialCam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      cam.set(initialCam);
+      // Create the first camera.
+      cam1 = createCamera();
 
-      setCamera(cam);
+      // Place the camera at the top-right.
+      cam1.setPosition(400, -400, 800);
+
+      // Point it at the origin.
+      cam1.lookAt(0, 0, 0);
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Copy cam1's configuration.
+      cam2.set(cam1);
+
+      describe(
+        'A white cube drawn against a gray background. The camera slowly moves forward. The camera resets when the user double-clicks.'
+      );
     }
 
     function draw() {
-      orbitControl();
-      background(255);
-      box(50);
-      translate(0, 0, -25);
-      plane(100);
+      background(200);
+
+      // Update cam2's position.
+      cam2.move(0, 0, -1);
+
+      // Draw the box.
+      box();
     }
 
-    function doubleClicked(){
-      // Double-click to return the camera to its initial position.
-      cam.set(initialCam);
+    // "Reset" the camera when the user double-clicks.
+    function doubleClicked() {
+      cam2.set(cam1);
     }
-    </code>
-    </div>
 class: p5.Camera
 params:
   - name: cam
     description: |
-      <p>source camera</p>
+      <p>camera to copy.</p>
     type: p5.Camera
 chainable: false
 ---

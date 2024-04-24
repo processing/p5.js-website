@@ -3,68 +3,104 @@ title: lookAt
 module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
-description: |
-  <p>Reorients the camera to look at a position in world space.</p>
-line: 1291
+description: >
+  <p>Points the camera at a location.</p>
+
+  <p><code>myCamera.lookAt()</code> changes the camera’s orientation without
+  changing its
+
+  position.</p>
+
+  <p>The parameters, <code>x</code>, <code>y</code>, and <code>z</code>, are the
+  coordinates in "world" space
+
+  where the camera should point. For example, calling
+
+  <code>myCamera.lookAt(10, 20, 30)</code> points the camera at the coordinates
+
+  <code>(10, 20, 30)</code>.</p>
+line: 2598
 isConstructor: false
 itemtype: method
-alt: |-
-  camera view of rotating 3D cubes changes to look at a new random
-  point every second .
 example:
   - |-
 
     <div>
     <code>
+    // Double-click to look at a different cube.
+
     let cam;
+    let isLookingLeft = true;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      normalMaterial();
+
+      // Create a p5.Camera object.
       cam = createCamera();
-      cam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+
+      // Place the camera at the top-center.
+      cam.setPosition(0, -400, 800);
+
+      // Point the camera at the origin.
+      cam.lookAt(-30, 0, 0);
+
+      describe(
+        'A red cube and a blue cube on a gray background. The camera switches focus between the cubes when the user double-clicks.'
+      );
     }
 
     function draw() {
       background(200);
 
-      // look at a new random point every 60 frames
-      if (frameCount % 60 === 0) {
-        cam.lookAt(random(-100, 100), random(-50, 50), 0);
-      }
+      // Draw the box on the left.
+      push();
+      // Translate the origin to the left.
+      translate(-30, 0, 0);
+      // Style the box.
+      fill(255, 0, 0);
+      // Draw the box.
+      box(20);
+      pop();
 
-      rotateX(frameCount * 0.01);
-      translate(-100, 0, 0);
+      // Draw the box on the right.
+      push();
+      // Translate the origin to the right.
+      translate(30, 0, 0);
+      // Style the box.
+      fill(0, 0, 255);
+      // Draw the box.
       box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
+      pop();
+    }
+
+    // Change the camera's focus when the user double-clicks.
+    function doubleClicked() {
+      if (isLookingLeft === true) {
+        cam.lookAt(30, 0, 0);
+        isLookingLeft = false;
+      } else {
+        cam.lookAt(-30, 0, 0);
+        isLookingLeft = true;
+      }
     }
     </code>
     </div>
 class: p5.Camera
 params:
   - name: x
-    description: |
-      <p>x position of a point in world space</p>
+    description: >
+      <p>x-coordinate of the position where the camera should look in "world"
+      space.</p>
     type: Number
   - name: 'y'
-    description: |
-      <p>y position of a point in world space</p>
+    description: >
+      <p>y-coordinate of the position where the camera should look in "world"
+      space.</p>
     type: Number
   - name: z
-    description: |
-      <p>z position of a point in world space</p>
+    description: >
+      <p>z-coordinate of the position where the camera should look in "world"
+      space.</p>
     type: Number
 chainable: false
 ---

@@ -4,25 +4,98 @@ module: Events
 submodule: Mouse
 file: src/events/mouse.js
 description: >
-  <p>The <a href="/reference/p5/mousePressed">mousePressed()</a> function is
-  called once after every time a mouse button
+  <p>A function that's called once when a mouse button is pressed.</p>
 
-  is pressed. The mouseButton variable (see the related reference entry)
+  <p>Declaring the function <code>mousePressed()</code> sets a code block to run
 
-  can be used to determine which button has been pressed. If no
+  automatically when the user presses a mouse button:</p>
 
-  <a href="/reference/p5/mousePressed">mousePressed()</a> function is defined,
-  the <a href="/reference/p5/touchStarted">touchStarted()</a> function will be
+  <code>
 
-  called instead if it is defined.<br><br>
+  function mousePressed() {
+    // Code to run.
+  }
 
-  Browsers may have different default
+  </code>
 
-  behaviors attached to various mouse events. To prevent any default
 
-  behavior for this event, add "return false" to the end of the
-  function.</br></br></p>
-line: 599
+  <p>The mouse system variables, such as <a
+  href="/reference/p5/mouseX">mouseX</a> and
+
+  <a href="/reference/p5/mouseY">mouseY</a>, will be updated with their most
+  recent
+
+  value when <code>mousePressed()</code> is called by p5.js:</p>
+
+  <code>
+
+  function mousePressed() {
+    if (mouseX < 50) {
+      // Code to run if the mouse is on the left.
+    }
+
+  <p>  if (mouseY > 50) {
+      // Code to run if the mouse is near the bottom.
+    }
+  }
+
+  </p></code>
+
+  <p>The parameter, <code>event</code>, is optional. <code>mousePressed()</code>
+  is always passed a
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent"
+  target="_blank">MouseEvent</a>
+
+  object with properties that describe the mouse press event:</p>
+
+  <code>
+
+  function mousePressed(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+
+  <p>On touchscreen devices, <code>mousePressed()</code> will run when a user’s
+  touch
+
+  begins if <a href="/reference/p5/touchStarted">touchStarted()</a> isn’t
+  declared. If
+
+  <a href="/reference/p5/touchStarted">touchStarted()</a> is declared, then
+
+  <a href="/reference/p5/touchStarted">touchStarted()</a> will run when a user’s
+  touch
+
+  begins and <code>mousePressed()</code> won’t.</p>
+
+  <p>Browsers may have default behaviors attached to various mouse events. For
+
+  example, some browsers highlight text when the user moves the mouse while
+
+  pressing a mouse button. To prevent any default behavior for this event,
+
+  add <code>return false;</code> to the end of the function.</p>
+
+  <p>Note: <code>mousePressed()</code>, <a
+  href="/reference/p5/mouseReleased">mouseReleased()</a>,
+
+  and <a href="/reference/p5/mouseClicked">mouseClicked()</a> are all related.
+
+  <code>mousePressed()</code> runs as soon as the user clicks the mouse.
+
+  <a href="/reference/p5/mouseReleased">mouseReleased()</a> runs as soon as the
+  user
+
+  releases the mouse click. <a
+  href="/reference/p5/mouseClicked">mouseClicked()</a>
+
+  runs immediately after <a
+  href="/reference/p5/mouseReleased">mouseReleased()</a>.</p>
+line: 1084
 isConstructor: false
 itemtype: method
 example:
@@ -30,41 +103,84 @@ example:
 
     <div>
     <code>
-    // Click anywhere in the webpage to change
-    // the color value of the rectangle
+    let value = 0;
 
-    let colorValue = 0;
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square becomes lighter when the user presses a mouse button.'
+      );
+    }
+
     function draw() {
-      fill(colorValue);
-      rect(25, 25, 50, 50);
-      describe('black 50-by-50 rect turns white with mouse click/press.');
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
     }
+
     function mousePressed() {
-      if (colorValue === 0) {
-        colorValue = 255;
-      } else {
-        colorValue = 0;
+      // Update the grayscale value.
+      value += 5;
+
+      // Reset the grayscale value.
+      if (value > 255) {
+        value = 0;
       }
+      // Uncomment to prevent any default behavior.
+      // return false;
     }
     </code>
     </div>
 
-    <div class="norender">
+    <div>
     <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Style the circle.
+      fill('orange');
+      stroke('royalblue');
+      strokeWeight(10);
+
+      describe(
+        'An orange circle with a thick, blue border drawn on a gray background. When the user presses and holds the mouse, the border becomes thin and pink. When the user releases the mouse, the border becomes thicker and changes color to blue.'
+      );
+    }
+
+    function draw() {
+      background(220);
+
+      // Draw the circle.
+      circle(50, 50, 20);
+    }
+
+    // Set the stroke color and weight as soon as the user clicks.
     function mousePressed() {
-      ellipse(mouseX, mouseY, 5, 5);
-      // prevent default
-      return false;
+      stroke('deeppink');
+      strokeWeight(3);
     }
-    </code>
-    </div>
 
-    <div class="norender">
-    <code>
-    // returns a MouseEvent object
-    // as a callback argument
-    function mousePressed(event) {
-      console.log(event);
+    // Set the stroke and fill colors as soon as the user releases
+    // the mouse.
+    function mouseReleased() {
+      stroke('royalblue');
+
+      // This is never visible because fill() is called
+      // in mouseClicked() which runs immediately after
+      // mouseReleased();
+      fill('limegreen');
+    }
+
+    // Set the fill color and stroke weight after
+    // mousePressed() and mouseReleased() are called.
+    function mouseClicked() {
+      fill('orange');
+      strokeWeight(10);
     }
     </code>
     </div>
@@ -72,7 +188,7 @@ class: p5
 params:
   - name: event
     description: |
-      <p>optional MouseEvent callback argument.</p>
+      <p>optional <code>MouseEvent</code> argument.</p>
     type: MouseEvent
     optional: true
 chainable: false
