@@ -39,8 +39,7 @@ export const JumpToLinks = ({ links, heading }: JumpToLinksProps) => {
             <li
               key={link.label}
               class={`
-              capitalize
-              ${link.size === "small" ? "text-body-caption" : "text-body"}
+              ${link.size === "small" ? "text-body-caption" : "text-body capitalize"}
                 ${link.current ? "underline" : ""}
                 `}
             >

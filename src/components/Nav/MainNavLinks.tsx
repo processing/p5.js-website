@@ -55,14 +55,13 @@ export const MainNavLinks = ({
     <div class={`${styles.mainlinks} ${open && "open"}`} aria-expanded={open}>
       {renderLogo()}
       <ul>
-        {open &&
-          links.map((link) => (
-            <li key={link.label}>
-              <a href={link.url}>{link.label}</a>
-            </li>
-          ))}
+        {links.map((link) => (
+          <li key={link.label}>
+            <a href={link.url}>{link.label}</a>
+          </li>
+        ))}
       </ul>
-      {open && (
+      {
         <ul>
           <li class="mb-xs">
             <a className={styles.buttonlink} href="https://editor.p5js.org">
@@ -81,7 +80,7 @@ export const MainNavLinks = ({
             </a>
           </li>
         </ul>
-      )}
+      }
     </div>
   );
 };
