@@ -30,7 +30,7 @@ export const MainNavLinks = ({
   // Have to do this in a lifecycle method
   // so that we can still server-side render
   useEffect(() => {
-    const _isMobile = window.innerWidth <= 768;
+    const _isMobile = window.innerWidth < 768;
     setIsMobile(_isMobile);
     setOpen(!_isMobile);
   }, []);
