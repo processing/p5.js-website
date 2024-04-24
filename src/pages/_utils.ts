@@ -112,22 +112,6 @@ export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
     // Third transformation: Replace all remaining underscores in the slug with hyphens.
     .replace(/_/g, "-");
 
-/**
- * If the given slug is the slug of the entry in the contributor doc
- * collection that we want to use as the index page, this returns a
- * '/' slug for routing purposes. Otherwise, just returns the slug given,
- * unchanged.
- *
- * For example: `contributor-docs/es/` will show
- * the content from `contributor-docs/es/readme`
- */
-export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
-  const contributorDocIndexPageName = "readme";
-  return slug.endsWith(contributorDocIndexPageName)
-    ? `/${slug.slice(0, -contributorDocIndexPageName.length)}`
-    : slug;
-};
-
 export const getExampleCategory = (slug: string): string =>
   slug.split("/")[1].split("_").splice(1).join(" ");
 
