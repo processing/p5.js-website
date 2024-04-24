@@ -97,6 +97,38 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
   });
 
 /**
+ *  Gets related entries from a collection utilizing our locale fallback logic.
+ *  Astro doesn't do this for us when it constructs the entries at the route level,
+ *  so we need to backfill this information in the page itself.
+ *
+ * @param collectionName
+ * @param locale
+ * @param relatedSlugs
+ * @returns
+ */
+export const getRelatedEntriesinCollection = async <
+  C extends keyof ContentEntryMap,
+>(
+  collectionName: C,
+  locale: string,
+  relatedSlugs: string[],
+): Promise<CollectionEntry<C>[]> => {
+  const collection = await getCollectionInLocaleWithFallbacks(
+    collectionName,
+    locale,
+  );
+  const foundEntries = relatedSlugs.map((relatedSlug) =>
+    collection.find(
+      (collectionItem) =>
+        removeLocaleAndExtension(collectionItem.slug) ===
+        removeLocaleAndExtension(relatedSlug),
+    ),
+  );
+  // silly typescript isn't understanding filter
+  return foundEntries.filter((el) => el !== undefined) as CollectionEntry<C>[];
+};
+
+/**
  * Astro automatically uses the directory structure for slug information
  * Historically the p5 website has used a different structure for example file vs. webpage routing
  * This function transforms the Astro slug to the appropriate webpage route to avoid breaking
