@@ -306,6 +306,7 @@ export const generateJumpToState = async (
   // Get categories for the collection
   let categories: Set<string> | undefined;
 
+  // Get the categories based on the collection type
   switch (collectionType) {
     case "reference":
       categories = new Set(localeEntries.map((entry) => entry.data.category));
@@ -324,6 +325,7 @@ export const generateJumpToState = async (
 
   const jumpToLinks = [] as JumpToLink[];
 
+  // Function to get the label for a category, these are different for each collection type
   const getCategoryLabel = (category: string) => {
     switch (collectionType) {
       case "reference":
@@ -337,17 +339,21 @@ export const generateJumpToState = async (
     }
   };
 
+  // Loop through each category and add entries to the jumpToLinks
   for (const category of categories ?? []) {
-    jumpToLinks.push({
+    const categoryLinks = [] as JumpToLink[];
+    categoryLinks.push({
       label: getCategoryLabel(category),
       url: `/${collectionType}#${category}`,
       current: false,
     });
 
+    // Examples are a special case where subentries are only shown if they are in the current category
     if (
       collectionType !== "examples" ||
       category === getExampleCategory(currentEntrySlug)
     ) {
+      // Get all entries in the current category
       const currentCategoryEntries = localeEntries.filter(
         (entry) =>
           category ===
@@ -356,7 +362,8 @@ export const generateJumpToState = async (
             : entry.data.category),
       );
 
-      jumpToLinks.push(
+      // Add the entries in the category to the jumpToLinks
+      categoryLinks.push(
         ...currentCategoryEntries.map(
           (entry) =>
             ({
@@ -369,6 +376,14 @@ export const generateJumpToState = async (
             }) as JumpToLink,
         ),
       );
+
+      const hasCurrent = categoryLinks.some((link) => link.current);
+      // If the current entry is in this category, move this category to the top
+      if (hasCurrent) {
+        jumpToLinks.unshift(...categoryLinks);
+      } else {
+        jumpToLinks.push(...categoryLinks);
+      }
     }
   }
 
