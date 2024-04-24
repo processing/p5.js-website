@@ -1,8 +1,11 @@
 ---
-import Image from "@components/Image/index.astro";
-import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import Image from "@components/Image/index.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
 import { setJumpToState } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { getRelatedEntriesinCollection } from "../pages/_utils";
 
 interface Props {
   entry: CollectionEntry<"past-events">;
@@ -13,20 +16,45 @@ const { entry, title } = Astro.props;
 const { Content } = await entry.render();
 
 setJumpToState(null);
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+const dayString = new Date(entry.data.date).toLocaleDateString(currentLocale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+const relatedEvents =
+  entry.data.relatedPastEvents !== undefined
+    ? await getRelatedEntriesinCollection(
+        "past-events",
+        currentLocale,
+        entry.data.relatedPastEvents.map((r) => r.slug)
+      )
+    : [];
 ---
 
-<BaseLayout title={title} variant="item" topic="community">
+<BaseLayout title={title} subtitle={dayString} variant="item" topic="community">
   {
     entry.data.featuredImage && entry.data.featuredImageAlt && (
-      <Image src={entry.data.featuredImage} alt={entry.data.featuredImageAlt} />
+      <Image
+        class="max-w-screen-md"
+        src={entry.data.featuredImage}
+        alt={entry.data.featuredImageAlt}
+      />
     )
   }
-  <Content />
+  <div class="rendered-markdown">
+    <Content />
+  </div>
 
-  <h2>Related Past Events</h2>
-
-  <ul>
-    {/* TODO: make this into a proper link */}
-    {entry.data.relatedPastEvents?.map((relEx) => <li>{relEx.slug}</li>)}
-  </ul>
+  {
+    // only render this section if we have any events
+    relatedEvents.length > 0 && (
+      <RelatedItems
+        title={t("Related Past Events") as string}
+        items={relatedEvents}
+      />
+    )
+  }
 </BaseLayout>
