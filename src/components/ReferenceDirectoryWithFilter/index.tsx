@@ -29,6 +29,21 @@ type ReferenceDirectoryWithFilterProps = {
   }[];
 };
 
+/**
+ * Convert Reference description to one-line description
+ * @param description String description
+ * @returns One-line description
+ */
+const getOneLineDescription = (description: string): string => {
+  const stopCharacters = ["\\.|\\?|!|।|。"];
+  const fullStopRegex = new RegExp(`[${stopCharacters.join("")}]`, "g");
+  const cleanedDescription = description
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/\n/g, " ");
+  const [oneLineDescription] = cleanedDescription.split(fullStopRegex, 1);
+  return `${oneLineDescription.trim()}.`;
+};
+
 export const ReferenceDirectoryWithFilter = ({
   categoryData,
 }: ReferenceDirectoryWithFilterProps) => {
@@ -65,7 +80,7 @@ export const ReferenceDirectoryWithFilter = ({
           <a href={`/reference/${entry.data.path}`} class="text-body-mono">
             <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />
           </a>
-          <p>{`${entry.data.description.replace(/<[^>]*>/g, "").split(/\.(\s|$)/, 1)[0]}.`}</p>
+          <p>{`${getOneLineDescription(entry.data.description)}`}</p>
         </div>
       ))}
     </div>

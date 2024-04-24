@@ -7,7 +7,8 @@ import {
   getRefEntryTitleConcatWithParen,
   normalizeReferenceRoute,
 } from "../pages/_utils";
-import { setJumpToState } from "../globals/state";
+import { setJumpToState, type JumpToState } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 
 type ReferenceEntry = CollectionEntry<"reference">;
 
@@ -26,10 +27,15 @@ function strCompare(a: string, b: string) {
   return 0;
 }
 
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
 const { entries } = Astro.props;
 const categoryData = categories.map((category) => {
   // Get all reference entries in the module
-  const directEntries = entries.filter((e) => e.data.module === category);
+  const directEntries = entries.filter(
+    (e) => e.data.module === t("referenceCategories", "modules", category)
+  );
 
   // Get the names of all submodules
   const subcats = [
@@ -110,7 +116,7 @@ const categoryData = categories.map((category) => {
     })),
   ];
   return {
-    name: category,
+    name: t("referenceCategories", "modules", category),
     subcats: subcatData,
   };
 });
@@ -122,7 +128,8 @@ const pageJumpToLinks = categoryData.map((category) => ({
 
 const pageJumpToState = {
   links: pageJumpToLinks,
-};
+  heading: t("Reference") as string,
+} as JumpToState;
 
 setJumpToState(pageJumpToState);
 ---
