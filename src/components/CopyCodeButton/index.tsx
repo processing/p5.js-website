@@ -15,6 +15,7 @@ export const CopyCodeButton = ({ textToCopy }: CopyCodeButtonProps) => {
     <CircleButton
       onClick={copyTextToClipboard}
       ariaLabel="Copy code to clipboard"
+      className="bg-sidebar-bg-color"
     >
       <svg
         width="18"
