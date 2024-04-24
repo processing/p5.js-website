@@ -230,7 +230,13 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
 export const getPaginationMax = (numPerPage: number, numItems: number) =>
   Math.ceil(numItems / numPerPage);
 
-export type PageTopic = "community" | "reference" | "contribute" | "about";
+export type PageTopic =
+  | "community"
+  | "reference"
+  | "contribute"
+  | "about"
+  | "examples"
+  | "tutorials";
 
 export const getTopicInfo = (topic?: PageTopic) => {
   switch (topic) {
@@ -242,6 +248,10 @@ export const getTopicInfo = (topic?: PageTopic) => {
       return { name: "Contribute", url: "/contribute" };
     case "about":
       return { name: "About", url: "/about" };
+    case "examples":
+      return { name: "Examples", url: "/examples" };
+    case "tutorials":
+      return { name: "Tutorials", url: "/tutorials" };
     default:
       return { name: "p5.js", url: "/" };
   }
