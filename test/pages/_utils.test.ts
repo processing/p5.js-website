@@ -1,6 +1,5 @@
 import { expect, test, suite } from "vitest";
 import {
-  convertContributorDocIndexSlugIfNeeded,
   exampleContentSlugToLegacyWebsiteSlug,
   removeContentFileExt,
   removeLeadingSlash,
@@ -21,23 +20,6 @@ suite("exampleContentSlugToLegacyWebsiteSlug", () => {
         "ar/00_structure/01_coordinates/description",
       ),
     ).toBe("structure-coordinates");
-  });
-});
-
-suite("convertContributorDocIndexSlugIfNeeded", () => {
-  test("works for prefixed english slugs", () => {
-    expect(convertContributorDocIndexSlugIfNeeded("en/readme")).toBe("/en/");
-  });
-  test("works for un-prefixed english slugs", () => {
-    expect(convertContributorDocIndexSlugIfNeeded("readme")).toBe("/");
-  });
-  test("works for other locale slugs", () => {
-    expect(convertContributorDocIndexSlugIfNeeded("es/readme")).toBe("/es/");
-  });
-  test("works for folders", () => {
-    expect(convertContributorDocIndexSlugIfNeeded("en/folder/readme")).toBe(
-      "/en/folder/",
-    );
   });
 });
 

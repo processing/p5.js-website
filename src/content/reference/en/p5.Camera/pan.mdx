@@ -3,56 +3,68 @@ title: pan
 module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
-description: |
-  <p>Panning rotates the camera view to the left and right.</p>
-line: 1171
+description: >
+  <p>Rotates the camera left and right.</p>
+
+  <p>Panning rotates the camera without changing its position. The rotation
+
+  happens in the camera’s "local" space.</p>
+
+  <p>The parameter, <code>angle</code>, is the angle the camera should rotate.
+  Passing a
+
+  positive angle, as in <code>myCamera.pan(0.001)</code>, rotates the camera to
+  the
+
+  right. Passing a negative angle, as in <code>myCamera.pan(-0.001)</code>,
+  rotates the
+
+  camera to the left.</p>
+
+  <p>Note: Angles are interpreted based on the current
+
+  <a href="/reference/p5/angleMode">angleMode()</a>.</p>
+line: 2472
 isConstructor: false
 itemtype: method
-alt: camera view pans left and right across a series of rotating 3D boxes.
 example:
   - |-
 
     <div>
     <code>
     let cam;
-    let delta = 0.01;
+    let delta = 0.001;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      normalMaterial();
+
+      // Create a p5.Camera object.
       cam = createCamera();
-      cam.camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      cam.perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      // set initial pan angle
-      cam.pan(-0.8);
+
+      // Place the camera at the top-center.
+      cam.setPosition(0, -400, 800);
+
+      // Point the camera at the origin.
+      cam.lookAt(0, 0, 0);
+
+      describe(
+        'A white cube on a gray background. The cube goes in and out of view as the camera pans left and right.'
+      );
     }
 
     function draw() {
       background(200);
 
-      // pan camera according to angle 'delta'
+      // Pan with the camera.
       cam.pan(delta);
 
-      // every 160 frames, switch direction
-      if (frameCount % 160 === 0) {
+      // Switch directions every 120 frames.
+      if (frameCount % 120 === 0) {
         delta *= -1;
       }
 
-      rotateX(frameCount * 0.01);
-      translate(-100, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
-      translate(35, 0, 0);
-      box(20);
+      // Draw the box.
+      box();
     }
     </code>
     </div>
@@ -60,9 +72,8 @@ class: p5.Camera
 params:
   - name: angle
     description: |
-      <p>amount to rotate camera in current
-      <a href="#/p5/angleMode">angleMode</a> units.
-      Greater than 0 values rotate counterclockwise (to the left).</p>
+      <p>amount to rotate in the current
+                            <a href="#/p5/angleMode">angleMode()</a>.</p>
     type: Number
 chainable: false
 ---

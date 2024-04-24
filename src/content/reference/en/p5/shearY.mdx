@@ -4,52 +4,96 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-  <p>Shears a shape around the y-axis the amount specified by the angle
+  <p>Shears the y-axis so that shapes appear skewed.</p>
 
-  parameter. Angles should be specified in the current angleMode. Objects
+  <p>By default, the x- and y-axes are perpendicular. The <code>shearY()</code>
+  function
 
-  are always sheared around their relative position to the origin and
+  transforms the coordinate system so that y-coordinates are translated while
 
-  positive numbers shear objects in a clockwise direction.</p>
+  x-coordinates are fixed.</p>
 
-  <p>Transformations apply to everything that happens after and subsequent
+  <p>The first parameter, <code>angle</code>, is the amount to shear. For
+  example, calling
 
-  calls to the function accumulates the effect. For example, calling
+  <code>shearY(1)</code> transforms all y-coordinates using the formula
 
-  shearY(PI/2) and then shearY(PI/2) is the same as shearY(PI). If
+  <code>y = y + x * tan(angle)</code>. <code>shearY()</code> interprets angle
+  values using the
 
-  <a href="/reference/p5/shearY">shearY()</a> is called within the <a
-  href="/reference/p5/draw">draw()</a>, the transformation is reset when
+  current <a href="/reference/p5/angleMode">angleMode()</a>.</p>
 
-  the loop begins again.</p>
+  <p>By default, transformations accumulate. For example, calling
 
-  <p>Technically, <a href="/reference/p5/shearY">shearY()</a> multiplies the
-  current transformation matrix by a
+  <code>shearY(1)</code> twice has the same effect as calling
+  <code>shearY(2)</code> once. The
 
-  rotation matrix. This function can be further controlled by the
+  <a href="/reference/p5/push">push()</a> and
 
-  <a href="/reference/p5/push">push()</a> and <a
-  href="/reference/p5/pop">pop()</a> functions.</p>
-line: 490
+  <a href="/reference/p5/pop">pop()</a> functions can be used to isolate
+
+  transformations within distinct drawing groups.</p>
+
+  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
+
+  <code>shearY(1)</code> inside the <a href="/reference/p5/draw">draw()</a>
+  function won't
+
+  cause shapes to shear continuously.</p>
+line: 1147
 isConstructor: false
 itemtype: method
-alt: white irregular quadrilateral with black outline at middle bottom.
 example:
   - |-
 
     <div>
     <code>
-    translate(width / 4, height / 4);
-    shearY(PI / 4.0);
-    rect(0, 0, 30, 30);
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white quadrilateral on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Shear the coordinate system along the x-axis.
+      shearY(QUARTER_PI);
+
+      // Draw the square.
+      square(0, 0, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe('A white quadrilateral on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Shear the coordinate system along the x-axis.
+      shearY(45);
+
+      // Draw the square.
+      square(0, 0, 50);
+    }
     </code>
     </div>
 class: p5
 params:
   - name: angle
-    description: |
-      <p>angle of shear specified in radians or degrees,
-                             depending on current angleMode</p>
+    description: >
+      <p>angle to shear by in the current <a
+      href="#/p5/angleMode">angleMode()</a>.</p>
     type: Number
 chainable: true
 ---

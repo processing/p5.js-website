@@ -3,33 +3,120 @@ title: centerZ
 module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
-description: |
-  <p>z coordinate representing center of the sketch</p>
-line: 748
+description: >
+  <p>The y-coordinate of the place where the camera looks.</p>
+
+  <p>By default, the camera looks at the origin <code>(0, 0, 0)</code> in
+  "world" space, so
+
+  <code>myCamera.centerZ</code> is 0.</p>
+line: 1412
 isConstructor: false
 itemtype: property
-alt: An example showing the use of camera object properties
 example:
   - |-
 
-    <div class='norender'><code>
-    let cam, div;
+    <div>
+    <code>
+    let cam;
+    let font;
+
+    // Load a font and create a p5.Font object.
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      background(255);
+
+      // Create a p5.Camera object.
       cam = createCamera();
-      cam.lookAt(0, 0, 1);
-      div = createDiv('centerZ = ' + cam.centerZ);
-      div.position(0, 0);
-      div.style('color', 'white');
-      describe('An example showing the use of camera object properties');
+
+      // Place the camera at the top-center.
+      cam.setPosition(0, -400, 800);
+
+      // Point the camera at (10, 20, -30).
+      cam.lookAt(10, 20, -30);
+
+      describe(
+        'A white cube on a gray background. The text "centerZ: -30" is written in black beneath it.'
+      );
     }
 
     function draw() {
-      orbitControl();
-      box(10);
+      background(200);
+
+      // Style the box.
+      fill(255);
+
+      // Draw the box.
+      box();
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+      textFont(font);
+      fill(0);
+
+      // Display the value of centerZ, rounded to the nearest integer.
+      text(`centerZ: ${round(cam.centerZ)}`, 0, 55);
     }
-    </code></div>
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let cam;
+    let font;
+
+    // Load a font and create a p5.Font object.
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Camera object.
+      cam = createCamera();
+
+      // Place the camera at the top-right.
+      cam.setPosition(100, -400, 800);
+
+      // Point the camera at (10, 20, -30).
+      cam.lookAt(10, 20, -30);
+
+      describe(
+        'A white cube on a gray background. The cube appears to move forward and back as the camera shifts its focus. The text "centerZ: Z" is written in black beneath the cube. Z oscillates between -55 and -25.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the box.
+      fill(255);
+
+      // Draw the box.
+      box();
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+      textFont(font);
+      fill(0);
+
+      // Calculate the new z-coordinate.
+      let z = 25 * sin(frameCount * 0.01) - 30;
+
+      // Point the camera.
+      cam.lookAt(10, 20, z);
+
+      // Display the value of centerZ, rounded to the nearest integer.
+      text(`centerZ: ${round(cam.centerZ)}`, 0, 55);
+    }
+    </code>
+    </div>
 class: p5.Camera
 type: Number
 ---

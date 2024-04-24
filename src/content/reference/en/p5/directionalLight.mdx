@@ -4,97 +4,226 @@ module: 3D
 submodule: Lights
 file: src/webgl/light.js
 description: >
-  <p>Creates a directional light with the given color and direction.</p>
+  <p>Creates a light that shines in one direction.</p>
 
-  <p>Directional light comes from one direction.
+  <p>Directional lights don’t shine from a specific point. They’re like a sun
 
-  The direction is specified as numbers inclusively between -1 and 1.
+  that shines from somewhere offscreen. The light’s direction is set using
 
-  For example, setting the direction as (0, -1, 0) will cause the
+  three <code>(x, y, z)</code> values between -1 and 1. For example, setting a
+  light’s
 
-  geometry to be lit from below (since the light will be facing
+  direction as <code>(1, 0, 0)</code> will light <a
+  href="/reference/p5/p5.Geometry">p5.Geometry</a>
 
-  directly upwards). Similarly, setting the direction as (1, 0, 0)
+  objects from the left since the light faces directly to the right.</p>
 
-  will cause the geometry to be lit from the left (since the light
+  <p>There are four ways to call <code>directionalLight()</code> with parameters
+  to set the
 
-  will be facing directly rightwards).</p>
+  light’s color and direction.</p>
 
-  <p>Directional lights do not have a specific point of origin, and
+  <p>The first way to call <code>directionalLight()</code> has six parameters.
+  The first
 
-  therefore cannot be positioned closer or farther away from a geometry.</p>
+  three parameters, <code>v1</code>, <code>v2</code>, and <code>v3</code>, set
+  the light’s color using the
 
-  <p>A maximum of <strong>5</strong> directional lights can be active at
-  once.</p>
+  current <a href="/reference/p5/colorMode">colorMode()</a>. The last three
 
-  <p>Note: lights need to be called (whether directly or indirectly)
+  parameters, <code>x</code>, <code>y</code>, and <code>z</code>, set the
+  light’s direction. For example,
 
-  within draw() to remain persistent in a looping program.
+  <code>directionalLight(255, 0, 0, 1, 0, 0)</code> creates a red <code>(255, 0,
+  0)</code> light
 
-  Placing them in setup() will cause them to only have an effect
+  that shines to the right <code>(1, 0, 0)</code>.</p>
 
-  the first time through the loop.</p>
-line: 246
+  <p>The second way to call <code>directionalLight()</code> has four parameters.
+  The first
+
+  three parameters, <code>v1</code>, <code>v2</code>, and <code>v3</code>, set
+  the light’s color using the
+
+  current <a href="/reference/p5/colorMode">colorMode()</a>. The last parameter,
+
+  <code>direction</code> sets the light’s direction using a
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object. For example,
+
+  <code>directionalLight(255, 0, 0, lightDir)</code> creates a red <code>(255,
+  0, 0)</code> light
+
+  that shines in the direction the <code>lightDir</code> vector points.</p>
+
+  <p>The third way to call <code>directionalLight()</code> has four parameters.
+  The first
+
+  parameter, <code>color</code>, sets the light’s color using a
+
+  <a href="/reference/p5/p5.Color">p5.Color</a> object or an array of color
+  values. The
+
+  last three parameters, <code>x</code>, <code>y</code>, and <code>z</code>, set
+  the light’s direction. For
+
+  example, <code>directionalLight(myColor, 1, 0, 0)</code> creates a light that
+  shines
+
+  to the right <code>(1, 0, 0)</code> with the color value of
+  <code>myColor</code>.</p>
+
+  <p>The fourth way to call <code>directionalLight()</code> has two parameters.
+  The first
+
+  parameter, <code>color</code>, sets the light’s color using a
+
+  <a href="/reference/p5/p5.Color">p5.Color</a> object or an array of color
+  values. The
+
+  second parameter, <code>direction</code>, sets the light’s direction using a
+
+  <a href="/reference/p5/p5.Color">p5.Color</a> object. For example,
+
+  <code>directionalLight(myColor, lightDir)</code> creates a light that shines
+  in the
+
+  direction the <code>lightDir</code> vector points with the color value of
+  <code>myColor</code>.</p>
+line: 461
 isConstructor: false
 itemtype: method
-alt: |-
-  scene with sphere and directional light. The direction of
-  the light is controlled with the mouse position.
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to turn on the directional light.
+
+    let isLit = false;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe(
-        'scene with sphere and directional light. The direction of the light is controlled with the mouse position.'
-      );
+
+      describe('A sphere drawn on a gray background. A red light starts shining from above when the user double-clicks.');
     }
+
     function draw() {
-      background(0);
-      //move your mouse to change light direction
-      let dirX = (mouseX / width - 0.5) * 2;
-      let dirY = (mouseY / height - 0.5) * 2;
-      directionalLight(250, 250, 250, -dirX, -dirY, -1);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Control the light.
+      if (isLit === true) {
+        // Add a red directional light from above.
+        // Use RGB values and XYZ directions.
+        directionalLight(255, 0, 0, 0, 1, 0);
+      }
+
+      // Style the sphere.
       noStroke();
-      sphere(40);
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a red directional light from above.
+      // Use a p5.Color object and XYZ directions.
+      let c = color(255, 0, 0);
+      directionalLight(c, 0, 1, 0);
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a red directional light from above.
+      // Use a p5.Color object and a p5.Vector object.
+      let c = color(255, 0, 0);
+      let lightDir = createVector(0, 1, 0);
+      directionalLight(c, lightDir);
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
     }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 246
+  - line: 461
     params:
       - name: v1
         description: |
-          <p>red or hue value relative to the current
-                                          color range</p>
+          <p>red or hue value in the current
+                                 <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v2
         description: |
-          <p>green or saturation value relative to the
-                                          current color range</p>
+          <p>green or saturation value in the current
+                                 <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v3
         description: |
-          <p>blue or brightness value relative to the
-                                          current color range</p>
+          <p>blue, brightness, or lightness value in the current
+                                 <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: x
         description: |
-          <p>x component of direction (inclusive range of -1 to 1)</p>
+          <p>x-component of the light's direction between -1 and 1.</p>
         type: Number
       - name: 'y'
         description: |
-          <p>y component of direction (inclusive range of -1 to 1)</p>
+          <p>y-component of the light's direction between -1 and 1.</p>
         type: Number
       - name: z
         description: |
-          <p>z component of direction (inclusive range of -1 to 1)</p>
+          <p>z-component of the light's direction between -1 and 1.</p>
         type: Number
     chainable: 1
-  - line: 304
+  - line: 613
     params:
       - name: v1
         description: ''
@@ -107,16 +236,16 @@ overloads:
         type: Number
       - name: direction
         description: |
-          <p>direction of light as a
-                                          <a href="#/p5.Vector">p5.Vector</a></p>
+          <p>direction of the light as a
+                                        <a href="#/p5.Vector">p5.Vector</a> object.</p>
         type: p5.Vector
     chainable: 1
-  - line: 314
+  - line: 623
     params:
       - name: color
         description: |
-          <p>color as a <a href="#/p5.Color">p5.Color</a>,
-                                                     as an array, or as a CSS string</p>
+          <p>color as a <a href="#/p5.Color">p5.Color</a> object,
+                                                    an array of color values, or as a CSS string.</p>
         type: 'p5.Color|Number[]|String'
       - name: x
         description: ''
@@ -128,7 +257,7 @@ overloads:
         description: ''
         type: Number
     chainable: 1
-  - line: 324
+  - line: 633
     params:
       - name: color
         description: ''

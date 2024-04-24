@@ -3,45 +3,184 @@ title: bezier
 module: Shape
 submodule: Curves
 file: src/core/shape/curves.js
-description: |
-  <p>Draws a cubic Bezier curve on the screen. These curves are defined by a
-  series of anchor and control points. The first two parameters specify
-  the first anchor point and the last two parameters specify the other
-  anchor point, which become the first and last points on the curve. The
-  middle parameters specify the two control points which define the shape
-  of the curve. Approximately speaking, control points "pull" the curve
-  towards them.</p>
-  <p>Bezier curves were developed by French automotive engineer Pierre Bezier,
-  and are commonly used in computer graphics to define gently sloping curves.
-  See also <a href="/reference/p5/curve">curve()</a>.</p>
+description: >
+  <p>Draws a Bézier curve.</p>
+
+  <p>Bézier curves can form shapes and curves that slope gently. They're defined
+
+  by two anchor points and two control points. Bézier curves provide more
+
+  control than the spline curves created with the
+
+  <a href="/reference/p5/curve">curve()</a> function.</p>
+
+  <p>The first two parameters, <code>x1</code> and <code>y1</code>, set the
+  first anchor point. The
+
+  first anchor point is where the curve starts.</p>
+
+  <p>The next four parameters, <code>x2</code>, <code>y2</code>,
+  <code>x3</code>, and <code>y3</code>, set the two control
+
+  points. The control points "pull" the curve towards them.</p>
+
+  <p>The seventh and eighth parameters, <code>x4</code> and <code>y4</code>, set
+  the last anchor
+
+  point. The last anchor point is where the curve ends.</p>
+
+  <p>Bézier curves can also be drawn in 3D using WebGL mode. The 3D version of
+
+  <code>bezier()</code> has twelve arguments because each point has x-, y-,
+
+  and z-coordinates.</p>
 line: 13
 isConstructor: false
 itemtype: method
-alt: >-
-  stretched black s-shape in center with orange lines extending from end points.
-
-  a white colored curve on black background from the upper-right corner to the
-  lower right corner.
 example:
   - |-
 
     <div>
     <code>
-    noFill();
-    stroke(255, 102, 0);
-    line(85, 20, 10, 10);
-    line(90, 90, 15, 80);
-    stroke(0, 0, 0);
-    bezier(85, 20, 10, 10, 90, 90, 15, 80);
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(85, 20);
+      point(15, 80);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(10, 10);
+      point(90, 90);
+
+      // Draw a black bezier curve.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+      bezier(85, 20, 10, 10, 90, 90, 15, 80);
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(85, 20, 10, 10);
+      line(15, 80, 90, 90);
+
+      describe(
+        'A gray square with three curves. A black s-curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
+      );
+    }
     </code>
     </div>
 
     <div>
     <code>
-    background(0, 0, 0);
-    noFill();
-    stroke(255);
-    bezier(250, 250, 0, 100, 100, 0, 100, 0, 0, 0, 100, 0);
+    // Click the mouse near the red dot in the top-left corner
+    // and drag to change the curve's shape.
+
+    let x2 = 10;
+    let y2 = 10;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with three curves. A black s-curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(85, 20);
+      point(15, 80);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x2, y2);
+      point(90, 90);
+
+      // Draw a black bezier curve.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+      bezier(85, 20, x2, y2, 90, 90, 15, 80);
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(85, 20, x2, y2);
+      line(15, 80, 90, 90);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x2, y2) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x2 = mouseX;
+        y2 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background('skyblue');
+
+      // Draw the red balloon.
+      fill('red');
+      bezier(50, 60, 5, 15, 95, 15, 50, 60);
+
+      // Draw the balloon string.
+      line(50, 60, 50, 80);
+
+      describe('A red balloon in a blue sky.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red balloon in a blue sky. The balloon rotates slowly, revealing that it is flat.');
+    }
+
+    function draw() {
+      background('skyblue');
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Draw the red balloon.
+      fill('red');
+      bezier(0, 0, 0, -45, -45, 0, 45, -45, 0, 0, 0, 0);
+
+      // Draw the balloon string.
+      line(0, 0, 0, 0, 20, 0);
+    }
     </code>
     </div>
 class: p5
@@ -50,38 +189,38 @@ overloads:
     params:
       - name: x1
         description: |
-          <p>x-coordinate for the first anchor point</p>
+          <p>x-coordinate of the first anchor point.</p>
         type: Number
       - name: y1
         description: |
-          <p>y-coordinate for the first anchor point</p>
+          <p>y-coordinate of the first anchor point.</p>
         type: Number
       - name: x2
         description: |
-          <p>x-coordinate for the first control point</p>
+          <p>x-coordinate of the first control point.</p>
         type: Number
       - name: y2
         description: |
-          <p>y-coordinate for the first control point</p>
+          <p>y-coordinate of the first control point.</p>
         type: Number
       - name: x3
         description: |
-          <p>x-coordinate for the second control point</p>
+          <p>x-coordinate of the second control point.</p>
         type: Number
       - name: y3
         description: |
-          <p>y-coordinate for the second control point</p>
+          <p>y-coordinate of the second control point.</p>
         type: Number
       - name: x4
         description: |
-          <p>x-coordinate for the second anchor point</p>
+          <p>x-coordinate of the second anchor point.</p>
         type: Number
       - name: y4
         description: |
-          <p>y-coordinate for the second anchor point</p>
+          <p>y-coordinate of the second anchor point.</p>
         type: Number
     chainable: 1
-  - line: 62
+  - line: 191
     params:
       - name: x1
         description: ''
@@ -91,7 +230,7 @@ overloads:
         type: Number
       - name: z1
         description: |
-          <p>z-coordinate for the first anchor point</p>
+          <p>z-coordinate of the first anchor point.</p>
         type: Number
       - name: x2
         description: ''
@@ -101,7 +240,7 @@ overloads:
         type: Number
       - name: z2
         description: |
-          <p>z-coordinate for the first control point</p>
+          <p>z-coordinate of the first control point.</p>
         type: Number
       - name: x3
         description: ''
@@ -111,7 +250,7 @@ overloads:
         type: Number
       - name: z3
         description: |
-          <p>z-coordinate for the second control point</p>
+          <p>z-coordinate of the second control point.</p>
         type: Number
       - name: x4
         description: ''
@@ -121,7 +260,7 @@ overloads:
         type: Number
       - name: z4
         description: |
-          <p>z-coordinate for the second anchor point</p>
+          <p>z-coordinate of the second anchor point.</p>
         type: Number
     chainable: 1
 chainable: true

@@ -4,128 +4,298 @@ module: 3D
 submodule: Lights
 file: src/webgl/light.js
 description: >
-  <p>Sets the color of the specular highlight of a non-ambient light
+  <p>Sets the specular color for lights.</p>
 
-  (i.e. all lights except <a
-  href="/reference/p5/ambientLight">ambientLight()</a>).</p>
+  <p><code>specularColor()</code> affects lights that bounce off a surface in a
+  preferred
 
-  <p>specularColor() affects only the lights which are created after
+  direction. These lights include
 
-  it in the code.</p>
+  <a href="/reference/p5/directionalLight">directionalLight()</a>,
 
-  <p>This function is used in combination with
+  <a href="/reference/p5/pointLight">pointLight()</a>, and
 
-  <a href="/reference/p5/specularMaterial">specularMaterial()</a>.
+  <a href="/reference/p5/spotLight">spotLight()</a>. The function helps to
+  create
 
-  If a geometry does not use specularMaterial(), this function
+  highlights on <a href="/reference/p5/p5.Geometry">p5.Geometry</a> objects that
+  are
 
-  will have no effect.</p>
+  styled with <a href="/reference/p5/specularMaterial">specularMaterial()</a>.
+  If a
 
-  <p>The default color is white (255, 255, 255), which is used if
+  geometry does not use
 
-  specularColor() is not explicitly called.</p>
+  <a href="/reference/p5/specularMaterial">specularMaterial()</a>, then
 
-  <p>Note: specularColor is equivalent to the Processing function
+  <code>specularColor()</code> will have no effect.</p>
 
-  <a
-  href="https://processing.org/reference/lightSpecular_.html">lightSpecular</a>.</p>
-line: 134
+  <p>Note: <code>specularColor()</code> doesn’t affect lights that bounce in all
+
+  directions, including <a href="/reference/p5/ambientLight">ambientLight()</a>
+  and
+
+  <a href="/reference/p5/imageLight">imageLight()</a>.</p>
+
+  <p>There are three ways to call <code>specularColor()</code> with optional
+  parameters to
+
+  set the specular highlight color.</p>
+
+  <p>The first way to call <code>specularColor()</code> has two optional
+  parameters, <code>gray</code>
+
+  and <code>alpha</code>. Grayscale and alpha values between 0 and 255, as in
+
+  <code>specularColor(50)</code> or <code>specularColor(50, 80)</code>, can be
+  passed to set the
+
+  specular highlight color.</p>
+
+  <p>The second way to call <code>specularColor()</code> has one optional
+  parameter,
+
+  <code>color</code>. A <a href="/reference/p5/p5.Color">p5.Color</a> object, an
+  array of color
+
+  values, or a CSS color string can be passed to set the specular highlight
+
+  color.</p>
+
+  <p>The third way to call <code>specularColor()</code> has four optional
+  parameters, <code>v1</code>,
+
+  <code>v2</code>, <code>v3</code>, and <code>alpha</code>. RGBA, HSBA, or HSLA
+  values, as in
+
+  <code>specularColor(255, 0, 0, 80)</code>, can be passed to set the specular
+  highlight
+
+  color. Color values will be interpreted using the current
+
+  <a href="/reference/p5/colorMode">colorMode()</a>.</p>
+line: 205
 isConstructor: false
 itemtype: method
-alt: |-
-  Sphere with specular highlight. Clicking the mouse toggles the
-  specular highlight color between red and the default white.
 example:
   - |-
 
     <div>
     <code>
-    let setRedSpecularColor = true;
+    // Click and drag the mouse to view the scene from different angles.
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      noStroke();
-      describe(
-        'Sphere with specular highlight. Clicking the mouse toggles the specular highlight color between red and the default white.'
-      );
+
+      describe('A white sphere drawn on a gray background.');
     }
 
     function draw() {
-      background(0);
+      background(200);
 
-      ambientLight(60);
+      // Enable orbiting with the mouse.
+      orbitControl();
 
-      // add a point light to showcase specular color
-      // -- use mouse location to position the light
-      let lightPosX = mouseX - width / 2;
-      let lightPosY = mouseY - height / 2;
-      // -- set the light's specular color
-      if (setRedSpecularColor) {
-        specularColor(255, 0, 0); // red specular highlight
-      }
-      // -- create the light
-      pointLight(200, 200, 200, lightPosX, lightPosY, 50); // white light
+      // No specular color.
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
 
-      // use specular material with high shininess
-      specularMaterial(150);
-      shininess(50);
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click the canvas to add a point light.
 
-      sphere(30, 64, 64);
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. A spotlight starts shining when the user double-clicks.');
     }
 
-    function mouseClicked() {
-      setRedSpecularColor = !setRedSpecularColor;
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the sphere.
+      noStroke();
+      specularColor(100);
+      specularMaterial(255, 255, 255);
+
+      // Control the light.
+      if (isLit === true) {
+        // Add a white point light from the top-right.
+        pointLight(255, 255, 255, 30, -20, 40);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the point light when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a specular highlight.
+      // Use a p5.Color object.
+      let c = color('dodgerblue');
+      specularColor(c);
+
+      // Add a white point light from the top-right.
+      pointLight(255, 255, 255, 30, -20, 40);
+
+      // Style the sphere.
+      noStroke();
+
+      // Add a white specular material.
+      specularMaterial(255, 255, 255);
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a specular highlight.
+      // Use a CSS color string.
+      specularColor('#1E90FF');
+
+      // Add a white point light from the top-right.
+      pointLight(255, 255, 255, 30, -20, 40);
+
+      // Style the sphere.
+      noStroke();
+
+      // Add a white specular material.
+      specularMaterial(255, 255, 255);
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a specular highlight.
+      // Use RGB values.
+      specularColor(30, 144, 255);
+
+      // Add a white point light from the top-right.
+      pointLight(255, 255, 255, 30, -20, 40);
+
+      // Style the sphere.
+      noStroke();
+
+      // Add a white specular material.
+      specularMaterial(255, 255, 255);
+
+      // Draw the sphere.
+      sphere(30);
     }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 134
+  - line: 205
     params:
       - name: v1
         description: |
-          <p>red or hue value relative to
-                                           the current color range</p>
+          <p>red or hue value in the current
+                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v2
         description: |
-          <p>green or saturation value
-                                           relative to the current color range</p>
+          <p>green or saturation value in the current
+                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
       - name: v3
         description: |
-          <p>blue or brightness value
-                                           relative to the current color range</p>
+          <p>blue, brightness, or lightness value in the current
+                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
         type: Number
     chainable: 1
-  - line: 207
+  - line: 423
     params:
       - name: gray
         description: |
-          <p>number specifying value between
-                                           white and black</p>
+          <p>grayscale value between 0 and 255.</p>
         type: Number
     chainable: 1
-  - line: 214
+  - line: 429
     params:
       - name: value
         description: |
-          <p>color as a CSS string</p>
+          <p>color as a CSS string.</p>
         type: String
     chainable: 1
-  - line: 220
+  - line: 435
     params:
       - name: values
         description: |
-          <p>color as an array containing the
-                                           red, green, and blue components</p>
+          <p>color as an array of RGBA, HSBA, or HSLA
+                                          values.</p>
         type: 'Number[]'
     chainable: 1
-  - line: 227
+  - line: 442
     params:
       - name: color
         description: |
-          <p>color as a <a href="#/p5.Color">p5.Color</a></p>
+          <p>color as a <a href="#/p5.Color">p5.Color</a> object.</p>
         type: p5.Color
     chainable: 1
 chainable: true

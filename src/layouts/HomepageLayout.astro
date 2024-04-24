@@ -6,6 +6,7 @@ import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getCurationSketches } from "../api/OpenProcessing";
 import BaseLayout from "./BaseLayout.astro";
 import { Icon } from "../components/Icon";
+import { setJumpToState } from "../globals/state";
 
 interface Props {
   config: CollectionEntry<"homepage">;
@@ -23,10 +24,10 @@ const sketches = data.sketchIds.map(
     curationSketches.find((sk) => id.toString() === sk.visualID) ??
     curationSketches[i]
 );
+
+setJumpToState(null);
 ---
 
-<!-- 'item' might seem strange here but the homepage follows
-  that visual styling of an item page -->
 <BaseLayout title="" variant="homepage">
   <div class="lg:mt-sm mb-xl">
     <div
@@ -49,7 +50,7 @@ const sketches = data.sketchIds.map(
       <source media="(max-width: 767px)" srcset={data.heroImageMobile.src} />
       <source media="(min-width: 768px)" srcset={data.heroImageDesktop.src} />
       <img
-        class="full-bleed-image border-t border-b border-type-color"
+        class="full-bleed-image"
         src={data.heroImageMobile.src}
         alt={data.heroImageAltText}
       />
@@ -76,7 +77,7 @@ const sketches = data.sketchIds.map(
     <div class="col-span-1 order-3 lg:order-2">
       <GridItemSketch item={sketches[0]} />
     </div>
-    <div class="col-span-1 order-4 :order-3">
+    <div class="col-span-1 order-4 lg:order-3">
       <GridItemSketch item={sketches[1]} />
     </div>
   </div>
@@ -127,5 +128,14 @@ const sketches = data.sketchIds.map(
     @media (min-width: $breakpoint-tablet) {
       font-size: 3.5rem;
     }
+  }
+  .full-bleed-image {
+    width: calc(100% + var(--spacing-lg) * 2);
+    max-width: calc(100% + var(--spacing-lg) * 2);
+    height: 402px; // extra 2px for border
+    left: calc(-1 * var(--spacing-lg));
+    position: relative;
+    object-fit: cover;
+    @apply border-b border-t border-type-color;
   }
 </style>

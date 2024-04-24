@@ -4,34 +4,103 @@ module: Shape
 submodule: Curves
 file: src/core/shape/curves.js
 description: >
-  <p>Sets the resolution at which Bezier's curve is displayed. The default value
-  is 20.</p>
+  <p>Sets the number of segments used to draw Bézier curves in WebGL mode.</p>
 
-  <p>Note, This function is only useful when using the WEBGL renderer
+  <p>In WebGL mode, smooth shapes are drawn using many flat segments. Adding
 
-  as the default canvas renderer does not use this information.</p>
-line: 92
+  more flat segments makes shapes appear smoother.</p>
+
+  <p>The parameter, <code>detail</code>, is the number of segments to use while
+  drawing a
+
+  Bézier curve. For example, calling <code>bezierDetail(5)</code> will use 5
+  segments to
+
+  draw curves with the <a href="/reference/p5/bezier">bezier()</a> function. By
+
+  default,<code>detail</code> is 20.</p>
+
+  <p>Note: <code>bezierDetail()</code> has no effect in 2D mode.</p>
+line: 221
 isConstructor: false
 itemtype: method
-alt: stretched black s-shape with a low level of bezier detail
 example:
   - |-
 
-    <div modernizr='webgl'>
+    <div>
     <code>
+    // Draw the original curve.
+
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(85, 20);
+      point(15, 80);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(10, 10);
+      point(90, 90);
+
+      // Draw a black bezier curve.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+      bezier(85, 20, 10, 10, 90, 90, 15, 80);
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(85, 20, 10, 10);
+      line(15, 80, 90, 90);
+
+      describe(
+        'A gray square with three curves. A black s-curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Draw the curve with less detail.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      noFill();
-      bezierDetail(5);
-    }
 
-    function draw() {
       background(200);
-      bezier(
-        -40, -40, 0,
-        90, -40, 0,
-        -90,  40, 0,
-        40,  40, 0
+
+      // Set the curveDetail() to 5.
+      bezierDetail(5);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(35, -30, 0);
+      point(-35, 30, 0);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(-40, -40, 0);
+      point(40, 40, 0);
+
+      // Draw a black bezier curve.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+      bezier(35, -30, 0, -40, -40, 0, 40, 40, 0, -35, 30, 0);
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(35, -30, -40, -40);
+      line(-35, 30, 40, 40);
+
+      describe(
+        'A gray square with three curves. A black s-curve is drawn with jagged segments. Two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
       );
     }
     </code>
@@ -40,7 +109,7 @@ class: p5
 params:
   - name: detail
     description: |
-      <p>resolution of the curves</p>
+      <p>number of segments to use. Defaults to 20.</p>
     type: Number
 chainable: true
 ---

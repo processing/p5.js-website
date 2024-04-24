@@ -4,204 +4,296 @@ module: 3D
 submodule: Interaction
 file: src/webgl/interaction.js
 description: >
-  <p>debugMode() helps visualize 3D space by adding a grid to indicate where the
+  <p>Adds a grid and an axes icon to clarify orientation in 3D sketches.</p>
 
-  ‘ground’ is in a sketch and an axes icon which indicates the +X, +Y, and +Z
+  <p><code>debugMode()</code> adds a grid that shows where the “ground” is in a
+  sketch. By
 
-  directions. This function can be called without parameters to create a
+  default, the grid will run through the origin <code>(0, 0, 0)</code> of the
+  sketch
 
-  default grid and axes icon, or it can be called according to the examples
+  along the XZ plane. <code>debugMode()</code> also adds an axes icon that
+  points along
 
-  above to customize the size and position of the grid and/or axes icon.  The
+  the positive x-, y-, and z-axes. Calling <code>debugMode()</code> displays the
+  grid
 
-  grid is drawn using the most recently set stroke color and weight.  To
+  and axes icon with their default size and position.</p>
 
-  specify these parameters, add a call to stroke() and strokeWeight()
+  <p>There are four ways to call <code>debugMode()</code> with optional
+  parameters to
 
-  just before the end of the draw() loop.</p>
+  customize the debugging environment.</p>
 
-  <p>By default, the grid will run through the origin (0,0,0) of the sketch
+  <p>The first way to call <code>debugMode()</code> has one parameter,
+  <code>mode</code>. If the
 
-  along the XZ plane
+  system constant <code>GRID</code> is passed, as in
+  <code>debugMode(GRID)</code>, then the grid
 
-  and the axes icon will be offset from the origin.  Both the grid and axes
+  will be displayed and the axes icon will be hidden. If the constant
+  <code>AXES</code>
 
-  icon will be sized according to the current canvas size.  Note that because
-  the
+  is passed, as in <code>debugMode(AXES)</code>, then the axes icon will be
+  displayed
 
-  grid runs parallel to the default camera view, it is often helpful to use
+  and the grid will be hidden.</p>
 
-  debugMode along with orbitControl to allow full view of the grid.</p>
-line: 378
+  <p>The second way to call <code>debugMode()</code> has six parameters. The
+  first
+
+  parameter, <code>mode</code>, selects either <code>GRID</code> or
+  <code>AXES</code> to be displayed. The
+
+  next five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
+  <code>xOff</code>, <code>yOff</code>, and
+
+  <code>zOff</code> are optional. They’re numbers that set the appearance of the
+  grid
+
+  (<code>gridSize</code> and <code>gridDivisions</code>) and the placement of
+  the axes icon
+
+  (<code>xOff</code>, <code>yOff</code>, and <code>zOff</code>). For example,
+  calling
+
+  <code>debugMode(20, 5, 10, 10, 10)</code> sets the <code>gridSize</code> to 20
+  pixels, the number
+
+  of <code>gridDivisions</code> to 5, and offsets the axes icon by 10 pixels
+  along the
+
+  x-, y-, and z-axes.</p>
+
+  <p>The third way to call <code>debugMode()</code> has five parameters. The
+  first
+
+  parameter, <code>mode</code>, selects either <code>GRID</code> or
+  <code>AXES</code> to be displayed. The
+
+  next four parameters, <code>axesSize</code>, <code>xOff</code>,
+  <code>yOff</code>, and <code>zOff</code> are optional.
+
+  They’re numbers that set the appearance of the size of the axes icon
+
+  (<code>axesSize</code>) and its placement (<code>xOff</code>,
+  <code>yOff</code>, and <code>zOff</code>).</p>
+
+  <p>The fourth way to call <code>debugMode()</code> has nine optional
+  parameters. The
+
+  first five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
+  <code>gridXOff</code>, <code>gridYOff</code>,
+
+  and <code>gridZOff</code> are numbers that set the appearance of the grid. For
+
+  example, calling <code>debugMode(100, 5, 0, 0, 0)</code> sets the
+  <code>gridSize</code> to 100,
+
+  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
+  so that
+
+  the grid is centered at the origin. The next four parameters,
+  <code>axesSize</code>,
+
+  <code>xOff</code>, <code>yOff</code>, and <code>zOff</code> are numbers that
+  set the appearance of the size
+
+  of the axes icon (<code>axesSize</code>) and its placement
+  (<code>axesXOff</code>, <code>axesYOff</code>,
+
+  and <code>axesZOff</code>). For example, calling
+
+  <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code> sets the
+  <code>gridSize</code> to 100,
+
+  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
+  so that
+
+  the grid is centered at the origin. It then sets the <code>axesSize</code> to
+  50 and
+
+  offsets the icon 10 pixels along each axis.</p>
+line: 471
 isConstructor: false
 itemtype: method
-alt: |-
-  a 3D box is centered on a grid in a 3D sketch. an icon
-  indicates the direction of each axis: a red line points +X,
-  a green line +Y, and a blue line +Z.
 example:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, -30, 100, 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      normalMaterial();
+
+      // Enable debug mode.
       debugMode();
-      describe(
-        'a 3D box is centered on a grid in a 3D sketch. an icon indicates the direction of each axis: a red line points +X, a green line +Y, and a blue line +Z. the grid and icon disappear when the spacebar is pressed.'
-      );
+
+      describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
     }
 
     function draw() {
       background(200);
+
+      // Enable orbiting with the mouse.
       orbitControl();
-      box(15, 30);
-      // Press the spacebar to turn debugMode off!
-      if (keyIsDown(32)) {
-        noDebugMode();
-      }
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, -30, 100, 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      normalMaterial();
-      debugMode(GRID);
-      describe('a 3D box is centered on a grid in a 3D sketch.');
-    }
 
-    function draw() {
-      background(200);
-      orbitControl();
-      box(15, 30);
-    }
-    </code>
-    </div>
-  - |-
-
-    <div>
-    <code>
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-      camera(0, -30, 100, 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      normalMaterial();
+      // Enable debug mode.
+      // Only display the axes icon.
       debugMode(AXES);
-      describe(
-        'a 3D box is centered in a 3D sketch. an icon indicates the direction of each axis: a red line points +X, a green line +Y, and a blue line +Z.'
-      );
+
+      describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
     }
 
     function draw() {
       background(200);
+
+      // Enable orbiting with the mouse.
       orbitControl();
-      box(15, 30);
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, -30, 100, 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      normalMaterial();
-      debugMode(GRID, 100, 10, 0, 0, 0);
-      describe('a 3D box is centered on a grid in a 3D sketch');
+
+      // Enable debug mode.
+      // Only display the grid and customize it:
+      // - size: 50
+      // - divisions: 10
+      // - offsets: 0, 20, 0
+      debugMode(GRID, 50, 10, 0, 20, 0);
+
+      describe('A multicolor box on a gray background. A grid is displayed below the box.');
     }
 
     function draw() {
       background(200);
+
+      // Enable orbiting with the mouse.
       orbitControl();
-      box(15, 30);
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, -30, 100, 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
-      normalMaterial();
-      debugMode(100, 10, 0, 0, 0, 20, 0, -40, 0);
-      describe(
-        'a 3D box is centered on a grid in a 3D sketch. an icon indicates the direction of each axis: a red line points +X, a green line +Y, and a blue line +Z.'
-      );
+
+      // Enable debug mode.
+      // Display the grid and axes icon and customize them:
+      // Grid
+      // ----
+      // - size: 50
+      // - divisions: 10
+      // - offsets: 0, 20, 0
+      // Axes
+      // ----
+      // - size: 50
+      // - offsets: 0, 0, 0
+      debugMode(50, 10, 0, 20, 0, 50, 0, 0, 0);
+
+      describe('A multicolor box on a gray background. A grid is displayed below the box. An axes icon is displayed at the center of the box.');
     }
 
     function draw() {
-      noStroke();
       background(200);
+
+      // Enable orbiting with the mouse.
       orbitControl();
-      box(15, 30);
-      // set the stroke color and weight for the grid!
-      stroke(255, 0, 150);
-      strokeWeight(0.8);
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
     }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 378
+  - line: 471
     params: []
-  - line: 527
+  - line: 650
     params:
       - name: mode
         description: |
           <p>either GRID or AXES</p>
         type: Constant
-  - line: 532
+  - line: 655
     params:
       - name: mode
         description: ''
         type: Constant
       - name: gridSize
         description: |
-          <p>size of one side of the grid</p>
+          <p>side length of the grid.</p>
         type: Number
         optional: true
       - name: gridDivisions
         description: |
-          <p>number of divisions in the grid</p>
+          <p>number of divisions in the grid.</p>
         type: Number
         optional: true
       - name: xOff
         description: |
-          <p>X axis offset from origin (0,0,0)</p>
+          <p>offset from origin along the x-axis.</p>
         type: Number
         optional: true
       - name: yOff
         description: |
-          <p>Y axis offset from origin (0,0,0)</p>
+          <p>offset from origin along the y-axis.</p>
         type: Number
         optional: true
       - name: zOff
         description: |
-          <p>Z axis offset from origin (0,0,0)</p>
+          <p>offset from origin along the z-axis.</p>
         type: Number
         optional: true
-  - line: 542
+  - line: 665
     params:
       - name: mode
         description: ''
         type: Constant
       - name: axesSize
         description: |
-          <p>size of axes icon</p>
+          <p>length of axes icon markers.</p>
         type: Number
         optional: true
       - name: xOff
@@ -216,7 +308,7 @@ overloads:
         description: ''
         type: Number
         optional: true
-  - line: 551
+  - line: 674
     params:
       - name: gridSize
         description: ''
@@ -227,15 +319,18 @@ overloads:
         type: Number
         optional: true
       - name: gridXOff
-        description: ''
+        description: |
+          <p>grid offset from the origin along the x-axis.</p>
         type: Number
         optional: true
       - name: gridYOff
-        description: ''
+        description: |
+          <p>grid offset from the origin along the y-axis.</p>
         type: Number
         optional: true
       - name: gridZOff
-        description: ''
+        description: |
+          <p>grid offset from the origin along the z-axis.</p>
         type: Number
         optional: true
       - name: axesSize
@@ -243,15 +338,18 @@ overloads:
         type: Number
         optional: true
       - name: axesXOff
-        description: ''
+        description: |
+          <p>axes icon offset from the origin along the x-axis.</p>
         type: Number
         optional: true
       - name: axesYOff
-        description: ''
+        description: |
+          <p>axes icon offset from the origin along the y-axis.</p>
         type: Number
         optional: true
       - name: axesZOff
-        description: ''
+        description: |
+          <p>axes icon offset from the origin along the z-axis.</p>
         type: Number
         optional: true
 chainable: false

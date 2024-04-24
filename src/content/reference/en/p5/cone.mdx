@@ -4,17 +4,61 @@ module: Shape
 submodule: 3D Primitives
 file: src/webgl/3d_primitives.js
 description: >
-  <p>Draw a cone with given radius and height</p>
+  <p>Draws a cone.</p>
 
-  <p>DetailX and detailY determine the number of subdivisions in the x-dimension
-  and
+  <p>A cone is a 3D shape with triangular faces that connect a flat bottom to a
 
-  the y-dimension of a cone. More subdivisions make the cone seem smoother. The
+  single point. Cones with few faces look like pyramids. Cones with many
 
-  recommended maximum value for detailX is 24. Using a value greater than 24
+  faces have smooth surfaces.</p>
 
-  may cause a warning or slow down the browser.</p>
-line: 707
+  <p>The first parameter, <code>radius</code>, is optional. If a
+  <code>Number</code> is passed, as in
+
+  <code>cone(20)</code>, it sets the radius of the cone’s base. By default,
+  <code>radius</code> is
+
+  50.</p>
+
+  <p>The second parameter, <code>height</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>cone(20, 30)</code>, it sets the cone’s height. By default,
+  <code>height</code> is
+
+  set to the cone’s <code>radius</code>.</p>
+
+  <p>The third parameter, <code>detailX</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>cone(20, 30, 5)</code>, it sets the number of edges used to form
+  the
+
+  cone's base. Using more edges makes the base look more like a circle. By
+
+  default, <code>detailX</code> is 24.</p>
+
+  <p>The fourth parameter, <code>detailY</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>cone(20, 30, 5, 7)</code>, it sets the number of triangle
+  subdivisions to
+
+  use along the y-axis connecting the base to the tip. All 3D shapes are made
+
+  by connecting triangles to form their surfaces. By default,
+  <code>detailY</code> is 1.</p>
+
+  <p>The fifth parameter, <code>cap</code>, is also optional. If a
+  <code>false</code> is passed, as
+
+  in <code>cone(20, 30, 5, 7, false)</code> the cone’s base won’t be drawn. By
+  default,
+
+  <code>cap</code> is <code>true</code>.</p>
+
+  <p>Note: <code>cone()</code> can only be used in WebGL mode.</p>
+line: 1730
 isConstructor: false
 itemtype: method
 example:
@@ -22,64 +66,165 @@ example:
 
     <div>
     <code>
-    // draw a spinning cone
-    // with radius 40 and height 70
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('a rotating white cone');
+
+      describe('A white cone on a gray background.');
     }
 
     function draw() {
       background(200);
-      rotateX(frameCount * 0.01);
-      rotateZ(frameCount * 0.01);
-      cone(40, 70);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cone.
+      cone();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    // slide to see how detailx works
-    let detailX;
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      detailX = createSlider(3, 16, 3);
-      detailX.position(10, height + 5);
-      detailX.style('width', '80px');
-      describe(
-        'a rotating white cone with limited X detail, with a slider that adjusts detailX'
-      );
+
+      describe('A white cone on a gray background.');
     }
 
     function draw() {
-      background(205, 102, 94);
-      rotateY(millis() / 1000);
-      cone(30, 65, detailX.value(), 16);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cone.
+      // Set its radius and height to 30.
+      cone(30);
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    // slide to see how detailY works
-    let detailY;
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      detailY = createSlider(3, 16, 3);
-      detailY.position(10, height + 5);
-      detailY.style('width', '80px');
-      describe(
-        'a rotating white cone with limited Y detail, with a slider that adjusts detailY'
-      );
+
+      describe('A white cone on a gray background.');
     }
 
     function draw() {
-      background(205, 102, 94);
-      rotateY(millis() / 1000);
-      cone(30, 65, 16, detailY.value());
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cone.
+      // Set its radius to 30 and height to 50.
+      cone(30, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cone on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cone.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 5.
+      cone(30, 50, 5);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white pyramid on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cone.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 5.
+      cone(30, 50, 5);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cone on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cone.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 24 and detailY to 2.
+      cone(30, 50, 24, 2);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cone on a gray background. Its base is missing.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the cone.
+      // Set its radius to 30 and height to 50.
+      // Set its detailX to 24 and detailY to 1.
+      // Don't draw its base.
+      cone(30, 50, 24, 1, false);
     }
     </code>
     </div>
@@ -87,31 +232,27 @@ class: p5
 params:
   - name: radius
     description: |
-      <p>radius of the bottom surface</p>
+      <p>radius of the cone's base. Defaults to 50.</p>
     type: Number
     optional: true
   - name: height
     description: |
-      <p>height of the cone</p>
+      <p>height of the cone. Defaults to the value of <code>radius</code>.</p>
     type: Number
     optional: true
   - name: detailX
     description: |
-      <p>number of segments,
-                                  the more segments the smoother geometry
-                                  default is 24</p>
+      <p>number of edges used to draw the base. Defaults to 24.</p>
     type: Integer
     optional: true
   - name: detailY
     description: |
-      <p>number of segments,
-                                  the more segments the smoother geometry
-                                  default is 1</p>
+      <p>number of triangle subdivisions along the y-axis. Defaults to 1.</p>
     type: Integer
     optional: true
   - name: cap
     description: |
-      <p>whether to draw the base of the cone</p>
+      <p>whether to draw the cone's base.  Defaults to <code>true</code>.</p>
     type: Boolean
     optional: true
 chainable: true

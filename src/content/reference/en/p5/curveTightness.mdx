@@ -4,41 +4,52 @@ module: Shape
 submodule: Curves
 file: src/core/shape/curves.js
 description: >
-  <p>Modifies the quality of forms created with <a
-  href="/reference/p5/curve">curve()</a>
+  <p>Adjusts the way <a href="/reference/p5/curve">curve()</a> and
 
-  and <a href="/reference/p5/curveVertex">curveVertex()</a>.The parameter
-  tightness
+  <a href="/reference/p5/curveVertex">curveVertex()</a> draw.</p>
 
-  determines how the curve fits to the vertex points. The value 0.0 is the
+  <p>Spline curves are like cables that are attached to a set of points.
 
-  default value for tightness (this value defines the curves to be Catmull-Rom
+  <code>curveTightness()</code> adjusts how tightly the cable is attached to the
+  points.</p>
 
-  splines) and the value 1.0 connects all the points with straight lines.
+  <p>The parameter, <code>tightness</code>, determines how the curve fits to the
+  vertex
 
-  Values within the range -5.0 and 5.0 will deform the curves but will leave
+  points. By default, <code>tightness</code> is set to 0. Setting tightness to
+  1,
 
-  them recognizable and as values increase in magnitude, they will continue to
-  deform.</p>
-line: 399
+  as in <code>curveTightness(1)</code>, connects the curve's points using
+  straight
+
+  lines. Values in the range from –5 to  5 deform curves while leaving them
+
+  recognizable.</p>
+line: 875
 isConstructor: false
 itemtype: method
-alt: 'Line shaped like right-facing arrow,points move with mouse-x and warp shape.'
 example:
   - |-
 
     <div>
     <code>
-    // Move the mouse left and right to see the curve change
+    // Move the mouse left and right to see the curve change.
+
     function setup() {
       createCanvas(100, 100);
-      noFill();
+
+      describe('A black curve forms a sideways U shape. The curve deforms as the user moves the mouse from left to right');
     }
 
     function draw() {
-      background(204);
-      let t = map(mouseX, 0, width, -5, 5);
+      background(200);
+
+      // Set the curve's tightness using the mouse.
+      let t = map(mouseX, 0, 100, -5, 5, true);
       curveTightness(t);
+
+      // Draw the curve.
+      noFill();
       beginShape();
       curveVertex(10, 26);
       curveVertex(10, 26);
@@ -54,7 +65,7 @@ class: p5
 params:
   - name: amount
     description: |
-      <p>amount of deformation from the original vertices</p>
+      <p>amount of tightness.</p>
     type: Number
 chainable: true
 ---

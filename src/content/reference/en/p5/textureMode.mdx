@@ -4,22 +4,163 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Sets the coordinate space for texture mapping. The default mode is IMAGE
+  <p>Changes the coordinate system used for textures when they’re applied to
 
-  which refers to the actual coordinates of the image.
+  custom shapes.</p>
 
-  NORMAL refers to a normalized space of values ranging from 0 to 1.</p>
+  <p>In order for <a href="/reference/p5/texture">texture()</a> to work, a shape
+  needs a
 
-  <p>With IMAGE, if an image is 100×200 pixels, mapping the image onto the
-  entire
+  way to map the points on its surface to the pixels in an image. Built-in
 
-  size of a quad would require the points (0,0) (100, 0) (100,200) (0,200).
+  shapes such as <a href="/reference/p5/rect">rect()</a> and
 
-  The same mapping in NORMAL is (0,0) (1,0) (1,1) (0,1).</p>
-line: 674
+  <a href="/reference/p5/box">box()</a> already have these texture mappings
+  based on
+
+  their vertices. Custom shapes created with
+
+  <a href="/reference/p5/vertex">vertex()</a> require texture mappings to be
+  passed as
+
+  uv coordinates.</p>
+
+  <p>Each call to <a href="/reference/p5/vertex">vertex()</a> must include 5
+  arguments,
+
+  as in <code>vertex(x, y, z, u, v)</code>, to map the vertex at coordinates
+  <code>(x, y, z)</code>
+
+  to the pixel at coordinates <code>(u, v)</code> within an image. For example,
+  the
+
+  corners of a rectangular image are mapped to the corners of a rectangle by
+  default:</p>
+
+  <code>
+
+  // Apply the image as a texture.
+
+  texture(img);
+
+
+  <p>// Draw the rectangle.
+
+  rect(0, 0, 30, 50);
+
+  </p></code>
+
+  <p>If the image in the code snippet above has dimensions of 300 x 500 pixels,
+
+  the same result could be achieved as follows:</p>
+
+  <code>
+
+  // Apply the image as a texture.
+
+  texture(img);
+
+
+  <p>// Draw the rectangle.
+
+  beginShape();</p>
+
+  <p>// Top-left.
+
+  // u: 0, v: 0
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// Top-right.
+
+  // u: 300, v: 0
+
+  vertex(30, 0, 0, 300, 0);</p>
+
+  <p>// Bottom-right.
+
+  // u: 300, v: 500
+
+  vertex(30, 50, 0, 300, 500);</p>
+
+  <p>// Bottom-left.
+
+  // u: 0, v: 500
+
+  vertex(0, 50, 0, 0, 500);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p><code>textureMode()</code> changes the coordinate system for uv
+  coordinates.</p>
+
+  <p>The parameter, <code>mode</code>, accepts two possible constants. If
+  <code>NORMAL</code> is
+
+  passed, as in <code>textureMode(NORMAL)</code>, then the texture’s uv
+  coordinates can
+
+  be provided in the range 0 to 1 instead of the image’s dimensions. This can
+
+  be helpful for using the same code for multiple images of different sizes.
+
+  For example, the code snippet above could be rewritten as follows:</p>
+
+  <code>
+
+  // Set the texture mode to use normalized coordinates.
+
+  textureMode(NORMAL);
+
+
+  <p>// Apply the image as a texture.
+
+  texture(img);</p>
+
+  <p>// Draw the rectangle.
+
+  beginShape();</p>
+
+  <p>// Top-left.
+
+  // u: 0, v: 0
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// Top-right.
+
+  // u: 1, v: 0
+
+  vertex(30, 0, 0, 1, 0);</p>
+
+  <p>// Bottom-right.
+
+  // u: 1, v: 1
+
+  vertex(30, 50, 0, 1, 1);</p>
+
+  <p>// Bottom-left.
+
+  // u: 0, v: 1
+
+  vertex(0, 50, 0, 0, 1);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p>By default, <code>mode</code> is <code>IMAGE</code>, which scales uv
+  coordinates to the
+
+  dimensions of the image. Calling <code>textureMode(IMAGE)</code> applies the
+  default.</p>
+
+  <p>Note: <code>textureMode()</code> can only be used in WebGL mode.</p>
+line: 1048
 isConstructor: false
 itemtype: method
-alt: 'quad with a texture, mapped using image coordinates'
 example:
   - |-
 
@@ -27,50 +168,66 @@ example:
     <code>
     let img;
 
+    // Load an image and create a p5.Image object.
     function preload() {
       img = loadImage('/assets/laDefense.jpg');
     }
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('quad with a texture, mapped using normalized coordinates');
+
+      describe('An image of a ceiling against a black background.');
     }
 
     function draw() {
+      background(0);
+
+      // Apply the image as a texture.
       texture(img);
-      textureMode(NORMAL);
+
+      // Draw the custom shape.
+      // Use the image's width and height as uv coordinates.
       beginShape();
-      vertex(-50, -50, 0, 0);
-      vertex(50, -50, 1, 0);
-      vertex(50, 50, 1, 1);
-      vertex(-50, 50, 0, 1);
+      vertex(-30, -30, 0, 0);
+      vertex(30, -30, img.width, 0);
+      vertex(30, 30, img.width, img.height);
+      vertex(-30, 30, 0, img.height);
       endShape();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
     let img;
 
+    // Load an image and create a p5.Image object.
     function preload() {
       img = loadImage('/assets/laDefense.jpg');
     }
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('quad with a texture, mapped using image coordinates');
+
+      describe('An image of a ceiling against a black background.');
     }
 
     function draw() {
+      background(0);
+
+      // Set the texture mode.
+      textureMode(NORMAL);
+
+      // Apply the image as a texture.
       texture(img);
-      textureMode(IMAGE);
+
+      // Draw the custom shape.
+      // Use normalized uv coordinates.
       beginShape();
-      vertex(-50, -50, 0, 0);
-      vertex(50, -50, img.width, 0);
-      vertex(50, 50, img.width, img.height);
-      vertex(-50, 50, 0, img.height);
+      vertex(-30, -30, 0, 0);
+      vertex(30, -30, 1, 0);
+      vertex(30, 30, 1, 1);
+      vertex(-30, 30, 0, 1);
       endShape();
     }
     </code>
@@ -79,7 +236,7 @@ class: p5
 params:
   - name: mode
     description: |
-      <p>either IMAGE or NORMAL</p>
+      <p>either IMAGE or NORMAL.</p>
     type: Constant
 chainable: false
 ---

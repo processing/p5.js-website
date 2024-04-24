@@ -4,59 +4,152 @@ module: Foundation
 submodule: Foundation
 file: src/core/reference.js
 description: >
-  <p><a href="/reference/p5/while">while</a> creates a loop that is useful for
-  executing
+  <p>A way to repeat a block of code.</p>
 
-  one section of code multiple times.</p>
+  <p><code>while</code> loops are helpful for repeating statements while a
+  condition is
 
-  <p>With a 'while loop', the code inside of the loop body (between the curly
+  <code>true</code>. They're like <code>if</code> statements that repeat. For
+  example, a <code>while</code>
 
-  braces) is run repeatedly until the test condition (inside of the parenthesis)
+  loop makes it easy to express the idea "draw several lines" like so:</p>
 
-  evaluates to false. The condition is tested before executing the code body
+  <code>
 
-  with <a href="/reference/p5/while">while</a>, so if the condition is initially
-  false
+  // Declare a variable to keep track of iteration.
 
-  the loop body, or statement, will never execute.</p>
+  let x = 10;
 
-  <p>As with any loop, it is important to ensure that the loop can 'exit', or
-  that
 
-  the test condition will eventually evaluate to false. This is to keep your
-  loop
+  <p>// Repeat as long as x < 100
 
-  from trying to run an infinite amount of times, which can crash your
-  browser.</p>
+  while (x < 100) {
+    line(x, 25, x, 75);</p>
+  <p>  // Increment by 20.
+    x += 20;
+  }
 
-  <p>From <a
-  href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/while">the
-  MDN entry</a>:
+  </p></code>
 
-  The while statement creates a loop that executes a specified statement as long
+  <p>The loop's header begins with the keyword <code>while</code>. Loops
+  generally count up
 
-  as the test condition evaluates to true.The condition is evaluated before
+  or count down as they repeat, or iterate. The statement in parentheses
 
-  executing the statement.</p>
-line: 448
+  <code>x < 100</code> is a condition the loop checks each time it iterates. If
+  the
+
+  condition is <code>true</code>, the loop runs the code between the curly
+  braces <code>{}</code>,
+
+  The code between the curly braces is called the loop's body. If the
+
+  condition is <code>false</code>, the body is skipped and the loop is
+  stopped.</p>
+
+  <p>It's common to create infinite loops accidentally. For example, the
+
+  following loop never stops iterating because it doesn't count up:</p>
+
+  <code>
+
+  // Declare a variable to keep track of iteration.
+
+  let x = 10;
+
+
+  <p>// Repeat as long as x < 100
+
+  while (x < 100) {
+    line(x, 25, x, 75);
+  }</p>
+
+  <p>// This should be in the loop's body!
+
+  x += 20;
+
+  </p></code>
+
+  <p>The statement <code>x += 20</code> appears after the loop's body. That
+  means the
+
+  variable <code>x</code> is stuck at <code>10</code>,  which is always less
+  than <code>100</code>.</p>
+
+  <p><code>while</code> loops are useful when the number of iterations isn't
+  known in
+
+  advance. For example, concentric circles could be drawn at random
+
+  increments:</p>
+
+  <code>
+
+  let d = 100;
+
+  let minSize = 5;
+
+
+  <p>while (d > minSize) {
+    circle(50, 50, d);
+    d -= random(10);
+  }
+
+  </p></code>
+line: 1908
 isConstructor: false
 itemtype: property
-alt: This example does not render anything
 example:
   - |-
 
-    <div class='norender'>
+    <div>
     <code>
-    // This example logs the lines below to the console
-    // 4
-    // 3
-    // 2
-    // 1
-    // 0
-    let num = 5;
-    while (num > 0) {
-      num = num - 1;
-      console.log(num);
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('Five black vertical lines on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Declare a variable to keep track of iteration.
+      let x = 10;
+
+      // Repeat as long as x < 100
+      while (x < 100) {
+        line(x, 25, x, 75);
+
+        // Increment by 20.
+        x += 20
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Slow the frame rate.
+      frameRate(5);
+
+      describe(
+        "A gray square with several concentric circles at the center. The circles' sizes decrease at random increments."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      let d = 100;
+      let minSize = 5;
+
+      while (d > minSize) {
+        circle(50, 50, d);
+        d -= random(5, 15);
+      }
     }
     </code>
     </div>

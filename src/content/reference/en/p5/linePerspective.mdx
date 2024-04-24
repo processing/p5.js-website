@@ -4,104 +4,155 @@ module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
 description: >
-  <p>Enable or disable perspective for lines in the WebGL renderer.
-   The behavior of <code>linePerspective()</code>  is associated with the type of camera projection being used.</p>
+  <p>Enables or disables perspective for lines in 3D sketches.</p>
+
+  <p>In WebGL mode, lines can be drawn with a thinner stroke when they’re
+
+  further from the camera. Doing so gives them a more realistic appearance.</p>
+
+  <p>By default, lines are drawn differently based on the type of perspective
+
+  being used:</p>
+
   <ul>
 
-  <li>When using <code>perspective()</code>, which simulates realistic
-  perspective, linePerspective
-    is set to <code>true</code> by default. This means that lines will be affected by the current
-    camera's perspective, resulting in a more natural appearance.</li>
-  <li>When using <code>ortho()</code> or <code>frustum()</code>, which do not
-  simulate realistic perspective,
-   linePerspective is set to <code>false</code> by default. In this case, lines will have a uniform
-   scale regardless of the camera's perspective, providing a more predictable and
-   consistent appearance.</li>
-  <li>You can override the default behavior by explicitly calling
-  <code>linePerspective()</code> after
-   using <code>perspective()</code>, <code>ortho()</code>, or <code>frustum()</code>. This allows you to customize the line
-   perspective based on your specific requirements.</li>
+  <li><code>perspective()</code> and <code>frustum()</code> simulate a realistic
+  perspective. In
+
+  these modes, stroke weight is affected by the line’s distance from the
+
+  camera. Doing so results in a more natural appearance.
+  <code>perspective()</code> is
+
+  the default mode for 3D sketches.</li>
+
+  <li><code>ortho()</code> doesn’t simulate a realistic perspective. In this
+  mode, stroke
+
+  weights are consistent regardless of the line’s distance from the camera.
+
+  Doing so results in a more predictable and consistent appearance.</li>
+
   </ul>
-line: 197
+
+  <p><code>linePerspective()</code> can override the default line drawing
+  mode.</p>
+
+  <p>The parameter, <code>enable</code>, is optional. It’s a
+  <code>Boolean</code> value that sets the
+
+  way lines are drawn. If <code>true</code> is passed, as in
+  <code>linePerspective(true)</code>,
+
+  then lines will appear thinner when they are further from the camera. If
+
+  <code>false</code> is passed, as in <code>linePerspective(false)</code>, then
+  lines will have
+
+  consistent stroke weights regardless of their distance from the camera. By
+
+  default, <code>linePerspective()</code> is enabled.</p>
+
+  <p>Calling <code>linePerspective()</code> without passing an argument returns
+  <code>true</code> if
+
+  it's enabled and <code>false</code> if not.</p>
+
+  <p>Note: <code>linePerspective()</code> can only be used in WebGL mode.</p>
+line: 280
 isConstructor: false
 itemtype: method
-alt: >-
-  Demonstrates the dynamic control of line perspective in a 3D environment with
-  rotating boxes.
 example:
-  - |2-
+  - |-
 
-     <div>
-     <code>
-     function setup() {
-       createCanvas(100, 100, WEBGL);
-       setAttributes({ antialias: true });
-       strokeWeight(3);
-       describe(
-         'rotated 3D boxes have their stroke weights affected if toggled back and forth with mouse clicks.'
-       );
-     }
-    function draw() {
-       background(220);
-       rotateY(PI/24);
-       rotateZ(PI/8);
-       translate(0, 0, 350);
-       for (let i = 0; i < 12; i++) {
-         translate(0, 0, -70);
-         box(30);
-       }
-     }
-    function mousePressed() {
-       linePerspective(!linePerspective());
-     }
-     </code>
-     </div>
     <div>
-     <code>
-     function setup() {
-       createCanvas(100, 100, WEBGL);
-       strokeWeight(4);
-     }
+    <code>
+    // Double-click the canvas to toggle the line perspective.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A white cube with black edges on a gray background. Its edges toggle between thick and thin when the user double-clicks.'
+      );
+    }
+
     function draw() {
-       background(220);
-      // Using orthographic projection
-       ortho();
-      // Enable line perspective explicitly
-       linePerspective(true);
-      // Draw a rotating cube
-       rotateX(frameCount * 0.01);
-       rotateY(frameCount * 0.01);
-       box(25);
-      // Move to a new position
-       translate(0, -60, 0);
-      // Using perspective projection
-       perspective();
-      // Disable line perspective explicitly
-       linePerspective(false);
-      // Draw another rotating cube with perspective
-       rotateX(frameCount * 0.01);
-       rotateY(frameCount * 0.01);
-       box(25);
-     }
-     </code>
-     </div>
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the line perspective when the user double-clicks.
+    function doubleClicked() {
+      let isEnabled = linePerspective();
+      linePerspective(!isEnabled);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click the canvas to toggle the line perspective.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A row of cubes with black edges on a gray background. Their edges toggle between thick and thin when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Use an orthographic projection.
+      ortho();
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the line perspective when the user double-clicks.
+    function doubleClicked() {
+      let isEnabled = linePerspective();
+      linePerspective(!isEnabled);
+    }
+    </code>
+    </div>
 class: p5
 overloads:
-  - line: 197
+  - line: 280
     params:
       - name: enable
-        description: >
-          <ul>
-
-          <li>Set to <code>true</code> to enable line perspective,
-          <code>false</code> to disable.</li>
-
-          </ul>
+        description: |
+          <p>whether to enable line perspective.</p>
         type: Boolean
-  - line: 286
+  - line: 392
     params: []
     return:
-      description: The boolean value representing the current state of linePerspective().
+      description: whether line perspective is enabled.
       type: Boolean
 chainable: false
 ---
