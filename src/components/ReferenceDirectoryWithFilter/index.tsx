@@ -47,6 +47,21 @@ const getOneLineDescription = (description: string): string => {
   return `${oneLineDescription?.trim() ?? cleanedDescription}`;
 };
 
+/**
+ * Convert Reference description to one-line description
+ * @param description String description
+ * @returns One-line description
+ */
+const getOneLineDescription = (description: string): string => {
+  const stopCharacters = ["\\.|\\?|!|।|。"];
+  const fullStopRegex = new RegExp(`[${stopCharacters.join("")}]`, "g");
+  const cleanedDescription = description
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/\n/g, " ");
+  const [oneLineDescription] = cleanedDescription.split(fullStopRegex, 1);
+  return `${oneLineDescription.trim()}.`;
+};
+
 export const ReferenceDirectoryWithFilter = ({
   categoryData,
   uiTranslations,
