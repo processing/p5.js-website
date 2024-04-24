@@ -9,12 +9,9 @@ export const defaultLocale = "en";
  * All other locales supported by the website.
  */
 export const nonDefaultSupportedLocales = [
-  "ar",
   "es",
   "hi",
   "ko",
-  "sk",
-  "pt-br",
   "zh-Hans",
 ];
 
