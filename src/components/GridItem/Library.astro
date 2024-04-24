@@ -20,6 +20,12 @@ const authorsFormatter = new Intl.ListFormat(
 const authorsString = authorsFormatter.format(
   item.data.author.map((a) => a.name)
 );
+let description = item.data.description.trim();
+// If the description didn't end with punctuation, add it, since we will be
+// appending another sentence afterwards.
+if (!/[.!]\)?$/.test(description)) {
+  description += '.';
+}
 ---
 
 <a href={getLibraryLink(item)}>
@@ -32,6 +38,6 @@ const authorsString = authorsFormatter.format(
     {item.data.name}
   </div>
   <div class="text-sm">
-    {item.data.description} By {authorsString}
+    {description} By {authorsString}
   </div>
 </a>
