@@ -29,6 +29,7 @@ export default {
         "type-black": "var(--type-black)",
         "type-white": "var(--type-white)",
         "type-magenta": "var(--type-magenta)",
+        "type-magenta-dark": "var(--type-magenta-dark)",
         "type-blue": "var(--type-blue)",
         "type-gray": "var(--type-gray)",
         "logo-color": "var(--logo-color)",
