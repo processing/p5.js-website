@@ -18,7 +18,7 @@ import strip from "strip-markdown";
 import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
-import { nonDefaultSupportedLocales, supportedLocales } from "@/src/i18n/const";
+import { nonDefaultSupportedLocales } from "@/src/i18n/const";
 
 /* Repo to pull the contributor documentation from */
 const docsRepoUrl = "https://github.com/processing/p5.js.git";
@@ -49,7 +49,14 @@ const langDirs = nonDefaultSupportedLocales;
  * Folders we want to ignore and **not** copy, including languages that the
  * p5 website doesn't support but are translated in the contributor docs
  */
-const ignoredFolders = ["archive", "project_wrapups", "ar", "sk", "pt-br"];
+const ignoredFolders = [
+  "archive",
+  "project_wrapups",
+  "ar",
+  "ja",
+  "sk",
+  "pt-br",
+];
 
 /**
  * Moves a markdown file to a new location, converting into MDX along the way
