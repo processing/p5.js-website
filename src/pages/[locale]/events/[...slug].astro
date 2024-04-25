@@ -2,13 +2,13 @@
 import { nonDefaultSupportedLocales } from "@i18n/const";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
-import PastEventLayout from "@/src/layouts/PastEventLayout.astro";
+import EventLayout from "@/src/layouts/EventLayout.astro";
 
 export async function getStaticPaths() {
   const entries = await Promise.all(
     nonDefaultSupportedLocales.map(async (locale) => {
       const localeEntries = await getCollectionInLocaleWithFallbacks(
-        "past-events",
+        "events",
         locale
       );
       return localeEntries.map((entry) => ({
@@ -24,4 +24,4 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 ---
 
-<PastEventLayout entry={entry} title={entry.data.title} />
+<EventLayout entry={entry} title={entry.data.title} />

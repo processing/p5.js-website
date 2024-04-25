@@ -1,11 +1,11 @@
 ---
 import { getCollectionInDefaultLocale } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
-import PastEventLayout from "@/src/layouts/PastEventLayout.astro";
+import EventLayout from "@/src/layouts/EventLayout.astro";
 
 export async function getStaticPaths() {
   // get all past events pages that are in the default locale
-  const pastEvents = await getCollectionInDefaultLocale("past-events");
+  const pastEvents = await getCollectionInDefaultLocale("events");
   return pastEvents.map((entry) => ({
     params: { slug: removeLocalePrefix(entry.slug) },
     props: { entry },
@@ -15,4 +15,4 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 ---
 
-<PastEventLayout entry={entry} title={entry.data.title} />
+<EventLayout entry={entry} title={entry.data.title} />
