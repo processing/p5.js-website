@@ -54,7 +54,7 @@ export const CodeEmbed = (props) => {
     setRendered(true);
 
     // Includes p5.min.js script to be used by `CodeFrame` iframe(s)
-    const p5ScriptElement = document.createElement('script');
+    const p5ScriptElement = document.createElement("script");
     p5ScriptElement.id = "p5ScriptTag";
     p5ScriptElement.src = p5LibraryUrl;
     document.head.appendChild(p5ScriptElement);
@@ -79,6 +79,7 @@ export const CodeEmbed = (props) => {
             <CircleButton
               className="!bg-bg-gray-40 !p-sm"
               onClick={updateOrReRun}
+              ariaLabel="Run sketch"
             >
               <Icon kind="play" />
             </CircleButton>
@@ -87,6 +88,7 @@ export const CodeEmbed = (props) => {
               onClick={() => {
                 setPreviewCodeString("");
               }}
+              ariaLabel="Stop sketch"
             >
               <Icon kind="stop" />
             </CircleButton>
