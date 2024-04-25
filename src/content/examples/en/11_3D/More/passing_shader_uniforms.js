@@ -10,7 +10,7 @@
 
  function preload(){
    // load the shader
-   theShader = loadShader('assets/uniforms.vert', 'assets/uniforms.frag');
+   theShader = loadShader('/assets/uniforms.vert', 'assets/uniforms.frag');
  }
 
  function setup() {
