@@ -289,6 +289,16 @@ const buildContributorDocs = async () => {
     recursive: true,
     force: true,
   });
+  await Promise.all(
+    oldTopLevelFiles
+      .filter((file) => file.isDirectory())
+      .map((file) =>
+        rm(fullPathFromDirent(file), {
+          recursive: true,
+          force: true,
+        }),
+      ),
+  );
 
   // get all the files and folders within the docs folder
   const topLevelFiles = await readdir(sourceDirectory, { withFileTypes: true });
