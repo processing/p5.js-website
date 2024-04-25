@@ -17,7 +17,7 @@ interface CodeBundle {
  * Wraps the given code in a p5.js setup function if it doesn't already have one.
  */
 const wrapSketch = (sketchCode?: string) => {
-  if (!sketchCode?.includes("setup")) {
+  if (sketchCode !== "" && !sketchCode?.includes("setup")) {
     return `
       function setup() {
         createCanvas(100, 100);
