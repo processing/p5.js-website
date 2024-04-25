@@ -13,7 +13,7 @@ export const contentTypes = [
   "contributor-docs",
   "examples",
   "libraries",
-  "past-events",
+  "events",
   "people",
   "reference",
   "sketches",
