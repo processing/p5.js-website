@@ -34,5 +34,9 @@ export const getExampleCode = async (exampleId: string): Promise<string> => {
     )}`;
   }
   const code = await readFile(codePath, "utf-8");
-  return code;
+  // Ensures that all examples use the correct path for assets which must be prefixed
+  // with the forward slash. This is necessary because the examples are rendered in an iframe
+  // Authoring practices should be updated to use the correct path, but this is a backup.
+  const assetMigratedCode = code.replaceAll(/\(["']assets/g, "('/assets");
+  return assetMigratedCode;
 };
