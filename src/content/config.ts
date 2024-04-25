@@ -1,5 +1,5 @@
 import { tutorialsCollection } from "./tutorials/config";
-import { pastEventsCollection } from "./past-events/config";
+import { eventsCollection } from "./events/config";
 import { librariesCollection } from "./libraries/config";
 import { peopleCollection } from "./people/config";
 import { referenceCollection } from "./reference/config";
@@ -16,7 +16,7 @@ import { homepageCollection } from "./homepage/config";
  */
 export const collections = {
   tutorials: tutorialsCollection,
-  "past-events": pastEventsCollection,
+  events: eventsCollection,
   libraries: librariesCollection,
   people: peopleCollection,
   reference: referenceCollection,
