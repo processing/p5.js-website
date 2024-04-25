@@ -17,6 +17,7 @@ import { Icon } from "../Icon";
  *   previewHeight?: number;
  *   previewWidth?: number;
  *   base?: string;
+ *   lazyLoad?: boolean;
  *   TODO: refactor this prop behavior
  *   allowSideBySide?: boolean
  * }
@@ -74,6 +75,7 @@ export const CodeEmbed = (props) => {
             height={props.previewHeight}
             base={props.base}
             frameRef={codeFrameRef}
+            lazyLoad={props.lazyLoad}
           />
           <div className="gap-xs lg:flex">
             <CircleButton
