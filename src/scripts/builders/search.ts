@@ -7,7 +7,8 @@ import type {
 } from "../../../types/content.interface";
 import { getContentFilePaths } from "../utils";
 import keywordExtractor from "keyword-extractor";
-import { contentTypes, localesWithSearchSupport } from "../../globals/globals";
+import { contentTypes } from "../../globals/globals";
+import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
 
 interface SearchIndex {
