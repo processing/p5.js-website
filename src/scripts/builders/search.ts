@@ -252,7 +252,7 @@ const generateSearchIndex = async (
         title = data.title;
         description = data.author?.name ?? "";
         break;
-      case "past-events":
+      case "events":
         title = data.title;
         description = getKeywordsFromContent(
           content + data.description,

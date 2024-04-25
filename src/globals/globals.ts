@@ -1,13 +1,4 @@
-export const localesWithSearchSupport = [
-  "ar",
-  "en",
-  "es",
-  "hi",
-  "ko",
-  "pt-br",
-  "sk",
-  "zh",
-] as const;
+export const localesWithSearchSupport = ["en", "es", "hi", "ko", "zh"] as const;
 
 export const contentTypes = [
   "contributor-docs",
@@ -16,7 +7,6 @@ export const contentTypes = [
   "events",
   "people",
   "reference",
-  "sketches",
   "tutorials",
 ] as const;
 
