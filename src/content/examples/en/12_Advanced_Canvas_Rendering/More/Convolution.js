@@ -20,7 +20,7 @@ const matrix = [
 ];
 
 function preload() {
-  img = loadImage('assets/moonwalk.jpg');
+  img = loadImage('/assets/moonwalk.jpg');
 }
 
 function setup() {
