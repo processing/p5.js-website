@@ -5,8 +5,8 @@ function preload() {
   // Preload the images from the canvas's assets directory.
   // The bottomImg is the photograph with color,
   // and the topImg is the black-and-white photograph.
-  bottomImg = loadImage('assets/parrot-color.png');
-  topImg = loadImage('assets/parrot-bw.png');
+  bottomImg = loadImage('/assets/parrot-color.png');
+  topImg = loadImage('/assets/parrot-bw.png');
 }
 function setup() {
   describe(
@@ -18,7 +18,7 @@ function setup() {
   // Hide the cursor and replace it with a picture of
   // a paintbrush.
   noCursor();
-  cursor('assets/brush.png', 20, -10);
+  cursor('/assets/brush.png', 20, -10);
 
   // Load the top image (the black-and-white image).
   image(topImg, 0, 0);
