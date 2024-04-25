@@ -13,6 +13,7 @@ export const examplesCollection = defineCollection({
       oneLineDescription: z.string(),
       // Aria label used for the live example code
       arialabel: z.string().optional(),
+      featured: z.boolean().optional(),
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
