@@ -12,7 +12,7 @@ import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
 interface Props {
   sketches: OpenProcessingCurationResponse;
   libraries: CollectionEntry<"libraries">[];
-  pastEvents: CollectionEntry<"past-events">[];
+  pastEvents: CollectionEntry<"events">[];
 }
 
 // Max number of sketches we will show on this page
@@ -24,9 +24,9 @@ const eventsLimit = 9;
 
 const sketches = Astro.props.sketches.slice(0, sketchesLimit),
   libraries = Astro.props.libraries
-    .filter(lib => lib.data.featured)
+    .filter((lib) => lib.data.featured)
     .slice(0, librariesLimit)
-    .sort(() => Math.random() < 0.5 ? -1 : 1),
+    .sort(() => (Math.random() < 0.5 ? -1 : 1)),
   events = Astro.props.pastEvents.slice(0, eventsLimit);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -101,7 +101,7 @@ setJumpToState({
         ))
       }
     </ul>
-    <LinkButton url="/past-events" variant="link" class="mt-lg"
+    <LinkButton url="/events" variant="link" class="mt-lg"
       >{t("All Events")}</LinkButton
     >
   </section>

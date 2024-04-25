@@ -1,6 +1,6 @@
 import { z, defineCollection, reference } from "astro:content";
 
-export const pastEventsCollection = defineCollection({
+export const eventsCollection = defineCollection({
   type: "content",
   schema: ({ image }) =>
     z.object({
@@ -14,6 +14,6 @@ export const pastEventsCollection = defineCollection({
       description: z.string().optional(),
       featuredImage: image(),
       featuredImageAlt: z.string(),
-      relatedPastEvents: z.array(reference("past-events")).optional(),
+      relatedPastEvents: z.array(reference("events")).optional(),
     }),
 });
