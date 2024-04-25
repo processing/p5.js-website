@@ -249,10 +249,6 @@ const generateSearchIndex = async (
         title = data.name;
         relativeUrl = `/people/`;
         break;
-      case "sketches":
-        title = data.title;
-        description = data.author?.name ?? "";
-        break;
       case "events":
         title = data.title;
         description = getKeywordsFromContent(
