@@ -59,7 +59,7 @@ const getOneLineDescription = (description: string): string => {
     .replace(/<[^>]*>?/gm, "")
     .replace(/\n/g, " ");
   const [oneLineDescription] = cleanedDescription.match(fullStopRegex) ?? [];
-  return `${oneLineDescription?.trim()}`;
+  return `${oneLineDescription?.trim() ?? cleanedDescription}`;
 };
 
 export const ReferenceDirectoryWithFilter = ({
