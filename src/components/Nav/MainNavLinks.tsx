@@ -42,17 +42,23 @@ export const MainNavLinks = ({
       <a
         href="/"
         class={`${isHomepage ? "text-logo-color" : "text-sidebar-type-color"}`}
+        aria-label={isHomepage ? "Reload current page" : "Go to p5.js homepage"}
       >
         <Logo />
       </a>
-      <button class={styles.toggle} onClick={handleClick}>
+      <button
+        class={styles.toggle}
+        onClick={handleClick}
+        aria-hidden="true"
+        tabIndex={-1}
+      >
         <Icon kind={open ? "chevron-up" : "chevron-down"} />
       </button>
     </div>
   );
 
   return (
-    <div class={`${styles.mainlinks} ${open && "open"}`} aria-expanded={open}>
+    <div class={`${styles.mainlinks} ${open && "open"}`}>
       {renderLogo()}
       <ul>
         {links.map((link) => (
