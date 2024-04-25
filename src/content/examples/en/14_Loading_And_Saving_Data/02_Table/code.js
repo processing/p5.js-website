@@ -13,7 +13,7 @@ let creatingBubble = false;
 
 // Put any asynchronous data loading in preload to complete before "setup" is run
 function preload() {
-  table = loadTable('assets/bubbles.csv', 'header', loadData);
+  table = loadTable('/assets/bubbles.csv', 'header', loadData);
 }
 
 // Convert saved Bubble data into Bubble Objects
