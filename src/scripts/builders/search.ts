@@ -7,7 +7,8 @@ import type {
 } from "../../../types/content.interface";
 import { getContentFilePaths } from "../utils";
 import keywordExtractor from "keyword-extractor";
-import { contentTypes, localesWithSearchSupport } from "../../globals/globals";
+import { contentTypes } from "../../globals/globals";
+import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
 
 interface SearchIndex {
@@ -248,11 +249,7 @@ const generateSearchIndex = async (
         title = data.name;
         relativeUrl = `/people/`;
         break;
-      case "sketches":
-        title = data.title;
-        description = data.author?.name ?? "";
-        break;
-      case "past-events":
+      case "events":
         title = data.title;
         description = getKeywordsFromContent(
           content + data.description,
