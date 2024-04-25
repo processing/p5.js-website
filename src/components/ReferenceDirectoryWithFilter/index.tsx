@@ -53,13 +53,13 @@ const getOneLineDescription = (description: string): string => {
  * @returns One-line description
  */
 const getOneLineDescription = (description: string): string => {
-  const stopCharacters = ["\\.|\\?|!|।|。"];
-  const fullStopRegex = new RegExp(`[${stopCharacters.join("")}]`, "g");
+  // Matches until the first ., ?, !, ।, or 。 followed by a space
+  const fullStopRegex = /.*?(?:\.\s|\?\s|!\s|।\s|。\s)/;
   const cleanedDescription = description
     .replace(/<[^>]*>?/gm, "")
     .replace(/\n/g, " ");
-  const [oneLineDescription] = cleanedDescription.split(fullStopRegex, 1);
-  return `${oneLineDescription.trim()}.`;
+  const [oneLineDescription] = cleanedDescription.match(fullStopRegex) ?? [];
+  return `${oneLineDescription?.trim()}`;
 };
 
 export const ReferenceDirectoryWithFilter = ({
