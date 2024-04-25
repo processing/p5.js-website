@@ -2,11 +2,17 @@
 import CodeContainer from "@components/CodeContainer/index.astro";
 import { CopyCodeButton } from "../CopyCodeButton";
 import { decodeHtml } from "@pages/_utils";
+
+interface Props {
+  darkTheme?: boolean;
+}
+
+const { darkTheme } = Astro.props;
 const codeContent = await Astro.slots.render("default");
 const toCopy = decodeHtml(codeContent);
 ---
 
-<CodeContainer class="pr-lg">
+<CodeContainer class={`pr-lg ${darkTheme && "bg-black"}`}>
   <slot />
   <div class="absolute top-xs right-xs">
     <CopyCodeButton client:load textToCopy={toCopy} />
