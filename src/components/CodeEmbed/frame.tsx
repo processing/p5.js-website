@@ -71,6 +71,7 @@ export interface CodeFrameProps {
   height?: number | string;
   width?: number | string;
   base?: string;
+  lazyLoad?: boolean;
 }
 
 /*
@@ -165,6 +166,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
         title="Code Preview"
         height={props.height}
         width={props.width}
+        loading={props.lazyLoad ? "lazy" : "eager"}
       />
     </div>
   );
