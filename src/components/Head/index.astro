@@ -1,0 +1,51 @@
+---
+import { getUiTranslator } from "@/src/i18n/utils";
+
+interface Props {
+  title: string;
+  featuredImageSrc?: string;
+  locale: string;
+  description?: string;
+}
+
+const {
+  title,
+  featuredImageSrc = "/favicon.svg",
+  locale,
+  description,
+} = Astro.props;
+
+const localeContentMap = {
+  en: "en_US",
+  es: "es_ES",
+  hi: "hi_IN",
+  "zh-Hans": "zh_CN",
+  ko: "ko_KR",
+} as Record<string, string>;
+
+const t = await getUiTranslator(locale);
+
+const localizedTitle = t(title) as string;
+const localizedDescription =
+  description || (t("briefPageDescriptions", title) as string);
+---
+
+<head>
+  <title>{localizedTitle}</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content={localizedDescription} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={localizedDescription} />
+  <meta property="og:image" content={featuredImageSrc} />
+  <meta property="og:url" content={Astro.url.href} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content={localeContentMap[locale]} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@p5xjs" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={localizedDescription} />
+  <meta name="twitter:image" content={featuredImageSrc} />
+  <meta name="twitter:url" content={Astro.url.href} />
+</head>

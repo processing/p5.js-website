@@ -1,10 +1,12 @@
 ---
 import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
+import Head from "@components/Head/index.astro";
 import { sketchesPerPage } from "../globals/globals";
 import { setJumpToState } from "../globals/state";
 import BaseLayout from "./BaseLayout.astro";
 import GridItemSketch from "@components/GridItem/Sketch.astro";
 import PaginationNav from "@components/PaginationNav/index.astro";
+import { getCurrentLocale } from "../i18n/utils";
 
 interface Props {
   entries: OpenProcessingCurationResponse;
@@ -12,10 +14,14 @@ interface Props {
   currentPage: number;
 }
 
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
 setJumpToState(null);
 
 const { entries, totalNumSketches, currentPage } = Astro.props;
 ---
+
+<Head title="Sketches" locale={currentLocale} />
 
 <BaseLayout title="Sketches" variant="item" topic="community">
   <ul class="grid grid-cols-2 gap-y-xl gap-x-md lg:grid-cols-4">

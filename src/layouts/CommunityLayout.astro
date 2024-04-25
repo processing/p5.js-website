@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import LinkButton from "@components/LinkButton/index.astro";
 import GridItemSketch from "@components/GridItem/Sketch.astro";
@@ -24,9 +25,9 @@ const eventsLimit = 9;
 
 const sketches = Astro.props.sketches.slice(0, sketchesLimit),
   libraries = Astro.props.libraries
-    .filter(lib => lib.data.featured)
+    .filter((lib) => lib.data.featured)
     .slice(0, librariesLimit)
-    .sort(() => Math.random() < 0.5 ? -1 : 1),
+    .sort(() => (Math.random() < 0.5 ? -1 : 1)),
   events = Astro.props.pastEvents.slice(0, eventsLimit);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -40,6 +41,8 @@ setJumpToState({
   ],
 });
 ---
+
+<Head title={"Community"} locale={currentLocale} />
 
 <BaseLayout title="Community">
   <section class="mt-md mb-xl">
