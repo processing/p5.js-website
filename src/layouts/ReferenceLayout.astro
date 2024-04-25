@@ -32,6 +32,7 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
 const { entries } = Astro.props;
+
 const categoryData = categories.map((category) => {
   // Get all reference entries in the module
   const directEntries = entries.filter(
@@ -50,7 +51,12 @@ const categoryData = categories.map((category) => {
 
   // Find the classes in this module. These will be turned into subcategories.
   const classes = directEntries
-    .filter((e) => e.data.isConstructor && e.data.module === category)
+    .filter(
+      (e) =>
+        e.data.isConstructor &&
+        e.data.module === category &&
+        e.data.title !== "p5"
+    )
     .sort((a, b) => strCompare(a.data.title, b.data.title))
     .map((e) => ({
       ...e,
@@ -89,8 +95,7 @@ const categoryData = categories.map((category) => {
           (e) =>
             e.data.submodule === subcat &&
             !e.data.isConstructor &&
-            e.data.description !== "" &&
-            !classes.some((c) => c.data.title === e.data.class)
+            e.data.description !== ""
         )
         .map((e) => ({
           ...e,
@@ -105,7 +110,7 @@ const categoryData = categories.map((category) => {
       name: getRefEntryTitleConcatWithParen(entry),
       entry, // Include the class entry itself so we can make the header a link
       entries: directEntries
-        .filter((e) => e.data.class === entry.data.title)
+        .filter((e) => e.data.class === entry.data.title && e.data.class)
         .map((e) => ({
           ...e,
           data: {
