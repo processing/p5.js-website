@@ -26,7 +26,7 @@ let kernel = [
 // preload() makes sure image is loaded before anything else occurs
 function preload() {
   // load the original image
-  img = loadImage('assets/rover.png');
+  img = loadImage('/assets/rover.png');
 }
 
 // setup() runs after preload, once()

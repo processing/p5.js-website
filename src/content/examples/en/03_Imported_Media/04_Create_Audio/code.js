@@ -9,7 +9,7 @@ function setup() {
   // This can also be a URL for a public file
   // On the p5 Editor, a file may be uploaded to Sketch Files
   // by clicking the > button on the upper left, followed by the + button
-  audioPlayer = createAudio('assets/piano-loop.mp3');
+  audioPlayer = createAudio('/assets/piano-loop.mp3');
 
   // Add description for assistive technologies to explain playback speed
   audioPlayer.attribute(

@@ -12,7 +12,7 @@ let message = 'tickle',
   y; // x and y coordinates of the text
 
 function preload() {
-  font = loadFont('assets/SourceSansPro-Regular.otf');
+  font = loadFont('/assets/SourceSansPro-Regular.otf');
 }
 
 function setup() {

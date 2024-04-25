@@ -2,7 +2,7 @@
 let astronaut;
 
 function preload() {
-  astronaut = loadModel('assets/astronaut.obj');
+  astronaut = loadModel('/assets/astronaut.obj');
 }
 
 function setup() {

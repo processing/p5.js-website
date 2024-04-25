@@ -11,7 +11,7 @@ let creatingBubble = false;
 // Put any asynchronous data loading in preload to complete before "setup" is run
 function preload() {
   // Load the JSON file and then call the loadData() function below
-  loadJSON('assets/bubbles.json', loadData);
+  loadJSON('/assets/bubbles.json', loadData);
 }
 
 // Convert saved bubble data into Bubble Objects

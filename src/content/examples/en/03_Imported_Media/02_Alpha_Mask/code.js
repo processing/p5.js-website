@@ -2,10 +2,10 @@
 // assets directory.
 function preload() {
   // Photo by Sergey Shmidt, https://unsplash.com/photos/koy6FlCCy5s
-  img = loadImage('assets/image.jpg');
+  img = loadImage('/assets/image.jpg');
 
   // Photo by Mockup Graphics, https://unsplash.com/photos/_mUVHhvBYZ0
-  imgMask = loadImage('assets/mask.png');
+  imgMask = loadImage('/assets/mask.png');
 }
 
 function setup() {

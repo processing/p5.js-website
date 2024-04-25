@@ -13,7 +13,7 @@ let hist = [];
 function preload() {
   // Load an image from the data directory
   // Load a different image by modifying the comments
-  img = loadImage('assets/frontier.jpg');
+  img = loadImage('/assets/frontier.jpg');
 }
 
 function setup() {
