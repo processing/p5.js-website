@@ -206,7 +206,7 @@ export const separateReferenceExamples = (examples: string[]): string[] =>
 export const getRefEntryTitleConcatWithParen = (
   referenceEntry: ReferenceDocContentItem,
 ) =>
-  `${referenceEntry.data.title}${referenceEntry.data.isConstructor || referenceEntry.data.itemtype === "method" ? "()" : ""}`;
+  `${referenceEntry.data.title}${referenceEntry.data.itemtype === "method" ? "()" : ""}`;
 
 /* Function to escape HTML content within <code> tags
  * @param htmlString String with HTML content
