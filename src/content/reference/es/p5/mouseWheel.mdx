@@ -1,0 +1,167 @@
+---
+title: mouseWheel
+module: Events
+submodule: Mouse
+file: src/events/mouse.js
+description: >
+  <p>A function that's called once when the mouse wheel moves.</p>
+
+  <p>Declaring the function <code>mouseWheel()</code> sets a code block to run
+
+  automatically when the user scrolls with the mouse wheel:</p>
+
+  <code>
+
+  function mouseWheel() {
+    // Code to run.
+  }
+
+  </code>
+
+
+  <p>The mouse system variables, such as <a
+  href="/reference/p5/mouseX">mouseX</a> and
+
+  <a href="/reference/p5/mouseY">mouseY</a>, will be updated with their most
+  recent
+
+  value when <code>mouseWheel()</code> is called by p5.js:</p>
+
+  <code>
+
+  function mouseWheel() {
+    if (mouseX < 50) {
+      // Code to run if the mouse is on the left.
+    }
+
+  <p>  if (mouseY > 50) {
+      // Code to run if the mouse is near the bottom.
+    }
+  }
+
+  </p></code>
+
+  <p>The parameter, <code>event</code>, is optional. <code>mouseWheel()</code>
+  is always passed a
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent"
+  target="_blank">MouseEvent</a>
+
+  object with properties that describe the mouse scroll event:</p>
+
+  <code>
+
+  function mouseWheel(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+
+  <p>The <code>event</code> object has many properties including
+  <code>delta</code>, a <code>Number</code>
+
+  containing the distance that the user scrolled. For example,
+  <code>event.delta</code>
+
+  might have the value 5 when the user scrolls up. <code>event.delta</code> is
+  positive
+
+  if the user scrolls up and negative if they scroll down. The signs are
+
+  opposite on macOS with "natural" scrolling enabled.</p>
+
+  <p>Browsers may have default behaviors attached to various mouse events. For
+
+  example, some browsers highlight text when the user moves the mouse while
+
+  pressing a mouse button. To prevent any default behavior for this event,
+
+  add <code>return false;</code> to the end of the function.</p>
+
+  <p>Note: On Safari, <code>mouseWheel()</code> may only work as expected if
+
+  <code>return false;</code> is added at the end of the function.</p>
+line: 1732
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let circleSize = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. A white circle at its center grows up when the user scrolls the mouse wheel.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the circle
+      circle(circleSize, 50, 50);
+    }
+
+    // Increment circleSize when the user scrolls the mouse wheel.
+    function mouseWheel() {
+      circleSize += 1;
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let direction = '';
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. An arrow at its center points up when the user scrolls up. The arrow points down when the user scrolls down.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Draw an arrow that points where
+      // the mouse last scrolled.
+      text(direction, 50, 50);
+    }
+
+    // Change direction when the user scrolls the mouse wheel.
+    function mouseWheel(event) {
+      if (event.delta > 0) {
+        direction = '▲';
+      } else {
+        direction = '▼';
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>optional <code>WheelEvent</code> argument.</p>
+    type: WheelEvent
+    optional: true
+chainable: false
+---
+
+
+# mouseWheel
