@@ -1,4 +1,5 @@
-import { contentTypes, localesWithSearchSupport } from "../src/globals/globals";
+import { contentTypes } from "../src/globals/globals";
+import { supportedLocales as localesWithSearchSupport } from "../src/i18n/const";
 
 export type ContentType = (typeof contentTypes)[number];
 
