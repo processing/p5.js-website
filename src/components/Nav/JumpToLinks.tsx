@@ -26,8 +26,13 @@ export const JumpToLinks = ({ links, heading }: JumpToLinksProps) => {
   if (!links || links?.length <= 0) return null;
 
   return (
-    <div class={`${styles.jumpto} ${open && "open"}`} aria-expanded={open}>
-      <button class={styles.toggle} onClick={handleClick}>
+    <div class={`${styles.jumpto} ${open && "open"}`}>
+      <button
+        class={styles.toggle}
+        onClick={handleClick}
+        aria-hidden="true"
+        tabIndex={-1}
+      >
         <span>{heading}</span>
         <div class="pt-xs">
           <Icon kind={open ? "chevron-up" : "chevron-down"} />
