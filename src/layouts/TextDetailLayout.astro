@@ -1,8 +1,10 @@
 ---
 import Image from "@components/Image/index.astro";
+import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
 import { setJumpToState } from "../globals/state";
+import { getCurrentLocale } from "../i18n/utils";
 
 interface Props {
   page: CollectionEntry<"text-detail">;
@@ -15,8 +17,12 @@ const pageTopic = Astro.url.pathname.includes("donate")
   ? "contribute"
   : undefined;
 
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
 setJumpToState(null);
 ---
+
+<Head title={page.data.title} locale={currentLocale} />
 
 <BaseLayout
   title={page.data.title}

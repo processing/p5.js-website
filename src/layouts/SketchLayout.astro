@@ -1,10 +1,12 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
+import Head from "@components/Head/index.astro";
 import {
   getRandomCurationSketches,
   getSketch,
   makeSketchLinkUrl,
+  makeThumbnailUrl,
 } from "@/src/api/OpenProcessing";
 import LinkButton from "@components/LinkButton/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
@@ -31,6 +33,13 @@ const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
 
 setJumpToState(null);
 ---
+
+<Head
+  title={sketchInfo.title}
+  locale={currentLocale}
+  featuredImageSrc={featuredImageURL}
+  description={sketchInfo.instructions}
+/>
 
 <BaseLayout
   title={`${sketchInfo.title}\n${authorName}`}
