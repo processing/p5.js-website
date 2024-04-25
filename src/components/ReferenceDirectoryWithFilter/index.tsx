@@ -35,13 +35,13 @@ type ReferenceDirectoryWithFilterProps = {
  * @returns One-line description
  */
 const getOneLineDescription = (description: string): string => {
-  const stopCharacters = ["\\.|\\?|!|।|。"];
-  const fullStopRegex = new RegExp(`[${stopCharacters.join("")}]`, "g");
+  // Matches until the first ., ?, !, ।, or 。 followed by a space
+  const fullStopRegex = /.*?(?:\.\s|\?\s|!\s|।\s|。\s)/;
   const cleanedDescription = description
     .replace(/<[^>]*>?/gm, "")
     .replace(/\n/g, " ");
-  const [oneLineDescription] = cleanedDescription.split(fullStopRegex, 1);
-  return `${oneLineDescription.trim()}.`;
+  const [oneLineDescription] = cleanedDescription.match(fullStopRegex) ?? [];
+  return `${oneLineDescription?.trim()}`;
 };
 
 export const ReferenceDirectoryWithFilter = ({
@@ -77,10 +77,17 @@ export const ReferenceDirectoryWithFilter = ({
     <div class="content-grid">
       {entries.map((entry) => (
         <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
-          <a href={`/reference/${entry.data.path}`} class="text-body-mono">
+          <a
+            href={`/reference/${entry.data.path}`}
+            class="text-body-mono"
+            aria-label={entry.data.title}
+            aria-describedby={`${entry.data.title}-description`}
+          >
             <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />
           </a>
-          <p>{`${getOneLineDescription(entry.data.description)}`}</p>
+          <p
+            id={`${entry.data.title}-description`}
+          >{`${getOneLineDescription(entry.data.description)}`}</p>
         </div>
       ))}
     </div>
