@@ -1,0 +1,240 @@
+---
+title: p5.Shader
+module: 3D
+submodule: Material
+file: src/webgl/p5.Shader.js
+description: >
+  <p>A class to describe a shader program.</p>
+
+  <p>Each <code>p5.Shader</code> object contains a shader program that runs on
+  the graphics
+
+  processing unit (GPU). Shaders can process many pixels or vertices at the
+
+  same time, making them fast for many graphics tasks. They’re written in a
+
+  language called
+
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
+  target="_blank">GLSL</a>
+
+  and run along with the rest of the code in a sketch.</p>
+
+  <p>A shader program consists of two files, a vertex shader and a fragment
+
+  shader. The vertex shader affects where 3D geometry is drawn on the screen
+
+  and the fragment shader affects color. Once the <code>p5.Shader</code> object
+  is
+
+  created, it can be used with the <a href="/reference/p5/shader">shader()</a>
+
+  function, as in <code>shader(myShader)</code>.</p>
+
+  <p>Note: <a href="/reference/p5/createShader">createShader()</a>,
+
+  <a href="/reference/p5/createFilterShader">createFilterShader()</a>, and
+
+  <a href="/reference/p5/loadShader">loadShader()</a> are the recommended ways
+  to
+
+  create an instance of this class.</p>
+line: 11
+isConstructor: true
+params:
+  - name: renderer
+    description: |
+      <p>WebGL context for this shader.</p>
+    type: p5.RendererGL
+  - name: vertSrc
+    description: |
+      <p>source code for the vertex shader program.</p>
+    type: String
+  - name: fragSrc
+    description: |
+      <p>source code for the fragment shader program.</p>
+    type: String
+example:
+  - |-
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+
+    void main() {
+      // Set each pixel's RGBA value to yellow.
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let myShader = createShader(vertSrc, fragSrc);
+
+      // Apply the p5.Shader object.
+      shader(myShader);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A yellow square.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
+    }
+
+    function draw() {
+      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
+
+      // Add a quad as a display surface for the shader.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+    </code>
+    </div>
+methods:
+  copyToContext:
+    description: >
+      <p>Copies the shader from one drawing context to another.</p>
+
+      <p>Each <code>p5.Shader</code> object must be compiled by calling
+
+      <a href="/reference/p5/shader">shader()</a> before it can run. Compilation
+      happens
+
+      in a drawing context which is usually the main canvas or an instance of
+
+      <a href="/reference/p5/p5.Graphics">p5.Graphics</a>. A shader can only be
+      used in the
+
+      context where it was compiled. The <code>copyToContext()</code> method
+      compiles the
+
+      shader again and copies it to another drawing context where it can be
+
+      reused.</p>
+
+      <p>The parameter, <code>context</code>, is the drawing context where the
+      shader will be
+
+      used. The shader can be copied to an instance of
+
+      <a href="/reference/p5/p5.Graphics">p5.Graphics</a>, as in
+
+      <code>myShader.copyToContext(pg)</code>. The shader can also be copied
+      from a
+
+      <a href="/reference/p5/p5.Graphics">p5.Graphics</a> object to the main
+      canvas using
+
+      the <code>window</code> variable, as in
+      <code>myShader.copyToContext(window)</code>.</p>
+
+      <p>Note: A <a href="/reference/p5/p5.Shader">p5.Shader</a> object created
+      with
+
+      <a href="/reference/p5/createShader">createShader()</a>,
+
+      <a href="/reference/p5/createFilterShader">createFilterShader()</a>, or
+
+      <a href="/reference/p5/loadShader">loadShader()</a>
+
+      can be used directly with a <a
+      href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
+
+      object created with
+
+      <a href="/reference/p5/createFramebuffer">createFramebuffer()</a>. Both
+      objects
+
+      have the same context as the main canvas.</p>
+    path: p5.Shader/copyToContext
+  setUniform:
+    description: >
+      <p>Sets the shader’s uniform (global) variables.</p>
+
+      <p>Shader programs run on the computer’s graphics processing unit (GPU).
+
+      They live in part of the computer’s memory that’s completely separate
+
+      from the sketch that runs them. Uniforms are global variables within a
+
+      shader program. They provide a way to pass values from a sketch running
+
+      on the CPU to a shader program running on the GPU.</p>
+
+      <p>The first parameter, <code>uniformName</code>, is a string with the
+      uniform’s name.
+
+      For the shader above, <code>uniformName</code> would be
+      <code>'r'</code>.</p>
+
+      <p>The second parameter, <code>data</code>, is the value that should be
+      used to set the
+
+      uniform. For example, calling <code>myShader.setUniform('r', 0.5)</code>
+      would set
+
+      the <code>r</code> uniform in the shader above to <code>0.5</code>. data
+      should match the
+
+      uniform’s type. Numbers, strings, booleans, arrays, and many types of
+
+      images can all be passed to a shader with <code>setUniform()</code>.</p>
+    path: p5.Shader/setUniform
+chainable: false
+---
+
+
+# p5.Shader

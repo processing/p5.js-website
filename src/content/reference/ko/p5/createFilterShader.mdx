@@ -1,0 +1,146 @@
+---
+title: createFilterShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Creates a <a href="/reference/p5/p5.Shader">p5.Shader</a> object to be used
+  with the
+
+  <a href="/reference/p5/filter">filter()</a> function.</p>
+
+  <p><code>createFilterShader()</code> works like
+
+  <a href="/reference/p5/createShader">createShader()</a> but has a default
+  vertex
+
+  shader included. <code>createFilterShader()</code> is intended to be used
+  along with
+
+  <a href="/reference/p5/filter">filter()</a> for filtering the contents of a
+  canvas.
+
+  A filter shader will be applied to the whole canvas instead of just
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> objects.</p>
+
+  <p>The parameter, <code>fragSrc</code>, sets the fragment shader. It’s a
+  string that
+
+  contains the fragment shader program written in
+
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
+  target="_blank">GLSL</a>.</p>
+
+  <p>The <a href="/reference/p5/p5.Shader">p5.Shader</a> object that's created
+  has some
+
+  uniforms that can be set:</p>
+
+  <ul>
+
+  <li><code>sampler2D tex0</code>, which contains the canvas contents as a
+  texture.</li>
+
+  <li><code>vec2 canvasSize</code>, which is the width and height of the canvas,
+  not including pixel density.</li>
+
+  <li><code>vec2 texelSize</code>, which is the size of a physical pixel
+  including pixel density. This is calculated as <code>1.0 / (width *
+  density)</code> for the pixel width and <code>1.0 / (height * density)</code>
+  for the pixel height.</li>
+
+  </ul>
+
+  <p>The <a href="/reference/p5/p5.Shader">p5.Shader</a> that's created also
+  provides
+
+  <code>varying vec2 vTexCoord</code>, a coordinate with values between 0 and 1.
+
+  <code>vTexCoord</code> describes where on the canvas the pixel will be
+  drawn.</p>
+
+  <p>For more info about filters and shaders, see Adam Ferriss' <a
+  href="https://github.com/aferriss/p5jsShaderExamples">repo of shader
+  examples</a>
+
+  or the <a
+  href="https://p5js.org/learn/getting-started-in-webgl-shaders.html">Introduction
+  to Shaders</a> tutorial.</p>
+line: 429
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    function setup() {
+      let fragSrc = `precision highp float;
+      void main() {
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+      }`;
+
+      createCanvas(100, 100, WEBGL);
+      let s = createFilterShader(fragSrc);
+      filter(s);
+      describe('a yellow canvas');
+    }
+    </code>
+    </div>
+
+    <div modernizr='webgl'>
+    <code>
+    let img, s;
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+    function setup() {
+      let fragSrc = `precision highp float;
+
+      // x,y coordinates, given from the vertex shader
+      varying vec2 vTexCoord;
+
+      // the canvas contents, given from filter()
+      uniform sampler2D tex0;
+      // other useful information from the canvas
+      uniform vec2 texelSize;
+      uniform vec2 canvasSize;
+      // a custom variable from this sketch
+      uniform float darkness;
+
+      void main() {
+        // get the color at current pixel
+        vec4 color = texture2D(tex0, vTexCoord);
+        // set the output color
+        color.b = 1.0;
+        color *= darkness;
+        gl_FragColor = vec4(color.rgb, 1.0);
+      }`;
+
+      createCanvas(100, 100, WEBGL);
+      s = createFilterShader(fragSrc);
+    }
+    function draw() {
+      image(img, -50, -50);
+      s.setUniform('darkness', 0.5);
+      filter(s);
+      describe('a image of bricks tinted dark blue');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: fragSrc
+    description: |
+      <p>source code for the fragment shader.</p>
+    type: String
+return:
+  description: new shader object created from the fragment shader.
+  type: p5.Shader
+chainable: false
+---
+
+
+# createFilterShader
