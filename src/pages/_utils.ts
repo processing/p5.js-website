@@ -388,6 +388,7 @@ export const generateJumpToState = async (
       categories = new Set(referenceCategories);
       break;
     case "tutorials":
+      // @ts-expect-error - We know that the category exists because of the collection type
       categories = new Set(localeEntries.map((entry) => entry.data.category));
       break;
     case "examples":
