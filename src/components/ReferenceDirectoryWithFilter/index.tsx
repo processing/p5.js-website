@@ -104,10 +104,16 @@ export const ReferenceDirectoryWithFilter = ({
           <div key={subcat.name}>
             {subcat.name && (
               <div class="my-lg">
-                <h3>
-                  {subcat.name}
-                  <a id={subcat.name} />
-                </h3>
+                {subcat.name.includes("p5.") ? (
+                  <a id={subcat.name} href={`/reference/p5/${subcat.name}`}>
+                    <h3>{subcat.name}</h3>
+                  </a>
+                ) : (
+                  <h3>
+                    {subcat.name}
+                    <a id={subcat.name} />
+                  </h3>
+                )}
               </div>
             )}
             {renderEntries(subcat.entries)}
