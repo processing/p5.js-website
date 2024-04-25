@@ -17,6 +17,7 @@ import { Icon } from "../Icon";
  *   previewHeight?: number;
  *   previewWidth?: number;
  *   base?: string;
+ *   lazyLoad?: boolean;
  *   TODO: refactor this prop behavior
  *   allowSideBySide?: boolean
  * }
@@ -54,7 +55,7 @@ export const CodeEmbed = (props) => {
     setRendered(true);
 
     // Includes p5.min.js script to be used by `CodeFrame` iframe(s)
-    const p5ScriptElement = document.createElement('script');
+    const p5ScriptElement = document.createElement("script");
     p5ScriptElement.id = "p5ScriptTag";
     p5ScriptElement.src = p5LibraryUrl;
     document.head.appendChild(p5ScriptElement);
@@ -74,11 +75,13 @@ export const CodeEmbed = (props) => {
             height={props.previewHeight}
             base={props.base}
             frameRef={codeFrameRef}
+            lazyLoad={props.lazyLoad}
           />
           <div className="gap-xs lg:flex">
             <CircleButton
               className="!bg-bg-gray-40 !p-sm"
               onClick={updateOrReRun}
+              ariaLabel="Run sketch"
             >
               <Icon kind="play" />
             </CircleButton>
@@ -87,6 +90,7 @@ export const CodeEmbed = (props) => {
               onClick={() => {
                 setPreviewCodeString("");
               }}
+              ariaLabel="Stop sketch"
             >
               <Icon kind="stop" />
             </CircleButton>
