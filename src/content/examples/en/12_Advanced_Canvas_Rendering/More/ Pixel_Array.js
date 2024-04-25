@@ -15,7 +15,7 @@ function setup() {
   noFill();
   stroke(255);
   frameRate(30);
-  img = loadImage('assets/sea.jpg');
+  img = loadImage('/assets/sea.jpg');
 }
 
 function draw() {

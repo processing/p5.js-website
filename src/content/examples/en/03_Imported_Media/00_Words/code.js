@@ -5,7 +5,7 @@ let fontsize = 40;
 function preload() {
   // Preload the font's file in the canvas's assets directory.
   // loadFont() accepts .ttf or .otf files.
-  font = loadFont('assets/SourceSansPro-Regular.otf');
+  font = loadFont('/assets/SourceSansPro-Regular.otf');
 }
 
 function setup() {

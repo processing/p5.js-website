@@ -7,7 +7,7 @@ let easing = 0.05;
 
 function preload() {
   // Load the bottom image from the canvas's assets directory.
-  img = loadImage('assets/moonwalk.jpg');
+  img = loadImage('/assets/moonwalk.jpg');
 }
 
 function setup() {
