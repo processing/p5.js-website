@@ -16,7 +16,8 @@ type LibraryEntry = CollectionEntry<"libraries">;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const { entries } = Astro.props;
+const { entries, page } = Astro.props;
+const { Content, components } = await page.render();
 
 function strCompare(a: string, b: string) {
   if (a < b) {
@@ -60,6 +61,9 @@ setJumpToState({
   variant="item"
   topic="community"
 >
+  <div class="rendered-markdown !max-w-screen-lg" slot="header-content">
+    <Content components={components} />
+  </div>
   {
     sections.map(({ slug, name, sectionEntries }) => (
       <div class="mb-lg">
