@@ -1,0 +1,77 @@
+---
+title: beginGeometry
+module: आकार
+submodule: 3D आदिम
+file: src/webgl/3d_primitives.js
+description: >
+  <p>एक नया p5.Geometry बनाना प्रारंभ करता है। बाद में खींची गई आकृतियों को ज्यामिति में जोड़ा जाएगा और फिर <a href="/reference/p5/endGeometry">endGeometry()</a> फ़ंक्शन कॉल होन पर वापस कर दिया जाएगा।
+
+  आकृतियाँ बनाने वाले फ़ंक्शन को पास करने के लिए कोई व्यक्ति <a href="/reference/p5/buildGeometry">buildGeometry()</a> का भी उपयोग कर सकता है।</p>
+
+  <p>यदि आपको हर फ्रेम में जटिल आकृतियाँ बनाने की ज़रूरत है जो समय के साथ नहीं बदलती हैं, तो उन्हें <code>beginGeometry()</code> और <code>endGeometry()</code> के साथ पहले से संयोजित करें और फिर उसे बनाएं। ये अलग-अलग टुकड़ों को बार-बार खींचने की तुलना में ज़्यादा तेज़ काम करेगा।</p>
+line: 13
+isConstructor: false
+itemtype: तरीका
+alt: अंतरिक्ष में तैरती विभिन्न सपाट, घुमावदार और 3D आकृतियों की एक श्रृंखला।
+example:
+  - |-
+
+    <div>
+    <code>
+    let shapes;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      makeShapes();
+    }
+
+    function makeShapes() {
+      beginGeometry();
+      scale(0.18);
+
+      push();
+      translate(100, -50);
+      scale(0.5);
+      rotateX(PI/4);
+      cone();
+      pop();
+      cone();
+
+      beginShape();
+      vertex(-20, -50);
+      quadraticVertex(
+        -40, -70,
+        0, -60
+      );
+      endShape();
+
+      beginShape(TRIANGLE_STRIP);
+      for (let y = 20; y <= 60; y += 10) {
+        for (let x of [20, 60]) {
+          vertex(x, y);
+        }
+      }
+      endShape();
+
+      beginShape();
+      vertex(-100, -120);
+      vertex(-120, -110);
+      vertex(-105, -100);
+      endShape();
+
+      shapes = endGeometry();
+    }
+
+    function draw() {
+      background(255);
+      lights();
+      orbitControl();
+      model(shapes);
+    }
+    </code>
+    </div>
+class: p5
+chainable: false
+---
+
+# beginGeometry

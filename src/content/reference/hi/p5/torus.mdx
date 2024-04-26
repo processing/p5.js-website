@@ -1,0 +1,116 @@
+---
+title: torus
+module: आकार
+submodule: 3D आदिम
+file: src/webgl/3d_primitives.js
+description: >
+  <p>दी गई रेडियस और ट्यूब रेडियस के साथ एक टोरस बनाएं ।</p>
+
+  <p>DetailX और DetailY टोरस के एक्स-आयाम और वाई-आयाम में उपविभाजनों की संख्या निर्धारित करते हैं।
+
+  अधिक उपविभाजन टोरस को अधिक चिकना बनाते हैं।
+
+  DetailX और DetailY के लिए डिफ़ॉल्ट और अधिकतम मान क्रमशः 24 और 16 हैं।
+
+  उन्हें 4 और 6 जैसे अपेक्षाकृत छोटे मानों पर सेट करने से आप टोरस के अलावा नई आकृतियाँ बना सकते हैं।</p>
+line: 952
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    // draw a spinning torus
+    // with ring radius 30 and tube radius 15
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
+      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+      describe('a rotating white torus');
+    }
+
+    function draw() {
+      background(205, 102, 94);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      torus(30, 15);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    // slide to see how detailX works
+    let detailX;
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
+      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+      detailX = createSlider(3, 24, 3);
+      detailX.position(10, height + 5);
+      detailX.style('width', '80px');
+      describe(
+        'a rotating white torus with limited X detail, with a slider that adjusts detailX'
+      );
+    }
+
+    function draw() {
+      background(205, 102, 94);
+      rotateY(millis() / 1000);
+      torus(30, 15, detailX.value(), 12);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    // slide to see how detailY works
+    let detailY;
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
+      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+      detailY = createSlider(3, 16, 3);
+      detailY.position(10, height + 5);
+      detailY.style('width', '80px');
+      describe(
+        'a rotating white torus with limited Y detail, with a slider that adjusts detailY'
+      );
+    }
+
+    function draw() {
+      background(205, 102, 94);
+      rotateY(millis() / 1000);
+      torus(30, 15, 16, detailY.value());
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: radius
+    description: |
+      <p>पूरी रिंग की रेडियस</p>
+    type: संख्या
+    optional: true
+  - name: tubeRadius
+    description: |
+      <p>ट्यूब की रेडियस</p>
+    type: संख्या
+    optional: true
+  - name: detailX
+    description: |
+      <p>एक्स-आयाम में खंडों की संख्या। जितने अधिक खंड उतनी चिकनी ज्यामिति। डिफ़ॉल्ट 24 है| </p>
+    type: पूर्णांक
+    optional: true
+  - name: detailY
+    description: |
+      <p>y-आयाम में खंडों की संख्या। जितने अधिक खंड उतनी चिकनी ज्यामिति। डिफ़ॉल्ट 16 है|</p>
+    type: पूर्णांक
+    optional: true
+chainable: true
+---
+
+# torus
