@@ -41,7 +41,7 @@ const getOneLineDescription = (description: string): string => {
     .replace(/<[^>]*>?/gm, "")
     .replace(/\n/g, " ");
   const [oneLineDescription] = cleanedDescription.match(fullStopRegex) ?? [];
-  return `${oneLineDescription?.trim()}`;
+  return `${oneLineDescription?.trim() ?? cleanedDescription}`;
 };
 
 export const ReferenceDirectoryWithFilter = ({
@@ -93,23 +93,46 @@ export const ReferenceDirectoryWithFilter = ({
     </div>
   );
 
+  const getSubcatHeading = (
+    subcat: { name: string },
+    category: { name: string },
+  ) => {
+    if (!subcat.name || !category.name || subcat.name === "p5.sound") {
+      return <div class="mb-sm" />;
+    }
+
+    return (
+      <div class="my-lg">
+        {subcat.name.includes("p5.") ? (
+          <a
+            id={subcat.name}
+            href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
+          >
+            <h3>{subcat.name}</h3>
+          </a>
+        ) : (
+          <h3>
+            {subcat.name}
+            <a id={subcat.name} />
+          </h3>
+        )}
+      </div>
+    );
+  };
+
   const renderCategoryData = () =>
     filteredEntries.map((category) => (
-      <div class="my-md border-b border-type-color pb-2xl" key={category.name}>
+      <div
+        class="my-md border-b border-type-color pb-2xl last:!border-0"
+        key={category.name}
+      >
         <h2>
           {category.name}
           <a id={category.name} />
         </h2>
         {category.subcats.map((subcat) => (
           <div key={subcat.name}>
-            {subcat.name && (
-              <div class="my-lg">
-                <h3>
-                  {subcat.name}
-                  <a id={subcat.name} />
-                </h3>
-              </div>
-            )}
+            {getSubcatHeading(subcat, category)}
             {renderEntries(subcat.entries)}
           </div>
         ))}
