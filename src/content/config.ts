@@ -7,6 +7,7 @@ import { textDetailCollection } from "./text-detail/config";
 import { examplesCollection } from "./examples/config";
 import { contributorDocsCollection } from "./contributor-docs/config";
 import { homepageCollection } from "./homepage/config";
+import { pagesCollection } from "./pages/config";
 
 /**
  * All content collections defined in subfolders of /src/content/
@@ -24,4 +25,5 @@ export const collections = {
   examples: examplesCollection,
   "contributor-docs": contributorDocsCollection,
   homepage: homepageCollection,
+  pages: pagesCollection,
 };
