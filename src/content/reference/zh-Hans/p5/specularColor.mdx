@@ -4,76 +4,50 @@ module: 3D
 submodule: Lights
 file: src/webgl/light.js
 description: >
-  <p>Sets the specular color for lights.</p>
+  <p>设置灯光的高光颜色。</p>
 
-  <p><code>specularColor()</code> affects lights that bounce off a surface in a
-  preferred
+  <p><code>specularColor()</code> 影响那些在表面上以首选方向反射的光线。
 
-  direction. These lights include
+  这些光线包括
 
   <a href="/reference/p5/directionalLight">directionalLight()</a>,
 
-  <a href="/reference/p5/pointLight">pointLight()</a>, and
+  <a href="/reference/p5/pointLight">pointLight()</a>, 和
 
-  <a href="/reference/p5/spotLight">spotLight()</a>. The function helps to
-  create
+  <a href="/reference/p5/spotLight">spotLight()</a>。 该函数有助于在使用
 
-  highlights on <a href="/reference/p5/p5.Geometry">p5.Geometry</a> objects that
-  are
+  <a href="/reference/p5/specularMaterial">specularMaterial()</a> 样式化的
 
-  styled with <a href="/reference/p5/specularMaterial">specularMaterial()</a>.
-  If a
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象上创建高光。
 
-  geometry does not use
+  如果几何体不使用
 
-  <a href="/reference/p5/specularMaterial">specularMaterial()</a>, then
+  <a href="/reference/p5/specularMaterial">specularMaterial()</a>，那么
+  <code>specularColor()</code> 将不起作用。</p>
 
-  <code>specularColor()</code> will have no effect.</p>
+  <p>注意： <code>specularColor()</code> 不影响所有方向反射的光线，
 
-  <p>Note: <code>specularColor()</code> doesn’t affect lights that bounce in all
+  包括 <a href="/reference/p5/ambientLight">ambientLight()</a>
+  和
 
-  directions, including <a href="/reference/p5/ambientLight">ambientLight()</a>
-  and
+  <a href="/reference/p5/imageLight">imageLight()</a>。</p>
 
-  <a href="/reference/p5/imageLight">imageLight()</a>.</p>
+  <p>有三种调用 <code>specularColor()</code> 的方式，可以通过可选参数设置高光颜色。</p>
 
-  <p>There are three ways to call <code>specularColor()</code> with optional
-  parameters to
+  <p>第一种调用 <code>specularColor()</code> 有两个可选参数， <code>gray</code>
 
-  set the specular highlight color.</p>
+  和 <code>alpha</code>。 介于 0 和 255 之间的灰度和 alpha 值， 例如
 
-  <p>The first way to call <code>specularColor()</code> has two optional
-  parameters, <code>gray</code>
+  <code>specularColor(50)</code> 或 <code>specularColor(50, 80)</code>, 可以传递来设置高光颜色。</p>
 
-  and <code>alpha</code>. Grayscale and alpha values between 0 and 255, as in
+  <p>第二种调用 <code>specularColor()</code> 有一个可选参数，
 
-  <code>specularColor(50)</code> or <code>specularColor(50, 80)</code>, can be
-  passed to set the
+  <code>color</code>。 可以传递一个 <a href="/reference/p5/p5.Color">p5.Color</a> 对象, 一个颜色值数组， 或一个 CSS 颜色字符串来 
+  设置高光颜色。</p>
 
-  specular highlight color.</p>
-
-  <p>The second way to call <code>specularColor()</code> has one optional
-  parameter,
-
-  <code>color</code>. A <a href="/reference/p5/p5.Color">p5.Color</a> object, an
-  array of color
-
-  values, or a CSS color string can be passed to set the specular highlight
-
-  color.</p>
-
-  <p>The third way to call <code>specularColor()</code> has four optional
-  parameters, <code>v1</code>,
-
-  <code>v2</code>, <code>v3</code>, and <code>alpha</code>. RGBA, HSBA, or HSLA
-  values, as in
-
-  <code>specularColor(255, 0, 0, 80)</code>, can be passed to set the specular
-  highlight
-
-  color. Color values will be interpreted using the current
-
-  <a href="/reference/p5/colorMode">colorMode()</a>.</p>
+  <p>调用 <code>specularColor()</code> 的第三种方式具有四个可选参数， <code>v1</code>, <code>v2</code>, <code>v3</code>, 和 
+  <code>alpha</code>。 RGBA, HSBA, 或 HSLA 值，例如 <code>specularColor(255, 0, 0, 80)</code>, 可用于设置高光颜色。颜色值将使用 
+  当前的 <a href="/reference/p5/colorMode">colorMode()</a> 进行解释。</p>
 line: 205
 isConstructor: false
 itemtype: method
@@ -82,22 +56,22 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 单击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('A white sphere drawn on a gray background.');
+      describe('在灰色背景上绘制了一个白色的球体。');
     }
 
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // No specular color.
-      // Draw the sphere.
+      // 无镜面颜色。
+      // 绘制球体。
       sphere(30);
     }
     </code>
@@ -105,39 +79,39 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
-    // Double-click the canvas to add a point light.
+    // 单击并拖动鼠标以从不同角度查看场景。
+    // 双击画布以添加一个点光源。
 
     let isLit = false;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('A sphere drawn on a gray background. A spotlight starts shining when the user double-clicks.');
+      describe('在灰色背景上绘制了一个球体。当用户双击时，聚光灯开始发光。');
     }
 
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Style the sphere.
+      // 给球体设置样式。
       noStroke();
       specularColor(100);
       specularMaterial(255, 255, 255);
 
-      // Control the light.
+      // 控制灯光。
       if (isLit === true) {
-        // Add a white point light from the top-right.
+        // 从右上方添加一个白色点光源。
         pointLight(255, 255, 255, 30, -20, 40);
       }
 
-      // Draw the sphere.
+      // 绘制球体。
       sphere(30);
     }
 
-    // Turn on the point light when the user double-clicks.
+    // 当用户双击时打开点光源。
     function doubleClicked() {
       isLit = true;
     }
@@ -146,35 +120,35 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 单击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+      describe('在灰色背景上绘制一个黑色的球体。球体表面的一个区域以蓝色突出显示。');
     }
 
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Add a specular highlight.
-      // Use a p5.Color object.
+      // 添加一个镜面高光。
+      // 使用一个 p5.Color 对象。
       let c = color('dodgerblue');
       specularColor(c);
 
-      // Add a white point light from the top-right.
+      // 从右上方添加一个白色点光源。
       pointLight(255, 255, 255, 30, -20, 40);
 
-      // Style the sphere.
+      // 为球体设置样式。
       noStroke();
 
-      // Add a white specular material.
+      // 添加白色的镜面材质。
       specularMaterial(255, 255, 255);
 
-      // Draw the sphere.
+      // 绘制球体。
       sphere(30);
     }
     </code>
@@ -182,34 +156,34 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 单击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+      describe('在灰色背景上绘制了一个黑色的球体。球体表面的一个区域以蓝色突出显示。');
     }
 
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Add a specular highlight.
-      // Use a CSS color string.
+      // 添加一个镜面高光。
+      // 使用 CSS 颜色字符串。
       specularColor('#1E90FF');
 
-      // Add a white point light from the top-right.
+      // 从右上方添加一个白色点光源。
       pointLight(255, 255, 255, 30, -20, 40);
 
-      // Style the sphere.
+      // 为球体设置样式。
       noStroke();
 
-      // Add a white specular material.
+      // 添加白色的镜面材质。
       specularMaterial(255, 255, 255);
 
-      // Draw the sphere.
+      // 绘制球体。
       sphere(30);
     }
     </code>
@@ -217,34 +191,34 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 单击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+      describe('在灰色背景上绘制了一个黑色的球体。球体表面的一个区域以蓝色突出显示。');
     }
 
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Add a specular highlight.
-      // Use RGB values.
+      // 添加一个镜面高光。
+      // 使用 RGB 值。
       specularColor(30, 144, 255);
 
-      // Add a white point light from the top-right.
+      // 从右上方添加一个白色点光源。
       pointLight(255, 255, 255, 30, -20, 40);
 
-      // Style the sphere.
+      // 为球体设置样式。
       noStroke();
 
-      // Add a white specular material.
+      // 添加一个白色的高光材质。
       specularMaterial(255, 255, 255);
 
-      // Draw the sphere.
+      // 绘制球体。
       sphere(30);
     }
     </code>
@@ -255,47 +229,43 @@ overloads:
     params:
       - name: v1
         description: |
-          <p>red or hue value in the current
-                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的红色或色相值。</p>
         type: Number
       - name: v2
         description: |
-          <p>green or saturation value in the current
-                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的绿色或饱和度值。</p>
         type: Number
       - name: v3
         description: |
-          <p>blue, brightness, or lightness value in the current
-                                     <a href="#/p5/colorMode">colorMode()</a>.</p>
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的蓝色、亮度或明度值。</p>
         type: Number
     chainable: 1
   - line: 423
     params:
       - name: gray
         description: |
-          <p>grayscale value between 0 and 255.</p>
+          <p>介于 0 和 255 之间的灰度值。</p>
         type: Number
     chainable: 1
   - line: 429
     params:
       - name: value
         description: |
-          <p>color as a CSS string.</p>
+          <p>作为 CSS 字符串的颜色。</p>
         type: String
     chainable: 1
   - line: 435
     params:
       - name: values
         description: |
-          <p>color as an array of RGBA, HSBA, or HSLA
-                                          values.</p>
+          <p>作为 RGBA、HSBA 或 HSLA 值数组的颜色。</p>
         type: 'Number[]'
     chainable: 1
   - line: 442
     params:
       - name: color
         description: |
-          <p>color as a <a href="#/p5.Color">p5.Color</a> object.</p>
+          <p>作为 <a href="#/p5.Color">p5.Color</a> 对象的颜色。</p>
         type: p5.Color
     chainable: 1
 chainable: true
