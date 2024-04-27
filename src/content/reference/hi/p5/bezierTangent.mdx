@@ -1,0 +1,94 @@
+---
+title: bezierTangent
+module: आकार
+submodule: वक्र
+file: src/core/shape/curves.js
+description: |
+  <p>बिंदु a, b, c, d के लिए स्थिति t पर बेज़ियर के कोआर्डिनेट का मूल्यांकन करता है।
+  पैरामीटर a और d वक्र पर पहले और आखिरी बिंदु हैं, और b और c नियंत्रण बिंदु हैं।
+  अंतिम पैरामीटर t 0 और 1 के बीच भिन्न होता है।</p>
+line: 186
+isConstructor: false
+itemtype: तरीका
+alt: >-
+  उन बिंदुओं पर स्पर्शरेखा दिखाने वाली 6 छोटी नारंगी रेखाओं वाली एस-आकार की रेखा।
+
+  6 छोटी नारंगी रेखाओं वाली एस-आकार की रेखा, जो बेज़ियर के नीचे से निकलने वाली रेखाओं को दर्शाती है।
+example:
+  - |-
+
+    <div>
+    <code>
+    noFill();
+    bezier(85, 20, 10, 10, 90, 90, 15, 80);
+    let steps = 6;
+    fill(255);
+    for (let i = 0; i <= steps; i++) {
+      let t = i / steps;
+      // Get the location of the point
+      let x = bezierPoint(85, 10, 90, 15, t);
+      let y = bezierPoint(20, 10, 90, 80, t);
+      // Get the tangent points
+      let tx = bezierTangent(85, 10, 90, 15, t);
+      let ty = bezierTangent(20, 10, 90, 80, t);
+      // Calculate an angle from the tangent points
+      let a = atan2(ty, tx);
+      a += PI;
+      stroke(255, 102, 0);
+      line(x, y, cos(a) * 30 + x, sin(a) * 30 + y);
+      // The following line of code makes a line
+      // inverse of the above line
+      //line(x, y, cos(a)*-30 + x, sin(a)*-30 + y);
+      stroke(0);
+      ellipse(x, y, 5, 5);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    noFill();
+    bezier(85, 20, 10, 10, 90, 90, 15, 80);
+    stroke(255, 102, 0);
+    let steps = 16;
+    for (let i = 0; i <= steps; i++) {
+      let t = i / steps;
+      let x = bezierPoint(85, 10, 90, 15, t);
+      let y = bezierPoint(20, 10, 90, 80, t);
+      let tx = bezierTangent(85, 10, 90, 15, t);
+      let ty = bezierTangent(20, 10, 90, 80, t);
+      let a = atan2(ty, tx);
+      a -= HALF_PI;
+      line(x, y, cos(a) * 8 + x, sin(a) * 8 + y);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p>वक्र पर पहले बिंदु के कोआर्डिनेट</p>
+    type: संख्या
+  - name: b
+    description: |
+      <p>वक्र पर पहले नियंत्रण बिंदु के कोआर्डिनेट</p>
+    type: संख्या
+  - name: c
+    description: |
+      <p>वक्र पर दूसरे नियंत्रण बिंदु के कोआर्डिनेट</p>
+    type: संख्या
+  - name: d
+    description: |
+      <p>वक्र पर दूसरे बिंदु के कोआर्डिनेट</p>
+    type: संख्या
+  - name: t
+    description: |
+      <p>मान 0 और 1 के बीच</p>
+    type: संख्या
+return:
+  description: स्थिति t पर स्पर्शरेखा
+  type: संख्या
+chainable: false
+---
+
+# bezierTangent
