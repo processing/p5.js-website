@@ -1,0 +1,143 @@
+---
+title: endShape
+module: आकार
+submodule: शीर्ष
+file: src/core/shape/vertex.js
+description: >
+  <p><a href='/reference/p5/endShape'>endShape()</a> फ़ंक्शन <a href='/reference/p5/beginShape'>beginShape()</a> का साथी है और केवल <a href="/reference/p5/beginShape">beginShape()</a> के बाद ही कॉल किया जा सकता है।
+
+  जब <a href="/reference/p5/endshape">endShape()</a> को कॉल किया जाता है, तो <a href="/reference/p5/beginShape">beginShape()</a> पर पिछली कॉल के बाद से परिभाषित सभी छवि डेटा छवि बफ़र में लिख दिया जाता है।
+
+  स्थिर CLOSE आकार को बंद करने (शुरुआत और अंत को जोड़ने के लिए) <code>mode</code> पैरामीटर के लिए मान है।
+
+  <a href="/reference/p5/endShape">endShape()</a> के साथ इंस्टेंसिंग का उपयोग करते समय इंस्टेंसिंग स्ट्रोक पर लागू नहीं होगी।
+
+  जब गिनती पैरामीटर का उपयोग 1 से अधिक मान के साथ किया जाता है, तो यह WEBGL मोड में निर्मित आकृतियों के लिए इंस्टेंसिंग को सक्षम बनाता है।
+
+  इंस्टेंसिंग एक ऐसी सुविधा है जो GPU को उसी के गुणकों को कुशलतापूर्वक खींचने की अनुमति देती है
+  आकार।
+
+  इसका उपयोग अक्सर कण प्रभावों या अन्य समयों के लिए किया जाता है जब आपको बहुत अधिक पुनरावृत्ति की आवश्यकता होती है।
+
+  इंस्टेंसिंग का लाभ उठाने के लिए, आपको gl_InstanceID कीवर्ड का उपयोग करके अपना स्वयं का कस्टम शेडर भी लिखना होगा।
+
+  आप इंस्टेंसिंग के बारे में <a href="https://webgl/lessons/webgl-instanced-drawing.html">यहां</a> या इस पेज पर उदाहरण से काम करके अधिक पढ़ सकते हैं।</p>
+line: 591
+isConstructor: false
+itemtype: तरीका
+alt: नीचे और ऊपर की ओर सबसे छोटे आंतरिक कोण के साथ त्रिभुज रेखा का आकार L।
+example:
+  - |-
+
+    <div>
+    <code>
+    noFill();
+
+    beginShape();
+    vertex(20, 20);
+    vertex(45, 20);
+    vertex(45, 80);
+    endShape(CLOSE);
+
+    beginShape();
+    vertex(50, 20);
+    vertex(75, 20);
+    vertex(75, 80);
+    endShape();
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    let fx;
+    let vs = `#version 300 es
+
+    precision mediump float;
+
+    in vec3 aPosition;
+    flat out int instanceID;
+
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    void main() {
+
+      // copy the instance ID to the fragment shader
+      instanceID = gl_InstanceID;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+
+      // gl_InstanceID represents a numeric value for each instance
+      // using gl_InstanceID allows us to move each instance separately
+      // here we move each instance horizontally by id * 23
+      float xOffset = float(gl_InstanceID) * 23.0;
+
+      // apply the offset to the final position
+      gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -
+        vec4(xOffset, 0.0, 0.0, 0.0));
+    }
+    `;
+    let fs = `#version 300 es
+
+    precision mediump float;
+
+    out vec4 outColor;
+    flat in int instanceID;
+    uniform float numInstances;
+
+    void main() {
+      vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+      vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+
+      // Normalize the instance id
+      float normId = float(instanceID) / numInstances;
+
+      // Mix between two colors using the normalized instance id
+      outColor = mix(red, blue, normId);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      fx = createShader(vs, fs);
+    }
+
+    function draw() {
+      background(220);
+
+      // strokes aren't instanced, and are rather used for debug purposes
+      shader(fx);
+      fx.setUniform('numInstances', 4);
+
+      // this doesn't have to do with instancing, this is just for centering the squares
+      translate(25, -10);
+
+      // here we draw the squares we want to instance
+      beginShape();
+      vertex(0, 0);
+      vertex(0, 20);
+      vertex(20, 20);
+      vertex(20, 0);
+      vertex(0, 0);
+      endShape(CLOSE, 4);
+
+      resetShader();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: mode
+    description: |
+      <p>आकृति को बंद करने के लिए CLOSE का उपयोग करें</p>
+    type: स्थिर
+    optional: true
+  - name: count
+    description: >
+      <p>जितनी बार आप आकृति बनाना/उदाहरण बनाना चाहते हैं (वेबजीएल मोड के लिए)।</p>
+    type: पूर्णांक
+    optional: true
+chainable: true
+---
+
+# endShape

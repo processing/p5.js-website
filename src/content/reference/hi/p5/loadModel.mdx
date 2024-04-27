@@ -1,0 +1,195 @@
+---
+title: loadModel
+module: आकार
+submodule: 3D Models
+file: src/webgl/loading.js
+description: >
+  <p>ओबीजे या एसटीएल फ़ाइल से एक 3D मॉडल लोड करें।</p>
+
+  <p><a href='/reference/p5/loadModel'>loadModel()</a> को <a href='/reference/p5/preload'>preload()</a> के अंदर रखा जाना चाहिए।
+
+  यह आपके शेष कोड को चलाने से पहले मॉडल को पूरी तरह से लोड करने की अनुमति देता है।</p>
+
+  <p>OBJ और STL प्रारूप की सीमाओं में से एक यह है कि इसमें पैमाने की कोई अंतर्निहित भावना नहीं है।
+
+  इसका मतलब यह है कि विभिन्न कार्यक्रमों से निर्यात किए गए मॉडल बहुत भिन्न आकार के हो सकते हैं।
+
+  यदि आपका मॉडल प्रदर्शित नहीं हो रहा है, तो normalize पैरामीटर को true पर सेट करके <a href="/reference/p5/loadModel">loadModel()</a> को कॉल करने का प्रयास करें।
+
+  यह मॉडल का आकार p5 के लिए उपयुक्त पैमाने पर बदल देगा।
+
+  आप <a href="/reference/p5/scale">scale()</a> फ़ंक्शन के साथ अपने मॉडल के अंतिम आकार में अतिरिक्त बदलाव भी कर सकते हैं।</p>
+
+  <p>इसके अलावा, रंगीन एसटीएल फ़ाइलों के लिए समर्थन मौजूद नहीं है।
+
+  रंग वाली एसटीएल फ़ाइलें रंग गुणों के बिना प्रस्तुत की जाएंगी।</p>
+
+  <p>विकल्पों में ये शामिल हो सकते हैं:</p>
+
+  <ul>
+
+  <li><code>path</कोड>: लोड करने के लिए 3D मॉडल फ़ाइल का स्थान या पथ निर्दिष्ट करता है।</li>
+
+  <li><code>normalize</code>: यदि true पर सेट किया गया है तो लोडिंग के दौरान मानकीकृत आकार स्केलिंग सक्षम करता है।</li>
+
+  <li><code>successCallback</code>: 3D मॉडल ऑब्जेक्ट के साथ पोस्ट-लोडिंग क्रियाओं के लिए कॉलबैक।</li>
+
+  <li><code>failureCallback</code>: यदि मॉडल लोडिंग विफल हो जाती है, तो ईवेंट त्रुटि प्राप्त होने पर त्रुटियों को संभालता है।</li>
+
+  <li><code>fileType</code>: मॉडल के फ़ाइल एक्सटेंशन को परिभाषित करता है।</li>
+
+  <li><code>flipU</code>: मॉडल के U बनावट निर्देशांक को फ़्लिप करता है।</li>
+
+  <li><code>flipV</code>: मॉडल के V बनावट निर्देशांक को फ़्लिप करता है।</li>
+
+  </ul>
+line: 12
+isConstructor: false
+itemtype: तरीका
+alt: लाल, हरे और नीले रंग की ढाल के साथ लंबवत घूमने वाला 3D चायदानी।
+example:
+  - |-
+
+    <div>
+    <code>
+    //draw a spinning octahedron
+    let octahedron;
+
+    function preload() {
+      octahedron = loadModel('/assets/octahedron.obj');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('Vertically rotating 3-d octahedron.');
+    }
+
+    function draw() {
+      background(200);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      model(octahedron);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    //draw a spinning teapot
+    let teapot;
+
+    function preload() {
+      // Load model with normalise parameter set to true
+      teapot = loadModel('/assets/teapot.obj', true);
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('Vertically rotating 3-d teapot with red, green and blue gradient.');
+    }
+
+    function draw() {
+      background(200);
+      scale(0.4); // Scaled to make model fit into canvas
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      normalMaterial(); // For effect
+      model(teapot);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: <a href='#/p5.Geometry'>p5.Geometry</a> ऑब्जेक्ट
+  type: p5.Geometry
+overloads:
+  - line: 12
+    params:
+      - name: path
+        description: |
+          <p>लोड किए जाने वाले मॉडल का पथ</p>
+        type: स्ट्रिंग
+      - name: normalize
+        description: |
+          <p>यदि सत्य है, तो लोड करते समय मॉडल को मानकीकृत आकार में स्केल करें</p>
+        type: बूलियन
+      - name: successCallback
+        description: |
+          <p>मॉडल लोड होने के बाद फ़ंक्शन को कॉल किया जाएगा। 3D मॉडल ऑब्जेक्ट पास किया जाएगा।</p>
+        type: फ़ंक्शन(p5.Geometry)
+        optional: true
+      - name: failureCallback
+        description: |
+          <p>यदि मॉडल लोड होने में विफल रहता है तो इवेंट त्रुटि के साथ कॉल किया जाता है।</p>
+        type: फ़ंक्शन(Event)
+        optional: true
+      - name: fileType
+        description: |
+          <p>मॉडल का फ़ाइल एक्सटेंशन (<code>.stl</code>, <code>.obj</code>).</p>
+        type: स्ट्रिंग
+        optional: true
+    return:
+      description: <a href='#/p5.Geometry'>p5.Geometry</a> ऑब्जेक्ट
+      type: p5.Geometry
+  - line: 107
+    params:
+      - name: path
+        description: ""
+        type: स्ट्रिंग
+      - name: successCallback
+        description: ""
+        type: फ़ंक्शन(p5.Geometry)
+        optional: true
+      - name: failureCallback
+        description: ""
+        type: फ़ंक्शन(Event)
+        optional: true
+      - name: fileType
+        description: ""
+        type: स्ट्रिंग
+        optional: true
+    return:
+      description: <a href='#/p5.Geometry'>p5.Geometry</a> ऑब्जेक्ट
+      type: p5.Geometry
+  - line: 115
+    params:
+      - name: path
+        description: ""
+        type: स्ट्रिंग
+      - name: options
+        description: ""
+        type: Object
+        optional: true
+        props:
+          - name: successCallback
+            description: ""
+            type: फ़ंक्शन(p5.Geometry)
+            optional: true
+          - name: failureCallback
+            description: ""
+            type: फ़ंक्शन(Event)
+            optional: true
+          - name: fileType
+            description: ""
+            type: स्ट्रिंग
+            optional: true
+          - name: normalize
+            description: ""
+            type: बूलियन
+            optional: true
+          - name: flipU
+            description: ""
+            type: बूलियन
+            optional: true
+          - name: flipV
+            description: ""
+            type: बूलियन
+            optional: true
+    return:
+      description: <a href='#/p5.Geometry'>p5.Geometry</a> ऑब्जेक्ट
+      type: p5.Geometry
+chainable: false
+---
+
+# loadModel

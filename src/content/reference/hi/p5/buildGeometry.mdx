@@ -1,0 +1,71 @@
+---
+title: buildGeometry
+module: आकार
+submodule: 3D आदिम
+file: src/webgl/3d_primitives.js
+description: >
+  <p>एक नया <a href="/reference/p5/p5.Geometry">p5.Geometry</a> बनाता है जिसमें दिए गए कॉलबैक फ़ंक्शन में खींची गई सभी आकृतियाँ शामिल होती हैं।
+
+  लौटाई गई संयुक्त आकृति को <a href="/reference/p5/model">model()</a> का उपयोग करके एक साथ खींचा जा सकता है।</p>
+
+  <p>यदि आपको हर फ्रेम में जटिल आकृतियाँ बनाने की ज़रूरत है जो समय के साथ नहीं बदलती हैं, तो उन्हें एक बार <code>buildGeometry()</code> के साथ संयोजित करें और फिर ड्राइंग बनाएं | ये अलग-अलग टुकड़ों को बार-बार खींचने की तुलना में तेज़ चलेगी।</p>
+
+  <p>कोई सीधे <a href="/reference/p5/beginGeometry">beginGeometry()</a> और <a href="/reference/p5/endGeometry">endGeometry()</a> के बीच भी आकृतियाँ बना सकता है, कॉलबैक फ़ंक्शन का उपयोग करने के बजाय।</p>
+line: 102
+isConstructor: false
+itemtype: तरीका
+alt: गोले का एक समूह
+example:
+  - |-
+
+    <div>
+    <code>
+    let particles;
+    let button;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      button = createButton('New');
+      button.mousePressed(makeParticles);
+      makeParticles();
+    }
+
+    function makeParticles() {
+      if (particles) freeGeometry(particles);
+
+      particles = buildGeometry(() => {
+        for (let i = 0; i < 60; i++) {
+          push();
+          translate(
+            randomGaussian(0, 20),
+            randomGaussian(0, 20),
+            randomGaussian(0, 20)
+          );
+          sphere(5);
+          pop();
+        }
+      });
+    }
+
+    function draw() {
+      background(255);
+      noStroke();
+      lights();
+      orbitControl();
+      model(particles);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: callback
+    description: |
+      <p>एक फ़ंक्शन जो आकृतियाँ बनाता है।</p>
+    type: फ़ंक्शन
+return:
+  description: वह मॉडल जो कॉलबैक फ़ंक्शन से बनाया गया था।
+  type: p5.Geometry
+chainable: false
+---
+
+# buildGeometry
