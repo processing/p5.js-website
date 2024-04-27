@@ -42,6 +42,12 @@ export interface ReferenceParam {
   optional?: boolean; // Indicates if the parameter is optional.
 }
 
+export type ReferenceOverload = {
+  params: ReferenceParam[];
+};
+
+export type ReferenceOverloads = ReferenceOverload[];
+
 /* Represents the definition of a class within the project, including its properties, methods, and inheritance information. */
 export interface ReferenceClassDefinition extends Chainable {
   name: string; // The name of the class.

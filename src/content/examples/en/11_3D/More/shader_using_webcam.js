@@ -12,7 +12,7 @@
 
  function preload(){
    // load the shader
-   theShader = loadShader('assets/webcam.vert', 'assets/webcam.frag');
+   theShader = loadShader('/assets/webcam.vert', 'assets/webcam.frag');
  }
 
  function setup() {

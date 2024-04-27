@@ -1,0 +1,37 @@
+---
+import Image from "@components/Image/index.astro";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "./BaseLayout.astro";
+import type { CollectionEntry } from "astro:content";
+import { setJumpToState } from "../globals/state";
+import { getCurrentLocale } from "../i18n/utils";
+
+interface Props {
+  page: CollectionEntry<"text-detail">;
+}
+
+const { page } = Astro.props;
+const { Content } = await page.render();
+
+const pageTopic = Astro.url.pathname.includes("donate")
+  ? "contribute"
+  : undefined;
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+setJumpToState(null);
+---
+
+<Head title={page.data.title} locale={currentLocale} />
+
+<BaseLayout
+  title={page.data.title}
+  variant="item"
+  topic={pageTopic}
+  className={pageTopic}
+  subtitle={null}
+>
+  <div class="max-w-screen-lg [&>*:first-child]:mt-0 rendered-markdown">
+    <Content />
+  </div>
+</BaseLayout>

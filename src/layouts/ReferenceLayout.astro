@@ -1,5 +1,6 @@
 ---
 import { type CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import { ReferenceDirectoryWithFilter } from "@components/ReferenceDirectoryWithFilter/";
 import { categories } from "../content/reference/config";
@@ -7,6 +8,8 @@ import {
   getRefEntryTitleConcatWithParen,
   normalizeReferenceRoute,
 } from "../pages/_utils";
+import { setJumpToState, type JumpToState } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 
 type ReferenceEntry = CollectionEntry<"reference">;
 
@@ -25,10 +28,16 @@ function strCompare(a: string, b: string) {
   return 0;
 }
 
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
 const { entries } = Astro.props;
+
 const categoryData = categories.map((category) => {
   // Get all reference entries in the module
-  const directEntries = entries.filter((e) => e.data.module === category);
+  const directEntries = entries.filter(
+    (e) => e.data.module === t("referenceCategories", "modules", category)
+  );
 
   // Get the names of all submodules
   const subcats = [
@@ -42,7 +51,12 @@ const categoryData = categories.map((category) => {
 
   // Find the classes in this module. These will be turned into subcategories.
   const classes = directEntries
-    .filter((e) => e.data.isConstructor && e.data.module === category)
+    .filter(
+      (e) =>
+        e.data.isConstructor &&
+        e.data.module === category &&
+        e.data.title !== "p5"
+    )
     .sort((a, b) => strCompare(a.data.title, b.data.title))
     .map((e) => ({
       ...e,
@@ -81,8 +95,7 @@ const categoryData = categories.map((category) => {
           (e) =>
             e.data.submodule === subcat &&
             !e.data.isConstructor &&
-            e.data.description !== "" &&
-            !classes.some((c) => c.data.title === e.data.class)
+            e.data.description !== ""
         )
         .map((e) => ({
           ...e,
@@ -97,7 +110,7 @@ const categoryData = categories.map((category) => {
       name: getRefEntryTitleConcatWithParen(entry),
       entry, // Include the class entry itself so we can make the header a link
       entries: directEntries
-        .filter((e) => e.data.class === entry.data.title)
+        .filter((e) => e.data.class === entry.data.title && e.data.class)
         .map((e) => ({
           ...e,
           data: {
@@ -109,11 +122,25 @@ const categoryData = categories.map((category) => {
     })),
   ];
   return {
-    name: category,
+    name: t("referenceCategories", "modules", category),
     subcats: subcatData,
   };
 });
+
+const pageJumpToLinks = categoryData.map((category) => ({
+  label: category.name,
+  url: `#${category.name}`,
+}));
+
+const pageJumpToState = {
+  links: pageJumpToLinks,
+  heading: t("Reference") as string,
+} as JumpToState;
+
+setJumpToState(pageJumpToState);
 ---
+
+<Head title="Reference" locale={currentLocale} />
 
 <BaseLayout title="Reference" mainContentParentClass="mx-0">
   <ReferenceDirectoryWithFilter

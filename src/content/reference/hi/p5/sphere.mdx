@@ -1,77 +1,140 @@
 ---
 title: sphere
-module: आकार
-submodule: 3D आदिम
+module: Shape
+submodule: 3D Primitives
 file: src/webgl/3d_primitives.js
 description: >
-  <p>दी गई त्रिज्या वाला एक गोला बनाएं।</p>
+  <p>Draws a sphere.</p>
 
-  <p>detailX और detailY एक गोले के x-डायमेंशन और y-डायमेंशन में उपविभाजनों की संख्या निर्धारित करते हैं। अधिक उपविभाजन से गोला अधिक चिकना प्रतीत होता है।
+  <p>A sphere is a 3D shape with triangular faces that connect to form a round
 
-  अनुशंसित अधिकतम मान दोनों 24 हैं। 24 से अधिक मान का उपयोग करने से चेतावनी मिल सकती है या ब्राउज़र धीमा हो सकता है।</p>
-line: 381
+  surface. Spheres with few faces look like crystals. Spheres with many faces
+
+  have smooth surfaces and look like balls.</p>
+
+  <p>The first parameter, <code>radius</code>, is optional. If a
+  <code>Number</code> is passed, as in
+
+  <code>sphere(20)</code>, it sets the radius of the sphere. By default,
+  <code>radius</code> is 50.</p>
+
+  <p>The second parameter, <code>detailX</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>sphere(20, 5)</code>, it sets the number of triangle subdivisions
+  to use
+
+  along the x-axis. All 3D shapes are made by connecting triangles to form
+
+  their surfaces. By default, <code>detailX</code> is 24.</p>
+
+  <p>The third parameter, <code>detailY</code>, is also optional. If a
+  <code>Number</code> is passed,
+
+  as in <code>sphere(20, 5, 2)</code>, it sets the number of triangle
+  subdivisions to
+
+  use along the y-axis. All 3D shapes are made by connecting triangles to
+
+  form their surfaces. By default, <code>detailY</code> is 16.</p>
+
+  <p>Note: <code>sphere()</code> can only be used in WebGL mode.</p>
+line: 1227
 isConstructor: false
-itemtype: तरीका
+itemtype: method
 example:
   - |-
 
     <div>
     <code>
-    // draw a sphere with radius 40
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      describe('a white sphere with black wireframe lines');
+
+      describe('A white sphere on a gray background.');
     }
 
     function draw() {
-      background(205, 102, 94);
-      sphere(40);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the sphere.
+      sphere();
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    let detailX;
-    // slide to see how detailX works
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      detailX = createSlider(3, 24, 3);
-      detailX.position(10, height + 5);
-      detailX.style('width', '80px');
-      describe(
-        'a white sphere with low detail on the x-axis, including a slider to adjust detailX'
-      );
+
+      describe('A white sphere on a gray background.');
     }
 
     function draw() {
-      background(205, 105, 94);
-      rotateY(millis() / 1000);
-      sphere(40, detailX.value(), 16);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the sphere.
+      // Set its radius to 30.
+      sphere(30);
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    let detailY;
-    // slide to see how detailY works
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      detailY = createSlider(3, 16, 3);
-      detailY.position(10, height + 5);
-      detailY.style('width', '80px');
-      describe(
-        'a white sphere with low detail on the y-axis, including a slider to adjust detailY'
-      );
+
+      describe('A white sphere on a gray background.');
     }
 
     function draw() {
-      background(205, 105, 94);
-      rotateY(millis() / 1000);
-      sphere(40, 16, detailY.value());
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the sphere.
+      // Set its radius to 30.
+      // Set its detailX to 6.
+      sphere(30, 6);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white sphere on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the sphere.
+      // Set its radius to 30.
+      // Set its detailX to 24.
+      // Set its detailY to 4.
+      sphere(30, 24, 4);
     }
     </code>
     </div>
@@ -79,18 +142,18 @@ class: p5
 params:
   - name: radius
     description: |
-      <p>गोले की त्रिज्या</p>
-    type: संख्या
+      <p>radius of the sphere. Defaults to 50.</p>
+    type: Number
     optional: true
   - name: detailX
     description: |
-      <p>गोले की x-डायमेंशन में उपविभाजनों की संख्या।</p>
-    type: पूर्णांक
+      <p>number of triangle subdivisions along the x-axis. Defaults to 24.</p>
+    type: Integer
     optional: true
   - name: detailY
     description: |
-      <p>गोले की y-डायमेंशन में उपविभाजनों की संख्या।</p>
-    type: पूर्णांक
+      <p>number of triangle subdivisions along the y-axis. Defaults to 16.</p>
+    type: Integer
     optional: true
 chainable: true
 ---

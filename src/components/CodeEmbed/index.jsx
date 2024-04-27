@@ -1,6 +1,7 @@
-import { useState, useEffect } from "preact/hooks";
+import { useState, useEffect, useRef } from "preact/hooks";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
+import { p5VersionForEmbeds } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -15,6 +16,10 @@ import { Icon } from "../Icon";
  *   previewable: boolean;
  *   previewHeight?: number;
  *   previewWidth?: number;
+ *   base?: string;
+ *   lazyLoad?: boolean;
+ *   TODO: refactor this prop behavior
+ *   allowSideBySide?: boolean
  * }
  */
 export const CodeEmbed = (props) => {
@@ -28,45 +33,71 @@ export const CodeEmbed = (props) => {
     initialCode.replace(/\u00A0/g, " "),
   );
 
+  const codeFrameRef = useRef(null);
+
+  const updateOrReRun = () => {
+    if (codeString === previewCodeString) {
+      setPreviewCodeString("");
+      requestAnimationFrame(() => setPreviewCodeString(codeString));
+    } else {
+      setPreviewCodeString(codeString);
+    }
+  };
+
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
+
+  /*
+   * Url to fetch the p5.js library from
+   */
+  const p5LibraryUrl = `https://cdnjs.cloudflare.com/ajax/libs/p5.js/${p5VersionForEmbeds}/p5.min.js`;
 
   useEffect(() => {
     setRendered(true);
+
+    // Includes p5.min.js script to be used by `CodeFrame` iframe(s)
+    const p5ScriptElement = document.createElement("script");
+    p5ScriptElement.id = "p5ScriptTag";
+    p5ScriptElement.src = p5LibraryUrl;
+    document.head.appendChild(p5ScriptElement);
   }, []);
 
   if (!rendered) return <div className="code-placeholder" />;
 
   return (
-    <div className="mb-md flex w-full flex-col overflow-hidden lg:flex-row">
+    <div
+      className={`my-md flex w-full flex-col gap-md overflow-hidden ${props.allowSideBySide && "lg:flex-row"}`}
+    >
       {props.previewable ? (
-        <div className="flex lg:flex-col">
+        <div className="ml-0 flex w-fit lg:flex-col">
           <CodeFrame
             jsCode={previewCodeString}
             width={props.previewWidth}
             height={props.previewHeight}
+            base={props.base}
+            frameRef={codeFrameRef}
+            lazyLoad={props.lazyLoad}
           />
-          {/* Looks more visually balanced with a slight leftward nudge */}
           <div className="gap-xs lg:flex">
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm lg:ml-[-2px]"
-              onClick={() => {
-                setPreviewCodeString(codeString);
-              }}
+              className="!bg-bg-gray-40 !p-sm"
+              onClick={updateOrReRun}
+              ariaLabel="Run sketch"
             >
               <Icon kind="play" />
             </CircleButton>
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm"
+              className="!bg-bg-gray-40 !p-sm "
               onClick={() => {
                 setPreviewCodeString("");
               }}
+              ariaLabel="Stop sketch"
             >
               <Icon kind="stop" />
             </CircleButton>
           </div>
         </div>
       ) : null}
-      <div className="relative w-full md:w-[calc(100%-150px)]">
+      <div className="relative w-full">
         <CodeMirror
           value={codeString}
           theme="light"
@@ -91,7 +122,7 @@ export const CodeEmbed = (props) => {
             (editorView.contentDOM.ariaLabel = "Code Editor")
           }
         />
-        <div className="absolute right-0 top-0 flex gap-xs p-xs">
+        <div className="absolute right-0 top-0 flex flex-col gap-xs p-xs md:flex-row">
           <CopyCodeButton textToCopy={codeString || initialCode} />
           <CircleButton
             onClick={() => {

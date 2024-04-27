@@ -1,7 +1,5 @@
 import type { z } from "astro/zod";
 import { referenceSchema } from "./reference/config";
-import type { ExampleData } from "./examples/config";
-import type { CollectionEntry } from "astro:content";
 
 type AstroBaseContentType<T = unknown> = {
   id: string;
@@ -15,13 +13,3 @@ type AstroBaseContentType<T = unknown> = {
 export type ReferenceDocContentItem = AstroBaseContentType<
   z.infer<typeof referenceSchema>
 >;
-
-// Define the type for content items that include data according to exampleSchema
-export type ExampleDocContentItem = AstroBaseContentType<ExampleData>;
-
-/**
- * Content Entry Types that can be displayed in a generic Archive page
- */
-export type ArchiveCollectionEntry =
-  | CollectionEntry<"contributor-docs">
-  | CollectionEntry<"past-events">;

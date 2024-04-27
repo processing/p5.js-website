@@ -1,0 +1,29 @@
+---
+import { getCurrentLocale } from "@/src/i18n/utils";
+import { removeLocaleAndExtension } from "@/src/pages/_utils";
+import Image from "@components/Image/index.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  item: CollectionEntry<"events">;
+}
+
+const { item } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const dayString = new Date(item.data.date).toLocaleDateString(currentLocale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<a href={`/events/${removeLocaleAndExtension(item.slug)}`}>
+  <!-- Could potentially reduce width needed here if featured and non-featured events were distinguished -->
+  <Image
+    src={item.data.featuredImage}
+    alt={item.data.featuredImageAlt}
+    width="800"
+  />
+  <div class="text-xl mt-xs break-words break-keep">{item.data.title}</div>
+  <div class="text-sm">{dayString}</div>
+</a>

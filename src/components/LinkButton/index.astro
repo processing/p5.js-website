@@ -1,24 +1,31 @@
 ---
-import { Icon } from "../Icon";
+import { Icon, type IconKind } from "../Icon";
 interface Props {
-  variant?: "link" | "code" | "bare";
+  variant?: "link" | "code" | "download" | "bare";
   url: string;
+  class?: string;
 }
 
 const { variant = "bare", url } = Astro.props;
+
+let kind = "arrow" as IconKind;
+switch (variant) {
+  case "code":
+    kind = "code-brackets";
+    break;
+  case "download":
+    kind = "download";
+    break;
+}
 ---
 
 <a
-  class="outline py-2 px-4 flex flex-nowrap w-fit items-center rounded-full"
+  class={"button-link outline outline-1 outline-type-color py-2 px-4 flex flex-nowrap w-fit items-center justify-between rounded-full hover:bg-sidebar-type-color hover:text-sidebar-bg-color hover:no-underline " +
+    Astro.props.class}
   href={url}
 >
-  <slot />
-  {
-    variant !== "bare" ? (
-      <Icon
-        className="ml-4"
-        kind={variant === "link" ? "arrow" : "code-brackets"}
-      />
-    ) : null
-  }
+  <span>
+    <slot />
+  </span>
+  {variant !== "bare" ? <Icon className="ml-auto" kind={kind} /> : null}
 </a>

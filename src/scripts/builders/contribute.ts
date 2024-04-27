@@ -14,6 +14,7 @@ import type { Dirent } from "fs";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import remarkGfm from "remark-gfm";
+import strip from "strip-markdown";
 import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
@@ -31,20 +32,31 @@ const outputDirectory = path.join(
   "src/content/contributor-docs/",
 );
 /* Name of the folder within `sourceDirectory` folder where static assets are found */
-const assetsSubFolder = "images";
-/* Base URL to refer to assets from final mdx docs*/
-const assetsOutputBaseUrl = path.join("/images/contributor-docs");
-/* Where the image assets will be output for the website */
-const assetsOutputDirectory = path.join(
-  repoRootPath,
-  "public",
-  assetsOutputBaseUrl,
+const sourceAssetsSubFolder = "images";
+/* Name of the folder within `outputDirectory` folder where static assets will be copied to */
+const outputAssetsSubFolder = "images";
+/* Base URL to refer to assets from final mdx docs */
+const assetsOutputBaseUrl = path.join(
+  "src/content/contributor-docs/",
+  outputAssetsSubFolder,
 );
-
-/* Directories that are translations
- * TODO: tie this to supported languages in astro config
- */
+/* Where the image assets will be output for the website */
+const assetsOutputDirectory = path.join(outputDirectory, "images");
+/* Directories that are translations */
 const langDirs = nonDefaultSupportedLocales;
+
+/*
+ * Folders we want to ignore and **not** copy, including languages that the
+ * p5 website doesn't support but are translated in the contributor docs
+ */
+const ignoredFolders = [
+  "archive",
+  "project_wrapups",
+  "ar",
+  "ja",
+  "sk",
+  "pt-br",
+];
 
 /**
  * Moves a markdown file to a new location, converting into MDX along the way
@@ -60,7 +72,6 @@ const langDirs = nonDefaultSupportedLocales;
 const convertMdtoMdx = async (
   sourceFile: string,
   destinationFolder: string,
-  frontmatterObject?: { [key: string]: string },
 ) => {
   const { name, ext } = path.parse(sourceFile);
 
@@ -92,11 +103,15 @@ const convertMdtoMdx = async (
       .processSync(contentWithRewrittenLinksAndComments)
       .toString();
 
+    const description = await extractDescription(newContent);
+    const { title, markdownText: newContentWithoutTitle } =
+      await extractTitle(newContent);
+
     // All MDX content with frontmatter as a string
-    const fullFileContent = matter.stringify(
-      newContent,
-      frontmatterObject ?? {},
-    );
+    const fullFileContent = matter.stringify(newContentWithoutTitle, {
+      title,
+      description,
+    });
 
     // Check that generated content can be compiled by MDX
     // (sometimes this catches different problems)
@@ -155,8 +170,59 @@ export const convertMarkdownCommentsToMDX = (markdownText: string): string => {
   const regexPattern: RegExp = /<!--([\S\s]*?)-->/g;
   return markdownText.replace(
     regexPattern,
-    (match, commentContent) => `{/*${commentContent}*/}`,
+    (_match, commentContent) => `{/*${commentContent}*/}`,
   );
+};
+
+/**
+ * Extracts the title from the markdown document and
+ * returns the text without the title inline
+ * This is because rendering the title will be handled with
+ * the frontmatter title data
+ *
+ * @param markdownText
+ * @returns
+ */
+export const extractTitle = async (
+  markdownText: string,
+): Promise<{ title: string; markdownText: string }> => {
+  // gets the first title string in the document
+  const regexPattern: RegExp = /^#+ ([\S\s]+?)$/im;
+  const firstTitleMatch = regexPattern.exec(markdownText);
+  if (!firstTitleMatch) {
+    return { title: "Untitled", markdownText };
+  }
+
+  return {
+    // Strip any markdown formatting that might be included
+    title: String(await remark().use(strip).process(firstTitleMatch[1])),
+    markdownText: markdownText.replace(regexPattern, ""),
+  };
+};
+
+/**
+ * Extracts a description from the markdown document.
+ *
+ * @param markdownText
+ * @returns
+ */
+export const extractDescription = async (markdownText: string) => {
+  const firstLineComment = markdownText.match(
+    /^\{\/\*\s?([\S\s]+?)\s?\*\/\}\s?[\n\r]/i,
+  );
+  const firstParagraph = markdownText.match(/^[^\s#{][\s\S]*?$/im);
+
+  // get the comment at the top of the document
+  // or the first paragraph in the document
+  const rawDescription =
+    firstLineComment !== null
+      ? firstLineComment[1]
+      : firstParagraph !== null
+        ? firstParagraph[0]
+        : "Couldn't find a description";
+
+  // Strip any markdown formatting that might be included
+  return String(await remark().use(strip).process(rawDescription));
 };
 
 /**
@@ -196,13 +262,21 @@ const buildContributorDocs = async () => {
 
   // Clean out previous files
   console.log("Cleaning out current content collection...");
+
+  // Delete all the folders
+  // (Astro has a top level config file that needs to be left)
+  const oldTopLevelFiles = await readdir(outputDirectory, {
+    withFileTypes: true,
+  });
   await Promise.all(
-    langDirs.map((lang) =>
-      rm(path.join(outputDirectory, lang), {
-        recursive: true,
-        force: true,
-      }),
-    ),
+    oldTopLevelFiles
+      .filter((file) => file.isDirectory())
+      .map((file) =>
+        rm(fullPathFromDirent(file), {
+          recursive: true,
+          force: true,
+        }),
+      ),
   );
 
   // get all the files and folders within the docs folder
@@ -214,7 +288,10 @@ const buildContributorDocs = async () => {
     const { ext, base } = path.parse(tlf.name);
     const isDirectory = tlf.isDirectory();
 
-    if (isDirectory && base === assetsSubFolder) {
+    if (ignoredFolders.includes(base)) {
+      console.debug(`Skipping ignored folder (${tlf.name})`);
+      continue;
+    } else if (isDirectory && base === sourceAssetsSubFolder) {
       console.debug("Copying images folder");
       await moveAssetsFolder(fullFilePath);
     } else if (isDirectory && langDirs.includes(base)) {

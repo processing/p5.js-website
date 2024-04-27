@@ -1,5 +1,6 @@
 ---
 title: curveTangent
+<<<<<<< HEAD
 module: आकार
 submodule: वक्र
 file: src/core/shape/curves.js
@@ -10,11 +11,60 @@ line: 494
 isConstructor: false
 itemtype: तरीका
 alt: कैनवास के मध्य-दाईं ओर दाहिनी ओर मुड़ने वाली रेखा और उससे निकलने वाली 7 छोटी रेखाएँ।
+=======
+module: Shape
+submodule: Curves
+file: src/core/shape/curves.js
+description: >
+  <p>Calculates coordinates along a line that's tangent to a spline curve.</p>
+
+  <p>Tangent lines skim the surface of a curve. A tangent line's slope equals
+
+  the curve's slope at the point where it intersects.</p>
+
+  <p><code>curveTangent()</code> calculates coordinates along a tangent line
+  using the
+
+  spline curve's anchor and control points. It expects points in the same
+
+  order as the <a href="/reference/p5/curve">curve()</a> function.
+  <code>curveTangent()</code>
+
+  works one axis at a time. Passing the anchor and control points'
+
+  x-coordinates will calculate the x-coordinate of a point on the tangent
+
+  line. Passing the anchor and control points' y-coordinates will calculate
+
+  the y-coordinate of a point on the tangent line.</p>
+
+  <p>The first parameter, <code>a</code>, is the coordinate of the first control
+  point.</p>
+
+  <p>The second and third parameters, <code>b</code> and <code>c</code>, are the
+  coordinates of the
+
+  anchor points.</p>
+
+  <p>The fourth parameter, <code>d</code>, is the coordinate of the last control
+  point.</p>
+
+  <p>The fifth parameter, <code>t</code>, is the amount to interpolate along the
+  curve. 0
+
+  is the first anchor point, 1 is the second anchor point, and 0.5 is halfway
+
+  between them.</p>
+line: 1054
+isConstructor: false
+itemtype: method
+>>>>>>> d92abe86a6be46eb4f9114440e434084a9b67f86
 example:
   - |-
 
     <div>
     <code>
+<<<<<<< HEAD
     noFill();
     curve(5, 26, 73, 24, 73, 61, 15, 65);
     let steps = 6;
@@ -28,6 +78,72 @@ example:
       let a = atan2(ty, tx);
       a -= PI / 2.0;
       line(x, y, cos(a) * 8 + x, sin(a) * 8 + y);
+=======
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 5;
+      let y1 = 26;
+      let x2 = 73;
+      let y2 = 24;
+      let x3 = 73;
+      let y3 = 61;
+      let x4 = 15;
+      let y4 = 65;
+
+      // Draw the curve.
+      noFill();
+      curve(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Draw tangents along the curve's path.
+      fill(255);
+
+      // Top circle.
+      stroke(0);
+      let x = curvePoint(x1, x2, x3, x4, 0);
+      let y = curvePoint(y1, y2, y3, y4, 0);
+      circle(x, y, 5);
+
+      // Top tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      let tx = 0.2 * curveTangent(x1, x2, x3, x4, 0);
+      let ty = 0.2 * curveTangent(y1, y2, y3, y4, 0);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Center circle.
+      stroke(0);
+      x = curvePoint(x1, x2, x3, x4, 0.5);
+      y = curvePoint(y1, y2, y3, y4, 0.5);
+      circle(x, y, 5);
+
+      // Center tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.2 * curveTangent(x1, x2, x3, x4, 0.5);
+      ty = 0.2 * curveTangent(y1, y2, y3, y4, 0.5);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Bottom circle.
+      stroke(0);
+      x = curvePoint(x1, x2, x3, x4, 1);
+      y = curvePoint(y1, y2, y3, y4, 1);
+      circle(x, y, 5);
+
+      // Bottom tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.2 * curveTangent(x1, x2, x3, x4, 1);
+      ty = 0.2 * curveTangent(y1, y2, y3, y4, 1);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      describe(
+        'A black curve on a gray square. A white circle moves back and forth along the curve.'
+      );
+>>>>>>> d92abe86a6be46eb4f9114440e434084a9b67f86
     }
     </code>
     </div>
@@ -35,6 +151,7 @@ class: p5
 params:
   - name: a
     description: |
+<<<<<<< HEAD
       <p>वक्र के पहले नियंत्रण बिंदु के कोआर्डिनेट</p>
     type: संख्या
   - name: b
@@ -59,4 +176,31 @@ return:
 chainable: false
 ---
 
+=======
+      <p>coordinate of first control point.</p>
+    type: Number
+  - name: b
+    description: |
+      <p>coordinate of first anchor point.</p>
+    type: Number
+  - name: c
+    description: |
+      <p>coordinate of second anchor point.</p>
+    type: Number
+  - name: d
+    description: |
+      <p>coordinate of second control point.</p>
+    type: Number
+  - name: t
+    description: |
+      <p>amount to interpolate between 0 and 1.</p>
+    type: Number
+return:
+  description: coordinate of a point on the tangent line.
+  type: Number
+chainable: false
+---
+
+
+>>>>>>> d92abe86a6be46eb4f9114440e434084a9b67f86
 # curveTangent

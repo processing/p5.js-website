@@ -70,20 +70,31 @@ for (const attr of preTag.attributes) {
   if (attr.name === 'style') continue
   preAttrs[attr.name] = attr.value;
 }
+preAttrs.class = (preAttrs.class || '') + ' code-box mr-md';
 const preStyle = preTag.getAttribute('style');
+const getPreStyle = (i: number) => {
+  let style = preStyle + ';';
+  if (i > 0) {
+    style += 'border-top-left-radius:0;border-top-right-radius:0;'
+  }
+  if (i < rows.length-1) {
+    style += 'border-bottom-left-radius:0;border-bottom-right-radius:0;'
+  }
+  return style;
+}
 const codeAttrs: Record<string, string> = {};
 for (const attr of codeTag.attributes) {
   codeAttrs[attr.name] = attr.value;
 }
 ---
-  <table class="h-1">
+  <table class="h-1 my-md">
     <tbody>
-      {rows.map(row => {
+      {rows.map((row, i) => {
         const lineNodes = lines.slice(row.startLine, row.endLine);
         return (
           <tr class="[&>*]:align-top [&>*]:m-0 [&>*:not(:first-child)]:py-2 [&>*:not(:first-child)]:max-w-xl">
-            <td class="align-top" style="height:100%; margin:0">
-            <pre {...preAttrs} style={`${preStyle};height:100%`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
+            <td class="align-top p-0" style="height:100%; margin:0">
+            <pre {...preAttrs} style={`${getPreStyle(i)};height:100%`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
             </td>
             {props.columns ? (
               <Fragment set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />

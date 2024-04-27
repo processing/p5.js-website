@@ -1,13 +1,98 @@
 ---
+import { defaultLocale, supportedLocales } from "@/src/i18n/const";
+import {
+  getCurrentLocale,
+  removeLocalePrefix,
+  getUiTranslator,
+} from "@/src/i18n/utils";
 import { AccessibilitySettings } from "@components/AccessibilitySettings/";
 import SearchForm from "@components/SearchForm/index.astro";
-import LocaleSwitcher from "@components/LocaleSwitcher/index.astro";
+import { LocaleSelect } from "@components/LocaleSelect";
+import styles from "./styles.module.scss";
+import type { DropdownOption } from "../Dropdown";
+
+interface Props {
+  hideSearch?: boolean;
+}
+
+const currentLocation = removeLocalePrefix(Astro.url.pathname);
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+// Generate the correct URL for all supported locales
+const localeOptions = supportedLocales.map((locale) => {
+  // No url prefix for the default locale
+  const targetLocale = locale === defaultLocale ? "" : locale;
+  return {
+    locale,
+    // displays the language associated with a
+    // locale code in its own language
+    label: new Intl.DisplayNames([locale], { type: "language" }).of(locale),
+    // The url for the default locale does not need a leading slash
+    url: `${locale === defaultLocale ? "" : "/"}${targetLocale}${currentLocation}`,
+  };
+});
+
+// move the current locale to the front of the array
+localeOptions.sort((a, b) => {
+  if (a.locale === currentLocale) {
+    return -1;
+  }
+  if (b.locale === currentLocale) {
+    return 1;
+  }
+  return 0;
+});
+
+const localeOptionProps = localeOptions.map(({ locale, label, url }) => ({
+  value: url,
+  label,
+  id: locale,
+})) as DropdownOption[];
+
+const t = await getUiTranslator(currentLocale);
+
+const a11ySettingsProps = [
+  {
+    value: "dark-theme",
+    label: t("Dark Mode"),
+  },
+  {
+    value: "monochrome-theme",
+    label: t("Monochrome Mode"),
+  },
+  {
+    value: "show-alt-text",
+    label: t("View Alt Text"),
+  },
+  {
+    value: "reduced-motion",
+    label: t("Reduced Motion"),
+  },
+] as DropdownOption[];
+
+const { hideSearch } = Astro.props;
 ---
 
-<div
-  class="settings flex flex-col md:flex-row gap-sm items-center space-x-2 md:p-sm [&>*]:px-sm md:fixed w-full z-10 top-0"
->
-  <LocaleSwitcher />
-  <SearchForm />
-  <AccessibilitySettings client:only />
+<div class={styles.container}>
+  <div id="settings-placeholder" class={styles.placeholder}></div>
+  <div id="settings-hitbox" class={styles.hitbox}></div>
+  <div id="settings-container" class={`${styles.wrapper} settings`}>
+    <div class={styles.localeselect}>
+      <LocaleSelect
+        locale={currentLocale}
+        options={localeOptionProps}
+        client:load
+      />
+    </div>
+    <div class={styles.a11yselect}>
+      <AccessibilitySettings options={a11ySettingsProps} client:load />
+    </div>
+    {
+      !hideSearch && (
+        <div class={styles.searchform}>
+          <SearchForm />
+        </div>
+      )
+    }
+  </div>
 </div>
+<script src="./script.js"></script>
