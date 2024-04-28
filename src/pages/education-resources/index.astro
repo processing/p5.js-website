@@ -1,0 +1,43 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Head from "@components/Head/index.astro";
+import { defaultLocale } from "@/src/i18n/const";
+import { getCollectionInDefaultLocale } from "@pages/_utils";
+import { setJumpToState, type JumpToLink } from "@/src/globals/state";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import { categories } from "@/src/content/tutorials/config";
+
+const pages = await getCollectionInDefaultLocale("pages");
+const page = pages.find((page) => page.slug === 'education-resources')!
+
+const { Content } = await page.render();
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+const pageJumpToLinks = categories.map((category) => ({
+  url: `/tutorials#${category}`,
+  label: t("tutorialCategories", category),
+})).concat([{
+  url: '/education-resources',
+  label: t("tutorialsPage", "education-resources"),
+}]);
+setJumpToState({
+  heading: t("Tutorials") as string,
+  links: pageJumpToLinks as JumpToLink[],
+});
+
+---
+
+<Head
+  title={page.data.title}
+  locale={defaultLocale}
+/>
+
+<BaseLayout
+  title={page.data.title}
+  subtitle={null}
+  variant="item"
+  topic="tutorials"
+>
+  <Content />
+</BaseLayout>
