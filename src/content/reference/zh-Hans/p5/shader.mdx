@@ -4,75 +4,30 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Sets the <a href="/reference/p5/p5.Shader">p5.Shader</a> object to apply
-  while drawing.</p>
+  <p>设置要在绘制时应用的 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象。</p>
 
-  <p>Shaders are programs that run on the graphics processing unit (GPU). They
+  <p>着色器是在图形处理单元 (GPU) 上运行的程序。 它们可以同时处理许多像素或顶点，从而可以快速执行许多图形任务。 它们是用一种名为 <a
+   href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"target="_blank">GLSL</a> 并与绘图中的其余代码一起运行。<a href="/reference/p5/p5.Shader">p5.Shader</a> 对象可以使用 <a href="/reference/p5/createShader">createShader()</a> 和 <a href="/reference/p5/loadShader">loadShader()</a> 函数。</p>
 
-  can process many pixels or vertices at the same time, making them fast for
-
-  many graphics tasks. They’re written in a language called
-
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
-  target="_blank">GLSL</a>
-
-  and run along with the rest of the code in a sketch.
-
-  <a href="/reference/p5/p5.Shader">p5.Shader</a> objects can be created using
-  the
-
-  <a href="/reference/p5/createShader">createShader()</a> and
-
-  <a href="/reference/p5/loadShader">loadShader()</a> functions.</p>
-
-  <p>The parameter, <code>s</code>, is the <a
-  href="/reference/p5/p5.Shader">p5.Shader</a> object to
-
-  apply. For example, calling <code>shader(myShader)</code> applies
-  <code>myShader</code> to
-
-  process each pixel on the canvas. The shader will be used for:</p>
+  <p>参数 <code>s</code> 是要应用的 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象。 例如，调用 <code>shader(myShader)</code> 应用 <code>myShader</code> 来处理画布上的每个像素。 该着色器将用于：</p>
 
   <ul>
 
-  <li>Fills when a texture is enabled if it includes a uniform
-  <code>sampler2D</code>.</li>
+  <li>如果纹理包含统一的纹理，则在启用纹理时填充 <code>sampler2D</code>。li>
 
-  <li>Fills when lights are enabled if it includes the attribute
-  <code>aNormal</code>, or if it has any of the following uniforms:
-  <code>uUseLighting</code>, <code>uAmbientLightCount</code>,
-  <code>uDirectionalLightCount</code>, <code>uPointLightCount</code>,
-  <code>uAmbientColor</code>, <code>uDirectionalDiffuseColors</code>,
-  <code>uDirectionalSpecularColors</code>, <code>uPointLightLocation</code>,
-  <code>uPointLightDiffuseColors</code>, <code>uPointLightSpecularColors</code>,
-  <code>uLightingDirection</code>, or <code>uSpecular</code>.</li>
+  <li>如果包含该属性，则在启用灯光时填充 <code>aNormal</code>，或者如果它具有以下任何 uniform：<code>uUseLighting</code>、<code>uAmbientLightCount</code>、<code>uDirectionalLightCount</code>、<code>uPointLightCount</code>、<code>uAmbientColor</code>、<code>uDirectionalDiffuseColors</code>、<code>uDirectionalSpecularColors</code>、<code>uPointLightLocation</code>、<code>uPointLightDiffuseColors</code>、<code>uPointLightSpecularColors</code>、<code>uLightingDirection</code>，或 <code>uSpecular</code>。</li>
 
-  <li>Fills whenever there are no lights or textures.</li>
+  <li>当没有灯光或纹理时进行填充。</li>
 
   <li>Strokes if it includes the uniform <code>uStrokeWeight</code>.</li>
 
   </ul>
 
-  <p>The source code from a <a href="/reference/p5/p5.Shader">p5.Shader</a>
-  object's
+  <p>源代码来自一个 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象的片段和顶点着色器将在第一次传递给 <code>shader()</code> 时进行编译。参见 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/compileShader"target="_blank">MDN</a> 了解有关编译着色器的更多信息。</p>
 
-  fragment and vertex shaders will be compiled the first time it's passed to
+  <p>调用 <a href="/reference/p5/resetShader">resetShader()</a> 可恢复绘图的默认着色器。</p>
 
-  <code>shader()</code>. See
-
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/compileShader"
-  target="_blank">MDN</a>
-
-  for more information about compiling shaders.</p>
-
-  <p>Calling <a href="/reference/p5/resetShader">resetShader()</a> restores a
-  sketch’s
-
-  default shaders.</p>
-
-  <p>Note: Shaders can only be used in WebGL mode.</p>
+  <p>注意：着色器只能在 WebGL 模式下使用。</p>
 line: 571
 isConstructor: false
 itemtype: method
@@ -81,10 +36,10 @@ example:
 
     <div modernizr='webgl'>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意：“uniform”是着色器程序中的全局变量。
 
-    // Create a string with the vertex shader program.
-    // The vertex shader is called for each vertex.
+    // 使用顶点着色器程序创建一个字符串。
+    // 每个顶点都会调用顶点着色器。
     let vertSrc = `
     precision highp float;
     uniform mat4 uModelViewMatrix;
@@ -101,13 +56,13 @@ example:
     }
     `;
 
-    // Create a string with the fragment shader program.
-    // The fragment shader is called for each pixel.
+    // 使用片段着色器程序创建一个字符串。
+    // 每个像素都会调用片段着色器。
     let fragSrc = `
     precision highp float;
 
     void main() {
-      // Set each pixel's RGBA value to yellow.
+      // 将每个像素的 RGBA 值设置为黄色。
       gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
     }
     `;
@@ -115,30 +70,30 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Create a p5.Shader object.
+      // 创建一个 p5.Shader 对象。
       let shaderProgram = createShader(vertSrc, fragSrc);
 
-      // Apply the p5.Shader object.
+      // 应用 p5.Shader 对象。
       shader(shaderProgram);
 
-      // Style the drawing surface.
+      // 设置绘图表面的样式。
       noStroke();
 
-      // Add a plane as a drawing surface.
+      // 添加一个平面作为绘图表面。
       plane(100, 100);
 
-      describe('A yellow square.');
+      describe('一个黄色的正方形。');
     }
     </code>
     </div>
 
     <div>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意："uniform" 是着色器程序中的全局变量。
 
     let mandelbrot;
 
-    // Load the shader and create a p5.Shader object.
+    // 加载着色器并创建一个 p5.Shader 对象。
     function preload() {
       mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
     }
@@ -146,20 +101,20 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Use the p5.Shader object.
+      // 使用 p5.Shader 对象。
       shader(mandelbrot);
 
-      // Set the shader uniform p to an array.
+      // 将着色器的 uniform p 设置为数组。
       mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
 
-      describe('A fractal image zooms in and out of focus.');
+      describe('分形图像会放大和失焦。');
     }
 
     function draw() {
-      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      // 将着色器的 uniform r 设置为在 0 和 2 之间振荡的值。
       mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
 
-      // Add a quad as a display surface for the shader.
+      // 添加一个四边形作为着色器的显示表面。
       quad(-1, -1, 1, -1, 1, 1, -1, 1);
     }
     </code>
@@ -167,13 +122,13 @@ example:
 
     <div>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意："uniform" 是着色器程序中的全局变量。
 
     let redGreen;
     let orangeBlue;
     let showRedGreen = false;
 
-    // Load the shader and create two separate p5.Shader objects.
+    // 加载着色器并创建两个单独的 p5.Shader 对象。
     function preload() {
       redGreen = loadShader('/assets/shader.vert', '/assets/shader-gradient.frag');
       orangeBlue = loadShader('/assets/shader.vert', '/assets/shader-gradient.frag');
@@ -182,29 +137,29 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Initialize the redGreen shader.
+      // 初始化红绿着色器。
       shader(redGreen);
 
-      // Set the redGreen shader's center and background color.
+      // 设置红绿着色器的中心颜色和背景颜色。
       redGreen.setUniform('colorCenter', [1.0, 0.0, 0.0]);
       redGreen.setUniform('colorBackground', [0.0, 1.0, 0.0]);
 
-      // Initialize the orangeBlue shader.
+      // 初始化橙蓝色着色器。
       shader(orangeBlue);
 
-      // Set the orangeBlue shader's center and background color.
+      // 设置橙蓝色着色器的中心颜色和背景颜色。
       orangeBlue.setUniform('colorCenter', [1.0, 0.5, 0.0]);
       orangeBlue.setUniform('colorBackground', [0.226, 0.0, 0.615]);
 
       describe(
-        'The scene toggles between two circular gradients when the user double-clicks. An orange and blue gradient vertically, and red and green gradient moves horizontally.'
+        '当用户双击时，场景在两个圆形渐变之间切换。 橙色和蓝色渐变垂直，红色和绿色渐变水平移动。'
       );
     }
 
     function draw() {
-      // Update the offset values for each shader.
-      // Move orangeBlue vertically.
-      // Move redGreen horizontally.
+      // 更新每个着色器的偏移值。
+      // 垂直移动橙蓝着色器。
+      // 水平移动红绿着色器。
       orangeBlue.setUniform('offset', [0, sin(frameCount * 0.01) + 1]);
       redGreen.setUniform('offset', [sin(frameCount * 0.01), 1]);
 
@@ -214,14 +169,14 @@ example:
         shader(orangeBlue);
       }
 
-      // Style the drawing surface.
+      // 设置绘图表面的样式。
       noStroke();
 
-      // Add a quad as a drawing surface.
+      // 添加四边形作为绘图表面。
       quad(-1, -1, 1, -1, 1, 1, -1, 1);
     }
 
-    // Toggle between shaders when the user double-clicks.
+    // 当用户双击时在着色器之间切换。
     function doubleClicked() {
       showRedGreen = !showRedGreen;
     }
@@ -231,8 +186,7 @@ class: p5
 params:
   - name: s
     description: |
-      <p><a href="#/p5.Shader">p5.Shader</a> object
-                           to apply.</p>
+      <p>应用对象 <a href="#/p5.Shader">p5.Shader</a>。</p>
     type: p5.Shader
 chainable: true
 ---
