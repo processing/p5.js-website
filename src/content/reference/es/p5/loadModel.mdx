@@ -4,88 +4,19 @@ module: Shape
 submodule: 3D Models
 file: src/webgl/loading.js
 description: >
-  <p>Loads a 3D model to create a
+  <p>Carga un modelo 3D para crear un objeto <a href="/reference/p5/p5.Geometry">p5.Geometry</a>.</p>
 
-  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object.</p>
+  <p><code>loadModel()</code> puede cargar modelos 3D desde archivos OBJ y STL. Una vez que el modelo se carga, se puede mostrar con la función <a href="/reference/p5/model">model()</a>, como en <code>model(shape)</code>.</p>
 
-  <p><code>loadModel()</code> can load 3D models from OBJ and STL files. Once
-  the model is
+  <p>Existen tres formas de llamar a <code>loadModel()</code> con parámetros opcionales para ayudar a procesar el modelo.</p>
 
-  loaded, it can be displayed with the
+  <p>El primer parámetro, <code>path</code>, siempre es una cadena de texto con la ruta al archivo. Las rutas a archivos locales deben ser relativas, como en <code>loadModel('/assets/model.obj')</code>. Las URL, como '<a href="https://example.com/model.obj">https://example.com/model.obj</a>', pueden estar bloqueadas debido a la seguridad del navegador.</p>
 
-  <a href="/reference/p5/model">model()</a> function, as in
-  <code>model(shape)</code>.</p>
+  <p>La primera forma de llamar a <code>loadModel()</code> tiene tres parámetros opcionales después de la ruta del archivo. El primer parámetro opcional, <code>successCallback</code>, es una función que se llama una vez que se carga el modelo. Por ejemplo, <code>loadModel('/assets/model.obj', handleModel)</code> llamará a la función <code>handleModel()</code> una vez que se cargue el modelo. El segundo parámetro opcional, <code>failureCallback</code>, es una función que se llama si el modelo no se carga correctamente. Por ejemplo, <code>loadModel('/assets/model.obj', handleModel, handleFailure)</code> llamará a la función <code>handleFailure()</code> si se produce un error durante la carga. El tercer parámetro opcional, <code>fileType</code>, es la extensión del archivo del modelo como una cadena de texto. Por ejemplo, <code>loadModel('/assets/model', handleModel, handleFailure, '.obj')</code> intentará cargar el archivo modelo como un archivo <code>.obj</code>.</p>
 
-  <p>There are three ways to call <code>loadModel()</code> with optional
-  parameters to help
+  <p>La segunda forma de llamar a <code>loadModel()</code> tiene cuatro parámetros opcionales después de la ruta del archivo. El primer parámetro opcional es un valor booleano. Si se pasa <code>true</code>, como en <code>loadModel('/assets/model.obj', true)</code>, entonces el modelo se redimensionará para asegurarse de que se ajuste al lienzo. Los siguientes tres parámetros son <code>successCallback</code>, <code>failureCallback</code> y <code>fileType</code> como se describe anteriormente.</p>
 
-  process the model.</p>
-
-  <p>The first parameter, <code>path</code>, is always a <code>String</code>
-  with the path to the
-
-  file. Paths to local files should be relative, as in
-
-  <code>loadModel('/assets/model.obj'). URLs such as </code>'<a
-  href="https://example.com/model.obj'%60">https://example.com/model.obj'`</a>
-  may be blocked due to browser security.</p>
-
-  <p>The first way to call <code>loadModel()</code> has three optional
-  parameters after the
-
-  file path. The first optional parameter, <code>successCallback</code>, is a
-  function
-
-  to call once the model loads. For example,
-
-  <code>loadModel('/assets/model.obj', handleModel)</code> will call the
-  <code>handleModel()</code>
-
-  function once the model loads. The second optional parameter,
-
-  <code>failureCallback</code>, is a function to call if the model fails to
-  load. For
-
-  example, <code>loadModel('/assets/model.obj', handleModel,
-  handleFailure)</code> will
-
-  call the <code>handleFailure()</code> function if an error occurs while
-  loading. The
-
-  third optional parameter, <code>fileType</code>, is the model’s file extension
-  as a
-
-  string. For example,
-
-  <code>loadModel('/assets/model', handleModel, handleFailure, '.obj')</code>
-  will try to
-
-  load the file model as a <code>.obj</code> file.</p>
-
-  <p>The second way to call <code>loadModel()</code> has four optional
-  parameters after the
-
-  file path. The first optional parameter is a <code>Boolean</code> value. If
-  <code>true</code> is
-
-  passed, as in <code>loadModel('/assets/model.obj', true)</code>, then the
-  model will be
-
-  resized to ensure it fits the canvas. The next three parameters are
-
-  <code>successCallback</code>, <code>failureCallback</code>, and
-  <code>fileType</code> as described above.</p>
-
-  <p>The third way to call <code>loadModel()</code> has one optional parameter
-  after the
-
-  file path. The optional parameter, <code>options</code>, is an
-  <code>Object</code> with options,
-
-  as in <code>loadModel('/assets/model.obj', options)</code>. The
-  <code>options</code> object can
-
-  have the following properties:</p>
+  <p>La tercera forma de llamar a <code>loadModel()</code> tiene un parámetro opcional después de la ruta del archivo. El parámetro opcional, <code>options</code>, es un objeto con opciones, como en <code>loadModel('/assets/model.obj', options)</code>. El objeto <code>options</code> puede tener las siguientes propiedades:</p>
 
   <code>
 
@@ -110,18 +41,9 @@ description: >
   loadModel('/assets/model.obj', options);
 
   </p></code>
+  <p>Los modelos pueden tardar en cargarse. Llamar a <code>loadModel()</code> en <a href="/reference/p5/preload">preload()</a> asegura que los modelos se carguen antes de usarlos en <a href="/reference/p5/setup">setup()</a> o <a href="/reference/p5/draw">draw()</a>.</p>
 
-  <p>Models can take time to load. Calling <code>loadModel()</code> in
-
-  <a href="/reference/p5/preload">preload()</a> ensures models load before
-  they're
-
-  used in <a href="/reference/p5/setup">setup()</a> or <a
-  href="/reference/p5/draw">draw()</a>.</p>
-
-  <p>Note: There’s no support for colored STL files. STL files with color will
-
-  be rendered without color.</p>
+  <p>Nota: No hay soporte para archivos STL en color. Los archivos STL con color se renderizarán sin color.</p>
 line: 12
 isConstructor: false
 itemtype: method
@@ -360,32 +282,30 @@ overloads:
     params:
       - name: path
         description: |
-          <p>path of the model to be loaded.</p>
+          <p>Ruta del modelo a cargar.</p>
         type: String
       - name: normalize
         description: |
-          <p>if <code>true</code>, scale the model to fit the canvas.</p>
+          <p>si se pasa <code>true</code>, el modelo se redimensionará para asegurarse de que se ajuste al lienzo.</p>
         type: Boolean
       - name: successCallback
         description: |
-          <p>function to call once the model is loaded. Will be passed
-                                                            the <a href="#/p5.Geometry">p5.Geometry</a> object.</p>
+          <p>función que se llama una vez que se carga el modelo. Se pasará el objeto <a href="#/p5.Geometry">p5.Geometry</a>.</p>
         type: function(p5.Geometry)
         optional: true
       - name: failureCallback
         description: >
-          <p>function to call if the model fails to load. Will be passed an
-          <code>Error</code> event object.</p>
+          <p>función a llamar si el modelo no se carga correctamente. Se le pasará un objeto de evento <code>Error</code>.</p>
         type: Function(Event)
         optional: true
       - name: fileType
         description: >
-          <p>model’s file extension. Either <code>'.obj'</code> or
+          <p>extensión del archivo del modelo. Puede ser <code>'.obj'</code> o
           <code>'.stl'</code>.</p>
         type: String
         optional: true
     return:
-      description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+      description: el objeto <a href="#/p5.Geometry">p5.Geometry</a>
       type: p5.Geometry
   - line: 318
     params:
@@ -405,7 +325,7 @@ overloads:
         type: String
         optional: true
     return:
-      description: new <a href="#/p5.Geometry">p5.Geometry</a> object.
+      description: nuevo objeto <a href="#/p5.Geometry">p5.Geometry</a>.
       type: p5.Geometry
   - line: 326
     params:
@@ -443,7 +363,7 @@ overloads:
             type: Boolean
             optional: true
     return:
-      description: new <a href="#/p5.Geometry">p5.Geometry</a> object.
+      description: nuevo objeto <a href="#/p5.Geometry">p5.Geometry</a>.
       type: p5.Geometry
 chainable: false
 ---
