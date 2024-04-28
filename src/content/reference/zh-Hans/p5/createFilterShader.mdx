@@ -4,70 +4,27 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Creates a <a href="/reference/p5/p5.Shader">p5.Shader</a> object to be used
-  with the
+  <p>创建一个 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象，与 <a href="/reference/p5/filter">filter()< /a> 函数。</p>
 
-  <a href="/reference/p5/filter">filter()</a> function.</p>
+  <p><code>createFilterShader()</code> 的工作方式与 <a href="/reference/p5/createShader">createShader()</a> 类似，但包含默认的顶点着色器。 <code>createFilterShader()</code> 旨在与 <a href="/reference/p5/filter">filter()</a> 一起使用来过滤画布的内容。 滤镜着色器将应用于整个画布，而不仅仅是 <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象。</p>
 
-  <p><code>createFilterShader()</code> works like
+  <p>参数 <code>fragSrc</code> 设置片段着色器。 它是一个字符串，包含编写的片段着色器程序 <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"target="_blank">GLSL</a>。</p>
 
-  <a href="/reference/p5/createShader">createShader()</a> but has a default
-  vertex
-
-  shader included. <code>createFilterShader()</code> is intended to be used
-  along with
-
-  <a href="/reference/p5/filter">filter()</a> for filtering the contents of a
-  canvas.
-
-  A filter shader will be applied to the whole canvas instead of just
-
-  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> objects.</p>
-
-  <p>The parameter, <code>fragSrc</code>, sets the fragment shader. It’s a
-  string that
-
-  contains the fragment shader program written in
-
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
-  target="_blank">GLSL</a>.</p>
-
-  <p>The <a href="/reference/p5/p5.Shader">p5.Shader</a> object that's created
-  has some
-
-  uniforms that can be set:</p>
+  <p>创建的 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象有一些可以设置的 uniform：</p>
 
   <ul>
 
-  <li><code>sampler2D tex0</code>, which contains the canvas contents as a
-  texture.</li>
+  <li><code>sampler2D tex0</code>，其中包含作为纹理的画布内容。</li>
 
-  <li><code>vec2 canvasSize</code>, which is the width and height of the canvas,
-  not including pixel density.</li>
+  <li><code>vec2 canvasSize</code>，即画布的宽度和高度，不包括像素密度。</li>
 
-  <li><code>vec2 texelSize</code>, which is the size of a physical pixel
-  including pixel density. This is calculated as <code>1.0 / (width *
-  density)</code> for the pixel width and <code>1.0 / (height * density)</code>
-  for the pixel height.</li>
+  <li><code>vec2 texelSize</code>，这是物理像素的大小，包括像素密度。 像素宽度的计算方式为 <code>1.0 / (width * Density)</code>，像素高度的计算方式为 <code>1.0 / (Height * Density)</code>。</li>
 
   </ul>
 
-  <p>The <a href="/reference/p5/p5.Shader">p5.Shader</a> that's created also
-  provides
+  <p>创建的 <a href="/reference/p5/p5.Shader">p5.Shader</a> 还提供了<code>varyingvec2 vTexCoord</code>，这是一个值介于 0 和 1 <code>vTexCoord 之间的坐标，描绘像素在画布上绘制的位置。</p>
 
-  <code>varying vec2 vTexCoord</code>, a coordinate with values between 0 and 1.
-
-  <code>vTexCoord</code> describes where on the canvas the pixel will be
-  drawn.</p>
-
-  <p>For more info about filters and shaders, see Adam Ferriss' <a
-  href="https://github.com/aferriss/p5jsShaderExamples">repo of shader
-  examples</a>
-
-  or the <a
-  href="https://p5js.org/learn/getting-started-in-webgl-shaders.html">Introduction
-  to Shaders</a> tutorial.</p>
+  <p>有关滤镜和着色器的更多信息，请参阅 Adam Ferriss 的 <a href="https://github.com/aferriss/p5jsShaderExamples">repo of shader examples</a> 或 <a href="https: //p5js.org/learn/getting-started-in-webgl-shaders.html"> Introduction to Shaders</a> 教程。</p>
 line: 429
 isConstructor: false
 itemtype: method
@@ -99,7 +56,7 @@ example:
     function setup() {
       let fragSrc = `precision highp float;
 
-      // x,y coordinates, given from the vertex shader
+      // 由顶点着色器给出的 x 和 y 坐标。
       varying vec2 vTexCoord;
 
       // the canvas contents, given from filter()
@@ -126,7 +83,7 @@ example:
       image(img, -50, -50);
       s.setUniform('darkness', 0.5);
       filter(s);
-      describe('a image of bricks tinted dark blue');
+      describe('深蓝色砖块的图像');
     }
     </code>
     </div>
@@ -134,10 +91,10 @@ class: p5
 params:
   - name: fragSrc
     description: |
-      <p>source code for the fragment shader.</p>
+      <p>片段着色器的源代码。</p>
     type: String
 return:
-  description: new shader object created from the fragment shader.
+  description: 从片段着色器创建的新着色器对象。
   type: p5.Shader
 chainable: false
 ---
