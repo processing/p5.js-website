@@ -4,41 +4,15 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Sets the texture that will be used on shapes.</p>
+  <p>设置将用于形状的纹理。</p>
 
-  <p>A texture is like a skin that wraps around a shape. <code>texture()</code>
-  works with
+  <p>纹理就像是包裹在形状周围的皮肤。<code>texture()</code> 函数可用于内置的形状，例如 <a href="/reference/p5/square">square()</a> 和 <a href="/reference/p5/sphere">sphere()</a>，以及使用 <a href="/reference/p5/buildGeometry">buildGeometry()</a> 等函数创建的自定义形状。要对使用 <a href="/reference/p5/beginShape">beginShape()</a> 创建的几何体进行纹理化，必须为每个 <a href="/reference/p5/vertex">vertex()</a> 调用传递 uv 坐标。</p>
 
-  built-in shapes, such as <a href="/reference/p5/square">square()</a> and
+  <p>参数 <code>tex</code> 是要应用的纹理。<code>texture()</code> 可以使用包括图像、视频和离屏渲染器等来源，例如 <a href="/reference/p5/p5.Graphics">p5.Graphics</a> 和 <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> 对象。</p>
 
-  <a href="/reference/p5/sphere">sphere()</a>, and custom shapes created with
+  <p>要对使用 <a href="/reference/p5/beginShape">beginShape()</a> 创建的几何体进行纹理化，你需要在 <a href="/reference/p5/vertex">vertex()</a> 中指定 uv 坐标。</p>
 
-  functions such as <a href="/reference/p5/buildGeometry">buildGeometry()</a>.
-  To
-
-  texture a geometry created with <a
-  href="/reference/p5/beginShape">beginShape()</a>,
-
-  uv coordinates must be passed to each
-
-  <a href="/reference/p5/vertex">vertex()</a> call.</p>
-
-  <p>The parameter, <code>tex</code>, is the texture to apply.
-  <code>texture()</code> can use a range
-
-  of sources including images, videos, and offscreen renderers such as
-
-  <a href="/reference/p5/p5.Graphics">p5.Graphics</a> and
-
-  <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> objects.</p>
-
-  <p>To texture a geometry created with <a
-  href="/reference/p5/beginShape">beginShape()</a>,
-
-  you will need to specify uv coordinates in <a
-  href="/reference/p5/vertex">vertex()</a>.</p>
-
-  <p>Note: <code>texture()</code> can only be used in WebGL mode.</p>
+  <p>注意：<code>texture()</code> 只能在 WebGL 模式下使用。</p>
 line: 861
 isConstructor: false
 itemtype: method
@@ -49,7 +23,7 @@ example:
     <code>
     let img;
 
-    // Load an image and create a p5.Image object.
+    // 加载一张图片并创建一个 p5.Image 对象。
     function preload() {
       img = loadImage('/assets/laDefense.jpg');
     }
@@ -57,21 +31,21 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('A spinning cube with an image of a ceiling on each face.');
+      describe('一个每个面上都贴有天花板图片的旋转立方体。');
     }
 
     function draw() {
       background(0);
 
-      // Rotate around the x-, y-, and z-axes.
+      // 绕 x 轴、y 轴和 z 轴旋转。
       rotateZ(frameCount * 0.01);
       rotateX(frameCount * 0.01);
       rotateY(frameCount * 0.01);
 
-      // Apply the image as a texture.
+      // 将图片应用为纹理。
       texture(img);
 
-      // Draw the box.
+      // 绘制立方体。
       box(50);
     }
     </code>
@@ -84,28 +58,28 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Create a p5.Graphics object.
+      // 创建一个 p5.Graphics 对象。
       pg = createGraphics(100, 100);
 
-      // Draw a circle to the p5.Graphics object.
+      // 在 p5.Graphics 对象上绘制一个圆形。
       pg.background(200);
       pg.circle(50, 50, 30);
 
-      describe('A spinning cube with circle at the center of each face.');
+      describe('一个每个面中心都有圆形的旋转立方体。');
     }
 
     function draw() {
       background(0);
 
-      // Rotate around the x-, y-, and z-axes.
+      //  绕 x 轴、y 轴和 z 轴旋转。
       rotateZ(frameCount * 0.01);
       rotateX(frameCount * 0.01);
       rotateY(frameCount * 0.01);
 
-      // Apply the p5.Graphics object as a texture.
+      // 将 p5.Graphics 对象应用为纹理。
       texture(pg);
 
-      // Draw the box.
+      // 绘制立方体。
       box(50);
     }
     </code>
@@ -115,7 +89,7 @@ example:
     <code>
     let vid;
 
-    // Load a video and create a p5.MediaElement object.
+    // 加载一个视频并创建一个 p5.MediaElement 对象。
     function preload() {
       vid = createVideo('/assets/fingers.mov');
     }
@@ -123,25 +97,25 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Hide the video.
+      // 隐藏视频。
       vid.hide();
 
-      // Set the video to loop.
+      // 设置视频循环播放。
       vid.loop();
 
-      describe('A rectangle with video as texture');
+      describe('一个视频作为其纹理的矩形');
     }
 
     function draw() {
       background(0);
 
-      // Rotate around the y-axis.
+      // 绕 y 轴旋转。
       rotateY(frameCount * 0.01);
 
-      // Apply the video as a texture.
+      // 将视频应用为纹理。
       texture(vid);
 
-      // Draw the rectangle.
+      // 绘制矩形。
       rect(-40, -40, 80, 80);
     }
     </code>
@@ -151,7 +125,7 @@ example:
     <code>
     let vid;
 
-    // Load a video and create a p5.MediaElement object.
+    // 加载一个视频并创建一个 p5.MediaElement 对象。
     function preload() {
       vid = createVideo('/assets/fingers.mov');
     }
@@ -159,28 +133,28 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Hide the video.
+      // 隐藏视频。
       vid.hide();
 
-      // Set the video to loop.
+      // 设置视频循环播放。
       vid.loop();
 
-      describe('A rectangle with video as texture');
+      describe('一个视频作为纹理的矩形');
     }
 
     function draw() {
       background(0);
 
-      // Rotate around the y-axis.
+      // 绕 y 轴旋转。
       rotateY(frameCount * 0.01);
 
-      // Set the texture mode.
+      // 设置纹理模式。
       textureMode(NORMAL);
 
-      // Apply the video as a texture.
+      // 将视频应用为纹理。
       texture(vid);
 
-      // Draw a custom shape using uv coordinates.
+      // 使用 uv 坐标绘制自定义形状。
       beginShape();
       vertex(-40, -40, 0, 0);
       vertex(40, -40, 1, 0);
@@ -194,7 +168,7 @@ class: p5
 params:
   - name: tex
     description: |
-      <p>media to use as the texture.</p>
+      <p>将媒体用作纹理。</p>
     type: >-
       p5.Image|p5.MediaElement|p5.Graphics|p5.Texture|p5.Framebuffer|p5.FramebufferTexture
 chainable: true
