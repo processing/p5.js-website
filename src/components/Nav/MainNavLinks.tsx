@@ -12,6 +12,7 @@ type MainNavLinksProps = {
   donateButtonLabel: string;
   mobileMenuLabel: string;
   isHomepage: boolean;
+  hasJumpTo: boolean;
 };
 
 export const MainNavLinks = ({
@@ -20,6 +21,7 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
+  hasJumpTo = false,
 }: MainNavLinksProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(!isMobile);
