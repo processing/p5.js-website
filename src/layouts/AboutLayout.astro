@@ -1,0 +1,120 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "./BaseLayout.astro";
+import LinkButton from "@components/LinkButton/index.astro";
+import GridItemPerson from "@components/GridItem/Person.astro";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { getCollectionInLocaleWithFallbacks } from "../pages/_utils";
+import { setJumpToState } from "../globals/state";
+
+interface Props {
+  entry: CollectionEntry<"text-detail">;
+}
+
+const { entry } = Astro.props;
+const { headings, Content } = await entry.render();
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+const markdownJumpToLinks = headings
+  .filter((h) => h.depth === 2)
+  .map((h) => ({ url: `${Astro.url.pathname}#${h.slug}`, label: h.text }));
+
+const pageJumpToLinks = [
+  {
+    url: `${Astro.url.pathname}#people`,
+    label: t("People") as string,
+  },
+  {
+    url: `${Astro.url.pathname}#contact`,
+    label: t("Contact") as string,
+  },
+  {
+    url: `${Astro.url.pathname}#processing-foundation`,
+    label: t("Processing Foundation") as string,
+  },
+];
+
+setJumpToState({
+  heading: t("About") as string,
+  links: [...markdownJumpToLinks, ...pageJumpToLinks],
+});
+
+const people = await getCollectionInLocaleWithFallbacks(
+  "people",
+  currentLocale
+);
+const featuredPeople = people.filter((p) => p.data.displayed === "featured");
+---
+
+<Head title="About" locale={currentLocale} />
+
+<BaseLayout title="About" variant="root">
+  <section class="mt-md pb-xs rendered-markdown">
+    <Content />
+  </section>
+  <hr />
+  <section class="pb-2xl lg:pb-xl">
+    <h2 id="people">{t("People")}</h2>
+    <ul class="content-grid my-xl">
+      {
+        featuredPeople.map((fp) => (
+          <li class="col-span-2">
+            <GridItemPerson item={fp} />
+          </li>
+        ))
+      }
+    </ul>
+    <LinkButton variant="link" url="/people" class="my-md min-w-[220px]"
+      >{t("All People")}</LinkButton
+    >
+  </section>
+  <hr />
+  <section class="pb-3xl lg:pb-2xl">
+    <h2 id="contact">{t("Contact")}</h2>
+    <div class="text-2xl grid grid-cols-6 lg:grid-cols-9 gap-x-md mt-xl">
+      <div class="col-span-2 lg:col-span-3">Email</div><div
+        class="col-span-4 lg:col-span-6"
+      >
+        info@p5js.org
+      </div>
+      <div class="col-span-2 lg:col-span-3">Social</div><div
+        class="col-span-4 lg:col-span-6"
+      >
+        <a href="https://github.com/processing/p5.js">GitHub</a>,{` `}
+        <a href="https://www.instagram.com/p5xjs/">Instagram</a>,{` `}
+        <a href="https://www.facebook.com/groups/p5dotjs/">Facebook</a>,{` `}
+        <a href="https://www.youtube.com/@pjs-dz1rv">YouTube</a>,{` `}
+        <a href="https://twitter.com/p5xjs">X</a>,{` `}
+        <a href="https://discord.gg/SHQ8dH25r9">Discord</a>,{` `}
+        <a href="https://discourse.processing.org/c/p5js">{t("Forum")}</a>{` `}
+      </div>
+    </div>
+  </section>
+  <hr />
+  <section>
+    <h2 id="processing-foundation">Processing Foundation</h2>
+    <ul class="text-2xl mt-xl">
+      <li>
+        <a href="https://processingfoundation.org">Processing Foundation</a>
+      </li>
+      <li><a href="https://processing.org">Processing</a></li>
+      <li><a href="https://py.processing.org/">Processing.py</a></li>
+      <li>
+        <a href="https://android.processing.org/">Processing for Android</a>
+      </li>
+      <li><a href="https://pi.processing.org/">Processing for Pi</a></li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  a {
+    @apply text-type-magenta-dark;
+  }
+  h2 {
+    @apply mt-sm;
+  }
+</style>

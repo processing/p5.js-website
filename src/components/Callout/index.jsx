@@ -4,8 +4,8 @@
  * props: { title?: string; children: any }
  */
 export const Callout = (props) => (
-  <div className="callout">
-    <h5>{props.title || "Try this!"}</h5>
+  <div className={`callout ${props.title ? 'callout-note' : ''}`}>
+    <h5 class="">{props.title || "Try this!"}</h5>
     {props.children}
   </div>
 );

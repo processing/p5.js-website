@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "./BaseLayout.astro";
+import GridItemEvent from "@components/GridItem/Event.astro";
+import PaginationNav from "@components/PaginationNav/index.astro";
+import { eventsPerPage } from "../globals/globals";
+import { setJumpToState } from "../globals/state";
+import { getCurrentLocale } from "../i18n/utils";
+
+interface Props {
+  entries: CollectionEntry<"events">[];
+  totalNumEvents: number;
+  currentPage: number;
+}
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const { entries, totalNumEvents, currentPage } = Astro.props;
+setJumpToState(null);
+---
+
+<Head title={"Events"} locale={currentLocale} />
+
+<BaseLayout title="Events" variant="item" topic="community">
+  <ul class="grid grid-cols-2 gap-y-xl gap-x-md lg:grid-cols-4">
+    {entries.map((entry) => <GridItemEvent item={entry} />)}
+  </ul>
+  <PaginationNav
+    maxNumItems={totalNumEvents}
+    itemsPerPage={eventsPerPage}
+    currentPage={currentPage}
+    sectionUrlPrefix="/events"
+  />
+</BaseLayout>

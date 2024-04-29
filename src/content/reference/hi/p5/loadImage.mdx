@@ -1,0 +1,134 @@
+---
+title: loadImage
+module: छवि
+submodule: लोड होना और प्रदर्शित करना
+file: src/image/loading_displaying.js
+description: >
+  <p>एक <a href="/reference/p5/p5.Image">p5.Image</a> बनाने के लिए एक छवि लोड करता है
+  वस्तु.</p>
+
+  <p><code>loadImage()</code> पहले पैरामीटर की तीन तरीकों में से एक व्याख्या करता है।
+  यदि पथ
+
+  एक छवि फ़ाइल प्रदान की गई है, <code>loadImage()</code> इसे लोड करेगा। के लिए पथ
+  स्थानीय
+
+  फ़ाइलें सापेक्ष होनी चाहिए, जैसे <code>'/assets/thundercat.jpg'</code>. यूआरएल
+  जैसे कि
+
+  <कोड>'https://example.com/thundercat.jpg'</code> को ब्लॉक किया जा सकता है
+  ब्राउज़र
+
+  सुरक्षा। कच्चे छवि डेटा को बेस64 एन्कोडेड छवि के रूप में भी पारित किया जा सकता है
+
+  फॉर्म <code>'data:image/png;base64,randomsequenceofcharacters'</code>.</p>
+
+  <p>दूसरा पैरामीटर वैकल्पिक है. यदि कोई फ़ंक्शन पारित हो जाता है, तो यह होगा
+
+  छवि लोड होने के बाद कॉल किया जाता है। कॉलबैक फ़ंक्शन वैकल्पिक रूप से उपयोग कर सकता है
+
+  नया <a href="/reference/p5/p5.Image">p5.Image</a> ऑब्जेक्ट।</p>
+
+  <p>तीसरा पैरामीटर भी वैकल्पिक है. यदि कोई फ़ंक्शन पारित हो जाता है, तो यह होगा
+
+  यदि छवि लोड होने में विफल रहती है तो कॉल किया जाता है। कॉलबैक फ़ंक्शन वैकल्पिक रूप से उपयोग कर सकता है
+
+  घटना त्रुटि.</p>
+
+  <p>छवियों को लोड होने में समय लग सकता है. <code>loadImage()</code> में कॉल किया जा रहा है
+
+  <a href="/reference/p5/preload">preload()</a> यह सुनिश्चित करता है कि छवियां पहले लोड हों
+  वे
+
+  <a href="/reference/p5/setup">setup()</a> या <a में उपयोग किया जाता है
+  href='/reference/p5/draw'>draw()</a>.</p>
+line: 18
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image and create a p5.Image object.
+    function preload() {
+      img = loadImage('/assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Draw the image.
+      image(img, 0, 0);
+
+      describe('Image of the underside of a white umbrella and a gridded ceiling.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      // Call handleImage() once the image loads.
+      loadImage('/assets/laDefense.jpg', handleImage);
+
+      describe('Image of the underside of a white umbrella and a gridded ceiling.');
+    }
+
+    // Display the image.
+    function handleImage(img) {
+      image(img, 0, 0);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      // Call handleImage() once the image loads or
+      // call handleError() if an error occurs.
+      loadImage('/assets/laDefense.jpg', handleImage, handleError);
+    }
+
+    // Display the image.
+    function handleImage(img) {
+      image(img, 0, 0);
+
+      describe('Image of the underside of a white umbrella and a gridded ceiling.');
+    }
+
+    // Log the error.
+    function handleError(event) {
+      console.error('Oops!', event);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: path
+    description: |
+      <p>लोड की जाने वाली छवि का पथ या बेस64 एन्कोडेड छवि।</p>
+    type: String
+  - name: successCallback
+    description: |
+      <p>फ़ंक्शन के साथ कॉल किया गया
+                                    <a href='#/p5.Image'>p5.Image</a> एक बार
+                                    भार.</p>
+    type: function(p5.Image)
+    optional: true
+  - name: failureCallback
+    description: |
+      <p>फंक्शन को इवेंट के साथ बुलाया गया
+                                    यदि छवि लोड होने में विफल रहती है तो त्रुटि।</p>
+    type: Function(Event)
+    optional: true
+return:
+  description: the <a href="#/p5.Image">p5.Image</a> object.
+  type: p5.Image
+chainable: false
+---
+
+
+# loadImage

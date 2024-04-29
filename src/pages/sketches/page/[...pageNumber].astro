@@ -1,0 +1,35 @@
+---
+import SketchesLayout from "@/src/layouts/SketchesLayout.astro";
+import { getCurationSketches } from "@src/api/OpenProcessing";
+import { getPaginationMax } from "../../_utils";
+import { sketchesPerPage } from "@/src/globals/globals";
+
+export async function getStaticPaths() {
+  const sketches = await getCurationSketches();
+  const paginationMax = getPaginationMax(sketchesPerPage, sketches.length);
+  const paths = [];
+  for (let i = 1; i <= paginationMax; i++) {
+    paths.push({
+      params: { pageNumber: i.toString() },
+      props: {
+        allSketches: sketches,
+        pageNumber: i,
+      },
+    });
+  }
+  return paths;
+}
+
+const { allSketches, pageNumber } = Astro.props;
+const totalSketches = allSketches.length;
+const sketches = allSketches.slice(
+  (pageNumber - 1) * sketchesPerPage,
+  pageNumber * sketchesPerPage
+);
+---
+
+<SketchesLayout
+  entries={sketches}
+  totalNumSketches={totalSketches}
+  currentPage={pageNumber}
+/>

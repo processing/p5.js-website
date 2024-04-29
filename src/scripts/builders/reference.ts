@@ -10,7 +10,7 @@ import type {
   ReferenceClassItemProperty,
 } from "../../../types/parsers.interface";
 import type {
-  ReferenceClassMethodPreviews,
+  ReferenceClassPreviews,
   ReferenceMDXDoc,
   ReferenceModulePathTree,
 } from "../../../types/builders.interface";
@@ -23,7 +23,7 @@ import he from "he";
 const prefix = "./src/content/reference/en/";
 
 /* Object to store class method previews, for transfer from the method records to the class records */
-const memberMethodPreviews: ReferenceClassMethodPreviews = {};
+const classMethodAndPropertyPreviews: ReferenceClassPreviews = {};
 
 /* Object to store the module path tree, needed for indicating relationships between records */
 const modulePathTree = {
@@ -53,13 +53,18 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
   if (!doc || !doc.name) return;
 
   let docClass: string;
+  let sortedModule = "";
+
+  if (doc.module === "Constants") {
+    sortedModule = "constants";
+  }
   if ("class" in doc && doc.class) {
     docClass = doc.class;
   } else {
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
-  return path.join(prefix, docClass);
+  return path.join(prefix, docClass, sortedModule);
 };
 
 /* Adds the doc to the module path tree */
@@ -120,42 +125,71 @@ const addDocToModulePathTree = (
       modulePathTree.modules[modulePath][doc.name] = itemPath;
     }
   }
-  if (doc?.description) {
-    const $ = load(doc.description, { xmlMode: true });
+};
 
-    // Modify the href attributes of <a> tags so that authors don't
-    // have to worry about locale prefixes
-    $("a").each(function () {
-      let href = $(this).attr("href");
-      if (!href) return;
-      // If the href starts with the class prefix
-      if (href.startsWith("#/p5.")) {
-        const parts = href.split("/");
-        // Check to see if the last part of the href is a method class
-        if (parts[parts.length - 1].indexOf("p5.") === -1) {
-          // If it is a method class, replace the prefix with /reference/
-          href = href.replace("#/", "/reference/");
-        } else {
-          // If it is a class itself, replace the prefix with /reference/p5/
-          href = href.replace("#/", "/reference/p5/");
-        }
-      } else if (href.startsWith("#/")) {
-        // If the href starts with #/, replace it with /reference/
-        href = href.replace("#/", "/reference/");
-      } else if (href.startsWith("/reference/#")) {
-        // p5 sound sometimes uses /reference/#/ which is incorrect
-        // Replace it with /reference/
-        href = href.replace("/reference/#", "/reference/");
-      }
-      $(this).attr("href", href);
-    });
-
-    // Initially encode the document to XML
-    const output = $.xml();
-
-    // Decode entities using the 'he' library to revert escaped punctuation
-    doc.description = he.decode(output);
+/**
+ * Corrects relative links to the example assets
+ * Made to be used with any string or string[] field on the doc
+ * such as example or description
+ * Could be removed if new upstream authoring practices are adopted
+ * @param content doc.example from the parsed JSON
+ * @returns example with relative links corrected
+ */
+const correctRelativeLinksToExampleAssets = (
+  content: string | string[] | undefined,
+) => {
+  if (!content) {
+    return content;
   }
+  return Array.isArray(content)
+    ? content.map((ex) => ex.replaceAll("assets/", "/assets/"))
+    : content.replaceAll("assets/", "/assets/");
+};
+
+/**
+ * Corrects relative links in the description of a doc
+ * @param description doc.description from the parsed JSON
+ * @returns description with relative links corrected
+ */
+const correctRelativeLinksInDescription = (description: string | undefined) => {
+  if (!description) {
+    return "";
+  }
+
+  const $ = load(description, { xmlMode: true });
+
+  // Modify the href attributes of <a> tags so that authors don't
+  // have to worry about locale prefixes
+  $("a").each(function () {
+    let href = $(this).attr("href");
+    if (!href) return;
+    // If the href starts with the class prefix
+    if (href.startsWith("#/p5.")) {
+      const parts = href.split("/");
+      // Check to see if the last part of the href is a method class
+      if (parts[parts.length - 1].indexOf("p5.") === -1) {
+        // If it is a method class, replace the prefix with /reference/
+        href = href.replace("#/", "/reference/");
+      } else {
+        // If it is a class itself, replace the prefix with /reference/p5/
+        href = href.replace("#/", "/reference/p5/");
+      }
+    } else if (href.startsWith("#/")) {
+      // If the href starts with #/, replace it with /reference/
+      href = href.replace("#/", "/reference/");
+    } else if (href.startsWith("/reference/#")) {
+      // p5 sound sometimes uses /reference/#/ which is incorrect
+      // Replace it with /reference/
+      href = href.replace("/reference/#", "/reference/");
+    }
+    $(this).attr("href", href);
+  });
+
+  // Initially encode the document to XML
+  const output = $.xml();
+
+  // Decode entities using the 'he' library to revert escaped punctuation
+  return he.decode(output);
 };
 
 /* Type guards to check the type of the doc */
@@ -199,13 +233,14 @@ const convertToMDX = async (
       ...getClassItemFrontmatter(doc),
       ...getMethodFrontmatter(doc),
     };
-    addMemberMethodPreviewsToClassDocs(doc);
+    addMethodAndPropertyPreviewsToClassDocs(doc);
   } else if (isPropertyClassItem(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
       ...getClassItemFrontmatter(doc),
       ...getPropertyFrontmatter(doc),
     };
+    addMethodAndPropertyPreviewsToClassDocs(doc);
   } else if (isClassDefinition(doc)) {
     frontMatterArgs = {
       ...frontMatterArgs,
@@ -271,6 +306,8 @@ const getPropertyFrontmatter = (doc: ReferenceClassItemProperty) => {
 
 const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
   const { description, module, submodule, params, example } = doc;
+  const methods = classMethodAndPropertyPreviews[doc.name]?.methods;
+  const properties = classMethodAndPropertyPreviews[doc.name]?.properties;
   return {
     description,
     isConstructor: true,
@@ -278,19 +315,22 @@ const getClassFrontmatter = (doc: ReferenceClassDefinition) => {
     submodule,
     params,
     example,
-    methods: { ...memberMethodPreviews[doc.name] },
+    methods,
+    properties,
     chainable: doc.chainable === 1,
   };
 };
 
 /* Adds description and path for member methods to the class docs */
-const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
+const addMethodAndPropertyPreviewsToClassDocs = (
+  doc: ReferenceClassItemMethod | ReferenceClassItemProperty,
+) => {
   // Skip p5 methods which are "global" and not part of a class from the perspective of the reference
   if (doc.class === "p5") return;
 
   // If the class doesn't exist in the memberMethodPreviews object, initialize it
-  if (!memberMethodPreviews[doc.class]) {
-    memberMethodPreviews[doc.class] = {};
+  if (!classMethodAndPropertyPreviews[doc.class]) {
+    classMethodAndPropertyPreviews[doc.class] = {};
   }
 
   // If the method doesn't exist in the class, log a warning and skip it
@@ -302,8 +342,19 @@ const addMemberMethodPreviewsToClassDocs = (doc: ReferenceClassItemMethod) => {
   // Construct the path to the class method
   const classMethodPath = `${modulePathTree.classes[doc.class][doc.name]}`;
 
+  const kindPath = doc.itemtype === "method" ? "methods" : "properties";
+
+  // If the previews don't have methods or properties yet, initialize the relevant one
+  if (!classMethodAndPropertyPreviews[doc.class][kindPath]) {
+    classMethodAndPropertyPreviews[doc.class][kindPath] = {};
+  }
+
+  if (!classMethodAndPropertyPreviews[doc.class][kindPath]) {
+    return;
+  }
+
   // Add the method to the memberMethodPreviews object, this is used to add previews to the class docs
-  memberMethodPreviews[doc.class][doc.name] = {
+  classMethodAndPropertyPreviews[doc.class][kindPath]![doc.name] = {
     description: doc.description,
     path: classMethodPath,
   };
@@ -324,6 +375,13 @@ const convertDocsToMDX = async (
             return;
           }
           addDocToModulePathTree(doc, savePath);
+          doc.description = correctRelativeLinksInDescription(doc.description);
+          doc.description = correctRelativeLinksToExampleAssets(
+            doc.description,
+          ) as string | undefined;
+          doc.example = correctRelativeLinksToExampleAssets(
+            doc.example,
+          ) as string[];
           const mdx = await convertToMDX(doc);
 
           return mdx ? { mdx, savePath, name: doc.name } : null;
@@ -370,7 +428,7 @@ buildReference();
 
 export const testingExports = {
   modulePathTree,
-  memberMethodPreviews,
+  memberMethodPreviews: classMethodAndPropertyPreviews,
   addDocToModulePathTree,
-  addMemberMethodPreviewsToClassDocs,
+  addMemberMethodPreviewsToClassDocs: addMethodAndPropertyPreviewsToClassDocs,
 };

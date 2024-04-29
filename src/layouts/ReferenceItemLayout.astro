@@ -1,9 +1,204 @@
 ---
+import CodeEmbed from "@components/CodeEmbed";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import Head from "@components/Head/index.astro";
+import {
+  getRefEntryTitleConcatWithParen,
+  escapeCodeTagsContent,
+  separateReferenceExamples,
+  normalizeReferenceRoute,
+  getRelatedEntriesinCollection,
+} from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
+import MethodSignature from "@components/MethodSignature/index.astro";
+import type {
+  ReferenceOverload,
+  ReferenceParam,
+} from "@/types/parsers.interface";
+import { setJumpToState } from "../globals/state";
 
-const { entry } = Astro.props;
+const { entry, relatedEntries } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const examples = separateReferenceExamples(entry.data.example)
+  // Remove empty lines at the beginning and end of the examples
+  ?.map((example) => example.trim());
+const description = escapeCodeTagsContent(entry.data.description);
+const t = await getUiTranslator(currentLocale);
+const title = getRefEntryTitleConcatWithParen(entry);
+
+const jumpToLinks = relatedEntries.map((relatedEntry: any) => {
+  return {
+    label: getRefEntryTitleConcatWithParen(relatedEntry),
+    url: `/reference/${normalizeReferenceRoute(relatedEntry.id)}`,
+    size: "small",
+    current: relatedEntry.id === entry.id,
+  };
+});
+
+// Add link for submodule itself
+jumpToLinks.unshift({
+  label: entry.data.submodule,
+  url: `/reference/#${entry.data.submodule}`,
+});
+
+const jumpToState = {
+  heading: t("Reference") as string,
+  links: jumpToLinks,
+};
+
+setJumpToState(jumpToState);
+
+// get whatever related entries might be specified in the collection entry data
+const relatedReferencesFromEntryData =
+  entry.data.relatedContent?.references !== undefined
+    ? await getRelatedEntriesinCollection(
+        "reference",
+        currentLocale,
+        entry.data.relatedContent.references.map((r: any) => r.slug)
+      )
+    : [];
+
+// then make a list of four, backfilled with entries from the jumpTo links
+const relatedReferences = [
+  ...relatedReferencesFromEntryData,
+  ...relatedEntries,
+].slice(0, 4);
 ---
 
-<BaseLayout title={entry.data.title} variant="secondary">
-  <div set:html={entry.data.description} class="[&_a]:underline" />
+<Head title={entry.data.title} locale={currentLocale} />
+
+<BaseLayout
+  title={title}
+  subtitle={null}
+  variant="item"
+  topic="reference"
+  className="reference"
+>
+  <div class="content-grid mt-0 max-w-screen-md">
+    <div class="col-span-9 xl:min-w-[1000px]">
+      <div set:html={description} class="[&_a]:text-type-magenta mb-xl" />
+      {
+        examples && (
+          <div class="mb-xl">
+            <h2 class="text-h3">{t("Examples")}</h2>
+            {examples.map((exampleCode: string, i: number) => {
+              return (
+                <CodeEmbed
+                  client:load
+                  initialValue={exampleCode}
+                  previewable
+                  editable
+                  lazyLoad={i > 0}
+                  previewHeight="120px"
+                  previewWidth="120px"
+                  allowSideBySide={true}
+                />
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        (entry.data.params || entry.data.overloads) && (
+          <>
+            <div class="mb-xl">
+              <h2 class="text-h3">{t("Syntax")}</h2>
+              <MethodSignature
+                params={entry.data.params}
+                overloads={entry.data.overloads}
+                name={entry.data.title}
+              />
+            </div>
+            <div class="mb-xl">
+              <h2 class="mb-md text-h3">{t("Parameters")}</h2>
+              {entry.data.params &&
+                entry.data.params.map((param: ReferenceParam) => (
+                  <div class="grid grid-cols-6 gap-[40px] text-body">
+                    <span class="col-span-1 text-body">{param.name}</span>
+                    <span
+                      class="col-span-5 [&_p]:m-0 [&_a]:underline"
+                      set:html={param.description}
+                    />
+                  </div>
+                ))}
+              {entry.data.overloads &&
+                entry.data.overloads.map((overload: ReferenceOverload) =>
+                  overload.params.map((param: ReferenceParam) => (
+                    <div class="grid grid-cols-6 gap-[40px] text-body">
+                      <h4 class="col-span-1">{param.name}</h4>
+                      <span
+                        class="col-span-5 [&_p]:m-0 [&_a]:underline"
+                        set:html={param.description}
+                      />
+                    </div>
+                  ))
+                )}
+            </div>
+          </>
+        )
+      }
+      {
+        entry.data.properties && (
+          <div class="mb-xl">
+            <h2 class="mb-md text-h3">{t("Fields")}</h2>
+            {Object.entries(entry.data.properties).map(([key, value]) => {
+              const propertyValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={`/reference/${propertyValue.path}`}
+                    class="text-body-large underline"
+                  >
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {propertyValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        entry.data.methods && (
+          <div class="my-xl">
+            <h2 class="text-h3">{t("Methods")}</h2>
+            {Object.entries(entry.data.methods).map(([key, value]) => {
+              const methodValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={`/reference/${methodValue.path}`}
+                    class="text-body-large"
+                  >
+                    {key}
+                  </a>
+                  {/* We don't render the full HTML in the preview */}
+                  <p class="mt-xxs">
+                    {methodValue.description.replace(/<[^>]*>/g, "")}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+  </div>
+  <RelatedItems
+    title={t("Related References") as string}
+    items={relatedReferences}
+  />
 </BaseLayout>

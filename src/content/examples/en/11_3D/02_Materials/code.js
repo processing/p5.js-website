@@ -16,8 +16,8 @@ let fillSelection, strokeSelection, ambientSelection, specularSelection;
 
 // Load astronaut model and venus image texture
 function preload() {
-  astronaut = loadModel('assets/astronaut.obj');
-  venus = loadImage('assets/venus.jpg');
+  astronaut = loadModel('/assets/astronaut.obj');
+  venus = loadImage('/assets/venus.jpg');
 }
 
 function setup() {

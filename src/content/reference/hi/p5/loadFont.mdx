@@ -1,0 +1,168 @@
+---
+title: loadFont
+module: टाइपोग्राफी
+submodule: लोड होना और प्रदर्शित करना
+file: src/typography/loading_displaying.js
+description: >
+  <p>एक फ़ॉन्ट लोड करता है और एक <a href="/reference/p5/p5.Font">p5.Font</a> बनाता है
+  वस्तु।
+
+  <code>loadFont()</code> फ़ॉन्ट को .otf या .ttf प्रारूप में लोड कर सकता है। लदा हुआ
+  फ़ॉन्ट कर सकते हैं
+
+  कैनवास पर और HTML तत्वों में टेक्स्ट को स्टाइल करने के लिए उपयोग किया जाता है।</p>
+
+  <p>पहला पैरामीटर, <code>पथ</code>, एक फ़ॉन्ट फ़ाइल का पथ है।
+
+  स्थानीय फ़ाइलों के पथ सापेक्ष होने चाहिए. उदाहरण के लिए,
+
+  <code>'/assets/inconsolata.otf'</code>. इनकंसोलटा फ़ॉन्ट का उपयोग किया गया
+  अगले
+
+  उदाहरण मुफ़्त में डाउनलोड किए जा सकते हैं
+
+  <a href='https://www.fontsquirrel.com/fonts/inconsolata'
+  target='_blank'>यहां</a>.
+
+  दूरस्थ फ़ाइलों के पथ URL होने चाहिए. उदाहरण के लिए,
+
+  <code>'https://example.com/inconsolata.otf'</code>। URL को इनके कारण ब्लॉक किया जा सकता है
+  ब्राउज़र
+
+  सुरक्षा.</p>
+
+  <p>दूसरा पैरामीटर, <code>सफलताकॉलबैक</code>, वैकल्पिक है। यदि एक
+  फ़ंक्शन है
+
+  पारित हो गया, फ़ॉन्ट लोड हो जाने पर इसे कॉल किया जाएगा। कॉलबैक फ़ंक्शन
+
+  नए <a href="/reference/p5/p5.Font">p5.Font</a> ऑब्जेक्ट का उपयोग कर सकते हैं यदि
+  जरूरत है.</p>
+
+  <p>तीसरा पैरामीटर, <code>failureCallback</code>, भी वैकल्पिक है। यदि एक
+  फ़ंक्शन है
+
+  पारित, यदि फ़ॉन्ट लोड होने में विफल रहता है तो इसे कॉल किया जाएगा। कॉलबैक फ़ंक्शन
+
+  त्रुटि का उपयोग कर सकते हैं
+
+  <a href='https://developer.mozilla.org/en-US/docs/Web/API/Event'
+  target='_blank'>घटना</a>
+
+  यदि आवश्यक हो तो आपत्ति करें।</p>
+
+  <p>फ़ॉन्ट लोड होने में समय लग सकता है। <code>loadFont()</code> में कॉल करना
+
+  <a href='/reference/p5/preload'>preload()</a> यह सुनिश्चित करता है कि फ़ॉन्ट पहले लोड हो
+  वे
+
+  <a href="/reference/p5/setup">setup()</a> या में उपयोग किया जाता है
+
+  <a href='/reference/p5/draw'>draw()</a>.</p>
+line: 16
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+
+    <div>
+    <code>
+    let font;
+
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('/assets/inconsolata.otf', font => {
+        fill('deeppink');
+        textFont(font);
+        textSize(36);
+        text('p5*js', 10, 50);
+
+        describe('The text "p5*js" written in pink on a white background.');
+      });
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('/assets/inconsolata.otf', success, failure);
+    }
+
+    function success(font) {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+
+    function failure(event) {
+      console.error('Oops!', event);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function preload() {
+      loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      let p = createP('p5*js');
+      p.style('color', 'deeppink');
+      p.style('font-family', 'Inconsolata');
+      p.style('font-size', '36px');
+      p.position(10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: पथ
+    description: |
+      <p>लोड किए जाने वाले फ़ॉन्ट का पथ.</p>
+    type: स्ट्रिंग
+  - name: successCallback
+    description: |
+      <p>फ़ंक्शन के साथ कॉल किया गया
+                                                इसके बाद <a href='#/p5.Font'>p5.Font</a> ऑब्जेक्ट
+                                                भार.</p>
+    type: फंक्शन
+    optional: true
+  - name: failureCallback
+    description: |
+      <p>फंक्शन को त्रुटि के साथ बुलाया गया
+                                                <a href='https://developer.mozilla.org/en-US/docs/Web/API/Event' target=”_blank'>इवेंट</a>
+                                                यदि फ़ॉन्ट लोड होने में विफल रहता है तो आपत्ति करें।</p>
+    type: फंक्शन
+    optional: true
+return:
+  description: <a href="#/p5.Font">p5.Font</a> object.
+  type: p5.Font
+chainable: false
+---
+
+
+# loadFont

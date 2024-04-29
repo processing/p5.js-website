@@ -35,18 +35,24 @@ export interface Modules {
 }
 
 /* Describes a parameter for methods or constructors */
-interface Param {
+export interface ReferenceParam {
   name: string; // The parameter name.
   description: string; // A description of the parameter.
   type: string; // The data type of the parameter.
   optional?: boolean; // Indicates if the parameter is optional.
 }
 
+export type ReferenceOverload = {
+  params: ReferenceParam[];
+};
+
+export type ReferenceOverloads = ReferenceOverload[];
+
 /* Represents the definition of a class within the project, including its properties, methods, and inheritance information. */
 export interface ReferenceClassDefinition extends Chainable {
   name: string; // The name of the class.
   shortname: string; // A shorter or abbreviated name for the class.
-  classitems: Param[]; // Parameters or properties of the class.
+  classitems: ReferenceParam[]; // Parameters or properties of the class.
   plugins: string[]; // Plugins associated with the class.
   extensions: string[]; // Extensions of the class.
   plugin_for: string[]; // Classes that this class is a plugin for.
@@ -58,7 +64,7 @@ export interface ReferenceClassDefinition extends Chainable {
   line?: number; // Optional line number where the class definition starts.
   description: string; // A description of the class.
   is_constructor?: boolean; // Indicates if this class is a constructor.
-  params?: Param[]; // Constructor parameters, if applicable.
+  params?: ReferenceParam[]; // Constructor parameters, if applicable.
   example?: string[]; // Example usage of the class.
 }
 
@@ -94,7 +100,7 @@ interface Return {
 
 /* Represents a method within a class */
 export interface ReferenceClassItemMethod extends BaseClassItem, Chainable {
-  params?: Param[];
+  params?: ReferenceParam[];
   return?: Return;
   example?: string[];
   overloads?: MethodOverload[]; // Optional array of method overloads.
@@ -103,7 +109,7 @@ export interface ReferenceClassItemMethod extends BaseClassItem, Chainable {
 /* Describes the parameters and return value of a method overload */
 interface MethodOverload {
   line: number;
-  params?: Param[];
+  params?: ReferenceParam[];
   return?: Return;
   chainable?: number;
 }

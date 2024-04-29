@@ -1,8 +1,11 @@
 import { useEffect, useState } from "preact/hooks";
 import Fuse, { type FuseResult } from "fuse.js";
+import SearchResults from "../SearchResults";
+import { defaultLocale } from "@/src/i18n/const";
 
 interface SearchProviderProps {
   currentLocale?: string;
+  uiTranslations: Record<string, string>;
 }
 
 type SearchResult = {
@@ -19,7 +22,10 @@ type SearchResult = {
  * It then uses Fuse.js to search the index and display the results.
  * @param {string} currentLocale - The current locale
  */
-const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
+const SearchProvider = ({
+  currentLocale,
+  uiTranslations,
+}: SearchProviderProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
 
@@ -29,9 +35,17 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
     let flatId = 0;
     Object.entries(data).forEach(([category, entries]) => {
       Object.entries(entries).forEach(([title, docDetails]) => {
+        // Since we are generating these links with Javascript and the
+        // middleware doesn't prefix the locale automatically, we need to
+        // do it manually here.
+        const relativeUrl =
+          currentLocale === defaultLocale
+            ? docDetails.relativeUrl
+            : `/${currentLocale}${docDetails.relativeUrl}`;
+        docDetails.relativeUrl = relativeUrl;
         flatData.push({
           id: flatId++,
-          category,
+          category: category.replace("-fallback", ""),
           title,
           ...docDetails,
         });
@@ -47,6 +61,15 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
     const query = params.get("term");
     if (query) setSearchTerm(query);
   }, []);
+
+  // Update query param on search term update
+  useEffect(() => {
+    if (searchTerm) {
+      const params = new URLSearchParams(window.location.search);
+      params.set("term", searchTerm);
+      history.replaceState(null, "", `${window.location.pathname}?${params}`);
+    }
+  }, [searchTerm]);
 
   // Fetch the search index for the current locale and search for the search term
   // This effect runs whenever the search term or the current locale changes
@@ -85,33 +108,22 @@ const SearchProvider = ({ currentLocale }: SearchProviderProps) => {
       );
   }, [searchTerm, currentLocale]);
 
-  const renderSearchResults = () => {
-    if (!results) {
-      return <p>Searching ...</p>;
+  const handleSearchTermChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const { value } = target;
+    if (value) {
+      setSearchTerm(target.value);
     }
-
-    if (results.length === 0) {
-      return <p>No results found</p>;
-    }
-
-    return (
-      <ul>
-        {results.map((result) => (
-          <li key={result.id}>
-            <a href={result.relativeUrl}>{result.title}</a>
-          </li>
-        ))}
-      </ul>
-    );
   };
 
-  if (!searchTerm) return null;
-
   return (
-    <div>
-      <h2>Search Results for: {searchTerm}</h2>
-      {renderSearchResults()}
-    </div>
+    <SearchResults
+      results={results}
+      searchTerm={searchTerm}
+      currentLocale={currentLocale as string}
+      onSearchChange={handleSearchTermChange}
+      uiTranslations={uiTranslations}
+    />
   );
 };
 

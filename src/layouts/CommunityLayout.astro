@@ -1,57 +1,111 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getLibraryLink, removeLocaleAndExtension } from "../pages/_utils";
+import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
-import { Image } from "astro:assets";
+import LinkButton from "@components/LinkButton/index.astro";
+import GridItemSketch from "@components/GridItem/Sketch.astro";
+import GridItemLibrary from "@components/GridItem/Library.astro";
+import GridItemEvent from "@components/GridItem/Event.astro";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import { setJumpToState } from "../globals/state";
+import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
 
 interface Props {
-  sketches: CollectionEntry<"sketches">[];
+  sketches: OpenProcessingCurationResponse;
   libraries: CollectionEntry<"libraries">[];
-  pastEvents: CollectionEntry<"past-events">[];
+  pastEvents: CollectionEntry<"events">[];
 }
 
-const { sketches, libraries, pastEvents } = Astro.props;
+// Max number of sketches we will show on this page
+const sketchesLimit = 8;
+// Max number of libraries we will show on this page
+const librariesLimit = 8;
+// Max number of libraries we will show on this page
+const eventsLimit = 9;
+
+const sketches = Astro.props.sketches.slice(0, sketchesLimit),
+  libraries = Astro.props.libraries
+    .filter((lib) => lib.data.featured)
+    .slice(0, librariesLimit)
+    .sort(() => (Math.random() < 0.5 ? -1 : 1)),
+  events = Astro.props.pastEvents.slice(0, eventsLimit);
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+setJumpToState({
+  heading: t("Community") as string,
+  links: [
+    { label: t("Sketches") as string, url: "#sketches" },
+    { label: t("Libraries") as string, url: "#libraries" },
+    { label: t("Events") as string, url: "#events" },
+  ],
+});
 ---
 
+<Head title={"Community"} locale={currentLocale} />
+
 <BaseLayout title="Community">
-  <h2>Sketches</h2>
-  {
-    sketches.map((entry) => (
-      <li>
-        <Image
-          src={entry.data.thumbnailImage}
-          alt={entry.data.thumbnailImageAlt}
-          width={200}
-          height={200}
-        />
-        <a href={`/sketches/${removeLocaleAndExtension(entry.id)}`}>
-          {removeLocaleAndExtension(entry.id)}
-        </a>
-      </li>
-    ))
-  }
-  <a href="/sketches">See Sketches Archive</a>
-
-  <h2>Libraries</h2>
-  {
-    libraries.map((entry) => (
-      <li>
-        <a href={getLibraryLink(entry)}>{removeLocaleAndExtension(entry.id)}</a>
-      </li>
-    ))
-  }
-
-  <a href="/libraries">See Libraries Archive</a>
-
-  <h2>Past Events</h2>
-  {
-    pastEvents.map((entry) => (
-      <li>
-        <a href={`/past-events/${removeLocaleAndExtension(entry.id)}`}>
-          {removeLocaleAndExtension(entry.id)}
-        </a>
-      </li>
-    ))
-  }
-  <a href="/past-events">See Past Events Archive</a>
+  <section class="mt-md mb-xl">
+    <h2 class="mb-lg">{t("Sketches")}<a id="sketches"></a></h2>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md lg:grid-cols-4">
+      {
+        sketches.map((sk, i) => (
+          <li
+            class={(() => {
+              if (i === 0)
+                return "col-span-2 row-span-2 lg:col-span-3 lg:row-span-3";
+              if (i === 1) return "lg:row-span-3";
+              if (i === 2) return "col-span-2 row-span-2";
+              if (i === librariesLimit - 1) return "row-span-2 col-span-2";
+              else return "lg:row-span-2";
+            })()}
+          >
+            <GridItemSketch item={sk} lazyLoad={i >= 5} />
+          </li>
+        ))
+      }
+    </ul>
+    <LinkButton url="/sketches" variant="link" class="mt-lg"
+      >{t("All Sketches")}</LinkButton
+    >
+  </section>
+  <hr />
+  <section class="mt-md mb-xl">
+    <h2 class="mb-lg">{t("Libraries")}<a id="libraries"></a></h2>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md lg:grid-cols-4">
+      {
+        libraries.map((lib) => (
+          <li>
+            <GridItemLibrary item={lib} />
+          </li>
+        ))
+      }
+    </ul>
+    <LinkButton url="/libraries" variant="link" class="mt-lg"
+      >{t("All Libraries")}</LinkButton
+    >
+  </section>
+  <hr />
+  <section class="mt-md mb-xl">
+    <h2 class="mb-lg">{t("Events")}<a id="events"></a></h2>
+    <ul class="grid grid-cols-2 gap-y-xl gap-x-md lg:grid-cols-4">
+      {
+        events.map((event, i) => (
+          <li
+            class={(() => {
+              if (i === 0 || i === 5) return "col-span-2 row-span-2";
+              if (i > 0 && i < 5) return "lg:row-span-2";
+              if (i === 8)
+                return "col-span-2 row-span-2 lg:row-span-1 lg:col-span-1";
+            })()}
+          >
+            <GridItemEvent item={event} />
+          </li>
+        ))
+      }
+    </ul>
+    <LinkButton url="/events" variant="link" class="mt-lg"
+      >{t("All Events")}</LinkButton
+    >
+  </section>
 </BaseLayout>

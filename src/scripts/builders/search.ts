@@ -7,7 +7,8 @@ import type {
 } from "../../../types/content.interface";
 import { getContentFilePaths } from "../utils";
 import keywordExtractor from "keyword-extractor";
-import { contentTypes, localesWithSearchSupport } from "../../globals/globals";
+import { contentTypes } from "../../globals/globals";
+import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
 
 interface SearchIndex {
@@ -228,27 +229,27 @@ const generateSearchIndex = async (
           .replace(/^[\w-]+?\//, "")
           .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2")
           .replace(/_/g, "-");
-        relativeUrl = `examples/${relativeUrl}`;
+        relativeUrl = `/examples/${relativeUrl}`;
         title = data.title;
         description = getKeywordsFromContent(content, locale);
         break;
       case "reference":
         title = data.title;
+        // Skip items without a description
+        if (!data.description) {
+          continue;
+        }
         break;
       case "libraries":
         title = data.name;
         description = data.description;
-        relativeUrl = `libraries/`;
+        relativeUrl = `/libraries/`;
         break;
       case "people":
         title = data.name;
-        relativeUrl = `people/`;
+        relativeUrl = `/people/`;
         break;
-      case "sketches":
-        title = data.title;
-        description = data.author?.name ?? "";
-        break;
-      case "past-events":
+      case "events":
         title = data.title;
         description = getKeywordsFromContent(
           content + data.description,

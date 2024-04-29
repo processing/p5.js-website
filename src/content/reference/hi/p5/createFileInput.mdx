@@ -1,0 +1,119 @@
+---
+title: createFileInput
+module: डोम
+submodule: डोम
+file: src/dom/dom.js
+description: >
+  <p>एक <code>'फ़ाइल'</code> <code><input></input></code> प्रकार का तत्व बनाता है | </p>
+
+  <p><code>createFileInput()</code> उपयोगकर्ताओं को स्केच में उपयोग के लिए स्थानीय फ़ाइलों का चयन करने की अनुमति देता है। यह एक <a href="/reference/p5/p5.File">p5.File</a> ऑब्जेक्ट लौटाता है।</p>
+
+  <p>पहला पैरामीटर, <code>callback</code>, एक फ़ंक्शन है जिसे फ़ाइल लोड होने पर कॉल किया जाता है। callback फ़ंक्शन में एक पैरामीटर होना चाहिए, <code>file</code>, जो एक <a href="/reference/p5/p5.File">p5.File</a> ऑब्जेक्ट है।</p>
+
+  <p>दूसरा पैरामीटर, <code>multiple</code>, वैकल्पिक है। यह एक बूलियन मान है जो <code>true</code> पर सेट होने पर एकाधिक फ़ाइलें लोड करने की अनुमति देता है। यदि <code>true</code> है, तो <code>callback</code> को प्रति फ़ाइल एक बार कॉल किया जाएगा।</p>
+line: 1923
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    // Use the file input to select an image to
+    // load and display.
+    let input;
+    let img;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a file input and place it beneath
+      // the canvas.
+      input = createFileInput(handleImage);
+      input.position(0, 100);
+
+      describe('A gray square with a file input beneath it. If the user selects an image file to load, it is displayed on the square.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the image if loaded.
+      if (img) {
+        image(img, 0, 0, width, height);
+      }
+    }
+
+    // Create an image if the file is an image.
+    function handleImage(file) {
+      if (file.type === 'image') {
+        img = createImg(file.data, '');
+        img.hide();
+      } else {
+        img = null;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Use the file input to select multiple images
+    // to load and display.
+    let input;
+    let images = [];
+
+    function setup() {
+      // Create a file input and place it beneath
+      // the canvas. Allow it to load multiple files.
+      input = createFileInput(handleImage, true);
+      input.position(0, 100);
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the images if loaded. Each image
+      // is drawn 20 pixels lower than the
+      // previous image.
+      for (let i = 0; i < images.length; i += 1) {
+        // Calculate the y-coordinate.
+        let y = i * 20;
+
+        // Draw the image.
+        image(img, 0, y, 100, 100);
+      }
+
+      describe('A gray square with a file input beneath it. If the user selects multiple image files to load, they are displayed on the square.');
+    }
+
+    // Create an image if the file is an image,
+    // then add it to the images array.
+    function handleImage(file) {
+      if (file.type === 'image') {
+        let img = createImg(file.data, '');
+        img.hide();
+        images.push(img);
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: callback
+    description: |
+      <p>फ़ाइल लोड होने पर कॉल कॉल होने वाला फंक्शन।</p>
+    type: फंक्शन
+  - name: multiple
+    description: |
+      <p>एकाधिक फ़ाइलों को चुनने की अनुमति | </p>
+    type: बूलियन
+    optional: true
+return:
+  description: नया <a href='#/p5.File'>p5.File</a> ऑब्जेक्ट।
+  type: p5.File
+chainable: false
+---
+
+
+# createFileInput

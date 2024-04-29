@@ -1,0 +1,234 @@
+---
+title: p5.Vector
+module: 数学
+submodule: 向量
+file: src/math/p5.Vector.js
+description: |2-
+
+  <p>描述二维或三维向量的类。</p>
+
+  <p>向量可以以不同的方式理解。在一种观点下，向量就像指向空间的箭头。向量具有大小（长度）和方向。</p>
+
+  <p><code>p5.Vector</code>对象经常用于编码运动，因为它们简化了数学计算。例如，移动的球有位置和速度。位置描述了球在空间中的位置。球的位置向量从原点延伸到球的中心。速度描述了球的速度和运动方向。如果球直直地向上移动，其速度向量也会指向上方。将球的速度向量添加到其位置向量中会移动球，就像<code>pos.add(vel)</code>一样。向量数学依赖于<code>p5.Vector</code>类中的方法。</p>
+
+  <p>注意：<a href="/reference/p5/createVector">createVector()</a>是创建此类实例的推荐方法。</p>
+line: '11'
+isConstructor: 'true'
+params:
+  - name: x
+    description: |2-
+  
+      <p>向量的 x 分量。</p>
+    type: 数字
+    optional: true
+  - name: y
+    description: |2-
+  
+      <p>向量的 y 分量。</p>
+    type: 数字
+    optional: true
+  - name: z
+    description: |2-
+  
+      <p>向量的 z 分量。</p>
+    type: 数字
+    optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create p5.Vector objects.
+      let p1 = createVector(25, 25);
+      let p2 = createVector(75, 75);
+
+      // Style the points.
+      strokeWeight(5);
+
+      // Draw the first point using a p5.Vector.
+      point(p1);
+
+      // Draw the second point using a p5.Vector's components.
+      point(p2.x, p2.y);
+
+      describe('Two black dots on a gray square, one at the top left and the other at the bottom right.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let pos;
+    let vel;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create p5.Vector objects.
+      pos = createVector(50, 100);
+      vel = createVector(0, -1);
+
+      describe('A black dot moves from bottom to top on a gray square. The dot reappears at the bottom when it reaches the top.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Add velocity to position.
+      pos.add(vel);
+
+      // If the dot reaches the top of the canvas,
+      // restart from the bottom.
+      if (pos.y < 0) {
+        pos.y = 100;
+      }
+
+      // Draw the dot.
+      strokeWeight(5);
+      point(pos);
+    }
+    </code>
+    </div>
+methods:
+  toString:
+    description: |2-
+
+      <p>返回向量的字符串表示。</p>
+
+      <p>在调试时，调用<code>toString()</code>非常有用，可以将向量打印到控制台。</p>
+    path: p5.Vector/toString
+  set:
+    description: |2-
+
+      <p>设置向量的<code>x</code>、<code>y</code>和<code>z</code>分量。</p>
+
+      <p><code>set()</code>可以使用单独的数字，例如<code>v.set(1, 2, 3)</code>，一个<a href="/reference/p5/p5.Vector">p5.Vector</a>对象，例如<code>v.set(v2)</code>，或者一个数字数组，例如<code>v.set([1, 2, 3])</code>。</p>
+
+      <p>如果未为分量提供值，则会将其设置为0。例如，<code>v.set(4, 5)</code>将<code>v.x</code>设置为4，<code>v.y</code>设置为5，<code>v.z</code>设置为0。调用<code>set()</code>时不带参数，例如<code>v.set()</code>，会将向量的所有分量都设置为0。</p>
+    path: p5.Vector/set
+  copy:
+    description: |2-
+
+      <p>返回<a href="/reference/p5/p5.Vector">p5.Vector</a>对象的副本。</p>
+    path: p5.Vector/copy
+  add:
+    description: |2-
+
+      <p>将向量的 <code>x</code>、<code>y</code> 和 <code>z</code> 分量相加。</p>
+
+      <p><code>add()</code> 可以使用单独的数字，例如 <code>v.add(1, 2, 3)</code>，另一个 <a href="/reference/p5/p5.Vector">p5.Vector</a> 对象，例如 <code>v.add(v2)</code>，或者数字数组，例如 <code>v.add([1, 2, 3])</code>。</p>
+
+      <p>如果没有为分量提供值，它将保持不变。例如，<code>v.add(4, 5)</code> 将 4 加到 <code>v.x</code>，5 加到 <code>v.y</code>，0 加到 <code>v.z</code>。</p>
+
+      <p>调用 <code>add()</code> 而不带参数，例如 <code>v.add()</code>，不会产生任何效果。</p>
+
+      <p>静态版本的 <code>add()</code>，例如 <code>p5.Vector.add(v2, v1)</code>，返回一个新的 <a href="/reference/p5/p5.Vector">p5.Vector</a> 对象，并不更改原始对象。</p>
+    path: p5.Vector/add
+  rem:
+    description: <p>对向量的 <code>x</code>、 <code>y</code>、 <code>z</code> 分量取模（余数）。</p> <p><code>rem()</code> 可以接收单独的数字，如：<code>v.rem(1, 2, 3)</code>；可以接收另一个 <a href="#/p5.Vector">p5.Vector</a> 对象，如：<code>v.rem(v2)</code>；也可以接收数字组，如：<code>v.rem([1, 2, 3])</code>。</p> <p>如果只传一个参数，如：<code>v.rem(2)</code>，那么所有分量都将设置为它们对 2 取模的值；如果传两个参数，如：<code>v.rem(2, 3)</code>，那么 <code>v.z</code> 不会变；调用不带参数的 <code>rem()</code>，如：<code>v.rem()</code>，不会发生任何变化。</p> <p><code>rem()</code> 的静态版本，如：<code>p5.Vector.rem(v2, v1)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/rem
+  sub:
+    description: <p>从向量的 <code>x</code>、<code>y</code>、 <code>z</code> 分量中减去。</p> <p><code>sub()</code> 可以接收单独的数字，如：<code>v.sub(1, 2, 3)</code>；可以接收另一个 <a href="#/p5.Vector">p5.Vector</a> 对象，如：<code>v.sub(v2)</code>；也可以接收数字组，如：<code>v.sub([1, 2, 3])</code>。</p> <p>如果不给分量传值，它的值就不会变，如：<code>v.sub(4, 5)</code>，它将 4 添加到 <code>v.x</code>，5 添加到 <code>v.y</code>，0 添加到 <code>v.z</code>；调用不带参数的 <code>sub()</code>，如：<code>v.sub()</code>，不会发生任何变化。</p> <p><code>sub()</code> 的静态版本，如：<code>p5.Vector.sub(v2, v1)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/sub
+  mult:
+    description: <p>乘以向量的 <code>x</code>、 <code>y</code>、 <code>z</code> 分量。</p> <p><code>mult()</code> 可以接收单独的数字，如：<code>v.mult(1, 2, 3)</code>；可以接收另一个 <a href="#/p5.Vector">p5.Vector</a> 对象，如：<code>v.mult(v2)</code>；也可以接收数字组，如：<code>v.mult([1, 2, 3])</code>。</p> <p>如果只传一个参数，如：<code>v.mult(2)</code>，那么所有分量都将乘以 2。如果不给分量传值，它的值就不会变，如：<code>v.mult(4, 5)</code> 会将 <code>v.x</code> 乘以 4，<code>v.y</code> 乘以 5，<code>v.z</code> 乘以 1。调用不带参数的 <code>mult()</code>，如：<code>v.mult()</code>，不会发生任何变化。</p> <p><code>mult()</code> 的静态版本，如：<code>p5.Vector.mult(v, 2)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/mult
+  div:
+    description: <p>除向量的 <code>x</code>、<code>y</code>、 <code>z</code> 分量。</p> <p><code>div()</code> 可以接收单独的数字，如：<code>v.div(1, 2, 3)</code>；可以接收另一个 <a href="#/p5.Vector">p5.Vector</a> 对象，如：<code>v.div(v2)</code>；也可以接收数字组，如：<code>v.div([1, 2, 3])</code>。</p> <p>如果只传一个参数，如：<code>v.div(2)</code>，那么所有分量都将除以 2。如果不给分量传值，它的值就不会变，如：<code>v.div(4, 5)</code>，会将 <code>v.x</code> 除以 4， <code>v.y</code> 除以 5，and <code>v.z</code> 除以 1。调用不带参数的 <code>div()</code>，如：<code>v.div()</code>，不会发生任何变化。</p> <p><code>div()</code> 的静态版本，如： <code>p5.Vector.div(v, 2)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/div
+  mag:
+    description: |-
+      <p>
+      计算向量的大小（长度）。</p> <p><a href="#/p5/mag">mag()</a> 用来计算二维向量的大小，参数形式为 <code>mag(x, y)</code>。</p>
+    path: p5.Vector/mag
+  magSq:
+    description: |2-
+
+      <p>计算向量的大小（长度）的平方。</p>
+    path: p5.Vector/magSq
+  dot:
+    description: <p>计算两个向量的点积。</p> <p>点积是描述两个向量之间重叠程度的数字。从视觉上，可以将点积看作是一个向量在另一个向量上投下的“阴影”。当两个向量指向相同或相反方向时，点积最大。当两个向量形成直角时，点积为 0。</p> <p><code>dot()</code> 带有一个参数时，可以把它看作一个 <a href="#/p5.Vector">p5.Vector</a> 对象。</p> <p><code>dot()</code> 带有多个参数时，可以把它们看作另一个向量的 <code>x</code>、<code>y</code>、<code>z</code> 分量。</p> <p><code>dot()</code>，如：<code>p5.Vector.dot(v1, v2)</code>，与调用 <code>v1.dot(v2)</code> 相同。</p>
+    path: p5.Vector/dot
+  cross:
+    description: "<p>计算两个向量的叉积。</p> <p>叉积是一个向量，指向由两个向量创建的平面的垂直方向，它的大小是两个原始向量形成的平行四边形的面积。</p> <p><code>cross()</code>，如：<code>p5.Vector.cross(v1, v2)</code>，与调用 <code>v1.cross(v2)</code>相同。</p>"
+    path: p5.Vector/cross
+  dist:
+    description: <p>计算由向量表示的两个点之间的距离。</p> <p>一个点的坐标可以由从原点到该点的向量的分量表示。</p> <p><code>dist()</code>，如：<code>p5.Vector.dist(v1, v2)</code>，与调用 <code>v1.dist(v2)</code> 相同。</p> <p><a href="#/p5/dist">dist()</a> 用来计算以坐标表示的点之间的距离，如：<code>dist(x1, y1, x2, y2)</code>。</p>
+    path: p5.Vector/dist
+  normalize:
+    description: <p>缩放 <a href="#/p5.Vector">p5.Vector</a> 对象的分量，使其大小为 1。</p> <p><code>normalize()</code> 的静态版本，如：<code>p5.Vector.normalize(v)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/normalize
+  limit:
+    description: <p>限制向量的最大值。</p> <p><code>limit()</code> 的静态版本，如：<code>p5.Vector.limit(v, 5)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/limit
+  setMag:
+    description: <p>将向量的大小设置为给定值。</p> <p><code>setMag()</code> 的静态版本，如：<code>p5.Vector.setMag(v, 10)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/setMag
+  heading:
+    description: <p>计算二维向量与正 x 轴的夹角。</p> <p>按照惯例，正 x 轴的角度为0，角度按顺时针方向增加。</p> <p>如果向量是用 <a href="#/p5/createVector">createVector()</a> 创建的，那么 <code>heading()</code> 返回当前 <a href="#/p5/angleMode">angleMode()</a> 的角度单位。</p> <p><code>heading()</code> 的静态版本，如：<code>p5.Vector.heading(v)</code>，也是一样的工作原理。</p>
+    path: p5.Vector/heading
+  setHeading:
+    description: <p>将二维向量旋转到特定角度而不改变其大小。</p> <p>按照惯例，正 x 轴的角度为0，角度按顺时针方向增加。</p> <p>如果向量是用 <a href="#/p5/createVector">createVector()</a> 创建的，那么 <code>setHeading()</code> 使用当前 <a href="#/p5/angleMode">angleMode()</a> 的单位。</p>
+    path: p5.Vector/setHeading
+  rotate:
+    description: <p>将二维向量按角度旋转而不改变其大小。</p> <p>按照惯例，正 x 轴的角度为0，角度按顺时针方向增加。</p> <p>如果向量是用 <a href="#/p5/createVector">createVector()</a> 创建的，那么 <code>rotate()</code> 使用当前 <a href="#/p5/angleMode">angleMode()</a> 的单位。</p> <p><code>rotate()</code> 的静态版本，如：<code>p5.Vector.rotate(v, PI)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>
+    path: p5.Vector/rotate
+  angleBetween:
+    description: <p>计算两个向量之间的角度。</p> <p>如果返回的角度是有符号的，就意味着 <code>v1.angleBetween(v2) === -v2.angleBetween(v1)</code>。</p> <p>如果向量是用 <a href="#/p5/createVector">createVector()</a> 创建的，那么 <code>angleBetween()</code> 返回当前 <a href="#/p5/angleMode">angleMode()</a> 的角度单位。</p>
+    path: p5.Vector/angleBetween
+  lerp:
+    description: '<p>计算新的 <code>x</code>、<code>y</code> 和  <code>z</code> 分量，它们之间按比例两两等距。</p> <p><code>amt</code> 参数是在旧向量和新向量之间进行插值的量。0.0 保持所有分量与旧的向量相等，0.5 取中间值，1.0 保持所有分量与新的向量相等。</p> <p><code>lerp()</code> 的静态版本，如: <code>p5.Vector.lerp(v0, v1, 0.5)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>'
+    path: p5.Vector/lerp
+  slerp:
+    description: '<p>计算介于两个向量之间新的方向和大小。</p> <p><code>amt</code> 参数是在旧向量和新向量之间进行插值的量。0.0 保持方向和大小与旧的向量相等，0.5 取中间值，1.0 保持方向和大小与新的向量相等。</p> <p><code>slerp()</code> 和 <a href="#/p5.Vector/lerp">lerp()</a> 不同的是，它插值大小。调用 <code>v0.slerp(v1, 0.5)</code>，将 <code>v0</code> 的大小设为其原始大小与 <code>v1</code> 之间的中间值。调用 <code>v0.lerp(v1, 0.5)</code> 不能实现该功能。</p> <p><code>slerp()</code> 的静态版本，如: <code>p5.Vector.slerp(v0, v1, 0.5)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>'
+    path: p5.Vector/slerp
+  reflect:
+    description: "<p>向量关于二维中的一条线或三维中的一个平面反射。</p> <p>线或平面的方向由一个法向量描述，该法向量的指向远离图形。</p> <p><code>reflect()</code> 的静态版本，如:<code>p5.Vector.reflect(v, n)</code>，返回一个新的 <a href="#/p5.Vector">p5.Vector</a> 对象，不改变原始对象。</p>"
+    path: p5.Vector/reflect
+  array:
+    description: |2-
+
+      <p>以数字数组的形式返回向量的分量。</p>
+    path: p5.Vector/array
+  equals:
+    description: |-
+      <p>检查向量的所有分量是否等于另一个向量的分量。</p>
+
+      <p>如果这两个向量的所有分量都相同，那么 <code>equals()</code> 返回 <code>true</code>，否则返回 <code>false</code>。</p>
+
+      <p>如果 <code>equals()</code> 只带有一个参数，那么这个参数是另一个 <a href="/reference/p5/p5.Vector">p5.Vector</a> 对象。</p>
+
+      <p>如果 <code>equals()</code> 带有多个参数，那么它们则是另一个向量的分量。缺失的参数将被赋值为 0。</p>
+
+      <p><code>equals()</code> 的静态版本，如: , <code>p5.Vector.equals(v0, v1)</code>，其中的两个参数都是 <a
+      href="/reference/p5/p5.Vector">p5.Vector</a> 对象。</p>
+    path: p5.Vector/equals
+  fromAngle:
+    description: |2-
+
+      <p>根据给定的角度，创建一个新的二维向量。</p>
+    path: p5.Vector/fromAngle
+  fromAngles:
+    description: |2-
+
+      <p>从一对 ISO 球面角，创建一个新的三维向量</p>
+    path: p5.Vector/fromAngles
+  random2D:
+    description: |2-
+
+      <p>创建一个新的二维单位向量，方向随机。</p>
+    path: p5.Vector/random2D
+  random3D:
+    description: |2-
+
+      <p>创建一个新的三维单位向量，方向随机。</p>
+    path: p5.Vector/random3D
+chainable: false
+---
+
+# p5.Vector

@@ -1,0 +1,181 @@
+---
+title: beginClip
+module: 颜色
+submodule: 设置
+file: src/color/setting.js
+description: >
+  <p>开始定义一个形状，该形状将遮罩之后绘制的任何形状。</p>
+
+  <p>在 <code>beginClip()</code> 和 <a href="/reference/p5/endClip">endClip()</a> 之间绘制的任何形状都将添加到遮罩形状中。遮罩将应用于在 <a href="/reference/p5/endClip">endClip()</a> 之后绘制的任何内容。</p>
+
+  <p>参数 <code>options</code> 是可选的。如果传入一个包含 <code>invert</code> 属性的对象，比如 <code>beginClip({ invert: true })</code>，它会被用于设置遮罩模式。<code>{ invert: true }</code> 会反转遮罩，即在被遮罩的形状中创建空洞。<code>invert</code> 的默认值是 <code>false</code>。</p>
+
+  <p>遮罩可以被包裹在 <a href="/reference/p5/push">push()</a> 和 <a href="/reference/p5/pop">pop()</a> 函数之间。这样可以在遮罩形状之后绘制不被遮罩的形状。</p>
+
+  <p>遮罩也可以通过传递给 <a href="/reference/p5/clip">clip()</a> 的回调函数来定义。</p>
+line: 13
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white triangle and circle on a gray background.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an inverted mask.
+      beginClip({ invert: true });
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+
+      describe('A white square at the top-left corner of a gray square. The white square has a triangle and a circle cut out of it.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      noStroke();
+
+      // Draw a masked shape.
+      push();
+      // Create a mask.
+      beginClip();
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw an inverted masked shape.
+      push();
+      // Create an inverted mask.
+      beginClip({ invert: true });
+      triangle(15, 37, 30, 13, 43, 37);
+      circle(45, 45, 7);
+      endClip();
+
+      // Draw a backing shape.
+      square(5, 5, 45);
+      pop();
+
+      describe('In the top left, a white triangle and circle. In the bottom right, a white square with a triangle and circle cut out of it.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored fuchsia.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+      endClip();
+
+      // Draw a backing shape.
+      noStroke();
+      fill('fuchsia');
+      plane(100);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A silhouette of a rotating torus colored with a gradient from cyan to purple.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a mask.
+      beginClip();
+      push();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      scale(0.5);
+      torus(30, 15);
+      pop();
+      endClip();
+
+      // Draw a backing shape.
+      noStroke();
+      beginShape(QUAD_STRIP);
+      fill(0, 255, 255);
+      vertex(-width / 2, -height / 2);
+      vertex(width / 2, -height / 2);
+      fill(100, 0, 100);
+      vertex(-width / 2, height / 2);
+      vertex(width / 2, height / 2);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: options
+    description: |
+      <p>含有剪裁设置的对象。</p>
+    type: 对象
+    optional: true
+chainable: false
+---
+
+# beginClip

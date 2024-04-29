@@ -1,40 +1,86 @@
 ---
-import { getLibraryLink } from "@pages/_utils";
-
 import type { CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
-import { Image } from "astro:assets";
+import GridItemLibrary from "@components/GridItem/Library.astro";
+import { setJumpToState, type JumpToLink } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { categories } from "../content/libraries/config";
 
 interface Props {
   entries: CollectionEntry<"libraries">[];
+  page: CollectionEntry<"pages">;
   title: string;
 }
+type LibraryEntry = CollectionEntry<"libraries">;
 
-const { entries } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+const { entries, page } = Astro.props;
+const { Content } = await page.render();
+
+function strCompare(a: string, b: string) {
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  return 0;
+}
+
+const sections = categories
+  .map((slug) => {
+    const name = t("libraryCategories", slug);
+    const sectionEntries = entries
+      .filter((e: LibraryEntry) => e.data.category === slug)
+      .sort((a: LibraryEntry, b: LibraryEntry) =>
+        strCompare(a.data.name.toLowerCase(), b.data.name.toLowerCase())
+      );
+
+    return { slug, name, sectionEntries };
+  })
+  .filter((section) => section.sectionEntries.length > 0);
+
+const pageJumpToLinks = categories.map((category) => ({
+  url: `/libraries#${category}`,
+  label: t("libraryCategories", category),
+}));
+
+setJumpToState({
+  heading: t("Libraries") as string,
+  links: pageJumpToLinks as JumpToLink[],
+});
 ---
 
-<BaseLayout title="Libraries">
-  <ul>
-    {
-      entries.map((lib) => (
-        <li>
-          <a href={getLibraryLink(lib)}>
-            {lib.data.featuredImageAlt && lib.data.featuredImage && (
-              <Image
-                src={lib.data.featuredImage}
-                alt={lib.data.featuredImageAlt}
-                width={1500}
-                height={1000}
-              />
-            )}
-            <span>{lib.data.name}</span>
-            {lib.data.description}
-            Created by:{" "}
-            {lib.data.author.map((a: { name: string }) => a.name).join(", ")}
-          </a>
-        </li>
-      ))
-    }
-    }
-  </ul>
+<Head title="Libraries" locale={currentLocale} />
+
+<BaseLayout
+  title="Libraries"
+  subtitle={t("briefPageDescriptions", "Libraries") as string}
+  variant="item"
+  topic="community"
+>
+  <div class="rendered-markdown !max-w-screen-lg">
+    <Content />
+  </div>
+  <hr />
+  {
+    sections.map(({ slug, name, sectionEntries }) => (
+      <div class="mb-lg">
+        <hr />
+        <h2 id={slug} class="mb-lg mt-sm lg:mt-md">
+          {name}
+        </h2>
+        <ul class="grid grid-cols-2 gap-y-xl gap-x-md lg:grid-cols-4">
+          {sectionEntries.map((entry: LibraryEntry) => (
+            <li>
+              <GridItemLibrary item={entry} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
 </BaseLayout>

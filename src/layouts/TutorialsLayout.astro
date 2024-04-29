@@ -1,32 +1,86 @@
 ---
 import { type CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
-import { Image } from "astro:assets";
+import Image from "@components/Image/index.astro";
+import { setJumpToState, type JumpToLink } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { categories } from "../content/tutorials/config";
+import LinkButton from "@components/LinkButton/index.astro";
 
 type TutorialEntry = CollectionEntry<"tutorials">;
 
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
 const { entries } = Astro.props;
+
+const sections = categories.map((slug) => {
+  const name = t("tutorialCategories", slug);
+  const sectionEntries = entries
+    .filter((e: TutorialEntry) => e.data.category === slug)
+    .sort(
+      (a: TutorialEntry, b: TutorialEntry) =>
+        (a.data.categoryIndex ?? 1000) - (b.data.categoryIndex ?? 1000)
+    );
+
+  return { slug, name, sectionEntries };
+});
+
+const pageJumpToLinks = categories.map((category) => ({
+  url: `#${category}`,
+  label: t("tutorialCategories", category),
+})).concat([{
+  url: '#education-resources',
+  label: t("tutorialsPage", "education-resources"),
+}]);
+
+setJumpToState({
+  heading: t("Tutorials") as string,
+  links: pageJumpToLinks as JumpToLink[],
+});
 ---
 
+<Head title="Tutorials" locale={currentLocale} />
+
 <BaseLayout title="Tutorials">
-  <ul>
-    {
-      entries.map((entry: TutorialEntry) => (
-        <li>
-          <a href={`/tutorials/${entry.slug}`}>
-            {" "}
-            {entry.data.featuredImageAlt && entry.data.featuredImage && (
-              <Image
-                src={entry.data.featuredImage}
-                alt={entry.data.featuredImageAlt}
-                width={200}
-                height={200}
-              />
-            )}
-            {entry.data.title}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  {
+    sections.map(({ slug, name, sectionEntries }) => (
+      <>
+        <h2 id={slug} class="mb-lg">
+          {name}
+        </h2>
+        <ul class="content-grid pb-4xl mb-lg border-b border-sidebar-type-color last:border-0 ">
+          {sectionEntries.map((entry: TutorialEntry, i: number) => (
+            <li class="col-span-3">
+              <a
+                href={`/tutorials/${entry.slug}`}
+                class="group hover:no-underline"
+              >
+                {entry.data.featuredImageAlt && entry.data.featuredImage && (
+                  <Image
+                    src={entry.data.featuredImage}
+                    alt={entry.data.featuredImageAlt}
+                    width="440"
+                    loading={i <= 3 ? "eager" : "lazy"}
+                  />
+                )}
+                <p class="mt-sm text-body group-hover:underline">
+                  {entry.data.title}
+                </p>
+                <p class="text-body-caption mt-xxs">{entry.data.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    ))
+  }
+  <section class="mt-md mb-xl">
+    <h2 class="mb-lg">{t("tutorialsPage", "education-resources")}<a id="education-resources"></a></h2>
+    <p>{t("tutorialsPage", "education-resources-snippet")}</p>
+    <LinkButton url="/education-resources" variant="link" class="mt-lg">
+      {t("tutorialsPage", "view-education-resources")}
+    </LinkButton>
+  </section>
 </BaseLayout>

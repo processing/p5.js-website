@@ -1,0 +1,152 @@
+---
+title: loadFont
+module: 타이포그래피
+submodule: 불러오기 & 보이기
+file: src/typography/loading_displaying.js
+description: >
+  <p>글꼴을 불러와 <a href="/reference/p5/p5.Font">p5.Font</a> 객체를 생성합니다.
+  
+  <code>loadFont()</code>는 .otf 또는 .ttf 형식의 글꼴을 불러올 수 있습니다.
+  
+  불러온 글꼴은 캔버스 및 HTML 요소에서 스타일을 지정하는 데에 사용할 수 있습니다.</p>
+  
+  <p>첫 번째 매개변수 <code>path</code>는 글꼴 파일의 경로입니다.
+  
+  로컬 파일의 경로는 상대적이어야 합니다.
+  
+  예시로, <code>'/assets/inconsolata.otf'</code>가 있습니다.
+  
+  다음 예제에서 사용된 Inconsolata 글꼴은
+  
+  <a href="https://www.fontsquirrel.com/fonts/inconsolata" target="_blank">이 곳</a>에서 무료로 다운로드할 수 있습니다.
+  
+  원격 파일의 경로는 URL이어야 합니다.
+  
+  예시로, <code>'[https://example.com/inconsolata.otf](https://example.com/inconsolata.otf')'</code>가 있습니다.
+  
+  브라우저 보안으로 인해 URL이 차단될 수 있습니다.</p>
+  
+  <p>두 번째 매개변수 <code>successCallback</code>은 선택 사항입니다.
+  
+  함수가 전달되면 글꼴을 불러온 후에 호출됩니다.
+  
+  콜백(callback) 함수가 필요한 경우 새 <a href="/reference/p5/p5.Font">p5.Font</a> 객체를 사용할 수 있습니다.</p>
+  
+  <p>세 번째 매개변수 <code>failureCallback</code>도 선택 사항입니다.
+  
+  함수가 전달되면 글꼴을 불러오는 데 실패한 경우에 호출됩니다.
+  
+  콜백 함수가 필요한 경우,
+  
+  오류 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event" target="_blank">이벤트</a> 객체를 사용할 수 있습니다.</p>
+  
+  <p>글꼴을 불러오는 데 시간이 걸릴 수 있습니다.
+  
+  <code>loadFont()</code>를 <a href="/reference/p5/preload">preload()</a>에서 호출하면
+  
+  <a href="/reference/p5/setup">setup()</a> 또는 <a href="/reference/p5/draw">draw()</a>에서
+  
+  사용되기 전에 글꼴을 불러옵니다.</p>
+line: 16
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+
+    <div>
+    <code>
+    let font;
+
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('/assets/inconsolata.otf', font => {
+        fill('deeppink');
+        textFont(font);
+        textSize(36);
+        text('p5*js', 10, 50);
+
+        describe('The text "p5*js" written in pink on a white background.');
+      });
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('/assets/inconsolata.otf', success, failure);
+    }
+
+    function success(font) {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+
+    function failure(event) {
+      console.error('Oops!', event);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function preload() {
+      loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      let p = createP('p5*js');
+      p.style('color', 'deeppink');
+      p.style('font-family', 'Inconsolata');
+      p.style('font-size', '36px');
+      p.position(10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: path
+    description: |
+      <p>불러올 글꼴의 경로.</p>
+    type: String
+  - name: successCallback
+    description: |
+      <p>글꼴을 불러온 후 <a href="#/p5.Font">p5.Font</a> 객체와 함께 호출되는 함수.</p>
+    type: Function
+    optional: true
+  - name: failureCallback
+    description: |
+      <p>글꼴을 불러오지 못한 경우 오류 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event " target="_blank">이벤트</a> 객체와 함께 호출되는 함수.</p>
+    type: Function
+    optional: true
+return:
+  description: <a href="#/p5.Font">p5.Font</a> 객체.
+  type: p5.Font
+chainable: false
+---
+
+
+# loadFont

@@ -1,0 +1,370 @@
+---
+title: p5.Image
+module: 이미지
+submodule: 이미지
+file: src/image/p5.Image.js
+description: >
+  <p>이미지를 표현하는 클래스(class)입니다.
+
+  이미지는 표시되거나 수정할 수 있는 픽셀 단위의 직사각형 격자(grid)입니다.</p>
+  
+  <p>기존 이미지는 <a href="./loadImage">loadImage()</a>를 호출하여 불러올 수 있습니다.
+  
+  빈 이미지는 <a href="./createImage">createImage()</a>를 호출하여 생성할 수 있습니다.</p>
+  
+  <p><code>p5.Image</code> 객체에는 필터 적용이나 픽셀 값 수정과 같은 일반적인 작업을 수행하는 메서드가 있습니다.</p>
+line: 21
+isConstructor: true
+params:
+  - name: width
+    description: ''
+    type: Number
+  - name: height
+    description: ''
+    type: Number
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      describe('An image of a brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Apply the GRAY filter.
+      img.filter(GRAY);
+
+      // Display the image.
+      image(img, 0, 0);
+
+      describe('A grayscale image of a brick wall.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Image object.
+      let img = createImage(66, 66);
+
+      // Load the image's pixels.
+      img.loadPixels();
+
+      // Set the pixels to black.
+      for (let x = 0; x < img.width; x += 1) {
+        for (let y = 0; y < img.height; y += 1) {
+          img.set(x, y, 0);
+        }
+      }
+
+      // Update the image.
+      img.updatePixels();
+
+      // Display the image.
+      image(img, 17, 17);
+
+      describe('A black square drawn in the middle of a gray square.');
+    }
+    </code>
+    </div>
+methods:
+  pixelDensity:
+    description: |
+      <p>고밀도 디스플레이를 위한 픽셀 밀도를 가져오거나 설정합니다.
+      기본적으로 밀도는 1로 설정됩니다.</p>
+      <p>인수(argument) 없이 메서드를 호출하면 기본 밀도를 얻을 수 있으며,
+      숫자를 입력하여 밀도를 설정할 수 있습니다.
+      양수가 아닌 숫자가 입력되면 기본값은 1입니다.</p>
+    path: p5.Image/pixelDensity
+  loadPixels:
+    description: >
+      <p><a href="#/p5.Image">p5.Image</a> 객체에 있는 각 픽셀의 현재 값을 <code>img.pixels</code> 배열에 불러옵니다.
+      이 메서드는 픽셀 값을 가져오거나 수정하기 전에 호출해야 합니다.</p>
+    path: p5.Image/loadPixels
+  updatePixels:
+    description: >
+      <p><a href="#/p5.Image/pixels">img.pixels</a> 배열의 RGBA 값을 사용하여 캔버스를 업데이트합니다.</p>
+
+      <p><code>img.updatePixels()</code>는 <a href="#/p5.Image/pixels">img.pixels</a>
+
+      배열의 값을 변경한 후에만 호출해야 합니다.
+      
+      이러한 변경 사항은 <a href="#/p5.Image/loadPixels">img.loadPixels()</a>를 호출한 직후에 바로 이루어지거나
+      
+      <a href="#/p5.Image/set">img.set()</a>를 호출하여 이루어질 수 있습니다.</p>
+      
+      <p>선택적 매개변수(paremeter)인 <code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>는
+
+      업데이트할 <a href="#/p5.Image">p5.Image</a> 객체의 하위 섹션(subsection)을 정의합니다.
+      
+      경우에 따라 이런 방식으로 성능을 향상시킬 수 있습니다.</p>
+      
+      <p><a href="#/p5.Image">p5.Image</a> 객체를 GIF에서 불러온 경우,
+      
+      <code>img.updatePixels()</code>를 호출하면 현재 프레임의 픽셀이 업데이트됩니다.</p>
+    path: p5.Image/updatePixels
+  get:
+    description: >
+      <p><a href="#/p5.Image">p5.Image</a> 객체에서 픽셀 또는 픽셀 영역을 가져옵니다.</p>
+      
+      <p><code>img.get()</code>은 사용하기 쉽지만 <a href="#/p5.Image/pixels">img.pixels</a>보다 느립니다.
+      
+      많은 픽셀 값을 읽을 때는 <a href="#/p5.Image/pixels">img.pixels</a>를 사용하세요.</p>
+      
+      <p>매개변수(parameter)가 없는 <code>img.get()</code>은 전체 이미지를 반환(return)합니다.</p>
+      
+      <p>두 개의 매개변수가 있는 <code>img.get()</code>은 좌표로 해석합니다.
+      
+      해당 지점의 픽셀의 <code>[R, G, B, A]</code> 값을 포함하는 배열을 반환합니다.</p>
+      
+      <p>네 개의 매개변수가 있는 <code>img.get()</code>은 좌표와 면적으로 해석합니다.
+      
+      이 때, 캔버스의 하위 섹션(subsection)을 <a href="#/p5.Image">p5.Image</a> 객체로 반환합니다.
+      
+      첫 번째 두 매개변수는 하위 섹션의 좌상단의 좌표입니다.
+      
+      마지막 두 매개변수는 하위 섹션의 너비와 높이입니다.</p>
+      
+      <p><a href="#/p5.Image/get">img.get()</a>을 사용하여 <a href="#/p5.Image">p5.Image</a> 객체에 직접 작업할 수 있습니다.</p>
+    path: p5.Image/get
+  set:
+    description: >
+      <p><a href="#/p5.Image">p5.Image</a> 객체 내에서 하나 또는 여러 개의 픽셀 색상을 설정합니다.</p>
+      
+      <p><code>img.set()</code>은 사용하기 쉽지만 <a href="#/p5.Image/pixels">img.pixels</a>보다 느립니다.
+      
+      많은 픽셀 값을 설정할 때는 <a href="#/p5.Image/pixels">img.pixels</a>를 사용하세요.</p>
+      
+      <p><code>img.set()</code>은 첫 번째 두 매개변수를 x 및 y 좌표로 해석합니다.
+      
+      마지막 매개변수는 그레이스케일 값, <code>[R, G, B, A]</code> 픽셀 배열,
+
+      <a href="#/p5.Color">p5.Color</a> 객체 또는 다른 <a href="#/p5.Image">p5.Image</a> 객체로 해석합니다.</p>
+      
+      <p>변경 사항이 표시되려면 <code>img.set()</code>을 사용한 후에
+
+      <a href="#/p5.Image/updatePixels">img.updatePixels()</a>를 호출해야 합니다.</p>
+    path: p5.Image/set
+  resize:
+    description: >
+      <p><a href="#/p5.Image">p5.Image</a> 객체의 크기를 주어진 <code>width</code>와 <code>height</code>로 조정합니다.
+
+      이미지의 원래 비율을 유지하려면 <code>width</code> 또는 <code>height</code> 중 하나에 0을 전달합니다.
+      
+      예를 들어, 500 × 300 픽셀 크기의 이미지에 <code>img.resize(50, 0)</code>을 호출하면
+      
+      이미지가 50 × 30 픽셀로 크기가 조정됩니다.</p>
+    path: p5.Image/resize
+  copy:
+    description: >
+      <p>소스 이미지에서 이 이미지로 픽셀을 복사합니다.</p>
+      
+      <p>첫 번째 매개변수인 <code>srcImage</code>는 선택 사항이며, 복사할<a href="/reference/p5/p5.Image">p5.Image</a> 객체입니다.
+      
+      소스 이미지가 전달되지 않으면 <code>img.copy()</code>를 사용하여 이 이미지의 한 영역을 다른 영역으로 복사할 수 있습니다.</p>
+      
+      <p>다음 네 개의 매개변수 <code>sx</code>, <code>sy</code>, <code>sw</code>, <code>sh</code>는 소스 이미지에서 복사할 영역을 결정합니다.
+      
+      <code>(sx, sy)</code>는 영역의 좌상단입니다.
+      
+      <code>sw</code>와 <code>sh</code>는 영역의 너비와 높이입니다.</p>
+      
+      <p>다음 네 개의 매개변수 <code>dx</code>, <code>dy</code>, <code>dw</code>, <code>dh</code>는 복사할 이 이미지의 영역을 결정합니다.
+      
+      <code>(dx, dy)</code>는 영역의 좌상단입니다.
+      
+      <code>dw</code>와 <code>dh</code>는 영역의 너비와 높이입니다.</p>
+      
+      <code>img.copy()</code>를 호출하면 소스 영역이 대상 영역과 크기가 다른 경우에 크기를 조정합니다.</p>
+    path: p5.Image/copy
+  mask:
+    description: >
+      <p>다른 이미지를 로드하고 불러온 이미지의 알파 채널을 이 이미지의 알파 채널로 사용하여
+
+      이미지의 일부를 표시하지 않도록 가리는 것입니다.
+      
+      마스크는 누적되며, 이미지 객체에 적용된 후에는 제거할 수 없습니다.</p>
+    path: p5.Image/mask
+  filter:
+    description: >
+      <p>이미지에 이미지 필터를 적용합니다.</p>
+      
+      <p>미리 정의된 옵션은 다음과 같습니다:</p>
+      
+      <p><code>INVERT</code>
+      
+      이미지의 색상을 반전시킵니다. 매개변수를 사용하지 않습니다.</p>
+      
+      <p><code>GRAY</code>
+      
+      이미지를 그레이스케일로 변환합니다. 매개변수를 사용하지 않습니다.</p>
+      
+      <p><code>THRESHOLD</code>
+      
+      이미지를 흑백으로 변환합니다.
+      
+      임계값을 초과하는 그레이스케일 값의 픽셀은 흰색이 됩니다.
+      
+      나머지는 검정색으로 변환됩니다.
+      
+      임계값은 0.0(검은색)과 1.0(흰색) 사이여야 합니다.
+      
+      값이 지정되지 않은 경우, 0.5가 사용됩니다.</p>
+      
+      <p><code>OPAQUE</code>
+      
+      알파 채널을 완전히 불투명하게 설정합니다. 매개변수를 사용하지 않습니다.</p>
+      
+      <p><code>POSTERIZE</code>
+      
+      이미지의 색상 수를 제한합니다.
+      
+      각 색상 채널은 지정된 색상 수로 제한됩니다.
+      
+      2에서 255 사이의 값이 가능하지만, 결과는 낮은 값에서 가장 뚜렷하게 나타납니다.
+      
+      기본값은 4입니다.</p>
+      
+      <p><code>BLUR</code>
+      
+      이미지를 흐리게 만듭니다. 흐림 반경으로 흐림의 정도를 지정합니다.
+      
+      값이 클수록 흐림이 증가합니다. 기본값은 4입니다.
+      
+      <code>P2D</code> 모드에서는 가우시안 블러를 사용합니다.
+      
+      <code>WEBGL</code> 모드에서는 박스 블러를 사용합니다.</p>
+      
+      <p><code>ERODE</code>
+      
+      밝은 영역을 줄입니다. 매개변수를 사용하지 않습니다.</p>
+      
+      <p><code>DILATE</code>
+      
+      밝은 영역을 늘립니다. 매개변수를 사용하지 않습니다.</p>
+    path: p5.Image/filter
+  blend:
+    description: >
+      <p>다른 이미지의 픽셀 영역을 이 이미지로 복사합니다.</p>
+      
+      <p>첫 번째 매개변수인 <code>srcImage</code>는 혼합할 <a href="/reference/p5/p5.Image">p5.Image</a> 객체입니다.</p>
+      
+      <p>다음 네 개의 매개변수 <code>sx</code>, <code>sy</code>, <code>sw</code>, <code>sh</code>는 소스 이미지에서 혼합할 영역을 결정합니다.
+      
+      <code>(sx, sy)</code>는 영역의 좌상단입니다.
+      
+      <code>sw</code>와 <code>sh</code>는 영역의 너비와 높이입니다.</p>
+      
+      <p>다음 네 개의 매개변수 <code>dx</code>, <code>dy</code>, <code>dw</code>, <code>dh</code>는 캔버스에서 혼합할 영역을 결정합니다.
+      
+      <code>(dx, dy)</code>는 영역의 좌상단입니다.
+      
+      <code>dw</code>와 <code>dh</code>는 영역의 너비와 높이입니다.</p>
+      
+      <p>열 번째 매개변수인 <code>blendMode</code>는 이미지 색상을 혼합하는 데 사용되는 효과를 설정합니다.
+      
+      옵션은 <code>BLEND</code>, <code>DARKEST</code>, <code>LIGHTEST</code>, <code>DIFFERENCE</code>, <code>MULTIPLY</code>, <code>EXCLUSION</code>,
+
+      <code>SCREEN</code>, <code>REPLACE</code>, <code>OVERLAY</code>, <code>HARD_LIGHT</code>, <code>SOFT_LIGHT</code>, <code>DODGE</code>,
+
+      <code>BURN</code>, <code>ADD</code>, <code>NORMAL</code>입니다.</p>
+    path: p5.Image/blend
+  save:
+    description: >
+      <p>이미지를 파일로 저장합니다.</p>
+      
+      <p>기본적으로 <code>img.save()</code>는 이미지를 <code>untitled.png</code>라는 PNG 이미지로 저장합니다.</p>
+      
+      <p>첫 번째 매개변수인 <code>filename</code>은 선택 사항입니다.
+      
+      파일 이름을 설정하는 문자열입니다.
+      
+      파일 확장자가 포함되어 있으면, 예를 들어 <code>img.save('drawing.png')</code>과 같이
+      
+      지정된다면 해당 형식으로 이미지가 저장됩니다.</p>
+      
+      <p>두 번째 매개변수인 <code>extension</code>도 선택 사항입니다. 파일의 형식을 설정합니다.
+      
+      <code>'png'</code> 또는 <code>'jpg'</code>를 사용할 수 있습니다.
+      
+      예를 들어, <code>img.save('drawing', 'jpg')</code>는 파일을 <code>drawing.jpg</code>로 저장합니다.</p>
+      
+      <p>참고: 브라우저는 파일을 즉시 저장하거나 사용자에게 대화 상자를 표시합니다.</p>
+      
+      <p>이미지가 GIF 파일에서 로드된 경우에만 움직이는 GIF로 다운로드됩니다.
+      
+      새 GIF를 생성하려면 <a href="/reference/p5/saveGif">saveGif()</a>를 참조하세요.</p>
+    path: p5.Image/save
+  reset:
+    description: |
+      <p>움직이는 GIF을 첫 프레임부터 다시 시작합니다.</p>
+    path: p5.Image/reset
+  getCurrentFrame:
+    description: |
+      <p>움직이는 GIF의 현재 프레임 인덱스를 불러옵니다.</p>
+    path: p5.Image/getCurrentFrame
+  setFrame:
+    description: |
+      <p>움직이는 GIF의 현재 프레임을 설정합니다.</p>
+    path: p5.Image/setFrame
+  numFrames:
+    description: |
+      <p>움직이는 GIF의 프레임 개수를 반환합니다.</p>
+    path: p5.Image/numFrames
+  play:
+    description: |
+      <p><a href="/reference/p5.Image/pause">img.pause()</a>로 일시정지한 움직이는 GIF를 재생합니다.</p>
+    path: p5.Image/play
+  pause:
+    description: |
+      <p>움직이는 GIF를 일시 정지합니다.</p>
+      <p><a href="/reference/p5.Image/play">img.play()</a>를 호출하여 GIF를 다시 재생할 수 있습니다.</p>
+    path: p5.Image/pause
+  delay:
+    description: >
+      <p>움직이는 GIF의 프레임 간 지연을 변경합니다.</p>
+      
+      <p>첫 번째 매개변수인 <code>delay</code>는 밀리초(milliseconds) 단위의 지연 길이입니다.</p>
+      
+      <p>두 번째 매개변수인 <code>index</code>는 선택 사항입니다.
+      
+      입력한 경우에 <code>index</code>에 있는 프레임의 지연만 변경됩니다.
+      
+      다른 모든 프레임은 기본 지연을 유지합니다.</p>
+    path: p5.Image/delay
+chainable: false
+---
+
+
+# p5.Image
