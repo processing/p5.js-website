@@ -4,56 +4,27 @@ module: 3D
 submodule: Material
 file: src/webgl/p5.Shader.js
 description: >
-  <p>A class to describe a shader program.</p>
+  <p>Una clase para describir un programa de sombreado.</p>
 
-  <p>Each <code>p5.Shader</code> object contains a shader program that runs on
-  the graphics
+  <p>Cada objeto <code>p5.Shader</code> contiene un programa de sombreado que se ejecuta en la unidad de procesamiento gráfico (GPU). Los sombreadores pueden procesar muchos píxeles o vértices al mismo tiempo, lo que los hace rápidos para muchas tareas gráficas. Están escritos en un lenguaje llamado <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a> y se ejecutan junto con el resto del código en un sketch.</p>
 
-  processing unit (GPU). Shaders can process many pixels or vertices at the
+  <p>Un programa de sombreado consta de dos archivos, un sombreador de vértices y un sombreador de fragmentos. El sombreador de vértices afecta dónde se dibuja la geometría 3D en la pantalla y el sombreador de fragmentos afecta el color. Una vez que se crea el objeto <code>p5.Shader</code>, se puede usar con la función <a href="/reference/p5/shader">shader()</a>, como en <code>shader(myShader)</code>.</p>
 
-  same time, making them fast for many graphics tasks. They’re written in a
-
-  language called
-
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
-  target="_blank">GLSL</a>
-
-  and run along with the rest of the code in a sketch.</p>
-
-  <p>A shader program consists of two files, a vertex shader and a fragment
-
-  shader. The vertex shader affects where 3D geometry is drawn on the screen
-
-  and the fragment shader affects color. Once the <code>p5.Shader</code> object
-  is
-
-  created, it can be used with the <a href="/reference/p5/shader">shader()</a>
-
-  function, as in <code>shader(myShader)</code>.</p>
-
-  <p>Note: <a href="/reference/p5/createShader">createShader()</a>,
-
-  <a href="/reference/p5/createFilterShader">createFilterShader()</a>, and
-
-  <a href="/reference/p5/loadShader">loadShader()</a> are the recommended ways
-  to
-
-  create an instance of this class.</p>
+  <p>Nota: <a href="/reference/p5/createShader">createShader()</a>, <a href="/reference/p5/createFilterShader">createFilterShader()</a> y <a href="/reference/p5/loadShader">loadShader()</a> son las formas recomendadas de crear una instancia de esta clase.</p>
 line: 11
 isConstructor: true
 params:
   - name: renderer
     description: |
-      <p>WebGL context for this shader.</p>
+      <p>Contexto WebGL para este sombreador.</p>
     type: p5.RendererGL
   - name: vertSrc
     description: |
-      <p>source code for the vertex shader program.</p>
+      <p>Código fuente para el programa de sombreado de vértices.</p>
     type: String
   - name: fragSrc
     description: |
-      <p>source code for the fragment shader program.</p>
+      <p>Código fuente para el programa de sombreado de fragmentos.</p>
     type: String
 example:
   - |-
@@ -146,92 +117,45 @@ example:
 methods:
   copyToContext:
     description: >
-      <p>Copies the shader from one drawing context to another.</p>
+      <p>Copia el sombreador de un contexto de dibujo a otro.</p>
 
-      <p>Each <code>p5.Shader</code> object must be compiled by calling
+      <p>Cada objeto <code>p5.Shader</code> debe ser compilado llamando a la función <a href="/reference/p5/shader">shader()</a> antes de poder ejecutarse. La compilación se realiza en un contexto de dibujo que generalmente es el lienzo principal o una instancia de <a href="/reference/p5/p5.Graphics">p5.Graphics</a>. Un sombreador solo se puede usar en el contexto donde se compiló. El método <code>copyToContext()</code> vuelve a compilar el sombreador y lo copia a otro contexto de dibujo donde se puede reutilizar.</p>
 
-      <a href="/reference/p5/shader">shader()</a> before it can run. Compilation
-      happens
+      <p>El parámetro <code>context</code> es el contexto de dibujo donde se utilizará el sombreador. El sombreador se puede copiar a una instancia de <a href="/reference/p5/p5.Graphics">p5.Graphics</a>, como en <code>myShader.copyToContext(pg)</code>. También se puede copiar el sombreador desde un objeto <a href="/reference/p5/p5.Graphics">p5.Graphics</a> al lienzo principal utilizando la variable <code>window</code>, como en <code>myShader.copyToContext(window)</code>.</p>
 
-      in a drawing context which is usually the main canvas or an instance of
-
-      <a href="/reference/p5/p5.Graphics">p5.Graphics</a>. A shader can only be
-      used in the
-
-      context where it was compiled. The <code>copyToContext()</code> method
-      compiles the
-
-      shader again and copies it to another drawing context where it can be
-
-      reused.</p>
-
-      <p>The parameter, <code>context</code>, is the drawing context where the
-      shader will be
-
-      used. The shader can be copied to an instance of
-
-      <a href="/reference/p5/p5.Graphics">p5.Graphics</a>, as in
-
-      <code>myShader.copyToContext(pg)</code>. The shader can also be copied
-      from a
-
-      <a href="/reference/p5/p5.Graphics">p5.Graphics</a> object to the main
-      canvas using
-
-      the <code>window</code> variable, as in
-      <code>myShader.copyToContext(window)</code>.</p>
-
-      <p>Note: A <a href="/reference/p5/p5.Shader">p5.Shader</a> object created
-      with
-
-      <a href="/reference/p5/createShader">createShader()</a>,
-
-      <a href="/reference/p5/createFilterShader">createFilterShader()</a>, or
-
-      <a href="/reference/p5/loadShader">loadShader()</a>
-
-      can be used directly with a <a
-      href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
-
-      object created with
-
-      <a href="/reference/p5/createFramebuffer">createFramebuffer()</a>. Both
-      objects
-
-      have the same context as the main canvas.</p>
+      <p>Nota: Un objeto <a href="/reference/p5/p5.Shader">p5.Shader</a> creado con <a href="/reference/p5/createShader">createShader()</a>, <a href="/reference/p5/createFilterShader">createFilterShader()</a> o <a href="/reference/p5/loadShader">loadShader()</a> se puede utilizar directamente con un objeto <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> creado con <a href="/reference/p5/createFramebuffer">createFramebuffer()</a>. Ambos objetos tienen el mismo contexto que el lienzo principal.</p>
     path: p5.Shader/copyToContext
   setUniform:
     description: >
-      <p>Sets the shader’s uniform (global) variables.</p>
+      <p>Establece las variables uniformes (globales) del sombreador.</p>
 
-      <p>Shader programs run on the computer’s graphics processing unit (GPU).
+      <p>Los programas de sombreado se ejecutan en la unidad de procesamiento gráfico (GPU) de la computadora.
 
-      They live in part of the computer’s memory that’s completely separate
+      Viven en una parte de la memoria de la computadora que es completamente separada
 
-      from the sketch that runs them. Uniforms are global variables within a
+      del sketch que los ejecuta. Las variables uniformes son variables globales dentro de un
 
-      shader program. They provide a way to pass values from a sketch running
+      programa de sombreado. Proporcionan una forma de pasar valores desde un sketch que se ejecuta
 
-      on the CPU to a shader program running on the GPU.</p>
+      en la CPU a un programa de sombreado que se ejecuta en la GPU.</p>
 
-      <p>The first parameter, <code>uniformName</code>, is a string with the
-      uniform’s name.
+      <p>El primer parámetro, <code>uniformName</code>, es una cadena con el nombre de la
+      variable uniforme.
 
-      For the shader above, <code>uniformName</code> would be
+      Para el sombreador anterior, <code>uniformName</code> sería
       <code>'r'</code>.</p>
 
-      <p>The second parameter, <code>data</code>, is the value that should be
-      used to set the
+      <p>El segundo parámetro, <code>data</code>, es el valor que se debe utilizar para establecer la
 
-      uniform. For example, calling <code>myShader.setUniform('r', 0.5)</code>
-      would set
+      variable uniforme. Por ejemplo, llamar a <code>myShader.setUniform('r', 0.5)</code>
+      establecería
 
-      the <code>r</code> uniform in the shader above to <code>0.5</code>. data
-      should match the
+      la variable uniforme <code>r</code> en el sombreador anterior a <code>0.5</code>. data
+      debe coincidir con el
 
-      uniform’s type. Numbers, strings, booleans, arrays, and many types of
+      tipo de la variable uniforme. Números, cadenas, booleanos, matrices y muchos tipos de
 
-      images can all be passed to a shader with <code>setUniform()</code>.</p>
+      imágenes se pueden pasar a un sombreador con <code>setUniform()</code>.</p>
     path: p5.Shader/setUniform
 chainable: false
 ---
