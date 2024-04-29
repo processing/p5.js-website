@@ -57,20 +57,19 @@ export const MainNavLinks = ({
           aria-hidden="true"
           tabIndex={-1}
         >
-          {isMobile ? (
-            <div class={styles.mobileMenuLabel}>
-              {open ? (
-                <Icon kind="close" />
-              ) : (
-                <>
-                  <span>{mobileMenuLabel}</span>
-                  <Icon kind="hamburger" />
-                </>
-              )}
-            </div>
-          ) : (
+          <div class={styles.mobileMenuLabel}>
+            {open ? (
+              <Icon kind="close" />
+            ) : (
+              <>
+                <span>{mobileMenuLabel}</span>
+                <Icon kind="hamburger" />
+              </>
+            )}
+          </div>
+          <span class={styles.desktopMenuLabel}>
             <Icon kind={open ? "chevron-up" : "chevron-down"} />
-          )}
+          </span>
         </button>
       )}
     </div>
