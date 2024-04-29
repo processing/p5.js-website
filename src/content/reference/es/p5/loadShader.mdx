@@ -4,70 +4,21 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Loads vertex and fragment shaders to create a
+  <p>Carga shaders de vértices y fragmentos para crear un objeto <a href="/reference/p5/p5.Shader">p5.Shader</a>.</p>
 
-  <a href="/reference/p5/p5.Shader">p5.Shader</a> object.</p>
+  <p>Los shaders son programas que se ejecutan en la unidad de procesamiento gráfico (GPU). Pueden procesar muchos píxeles al mismo tiempo, lo que los hace rápidos para muchas tareas gráficas. Están escritos en un lenguaje llamado <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a> y se ejecutan junto con el resto del código en un sketch.</p>
 
-  <p>Shaders are programs that run on the graphics processing unit (GPU). They
+  <p>Una vez creado el objeto <a href="/reference/p5/p5.Shader">p5.Shader</a>, se puede usar con la función <a href="/reference/p5/shader">shader()</a>, como en <code>shader(myShader)</code>. Un programa de shader consta de dos archivos, un shader de vértices y un shader de fragmentos. El shader de vértices afecta dónde se dibuja la geometría 3D en la pantalla y el shader de fragmentos afecta el color.</p>
 
-  can process many pixels at the same time, making them fast for many
+  <p><code>loadShader()</code> carga los shaders de vértices y fragmentos desde sus archivos <code>.vert</code> y <code>.frag</code>. Por ejemplo, llamar a <code>loadShader('/assets/shader.vert', '/assets/shader.frag')</code> carga ambos shaders requeridos y devuelve un objeto <a href="/reference/p5/p5.Shader">p5.Shader</a>.</p>
 
-  graphics tasks. They’re written in a language called
+  <p>El tercer parámetro, <code>successCallback</code>, es opcional. Si se pasa una función, se llamará una vez que se haya cargado el shader. La función de devolución de llamada puede utilizar el nuevo objeto <a href="/reference/p5/p5.Shader">p5.Shader</a> como su parámetro.</p>
 
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
-  target="_blank">GLSL</a>
+  <p>El cuarto parámetro, <code>failureCallback</code>, también es opcional. Si se pasa una función, se llamará si el shader no se carga correctamente. La función de devolución de llamada puede utilizar el error del evento como su parámetro.</p>
 
-  and run along with the rest of the code in a sketch.</p>
+  <p>Los shaders pueden tardar en cargarse. Llamar a <code>loadShader()</code> en <a href="/reference/p5/preload">preload()</a> asegura que los shaders se carguen antes de que se utilicen en <a href="/reference/p5/setup">setup()</a> o <a href="/reference/p5/draw">draw()</a>.</p>
 
-  <p>Once the <a href="/reference/p5/p5.Shader">p5.Shader</a> object is created,
-  it can be
-
-  used with the <a href="/reference/p5/shader">shader()</a> function, as in
-
-  <code>shader(myShader)</code>. A shader program consists of two files, a
-  vertex shader
-
-  and a fragment shader. The vertex shader affects where 3D geometry is drawn
-
-  on the screen and the fragment shader affects color.</p>
-
-  <p><code>loadShader()</code> loads the vertex and fragment shaders from their
-  <code>.vert</code> and
-
-  <code>.frag</code> files. For example, calling
-
-  <code>loadShader('/assets/shader.vert', '/assets/shader.frag')</code> loads
-  both
-
-  required shaders and returns a <a href="/reference/p5/p5.Shader">p5.Shader</a>
-  object.</p>
-
-  <p>The third parameter, <code>successCallback</code>, is optional. If a
-  function is
-
-  passed, it will be called once the shader has loaded. The callback function
-
-  can use the new <a href="/reference/p5/p5.Shader">p5.Shader</a> object as its
-
-  parameter.</p>
-
-  <p>The fourth parameter, <code>failureCallback</code>, is also optional. If a
-  function is
-
-  passed, it will be called if the shader fails to load. The callback
-
-  function can use the event error as its parameter.</p>
-
-  <p>Shaders can take time to load. Calling <code>loadShader()</code> in
-
-  <a href="/reference/p5/preload">preload()</a> ensures shaders load before
-  they're
-
-  used in <a href="/reference/p5/setup">setup()</a> or <a
-  href="/reference/p5/draw">draw()</a>.</p>
-
-  <p>Note: Shaders can only be used in WebGL mode.</p>
+  <p>Nota: Los shaders solo se pueden usar en el modo WebGL.</p>
 line: 12
 isConstructor: false
 itemtype: method
@@ -141,26 +92,24 @@ class: p5
 params:
   - name: vertFilename
     description: |
-      <p>path of the vertex shader to be loaded.</p>
+      <p>Ruta del archivo del shader de vértices a cargar.</p>
     type: String
   - name: fragFilename
     description: |
-      <p>path of the fragment shader to be loaded.</p>
+      <p>Ruta del archivo del shader de fragmentos a cargar.</p>
     type: String
   - name: successCallback
     description: |
-      <p>function to call once the shader is loaded. Can be passed the
-                                          <a href="#/p5.Shader">p5.Shader</a> object.</p>
+      <p>Función que se llamará una vez que se haya cargado el shader. Puede recibir el objeto <a href="#/p5.Shader">p5.Shader</a>.</p>
     type: Function
     optional: true
   - name: failureCallback
     description: |
-      <p>function to call if the shader fails to load. Can be passed an
-                                          <code>Error</code> event object.</p>
+      <p>Función que se llamará si el shader no se carga correctamente. Puede recibir un objeto de evento <code>Error</code>.</p>
     type: Function
     optional: true
 return:
-  description: new shader created from the vertex and fragment shader files.
+  description: Nuevo shader creado a partir de los archivos del shader de vértices y fragmentos.
   type: p5.Shader
 chainable: false
 ---
