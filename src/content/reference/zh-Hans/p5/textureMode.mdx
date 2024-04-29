@@ -4,86 +4,57 @@ module: 3D
 submodule: Material
 file: src/webgl/material.js
 description: >
-  <p>Changes the coordinate system used for textures when they’re applied to
+  <p>更改应用于自定义形状时使用的纹理坐标系统。</p>
 
-  custom shapes.</p>
+  <p>为了使 <a href="/reference/p5/texture">texture()</a> 功能有效，一个形状需要一种方法来将其表面的点映射到图像中的像素上。内置形状如 <a href="/reference/p5/rect">rect()</a> 和 <a href="/reference/p5/box">box()</a> 已经根据它们的顶点具有这些纹理映射。使用 <a href="/reference/p5/vertex">vertex()</a> 创建的自定义形状需要将纹理映射作为 uv 坐标传递。</p>
 
-  <p>In order for <a href="/reference/p5/texture">texture()</a> to work, a shape
-  needs a
-
-  way to map the points on its surface to the pixels in an image. Built-in
-
-  shapes such as <a href="/reference/p5/rect">rect()</a> and
-
-  <a href="/reference/p5/box">box()</a> already have these texture mappings
-  based on
-
-  their vertices. Custom shapes created with
-
-  <a href="/reference/p5/vertex">vertex()</a> require texture mappings to be
-  passed as
-
-  uv coordinates.</p>
-
-  <p>Each call to <a href="/reference/p5/vertex">vertex()</a> must include 5
-  arguments,
-
-  as in <code>vertex(x, y, z, u, v)</code>, to map the vertex at coordinates
-  <code>(x, y, z)</code>
-
-  to the pixel at coordinates <code>(u, v)</code> within an image. For example,
-  the
-
-  corners of a rectangular image are mapped to the corners of a rectangle by
-  default:</p>
+  <p>每次调用 <a href="/reference/p5/vertex">vertex()</a> 都必须包括 5 个参数，如 <code>vertex(x, y, z, u, v)</code>，以将坐标 <code>(x, y, z)</code> 上的顶点映射到图像中坐标 <code>(u, v)</code> 上的像素。例如，默认情况下，矩形图像的角落被映射到矩形的角落：</p>
 
   <code>
 
-  // Apply the image as a texture.
+  // 将图像应用为纹理。
 
   texture(img);
 
 
-  <p>// Draw the rectangle.
+  <p>// 绘制矩形。
 
   rect(0, 0, 30, 50);
 
   </p></code>
 
-  <p>If the image in the code snippet above has dimensions of 300 x 500 pixels,
-
-  the same result could be achieved as follows:</p>
+  <p>如果上面代码片段中的图像尺寸为 300 x 500 像素，可以按照以下方式实现相同的结果：</p>
 
   <code>
 
-  // Apply the image as a texture.
+  // 将图像应用为纹理。
 
   texture(img);
 
 
-  <p>// Draw the rectangle.
+  <p>// 绘制矩形。
 
   beginShape();</p>
 
-  <p>// Top-left.
+  <p>// 左上角。
 
   // u: 0, v: 0
 
   vertex(0, 0, 0, 0, 0);</p>
 
-  <p>// Top-right.
+  <p>// 右上角。
 
   // u: 300, v: 0
 
   vertex(30, 0, 0, 300, 0);</p>
 
-  <p>// Bottom-right.
+  <p>// 右下角。
 
   // u: 300, v: 500
 
   vertex(30, 50, 0, 300, 500);</p>
 
-  <p>// Bottom-left.
+  <p>// 左下角。
 
   // u: 0, v: 500
 
@@ -93,55 +64,44 @@ description: >
 
   </p></code>
 
-  <p><code>textureMode()</code> changes the coordinate system for uv
-  coordinates.</p>
+  <p><code>textureMode()</code> 用于改变 uv 坐标的坐标系统。</p>
 
-  <p>The parameter, <code>mode</code>, accepts two possible constants. If
-  <code>NORMAL</code> is
-
-  passed, as in <code>textureMode(NORMAL)</code>, then the texture’s uv
-  coordinates can
-
-  be provided in the range 0 to 1 instead of the image’s dimensions. This can
-
-  be helpful for using the same code for multiple images of different sizes.
-
-  For example, the code snippet above could be rewritten as follows:</p>
+  <p>参数 <code>mode</code> 接受两种可能的常量。如果传递 <code>NORMAL</code>，如 <code>textureMode(NORMAL)</code> 中所示，则纹理的 uv 坐标可以在 0 到 1 的范围内提供，而不是图像的尺寸。这对于使用相同的代码处理不同尺寸的多张图像很有帮助。例如，上面的代码片段可以重写如下：</p>
 
   <code>
 
-  // Set the texture mode to use normalized coordinates.
+  // 设置纹理模式以使用标准化坐标。
 
   textureMode(NORMAL);
 
 
-  <p>// Apply the image as a texture.
+  <p>// 将图像应用为纹理。
 
   texture(img);</p>
 
-  <p>// Draw the rectangle.
+  <p>// 绘制矩形。
 
   beginShape();</p>
 
-  <p>// Top-left.
+  <p>// 左上角。
 
   // u: 0, v: 0
 
   vertex(0, 0, 0, 0, 0);</p>
 
-  <p>// Top-right.
+  <p>// 右上角。
 
   // u: 1, v: 0
 
   vertex(30, 0, 0, 1, 0);</p>
 
-  <p>// Bottom-right.
+  <p>// 右下角。
 
   // u: 1, v: 1
 
   vertex(30, 50, 0, 1, 1);</p>
 
-  <p>// Bottom-left.
+  <p>// 左下角。
 
   // u: 0, v: 1
 
@@ -151,13 +111,9 @@ description: >
 
   </p></code>
 
-  <p>By default, <code>mode</code> is <code>IMAGE</code>, which scales uv
-  coordinates to the
+  <p>默认情况下，<code>mode</code> 是 <code>IMAGE</code>，它将 uv 坐标缩放到图像的尺寸。调用 <code>textureMode(IMAGE)</code> 会应用这个默认设置。</p>
 
-  dimensions of the image. Calling <code>textureMode(IMAGE)</code> applies the
-  default.</p>
-
-  <p>Note: <code>textureMode()</code> can only be used in WebGL mode.</p>
+  <p>注意：<code>textureMode()</code> 只能在 WebGL 模式下使用。</p>
 line: 1048
 isConstructor: false
 itemtype: method
@@ -168,7 +124,7 @@ example:
     <code>
     let img;
 
-    // Load an image and create a p5.Image object.
+    // 加载一张图像并创建一个 p5.Image 对象。
     function preload() {
       img = loadImage('/assets/laDefense.jpg');
     }
@@ -176,17 +132,17 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('An image of a ceiling against a black background.');
+      describe('一张天花板在黑色背景下的图片。');
     }
 
     function draw() {
       background(0);
 
-      // Apply the image as a texture.
+      // 将图像应用为纹理。
       texture(img);
 
-      // Draw the custom shape.
-      // Use the image's width and height as uv coordinates.
+      // 绘制自定义形状。
+      // 使用图像的宽度和高度作为 uv 坐标。
       beginShape();
       vertex(-30, -30, 0, 0);
       vertex(30, -30, img.width, 0);
@@ -201,7 +157,7 @@ example:
     <code>
     let img;
 
-    // Load an image and create a p5.Image object.
+    // 加载一张图像并创建一个 p5.Image 对象。
     function preload() {
       img = loadImage('/assets/laDefense.jpg');
     }
@@ -209,20 +165,20 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      describe('An image of a ceiling against a black background.');
+      describe('一张天花板在黑色背景下的图片。');
     }
 
     function draw() {
       background(0);
 
-      // Set the texture mode.
+      // 设置纹理模式。
       textureMode(NORMAL);
 
-      // Apply the image as a texture.
+      // 将图像应用为纹理。
       texture(img);
 
-      // Draw the custom shape.
-      // Use normalized uv coordinates.
+      // 绘制自定义形状。
+      // 使用归一化的 uv 坐标。
       beginShape();
       vertex(-30, -30, 0, 0);
       vertex(30, -30, 1, 0);
@@ -236,7 +192,7 @@ class: p5
 params:
   - name: mode
     description: |
-      <p>either IMAGE or NORMAL.</p>
+      <p>可以是 IMAGE 或 NORMAL。</p>
     type: Constant
 chainable: false
 ---
