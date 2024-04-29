@@ -130,6 +130,7 @@ export const CodeEmbed = (props) => {
               setPreviewCodeString(initialCode);
             }}
             ariaLabel="Reset code to initial value"
+            className="bg-sidebar-bg-color"
           >
             <Icon kind="refresh" />
           </CircleButton>
