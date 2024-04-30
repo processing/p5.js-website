@@ -1,41 +1,24 @@
 ---
 title: textureMode
 module: 3D
-submodule: Material
+submodule: 재질
 file: src/webgl/material.js
 description: >
-  <p>Changes the coordinate system used for textures when they’re applied to
+  <p>사용자 지정 모양에 적용되는 텍스처의 좌표계를 변경합니다.</p>
 
-  custom shapes.</p>
+  <p> <a href="/reference/#/p5/texture">texture()</a>가 작동하려면 해당 도형은
 
-  <p>In order for <a href="/reference/p5/texture">texture()</a> to work, a shape
-  needs a
+  표면의 점을 이미지의 픽셀에 매핑해야 합니다. 
+  
+  <a href="/reference/#/p5/rect">rect()</a>와 <a href="/reference/#/p5/box">box()</a>와 같은 내장된 도형은 이미 그들의 꼭짓점에 기반한 텍스처 매핑을 가지고 있습니다.
 
-  way to map the points on its surface to the pixels in an image. Built-in
+  <a href="/reference/#/p5/vertex">vertex()</a>로 생성된 사용자 지정 도형은 uv 좌표로 전달되어야 합니다.</p>
 
-  shapes such as <a href="/reference/p5/rect">rect()</a> and
+  <p>각 <a href="/reference/#/p5/vertex">vertex()</a> 호출은 5개의 인수를 포함해야 합니다.
 
-  <a href="/reference/p5/box">box()</a> already have these texture mappings
-  based on
+  예를 들어 <code>vertex(x, y, z, u, v)</code>는 좌표 <code>(x, y, z)</code>에 있는 꼭짓점을
 
-  their vertices. Custom shapes created with
-
-  <a href="/reference/p5/vertex">vertex()</a> require texture mappings to be
-  passed as
-
-  uv coordinates.</p>
-
-  <p>Each call to <a href="/reference/p5/vertex">vertex()</a> must include 5
-  arguments,
-
-  as in <code>vertex(x, y, z, u, v)</code>, to map the vertex at coordinates
-  <code>(x, y, z)</code>
-
-  to the pixel at coordinates <code>(u, v)</code> within an image. For example,
-  the
-
-  corners of a rectangular image are mapped to the corners of a rectangle by
-  default:</p>
+  이미지의 좌표 <code>(u, v)</code>에 매핑합니다. 예를 들어, 기본적으로 직사각형의 모서리는 다음과 같이 매핑됩니다:</p>
 
   <code>
 
@@ -50,9 +33,9 @@ description: >
 
   </p></code>
 
-  <p>If the image in the code snippet above has dimensions of 300 x 500 pixels,
+  <p>위의 코드 스니펫의 이미지가 300 x 500 픽셀의 크기를 가진다면,
 
-  the same result could be achieved as follows:</p>
+  동일한 결과는 다음과 같이 얻을 수 있습니다:</p>
 
   <code>
 
@@ -93,20 +76,15 @@ description: >
 
   </p></code>
 
-  <p><code>textureMode()</code> changes the coordinate system for uv
-  coordinates.</p>
+  <p><code>textureMode()</code>는 uv 좌표계를 변경합니다.</p>
 
-  <p>The parameter, <code>mode</code>, accepts two possible constants. If
-  <code>NORMAL</code> is
+  <p>매개변수인 <code>mode</code>는 두 가지 상수를 받습니다. <code>NORMAL</code>이 전달되면
 
-  passed, as in <code>textureMode(NORMAL)</code>, then the texture’s uv
-  coordinates can
+  <code>textureMode(NORMAL)</code>처럼, 텍스처의 uv 좌표는 이미지의 크기 대신 0에서 1의 범위로 제공될 수 있습니다.
 
-  be provided in the range 0 to 1 instead of the image’s dimensions. This can
+  이는 다른 크기의 여러 이미지에 대해 동일한 코드를 사용하는 데 도움이 될 수 있습니다.
 
-  be helpful for using the same code for multiple images of different sizes.
-
-  For example, the code snippet above could be rewritten as follows:</p>
+  예를 들어, 위의 코드 스니펫은 다음과 같이 다시 작성할 수 있습니다:</p>
 
   <code>
 
@@ -151,13 +129,11 @@ description: >
 
   </p></code>
 
-  <p>By default, <code>mode</code> is <code>IMAGE</code>, which scales uv
-  coordinates to the
+  <p>기본적으로 <code>mode</code>는 <code>IMAGE</code>이며, uv 좌표를 이미지의 크기로 조정합니다.
 
-  dimensions of the image. Calling <code>textureMode(IMAGE)</code> applies the
-  default.</p>
+  <code>textureMode(IMAGE)</code>를 호출하면 기본값이 적용됩니다.</p>
 
-  <p>Note: <code>textureMode()</code> can only be used in WebGL mode.</p>
+  <p>참고: <code>textureMode()</code>는 WebGL 모드에서만 사용할 수 있습니다.</p>
 line: 1048
 isConstructor: false
 itemtype: method
@@ -236,7 +212,7 @@ class: p5
 params:
   - name: mode
     description: |
-      <p>either IMAGE or NORMAL.</p>
+      <p> IMAGE 혹은 NORMAL 중 하나.</p>
     type: Constant
 chainable: false
 ---
