@@ -6,6 +6,7 @@ export type IconKind =
   | "stop"
   | "chevron-down"
   | "chevron-up"
+  | "chevron-right"
   | "globe"
   | "settings"
   | "search"
@@ -57,6 +58,24 @@ export const Icon = (props: IconProps) => {
             fill-rule="evenodd"
             clip-rule="evenodd"
             d="M11 11.707L21.3536 1.35348C21.5488 1.15822 21.5488 0.841633 21.3536 0.646371C21.1583 0.451109 20.8417 0.451109 20.6464 0.646371L11 10.2928L1.35355 0.646371C1.15829 0.451109 0.841709 0.451109 0.646447 0.646371C0.451184 0.841633 0.451184 1.15822 0.646447 1.35348L11 11.707Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case "chevron-right":
+      return (
+        <svg
+          width="7"
+          height="12"
+          viewBox="0 0 7 12"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M6.70703 6L1.35348 0.646446C1.15822 0.451185 0.841633 0.451185 0.646371 0.646446C0.451108 0.841708 0.451108 1.15829 0.646371 1.35355L5.29282 6L0.646371 10.6464C0.451109 10.8417 0.451109 11.1583 0.646371 11.3536C0.841633 11.5488 1.15822 11.5488 1.35348 11.3536L6.70703 6Z"
             fill="currentColor"
           />
         </svg>
