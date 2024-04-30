@@ -1,97 +1,44 @@
 ---
 title: applyMatrix
-module: Transform
-submodule: Transform
+module: परिवर्तन
+submodule: परिवर्तन
 file: src/core/transform.js
 description: >
-  <p>Applies a transformation matrix to the coordinate system.</p>
+  <p>समन्वय प्रणाली में एक परिवर्तन मैट्रिक्स लागू करता है।</p>
 
-  <p>Transformations such as
+<p>रूपांतरण जैसे <a href='/reference/p5/translate'>translate()</a>, <a href='/reference/p5/rotate'>rotate()</a>, और <a href='/reference/p5/scale'>scale()</a> पर्दे के पीछे मैट्रिक्स-वेक्टर गुणन का उपयोग करें। संख्याओं की एक तालिका, जिसे मैट्रिक्स कहा जाता है, प्रत्येक परिवर्तन को एन्कोड करती है। फिर मैट्रिक्स में मान कैनवास पर प्रत्येक बिंदु को गुणा करते हैं, जिसे एक वेक्टर द्वारा दर्शाया जाता है।</p>
 
-  <a href="/reference/p5/translate">translate()</a>,
+   <p><code>applyMatrix()</code> एक साथ कई परिवर्तनों को लागू करने की अनुमति देता है। देखें <a href='https://en.wikipedia.org/wiki/Transformation_matrix'
+   target='_blank'>विकिपीडिया</a> और <a
+   href='https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web'
+   target='_blank'>MDN</a>
 
-  <a href="/reference/p5/rotate">rotate()</a>, and
+  परिवर्तनों के बारे में अधिक जानकारी के लिए।</p> <p>दो और तीन आयामों में <code>applyMatrix()</code> को कॉल करने के दो तरीके हैं।</p>
 
-  <a href="/reference/p5/scale">scale()</a>
+   <p>2डी मोड में, पैरामीटर <code>ए</code>, <code>बी</code>, <code>सी</code>, <code>डी</code>, <code>ई< /code>, और <code>एफ</code>, निम्नलिखित परिवर्तन मैट्रिक्स में तत्वों के अनुरूप हैं:</p>
 
-  use matrix-vector multiplication behind the scenes. A table of numbers,
+   <blockquote> <p><img style='max-width: 150px' src='/assets/transformation-matrix.png' alt='applyMatrix को 2D में कॉल करते समय उपयोग किया जाने वाला ट्रांसफ़ॉर्मेशन मैट्रिक्स
+   मोड।'/></p>
 
-  called a matrix, encodes each transformation. The values in the matrix
+   </blockquote>
 
-  then multiply each point on the canvas, which is represented by a vector.</p>
+   <p>संख्याओं को अलग-अलग पारित किया जा सकता है, जैसे कि
 
-  <p><code>applyMatrix()</code> allows for many transformations to be applied at
-  once. See
+   <code>मैट्रिक्स लागू करें(2, 0, 0, 0, 2, 0)</code>। उन्हें एक सरणी में भी पारित किया जा सकता है, जैसे <code>applyMatrix([2, 0, 0, 0, 2, 0])</code></p>
 
-  <a href="https://en.wikipedia.org/wiki/Transformation_matrix"
-  target="_blank">Wikipedia</a>
+   <p>3डी मोड में, पैरामीटर <code>ए</code>, <code>बी</code>, <code>सी</code>, <code>डी</code>, <code>ई< /code>, <code>एफ</code>, <code>जी</code>, <code>एच</code>, <code>आई</code>,
 
-  and <a
-  href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web"
-  target="_blank">MDN</a>
+<code>जे</code>, <code>के</code>, <code>एल</code>, <code>एम</code>,
+   <code>n</code>, <code>o</code>, और <code>p</code> निम्नलिखित परिवर्तन मैट्रिक्स में तत्वों के अनुरूप हैं:</p>
 
-  for more details about transformations.</p>
+   <p><img style='max-width: 300px' src='/assets/transformation-matrix-4-4.png' alt=='जब applyMatrix को 3D मोड में कॉल किया जाता है तो परिवर्तन मैट्रिक्स का उपयोग किया जाता है।'/></p>
 
-  <p>There are two ways to call <code>applyMatrix()</code> in two and three
-  dimensions.</p>
+   <p>संख्याओं को अलग-अलग पास किया जा सकता है, जैसे <code>applyMatrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1)< /code>. वे
+   किसी ऐरे में भी पारित किया जा सकता है, जैसे कि <code>applyMatrix([2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1])< /code>.</p>
 
-  <p>In 2D mode, the parameters <code>a</code>, <code>b</code>, <code>c</code>,
-  <code>d</code>, <code>e</code>, and <code>f</code>, correspond to
+   <p>डिफ़ॉल्ट रूप से, परिवर्तन एकत्रित होते हैं। <a href='/reference/p5/push'>push()</a> और <a href='/reference/p5/pop'>pop()</a> फ़ंक्शंस का उपयोग भीतर परिवर्तनों को अलग करने के लिए किया जा सकता है विशिष्ट ड्राइंग समूह।</p>
 
-  elements in the following transformation matrix:</p>
-
-  <blockquote>
-
-  <p><img style="max-width: 150px" src="/assets/transformation-matrix.png"
-  alt="The transformation matrix used when applyMatrix is called in 2D
-  mode."/></p>
-
-  </blockquote>
-
-  <p>The numbers can be passed individually, as in
-
-  <code>applyMatrix(2, 0, 0, 0, 2, 0)</code>. They can also be passed in an
-  array, as in
-
-  <code>applyMatrix([2, 0, 0, 0, 2, 0])</code>.</p>
-
-  <p>In 3D mode, the parameters <code>a</code>, <code>b</code>, <code>c</code>,
-  <code>d</code>, <code>e</code>, <code>f</code>, <code>g</code>,
-  <code>h</code>, <code>i</code>,
-
-  <code>j</code>, <code>k</code>, <code>l</code>, <code>m</code>,
-  <code>n</code>, <code>o</code>, and <code>p</code> correspond to elements in
-  the
-
-  following transformation matrix:</p>
-
-  <p><img style="max-width: 300px" src="/assets/transformation-matrix-4-4.png"
-  alt="The transformation matrix used when applyMatrix is called in 3D
-  mode."/></p>
-
-  <p>The numbers can be passed individually, as in
-
-  <code>applyMatrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1)</code>. They
-  can
-
-  also be passed in an array, as in
-
-  <code>applyMatrix([2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-  1])</code>.</p>
-
-  <p>By default, transformations accumulate. The
-
-  <a href="/reference/p5/push">push()</a> and <a
-  href="/reference/p5/pop">pop()</a> functions
-
-  can be used to isolate transformations within distinct drawing groups.</p>
-
-  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
-
-  <code>applyMatrix()</code> inside the <a href="/reference/p5/draw">draw()</a>
-  function won't
-
-  cause shapes to transform continuously.</p>
+   <p> ध्यान दें: ट्रांसफ़ॉर्मेशन ड्रॉ लूप की शुरुआत में रीसेट किए जाते हैं। <a ref="/reference/p5/draw">draw()</a> फ़ंक्शन के अंदर <code>applyMatrix()</code> को कॉल करने से आकृतियों में लगातार परिवर्तन नहीं होगा।</p>
 line: 11
 isConstructor: false
 itemtype: method
