@@ -1,0 +1,160 @@
+---
+title: endShape
+module: Shape
+submodule: Vertex
+file: src/core/shape/vertex.js
+description: >
+  <p>Comienza a agregar vértices a una forma personalizada.</p>
+
+  <p>Las funciones <a href="/reference/p5/beginShape">beginShape()</a> y <code>endShape()</code> permiten crear formas personalizadas en 2D o 3D. <a href="/reference/p5/beginShape">beginShape()</a> comienza a agregar vértices a una forma personalizada y <code>endShape()</code> detiene su adición.</p>
+
+  <p>El primer parámetro, <code>mode</code>, es opcional. Por defecto, el primer y último vértice de una forma no están conectados. Si se pasa la constante <code>CLOSE</code>, como en <code>endShape(CLOSE)</code>, el primer y último vértice estarán conectados.</p>
+
+  <p>El segundo parámetro, <code>count</code>, también es opcional. En el modo WebGL, es más eficiente dibujar muchas copias de la misma forma utilizando una técnica llamada <a href="https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html" target="_blank">instanciación</a>. El parámetro <code>count</code> indica cuántas copias dibujar en el modo WebGL. Por ejemplo, llamar a <code>endShape(CLOSE, 400)</code> después de dibujar una forma personalizada hace que sea eficiente dibujar 400 copias. Esta característica requiere <a href="https://p5js.org/learn/getting-started-in-webgl-shaders.html" target="_blank">escribir un shader personalizado</a>.</p>
+
+  <p>Después de llamar a <a href="/reference/p5/beginShape">beginShape()</a>, se pueden construir formas llamando a <a href="/reference/p5/vertex">vertex()</a>, <a href="/reference/p5/bezierVertex">bezierVertex()</a>, <a href="/reference/p5/quadraticVertex">quadraticVertex()</a>, y/o <a href="/reference/p5/curveVertex">curveVertex()</a>. Llamar a <code>endShape()</code> detendrá la adición de vértices a la forma. Cada forma será delineada con el color de trazo actual y rellenada con el color de relleno actual.</p>
+
+  <p>Las transformaciones como <a href="/reference/p5/translate">translate()</a>, <a href="/reference/p5/rotate">rotate()</a>, y <a href="/reference/p5/scale">scale()</a> no funcionan entre <a href="/reference/p5/beginShape">beginShape()</a> y <code>endShape()</code>. Tampoco es posible usar otras formas, como <a href="/reference/p5/ellipse">ellipse()</a> o <a href="/reference/p5/rect">rect()</a>, entre <a href="/reference/p5/beginShape">beginShape()</a
+
+line: 1344
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shapes.
+      noFill();
+
+      // Left triangle.
+      beginShape();
+      vertex(20, 20);
+      vertex(45, 20);
+      vertex(45, 80);
+      endShape(CLOSE);
+
+      // Right triangle.
+      beginShape();
+      vertex(50, 20);
+      vertex(75, 20);
+      vertex(75, 80);
+      endShape();
+
+      describe(
+        'Two sets of black lines drawn on a gray background. The three lines on the left form a right triangle. The two lines on the right form a right angle.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `#version 300 es
+
+    precision mediump float;
+
+    in vec3 aPosition;
+    flat out int instanceID;
+
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    void main() {
+
+      // Copy the instance ID to the fragment shader.
+      instanceID = gl_InstanceID;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+
+      // gl_InstanceID represents a numeric value for each instance.
+      // Using gl_InstanceID allows us to move each instance separately.
+      // Here we move each instance horizontally by ID * 23.
+      float xOffset = float(gl_InstanceID) * 23.0;
+
+      // Apply the offset to the final position.
+      gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -
+        vec4(xOffset, 0.0, 0.0, 0.0));
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `#version 300 es
+
+    precision mediump float;
+
+    out vec4 outColor;
+    flat in int instanceID;
+    uniform float numInstances;
+
+    void main() {
+      vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+      vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+
+      // Normalize the instance ID.
+      float normId = float(instanceID) / numInstances;
+
+      // Mix between two colors using the normalized instance ID.
+      outColor = mix(red, blue, normId);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let myShader = createShader(vertSrc, fragSrc);
+
+      background(220);
+
+      // Compile and apply the p5.Shader.
+      shader(myShader);
+
+      // Set the numInstances uniform.
+      myShader.setUniform('numInstances', 4);
+
+      // Translate the origin to help align the drawing.
+      translate(25, -10);
+
+      // Style the shapes.
+      noStroke();
+
+      // Draw the shapes.
+      beginShape();
+      vertex(0, 0);
+      vertex(0, 20);
+      vertex(20, 20);
+      vertex(20, 0);
+      vertex(0, 0);
+      endShape(CLOSE, 4);
+
+      describe('A row of four squares. Their colors transition from purple on the left to red on the right');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: mode
+    description: |
+      <p>usa CLOSE para cerrar la forma</p>
+    type: Constant
+    optional: true
+  - name: count
+    description: >
+      <p>número de veces que deseas dibujar/instanciar la forma (para modo WebGL).</p>
+    type: Integer
+    optional: true
+chainable: true
+---
+
+
+# endShape

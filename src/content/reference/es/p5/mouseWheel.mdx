@@ -1,0 +1,168 @@
+---
+title: mouseWheel
+module: Events
+submodule: Mouse
+file: src/events/mouse.js
+description: >
+  <p>Una función que se ejecuta una vez cuando el rueda del ratón se mueve.</p>
+
+  <p>Declarar la función <code>mouseWheel()</code> establece un bloque de código
+
+  para ejecutarse automáticamente cuando el usuario hace scroll con el ratón:</p>
+
+  <code>
+
+  function mouseWheel() {
+    // Code to run.
+  }
+
+  </code>
+
+
+  <p>Las variables del sistema del ratón, como <a
+  href="/reference/es/p5/mouseX">mouseX</a> y
+
+  <a href="/reference/es/p5/mouseY">mouseY</a>, se actualizarán con su valor más
+  reciente
+
+  cuando <code>mouseWheel()</code> sea llamada por p5.js:</p>
+
+  <code>
+
+  function mouseWheel() {
+    if (mouseX < 50) {
+      // Code to run if the mouse is on the left.
+    }
+
+  <p>  if (mouseY > 50) {
+      // Code to run if the mouse is near the bottom.
+    }
+  }
+
+  </p></code>
+
+  <p>El parámetro, <code>event</code>, es opcional. <code>mouseWheel()</code> 
+  siempre se le pasa un
+
+  <a href="https://developer.mozilla.org/es/docs/Web/API/MouseEvent"
+  target="_blank">MouseEvent</a>
+
+  objeto con propiedades que describen el evento de desplazamiento del ratón:</p>
+
+  <code>
+
+  function mouseWheel(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+
+  <p>El objeto <code>event</code> tiene muchas propiedades incluyendo
+  <code>delta</code>, un <code>Number</code>
+
+  que contiene la distancia que el usuario ha hecho scroll. Por ejemplo,
+  <code>event.delta</code>
+
+  podría tener el valor 5 cuando el usuario hace scroll hacia arriba.
+  <code>event.delta</code> es positivo
+
+  si el usuario hace scroll hacia arriba y negativo si hace scroll hacia abajo.
+  Los signos son
+
+  opuestos en macOS con "natural" scrolling habilitado.</p>
+
+  <p>Los navegadores pueden tener comportamientos predeterminados asociados a
+
+  eventos de ratón. Por ejemplo, algunos navegadores resaltan texto cuando el
+  usuario mueve el ratón mientras mantiene un botón presionado. Para evitar cualquier
+  comportamiento predeterminado para este evento, agregue <code>return false;</code>
+
+  al final de la función.</p>
+
+  <p>Nota: En Safari, <code>mouseWheel()</code> podría no funcionar de manera
+
+  esperada si no se agrega <code>return false;</code> al final de la función.</p>
+line: 1732
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let circleSize = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. A white circle at its center grows up when the user scrolls the mouse wheel.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the circle
+      circle(circleSize, 50, 50);
+    }
+
+    // Increment circleSize when the user scrolls the mouse wheel.
+    function mouseWheel() {
+      circleSize += 1;
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let direction = '';
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. An arrow at its center points up when the user scrolls up. The arrow points down when the user scrolls down.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Draw an arrow that points where
+      // the mouse last scrolled.
+      text(direction, 50, 50);
+    }
+
+    // Change direction when the user scrolls the mouse wheel.
+    function mouseWheel(event) {
+      if (event.delta > 0) {
+        direction = '▲';
+      } else {
+        direction = '▼';
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>Argumento opcional <code>WheelEvent</code>.</p>
+    type: WheelEvent
+    optional: true
+chainable: false
+---
+
+
+# mouseWheel

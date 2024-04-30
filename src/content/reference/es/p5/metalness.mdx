@@ -1,0 +1,123 @@
+---
+title: metalness
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Establece la cantidad de "metalness" de un
+  <a href="/reference/p5/specularMaterial">specularMaterial()</a>.</p>
+
+  <p><code>metalness()</code> puede hacer que los materiales parezcan más metálicos. 
+  Afecta la forma en que los materiales reflejan las fuentes de luz, incluyendo
+  <a href="/reference/p5/directionalLight">directionalLight()</a>,
+  <a href="/reference/p5/pointLight">pointLight()</a>,
+  <a href="/reference/p5/spotLight">spotLight()</a> y
+  <a href="/reference/p5/imageLight">imageLight()</a>.</p>
+
+  <p>El parámetro <code>metallic</code> es un número que establece la cantidad de metalness.
+  <code>metallic</code> debe ser mayor que 1, que es su valor predeterminado. 
+  Valores más altos, como <code>metalness(100)</code>, hacen que los materiales especulares parezcan más metálicos.</p>
+line: 2214
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'Two blue spheres drawn on a gray background. White light reflects from their surfaces as the mouse moves. The right sphere is more metallic than the left sphere.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Turn on an ambient light.
+      ambientLight(200);
+
+      // Get the mouse's coordinates.
+      let mx = mouseX - 50;
+      let my = mouseY - 50;
+
+      // Turn on a white point light that follows the mouse.
+      pointLight(255, 255, 255, mx, my, 50);
+
+      // Style the spheres.
+      noStroke();
+      fill(30, 30, 255);
+      specularMaterial(255);
+      shininess(20);
+
+      // Draw the left sphere with low metalness.
+      translate(-25, 0, 0);
+      metalness(1);
+      sphere(20);
+
+      // Draw the right sphere with high metalness.
+      translate(50, 0, 0);
+      metalness(50);
+      sphere(20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/outdoor_spheremap.jpg');
+    }
+
+    function setup() {
+      createCanvas(100 ,100 ,WEBGL);
+
+      describe(
+        'Two spheres floating above a landscape. The surface of the spheres reflect the landscape. The right sphere is more reflective than the left sphere.'
+      );
+    }
+
+    function draw() {
+      // Add the panorama.
+      panorama(img);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Use the image as a light source.
+      imageLight(img);
+
+      // Style the spheres.
+      noStroke();
+      specularMaterial(50);
+      shininess(200);
+
+      // Draw the left sphere with low metalness.
+      translate(-25, 0, 0);
+      metalness(1);
+      sphere(20);
+
+      // Draw the right sphere with high metalness.
+      translate(50, 0, 0);
+      metalness(50);
+      sphere(20);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: metallic
+    description: |
+      <p>Cantidad de metalness.</p>
+    type: Number
+chainable: false
+---
+
+
+# metalness

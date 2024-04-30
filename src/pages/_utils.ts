@@ -4,11 +4,13 @@ import {
   type AnyEntryMap,
   type ContentEntryMap,
 } from "astro:content";
-import { defaultLocale } from "@i18n/const";
+import { defaultLocale, supportedLocales } from "@i18n/const";
 import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
 import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
 import he from "he";
+import { JSDOM } from "jsdom";
+import type { JumpToLink, JumpToState } from "../globals/state";
 
 interface EntryWithId {
   id: string;
@@ -96,6 +98,38 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
   });
 
 /**
+ *  Gets related entries from a collection utilizing our locale fallback logic.
+ *  Astro doesn't do this for us when it constructs the entries at the route level,
+ *  so we need to backfill this information in the page itself.
+ *
+ * @param collectionName
+ * @param locale
+ * @param relatedSlugs
+ * @returns
+ */
+export const getRelatedEntriesinCollection = async <
+  C extends keyof ContentEntryMap,
+>(
+  collectionName: C,
+  locale: string,
+  relatedSlugs: string[],
+): Promise<CollectionEntry<C>[]> => {
+  const collection = await getCollectionInLocaleWithFallbacks(
+    collectionName,
+    locale,
+  );
+  const foundEntries = relatedSlugs.map((relatedSlug) =>
+    collection.find(
+      (collectionItem) =>
+        removeLocaleAndExtension(collectionItem.slug) ===
+        removeLocaleAndExtension(relatedSlug),
+    ),
+  );
+  // silly typescript isn't understanding filter
+  return foundEntries.filter((el) => el !== undefined) as CollectionEntry<C>[];
+};
+
+/**
  * Astro automatically uses the directory structure for slug information
  * Historically the p5 website has used a different structure for example file vs. webpage routing
  * This function transforms the Astro slug to the appropriate webpage route to avoid breaking
@@ -111,21 +145,8 @@ export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
     // Third transformation: Replace all remaining underscores in the slug with hyphens.
     .replace(/_/g, "-");
 
-/**
- * If the given slug is the slug of the entry in the contributor doc
- * collection that we want to use as the index page, this returns a
- * '/' slug for routing purposes. Otherwise, just returns the slug given,
- * unchanged.
- *
- * For example: `contributor-docs/es/` will show
- * the content from `contributor-docs/es/readme`
- */
-export const convertContributorDocIndexSlugIfNeeded = (slug: string) => {
-  const contributorDocIndexPageName = "readme";
-  return slug.endsWith(contributorDocIndexPageName)
-    ? `/${slug.slice(0, -contributorDocIndexPageName.length)}`
-    : slug;
-};
+export const getExampleCategory = (slug: string): string =>
+  slug.split("/")[1].split("_").splice(1).join(" ");
 
 export const normalizeReferenceRoute = (route: string): string =>
   removeLocaleAndExtension(route).replace("constants/", "");
@@ -185,7 +206,7 @@ export const separateReferenceExamples = (examples: string[]): string[] =>
 export const getRefEntryTitleConcatWithParen = (
   referenceEntry: ReferenceDocContentItem,
 ) =>
-  `${referenceEntry.data.title}${referenceEntry.data.isConstructor || referenceEntry.data.itemtype === "method" ? "()" : ""}`;
+  `${referenceEntry.data.title}${referenceEntry.data.itemtype === "method" ? "()" : ""}`;
 
 /* Function to escape HTML content within <code> tags
  * @param htmlString String with HTML content
@@ -205,4 +226,189 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
   });
   // Return the modified HTML as a string
   return $.html();
+};
+
+export const getPaginationMax = (numPerPage: number, numItems: number) =>
+  Math.ceil(numItems / numPerPage);
+
+export type PageTopic =
+  | "community"
+  | "reference"
+  | "contribute"
+  | "about"
+  | "examples"
+  | "tutorials";
+
+export const getTopicInfo = (topic?: PageTopic) => {
+  switch (topic) {
+    case "community":
+      return { name: "Community", url: "/community" };
+    case "reference":
+      return { name: "Reference", url: "/reference" };
+    case "contribute":
+      return { name: "Contribute", url: "/contribute" };
+    case "about":
+      return { name: "About", url: "/about" };
+    case "examples":
+      return { name: "Examples", url: "/examples" };
+    case "tutorials":
+      return { name: "Tutorials", url: "/tutorials" };
+    default:
+      return { name: "p5.js", url: "/" };
+  }
+};
+
+/**
+ * Capitalize the first letter of a string
+ * (really only makes sense for English strings)
+ *
+ * @param str
+ * @returns
+ */
+export const capitalize = (str: string): string =>
+  str ? str[0].toUpperCase() + str.slice(1) : "";
+
+// Function to decode HTML content and strip HTML tags
+export const decodeHtml = (html: string) => {
+  // Create a new JSDOM instance with the provided HTML
+  const dom = new JSDOM(html);
+  const document = dom.window.document;
+
+  // Extract text content from the parsed HTML
+  const textContent = document.body.textContent || "";
+
+  return textContent.trim(); // remove blank space at the beginning
+};
+
+/**
+ * Generate jumpToLinks for an entire category of collection entries
+ * Highlight the currently viewed entry
+ * @param collectionType The type of collection
+ * @param currentEntrySlug The id of the currently viewed entry
+ * @param jumpToHeading The heading for the jumpToLinks
+ * @returns JumpToState object
+ */
+export const generateJumpToState = async (
+  collectionType: keyof ContentEntryMap,
+  currentEntrySlug: string,
+  jumpToHeading: string,
+  t: (...args: string[]) => string | Record<string, any>,
+  currentLocale: (typeof supportedLocales)[number],
+): Promise<JumpToState> => {
+  // Get all entries in the collection in the default locale
+  // We can use the default locale because the links are automatically
+  // prefixed and there is fallback to the default locale
+  const localeEntries = await getCollectionInLocaleWithFallbacks(
+    collectionType,
+    currentLocale,
+  );
+
+  // Get categories for the collection
+  let categories: Set<string> | undefined;
+
+  // Get the categories based on the collection type
+  switch (collectionType) {
+    case "reference":
+      // @ts-expect-error - We know that the category exists because of the collection type
+      categories = new Set(localeEntries.map((entry) => entry.data.category));
+      break;
+    case "tutorials":
+      // @ts-expect-error - We know that the category exists because of the collection type
+      categories = new Set(localeEntries.map((entry) => entry.data.category));
+      break;
+    case "examples":
+      categories = new Set(
+        localeEntries.map((entry) => getExampleCategory(entry.slug)),
+      );
+      break;
+    default:
+      break;
+  }
+
+  const jumpToLinks = [] as JumpToLink[];
+
+  // Function to get the label for a category, these are different for each collection type
+  const getCategoryLabel = (category: string) => {
+    switch (collectionType) {
+      case "reference":
+        return category;
+      case "tutorials":
+        return t("tutorialCategories", category) as string;
+      case "examples":
+        return category;
+      default:
+        return "";
+    }
+  };
+
+  // Loop through each category and add entries to the jumpToLinks
+  for (const category of categories ?? []) {
+    const categoryLinks = [] as JumpToLink[];
+    categoryLinks.push({
+      label: getCategoryLabel(category),
+      url: `/${collectionType}#${category}`,
+      current: false,
+    });
+
+    // Examples are a special case where subentries are only shown if they are in the current category
+    if (
+      collectionType !== "examples" ||
+      category === getExampleCategory(currentEntrySlug)
+    ) {
+      // Get all entries in the current category
+      const currentCategoryEntries = localeEntries.filter(
+        (entry) =>
+          category ===
+          (collectionType === "examples"
+            ? getExampleCategory(entry.slug)
+            : // @ts-expect-error - We know that the category exists because of the collection type
+              entry.data.category ?? ""),
+      );
+
+      // Add the entries in the category to the jumpToLinks
+      categoryLinks.push(
+        ...currentCategoryEntries.map(
+          (entry) =>
+            ({
+              label: entry.data.title,
+              url: getUrl(entry, collectionType),
+              size: "small",
+              current:
+                removeLocalePrefix(entry.slug) ===
+                removeLocalePrefix(currentEntrySlug),
+            }) as JumpToLink,
+        ),
+      );
+
+      const hasCurrent = categoryLinks.some((link) => link.current);
+      // If the current entry is in this category, move this category to the top
+      if (hasCurrent) {
+        jumpToLinks.unshift(...categoryLinks);
+      } else {
+        jumpToLinks.push(...categoryLinks);
+      }
+    }
+  }
+
+  // Return the JumpToState object
+  return {
+    heading: t(jumpToHeading) as string,
+    links: jumpToLinks,
+  };
+};
+
+const getUrl = (
+  entry: CollectionEntry<keyof ContentEntryMap>,
+  collectionType: keyof ContentEntryMap,
+) => {
+  switch (collectionType) {
+    case "reference":
+      return `/reference/${entry.slug}`;
+    case "tutorials":
+      return `/tutorials/${removeLocalePrefix(entry.slug)}`;
+    case "examples":
+      return `/examples${exampleContentSlugToLegacyWebsiteSlug(removeLocalePrefix(entry.slug))}`;
+    default:
+      return "";
+  }
 };

@@ -4,32 +4,216 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-  <p>通过角度参数指定的量旋转形状。此函数考虑到 <a href="/reference/p5/angleMode">angleMode</a>，因此可以在 RADIANS 或 DEGREES 中输入角度。</p>
-  <p>对象始终围绕它们相对于原点的位置旋转，并且正数使对象顺时针旋转。变换应用于之后发生的所有事情，并且对函数的连续调用会累积效果。例如，调用 rotate(HALF_PI)，然后再调用 rotate(HALF_PI) 等同于调用 rotate(PI)。当 <a href="/reference/p5/draw">draw()</a> 重新开始时，所有变换都将被重置。</p>
-  <p>从技术上讲，<a href="/reference/p5/rotate">rotate()</a> 将当前变换矩阵乘以一个旋转矩阵。可以通过 <a href="/reference/p5/push">push()</a> 和 <a href="/reference/p5/pop">pop()</a> 进一步控制此函数。</p>
-line: 222
+  <p>Rotates the coordinate system.</p>
+
+  <p>By default, the positive x-axis points to the right and the positive y-axis
+
+  points downward. The <code>rotate()</code> function changes this orientation
+  by
+
+  rotating the coordinate system about the origin. Everything drawn after
+
+  <code>rotate()</code> is called will appear to be rotated.</p>
+
+  <p>The first parameter, <code>angle</code>, is the amount to rotate. For
+  example, calling
+
+  <code>rotate(1)</code> rotates the coordinate system clockwise 1 radian which
+  is
+
+  nearly 57˚. <code>rotate()</code> interprets angle values using the current
+
+  <a href="/reference/p5/angleMode">angleMode()</a>.</p>
+
+  <p>The second parameter, <code>axis</code>, is optional. It's used to orient
+  3D rotations
+
+  in WebGL mode. If a <a href="/reference/p5/p5.Vector">p5.Vector</a> is passed,
+  as in
+
+  <code>rotate(QUARTER_PI, myVector)</code>, then the coordinate system will
+  rotate
+
+  <code>QUARTER_PI</code> radians about <code>myVector</code>. If an array of
+  vector components is
+
+  passed, as in <code>rotate(QUARTER_PI, [1, 0, 0])</code>, then the coordinate
+  system
+
+  will rotate <code>QUARTER_PI</code> radians about a vector with the components
+
+  <code>[1, 0, 0]</code>.</p>
+
+  <p>By default, transformations accumulate. For example, calling
+  <code>rotate(1)</code>
+
+  twice has the same effect as calling <code>rotate(2)</code> once. The
+
+  <a href="/reference/p5/push">push()</a> and <a
+  href="/reference/p5/pop">pop()</a> functions
+
+  can be used to isolate transformations within distinct drawing groups.</p>
+
+  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
+
+  <code>rotate(1)</code> inside the <a href="/reference/p5/draw">draw()</a>
+  function won't cause
+
+  shapes to spin.</p>
+line: 289
 isConstructor: false
 itemtype: method
-alt: white 52×52 rect with black outline at center rotated counter 45 degrees
 example:
   - |-
 
     <div>
     <code>
-    translate(width / 2, height / 2);
-    rotate(PI / 3.0);
-    rect(-26, -26, 52, 52);
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      rotate(QUARTER_PI);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/16 turn.
+      rotate(QUARTER_PI / 2);
+
+      // Rotate the coordinate system another 1/16 turn.
+      rotate(QUARTER_PI / 2);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      rotate(45);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A white rectangle on a gray background. The rectangle rotates slowly about the top-left corner. It disappears and reappears periodically.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      rotate(angle);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe("A cube on a gray background. The cube's front face points to the top-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn about
+      // the axis [1, 1, 0].
+      let axis = createVector(1, 1, 0);
+      rotate(QUARTER_PI, axis);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe("A cube on a gray background. The cube's front face points to the top-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn about
+      // the axis [1, 1, 0].
+      let axis = [1, 1, 0];
+      rotate(QUARTER_PI, axis);
+
+      // Draw a box.
+      box();
+    }
     </code>
     </div>
 class: p5
 params:
   - name: angle
     description: |
-      <p>旋转角度，取决于当前的 angleMode，以弧度或度数指定。</p>
+      <p>the angle of rotation, specified in radians
+                             or degrees, depending on current angleMode</p>
     type: Number
   - name: axis
     description: |
-      <p>（在 3D 中）围绕旋转的轴。</p>
+      <p>(in 3d) the axis to rotate around</p>
     type: 'p5.Vector|Number[]'
     optional: true
 chainable: true

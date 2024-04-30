@@ -1,0 +1,258 @@
+---
+title: pointLight
+module: 3D
+submodule: Lights
+file: src/webgl/light.js
+description: >
+  <p>Crea una luz que brilla desde un punto en todas las direcciones.</p>
+
+  <p>Las luces de punto son como bombillas que brillan en todas las direcciones. Se pueden colocar en diferentes posiciones para lograr diferentes efectos de iluminación. Se pueden activar un máximo de 5 luces de punto a la vez.</p>
+
+  <p>Hay cuatro formas de llamar a <code>pointLight()</code> con parámetros para establecer el color y la posición de la luz.</p>
+
+  <p>La primera forma de llamar a <code>pointLight()</code> tiene seis parámetros. Los primeros tres parámetros, <code>v1</code>, <code>v2</code> y <code>v3</code>, establecen el color de la luz utilizando el <a href="/reference/p5/colorMode">colorMode()</a> actual. Los últimos tres parámetros, <code>x</code>, <code>y</code> y <code>z</code>, establecen la posición de la luz. Por ejemplo, <code>pointLight(255, 0, 0, 50, 0, 0)</code> crea una luz roja <code>(255, 0, 0)</code> que brilla desde las coordenadas <code>(50, 0, 0)</code>.</p>
+
+  <p>La segunda forma de llamar a <code>pointLight()</code> tiene cuatro parámetros. Los primeros tres parámetros, <code>v1</code>, <code>v2</code> y <code>v3</code>, establecen el color de la luz utilizando el <a href="/reference/p5/colorMode">colorMode()</a> actual. El último parámetro, <code>position</code>, establece la posición de la luz utilizando un objeto <a href="/reference/p5/p5.Vector">p5.Vector</a>. Por ejemplo, <code>pointLight(255, 0, 0, lightPos)</code> crea una luz roja <code>(255, 0, 0)</code> que brilla desde la posición establecida por el vector <code>lightPos</code>.</p>
+
+  <p>La tercera forma de llamar a <code>pointLight()</code> tiene cuatro parámetros. El primer parámetro, <code>color</code>, establece el color de la luz utilizando un objeto <a href="/reference/p5/p5.Color">p5.Color</a> o un arreglo de valores de color. Los últimos tres parámetros, <code>x</code>, <code>y</code> y <code>z</code>, establecen la posición de la luz. Por ejemplo, <code>directionalLight(myColor, 50, 0, 0)</code> crea una luz que brilla desde las coordenadas <code>(50, 0, 0)</code> con el valor de color de <code>myColor</code>.</p>
+
+  <p>La cuarta forma de llamar a <code>pointLight()</code> tiene dos parámetros. El primer parámetro, <code>color</code>, establece el color de la luz utilizando un objeto <a href="/reference/p5/p5.Color">p5.Color</a> o un arreglo de valores de color. El segundo parámetro, <code>position</code>, establece la posición de la luz utilizando un objeto <a href="/reference/p5/p5.Vector">p5.Vector</a>. Por ejemplo, <code>directionalLight(myColor, lightPos)</code> crea una luz que brilla desde la posición establecida por el vector <code>lightPos</code> con el valor de color de <code>myColor</code>.</p>
+line: 682
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to turn on the point light.
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. A red light starts shining from above when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Control the light.
+      if (isLit === true) {
+        // Add a red point light from above.
+        // Use RGB values and XYZ coordinates.
+        pointLight(255, 0, 0, 0, -150, 0);
+      }
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the point light when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a red point light from above.
+      // Use a p5.Color object and XYZ directions.
+      let c = color(255, 0, 0);
+      pointLight(c, 0, -150, 0);
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a red point light from above.
+      // Use a p5.Color object and a p5.Vector object.
+      let c = color(255, 0, 0);
+      let lightPos = createVector(0, -150, 0);
+      pointLight(c, lightPos);
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('Four spheres arranged in a square and drawn on a gray background. The spheres appear bright red toward the center of the square. The color gets darker toward the corners of the square.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a red point light that points to the center of the scene.
+      // Use a p5.Color object and a p5.Vector object.
+      let c = color(255, 0, 0);
+      let lightPos = createVector(0, 0, 65);
+      pointLight(c, lightPos);
+
+      // Style the spheres.
+      noStroke();
+
+      // Draw a sphere up and to the left.
+      push();
+      translate(-25, -25, 25);
+      sphere(10);
+      pop();
+
+      // Draw a box up and to the right.
+      push();
+      translate(25, -25, 25);
+      sphere(10);
+      pop();
+
+      // Draw a sphere down and to the left.
+      push();
+      translate(-25, 25, 25);
+      sphere(10);
+      pop();
+
+      // Draw a box down and to the right.
+      push();
+      translate(25, 25, 25);
+      sphere(10);
+      pop();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 682
+    params:
+      - name: v1
+        description: |
+          <p>valor rojo o de matiz en el actual
+                       <a href="#/p5/colorMode">colorMode()</a>.</p>
+        type: Number
+      - name: v2
+        description: |
+          <p>valor verde o de saturación en el actual
+                       <a href="#/p5/colorMode">colorMode()</a>.</p>
+        type: Number
+      - name: v3
+        description: |
+          <p>valor azul, brillo o luminosidad en el actual
+                       <a href="#/p5/colorMode">colorMode()</a>.</p>
+        type: Number
+      - name: x
+        description: |
+          <p>Coordenada x de la luz.</p>
+        type: Number
+      - name: 'y'
+        description: |
+          <p>Coordenada y de la luz.</p>
+        type: Number
+      - name: z
+        description: |
+          <p>Coordenada z de la luz.</p>
+        type: Number
+    chainable: 1
+  - line: 889
+    params:
+      - name: v1
+        description: ''
+        type: Number
+      - name: v2
+        description: ''
+        type: Number
+      - name: v3
+        description: ''
+        type: Number
+      - name: position
+        description: |
+          <p>posición de la luz como un objeto
+                          <a href="#/p5.Vector">p5.Vector</a>.</p>
+        type: p5.Vector
+    chainable: 1
+  - line: 899
+    params:
+      - name: color
+        description: |
+          <p>color como un objeto <a href="#/p5.Color">p5.Color</a>,
+                                 un arreglo de valores de color o una cadena CSS.</p>
+        type: 'p5.Color|Number[]|String'
+      - name: x
+        description: ''
+        type: Number
+      - name: 'y'
+        description: ''
+        type: Number
+      - name: z
+        description: ''
+        type: Number
+    chainable: 1
+  - line: 909
+    params:
+      - name: color
+        description: ''
+        type: 'p5.Color|Number[]|String'
+      - name: position
+        description: ''
+        type: p5.Vector
+    chainable: 1
+chainable: true
+---
+
+
+# pointLight

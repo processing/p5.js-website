@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "./BaseLayout.astro";
+import Image from "@components/Image/index.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
+import { setJumpToState } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { getRelatedEntriesinCollection } from "../pages/_utils";
+
+interface Props {
+  entry: CollectionEntry<"events">;
+  title: string;
+}
+
+const { entry, title } = Astro.props;
+const { Content } = await entry.render();
+
+setJumpToState(null);
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+const dayString = new Date(entry.data.date).toLocaleDateString(currentLocale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+const relatedEvents =
+  entry.data.relatedPastEvents !== undefined
+    ? await getRelatedEntriesinCollection(
+        "events",
+        currentLocale,
+        entry.data.relatedPastEvents.map((r) => r.slug)
+      )
+    : [];
+---
+
+<Head
+  title={entry.data.title}
+  locale={currentLocale}
+  featuredImageSrc={entry.data.featuredImage.src}
+/>
+
+<BaseLayout title={title} subtitle={dayString} variant="item" topic="community">
+  {
+    entry.data.featuredImage && entry.data.featuredImageAlt && (
+      <Image
+        class="max-w-screen-md"
+        src={entry.data.featuredImage}
+        alt={entry.data.featuredImageAlt}
+      />
+    )
+  }
+  <div class="rendered-markdown">
+    <Content />
+  </div>
+
+  {
+    // only render this section if we have any events
+    relatedEvents.length > 0 && (
+      <RelatedItems
+        title={t("Related Past Events") as string}
+        items={relatedEvents}
+      />
+    )
+  }
+</BaseLayout>

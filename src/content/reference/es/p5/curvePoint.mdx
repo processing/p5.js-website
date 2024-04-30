@@ -1,0 +1,143 @@
+---
+title: curvePoint
+module: Shape
+submodule: Curves
+file: src/core/shape/curves.js
+description: >
+  <p>Calcula coordenadas a lo largo de una curva spline utilizando interpolación.</p>
+
+  <p><code>curvePoint()</code> calcula coordenadas a lo largo de una curva spline usando
+  los puntos de anclaje y control. Espera los puntos en el mismo orden que la
+  función <a href="/reference/p5/curve">curve()</a>. <code>curvePoint()</code> 
+  trabaja un eje a la vez. Al pasar las coordenadas x de los puntos de anclaje y 
+  control, se calcula la coordenada x de un punto en la curva. Al pasar las 
+  coordenadas 'y' de los puntos de anclaje y control, se calcula la coordenada 'y' 
+  de un punto en la curva.</p>
+
+  <p>El primer parámetro, <code>a</code>, es la coordenada del primer punto de control.</p>
+
+  <p>El segundo y tercer parámetros, <code>b</code> y <code>c</code>, son las coordenadas 
+  de los puntos de anclaje.</p>
+
+  <p>El cuarto parámetro, <code>d</code>, es la coordenada del último punto de control.</p>
+
+  <p>El quinto parámetro, <code>t</code>, es la cantidad a interpolar a lo largo de la 
+  curva. 0 es el primer punto de anclaje, 1 es el segundo punto de anclaje, y 0.5 
+  es a mitad de camino entre ellos.</p>
+  
+line: 930
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 5;
+      let y1 = 26;
+      let x2 = 73;
+      let y2 = 24;
+      let x3 = 73;
+      let y3 = 61;
+      let x4 = 15;
+      let y4 = 65;
+
+      // Draw the curve.
+      noFill();
+      curve(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Draw circles along the curve's path.
+      fill(255);
+
+      // Top.
+      let x = curvePoint(x1, x2, x3, x4, 0);
+      let y = curvePoint(y1, y2, y3, y4, 0);
+      circle(x, y, 5);
+
+      // Center.
+      x = curvePoint(x1, x2, x3, x4, 0.5);
+      y = curvePoint(y1, y2, y3, y4, 0.5);
+      circle(x, y, 5);
+
+      // Bottom.
+      x = curvePoint(x1, x2, x3, x4, 1);
+      y = curvePoint(y1, y2, y3, y4, 1);
+      circle(x, y, 5);
+
+      describe('A black curve on a gray square. The endpoints and center of the curve are marked with white circles.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A black curve on a gray square. A white circle moves back and forth along the curve.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 5;
+      let y1 = 26;
+      let x2 = 73;
+      let y2 = 24;
+      let x3 = 73;
+      let y3 = 61;
+      let x4 = 15;
+      let y4 = 65;
+
+      // Draw the curve.
+      noFill();
+      curve(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Calculate the circle's coordinates.
+      let t = 0.5 * sin(frameCount * 0.01) + 0.5;
+      let x = curvePoint(x1, x2, x3, x4, t);
+      let y = curvePoint(y1, y2, y3, y4, t);
+
+      // Draw the circle.
+      fill(255);
+      circle(x, y, 5);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p>coordenada del primer punto de anclaje.</p>
+    type: Number
+  - name: b
+    description: |
+      <p>coordenada del primer punto de control.</p>
+    type: Number
+  - name: c
+    description: |
+      <p>coordenada del segundo punto de control.</p>
+    type: Number
+  - name: d
+    description: |
+      <p>coordenada del segundo punto de anclaje.</p>
+    type: Number
+  - name: t
+    description: |
+      <p>cantidad a interpolar entre 0 y 1.</p>
+    type: Number
+return:
+  description: coordenada de un punto en la curva.
+  type: Number
+chainable: false
+---
+
+
+# curvePoint

@@ -1,6 +1,7 @@
 ---
+import { getCurrentLocale } from "@/src/i18n/utils";
 import { getLibraryLink } from "@/src/pages/_utils";
-import { Image } from "astro:assets";
+import Image from "@components/Image/index.astro";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
@@ -8,10 +9,38 @@ interface Props {
 }
 
 const { item } = Astro.props;
+
+const authorsFormatter = new Intl.ListFormat(
+  getCurrentLocale(Astro.url.pathname),
+  {
+    style: "long",
+    type: "conjunction",
+  }
+);
+const authorsString = authorsFormatter.format(
+  item.data.author.map((a) => a.name)
+);
+let description = item.data.description.trim();
+// If the description didn't end with punctuation, add it, since we will be
+// appending another sentence afterwards.
+if (!/[.!]\)?$/.test(description)) {
+  description += ".";
+}
 ---
 
-<a href={getLibraryLink(item)}>
-  <Image src={item.data.featuredImage} alt={item.data.featuredImageAlt} />
-  <div class="text-lg mt-xs">{item.data.name}</div>
-  <div class="text-sm">{item.data.description}</div>
+<a class="group hover:no-underline" href={getLibraryLink(item)}>
+  <Image
+    src={item.data.featuredImage}
+    alt={item.data.featuredImageAlt}
+    width="400"
+    class="w-3/5"
+  />
+  <div
+    class="text-xl mt-xs text-wrap break-words break-keep group-hover:underline"
+  >
+    {item.data.name}
+  </div>
+  <div class="text-sm">
+    {description} By {authorsString}
+  </div>
 </a>

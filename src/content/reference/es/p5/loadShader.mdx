@@ -1,0 +1,118 @@
+---
+title: loadShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Carga shaders de vértices y fragmentos para crear un objeto <a href="/reference/p5/p5.Shader">p5.Shader</a>.</p>
+
+  <p>Los shaders son programas que se ejecutan en la unidad de procesamiento gráfico (GPU). Pueden procesar muchos píxeles al mismo tiempo, lo que los hace rápidos para muchas tareas gráficas. Están escritos en un lenguaje llamado <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a> y se ejecutan junto con el resto del código en un sketch.</p>
+
+  <p>Una vez creado el objeto <a href="/reference/p5/p5.Shader">p5.Shader</a>, se puede usar con la función <a href="/reference/p5/shader">shader()</a>, como en <code>shader(myShader)</code>. Un programa de shader consta de dos archivos, un shader de vértices y un shader de fragmentos. El shader de vértices afecta dónde se dibuja la geometría 3D en la pantalla y el shader de fragmentos afecta el color.</p>
+
+  <p><code>loadShader()</code> carga los shaders de vértices y fragmentos desde sus archivos <code>.vert</code> y <code>.frag</code>. Por ejemplo, llamar a <code>loadShader('/assets/shader.vert', '/assets/shader.frag')</code> carga ambos shaders requeridos y devuelve un objeto <a href="/reference/p5/p5.Shader">p5.Shader</a>.</p>
+
+  <p>El tercer parámetro, <code>successCallback</code>, es opcional. Si se pasa una función, se llamará una vez que se haya cargado el shader. La función de devolución de llamada puede utilizar el nuevo objeto <a href="/reference/p5/p5.Shader">p5.Shader</a> como su parámetro.</p>
+
+  <p>El cuarto parámetro, <code>failureCallback</code>, también es opcional. Si se pasa una función, se llamará si el shader no se carga correctamente. La función de devolución de llamada puede utilizar el error del evento como su parámetro.</p>
+
+  <p>Los shaders pueden tardar en cargarse. Llamar a <code>loadShader()</code> en <a href="/reference/p5/preload">preload()</a> asegura que los shaders se carguen antes de que se utilicen en <a href="/reference/p5/setup">setup()</a> o <a href="/reference/p5/draw">draw()</a>.</p>
+
+  <p>Nota: Los shaders solo se pueden usar en el modo WebGL.</p>
+line: 12
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Compile and apply the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      // Set the shader uniform r to the value 1.5.
+      mandelbrot.setUniform('r', 1.5);
+
+      // Add a quad as a display surface for the shader.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+
+      describe('A black fractal image on a magenta background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
+    }
+
+    function draw() {
+      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
+
+      // Add a quad as a display surface for the shader.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: vertFilename
+    description: |
+      <p>Ruta del archivo del shader de vértices a cargar.</p>
+    type: String
+  - name: fragFilename
+    description: |
+      <p>Ruta del archivo del shader de fragmentos a cargar.</p>
+    type: String
+  - name: successCallback
+    description: |
+      <p>Función que se llamará una vez que se haya cargado el shader. Puede recibir el objeto <a href="#/p5.Shader">p5.Shader</a>.</p>
+    type: Function
+    optional: true
+  - name: failureCallback
+    description: |
+      <p>Función que se llamará si el shader no se carga correctamente. Puede recibir un objeto de evento <code>Error</code>.</p>
+    type: Function
+    optional: true
+return:
+  description: Nuevo shader creado a partir de los archivos del shader de vértices y fragmentos.
+  type: p5.Shader
+chainable: false
+---
+
+
+# loadShader

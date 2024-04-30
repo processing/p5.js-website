@@ -1,0 +1,127 @@
+---
+title: createFilterShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Crea un objeto <a href="/reference/p5/p5.Shader">p5.Shader</a> para ser utilizado
+  con la función <a href="/reference/p5/filter">filter()</a>.</p>
+
+  <p><code>createFilterShader()</code> funciona de manera similar a
+  <a href="/reference/p5/createShader">createShader()</a> pero incluye un
+  vertex shader predeterminado. <code>createFilterShader()</code> está diseñado
+  para ser utilizado junto con <a href="/reference/p5/filter">filter()</a> para
+  filtrar el contenido de un lienzo.</p>
+
+  <p>Un filtro shader se aplicará a todo el lienzo en lugar de solo a los objetos
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a>.</p>
+
+  <p>El parámetro <code>fragSrc</code> establece el fragment shader. Es una cadena
+  que contiene el programa del fragment shader escrito en
+  <a
+  href="https://developer.mozilla.org/es/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
+  target="_blank">GLSL</a>.</p>
+
+  <p>El objeto <a href="/reference/p5/p5.Shader">p5.Shader</a> que se crea tiene
+  algunos uniformes que se pueden establecer:</p>
+
+  <ul>
+
+  <li><code>sampler2D tex0</code>, que contiene el contenido del lienzo como una
+  textura.</li>
+
+  <li><code>vec2 canvasSize</code>, que es el ancho y alto del lienzo, sin incluir
+  la densidad de píxeles.</li>
+
+  <li><code>vec2 texelSize</code>, que es el tamaño de un píxel físico, incluyendo
+  la densidad de píxeles. Esto se calcula como <code>1.0 / (ancho * densidad)</code>
+  para el ancho del píxel y <code>1.0 / (height * density)</code> para la altura del
+  píxel.</li>
+
+  </ul>
+
+  <p>El <a href="/reference/p5/p5.Shader">p5.Shader</a> que se crea también
+  proporciona <code>varying vec2 vTexCoord</code>, una coordenada con valores entre
+  0 y 1. <code>vTexCoord</code> describe dónde se dibujará el píxel en el lienzo.</p>
+
+  <p>Para obtener más información sobre filtros y shaders, consulta el repositorio
+  de Adam Ferriss de <a
+  href="https://github.com/aferriss/p5jsShaderExamples">ejemplos de shaders de p5.js</a>
+  o el tutorial de <a
+  href="https://p5js.org/learn/getting-started-in-webgl-shaders.html">Introducción a los Shaders</a>.</p>
+line: 429
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    function setup() {
+      let fragSrc = `precision highp float;
+      void main() {
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+      }`;
+
+      createCanvas(100, 100, WEBGL);
+      let s = createFilterShader(fragSrc);
+      filter(s);
+      describe('a yellow canvas');
+    }
+    </code>
+    </div>
+
+    <div modernizr='webgl'>
+    <code>
+    let img, s;
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+    function setup() {
+      let fragSrc = `precision highp float;
+
+      // x,y coordinates, given from the vertex shader
+      varying vec2 vTexCoord;
+
+      // the canvas contents, given from filter()
+      uniform sampler2D tex0;
+      // other useful information from the canvas
+      uniform vec2 texelSize;
+      uniform vec2 canvasSize;
+      // a custom variable from this sketch
+      uniform float darkness;
+
+      void main() {
+        // get the color at current pixel
+        vec4 color = texture2D(tex0, vTexCoord);
+        // set the output color
+        color.b = 1.0;
+        color *= darkness;
+        gl_FragColor = vec4(color.rgb, 1.0);
+      }`;
+
+      createCanvas(100, 100, WEBGL);
+      s = createFilterShader(fragSrc);
+    }
+    function draw() {
+      image(img, -50, -50);
+      s.setUniform('darkness', 0.5);
+      filter(s);
+      describe('a image of bricks tinted dark blue');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: fragSrc
+    description: |
+      <p>Código fuente para el fragment shader.</p>
+    type: String
+return:
+  description: Objeto shader nuevo creado a partir del fragment shader.
+  type: p5.Shader
+chainable: false
+---
+
+
+# createFilterShader

@@ -1,0 +1,164 @@
+---
+title: p5.Shader
+module: 3D
+submodule: Material
+file: src/webgl/p5.Shader.js
+description: >
+  <p>Una clase para describir un programa de sombreado.</p>
+
+  <p>Cada objeto <code>p5.Shader</code> contiene un programa de sombreado que se ejecuta en la unidad de procesamiento gráfico (GPU). Los sombreadores pueden procesar muchos píxeles o vértices al mismo tiempo, lo que los hace rápidos para muchas tareas gráficas. Están escritos en un lenguaje llamado <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a> y se ejecutan junto con el resto del código en un sketch.</p>
+
+  <p>Un programa de sombreado consta de dos archivos, un sombreador de vértices y un sombreador de fragmentos. El sombreador de vértices afecta dónde se dibuja la geometría 3D en la pantalla y el sombreador de fragmentos afecta el color. Una vez que se crea el objeto <code>p5.Shader</code>, se puede usar con la función <a href="/reference/p5/shader">shader()</a>, como en <code>shader(myShader)</code>.</p>
+
+  <p>Nota: <a href="/reference/p5/createShader">createShader()</a>, <a href="/reference/p5/createFilterShader">createFilterShader()</a> y <a href="/reference/p5/loadShader">loadShader()</a> son las formas recomendadas de crear una instancia de esta clase.</p>
+line: 11
+isConstructor: true
+params:
+  - name: renderer
+    description: |
+      <p>Contexto WebGL para este sombreador.</p>
+    type: p5.RendererGL
+  - name: vertSrc
+    description: |
+      <p>Código fuente para el programa de sombreado de vértices.</p>
+    type: String
+  - name: fragSrc
+    description: |
+      <p>Código fuente para el programa de sombreado de fragmentos.</p>
+    type: String
+example:
+  - |-
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+
+    void main() {
+      // Set each pixel's RGBA value to yellow.
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let myShader = createShader(vertSrc, fragSrc);
+
+      // Apply the p5.Shader object.
+      shader(myShader);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A yellow square.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
+    }
+
+    function draw() {
+      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
+
+      // Add a quad as a display surface for the shader.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+    </code>
+    </div>
+methods:
+  copyToContext:
+    description: >
+      <p>Copia el sombreador de un contexto de dibujo a otro.</p>
+
+      <p>Cada objeto <code>p5.Shader</code> debe ser compilado llamando a la función <a href="/reference/p5/shader">shader()</a> antes de poder ejecutarse. La compilación se realiza en un contexto de dibujo que generalmente es el lienzo principal o una instancia de <a href="/reference/p5/p5.Graphics">p5.Graphics</a>. Un sombreador solo se puede usar en el contexto donde se compiló. El método <code>copyToContext()</code> vuelve a compilar el sombreador y lo copia a otro contexto de dibujo donde se puede reutilizar.</p>
+
+      <p>El parámetro <code>context</code> es el contexto de dibujo donde se utilizará el sombreador. El sombreador se puede copiar a una instancia de <a href="/reference/p5/p5.Graphics">p5.Graphics</a>, como en <code>myShader.copyToContext(pg)</code>. También se puede copiar el sombreador desde un objeto <a href="/reference/p5/p5.Graphics">p5.Graphics</a> al lienzo principal utilizando la variable <code>window</code>, como en <code>myShader.copyToContext(window)</code>.</p>
+
+      <p>Nota: Un objeto <a href="/reference/p5/p5.Shader">p5.Shader</a> creado con <a href="/reference/p5/createShader">createShader()</a>, <a href="/reference/p5/createFilterShader">createFilterShader()</a> o <a href="/reference/p5/loadShader">loadShader()</a> se puede utilizar directamente con un objeto <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> creado con <a href="/reference/p5/createFramebuffer">createFramebuffer()</a>. Ambos objetos tienen el mismo contexto que el lienzo principal.</p>
+    path: p5.Shader/copyToContext
+  setUniform:
+    description: >
+      <p>Establece las variables uniformes (globales) del sombreador.</p>
+
+      <p>Los programas de sombreado se ejecutan en la unidad de procesamiento gráfico (GPU) de la computadora.
+
+      Viven en una parte de la memoria de la computadora que es completamente separada
+
+      del sketch que los ejecuta. Las variables uniformes son variables globales dentro de un
+
+      programa de sombreado. Proporcionan una forma de pasar valores desde un sketch que se ejecuta
+
+      en la CPU a un programa de sombreado que se ejecuta en la GPU.</p>
+
+      <p>El primer parámetro, <code>uniformName</code>, es una cadena con el nombre de la
+      variable uniforme.
+
+      Para el sombreador anterior, <code>uniformName</code> sería
+      <code>'r'</code>.</p>
+
+      <p>El segundo parámetro, <code>data</code>, es el valor que se debe utilizar para establecer la
+
+      variable uniforme. Por ejemplo, llamar a <code>myShader.setUniform('r', 0.5)</code>
+      establecería
+
+      la variable uniforme <code>r</code> en el sombreador anterior a <code>0.5</code>. data
+      debe coincidir con el
+
+      tipo de la variable uniforme. Números, cadenas, booleanos, matrices y muchos tipos de
+
+      imágenes se pueden pasar a un sombreador con <code>setUniform()</code>.</p>
+    path: p5.Shader/setUniform
+chainable: false
+---
+
+
+# p5.Shader

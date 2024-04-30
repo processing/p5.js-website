@@ -1,28 +1,46 @@
 ---
-import { getCurrentLocale, useTranslations } from "@/src/i18n/utils";
+import { getCurrentLocale, getUiTranslator } from "@/src/i18n/utils";
+import { jumpToState } from "@/src/globals/state";
+import { JumpToLinks } from "./JumpToLinks";
+import { MainNavLinks } from "./MainNavLinks";
+import styles from "./styles.module.scss";
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
-const t = await useTranslations(currentLocale);
+// We force the logo to the accent color only on the homepage
+const pathMinusLocale = Astro.url.pathname.replace(`/${currentLocale}`, "");
+const isHomepage = pathMinusLocale === "/";
+const t = await getUiTranslator(currentLocale);
+
+const mainLinks = [
+  { url: "/reference", label: t("Reference") },
+  { url: "/tutorials", label: t("Tutorials") },
+  { url: "/examples", label: t("Examples") },
+  { url: "/contribute", label: t("Contribute") },
+  { url: "/community", label: t("Community") },
+  { url: "/about", label: t("About") },
+] as { url: string; label: string }[];
+
+const editorButtonLabel = t("Start Coding");
+const donateButtonLabel = t("Donate");
+const mobileMenuLabel = t("Menu");
 ---
 
-<nav class="border-r border-sidebar-type-color">
-  <ul>
-    <li class="inline-block md:block"><a href="/">{t("Home")}</a></li>
-    <li class="inline-block md:block">
-      <a href="/reference">{t("Reference")}</a>
-    </li>
-    <li class="inline-block md:block">
-      <a href="/tutorials">{t("Tutorials")}</a>
-    </li>
-    <li class="inline-block md:block">
-      <a href="/examples">{t("Examples")}</a>
-    </li>
-    <li class="inline-block md:block">
-      <a href="/community">{t("Community")}</a>
-    </li>
-    <li class="inline-block md:block"><a href="/about">{t("About")}</a></li>
-    <li class="inline-block md:block">
-      <a href="/contribute">{t("Contribute")}</a>
-    </li>
-  </ul>
+<nav class={styles.container}>
+  <a href="#main-content" class="skip-to-main">
+    {t("Skip to main content")}
+  </a>
+  <MainNavLinks
+    links={mainLinks}
+    isHomepage={isHomepage}
+    editorButtonLabel={editorButtonLabel as string}
+    donateButtonLabel={donateButtonLabel as string}
+    mobileMenuLabel={mobileMenuLabel as string}
+    hasJumpTo={jumpToState !== null}
+    client:load
+  />
+  <JumpToLinks
+    heading={jumpToState?.heading || (t("Jump To") as string)}
+    links={jumpToState?.links}
+    client:load
+  />
 </nav>

@@ -4,28 +4,96 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-  <p>按照角度参数指定的量围绕 X 轴错切形状。角度应该以当前的 angleMode 指定。对象始终围绕它们相对于原点的位置错切，正数会将对象顺时针错切。</p>
-  <p>变换应用于之后发生的所有事情，并且对函数的连续调用会累积效果。例如，调用 shearX(PI/2)，然后再调用 shearX(PI/2) 等同于调用shearX(PI)。如果在 <a href="/reference/p5/draw">draw()</a> 中调用 <a href="/reference/p5/shearX">shearX()</a>，则当循环重新开始时，变换会被重置。</p>
-  <p>从技术上讲，<a href="/reference/p5/shearX">shearX()</a> 将当前变换矩阵乘以一个旋转矩阵。可以通过 <a href="/reference/p5/push">push()</a> 和 <a href="/reference/p5/pop">pop()</a> 函数进一步控制此函数。</p>
-line: 451
+  <p>Shears the x-axis so that shapes appear skewed.</p>
+
+  <p>By default, the x- and y-axes are perpendicular. The <code>shearX()</code>
+  function
+
+  transforms the coordinate system so that x-coordinates are translated while
+
+  y-coordinates are fixed.</p>
+
+  <p>The first parameter, <code>angle</code>, is the amount to shear. For
+  example, calling
+
+  <code>shearX(1)</code> transforms all x-coordinates using the formula
+
+  <code>x = x + y * tan(angle)</code>. <code>shearX()</code> interprets angle
+  values using the
+
+  current <a href="/reference/p5/angleMode">angleMode()</a>.</p>
+
+  <p>By default, transformations accumulate. For example, calling
+
+  <code>shearX(1)</code> twice has the same effect as calling
+  <code>shearX(2)</code> once. The
+
+  <a href="/reference/p5/push">push()</a> and
+
+  <a href="/reference/p5/pop">pop()</a> functions can be used to isolate
+
+  transformations within distinct drawing groups.</p>
+
+  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
+
+  <code>shearX(1)</code> inside the <a href="/reference/p5/draw">draw()</a>
+  function won't
+
+  cause shapes to shear continuously.</p>
+line: 1070
 isConstructor: false
 itemtype: method
-alt: white irregular quadrilateral with black outline at top middle.
 example:
   - |-
 
     <div>
     <code>
-    translate(width / 4, height / 4);
-    shearX(PI / 4.0);
-    rect(0, 0, 30, 30);
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white quadrilateral on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Shear the coordinate system along the x-axis.
+      shearX(QUARTER_PI);
+
+      // Draw the square.
+      square(0, 0, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe('A white quadrilateral on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Shear the coordinate system along the x-axis.
+      shearX(45);
+
+      // Draw the square.
+      square(0, 0, 50);
+    }
     </code>
     </div>
 class: p5
 params:
   - name: angle
-    description: |
-      <p>错切角度根据当前的 angleMode 指定为弧度或度数。</p>
+    description: >
+      <p>angle to shear by in the current <a
+      href="#/p5/angleMode">angleMode()</a>.</p>
     type: Number
 chainable: true
 ---

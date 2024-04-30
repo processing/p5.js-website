@@ -1,0 +1,27 @@
+---
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
+import EventLayout from "@/src/layouts/EventLayout.astro";
+
+export async function getStaticPaths() {
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const localeEntries = await getCollectionInLocaleWithFallbacks(
+        "events",
+        locale
+      );
+      return localeEntries.map((entry) => ({
+        params: { locale, slug: removeLocalePrefix(entry.slug) },
+        props: { entry },
+      }));
+    })
+  );
+
+  return entries.flat();
+}
+
+const { entry } = Astro.props;
+---
+
+<EventLayout entry={entry} title={entry.data.title} />

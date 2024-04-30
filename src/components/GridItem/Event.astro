@@ -1,21 +1,34 @@
 ---
 import { getCurrentLocale } from "@/src/i18n/utils";
 import { removeLocaleAndExtension } from "@/src/pages/_utils";
-import { Image } from "astro:assets";
+import Image from "@components/Image/index.astro";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
-  item: CollectionEntry<"past-events">;
+  item: CollectionEntry<"events">;
 }
 
 const { item } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
+const dayString = new Date(item.data.date).toLocaleDateString(currentLocale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 ---
 
-<a href={`/past-events/${removeLocaleAndExtension(item.id)}`}>
-  <Image src={item.data.featuredImage} alt={item.data.featuredImageAlt} />
-  <div class="text-lg mt-xs">{item.data.title}</div>
-  <div class="text-sm">
-    {new Date(item.data.date).toLocaleDateString(currentLocale)}
+<a
+  class="group hover:no-underline"
+  href={`/events/${removeLocaleAndExtension(item.slug)}`}
+>
+  <!-- Could potentially reduce width needed here if featured and non-featured events were distinguished -->
+  <Image
+    src={item.data.featuredImage}
+    alt={item.data.featuredImageAlt}
+    width="800"
+  />
+  <div class="text-xl mt-xs break-words break-keep group-hover:underline">
+    {item.data.title}
   </div>
+  <div class="text-sm">{dayString}</div>
 </a>

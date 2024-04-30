@@ -1,0 +1,171 @@
+---
+title: perspective
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Establece una proyección perspectiva para la cámara actual en un sketch (boceto) 3D.</p>
+
+  <p>En una proyección perspectiva, las formas que están más lejos de la cámara
+
+  aparecen más pequeñas que las que están cerca de la cámara. Esta técnica,
+
+  llamada perspectiva, crea escenas 3D realistas. Se aplica por defecto en
+
+  modo WebGL.</p>
+
+  <p><code>perspective()</code> cambia la perspectiva de la cámara al cambiar su
+  campo de visión. El campo de visión de la cámara es un volumen de espacio que
+
+  está visible desde la cámara. Su forma es una pirámide con su parte superior
+
+  cortada. La cámara está donde debería estar la parte superior de la pirámide y
+
+  mira hacia todo lo que hay entre la parte superior (plano cercano) y la
+
+  parte inferior (plano lejano) del volumen.</p>
+
+  <p>El primer parámetro, <code>fovy</code>, es el campo de visión vertical de
+  la cámara. Es un ángulo que describe la altura o ancho de la visión que la
+
+  cámara tiene. Por ejemplo, llamar a <code>perspective(0.5)</code> establece el
+  campo de visión vertical de la cámara a 0.5 radianes. Por defecto,
+
+  <code>fovy</code> se calcula basado en la altura del boceto y la distancia
+  predeterminada de la cámara al origen, que es 800. La fórmula para el
+  <code>fovy</code> predeterminado es <code>2 * atan(altura / 2 / 800)</code>.</p>
+
+  <p>El segundo parámetro, <code>aspect</code>, es la relación de aspecto de la
+  cámara. Es un número que describe la relación entre el ancho del plano superior
+
+  y su altura. Por ejemplo, llamar a <code>perspective(0.5, 1.5)</code> establece
+  el campo de visión de la cámara a 0.5 radianes y su relación de aspecto a 1.5, lo
+
+  que haría que las formas aparezcan más estrechas en un lienzo cuadrado. Por
+
+  defecto, aspecto está establecido a <code>ancho / altura</code>.</p>
+
+  <p>El tercer parámetro, <code>near</code>, es la distancia desde la cámara al
+  plano cercano. Por ejemplo, llamar a <code>perspective(0.5, 1.5, 100)</code>
+  establece el campo de visión de la cámara a 0.5 radianes, su relación de aspecto
+  a 1.5, y coloca el plano cercano a 100 pixeles de la cámara. Cualquier forma
+
+  dibujada a menos de 100 pixeles de la cámara no será visible. Por defecto,
+
+  near está establecido a <code>0.1 * 800</code>, lo que es un 1/10 de la
+  distancia predeterminada entre la cámara y el origen.</p>
+
+  <p>El cuarto parámetro, <code>far</code>, es la distancia desde la cámara al
+  plano lejano. Por ejemplo, llamar a <code>perspective(0.5, 1.5, 100,
+  10000)</code> establece el campo de visión de la cámara a 0.5 radianes, su
+  relación de aspecto a 1.5, coloca el plano cercano a 100 pixeles de la cámara
+  y el plano lejano a 10000 pixeles de la cámara. Cualquier forma dibujada más
+
+  de 10000 pixeles de la cámara no será visible. Por defecto, far está
+  establecido a <code>10 * 800</code>, lo que es 10 veces la distancia
+  predeterminada entre la cámara y el origen.</p>
+
+  <p>Nota: <code>perspective()</code> solo puede ser usado en el modo WebGL.</p>
+line: 148
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to squeeze the box.
+
+    let isSqueezed = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white rectangular prism on a gray background. The box appears to become thinner when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Place the camera at the top-right.
+      camera(400, -400, 800);
+
+      if (isSqueezed === true) {
+        // Set fovy to 0.2.
+        // Set aspect to 1.5.
+        perspective(0.2, 1.5);
+      }
+
+      // Draw the box.
+      box();
+    }
+
+    // Change the camera's perspective when the user double-clicks.
+    function doubleClicked() {
+      isSqueezed = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white rectangular prism on a gray background. The prism moves away from the camera until it disappears.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Place the camera at the top-right.
+      camera(400, -400, 800);
+
+      // Set fovy to 0.2.
+      // Set aspect to 1.5.
+      // Set near to 600.
+      // Set far to 1200.
+      perspective(0.2, 1.5, 600, 1200);
+
+      // Move the origin away from the camera.
+      let x = -frameCount;
+      let y = frameCount;
+      let z = -2 * frameCount;
+      translate(x, y, z);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: fovy
+    description: |
+      <p>Campo de visión vertical del cono de visión de la cámara. Toma como
+      valor por defecto <code>2 * atan(height / 2 / 800)</code>.</p>
+    type: Number
+    optional: true
+  - name: aspect
+    description: |
+      <p>Relación de aspecto del cono de visión de la cámara. Toma como valor
+      por defecto <code>width / height</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>Distancia desde la cámara al plano de recorte cercano. Toma como valor
+      por defecto <code>0.1 * 800</code>.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: |
+      <p>Distancia desde la cámara al plano de recorte lejano. Toma como valor
+      por defecto <code>10 * 800</code>.</p>
+    type: Number
+    optional: true
+chainable: true
+---
+
+
+# perspective

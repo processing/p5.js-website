@@ -1,22 +1,79 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-import type { ExampleDocContentItem } from "../content/types";
+import Head from "@components/Head/index.astro";
+import GridItemExample from "@components/GridItem/Example.astro";
+import { getExampleCategory } from "../pages/_utils";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { setJumpToState } from "../globals/state";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  exampleEntries: CollectionEntry<"examples">[];
+}
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
 
 const { exampleEntries } = Astro.props;
+const exampleCategories = new Set<string>();
+exampleEntries.forEach((exampleEntry) => {
+  exampleCategories.add(getExampleCategory(exampleEntry.id));
+});
+
+const examplesByCategory = Array.from(exampleCategories).map((category) => {
+  return {
+    name: t("exampleCategories", category) as string,
+    examples: exampleEntries.filter((exampleEntry) => {
+      return getExampleCategory(exampleEntry.id) === category;
+    }),
+  };
+});
+
+// If there are any featured examples, add a Featured category at the top
+const featuredEntries = exampleEntries.filter(
+  (exampleEntry) => exampleEntry.data.featured
+);
+if (featuredEntries.length > 0) {
+  examplesByCategory.unshift({
+    name: t("exampleCategories", "Featured") as string,
+    examples: featuredEntries,
+  });
+}
+
+const jumpToLinks = Array.from(examplesByCategory).map(({ name }) => ({
+  label: name as string,
+  url: `/examples/#${name.toLowerCase()}`,
+}));
+
+const jumpToState = {
+  links: jumpToLinks,
+};
+
+setJumpToState(jumpToState);
 ---
 
+<Head title={"Examples"} locale={currentLocale} />
+
 <BaseLayout title="Examples">
-  <div class="content-grid">
-    {
-      exampleEntries.map((exampleEntry: ExampleDocContentItem) => (
-        <div class="col-span-3 w-full overflow-hidden">
-          <!-- placeholder for thumbnail -->
-          <div class="aspect-square border border-sidebar-type-color w-full"/>
-          <a href={`/examples/${exampleEntry.slug}`}>
-            {exampleEntry.data.title}
-          </a>
-        </div>
-      ))
-    }
-  </div>
+  {
+    examplesByCategory.map((category, i) => (
+      <>
+        <section class="grid grid-cols-2 lg:grid-cols-4 pb-3xl lg:pb-2xl last:pb-0">
+          <h2 class="col-span-full mb-xl mt-0">
+            {category.name} <a id={category.name.toLowerCase()} />
+          </h2>
+          <ul class="col-span-full grid grid-cols-subgrid gap-x-[20px] gap-y-[40px] lg:gap-x-[40px]">
+            {category.examples.map((exampleEntry, i) => (
+              <li class="col-span-1">
+                {<GridItemExample item={exampleEntry} lazyLoad={i <= 4} />}
+              </li>
+            ))}
+          </ul>
+        </section>
+        {i !== examplesByCategory.length - 1 ? (
+          <hr class="mb-sm col-span-full" />
+        ) : null}
+      </>
+    ))
+  }
 </BaseLayout>

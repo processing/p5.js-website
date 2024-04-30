@@ -1,0 +1,211 @@
+---
+title: perspective
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Establece una proyección en perspectiva para la cámara.</p>
+
+  <p>En una proyección en perspectiva, las formas que están más lejanas de la cámara
+  aparecen más pequeñas que las que están cerca de la cámara. Esta técnica, llamada
+  escorzo, crea escenas 3D realistas. Se aplica por defecto en nuevas
+  instancias de <code>p5.Camera</code>.</p>
+
+  <p><code>myCamera.perspective()</code> cambia la perspectiva de la cámara por
+  cambiar su
+  espacio de visión. El espacio de visión de la cámara es un volumen de espacio
+  que se puede ver desde la cámara. La forma de espacio de visión es una pirámide
+  con su cima cortada. La cámara se encuentra en el lugar donde debería estar
+  la cima de la pirámide y apunta hacia la base de la pirámide. Vista desde la
+  cámara, se ven solo las formas dentro del espacio de visión.</p>
+
+  <p>El primer parámetro, <code>fovy</code>, es el campo de visión vertical de la
+  cámara. Es
+  un ángulo que describe cómo alto o ancho es la vista de la cámara. Por
+  ejemplo, llamar a <code>myCamera.perspective(0.5)</code> establece el campo de
+  visión vertical
+  de la cámara en 0.5 radianes. Por defecto, <code>fovy</code> se calcula
+  basado en la
+  altura de la ventana y la coordenada z por defecto de la cámara, que es
+  800. La fórmula para el campo de visión por defecto es <code>2 * atan(height /
+  2 / 800)</code>.</p>
+
+  <p>El segundo parámetro, <code>aspect</code>, es la relación de aspecto de la
+  cámara. Es un
+  número que describe la relación de ancho a alto del plano superior de la
+  proyección. Por ejemplo, llamar a <code>myCamera.perspective(0.5, 1.5)</code>
+  establece el campo
+  de visión de la cámara en 0.5 radianes y su relación de aspecto a 1.5, lo que
+  haría que las formas
+  aparezcan más delgadas en una lienzo cuadrado. Por defecto, <code>aspect</code>
+  se establece a <code>ancho / alto</code>.</p>
+
+  <p>El tercer parámetro, <code>near</code>, es la distancia desde la cámara al
+  plano
+  cercano. Por ejemplo, llamar a <code>myCamera.perspective(0.5, 1.5, 100)</code>
+  establece el campo
+  de visión de la cámara en 0.5 radianes, su relación de aspecto a 1.5, y coloca
+  el plano cercano
+  a 100 pixeles de la cámara. Cualquier forma dibujada a menos de 100
+  pixeles de la cámara no
+  será visible. Por defecto, <code>near</code> se establece a <code>0.1 * 800</code>,
+  lo que es
+  1/10 la distancia por defecto entre la cámara y el origen.</p>
+
+  <p>El cuarto parámetro, <code>far</code>, es la distancia desde la cámara al
+  plano lejano. Por ejemplo, llamar a <code>myCamera.perspective(0.5, 1.5, 100,
+  10000)</code>
+  establece el campo de visión de la cámara en 0.5 radianes, su relación de
+  aspecto a 1.5, coloca el plano cercano
+  a 100 pixeles de la cámara y el plano lejano a 10,000 pixeles de la
+  cámara. Cualquier forma dibujada más
+  de 10,000 pixeles de la cámara no será visible. Por defecto, <code>far</code>
+  se establece a <code>10 * 800</code>, lo que es
+  10 veces la distancia por defecto entre la cámara y el origen.</p>
+
+line: 1862
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right.
+      cam2.camera(400, -400, 800);
+
+      // Set its fovy to 0.2.
+      // Set its aspect to 1.5.
+      // Set its near to 600.
+      // Set its far to 1200.
+      cam2.perspective(0.2, 1.5, 600, 1200);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A white cube on a gray background. The camera toggles between a frontal view and a skewed aerial view when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the box.
+      box();
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right.
+      cam2.camera(400, -400, 800);
+
+      // Set its fovy to 0.2.
+      // Set its aspect to 1.5.
+      // Set its near to 600.
+      // Set its far to 1200.
+      cam2.perspective(0.2, 1.5, 600, 1200);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A white cube moves left and right on a gray background. The camera toggles between a frontal and a skewed aerial view when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin left and right.
+      let x = 100 * sin(frameCount * 0.01);
+      translate(x, 0, 0);
+
+      // Draw the box.
+      box();
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: fovy
+    description: |
+      <p>campo de visión vertical del cono de visión de la cámara. Por defecto es
+                                <code>2 * atan(altura / 2 / 800)</code>.</p>
+    type: Number
+    optional: true
+  - name: aspect
+    description: |
+      <p>relación de aspecto del cono de visión de la cámara. Por defecto es
+                                <code>ancho / altura</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>distancia desde la cámara al plano de recorte cercano.
+                                Por defecto es <code>0.1 * 800</code>.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: |
+      <p>distancia desde la cámara al plano de recorte lejano.
+                                Por defecto es <code>10 * 800</code>.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# perspective

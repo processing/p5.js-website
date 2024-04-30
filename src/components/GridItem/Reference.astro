@@ -1,0 +1,26 @@
+---
+import { normalizeReferenceRoute } from "@/src/pages/_utils";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  item: CollectionEntry<"reference">;
+}
+
+const { item } = Astro.props;
+---
+
+<a
+  class="group hover:no-underline"
+  href={`/reference/${normalizeReferenceRoute(item.id)}`}
+>
+  <div
+    class="text-xl mt-xs text-body-mono break-words break-keep group-hover:underline"
+  >
+    {item.data.title}
+  </div>
+  <p class="text-sm mt-0">
+    {
+      `${item.data.description.replace(/<[^>]*>/g, "").split(/\.(\s|$)/, 1)[0]}.`
+    }
+  </p>
+</a>

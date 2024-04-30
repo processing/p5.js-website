@@ -4,71 +4,231 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-  <p>指定在显示窗口内显示对象的量。</p>
-  <p>x 参数指定左/右移动，y 参数指定上/下移动。</p>
-  <p>变换是累积的，适用于之后发生的所有事情，并且对函数的连续调用会有累积效果。例如，调用 translate(50, 0)，然后再调用 translate(20, 0) 等同于调用 translate(70, 0)。如果在 <a href="/reference/p5/draw">draw()</a> 中调用 <a href="/reference/p5/translate">translate()</a>，则当循环重新开始时，变换会被重置。可以通过使用 a href="/reference/p5/push">push()</a> 和 <a href="/reference/p5/pop">pop()</a> 进一步控制此函数。</p>
-line: 529
+  <p>Translates the coordinate system.</p>
+
+  <p>By default, the origin <code>(0, 0)</code> is at the sketch's top-left
+  corner in 2D
+
+  mode and center in WebGL mode. The <code>translate()</code> function shifts
+  the origin
+
+  to a different position. Everything drawn after <code>translate()</code> is
+  called
+
+  will appear to be shifted. There are two ways to call <code>translate()</code>
+  with
+
+  parameters that set the origin's position.</p>
+
+  <p>The first way to call <code>translate()</code> uses numbers to set the
+  amount of
+
+  translation. The first two parameters, <code>x</code> and <code>y</code>, set
+  the amount to
+
+  translate along the positive x- and y-axes. For example, calling
+
+  <code>translate(20, 30)</code> translates the origin 20 pixels along the
+  x-axis and 30
+
+  pixels along the y-axis. The third parameter, <code>z</code>, is optional. It
+  sets the
+
+  amount to translate along the positive z-axis. For example, calling
+
+  <code>translate(20, 30, 40)</code> translates the origin 20 pixels along the
+  x-axis,
+
+  30 pixels along the y-axis, and 40 pixels along the z-axis.</p>
+
+  <p>The second way to call <code>translate()</code> uses a
+
+  <a href="/reference/p5/p5.Vector">p5.Vector</a> object to set the amount of
+
+  translation. For example, calling <code>translate(myVector)</code> uses the
+  x-, y-,
+
+  and z-components of <code>myVector</code> to set the amount to translate along
+  the x-,
+
+  y-, and z-axes. Doing so is the same as calling
+
+  <code>translate(myVector.x, myVector.y, myVector.z)</code>.</p>
+
+  <p>By default, transformations accumulate. For example, calling
+
+  <code>translate(10, 0)</code> twice has the same effect as calling
+
+  <code>translate(20, 0)</code> once. The <a
+  href="/reference/p5/push">push()</a> and
+
+  <a href="/reference/p5/pop">pop()</a> functions can be used to isolate
+
+  transformations within distinct drawing groups.</p>
+
+  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
+
+  <code>translate(10, 0)</code> inside the <a
+  href="/reference/p5/draw">draw()</a> function won't
+
+  cause shapes to move continuously.</p>
+line: 1224
 isConstructor: false
 itemtype: method
-alt: |-
-  white 55×55 rect with black outline at center right.
-  3 white 55×55 rects with black outlines at top-l, center-r and bottom-r.
-  a 20×20 white rect moving in a circle around the canvas
 example:
   - |-
 
     <div>
     <code>
-    translate(30, 20);
-    rect(0, 0, 55, 55);
-    </code>
-    </div>
+    function setup() {
+      createCanvas(100, 100);
 
-    <div>
-    <code>
-    rect(0, 0, 55, 55); // Draw rect at original 0,0
-    translate(30, 20);
-    rect(0, 0, 55, 55); // Draw rect at new 0,0
-    translate(14, 14);
-    rect(0, 0, 55, 55); // Draw rect at new 0,0
-    </code>
-    </div>
+      describe('A white circle on a gray background.');
+    }
 
-
-    <div>
-    <code>
     function draw() {
       background(200);
-      rectMode(CENTER);
-      translate(width / 2, height / 2);
-      translate(p5.Vector.fromAngle(millis() / 1000, 40));
-      rect(0, 0, 20, 20);
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw a circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'Two circles drawn on a gray background. The blue circle on the right overlaps the red circle at the center.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw the red circle.
+      fill('red');
+      circle(0, 0, 40);
+
+      // Translate the origin to the right.
+      translate(25, 0);
+
+      // Draw the blue circle.
+      fill('blue');
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle moves slowly from left to right on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the x-coordinate.
+      let x = frameCount * 0.2;
+
+      // Translate the origin.
+      translate(x, 50);
+
+      // Draw a circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a p5.Vector object.
+      let v = createVector(50, 50);
+
+      // Translate the origin by the vector.
+      translate(v);
+
+      // Draw a circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'Two spheres sitting side-by-side on gray background. The sphere at the center is red. The sphere on the right is blue.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Turn on the lights.
+      lights();
+
+      // Style the spheres.
+      noStroke();
+
+      // Draw the red sphere.
+      fill('red');
+      sphere(10);
+
+      // Translate the origin to the right.
+      translate(30, 0, 0);
+
+      // Draw the blue sphere.
+      fill('blue');
+      sphere(10);
     }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 529
+  - line: 1224
     params:
       - name: x
         description: |
-          <p>左/右移动。</p>
+          <p>amount to translate along the positive x-axis.</p>
         type: Number
       - name: 'y'
         description: |
-          <p>上/下移动</p>
+          <p>amount to translate along the positive y-axis.</p>
         type: Number
       - name: z
         description: |
-          <p>前进/后退移动（仅适用于WebGL）。</p>
+          <p>amount to translate along the positive z-axis.</p>
         type: Number
         optional: true
     chainable: 1
-  - line: 582
+  - line: 1395
     params:
       - name: vector
         description: |
-          <p>要进行移动的向量。</p>
+          <p>vector by which to translate.</p>
         type: p5.Vector
     chainable: 1
 chainable: true

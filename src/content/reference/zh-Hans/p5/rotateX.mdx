@@ -4,27 +4,142 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-<p>通过角度参数指定的量围绕 X 轴旋转形状。可以通过 RADIANS 或 DEGREES 输入角度。</p>
-  <p>此方法仅在 WebGL 模式下有效。</p>
-  <p>对象始终围绕它们相对于原点的位置旋转，正数会使对象顺时针旋转。</p>
-  <p>当 <a href="/reference/p5/draw">draw()</a> 重新开始时，所有变换都会被重置。</p>
-line: 261
+  <p>Rotates the coordinate system about the x-axis in WebGL mode.</p>
+
+  <p>The parameter, <code>angle</code>, is the amount to rotate. For example,
+  calling
+
+  <code>rotateX(1)</code> rotates the coordinate system about the x-axis by 1
+  radian.
+
+  <code>rotateX()</code> interprets angle values using the current
+
+  <a href="/reference/p5/angleMode">angleMode()</a>.</p>
+
+  <p>By default, transformations accumulate. For example, calling
+  <code>rotateX(1)</code>
+
+  twice has the same effect as calling <code>rotateX(2)</code> once. The
+
+  <a href="/reference/p5/push">push()</a> and <a
+  href="/reference/p5/pop">pop()</a> functions
+
+  can be used to isolate transformations within distinct drawing groups.</p>
+
+  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
+
+  <code>rotateX(1)</code> inside the <a href="/reference/p5/draw">draw()</a>
+  function won't cause
+
+  shapes to spin.</p>
+line: 471
 isConstructor: false
 itemtype: method
-alt: 3d box rotating around the x axis.
 example:
   - |-
 
-    <div modernizr='webgl'>
+    <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      camera(0, 0, 50*sqrt(3), 0, 0, 0, 0, 1, 0);
-      perspective(PI/3, 1, 5*sqrt(3), 500*sqrt(3));
+
+      describe('A white cube on a gray background.');
     }
+
     function draw() {
-      background(255);
-      rotateX(millis() / 1000);
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/8 turn.
+      rotateX(QUARTER_PI);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/16 turn.
+      rotateX(QUARTER_PI / 2);
+
+      // Rotate the coordinate system 1/16 turn.
+      rotateX(QUARTER_PI / 2);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/8 turn.
+      rotateX(45);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube rotates slowly against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      rotateX(angle);
+
+      // Draw a box.
       box();
     }
     </code>
@@ -32,8 +147,9 @@ example:
 class: p5
 params:
   - name: angle
-    description: |
-      <p>旋转角度，根据当前的 angleMode，指定为弧度或度数。</p>
+    description: >
+      <p>angle of rotation in the current <a
+      href="#/p5/angleMode">angleMode()</a>.</p>
     type: Number
 chainable: true
 ---

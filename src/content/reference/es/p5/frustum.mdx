@@ -1,0 +1,144 @@
+---
+title: frustum
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p><code>frustum()</code> cambia la perspectiva por defecto de la cámara actual en un
+  boceto 3D.</p>
+
+  <p>En una proyección de frustum, las formas que están más lejanas de la cámara
+  aparecen más pequeñas que las formas que están cercanas a la cámara. Esta
+  técnica, llamada foreshortening(escorzo), crea escenas 3D realistas.</p>
+
+  <p><code>frustum()</code> cambia la perspectiva de la cámara cambiando su
+  frustum de vista. El frustum es el volumen de espacio que es visible para la
+  cámara. La forma del frustum es una pirámide con su parte superior cortada. La
+  cámara está en la parte superior de la pirámide y mira hacia la base de la
+  pirámide. Vista la región visible dentro del frustum.</p>
+
+  <p>Los primeros cuatro parámetros, <code>left</code>, <code>right</code>,
+  <code>bottom</code> y <code>top</code>, establecen las coordenadas de los lados,
+  parte inferior y superior del frustum. Por ejemplo, llamar a
+  <code>frustum(-100, 100, 200, -200)</code> crea un frustum que mide 200 píxeles
+  de ancho y 400 píxeles de alto. Por defecto, estos parámetros están establecidos
+  basados en el ancho y alto del boceto, como en
+
+  <code>ortho(-ancho / 20, ancho / 20, alto / 20, -alto / 20)</code>.</p>
+
+  <p>Los dos últimos parámetros, <code>near</code> y <code>far</code>, establecen
+  la distancia del plano cercano y lejano del frustum respectivamente desde la
+  cámara. Por ejemplo, llamar a
+  <code>ortho(-100, 100, 200, -200, 50, 1000)</code> crea un frustum que mide 200
+  píxeles de ancho y alto, empieza a 50 píxeles de la cámara y termina a 1000
+  píxeles de la cámara. Por defecto, <code>near</code> está establecido en
+  <code>0.1 * 800</code>, que es 1/10th la distancia por defecto entre la cámara
+  y el origen. <code>far</code> está establecido en <code>10 * 800</code>, que es
+  10 veces la distancia por defecto entre la cámara y el origen.</p>
+
+  <p>Nota: <code>frustum()</code> solo puede ser usado en modo WebGL.</p>
+line: 522
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A row of white cubes on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Apply the default frustum projection.
+      frustum();
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Adjust the frustum.
+      // Center it.
+      // Set its width and height to 20 pixels.
+      // Place its near plane 300 pixels from the camera.
+      // Place its far plane 350 pixels from the camera.
+      frustum(-10, 10, -10, 10, 300, 350);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: left
+    description: >
+      <p>Coordenada x del plano izquierdo del frustum. Por defecto es <code>-width / 20</code>.</p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p>Coordenada x del plano derecho del frustum. Por defecto es <code>width / 20</code>.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>Coordenada y del plano inferior del frustum. Por defecto es <code>height / 20</code>.</p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p>Coordenada y del plano superior del frustum. Por defecto es <code>-height / 20</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: >
+      <p>Coordenada z del plano cercano del frustum. Por defecto es <code>0.1 * 800</code>.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p>Coordenada z del plano lejano del frustum. Por defecto es <code>10 * 800</code>.</p>
+    type: Number
+    optional: true
+chainable: true
+---
+
+
+# frustum

@@ -1,0 +1,218 @@
+---
+title: camera
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Establece la posición y orientación de la cámara.</p>
+
+  <p><code>myCamera.camera()</code> permite visualizar objetos desde diferentes
+  ángulos. Tiene nueve parámetros, todos opcionales.</p>
+
+  <p>Los tres primeros parámetros, <code>x</code>, <code>y</code> y
+  <code>z</code>, son las coordenadas de la
+  posición de la cámara en el espacio "mundo". Por ejemplo, llamar a
+  <code>myCamera.camera(0, 0, 0)</code> coloca la cámara en el origen
+  <code>(0, 0, 0)</code>. De forma predeterminada, la cámara se coloca en
+  <code>(0, 0, 800)</code>.</p>
+
+  <p>Los tres parámetros siguientes, <code>centerX</code>,
+  <code>centerY</code> y <code>centerZ</code> son las coordenadas del punto al
+  que mira la cámara en el espacio "mundo". Por ejemplo, llamar a
+  <code>myCamera.camera(0, 0, 0, 10, 20, 30)</code> coloca la cámara en el
+  origen <code>(0, 0, 0)</code> y la hace apuntar al punto
+  <code>(10, 20, 30)</code>. De forma predeterminada, la cámara apunta al
+  origen <code>(0, 0, 0)</code>.</p>
+
+  <p>Los tres parámetros restantes, <code>upX</code>, <code>upY</code> y
+  <code>upZ</code> son los componentes del vector "arriba" en el espacio "local".
+  El vector "arriba" orienta el eje y de la cámara. Por ejemplo, llamar a
+  <code>myCamera.camera(0, 0, 0, 10, 20, 30, 0, -1, 0)</code> coloca la cámara
+  en el origen <code>(0, 0, 0)</code>, la hace apuntar al punto
+  <code>(10, 20, 30)</code> y establece el vector "arriba" como
+  <code>(0, -1, 0)</code> lo que es como si la cámara estuviera boca abajo. De
+  forma predeterminada, el vector "arriba" es <code>(0, 1, 0)</code>.</p>
+line: 2695
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right: (1200, -600, 100)
+      // Point it at the row of boxes: (-10, -10, 400)
+      // Set its "up" vector to the default: (0, 1, 0)
+      cam2.camera(1200, -600, 100, -10, -10, 400, 0, 1, 0);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe(
+        'A row of white cubes against a gray background. The camera toggles between a frontal and an aerial view when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -30);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the right: (1200, 0, 100)
+      // Point it at the row of boxes: (-10, -10, 400)
+      // Set its "up" vector to the default: (0, 1, 0)
+      cam2.camera(1200, 0, 100, -10, -10, 400, 0, 1, 0);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe(
+        'A row of white cubes against a gray background. The camera toggles between a static frontal view and an orbiting view when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Update cam2's position.
+      let x = 1200 * cos(frameCount * 0.01);
+      let y = -600 * sin(frameCount * 0.01);
+      cam2.camera(x, y, 100, -10, -10, 400, 0, 1, 0);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -30);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: x
+    description: |
+      <p>Coordenada x de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: 'y'
+    description: |
+      <p>Coordenada y de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: z
+    description: |
+      <p>Coordenada z de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: centerX
+    description: |
+      <p>Coordenada x del punto que la cámara enfoca. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: centerY
+    description: |
+      <p>Coordenada y del punto que la cámara enfoca. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: centerZ
+    description: |
+      <p>Coordenada z del punto que la cámara enfoca. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: upX
+    description: |
+      <p>Componente x del vector "arriba" de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: upY
+    description: |
+      <p>Componente y del vector "arriba" de la cámara. Por defecto, 1.</p>
+    type: Number
+    optional: true
+  - name: upZ
+    description: |
+      <p>Componente z del vector "arriba" de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# camera

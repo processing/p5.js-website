@@ -1,0 +1,270 @@
+---
+title: bezier
+module: Shape
+submodule: Curves
+file: src/core/shape/curves.js
+description: >
+  <p>Dibuja una curva de Bézier.</p>
+
+  <p>Las curvas de Bézier pueden crear formas y curvas que se inclinan suavemente. Están definidas
+
+  por dos puntos de anclaje y dos puntos de control. Las curvas de Bézier proporcionan más
+
+  control que las curvas spline creadas con la función
+
+  <a href="/reference/p5/curve">curve()</a>.</p>
+
+  <p>Los dos primeros parámetros, <code>x1</code> y <code>y1</code>, establecen el
+  primer punto de anclaje. El
+
+  primer punto de anclaje es donde comienza la curva.</p>
+
+  <p>Los siguientes cuatro parámetros, <code>x2</code>, <code>y2</code>,
+  y <code>x3</code>, <code>y3</code>, establecen los dos puntos de control.
+
+  Los puntos de control "tiran" de la curva hacia ellos.</p>
+
+  <p>Los parámetros séptimo y octavo, <code>x4</code> y <code>y4</code>, establecen
+
+  el último punto de anclaje. El último punto de anclaje es donde termina la curva.</p>
+
+  <p>Las curvas de Bézier también se pueden dibujar en 3D utilizando el modo WebGL. La versión en 3D de
+
+  bezier()</code> tiene doce argumentos porque cada punto tiene coordenadas x, y,
+
+  y z.</p>
+
+line: 13
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(85, 20);
+      point(15, 80);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(10, 10);
+      point(90, 90);
+
+      // Draw a black bezier curve.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+      bezier(85, 20, 10, 10, 90, 90, 15, 80);
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(85, 20, 10, 10);
+      line(15, 80, 90, 90);
+
+      describe(
+        'A gray square with three curves. A black s-curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the mouse near the red dot in the top-left corner
+    // and drag to change the curve's shape.
+
+    let x2 = 10;
+    let y2 = 10;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with three curves. A black s-curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(85, 20);
+      point(15, 80);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x2, y2);
+      point(90, 90);
+
+      // Draw a black bezier curve.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+      bezier(85, 20, x2, y2, 90, 90, 15, 80);
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(85, 20, x2, y2);
+      line(15, 80, 90, 90);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x2, y2) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x2 = mouseX;
+        y2 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background('skyblue');
+
+      // Draw the red balloon.
+      fill('red');
+      bezier(50, 60, 5, 15, 95, 15, 50, 60);
+
+      // Draw the balloon string.
+      line(50, 60, 50, 80);
+
+      describe('A red balloon in a blue sky.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red balloon in a blue sky. The balloon rotates slowly, revealing that it is flat.');
+    }
+
+    function draw() {
+      background('skyblue');
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Draw the red balloon.
+      fill('red');
+      bezier(0, 0, 0, -45, -45, 0, 45, -45, 0, 0, 0, 0);
+
+      // Draw the balloon string.
+      line(0, 0, 0, 0, 20, 0);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 13
+    params:
+      - name: x1
+        description: |
+          <p>Coordenada x del primer punto de anclaje.</p>
+        type: Number
+      - name: y1
+        description: |
+          <p>Coordenada y del primer punto de anclaje.</p>
+        type: Number
+      - name: x2
+        description: |
+          <p>Coordenada x del primer punto de control.</p>
+        type: Number
+      - name: y2
+        description: |
+          <p>Coordenada y del primer punto de control.</p>
+        type: Number
+      - name: x3
+        description: |
+          <p>Coordenada x del segundo punto de control.</p>
+        type: Number
+      - name: y3
+        description: |
+          <p>Coordenada y del segundo punto de control.</p>
+        type: Number
+      - name: x4
+        description: |
+          <p>Coordenada x del segundo punto de anclaje.</p>
+        type: Number
+      - name: y4
+        description: |
+          <p>Coordenada y del segundo punto de anclaje.</p>
+        type: Number
+    chainable: 1
+  - line: 191
+    params:
+      - name: x1
+        description: ''
+        type: Number
+      - name: y1
+        description: ''
+        type: Number
+      - name: z1
+        description: |
+          <p>Coordenada z del primer punto de anclaje.</p>
+        type: Number
+      - name: x2
+        description: ''
+        type: Number
+      - name: y2
+        description: ''
+        type: Number
+      - name: z2
+        description: |
+          <p>Coordenada z del primer punto de control.</p>
+        type: Number
+      - name: x3
+        description: ''
+        type: Number
+      - name: y3
+        description: ''
+        type: Number
+      - name: z3
+        description: |
+          <p>Coordenada z del segundo punto de control.</p>
+        type: Number
+      - name: x4
+        description: ''
+        type: Number
+      - name: y4
+        description: ''
+        type: Number
+      - name: z4
+        description: |
+          <p>Coordenada z del segundo punto de anclaje.</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# bezier

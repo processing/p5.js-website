@@ -1,0 +1,187 @@
+---
+title: texture
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Establece la textura que se utilizará en las formas.</p>
+
+  <p>Una textura es como una piel que envuelve una forma. <code>texture()</code>
+  funciona con formas incorporadas, como <a href="/reference/p5/square">square()</a> y
+  <a href="/reference/p5/sphere">sphere()</a>, y formas personalizadas creadas con
+  funciones como <a href="/reference/p5/buildGeometry">buildGeometry()</a>.
+  Para texturizar una geometría creada con <a href="/reference/p5/beginShape">beginShape()</a>,
+  se deben pasar coordenadas UV a cada llamada de <a href="/reference/p5/vertex">vertex()</a>.</p>
+
+  <p>El parámetro <code>tex</code> es la textura a aplicar.
+  <code>texture()</code> puede usar una variedad de fuentes, incluyendo imágenes, videos y renderizadores externos como
+  objetos <a href="/reference/p5/p5.Graphics">p5.Graphics</a> y
+  <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>.</p>
+
+  <p>Para texturizar una geometría creada con <a href="/reference/p5/beginShape">beginShape()</a>,
+  deberás especificar coordenadas UV en <a href="/reference/p5/vertex">vertex()</a>.</p>
+
+  <p>Nota: <code>texture()</code> solo se puede usar en modo WebGL.</p>
+line: 861
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load an image and create a p5.Image object.
+    function preload() {
+      img = loadImage('/assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A spinning cube with an image of a ceiling on each face.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Rotate around the x-, y-, and z-axes.
+      rotateZ(frameCount * 0.01);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+
+      // Apply the image as a texture.
+      texture(img);
+
+      // Draw the box.
+      box(50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let pg;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Graphics object.
+      pg = createGraphics(100, 100);
+
+      // Draw a circle to the p5.Graphics object.
+      pg.background(200);
+      pg.circle(50, 50, 30);
+
+      describe('A spinning cube with circle at the center of each face.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Rotate around the x-, y-, and z-axes.
+      rotateZ(frameCount * 0.01);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+
+      // Apply the p5.Graphics object as a texture.
+      texture(pg);
+
+      // Draw the box.
+      box(50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let vid;
+
+    // Load a video and create a p5.MediaElement object.
+    function preload() {
+      vid = createVideo('/assets/fingers.mov');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Hide the video.
+      vid.hide();
+
+      // Set the video to loop.
+      vid.loop();
+
+      describe('A rectangle with video as texture');
+    }
+
+    function draw() {
+      background(0);
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Apply the video as a texture.
+      texture(vid);
+
+      // Draw the rectangle.
+      rect(-40, -40, 80, 80);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let vid;
+
+    // Load a video and create a p5.MediaElement object.
+    function preload() {
+      vid = createVideo('/assets/fingers.mov');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Hide the video.
+      vid.hide();
+
+      // Set the video to loop.
+      vid.loop();
+
+      describe('A rectangle with video as texture');
+    }
+
+    function draw() {
+      background(0);
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Set the texture mode.
+      textureMode(NORMAL);
+
+      // Apply the video as a texture.
+      texture(vid);
+
+      // Draw a custom shape using uv coordinates.
+      beginShape();
+      vertex(-40, -40, 0, 0);
+      vertex(40, -40, 1, 0);
+      vertex(40, 40, 1, 1);
+      vertex(-40, 40, 0, 1);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: tex
+    description: |
+      <p>medio a utilizar como textura.</p>
+    type: >-
+      p5.Image|p5.MediaElement|p5.Graphics|p5.Texture|p5.Framebuffer|p5.FramebufferTexture
+chainable: true
+---
+
+
+# texture

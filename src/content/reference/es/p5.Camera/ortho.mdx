@@ -1,0 +1,215 @@
+---
+title: ortho
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Establece una proyección ortográfica para la cámara.</p>
+
+  <p>En una proyección ortográfica, las formas que tienen el mismo tamaño siempre
+
+  aparecen con el mismo tamaño, independientemente de si están cerca o lejos
+
+  de la cámara.</p>
+
+  <p><code>myCamera.ortho()</code> cambia la perspectiva de la cámara al
+
+  cambiar su visor de pirámide truncada a un prisma rectangular. El visor es
+
+  el volumen de espacio visible desde la cámara. La cámara se encuentra delante
+
+  del visor y ve todo lo que está dentro del visor. <code>myCamera.ortho()</code>
+
+  tiene seis parámetros opcionales para definir el visor.</p>
+
+  <p>Los primeros cuatro parámetros, <code>left</code>, <code>right</code>,
+  <code>bottom</code> y <code>top</code>, establecen las coordenadas de los lados,
+  parte inferior y parte superior del visor. Por ejemplo, llamar a <code>myCamera.ortho(-100, 100,
+
+  200, -200)</code> crea un visor que mide 200 píxeles de ancho y 400 de alto.
+  Por defecto, estos valores son establecidos basados en el ancho y alto del
+
+  boceto, como en
+
+  <code>myCamera.ortho(-width / 2, width / 2, -height / 2, height /
+  2)</code>.</p>
+
+  <p>Los últimos dos parámetros, <code>near</code> y <code>far</code>, establecen
+  la distancia del
+
+  plano cercano y lejano respectivamente del visor desde la cámara. Por ejemplo,
+
+  llamar a <code>myCamera.ortho(-100, 100, 200, -200, 50, 1000)</code> crea un
+  visor que mide 200 píxeles de ancho, 400 de alto, empieza 50 píxeles desde la
+
+  cámara y termina a 1,000 píxeles de la cámara. Por defecto, <code>near</code>
+  y <code>far</code> son establecidos a 0 y <code>max(width, height) + 800</code>,
+  respectivamente.</p>
+line: 2085
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Apply an orthographic projection.
+      cam2.ortho();
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A row of white cubes against a gray background. The camera toggles between a perspective and an orthographic projection when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Apply an orthographic projection.
+      cam2.ortho();
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A row of white cubes slither like a snake against a gray background. The camera toggles between a perspective and an orthographic projection when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        push();
+        // Calculate the box's coordinates.
+        let x = 10 * sin(frameCount * 0.02 + i * 0.6);
+        let z = -40 * i;
+        // Translate the origin.
+        translate(x, 0, z);
+        // Draw the box.
+        box(10);
+        pop();
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: left
+    description: >
+      <p>Coordenada x del plano izquierdo del frustum. Predeterminado a <code>-width /
+      2</code>.</p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p>Coordenada x del plano derecho del frustum. Predeterminado a <code>width /
+      2</code>.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>Coordenada y del plano inferior del frustum. Predeterminado a <code>height /
+      2</code>.</p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p>Coordenada y del plano superior del frustum. Predeterminado a <code>-height /
+      2</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>Coordenada z del plano cercano del frustum. Predeterminado a 0.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p>Coordenada z del plano lejano del frustum. Predeterminado a <code>max(width,
+      height) + 800</code>.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# ortho

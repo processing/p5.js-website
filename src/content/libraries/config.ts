@@ -1,7 +1,7 @@
 import { z, defineCollection } from "astro:content";
 import { author } from "../shared";
 
-const categories = [
+export const categories = [
   "drawing",
   "color",
   "ui",
@@ -16,6 +16,7 @@ const categories = [
   "hardware",
   "sound",
   "data",
+  "teaching",
   "networking",
   "export",
   "utils",
@@ -53,5 +54,6 @@ export const librariesCollection = defineCollection({
       license: z.string().optional(),
       npm: z.string().optional(),
       npmFilePath: z.string().optional(),
+      featured: z.boolean().optional(),
     }),
 });
