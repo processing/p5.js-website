@@ -1,0 +1,28 @@
+---
+import Image from "@components/Image/index.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  item: CollectionEntry<"tutorials">;
+  lazyLoad?: boolean;
+}
+
+const { item, lazyLoad } = Astro.props;
+---
+
+<a href={`/tutorials/${item.slug}`} class="group hover:no-underline">
+  {
+    item.data.featuredImageAlt && item.data.featuredImage && (
+      <Image
+        src={item.data.featuredImage}
+        alt={item.data.featuredImageAlt}
+        width="440"
+        loading={lazyLoad ? "lazy" : "eager"}
+      />
+    )
+  }
+  <p class="mt-xs text-body group-hover:underline">
+    {item.data.title}
+  </p>
+  <p class="text-body-caption mt-xxs">{item.data.description}</p>
+</a>
