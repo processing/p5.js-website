@@ -83,6 +83,9 @@ export const getSketch = async (
 export const makeSketchLinkUrl = (id: string) =>
   `https://openprocessing.org/sketch/${id}`;
 
+export const makeSketchEmbedUrl = (id: string) =>
+  `https://openprocessing.org/sketch/${id}/embed/?plusEmbedFullscreen=true&plusEmbedInstructions=false`;
+
 export const makeThumbnailUrl = (id: string) =>
   `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}@2x.jpg`;
 
