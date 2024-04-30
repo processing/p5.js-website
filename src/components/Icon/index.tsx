@@ -121,6 +121,24 @@ export const Icon = (props: IconProps) => {
           />
         </svg>
       );
+    case "chevron-right":
+      return (
+        <svg
+          width="7"
+          height="12"
+          viewBox="0 0 7 12"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M6.70703 6L1.35348 0.646446C1.15822 0.451185 0.841633 0.451185 0.646371 0.646446C0.451108 0.841708 0.451108 1.15829 0.646371 1.35355L5.29282 6L0.646371 10.6464C0.451109 10.8417 0.451109 11.1583 0.646371 11.3536C0.841633 11.5488 1.15822 11.5488 1.35348 11.3536L6.70703 6Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
     case "code-brackets":
       return (
         <svg
