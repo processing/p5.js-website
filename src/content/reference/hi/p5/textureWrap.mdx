@@ -1,41 +1,15 @@
 ---
 title: textureWrap
-module: 3D
-submodule: Material
+module: 3डी
+submodule: भौतिक
 file: src/webgl/material.js
 description: >
-  <p>Changes the way textures behave when a shape’s uv coordinates go beyond the
+  <p>जब किसी आकृति का यूवी निर्देशांक बनावट से परे चला जाता है तो बनावट के व्यवहार का तरीका बदल जाता है।</p>
 
-  texture.</p>
+  <p><a href="/reference/p5/texture">texture()</a> को काम करने के लिए, किसी आकृति को उसकी सतह पर बिंदुओं को छवि में पिक्सेल पर मैप करने के तरीके की आवश्यकता होती है। <a href="/reference/p5/rect">rect()</a> और <a href="/reference/p5/box">box()</a> जैसी अंतर्निहित आकृतियाँ पहले से ही मौजूद हैं बनावट मानचित्रण
+  उनके शीर्षों के आधार पर। <a href="/reference/p5/vertex">vertex()</a> के साथ बनाई गई कस्टम आकृतियों को यूवी निर्देशांक के रूप में पारित होने के लिए बनावट मैपिंग की आवश्यकता होती है।</p>
 
-  <p>In order for <a href="/reference/p5/texture">texture()</a> to work, a shape
-  needs a
-
-  way to map the points on its surface to the pixels in an image. Built-in
-
-  shapes such as <a href="/reference/p5/rect">rect()</a> and
-
-  <a href="/reference/p5/box">box()</a> already have these texture mappings
-  based on
-
-  their vertices. Custom shapes created with
-
-  <a href="/reference/p5/vertex">vertex()</a> require texture mappings to be
-  passed as
-
-  uv coordinates.</p>
-
-  <p>Each call to <a href="/reference/p5/vertex">vertex()</a> must include 5
-  arguments,
-
-  as in <code>vertex(x, y, z, u, v)</code>, to map the vertex at coordinates
-  <code>(x, y, z)</code>
-
-  to the pixel at coordinates <code>(u, v)</code> within an image. For example,
-  the
-
-  corners of a rectangular image are mapped to the corners of a rectangle by
-  default:</p>
+  <p>प्रत्येक कॉल <a href="/reference/p5/vertex">vertex()</a> में 5 तर्क शामिल होने चाहिए, जैसे <code>vertex(x, y, z, u, v)</ कोड>, एक छवि के भीतर निर्देशांक <code>(x, y, z)</code> पर शीर्ष को निर्देशांक <code>(u, v)</code> पर पिक्सेल पर मैप करने के लिए। उदाहरण के लिए, एक आयताकार छवि के कोनों को डिफ़ॉल्ट रूप से एक आयत के कोनों पर मैप किया जाता है:</p>
 
   <code>
 
@@ -50,9 +24,9 @@ description: >
 
   </p></code>
 
-  <p>If the image in the code snippet above has dimensions of 300 x 500 pixels,
+  <p>यदि उपरोक्त कोड स्निपेट में छवि का आयाम 300 x 500 पिक्सेल है,
 
-  the same result could be achieved as follows:</p>
+  वही परिणाम इस प्रकार प्राप्त किया जा सकता है:</p>
 
   <code>
 
@@ -93,14 +67,7 @@ description: >
 
   </p></code>
 
-  <p><code>textureWrap()</code> controls how textures behave when their uv's go
-  beyond the
-
-  texture. Doing so can produce interesting visual effects such as tiling.
-
-  For example, the custom shape above could have u-coordinates are greater
-
-  than the image’s width:</p>
+  <p><code>textureWrap()</code> नियंत्रित करता है कि बनावट कैसे व्यवहार करती है जब उनकी यूवी बनावट से परे जाती है। ऐसा करने से टाइलिंग जैसे दिलचस्प दृश्य प्रभाव उत्पन्न हो सकते हैं। उदाहरण के लिए, ऊपर दिए गए कस्टम आकार में यू-निर्देशांक छवि की चौड़ाई से अधिक हो सकते हैं:</p>
 
   <code>
 
@@ -133,44 +100,13 @@ description: >
 
   </p></code>
 
-  <p>The u-coordinates of 600 are greater than the texture image’s width of 300.
+  <p>600 के यू-निर्देशांक बनावट छवि की चौड़ाई 300 से अधिक हैं। यह दिलचस्प संभावनाएं पैदा करता है।</p>
 
-  This creates interesting possibilities.</p>
+  <p>पहला पैरामीटर, <code>wrapX</code>, तीन संभावित स्थिरांक स्वीकार करता है। यदि <code>CLAMP</code> पास हो जाता है, जैसा कि <code>textureWrap(CLAMP)</code> में होता है, तो बनावट के किनारे पर मौजूद पिक्सेल आकृति के किनारों तक विस्तारित हो जाएंगे। यदि <code>REPEAT</code> पास हो जाता है, जैसे कि <code>textureWrap(REPEAT)</code> में, बनावट आकृति के किनारों तक पहुंचने तक बार-बार टाइल होगी। यदि <code>MIRROR</code> पास हो जाता है, जैसा कि <code>textureWrap(MIRROR)</code> में होता है, तो बनावट बार-बार टाइल करेगी जब तक कि वह आकृति के किनारों तक नहीं पहुंच जाती, और टाइलों के बीच उसका अभिविन्यास बदल जाता है। डिफ़ॉल्ट रूप से, बनावट <code>CLAMP</code>.</p>
 
-  <p>The first parameter, <code>wrapX</code>, accepts three possible constants.
-  If <code>CLAMP</code>
+  <p>दूसरा पैरामीटर, <code>wrapY</code>, वैकल्पिक है। यह समान तीन स्थिरांक स्वीकार करता है, <कोड>क्लैंप</कोड>, <कोड>दोहराएं</कोड>, और <कोड>मिरर</कोड>। यदि इनमें से एक स्थिरांक पारित हो जाता है, जैसे कि <code>textureWRAP(MIRROR, REPEAT)</code>, तो बनावट <code>MIRROR</code> क्षैतिज रूप से और <code>दोहराया जाएगा</code> लंबवत रूप से होगी। डिफ़ॉल्ट रूप से, <code>wrapY</code> को <code>wrapX</code> के समान मान पर सेट किया जाएगा।</p>
 
-  is passed, as in <code>textureWrap(CLAMP)</code>, the pixels at the edge of
-  the
-
-  texture will extend to the shape’s edges. If <code>REPEAT</code> is passed, as
-  in
-
-  <code>textureWrap(REPEAT)</code>, the texture will tile repeatedly until
-  reaching the
-
-  shape’s edges. If <code>MIRROR</code> is passed, as in
-  <code>textureWrap(MIRROR)</code>, the
-
-  texture will tile repeatedly until reaching the shape’s edges, flipping
-
-  its orientation between tiles. By default, textures <code>CLAMP</code>.</p>
-
-  <p>The second parameter, <code>wrapY</code>, is optional. It accepts the same
-  three
-
-  constants, <code>CLAMP</code>, <code>REPEAT</code>, and <code>MIRROR</code>.
-  If one of these constants is
-
-  passed, as in <code>textureWRAP(MIRROR, REPEAT)</code>, then the texture will
-  <code>MIRROR</code>
-
-  horizontally and <code>REPEAT</code> vertically. By default,
-  <code>wrapY</code> will be set to
-
-  the same value as <code>wrapX</code>.</p>
-
-  <p>Note: <code>textureWrap()</code> can only be used in WebGL mode.</p>
+  <p>ध्यान दें: <code>textureWrap()</code> का उपयोग केवल WebGL मोड में किया जा सकता है।</p>
 line: 1227
 isConstructor: false
 itemtype: method
@@ -351,11 +287,11 @@ class: p5
 params:
   - name: wrapX
     description: |
-      <p>either CLAMP, REPEAT, or MIRROR</p>
+      <p>या तो क्लैंप, रिपीट, या मिरर</p>
     type: Constant
   - name: wrapY
     description: |
-      <p>either CLAMP, REPEAT, or MIRROR</p>
+      <p>या तो क्लैंप, रिपीट, या मिरर</p>
     type: Constant
     optional: true
 chainable: false
