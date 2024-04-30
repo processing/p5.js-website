@@ -45,7 +45,14 @@ const people = await getCollectionInLocaleWithFallbacks(
   "people",
   currentLocale
 );
-const featuredPeople = people.filter((p) => p.data.displayed === "featured");
+const featuredPeople = people.filter((p) => p.data.category !== "contributor");
+const sortedFeaturedPeople = featuredPeople.sort((a, b) => {
+  const orderA =
+    a.data.order !== undefined ? a.data.order : Number.MAX_SAFE_INTEGER;
+  const orderB =
+    b.data.order !== undefined ? b.data.order : Number.MAX_SAFE_INTEGER;
+  return orderA - orderB;
+});
 ---
 
 <Head title="About" locale={currentLocale} />
@@ -59,7 +66,7 @@ const featuredPeople = people.filter((p) => p.data.displayed === "featured");
     <h2 id="people">{t("People")}</h2>
     <ul class="content-grid my-xl">
       {
-        featuredPeople.map((fp) => (
+        sortedFeaturedPeople.map((fp) => (
           <li class="col-span-2">
             <GridItemPerson item={fp} />
           </li>
