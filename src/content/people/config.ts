@@ -1,6 +1,6 @@
 import { z, defineCollection } from "astro:content";
 
-const displayTypes = ["featured", "alumni", "contributor"] as const;
+const peopleCategories = ["lead", "mentor", "alumni", "contributor"] as const;
 
 /**
  * Content collection for the People section of the site.
@@ -19,7 +19,7 @@ export const peopleCollection = defineCollection({
         imageAlt: z.string().optional(),
         blurb: z.string().optional(),
         // How this person should be displayed on the people page
-        displayed: z.enum(displayTypes),
+        category: z.enum(peopleCategories),
         // The role that this person had with the project
         role: z.string().optional(),
         // The order in which this person should be displayed
@@ -28,7 +28,7 @@ export const peopleCollection = defineCollection({
       .refine(
         (data) => {
           // If displayed is not contributor, image and imageAlt must be provided
-          if (data.displayed !== "contributor") {
+          if (data.category !== "contributor") {
             return !!data.image && !!data.imageAlt;
           }
           return true; // Contributor doesn't need image and imageAlt
