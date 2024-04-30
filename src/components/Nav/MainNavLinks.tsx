@@ -21,7 +21,6 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
-  hasJumpTo = false,
 }: MainNavLinksProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(!isMobile);
