@@ -1,78 +1,52 @@
 ---
 title: shader
 module: 3D
-submodule: Material
+submodule: 재질
 file: src/webgl/material.js
 description: >
-  <p>Sets the <a href="/reference/p5/p5.Shader">p5.Shader</a> object to apply
-  while drawing.</p>
 
-  <p>Shaders are programs that run on the graphics processing unit (GPU). They
+  <p>화면을 그리는 도중에 적용할 <a href="/reference/p5/p5.Shader">p5.Shader</a> 객체를 설정합니다.</p>
 
-  can process many pixels or vertices at the same time, making them fast for
+  <>셰이더는 그래픽 처리 장치(GPU)에서 실행되는 프로그램입니다. 
+  
+  많은 픽셀이나 정점을 동시에 처리할 수 있어 많은 그래픽 작업에 빠릅니다. 
+  
+  이들은 <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a>이라는 언어로 작성되며 스케치의 나머지 코드와 함께 실행됩니다.
 
-  many graphics tasks. They’re written in a language called
+  <a href="/reference/p5/p5.Shader">p5.Shader</a> 객체는 <a href="/reference/p5/createShader">createShader()</a>와 <a href="/reference/p5/loadShader">loadShader()</a> 함수를 사용하여 생성할 수 있습니다.</p>
 
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
-  target="_blank">GLSL</a>
+  <p>매개변수 <code>s</code>는 각 픽셀을 처리하는 데 사용할 <a href="/reference/p5/p5.Shader">p5.Shader</a> 객체입니다.
 
-  and run along with the rest of the code in a sketch.
-
-  <a href="/reference/p5/p5.Shader">p5.Shader</a> objects can be created using
-  the
-
-  <a href="/reference/p5/createShader">createShader()</a> and
-
-  <a href="/reference/p5/loadShader">loadShader()</a> functions.</p>
-
-  <p>The parameter, <code>s</code>, is the <a
-  href="/reference/p5/p5.Shader">p5.Shader</a> object to
-
-  apply. For example, calling <code>shader(myShader)</code> applies
-  <code>myShader</code> to
-
-  process each pixel on the canvas. The shader will be used for:</p>
+  예를 들어, <code>shader(myShader)</code>를 호출하면 <code>myShader</code>가 적용되어 캔버스의 각 픽셀을 처리합니다.
+  
+  셰이더는 다음과 같은 경우에 사용됩니다:</p>
 
   <ul>
 
-  <li>Fills when a texture is enabled if it includes a uniform
-  <code>sampler2D</code>.</li>
+  <li>텍스처가 활성화되어 있고 <code>sampler2D</code> 유니폼을 포함하는 경우.</li>
 
-  <li>Fills when lights are enabled if it includes the attribute
-  <code>aNormal</code>, or if it has any of the following uniforms:
+  <li>조명이 활성화되어 있고 <code>aNormal</code> 속성이 포함되어 있거나 다음과 같은 유니폼 중 하나가 있는 경우:
+
   <code>uUseLighting</code>, <code>uAmbientLightCount</code>,
   <code>uDirectionalLightCount</code>, <code>uPointLightCount</code>,
   <code>uAmbientColor</code>, <code>uDirectionalDiffuseColors</code>,
   <code>uDirectionalSpecularColors</code>, <code>uPointLightLocation</code>,
   <code>uPointLightDiffuseColors</code>, <code>uPointLightSpecularColors</code>,
-  <code>uLightingDirection</code>, or <code>uSpecular</code>.</li>
+  <code>uLightingDirection</code>, 또는 <code>uSpecular</code>.</li>
 
-  <li>Fills whenever there are no lights or textures.</li>
+  <li>조명이나 텍스처가 없는 경우.</li>
 
-  <li>Strokes if it includes the uniform <code>uStrokeWeight</code>.</li>
+  <li><code>uStrokeWeight</code> 유니폼을 포함하는 경우 획을 그립니다.</li>
 
   </ul>
 
-  <p>The source code from a <a href="/reference/p5/p5.Shader">p5.Shader</a>
-  object's
+  <p> <a href="/reference/p5/p5.Shader">p5.Shader</a> 객체의 프래그먼트와 정점 셰이더의 소스 코드는 처음 <code>shader()</code>에 전달될 때 컴파일됩니다.
 
-  fragment and vertex shaders will be compiled the first time it's passed to
+  셰이더를 컴파일하는 것에 대한 자세한 내용은 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/compileShader" target="_blank">MDN</a>을 참조하십시오.</p>
 
-  <code>shader()</code>. See
+  <p><a href="/reference/p5/resetShader">resetShader()</a>를 호출하여 스케치의 기본 셰이더로 복원할 수 있습니다.</p>
 
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/compileShader"
-  target="_blank">MDN</a>
-
-  for more information about compiling shaders.</p>
-
-  <p>Calling <a href="/reference/p5/resetShader">resetShader()</a> restores a
-  sketch’s
-
-  default shaders.</p>
-
-  <p>Note: Shaders can only be used in WebGL mode.</p>
+  <p>참고: 셰이더는 WebGL 모드에서만 사용할 수 있습니다.</p>
 line: 571
 isConstructor: false
 itemtype: method
@@ -231,8 +205,7 @@ class: p5
 params:
   - name: s
     description: |
-      <p><a href="#/p5.Shader">p5.Shader</a> object
-                           to apply.</p>
+      <p> 적용할 <a href="#/p5.Shader">p5.Shader</a> 객체</p>
     type: p5.Shader
 chainable: true
 ---
