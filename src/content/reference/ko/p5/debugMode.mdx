@@ -4,117 +4,66 @@ module: 3D
 submodule: 인터랙션
 file: src/webgl/interaction.js
 description: >
-  <p>3D 스케치에서 사용자가 마우스, 트랙패드 또는 터치스크린을 사용하여 주변을 돌아볼 수 있게 해줍니다.</p>
+  <p>3D 스케치에서 방향성을 명확히 하기 위해 그리드와 축 아이콘을 추가합니다.</p>
 
-  <p>3D 스케치는 가상의 카메라를 통해 보여지며, <code>debugMode()</code> 
-adds a grid that shows where the “ground” is in a
-  sketch. By
+  <p><code>debugMode()</code>는 스케치에서 "바닥"이 어디인지 보여주는 그리드를 추가합니다.
 
-  default, the grid will run through the origin <code>(0, 0, 0)</code> of the
-  sketch
-
-  along the XZ plane. <code>debugMode()</code> also adds an axes icon that
+  기본적으로, 이 그리드는 스케치의 원점 <code>(0, 0, 0)</code>을 통과하며 XZ 평면을 따라 설정됩니다.
+  
+  <code>debugMode()</code> also adds an axes icon that
   points along
 
-  the positive x-, y-, and z-axes. Calling <code>debugMode()</code> displays the
-  grid
+  <code>debugMode()</code>는 또한 x, y, z의 양의 방향을 가리키는 축 아이콘을 추가합니다. 
 
-  and axes icon with their default size and position.</p>
+  <code>debugMode()</code>를 호출하면 기본 크기와 위치를 갖는 그리드와 축 아이콘이 표시됩니다.</p>
 
-  <p>There are four ways to call <code>debugMode()</code> with optional
-  parameters to
+  <p>디버깅 환경을 사용자 정의할 수 있는 선택적 매개변수를 사용하여,
+  
+  <code>debugMode()</code>를 호출하는 네 가지 방법이 있습니다.</p>
 
-  customize the debugging environment.</p>
+  <p>첫 번째 방법으로 <code>debugMode()</code>를 호출할 때, <code>mode</code>라는 매개변수를 사용하는 방법이 있습니다. 
+  
+  <code>debugMode(GRID)</code>와 같이 시스템 상수 <code>GRID</code>를 전달하면, 그리드가 표시되고 축 아이콘이 숨겨집니다.
+  
+  <code>debugMode(AXES)</code>와 같이 시스템 상수 <code>AXES</code>를 전달하면, 축 아이콘이 표시되고 그리드가 숨겨집니다.</p>
 
-  <p>The first way to call <code>debugMode()</code> has one parameter,
-  <code>mode</code>. If the
+  <p><code>debugMode()</code>를 호출하는 두 번째 방법은 여섯 개의 매개변수를 사용합니다. 첫 번째 매개변수인 <code>mode</code>는 <code>GRID</code> 또는 <code>AXES</code>를 선택합니다.
 
-  system constant <code>GRID</code> is passed, as in
-  <code>debugMode(GRID)</code>, then the grid
+  다음 다섯 개의 매개변수인 <code>gridSize</code>, <code>gridDivisions</code>, <code>xOff</code>, <code>yOff</code>, <code>zOff</code>는 선택적입니다.
 
-  will be displayed and the axes icon will be hidden. If the constant
-  <code>AXES</code>
+  이들은 그리드의 모양(<code>gridSize</code>와 <code>gridDivisions</code>)과 축 아이콘의 위치(<code>xOff</code>, 
+  
+  <code>yOff</code>, <code>zOff</code>)를 설정하는 숫자입니다.
+  
+  예를 들어, <code>debugMode(20, 5, 10, 10, 10)</code>를 호출하면 <code>gridSize</code>를 20 픽셀로 설정하고,
+  
+  <code>gridDivisions</code>의 수를 5로 설정하며, 축 아이콘을 x, y, z축을 따라 각각 10 픽셀씩 위치를 조정합니다.</p>
 
-  is passed, as in <code>debugMode(AXES)</code>, then the axes icon will be
-  displayed
+  <p><code>debugMode()</code>를 호출하는 세 번째 방법은 다섯 개의 매개변수를 사용합니다. 첫 번째 매개변수인 <code>mode</code>는 <code>GRID</code> 또는 <code>AXES</code>를 선택합니다.
 
-  and the grid will be hidden.</p>
+  다음 네 개의 매개변수인 <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, <code>zOff</code>는 선택적입니다.
 
-  <p>The second way to call <code>debugMode()</code> has six parameters. The
-  first
+  이들은 축 아이콘의 크기(<code>axesSize</code>)와 위치(<code>xOff</code>, <code>yOff</code>, <code>zOff</code>)를 설정하는 숫자입니다.</p>
 
-  parameter, <code>mode</code>, selects either <code>GRID</code> or
-  <code>AXES</code> to be displayed. The
+  <p><code>debugMode()</code>를 호출하는 네 번째 방법은 아홉 개의 선택적 매개변수를 사용합니다. 
+  
+  첫 다섯 개의 매개변수인 <code>gridSize</code>, <code>gridDivisions</code>, <code>gridXOff</code>, 
+  
+  <code>gridYOff</code>, <code>gridZOff</code>는 그리드의 모양을 설정하는 숫자입니다.
 
-  next five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
-  <code>xOff</code>, <code>yOff</code>, and
+  예를 들어, <code>debugMode(100, 5, 0, 0, 0)</code>를 호출하면 <code>gridSize</code>를 100 픽셀로 설정하고,
 
-  <code>zOff</code> are optional. They’re numbers that set the appearance of the
-  grid
+  <code>gridDivisions</code>의 수를 5로 설정하며, 모든 위치를 0으로 설정하여 그리드가 원점에 중앙에 위치하도록 합니다.
 
-  (<code>gridSize</code> and <code>gridDivisions</code>) and the placement of
-  the axes icon
+  다음 네 개의 매개변수인 <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, <code>zOff</code>는 
+  
+  축 아이콘의 모양(<code>axesSize</code>)과 위치(<code>axesXOff</code>, <code>axesYOff</code>, <code>axesZOff</code>)를 설정하는 숫자입니다.
 
-  (<code>xOff</code>, <code>yOff</code>, and <code>zOff</code>). For example,
-  calling
+  예를 들어, <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code>를 호출하면 <code>gridSize</code>를 100으로 설정하고,
 
-  <code>debugMode(20, 5, 10, 10, 10)</code> sets the <code>gridSize</code> to 20
-  pixels, the number
+  <code>gridDivisions</code>의 수를 5로 설정하며, 모든 위치를 0으로 설정하여 그리드가 원점에 중앙에 위치하도록 합니다.
 
-  of <code>gridDivisions</code> to 5, and offsets the axes icon by 10 pixels
-  along the
-
-  x-, y-, and z-axes.</p>
-
-  <p>The third way to call <code>debugMode()</code> has five parameters. The
-  first
-
-  parameter, <code>mode</code>, selects either <code>GRID</code> or
-  <code>AXES</code> to be displayed. The
-
-  next four parameters, <code>axesSize</code>, <code>xOff</code>,
-  <code>yOff</code>, and <code>zOff</code> are optional.
-
-  They’re numbers that set the appearance of the size of the axes icon
-
-  (<code>axesSize</code>) and its placement (<code>xOff</code>,
-  <code>yOff</code>, and <code>zOff</code>).</p>
-
-  <p>The fourth way to call <code>debugMode()</code> has nine optional
-  parameters. The
-
-  first five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
-  <code>gridXOff</code>, <code>gridYOff</code>,
-
-  and <code>gridZOff</code> are numbers that set the appearance of the grid. For
-
-  example, calling <code>debugMode(100, 5, 0, 0, 0)</code> sets the
-  <code>gridSize</code> to 100,
-
-  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
-  so that
-
-  the grid is centered at the origin. The next four parameters,
-  <code>axesSize</code>,
-
-  <code>xOff</code>, <code>yOff</code>, and <code>zOff</code> are numbers that
-  set the appearance of the size
-
-  of the axes icon (<code>axesSize</code>) and its placement
-  (<code>axesXOff</code>, <code>axesYOff</code>,
-
-  and <code>axesZOff</code>). For example, calling
-
-  <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code> sets the
-  <code>gridSize</code> to 100,
-
-  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
-  so that
-
-  the grid is centered at the origin. It then sets the <code>axesSize</code> to
-  50 and
-
-  offsets the icon 10 pixels along each axis.</p>
+  그리고 <code>axesSize</code>를 50으로 설정하고, 축 아이콘을 x, y, z축을 따라 각각 10 픽셀씩 위치를 조정합니다.</p>
 line: 471
 isConstructor: false
 itemtype: method
@@ -133,6 +82,7 @@ example:
 
       describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
     }
+    
 
     function draw() {
       background(200);
@@ -255,7 +205,7 @@ overloads:
     params:
       - name: mode
         description: |
-          <p>either GRID or AXES</p>
+          <p>GRID 혹은 AXES 중 하나를 선택</p>
         type: Constant
   - line: 655
     params:
@@ -264,27 +214,27 @@ overloads:
         type: Constant
       - name: gridSize
         description: |
-          <p>side length of the grid.</p>
+          <p>그리드의 한 변의 길이</p>
         type: Number
         optional: true
       - name: gridDivisions
         description: |
-          <p>number of divisions in the grid.</p>
+          <p>그리드의 분할 수</p>
         type: Number
         optional: true
       - name: xOff
         description: |
-          <p>offset from origin along the x-axis.</p>
+          <p>원점으로부터 x축을 따라의 위치</p>
         type: Number
         optional: true
       - name: yOff
         description: |
-          <p>offset from origin along the y-axis.</p>
+          <p>원점으로부터 y축을 따라의 위치</p>
         type: Number
         optional: true
       - name: zOff
         description: |
-          <p>offset from origin along the z-axis.</p>
+          <p>원점으로부터 z축을 따라의 위치</p>
         type: Number
         optional: true
   - line: 665
@@ -294,7 +244,7 @@ overloads:
         type: Constant
       - name: axesSize
         description: |
-          <p>length of axes icon markers.</p>
+          <p>축 아이콘의 크기</p>
         type: Number
         optional: true
       - name: xOff
@@ -321,17 +271,17 @@ overloads:
         optional: true
       - name: gridXOff
         description: |
-          <p>grid offset from the origin along the x-axis.</p>
+          <p>원점으로부터 x축을 따라의 위치</p>
         type: Number
         optional: true
       - name: gridYOff
         description: |
-          <p>grid offset from the origin along the y-axis.</p>
+          <p>원점으로부터 y축을 따라의 위치</p>
         type: Number
         optional: true
       - name: gridZOff
         description: |
-          <p>grid offset from the origin along the z-axis.</p>
+          <p>원점으로부터 z축을 따라의 위치</p>
         type: Number
         optional: true
       - name: axesSize
@@ -340,17 +290,17 @@ overloads:
         optional: true
       - name: axesXOff
         description: |
-          <p>axes icon offset from the origin along the x-axis.</p>
+          <p>원점으로부터 x축을 따라의 위치</p>
         type: Number
         optional: true
       - name: axesYOff
         description: |
-          <p>axes icon offset from the origin along the y-axis.</p>
+          <p>원점으로부터 y축을 따라의 위치</p>
         type: Number
         optional: true
       - name: axesZOff
         description: |
-          <p>axes icon offset from the origin along the z-axis.</p>
+          <p>원점으로부터 z축을 따라의 위치</p>
         type: Number
         optional: true
 chainable: false
