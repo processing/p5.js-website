@@ -112,6 +112,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 22 12"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -477,6 +478,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             d="M15.5 8L0.5 15.5L0.499999 0.500001L15.5 8Z"
@@ -492,6 +494,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <rect x="0.5" y="0.5" width="15" height="15" fill="currentColor" />
         </svg>
@@ -504,6 +507,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -521,6 +525,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -538,6 +543,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -555,6 +561,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 22 12"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -572,6 +579,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 22 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -595,6 +603,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 21 21"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -612,6 +621,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 21 11"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             d="M15.3535 0.146446L20.707 5.5L15.3535 10.8536C15.1582 11.0488 14.8416 11.0488 14.6464 10.8536C14.4511 10.6583 14.4511 10.3417 14.6464 10.1464L18.7928 6L5 6C4.72386 6 4.5 5.77614 4.5 5.5C4.5 5.22386 4.72386 5 5 5L18.7928 5L14.6464 0.853553C14.4511 0.658291 14.4511 0.341708 14.6464 0.146446C14.8416 -0.0488155 15.1582 -0.0488155 15.3535 0.146446Z"
@@ -627,6 +637,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 22 18"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -638,7 +649,12 @@ export const Icon = (props: IconProps) => {
       );
     case "asterisk-thick":
       return (
-        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          viewBox="0 0 28 28"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
+        >
           <path
             fill="currentColor"
             d="M16.909,10.259l8.533-2.576l1.676,5.156l-8.498,2.899l5.275,7.48
@@ -654,6 +670,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 34 34"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
@@ -671,6 +688,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 22 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             d="M11.5 0.5L11.5 10.7928L15.6464 6.64637C15.8417 6.45111 16.1583 6.45111 16.3536 6.64637C16.5488 6.84163 16.5488 7.15822 16.3536 7.35348L11 12.707L5.64645 7.35348C5.45118 7.15822 5.45118 6.84163 5.64645 6.64637C5.84171 6.45111 6.15829 6.45111 6.35355 6.64637L10.5 10.7928V0.5C10.5 0.223858 10.7239 0 11 0C11.2761 0 11.5 0.223858 11.5 0.5Z"
@@ -690,6 +708,7 @@ export const Icon = (props: IconProps) => {
           viewBox="0 0 20 15"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
         >
           <path
             fill-rule="evenodd"
