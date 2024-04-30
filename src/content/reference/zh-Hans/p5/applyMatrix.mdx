@@ -4,94 +4,33 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-  <p>Applies a transformation matrix to the coordinate system.</p>
+<p>将转换矩阵应用于坐标系。</p>
 
-  <p>Transformations such as
+<p>转换如 <a href="/reference/p5/translate">translate()</a>、<a href="/reference/p5/rotate">rotate()</a> 和 <a href="/reference/p5/scale">scale()</a> 在幕后使用矩阵-向量乘法。称为矩阵的数字表格编码了每个转换。然后矩阵中的值会与画布上的每个点相乘，这些点由向量表示。</p>
 
-  <a href="/reference/p5/translate">translate()</a>,
+<p><code>applyMatrix()</code> 允许一次应用多个转换。查看 <a href="https://en.wikipedia.org/wiki/Transformation_matrix" target="_blank">Wikipedia</a> 和 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web" target="_blank">MDN</a> 以获取有关转换的更多详细信息。</p>
 
-  <a href="/reference/p5/rotate">rotate()</a>, and
+<p>有两种方式可以在二维和三维中调用 <code>applyMatrix()</code>。</p>
 
-  <a href="/reference/p5/scale">scale()</a>
+<p>在二维模式下，参数 <code>a</code>、<code>b</code>、<code>c</code>、<code>d</code>、<code>e</code> 和 <code>f</code> 对应于以下转换矩阵中的元素：</p>
 
-  use matrix-vector multiplication behind the scenes. A table of numbers,
-
-  called a matrix, encodes each transformation. The values in the matrix
-
-  then multiply each point on the canvas, which is represented by a vector.</p>
-
-  <p><code>applyMatrix()</code> allows for many transformations to be applied at
-  once. See
-
-  <a href="https://en.wikipedia.org/wiki/Transformation_matrix"
-  target="_blank">Wikipedia</a>
-
-  and <a
-  href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web"
-  target="_blank">MDN</a>
-
-  for more details about transformations.</p>
-
-  <p>There are two ways to call <code>applyMatrix()</code> in two and three
-  dimensions.</p>
-
-  <p>In 2D mode, the parameters <code>a</code>, <code>b</code>, <code>c</code>,
-  <code>d</code>, <code>e</code>, and <code>f</code>, correspond to
-
-  elements in the following transformation matrix:</p>
-
-  <blockquote>
-
-  <p><img style="max-width: 150px" src="/assets/transformation-matrix.png"
-  alt="The transformation matrix used when applyMatrix is called in 2D
+<blockquote>
+<p><img style="max-width: 150px" src="/assets/transformation-matrix.png" alt="The transformation matrix used when applyMatrix is called in 2D
   mode."/></p>
 
-  </blockquote>
+</blockquote>
+<p>数字可以个别传递，如 <code>applyMatrix(2, 0, 0, 0, 2, 0)</code>。也可以作为数组传递，如 <code>applyMatrix([2, 0, 0, 0, 2, 0])</code>。</p>
 
-  <p>The numbers can be passed individually, as in
+<p>在三维模式下，参数 <code>a</code>、<code>b</code>、<code>c</code>、<code>d</code>、<code>e</code>、<code>f</code>、<code>g</code>、<code>h</code>、<code>i</code>、<code>j</code>、<code>k</code>、<code>l</code>、<code>m</code>、<code>n</code>、<code>o</code> 和 <code>p</code> 对应于以下转换矩阵中的元素：</p>
 
-  <code>applyMatrix(2, 0, 0, 0, 2, 0)</code>. They can also be passed in an
-  array, as in
-
-  <code>applyMatrix([2, 0, 0, 0, 2, 0])</code>.</p>
-
-  <p>In 3D mode, the parameters <code>a</code>, <code>b</code>, <code>c</code>,
-  <code>d</code>, <code>e</code>, <code>f</code>, <code>g</code>,
-  <code>h</code>, <code>i</code>,
-
-  <code>j</code>, <code>k</code>, <code>l</code>, <code>m</code>,
-  <code>n</code>, <code>o</code>, and <code>p</code> correspond to elements in
-  the
-
-  following transformation matrix:</p>
-
-  <p><img style="max-width: 300px" src="/assets/transformation-matrix-4-4.png"
-  alt="The transformation matrix used when applyMatrix is called in 3D
+<p><img style="max-width: 300px" src="/assets/transformation-matrix-4-4.png" alt="The transformation matrix used when applyMatrix is called in 3D
   mode."/></p>
 
-  <p>The numbers can be passed individually, as in
+<p>数字可以个别传递，如 <code>applyMatrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1)</code>。也可以作为数组传递，如 <code>applyMatrix([2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1])</code>。</p>
 
-  <code>applyMatrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1)</code>. They
-  can
+<p>默认情况下，转换会累积。可以使用<a href="/reference/p5/push">push()</a> 和 <a href="/reference/p5/pop">pop()</a> 函数将转换隔离到不同的绘图组中。</p>
 
-  also be passed in an array, as in
-
-  <code>applyMatrix([2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-  1])</code>.</p>
-
-  <p>By default, transformations accumulate. The
-
-  <a href="/reference/p5/push">push()</a> and <a
-  href="/reference/p5/pop">pop()</a> functions
-
-  can be used to isolate transformations within distinct drawing groups.</p>
-
-  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
-
-  <code>applyMatrix()</code> inside the <a href="/reference/p5/draw">draw()</a>
-  function won't
-
-  cause shapes to transform continuously.</p>
+<p>注意：转换会在绘制循环的开始处重置。在 <a href="/reference/p5/draw">draw()</a> 函数中调用 <code>applyMatrix()</code> 不会导致形状连续变换。</p>
 line: 11
 isConstructor: false
 itemtype: method
@@ -245,35 +184,34 @@ overloads:
     params:
       - name: arr
         description: >
-          <p>an array containing the elements of the transformation matrix. Its
-          length should be either 6 (2D) or 16 (3D).</p>
+          <p>一个包含转换矩阵元素的数组。其长度应为 6（2D）或 16（3D）。</p>
         type: Array
     chainable: 1
   - line: 206
     params:
       - name: a
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: b
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: c
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: d
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: e
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: f
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
     chainable: 1
   - line: 216
@@ -298,43 +236,43 @@ overloads:
         type: Number
       - name: g
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: h
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: i
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: j
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: k
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: l
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: m
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: 'n'
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: o
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
       - name: p
         description: |
-          <p>an element of the transformation matrix.</p>
+          <p>转换矩阵的一个元素。</p>
         type: Number
     chainable: 1
 chainable: true
