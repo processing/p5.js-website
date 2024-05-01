@@ -9,6 +9,7 @@ import { categories } from "../content/libraries/config";
 
 interface Props {
   entries: CollectionEntry<"libraries">[];
+  page: CollectionEntry<"pages">;
   title: string;
 }
 type LibraryEntry = CollectionEntry<"libraries">;
@@ -16,7 +17,8 @@ type LibraryEntry = CollectionEntry<"libraries">;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const { entries } = Astro.props;
+const { entries, page } = Astro.props;
+const { Content } = await page.render();
 
 function strCompare(a: string, b: string) {
   if (a < b) {
@@ -60,6 +62,10 @@ setJumpToState({
   variant="item"
   topic="community"
 >
+  <div class="rendered-markdown">
+    <Content />
+  </div>
+
   {
     sections.map(({ slug, name, sectionEntries }) => (
       <div class="mb-lg">
