@@ -1,73 +1,24 @@
 ---
 title: loadShader
 module: 3D
-submodule: Material
+submodule: 材质
 file: src/webgl/material.js
 description: >
-  <p>Loads vertex and fragment shaders to create a
+  <p>加载顶点和片段着色器以创建一个 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象。</p>
 
-  <a href="/reference/p5/p5.Shader">p5.Shader</a> object.</p>
+  <p>着色器是在图形处理单元（GPU）上运行的程序。它们可以同时处理许多像素，因此对于许多图形任务来说速度很快。它们是用一种叫做 <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a> 的语言编写的，并且与绘图中的其他代码一起运行。</p>
 
-  <p>Shaders are programs that run on the graphics processing unit (GPU). They
+  <p>一旦创建了 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象，它就可以与 <a href="/reference/p5/shader">shader()</a> 函数一起使用，例如：<code>shader(myShader)</code>。着色器程序由两个文件组成，一个顶点着色器和一个片段着色器。顶点着色器影响 3D 几何体在屏幕上的绘制位置，而片段着色器影响颜色。</p>
 
-  can process many pixels at the same time, making them fast for many
+  <p><code>loadShader()</code> 从 <code>.vert</code> 和 <code>.frag</code> 文件加载顶点和片段着色器。 例如，调用 <code>loadShader('/assets/shader.vert', '/assets/shader.frag')</code> 加载所需的着色器并返回 <a href="/reference/p5/p5.Shader">p5 .Shader</a> 对象。</p>
 
-  graphics tasks. They’re written in a language called
+  <p> 第三个参数 <code>successCallback</code> 是可选的。 如果传递一个函数，则着色器加载后就会调用该函数。 回调函数可以使用新的 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象作为其参数。</p>
 
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
-  target="_blank">GLSL</a>
+  <p>第四个参数 <code>failureCallback</code> 也是可选的。 如果传递一个函数，则在着色器加载失败时将调用该函数。 回调函数可以使用事件错误作为其参数。</p>
 
-  and run along with the rest of the code in a sketch.</p>
+  <p>着色器可能需要一些时间来加载。 在 <a href="/reference/p5/preload">preload()</a> 中调用 <code>loadShader()</code> 可确保着色器在用于 <a href="/reference/p5 之前加载 /setup">setup()</a> 或 <a href="/reference/p5/draw">draw()</a>。</p>
 
-  <p>Once the <a href="/reference/p5/p5.Shader">p5.Shader</a> object is created,
-  it can be
-
-  used with the <a href="/reference/p5/shader">shader()</a> function, as in
-
-  <code>shader(myShader)</code>. A shader program consists of two files, a
-  vertex shader
-
-  and a fragment shader. The vertex shader affects where 3D geometry is drawn
-
-  on the screen and the fragment shader affects color.</p>
-
-  <p><code>loadShader()</code> loads the vertex and fragment shaders from their
-  <code>.vert</code> and
-
-  <code>.frag</code> files. For example, calling
-
-  <code>loadShader('/assets/shader.vert', '/assets/shader.frag')</code> loads
-  both
-
-  required shaders and returns a <a href="/reference/p5/p5.Shader">p5.Shader</a>
-  object.</p>
-
-  <p>The third parameter, <code>successCallback</code>, is optional. If a
-  function is
-
-  passed, it will be called once the shader has loaded. The callback function
-
-  can use the new <a href="/reference/p5/p5.Shader">p5.Shader</a> object as its
-
-  parameter.</p>
-
-  <p>The fourth parameter, <code>failureCallback</code>, is also optional. If a
-  function is
-
-  passed, it will be called if the shader fails to load. The callback
-
-  function can use the event error as its parameter.</p>
-
-  <p>Shaders can take time to load. Calling <code>loadShader()</code> in
-
-  <a href="/reference/p5/preload">preload()</a> ensures shaders load before
-  they're
-
-  used in <a href="/reference/p5/setup">setup()</a> or <a
-  href="/reference/p5/draw">draw()</a>.</p>
-
-  <p>Note: Shaders can only be used in WebGL mode.</p>
+  <p>注意：着色器只能在 WebGL 模式下使用。</p>
 line: 12
 isConstructor: false
 itemtype: method
@@ -76,11 +27,11 @@ example:
 
     <div modernizr='webgl'>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意："uniform" 是着色器程序中的全局变量。
 
     let mandelbrot;
 
-    // Load the shader and create a p5.Shader object.
+    // 加载着色器并创建一个 p5.Shader 对象。
     function preload() {
       mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
     }
@@ -88,16 +39,16 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Compile and apply the p5.Shader object.
+      // 编译并应用 p5.Shader 对象。
       shader(mandelbrot);
 
-      // Set the shader uniform p to an array.
+      // 将着色器的 uniform p 设置为数组。
       mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
 
-      // Set the shader uniform r to the value 1.5.
+      // 将着色器的 uniform r 设置为值 1.5。
       mandelbrot.setUniform('r', 1.5);
 
-      // Add a quad as a display surface for the shader.
+      // 添加一个四边形作为着色器的显示表面。
       quad(-1, -1, 1, -1, 1, 1, -1, 1);
 
       describe('A black fractal image on a magenta background.');
@@ -107,11 +58,11 @@ example:
 
     <div>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意："uniform" 是着色器程序中的全局变量。
 
     let mandelbrot;
 
-    // Load the shader and create a p5.Shader object.
+    // 加载着色器并创建一个 p5.Shader 对象。
     function preload() {
       mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
     }
@@ -119,20 +70,20 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Use the p5.Shader object.
+      // 使用 p5.Shader 对象。
       shader(mandelbrot);
 
-      // Set the shader uniform p to an array.
+      // 将着色器的 uniform p 设置为数组。
       mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
 
       describe('A fractal image zooms in and out of focus.');
     }
 
     function draw() {
-      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      // 将着色器的 uniform r 设置为在 0 和 2 之间振荡的值。
       mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
 
-      // Add a quad as a display surface for the shader.
+      // 添加一个四边形作为着色器的显示表面。
       quad(-1, -1, 1, -1, 1, 1, -1, 1);
     }
     </code>
@@ -141,26 +92,24 @@ class: p5
 params:
   - name: vertFilename
     description: |
-      <p>path of the vertex shader to be loaded.</p>
-    type: String
+      <p>要加载的顶点着色器的路径。</p>
+    type: 字符串
   - name: fragFilename
     description: |
-      <p>path of the fragment shader to be loaded.</p>
-    type: String
+      <p>要加载的片段着色器的路径。</p>
+    type: 字符串
   - name: successCallback
     description: |
-      <p>function to call once the shader is loaded. Can be passed the
-                                          <a href="#/p5.Shader">p5.Shader</a> object.</p>
-    type: Function
+      <p>加载着色器后调用的函数。可以传递 <a href="#/p5.Shader">p5.Shader</a> 对象。</p>
+    type: 函数
     optional: true
   - name: failureCallback
     description: |
-      <p>function to call if the shader fails to load. Can be passed an
-                                          <code>Error</code> event object.</p>
-    type: Function
+      <p>着色器加载失败时调用的函数。 可以传递 <code>Error</code> 事件对象。</p>
+    type: 函数
     optional: true
 return:
-  description: new shader created from the vertex and fragment shader files.
+  description: 从顶点和片段着色器文件创建的新着色器。
   type: p5.Shader
 chainable: false
 ---
