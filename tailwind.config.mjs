@@ -57,7 +57,7 @@ export default {
         "5xl": "var(--spacing-5xl)",
       },
       animation: {
-        "spin-slow": "spin 4s linear infinite",
+        "spin-slow": "spin 7s linear infinite",
       },
       aspectRatio: {
         photo: "3 / 2",
