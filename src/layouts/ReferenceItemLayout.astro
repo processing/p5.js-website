@@ -8,6 +8,7 @@ import {
   separateReferenceExamples,
   normalizeReferenceRoute,
   getRelatedEntriesinCollection,
+  generateJumpToState,
 } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
@@ -28,7 +29,16 @@ const description = escapeCodeTagsContent(entry.data.description);
 const t = await getUiTranslator(currentLocale);
 const title = getRefEntryTitleConcatWithParen(entry);
 
-const jumpToLinks = relatedEntries.map((relatedEntry: any) => {
+const jumpToState = await generateJumpToState(
+  "reference",
+  entry.id,
+  "Reference",
+  t,
+  currentLocale
+);
+
+// make related entry links
+const relatedEntriesLinks = relatedEntries.map((relatedEntry: any) => {
   return {
     label: getRefEntryTitleConcatWithParen(relatedEntry),
     url: `/reference/${normalizeReferenceRoute(relatedEntry.id)}`,
@@ -36,17 +46,13 @@ const jumpToLinks = relatedEntries.map((relatedEntry: any) => {
     current: relatedEntry.id === entry.id,
   };
 });
-
 // Add link for submodule itself
-jumpToLinks.unshift({
+relatedEntriesLinks.unshift({
   label: entry.data.submodule,
   url: `/reference/#${entry.data.submodule}`,
 });
-
-const jumpToState = {
-  heading: t("Reference") as string,
-  links: jumpToLinks,
-};
+// Put related links at top of the list
+jumpToState.links?.unshift(...relatedEntriesLinks);
 
 setJumpToState(jumpToState);
 
