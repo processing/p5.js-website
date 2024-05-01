@@ -145,7 +145,7 @@ export const ReferenceDirectoryWithFilter = ({
 
   return (
     <>
-      <div class="border-b border-sidebar-type-color bg-accent-color px-lg pb-lg">
+      <div class="border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg">
         <div class="max-w-screen-md">
           <input
             type="text"
@@ -159,7 +159,7 @@ export const ReferenceDirectoryWithFilter = ({
           />
         </div>
       </div>
-      <div class="mx-lg">{renderCategoryData()}</div>
+      <div class="mx-5 md:mx-lg">{renderCategoryData()}</div>
     </>
   );
 };
