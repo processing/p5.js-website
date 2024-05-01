@@ -79,15 +79,16 @@ export const ReferenceDirectoryWithFilter = ({
         <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
           <a
             href={`/reference/${entry.data.path}`}
-            class="text-body-mono group hover:no-underline"
+            class="group hover:no-underline"
             aria-label={entry.data.title}
             aria-describedby={`${entry.data.title}-description`}
           >
             <span
-              class="group-hover:underline"
+              class="text-body-mono group-hover:underline"
               dangerouslySetInnerHTML={{ __html: entry.data.title }}
             />
             <p
+              class="mt-1 text-sm"
               id={`${entry.data.title}-description`}
             >{`${getOneLineDescription(entry.data.description)}`}</p>
           </a>
