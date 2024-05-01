@@ -1,44 +1,158 @@
 ---
-title: rotationZ
-module: Events
-submodule: Acceleration
-file: src/events/acceleration.js
-description: |
-  <p>La variable del sistema rotationZ siempre contiene la rotación del
-  dispositivo a lo largo del eje z. Si el <a href="/reference/p5/angleMode">
-  angleMode()</a> del boceto está configurado en GRADOS, el valor será de 0 a 360. Si
-  está configurado en RADIANES, el valor será de 0 a 2*PI.</p>
-  <p>A diferencia de rotationX y rotationY, esta variable está disponible solo para dispositivos
-  con una brújula incorporada.</p>
-  <p>Nota: El orden en que se llaman las rotaciones es importante, es decir, si se usan
-  juntas, deben llamarse en el orden Z-X-Y o podría haber
-  un comportamiento inesperado.</p>
-line: 197
+title: rotateZ
+module:  Transform
+submodule: Transform
+file: src/core/transform.js
+description: >
+  <p>Rota el sistema de coordenadas alrededor del eje z- en modo WebGL.</p>
+
+  <p>El parámetro, <code>angle</code>, es la cantidad a rotar. Por ejemplo,
+  llamar a
+
+  <code>rotateZ(1)</code> rota el sistema de coordenadas alrededor del eje z- por 1
+  radián.
+
+  <code>rotateZ()</code> interpreta los valores de ángulo utilizando el
+
+  <a href="/reference/p5/angleMode">angleMode()</a> actual.</p>
+
+  <p>Por defecto, las transformaciones se acumulan. Por ejemplo, llamar
+  <code>rotateZ(1)</code>
+
+  dos veces tiene el mismo efecto que llamar <code>rotateZ(2)</code> una vez. Las
+
+  funciones <a href="/reference/p5/push">push()</a> y <a
+  href="/reference/p5/pop">pop()</a>
+
+  pueden ser utilizadas para aislar transformaciones dentro de grupos de dibujo distintos.</p>
+
+  <p>Nota: Las transformaciones se reinician al inicio del ciclo de dibujo. Llamar
+
+  <code>rotateZ(1)</code> dentro de la función <a href="/reference/p5/draw">draw()</a>
+  no hará que
+
+  las formas giren.</p>
+line: 743
 isConstructor: false
-itemtype: property
-example:
+itemtype: método
+ejemplo:
   - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     function setup() {
       createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
     }
 
     function draw() {
       background(200);
-      rotateZ(radians(rotationZ));
-      //rotateX(radians(rotationX));
-      //rotateY(radians(rotationY));
-      box(200, 200, 200);
-      describe(`red horizontal line right, green vertical line bottom.
-        black background.`);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/8 turn.
+      rotateZ(QUARTER_PI);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/16 turn.
+      rotateZ(QUARTER_PI / 2);
+
+      // Rotate the coordinate system 1/16 turn.
+      rotateZ(QUARTER_PI / 2);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system 1/8 turn.
+      rotateZ(45);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube rotates slowly against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      rotateZ(angle);
+
+      // Draw a box.
+      box();
     }
     </code>
     </div>
 class: p5
-type: Number
+params:
+  - name: angle
+    description: >
+      <p>ángulo de rotación en el <a
+      href="#/p5/angleMode">angleMode()</a> actual.</p>
+    type: Number
+chainable: true
 ---
 
 
-# rotationZ
+# rotateZ"
