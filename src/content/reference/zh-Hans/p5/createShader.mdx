@@ -1,48 +1,20 @@
 ---
 title: createShader
 module: 3D
-submodule: Material
+submodule: 材质
 file: src/webgl/material.js
 description: >
-  <p>Creates a new <a href="/reference/p5/p5.Shader">p5.Shader</a> object.</p>
+  <p>创建一个新的 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象。</p>
 
-  <p>Shaders are programs that run on the graphics processing unit (GPU). They
+  <p>着色器是在图形处理单元 (GPU) 上运行的程序。 它们可以同时处理许多像素，从而可以快速执行许多图形任务。 它们是用 <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"target="_blank">GLSL</a> 语言编写的，并于绘图中运行其余代码。</p>
 
-  can process many pixels at the same time, making them fast for many
+  <p>一旦创建了 <a href="/reference/p5/p5.Shader">p5.Shader</a> 对象，它就可以与 <a href="/reference/p5/shader"> 一起使用 Shader()</a> 函数，如 <code>shader(myShader)</code> 中。 着色器程序由两部分组成，顶点着色器和片段着色器。 顶点着色器影响 3D 几何体在屏幕上绘制的位置，而片段着色器则影响颜色。</p>
 
-  graphics tasks. They’re written in a language called
+  <p>第一个参数 <code>vertSrc</code> 设置顶点着色器。 它是一个字符串，包含用 GLSL 编写的顶点着色器程序。</p>
 
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
-  target="_blank">GLSL</a>
+  <p>第二个参数，<code>fragSrc</code>，设置片段着色器。 它是一个字符串，包含用 GLSL 编写的片段着色器程序。</p>
 
-  and run along with the rest of the code in a sketch.</p>
-
-  <p>Once the <a href="/reference/p5/p5.Shader">p5.Shader</a> object is created,
-  it can be
-
-  used with the <a href="/reference/p5/shader">shader()</a> function, as in
-
-  <code>shader(myShader)</code>. A shader program consists of two parts, a
-  vertex shader
-
-  and a fragment shader. The vertex shader affects where 3D geometry is drawn
-
-  on the screen and the fragment shader affects color.</p>
-
-  <p>The first parameter, <code>vertSrc</code>, sets the vertex shader. It’s a
-  string that
-
-  contains the vertex shader program written in GLSL.</p>
-
-  <p>The second parameter, <code>fragSrc</code>, sets the fragment shader. It’s
-  a string
-
-  that contains the fragment shader program written in GLSL.</p>
-
-  <p>Note: Only filter shaders can be used in 2D mode. All shaders can be used
-
-  in WebGL mode.</p>
+  <p>注意：2D 模式下只能使用滤镜着色器。 而所有着色器都可以在 WebGL 模式下使用。</p>
 line: 173
 isConstructor: false
 itemtype: method
@@ -51,10 +23,10 @@ example:
 
     <div modernizr='webgl'>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意："uniform" 是着色器程序中的全局变量。
 
-    // Create a string with the vertex shader program.
-    // The vertex shader is called for each vertex.
+    // 使用顶点着色器程序创建一个字符串。
+    // 每个顶点都会调用顶点着色器。
     let vertSrc = `
     precision highp float;
     uniform mat4 uModelViewMatrix;
@@ -70,13 +42,13 @@ example:
     }
     `;
 
-    // Create a string with the fragment shader program.
-    // The fragment shader is called for each pixel.
+    // 使用片段着色器程序创建一个字符串。
+    // 每个像素都会调用片段着色器。
     let fragSrc = `
     precision highp float;
 
     void main() {
-      // Set each pixel's RGBA value to yellow.
+      // 将每个像素的 RGBA 值设置为黄色。
       gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
     }
     `;
@@ -84,16 +56,16 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Create a p5.Shader object.
+      // 创建一个 p5.Shader 对象。
       let shaderProgram = createShader(vertSrc, fragSrc);
 
-      // Compile and apply the p5.Shader object.
+      // 编译并应用 p5.Shader 对象。
       shader(shaderProgram);
 
-      // Style the drawing surface.
+      // 设置绘图表面的样式。
       noStroke();
 
-      // Add a plane as a drawing surface.
+      // 添加一个平面作为绘图表面。
       plane(100, 100);
 
       describe('A yellow square.');
@@ -103,10 +75,10 @@ example:
 
     <div>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意："uniform" 是着色器程序中的全局变量。
 
-    // Create a string with the vertex shader program.
-    // The vertex shader is called for each vertex.
+    // 使用顶点着色器程序创建一个字符串。
+    // 每个顶点都会调用顶点着色器。
     let vertSrc = `
     precision highp float;
     uniform mat4 uModelViewMatrix;
@@ -122,8 +94,8 @@ example:
     }
     `;
 
-    // Create a string with the fragment shader program.
-    // The fragment shader is called for each pixel.
+    // 使用片段着色器程序创建一个字符串。
+    // 每个像素都会调用片段着色器。
     let fragSrc = `
     precision highp float;
     uniform vec2 p;
@@ -156,24 +128,24 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Create a p5.Shader object.
+      // 创建一个 p5.Shader 对象。
       let mandelbrot = createShader(vertSrc, fragSrc);
 
-      // Compile and apply the p5.Shader object.
+      // 编译并应用 p5.Shader 对象。
       shader(mandelbrot);
 
-      // Set the shader uniform p to an array.
-      // p is the center point of the Mandelbrot image.
+      // 将着色器的 uniform p 设置为数组。
+      // p 是 Mandelbrot 图像的中心点。
       mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
 
-      // Set the shader uniform r to 0.005.
-      // r is the size of the image in Mandelbrot-space.
+      // 将着色器的 uniform r 设置为 0.005。
+      // r 是 Mandelbrot 空间中图像的大小。
       mandelbrot.setUniform('r', 0.005);
 
-      // Style the drawing surface.
+      // 设置绘图表面的样式。
       noStroke();
 
-      // Add a plane as a drawing surface.
+      // 添加一个平面作为绘图表面。
       plane(100, 100);
 
       describe('A black fractal image on a magenta background.');
@@ -183,10 +155,10 @@ example:
 
     <div>
     <code>
-    // Note: A "uniform" is a global variable within a shader program.
+    // 注意："uniform" 是着色器程序中的全局变量。
 
-    // Create a string with the vertex shader program.
-    // The vertex shader is called for each vertex.
+    // 使用顶点着色器程序创建一个字符串。
+    // 每个顶点都会调用顶点着色器。
     let vertSrc = `
     precision highp float;
     uniform mat4 uModelViewMatrix;
@@ -203,8 +175,8 @@ example:
     }
     `;
 
-    // Create a string with the fragment shader program.
-    // The fragment shader is called for each pixel.
+    // 使用片段着色器程序创建一个字符串。
+    // 每个像素都会调用片段着色器。
     let fragSrc = `
     precision highp float;
     uniform vec2 p;
@@ -240,30 +212,30 @@ example:
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Create a p5.Shader object.
+      // 创建一个 p5.Shader 对象。
       mandelbrot = createShader(vertSrc, fragSrc);
 
-      // Apply the p5.Shader object.
+      // 应用 p5.Shader 对象。
       shader(mandelbrot);
 
-      // Set the shader uniform p to an array.
-      // p is the center point of the Mandelbrot image.
+      // 将着色器的 uniform p 设置为数组。
+      // p 是 Mandelbrot 图像的中心点。
       mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
 
       describe('A fractal image zooms in and out of focus.');
     }
 
     function draw() {
-      // Set the shader uniform r to a value that oscillates
-      // between 0 and 0.005.
-      // r is the size of the image in Mandelbrot-space.
+      // 将着色器的 uniform r 设置为振荡的值
+      // 0 到 0.005 之间。
+      // r 是 Mandelbrot 空间中图像的大小。
       let radius = 0.005 * (sin(frameCount * 0.01) + 1);
       mandelbrot.setUniform('r', radius);
 
-      // Style the drawing surface.
+      // 设置绘图表面的样式。
       noStroke();
 
-      // Add a plane as a drawing surface.
+      // 添加一个平面作为绘图表面。
       plane(100, 100);
     }
     </code>
@@ -272,12 +244,12 @@ class: p5
 params:
   - name: vertSrc
     description: |
-      <p>source code for the vertex shader.</p>
-    type: String
+      <p>顶点着色器的源代码。</p>
+    type: 字符串
   - name: fragSrc
     description: |
-      <p>source code for the fragment shader.</p>
-    type: String
+      <p>片段着色器的源代码。</p>
+    type: 字符串
 return:
   description: |-
     new shader object created from the
