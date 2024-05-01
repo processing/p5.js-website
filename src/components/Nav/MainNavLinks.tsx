@@ -21,6 +21,7 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
+  hasJumpTo,
 }: MainNavLinksProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(!isMobile);
@@ -74,7 +75,9 @@ export const MainNavLinks = ({
   );
 
   return (
-    <div class={`${styles.mainlinks} ${open && "open"}`}>
+    <div
+      class={`${styles.mainlinks} ${open && "open"} ${!hasJumpTo && "noJumpTo"}`}
+    >
       {renderLogo()}
       <ul>
         {links.map((link) => (

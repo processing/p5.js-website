@@ -379,14 +379,13 @@ export const generateJumpToState = async (
             }) as JumpToLink,
         ),
       );
-
-      const hasCurrent = categoryLinks.some((link) => link.current);
-      // If the current entry is in this category, move this category to the top
-      if (hasCurrent) {
-        jumpToLinks.unshift(...categoryLinks);
-      } else {
-        jumpToLinks.push(...categoryLinks);
-      }
+    }
+    const hasCurrent = categoryLinks.some((link) => link.current);
+    // If the current entry is in this category, move this category to the top
+    if (hasCurrent) {
+      jumpToLinks.unshift(...categoryLinks);
+    } else {
+      jumpToLinks.push(...categoryLinks);
     }
   }
 

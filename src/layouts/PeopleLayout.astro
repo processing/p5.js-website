@@ -16,7 +16,8 @@ const { entries, title } = Astro.props;
 interface DisplayedEntries {
   alumni: CollectionEntry<"people">[];
   contributor: CollectionEntry<"people">[];
-  featured: CollectionEntry<"people">[];
+  lead: CollectionEntry<"people">[];
+  mentor: CollectionEntry<"people">[];
 }
 
 // Sort entries first, handling possibly undefined 'order'
@@ -29,15 +30,25 @@ const sortedEntries = entries.sort((a, b) => {
 });
 const filteredEntries = sortedEntries.reduce<DisplayedEntries>(
   (acc, item) => {
-    const key = item.data.displayed as keyof DisplayedEntries; // 'gallery' or 'featured'
+    const key = item.data.category as keyof DisplayedEntries;
     acc[key].push(item); //  Safe to do because we assert that key is one of the keys of DisplayedEntrie
     return acc;
   },
-  { alumni: [], featured: [], contributor: [] } // Initializing with empty arrays for both keys
+  { alumni: [], lead: [], mentor: [], contributor: [] } // Initializing with empty arrays for both keys
 );
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
+
+const featuredEntries = [
+  { label: t("peopleCategories", "lead"), members: filteredEntries.lead },
+  { label: t("peopleCategories", "mentor"), members: filteredEntries.mentor },
+  { label: t("peopleCategories", "alumni"), members: filteredEntries.alumni },
+];
+const contributorEntries = {
+  label: t("peopleCategories", "contributor"),
+  members: filteredEntries.contributor,
+};
 
 setJumpToState(null);
 ---
@@ -48,63 +59,45 @@ setJumpToState(null);
   <h3 class="mb-xl max-w-screen-md">
     {t("peoplePage", "PageDescription")}
   </h3>
-  <ul class="content-grid">
-    {
-      filteredEntries.featured.map((person, i) => (
-        <li class="col-span-6 md:col-span-9 lg:col-span-12 content-grid">
-          <div class="col-span-4 md:col-span-9 lg:col-span-3 grayscale">
-            <Image
-              src={person.data.image!}
-              alt={person.data.imageAlt!}
-              width="400"
-              aspectRatio="square"
-              loading={i === 0 ? "eager" : "lazy"}
-            />
-            <div class="mt-xs">
-              <a
-                href={person.data.url}
-                aria-label={`Link to ${person.data.name}'s personal website'`}
-              >
-                {person.data.name}
-              </a>
-            </div>
-            <p class="text-body-caption mt-0">{person.data.role}</p>
-          </div>
-          <p class="col-span-6 md:col-span-9 p-0 m-0">{person.data.blurb}</p>
-        </li>
-      ))
-    }
-  </ul>
-  <h2 class="mb-lg">{t("Alumni")}</h2>
-  <ul class="content-grid">
-    {
-      filteredEntries.alumni.map((person) => (
-        <li class="col-span-2">
-          <div class="grayscale">
-            <Image
-              src={person.data.image!}
-              alt={person.data.imageAlt!}
-              aspectRatio="square"
-              width="200"
-            />
-          </div>
-          <div class="mt-xs">
-            <a
-              href={person.data.url}
-              aria-label={`Link to ${person.data.name}'s personal website'`}
-            >
-              {person.data.name}
-            </a>
-          </div>
-          <p class="text-body-caption mt-0">{person.data.role}</p>
-        </li>
-      ))
-    }
-  </ul>
-  <h2 class="mb-lg">{t("Contributors")}</h2>
+  {
+    featuredEntries.map((category, i) => (
+      <section>
+        <h2 class="mb-lg">{category.label}</h2>
+        <ul class="content-grid">
+          {category.members.map((person) => (
+            <li class="col-span-6 md:col-span-9 lg:col-span-12 content-grid">
+              <div class="col-span-4 md:col-span-9 lg:col-span-3 grayscale">
+                <Image
+                  src={person.data.image!}
+                  alt={person.data.imageAlt!}
+                  width="400"
+                  aspectRatio="square"
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+                <div class="mt-xs">
+                  <a
+                    href={person.data.url}
+                    aria-label={`Link to ${person.data.name}'s personal website'`}
+                  >
+                    {person.data.name}
+                  </a>
+                </div>
+                <p class="text-body-caption mt-0">{person.data.role}</p>
+              </div>
+              <p class="col-span-6 md:col-span-9 p-0 m-0">
+                {person.data.blurb}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  <h2 class="mb-lg">{contributorEntries.label}</h2>
   <ul class="content-grid !gap-xs">
     {
-      filteredEntries.contributor.map((person) => (
+      contributorEntries.members.map((person) => (
         <li class="col-span-3">
           <a
             href={person.data.url}
