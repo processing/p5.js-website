@@ -69,7 +69,7 @@ export const CodeEmbed = (props) => {
     >
       {props.previewable ? (
         <div
-          className={`ml-0 flex w-fit gap-5 ${props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
+          className={`ml-0 flex w-fit gap-[20px] ${props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
         >
           <div>
             <CodeFrame
