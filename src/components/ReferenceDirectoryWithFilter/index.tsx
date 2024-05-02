@@ -146,7 +146,7 @@ export const ReferenceDirectoryWithFilter = ({
   return (
     <>
       <div class="border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg">
-        <div class="max-w-screen-md">
+        <div class="max-w-[750px]">
           <input
             type="text"
             id="search"
