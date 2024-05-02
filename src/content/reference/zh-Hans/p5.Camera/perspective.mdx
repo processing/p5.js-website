@@ -1,94 +1,22 @@
 ---
 title: perspective
 module: 3D
-submodule: Camera
+submodule: 相机
 file: src/webgl/p5.Camera.js
 description: >
-  <p>Sets a perspective projection for the camera.</p>
+  <p>为相机设置透视投影。</p>
 
-  <p>In a perspective projection, shapes that are further from the camera appear
+  <p>在透视投影中，距离相机更远的形状比靠近相机的形状看起来更小。这种称为透视缩短的技术创建了逼真的三维场景。在新的 <code>p5.Camera</code> 对象中默认应用此技术。</p>
 
-  smaller than shapes that are near the camera. This technique, called
+  <p><code>myCamera.perspective()</code> 通过改变其视锥体来改变相机的透视。视锥体是相机可见的空间体积。视锥体的形状是一个顶部被切掉的金字塔。相机放置在金字塔应该顶部的位置，并朝着金字塔的底部。它查看视锥体内的所有内容。</p>
 
-  foreshortening, creates realistic 3D scenes. It’s applied by default in new
+  <p>第一个参数 <code>fovy</code> 是相机的垂直视场角。它是一个描述相机视图有多高或多窄的角度。例如，调用 <code>myCamera.perspective(0.5)</code> 将相机的垂直视场角设置为 0.5 弧度。默认情况下，<code>fovy</code> 根据绘图的高度和相机的默认 z 坐标（即 800）计算。默认 <code>fovy</code> 的公式是 <code>2 * atan(height / 2 / 800)</code>。</p>
 
-  <code>p5.Camera</code> objects.</p>
+  <p>第二个参数 <code>aspect</code> 是相机的宽高比。它是一个数字，描述顶部平面宽度与高度的比例。例如，调用 <code>myCamera.perspective(0.5, 1.5)</code> 将相机的视场角设置为 0.5 弧度，宽高比设置为 1.5，这会使形状在正方形画布上看起来更细。默认情况下，<code>aspect</code> 设置为 <code>width / height</code>。</p>
 
-  <p><code>myCamera.perspective()</code> changes the camera’s perspective by
-  changing its
+  <p>第三个参数 <code>near</code> 是相机到近平面的距离。例如，调用 <code>myCamera.perspective(0.5, 1.5, 100)</code> 将相机的视场角设置为 0.5 弧度，宽高比设置为 1.5，并将近平面放置在相机 100 像素处。任何距离相机少于 100 像素的形状都不可见。默认情况下，<code>near</code> 设置为 <code>0.1 * 800</code>，即相机与原点之间的默认距离的十分之一。</p>
 
-  viewing frustum. The frustum is the volume of space that’s visible to the
-
-  camera. The frustum’s shape is a pyramid with its top cut off. The camera
-
-  is placed where the top of the pyramid should be and points towards the
-
-  base of the pyramid. It views everything within the frustum.</p>
-
-  <p>The first parameter, <code>fovy</code>, is the camera’s vertical field of
-  view. It’s
-
-  an angle that describes how tall or narrow a view the camera has. For
-
-  example, calling <code>myCamera.perspective(0.5)</code> sets the camera’s
-  vertical
-
-  field of view to 0.5 radians. By default, <code>fovy</code> is calculated
-  based on the
-
-  sketch’s height and the camera’s default z-coordinate, which is 800. The
-
-  formula for the default <code>fovy</code> is <code>2 * atan(height / 2 /
-  800)</code>.</p>
-
-  <p>The second parameter, <code>aspect</code>, is the camera’s aspect ratio.
-  It’s a number
-
-  that describes the ratio of the top plane’s width to its height. For
-
-  example, calling <code>myCamera.perspective(0.5, 1.5)</code> sets the camera’s
-  field
-
-  of view to 0.5 radians and aspect ratio to 1.5, which would make shapes
-
-  appear thinner on a square canvas. By default, <code>aspect</code> is set to
-
-  <code>width / height</code>.</p>
-
-  <p>The third parameter, <code>near</code>, is the distance from the camera to
-  the near
-
-  plane. For example, calling <code>myCamera.perspective(0.5, 1.5, 100)</code>
-  sets the
-
-  camera’s field of view to 0.5 radians, its aspect ratio to 1.5, and places
-
-  the near plane 100 pixels from the camera. Any shapes drawn less than 100
-
-  pixels from the camera won’t be visible. By default, <code>near</code> is set
-  to
-
-  <code>0.1 * 800</code>, which is 1/10th the default distance between the
-  camera and
-
-  the origin.</p>
-
-  <p>The fourth parameter, <code>far</code>, is the distance from the camera to
-  the far
-
-  plane. For example, calling <code>myCamera.perspective(0.5, 1.5, 100,
-  10000)</code>
-
-  sets the camera’s field of view to 0.5 radians, its aspect ratio to 1.5,
-
-  places the near plane 100 pixels from the camera, and places the far plane
-
-  10,000 pixels from the camera. Any shapes drawn more than 10,000 pixels
-
-  from the camera won’t be visible. By default, <code>far</code> is set to
-  <code>10 * 800</code>,
-
-  which is 10 times the default distance between the camera and the origin.</p>
+  <p>第四个参数 <code>far</code> 是相机到远平面的距离。例如，调用 <code>myCamera.perspective(0.5, 1.5, 100, 10000)</code> 将相机的视场角设置为 0.5 弧度，宽高比设置为 1.5，将近平面放置在相机 100 像素处，并将远平面放置在相机 10,000 像素处。任何距离相机超过 10,000 像素的形状都不可见。默认情况下，<code>far</code> 设置为 <code>10 * 800</code>，即相机与原点之间的默认距离的十倍。</p>
 line: 1862
 isConstructor: false
 itemtype: method
@@ -208,27 +136,23 @@ class: p5.Camera
 params:
   - name: fovy
     description: |
-      <p>camera frustum vertical field of view. Defaults to
-                                <code>2 * atan(height / 2 / 800)</code>.</p>
-    type: Number
+     <p>相机视锥体的垂直视场角。默认为 <code>2 * atan(height / 2 / 800)</code>。</p>
+    type: 数字
     optional: true
   - name: aspect
     description: |
-      <p>camera frustum aspect ratio. Defaults to
-                                <code>width / height</code>.</p>
-    type: Number
+      <p>相机视锥体的宽高比。默认为 <code>width / height</code>。</p>
+    type: 数字
     optional: true
   - name: near
     description: |
-      <p>distance from the camera to the near clipping plane.
-                                Defaults to <code>0.1 * 800</code>.</p>
-    type: Number
+      <p>相机到近裁剪平面的距离。默认为 <code>0.1 * 800</code>。</p>
+    type: 数字
     optional: true
   - name: far
     description: |
-      <p>distance from the camera to the far clipping plane.
-                                Defaults to <code>10 * 800</code>.</p>
-    type: Number
+      <p>相机到远裁剪平面的距离。默认为 <code>10 * 800</code>。</p>
+    type: 数字
     optional: true
 chainable: false
 ---
