@@ -1,119 +1,22 @@
 ---
 title: debugMode
 module: 3D
-submodule: Interaction
+submodule: 交互
 file: src/webgl/interaction.js
 description: >
-  <p>Adds a grid and an axes icon to clarify orientation in 3D sketches.</p>
+  <p>添加网格和轴标志以帮助明确 3D 绘图中的方向。</p>
 
-  <p><code>debugMode()</code> adds a grid that shows where the “ground” is in a
-  sketch. By
+  <p><code>debugMode()</code> 函数添加一个网格， 显示绘图中“地面”的位置。默认情况下，网格将通过绘图的原点 <code>(0, 0, 0)</code> 沿着　XZ 平面运行。 <code>debugMode()</code> 还添加了一个沿着正 x、y 和 z 轴指向的坐标轴图标。调用 <code>debugMode()</code> 会显示网格和坐标轴图标， 以及它们的默认大小和位置。</p>
 
-  default, the grid will run through the origin <code>(0, 0, 0)</code> of the
-  sketch
+  <p>>有四种调用 <code>debugMode()</code> 的方式，可选参数用于自定义调试环境。</p>
 
-  along the XZ plane. <code>debugMode()</code> also adds an axes icon that
-  points along
+  <p>第一种调用 <code>debugMode()</code> 的方式有一个参数，<code>mode</code>。 如果传递了系统常量 <code>GRID</code>， 例如<code>debugMode(GRID)</code>, 那么将显示网格并隐藏坐标轴图标。 如果传递了常量<code>AXES</code>，例如 <code>debugMode(AXES)</code>， 则会显示坐标轴图标并隐藏网格。</p>
 
-  the positive x-, y-, and z-axes. Calling <code>debugMode()</code> displays the
-  grid
+  <p>第二种调用 <code>debugMode()</code> 的方式有六个参数。第一个参数　<code>mode</code>,  选择要显示的 <code>GRID</code> 或　<code>AXES</code>。 接下来的五个参数, <code>gridSize</code>, <code>gridDivisions</code>,　<code>xOff</code>, <code>yOff</code>, 和　<code>zOff</code> 是可选的。 它们是用于设置网格外观　(<code>gridSize</code> 和 <code>gridDivisions</code>) 以及放置坐标轴图标 (<code>xOff</code>, <code>yOff</code>, 和 <code>zOff</code>) 的数字。 例如，调用<code>debugMode(20, 5, 10, 10, 10)</code> 将 <code>gridSize</code> 设置为 20 个像素, 并将 <code>gridDivisions</code> 设置为 5, 并且沿着 x、y 和 z 轴偏移坐标轴图标 1 0像素。</p>
 
-  and axes icon with their default size and position.</p>
+  <p>第三种调用 <code>debugMode()</code> 的方式有五个参数。 第一个参数 <code>mode</code> 选择要显示的 <code>GRID</code> 或 <code>AXES</code>。接下来的四个参数, <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, 和 <code>zOff</code> 是可选的。它们是用于设置坐标轴图标大小 （ <code>axesSize</code>） 以及其放置位置 （ <code>xOff</code>、 <code>yOff</code> 和 <code>zOff</code>）的数字。</p>
 
-  <p>There are four ways to call <code>debugMode()</code> with optional
-  parameters to
-
-  customize the debugging environment.</p>
-
-  <p>The first way to call <code>debugMode()</code> has one parameter,
-  <code>mode</code>. If the
-
-  system constant <code>GRID</code> is passed, as in
-  <code>debugMode(GRID)</code>, then the grid
-
-  will be displayed and the axes icon will be hidden. If the constant
-  <code>AXES</code>
-
-  is passed, as in <code>debugMode(AXES)</code>, then the axes icon will be
-  displayed
-
-  and the grid will be hidden.</p>
-
-  <p>The second way to call <code>debugMode()</code> has six parameters. The
-  first
-
-  parameter, <code>mode</code>, selects either <code>GRID</code> or
-  <code>AXES</code> to be displayed. The
-
-  next five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
-  <code>xOff</code>, <code>yOff</code>, and
-
-  <code>zOff</code> are optional. They’re numbers that set the appearance of the
-  grid
-
-  (<code>gridSize</code> and <code>gridDivisions</code>) and the placement of
-  the axes icon
-
-  (<code>xOff</code>, <code>yOff</code>, and <code>zOff</code>). For example,
-  calling
-
-  <code>debugMode(20, 5, 10, 10, 10)</code> sets the <code>gridSize</code> to 20
-  pixels, the number
-
-  of <code>gridDivisions</code> to 5, and offsets the axes icon by 10 pixels
-  along the
-
-  x-, y-, and z-axes.</p>
-
-  <p>The third way to call <code>debugMode()</code> has five parameters. The
-  first
-
-  parameter, <code>mode</code>, selects either <code>GRID</code> or
-  <code>AXES</code> to be displayed. The
-
-  next four parameters, <code>axesSize</code>, <code>xOff</code>,
-  <code>yOff</code>, and <code>zOff</code> are optional.
-
-  They’re numbers that set the appearance of the size of the axes icon
-
-  (<code>axesSize</code>) and its placement (<code>xOff</code>,
-  <code>yOff</code>, and <code>zOff</code>).</p>
-
-  <p>The fourth way to call <code>debugMode()</code> has nine optional
-  parameters. The
-
-  first five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
-  <code>gridXOff</code>, <code>gridYOff</code>,
-
-  and <code>gridZOff</code> are numbers that set the appearance of the grid. For
-
-  example, calling <code>debugMode(100, 5, 0, 0, 0)</code> sets the
-  <code>gridSize</code> to 100,
-
-  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
-  so that
-
-  the grid is centered at the origin. The next four parameters,
-  <code>axesSize</code>,
-
-  <code>xOff</code>, <code>yOff</code>, and <code>zOff</code> are numbers that
-  set the appearance of the size
-
-  of the axes icon (<code>axesSize</code>) and its placement
-  (<code>axesXOff</code>, <code>axesYOff</code>,
-
-  and <code>axesZOff</code>). For example, calling
-
-  <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code> sets the
-  <code>gridSize</code> to 100,
-
-  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
-  so that
-
-  the grid is centered at the origin. It then sets the <code>axesSize</code> to
-  50 and
-
-  offsets the icon 10 pixels along each axis.</p>
+  <p>第四种调用 <code>debugMode()</code> 的方式有九个可选参数。前五个参数 <code>gridSize</code>、 <code>gridDivisions</code>、 <code>gridXOff</code>、 <code>gridYOff</code> 和 <code>gridZOff</code> 是用于设置网格外观的数字。例如，调用 <code>debugMode(100, 5, 0, 0, 0)</code> 将 <code>gridSize</code> 设置为 100，将 <code>gridDivisions</code> 设置为 5，并将所有偏移量设置为 0，以便网格居中于原点。接下来的四个参数 <code>axesSize</code>、 <code>xOff</code>、 <code>yOff</code> 和 <code>zOff</code> 是用于设置坐标轴图标大小的数字（ <code>axesSize</code>）以及其放置位置（ <code>axesXOff</code>、 <code>axesYOff</code> 和 <code>axesZOff</code>）。例如，调用 <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code> 将 <code>gridSize</code> 设置为 100，将 <code>gridDivisions</code> 设置为 5，并将所有偏移量设置为 0，以便网格居中于原点。然后将 <code>axesSize</code> 设置为 50，并将图标沿每个轴偏移 10 像素。</p>
 line: 471
 isConstructor: false
 itemtype: method
@@ -122,12 +25,12 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 点击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Enable debug mode.
+      // 启用调试模式。
       debugMode();
 
       describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
@@ -136,13 +39,13 @@ example:
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Style the box.
+      // 设定盒子样式。
       normalMaterial();
 
-      // Draw the box.
+      // 绘制盒子。
       box(20, 40);
     }
     </code>
@@ -150,13 +53,13 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 点击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Enable debug mode.
-      // Only display the axes icon.
+      // 启用调试模式。
+      // 只显示坐标轴图标。
       debugMode(AXES);
 
       describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
@@ -165,13 +68,13 @@ example:
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Style the box.
+      // 设定盒子样式。
       normalMaterial();
 
-      // Draw the box.
+      // 绘制盒子。
       box(20, 40);
     }
     </code>
@@ -179,13 +82,13 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 点击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Enable debug mode.
-      // Only display the grid and customize it:
+      // 启用调试模式。
+      // 只显示网格并进行自定义设置：
       // - size: 50
       // - divisions: 10
       // - offsets: 0, 20, 0
@@ -197,13 +100,13 @@ example:
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Style the box.
+      // 设定盒子样式。
       normalMaterial();
 
-      // Draw the box.
+      // 绘制盒子。
       box(20, 40);
     }
     </code>
@@ -211,13 +114,13 @@ example:
 
     <div>
     <code>
-    // Click and drag the mouse to view the scene from different angles.
+    // 点击并拖动鼠标以从不同角度查看场景。
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      // Enable debug mode.
-      // Display the grid and axes icon and customize them:
+      // 启用调试模式。
+      // 显示网格和坐标轴图标，并进行自定义设置：
       // Grid
       // ----
       // - size: 50
@@ -235,13 +138,13 @@ example:
     function draw() {
       background(200);
 
-      // Enable orbiting with the mouse.
+      // 使用鼠标进行轨道控制。
       orbitControl();
 
-      // Style the box.
+      // 设定盒子样式。
       normalMaterial();
 
-      // Draw the box.
+      // 绘制盒子。
       box(20, 40);
     }
     </code>
@@ -254,103 +157,103 @@ overloads:
     params:
       - name: mode
         description: |
-          <p>either GRID or AXES</p>
-        type: Constant
+          <p>GRID 或 AXES</p>
+        type: 常数
   - line: 655
     params:
       - name: mode
         description: ''
-        type: Constant
+        type: 常数
       - name: gridSize
         description: |
-          <p>side length of the grid.</p>
-        type: Number
+          <p>网格的边长。</p>
+        type: 数字
         optional: true
       - name: gridDivisions
         description: |
-          <p>number of divisions in the grid.</p>
-        type: Number
+          <p>网格的分割数。</p>
+        type: 数字
         optional: true
       - name: xOff
         description: |
-          <p>offset from origin along the x-axis.</p>
-        type: Number
+          <p>沿 x 轴的偏移量。</p>
+        type: 数字
         optional: true
       - name: yOff
         description: |
-          <p>offset from origin along the y-axis.</p>
-        type: Number
+          <p>沿 y 轴的偏移量。</p>
+        type: 数字
         optional: true
       - name: zOff
         description: |
-          <p>offset from origin along the z-axis.</p>
-        type: Number
+          <p>沿 z 轴的偏移量。</p>
+        type: 数字
         optional: true
   - line: 665
     params:
       - name: mode
         description: ''
-        type: Constant
+        type: 常数
       - name: axesSize
         description: |
-          <p>length of axes icon markers.</p>
-        type: Number
+          <p>坐标轴图标标记的长度。</p>
+        type: 数字
         optional: true
       - name: xOff
         description: ''
-        type: Number
+        type: 数字
         optional: true
       - name: yOff
         description: ''
-        type: Number
+        type: 数字
         optional: true
       - name: zOff
         description: ''
-        type: Number
+        type: 数字
         optional: true
   - line: 674
     params:
       - name: gridSize
         description: ''
-        type: Number
+        type: 数字
         optional: true
       - name: gridDivisions
         description: ''
-        type: Number
+        type: 数字
         optional: true
       - name: gridXOff
         description: |
-          <p>grid offset from the origin along the x-axis.</p>
-        type: Number
+          <p>沿x轴偏移的网格。</p>
+        type: 数字
         optional: true
       - name: gridYOff
         description: |
-          <p>grid offset from the origin along the y-axis.</p>
-        type: Number
+          <p>沿y轴偏移的网格。</p>
+        type: 数字
         optional: true
       - name: gridZOff
         description: |
-          <p>grid offset from the origin along the z-axis.</p>
-        type: Number
+          <p>沿z轴偏移的网格。</p>
+        type: 数字
         optional: true
       - name: axesSize
         description: ''
-        type: Number
+        type: 数字
         optional: true
       - name: axesXOff
         description: |
-          <p>axes icon offset from the origin along the x-axis.</p>
-        type: Number
+          <p>沿x轴偏移的坐标轴图标。</p>
+        type: 数字
         optional: true
       - name: axesYOff
         description: |
-          <p>axes icon offset from the origin along the y-axis.</p>
-        type: Number
+          <p>沿y轴偏移的坐标轴图标。</p>
+        type: 数字
         optional: true
       - name: axesZOff
         description: |
-          <p>axes icon offset from the origin along the z-axis.</p>
-        type: Number
+          <p>沿z轴偏移的坐标轴图标。</p>
+        type: 数字
         optional: true
 chainable: false
 ---

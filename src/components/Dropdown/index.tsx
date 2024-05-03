@@ -128,7 +128,7 @@ export const Dropdown = ({
           "Select..."}
       </span>
       <div className={styles.chevron}>
-        <Icon kind="chevron-down" className={styles.chevron} />
+        <Icon kind="chevron-down" />
       </div>
     </button>
   );

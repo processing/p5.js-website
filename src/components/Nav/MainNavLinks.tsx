@@ -12,6 +12,7 @@ type MainNavLinksProps = {
   donateButtonLabel: string;
   mobileMenuLabel: string;
   isHomepage: boolean;
+  hasJumpTo: boolean;
 };
 
 export const MainNavLinks = ({
@@ -20,6 +21,7 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
+  hasJumpTo,
 }: MainNavLinksProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(!isMobile);
@@ -48,32 +50,34 @@ export const MainNavLinks = ({
       >
         <Logo />
       </a>
+
       <button
         class={styles.toggle}
         onClick={handleClick}
         aria-hidden="true"
         tabIndex={-1}
       >
-        {isMobile ? (
-          <div class={styles.mobileMenuLabel}>
-            {open ? (
-              <Icon kind="close" />
-            ) : (
-              <>
-                <span>{mobileMenuLabel}</span>
-                <Icon kind="hamburger" />
-              </>
-            )}
-          </div>
-        ) : (
+        <div class={styles.mobileMenuLabel}>
+          {open ? (
+            <Icon kind="close" />
+          ) : (
+            <>
+              <span>{mobileMenuLabel}</span>
+              <Icon kind="hamburger" />
+            </>
+          )}
+        </div>
+        <span class={styles.desktopMenuLabel}>
           <Icon kind={open ? "chevron-up" : "chevron-down"} />
-        )}
+        </span>
       </button>
     </div>
   );
 
   return (
-    <div class={`${styles.mainlinks} ${open && "open"}`}>
+    <div
+      class={`${styles.mainlinks} ${open && "open"} ${!hasJumpTo && "noJumpTo"}`}
+    >
       {renderLogo()}
       <ul>
         {links.map((link) => (

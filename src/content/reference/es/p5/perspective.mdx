@@ -4,88 +4,68 @@ module: 3D
 submodule: Camera
 file: src/webgl/p5.Camera.js
 description: >
-  <p>Sets a perspective projection for the current camera in a 3D sketch.</p>
+  <p>Establece una proyección perspectiva para la cámara actual en un sketch (boceto) 3D.</p>
 
-  <p>In a perspective projection, shapes that are further from the camera appear
+  <p>En una proyección perspectiva, las formas que están más lejos de la cámara
 
-  smaller than shapes that are near the camera. This technique, called
+  aparecen más pequeñas que las que están cerca de la cámara. Esta técnica,
 
-  foreshortening, creates realistic 3D scenes. It’s applied by default in
+  llamada perspectiva, crea escenas 3D realistas. Se aplica por defecto en
 
-  WebGL mode.</p>
+  modo WebGL.</p>
 
-  <p><code>perspective()</code> changes the camera’s perspective by changing its
-  viewing
+  <p><code>perspective()</code> cambia la perspectiva de la cámara al cambiar su
+  campo de visión. El campo de visión de la cámara es un volumen de espacio que
 
-  frustum. The frustum is the volume of space that’s visible to the camera.
+  está visible desde la cámara. Su forma es una pirámide con su parte superior
 
-  Its shape is a pyramid with its top cut off. The camera is placed where
+  cortada. La cámara está donde debería estar la parte superior de la pirámide y
 
-  the top of the pyramid should be and views everything between the frustum’s
+  mira hacia todo lo que hay entre la parte superior (plano cercano) y la
 
-  top (near) plane and its bottom (far) plane.</p>
+  parte inferior (plano lejano) del volumen.</p>
 
-  <p>The first parameter, <code>fovy</code>, is the camera’s vertical field of
-  view. It’s
+  <p>El primer parámetro, <code>fovy</code>, es el campo de visión vertical de
+  la cámara. Es un ángulo que describe la altura o ancho de la visión que la
 
-  an angle that describes how tall or narrow a view the camera has. For
+  cámara tiene. Por ejemplo, llamar a <code>perspective(0.5)</code> establece el
+  campo de visión vertical de la cámara a 0.5 radianes. Por defecto,
 
-  example, calling <code>perspective(0.5)</code> sets the camera’s vertical
-  field of
+  <code>fovy</code> se calcula basado en la altura del boceto y la distancia
+  predeterminada de la cámara al origen, que es 800. La fórmula para el
+  <code>fovy</code> predeterminado es <code>2 * atan(altura / 2 / 800)</code>.</p>
 
-  view to 0.5 radians. By default, <code>fovy</code> is calculated based on the
-  sketch’s
+  <p>El segundo parámetro, <code>aspect</code>, es la relación de aspecto de la
+  cámara. Es un número que describe la relación entre el ancho del plano superior
 
-  height and the camera’s default z-coordinate, which is 800. The formula for
+  y su altura. Por ejemplo, llamar a <code>perspective(0.5, 1.5)</code> establece
+  el campo de visión de la cámara a 0.5 radianes y su relación de aspecto a 1.5, lo
 
-  the default <code>fovy</code> is <code>2 * atan(height / 2 / 800)</code>.</p>
+  que haría que las formas aparezcan más estrechas en un lienzo cuadrado. Por
 
-  <p>The second parameter, <code>aspect</code>, is the camera’s aspect ratio.
-  It’s a number
+  defecto, aspecto está establecido a <code>ancho / altura</code>.</p>
 
-  that describes the ratio of the top plane’s width to its height. For
+  <p>El tercer parámetro, <code>near</code>, es la distancia desde la cámara al
+  plano cercano. Por ejemplo, llamar a <code>perspective(0.5, 1.5, 100)</code>
+  establece el campo de visión de la cámara a 0.5 radianes, su relación de aspecto
+  a 1.5, y coloca el plano cercano a 100 pixeles de la cámara. Cualquier forma
 
-  example, calling <code>perspective(0.5, 1.5)</code> sets the camera’s field of
-  view to
+  dibujada a menos de 100 pixeles de la cámara no será visible. Por defecto,
 
-  0.5 radians and aspect ratio to 1.5, which would make shapes appear thinner
+  near está establecido a <code>0.1 * 800</code>, lo que es un 1/10 de la
+  distancia predeterminada entre la cámara y el origen.</p>
 
-  on a square canvas. By default, aspect is set to <code>width /
-  height</code>.</p>
+  <p>El cuarto parámetro, <code>far</code>, es la distancia desde la cámara al
+  plano lejano. Por ejemplo, llamar a <code>perspective(0.5, 1.5, 100,
+  10000)</code> establece el campo de visión de la cámara a 0.5 radianes, su
+  relación de aspecto a 1.5, coloca el plano cercano a 100 pixeles de la cámara
+  y el plano lejano a 10000 pixeles de la cámara. Cualquier forma dibujada más
 
-  <p>The third parameter, <code>near</code>, is the distance from the camera to
-  the near
+  de 10000 pixeles de la cámara no será visible. Por defecto, far está
+  establecido a <code>10 * 800</code>, lo que es 10 veces la distancia
+  predeterminada entre la cámara y el origen.</p>
 
-  plane. For example, calling <code>perspective(0.5, 1.5, 100)</code> sets the
-  camera’s
-
-  field of view to 0.5 radians, its aspect ratio to 1.5, and places the near
-
-  plane 100 pixels from the camera. Any shapes drawn less than 100 pixels
-
-  from the camera won’t be visible. By default, near is set to <code>0.1 *
-  800</code>,
-
-  which is 1/10th the default distance between the camera and the origin.</p>
-
-  <p>The fourth parameter, <code>far</code>, is the distance from the camera to
-  the far
-
-  plane. For example, calling <code>perspective(0.5, 1.5, 100, 10000)</code>
-  sets the
-
-  camera’s field of view to 0.5 radians, its aspect ratio to 1.5, places the
-
-  near plane 100 pixels from the camera, and places the far plane 10,000
-
-  pixels from the camera. Any shapes drawn more than 10,000 pixels from the
-
-  camera won’t be visible. By default, far is set to <code>10 * 800</code>,
-  which is 10
-
-  times the default distance between the camera and the origin.</p>
-
-  <p>Note: <code>perspective()</code> can only be used in WebGL mode.</p>
+  <p>Nota: <code>perspective()</code> solo puede ser usado en el modo WebGL.</p>
 line: 148
 isConstructor: false
 itemtype: method
@@ -162,26 +142,26 @@ class: p5
 params:
   - name: fovy
     description: |
-      <p>camera frustum vertical field of view. Defaults to
-                                <code>2 * atan(height / 2 / 800)</code>.</p>
+      <p>Campo de visión vertical del cono de visión de la cámara. Toma como
+      valor por defecto <code>2 * atan(height / 2 / 800)</code>.</p>
     type: Number
     optional: true
   - name: aspect
     description: |
-      <p>camera frustum aspect ratio. Defaults to
-                                <code>width / height</code>.</p>
+      <p>Relación de aspecto del cono de visión de la cámara. Toma como valor
+      por defecto <code>width / height</code>.</p>
     type: Number
     optional: true
   - name: near
     description: |
-      <p>distance from the camera to the near clipping plane.
-                                Defaults to <code>0.1 * 800</code>.</p>
+      <p>Distancia desde la cámara al plano de recorte cercano. Toma como valor
+      por defecto <code>0.1 * 800</code>.</p>
     type: Number
     optional: true
   - name: far
     description: |
-      <p>distance from the camera to the far clipping plane.
-                                Defaults to <code>10 * 800</code>.</p>
+      <p>Distancia desde la cámara al plano de recorte lejano. Toma como valor
+      por defecto <code>10 * 800</code>.</p>
     type: Number
     optional: true
 chainable: true
