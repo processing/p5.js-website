@@ -20,6 +20,7 @@ import { Icon } from "../Icon";
  *   lazyLoad?: boolean;
  *   TODO: refactor this prop behavior
  *   allowSideBySide?: boolean
+ *   fullWidth?: boolean
  * }
  */
 export const CodeEmbed = (props) => {
@@ -65,7 +66,7 @@ export const CodeEmbed = (props) => {
 
   return (
     <div
-      className={`my-md flex w-full flex-col gap-md overflow-hidden ${props.allowSideBySide && "lg:flex-row"}`}
+      className={`my-md flex w-full flex-col gap-md overflow-hidden ${props.allowSideBySide && "lg:flex-row"} ${props.fullWidth && "full-width"}`}
     >
       {props.previewable ? (
         <div
