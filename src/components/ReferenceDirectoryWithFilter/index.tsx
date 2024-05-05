@@ -79,15 +79,16 @@ export const ReferenceDirectoryWithFilter = ({
         <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
           <a
             href={`/reference/${entry.data.path}`}
-            class="text-body-mono group hover:no-underline"
+            class="group hover:no-underline"
             aria-label={entry.data.title}
             aria-describedby={`${entry.data.title}-description`}
           >
             <span
-              class="group-hover:underline"
+              class="text-body-mono group-hover:underline"
               dangerouslySetInnerHTML={{ __html: entry.data.title }}
             />
             <p
+              class="mt-1 text-sm"
               id={`${entry.data.title}-description`}
             >{`${getOneLineDescription(entry.data.description)}`}</p>
           </a>
@@ -144,8 +145,8 @@ export const ReferenceDirectoryWithFilter = ({
 
   return (
     <>
-      <div class="border-b border-sidebar-type-color bg-accent-color px-lg pb-lg">
-        <div class="max-w-screen-md">
+      <div class="border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg">
+        <div class="max-w-[750px]">
           <input
             type="text"
             id="search"
@@ -158,7 +159,7 @@ export const ReferenceDirectoryWithFilter = ({
           />
         </div>
       </div>
-      <div class="mx-lg">{renderCategoryData()}</div>
+      <div class="mx-5 md:mx-lg">{renderCategoryData()}</div>
     </>
   );
 };

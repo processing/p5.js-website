@@ -68,25 +68,29 @@ export const CodeEmbed = (props) => {
       className={`my-md flex w-full flex-col gap-md overflow-hidden ${props.allowSideBySide && "lg:flex-row"}`}
     >
       {props.previewable ? (
-        <div className="ml-0 flex w-fit lg:flex-col">
-          <CodeFrame
-            jsCode={previewCodeString}
-            width={props.previewWidth}
-            height={props.previewHeight}
-            base={props.base}
-            frameRef={codeFrameRef}
-            lazyLoad={props.lazyLoad}
-          />
-          <div className="gap-xs lg:flex">
+        <div
+          className={`ml-0 flex w-fit gap-[20px] ${props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
+        >
+          <div>
+            <CodeFrame
+              jsCode={previewCodeString}
+              width={props.previewWidth}
+              height={props.previewHeight}
+              base={props.base}
+              frameRef={codeFrameRef}
+              lazyLoad={props.lazyLoad}
+            />
+          </div>
+          <div className="flex gap-2.5 md:flex-row lg:flex-col">
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm"
+              className="bg-bg-gray-40"
               onClick={updateOrReRun}
               ariaLabel="Run sketch"
             >
               <Icon kind="play" />
             </CircleButton>
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm "
+              className="bg-bg-gray-40"
               onClick={() => {
                 setPreviewCodeString("");
               }}
