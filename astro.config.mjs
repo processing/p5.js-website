@@ -93,4 +93,9 @@ export default defineConfig({
       ignored: ["src/scripts/*"],
     },
   },
+  markdown: {
+    shikiConfig: {
+      theme: 'github-light',
+    },
+  },
 });
