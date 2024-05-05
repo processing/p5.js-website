@@ -38,6 +38,8 @@ export type OpenProcessingCurationResponse = Array<{
 export const getCurationSketches = async (
   limit?: number,
 ): Promise<OpenProcessingCurationResponse> => {
+  // @ts-ignore
+  return [{ visualID: 'abcd', title: 'Test', description: 'test' }];
   const limitParam = limit ? `limit=${limit}` : "";
   const response = await fetch(
     `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
