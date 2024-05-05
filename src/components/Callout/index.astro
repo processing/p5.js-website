@@ -1,0 +1,20 @@
+---
+import { getCurrentLocale, getUiTranslator } from "../../i18n/utils";
+
+/*
+ * A component that points out something to the reader, such as a call to
+ * try out an idea oneself.
+ */
+interface Props {
+  title?: string
+}
+
+const { props } = Astro;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+---
+
+<div className={`callout ${props.title ? 'callout-note' : ''}`}>
+  <h5 class="">{t('calloutTitles', props.title || "Try this!")}</h5>
+  <slot />
+</div>
