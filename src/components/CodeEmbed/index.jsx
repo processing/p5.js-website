@@ -102,7 +102,7 @@ export const CodeEmbed = (props) => {
           </div>
         </div>
       ) : null}
-      <div className="relative w-full">
+      <div className="relative w-full code-editor-container">
         <CodeMirror
           value={codeString}
           theme="light"
