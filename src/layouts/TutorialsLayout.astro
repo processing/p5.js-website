@@ -2,11 +2,11 @@
 import { type CollectionEntry } from "astro:content";
 import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
-import Image from "@components/Image/index.astro";
 import { setJumpToState, type JumpToLink } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { categories } from "../content/tutorials/config";
 import LinkButton from "@components/LinkButton/index.astro";
+import GridItemTutorial from "@components/GridItem/Tutorial.astro";
 
 type TutorialEntry = CollectionEntry<"tutorials">;
 
@@ -27,16 +27,19 @@ const sections = categories.map((slug) => {
   return { slug, name, sectionEntries };
 });
 
-const pageJumpToLinks = categories.map((category) => ({
-  url: `#${category}`,
-  label: t("tutorialCategories", category),
-})).concat([{
-  url: '#education-resources',
-  label: t("tutorialsPage", "education-resources"),
-}]);
+const pageJumpToLinks = categories
+  .map((category) => ({
+    url: `#${category}`,
+    label: t("tutorialCategories", category),
+  }))
+  .concat([
+    {
+      url: "#education-resources",
+      label: t("tutorialsPage", "education-resources"),
+    },
+  ]);
 
 setJumpToState({
-  heading: t("Tutorials") as string,
   links: pageJumpToLinks as JumpToLink[],
 });
 ---
@@ -53,31 +56,18 @@ setJumpToState({
         <ul class="content-grid pb-4xl mb-lg border-b border-sidebar-type-color last:border-0 ">
           {sectionEntries.map((entry: TutorialEntry, i: number) => (
             <li class="col-span-3">
-              <a
-                href={`/tutorials/${entry.slug}`}
-                class="group hover:no-underline"
-              >
-                {entry.data.featuredImageAlt && entry.data.featuredImage && (
-                  <Image
-                    src={entry.data.featuredImage}
-                    alt={entry.data.featuredImageAlt}
-                    width="440"
-                    loading={i <= 3 ? "eager" : "lazy"}
-                  />
-                )}
-                <p class="mt-sm text-body group-hover:underline">
-                  {entry.data.title}
-                </p>
-                <p class="text-body-caption mt-xxs">{entry.data.description}</p>
-              </a>
+              <GridItemTutorial item={entry} lazyLoad={i > 3} />
             </li>
           ))}
         </ul>
       </>
     ))
   }
-  <section class="mt-md mb-xl">
-    <h2 class="mb-lg">{t("tutorialsPage", "education-resources")}<a id="education-resources"></a></h2>
+  <section class="mt-md">
+    <h2 class="mb-lg">
+      {t("tutorialsPage", "education-resources")}<a id="education-resources"
+      ></a>
+    </h2>
     <p>{t("tutorialsPage", "education-resources-snippet")}</p>
     <LinkButton url="/education-resources" variant="link" class="mt-lg">
       {t("tutorialsPage", "view-education-resources")}

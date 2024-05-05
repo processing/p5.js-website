@@ -8,6 +8,7 @@ import {
   separateReferenceExamples,
   normalizeReferenceRoute,
   getRelatedEntriesinCollection,
+  generateJumpToState,
 } from "@pages/_utils";
 import BaseLayout from "./BaseLayout.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
@@ -28,7 +29,16 @@ const description = escapeCodeTagsContent(entry.data.description);
 const t = await getUiTranslator(currentLocale);
 const title = getRefEntryTitleConcatWithParen(entry);
 
-const jumpToLinks = relatedEntries.map((relatedEntry: any) => {
+const jumpToState = await generateJumpToState(
+  "reference",
+  entry.id,
+  "Reference",
+  t,
+  currentLocale
+);
+
+// make related entry links
+const relatedEntriesLinks = relatedEntries.map((relatedEntry: any) => {
   return {
     label: getRefEntryTitleConcatWithParen(relatedEntry),
     url: `/reference/${normalizeReferenceRoute(relatedEntry.id)}`,
@@ -36,17 +46,13 @@ const jumpToLinks = relatedEntries.map((relatedEntry: any) => {
     current: relatedEntry.id === entry.id,
   };
 });
-
 // Add link for submodule itself
-jumpToLinks.unshift({
+relatedEntriesLinks.unshift({
   label: entry.data.submodule,
   url: `/reference/#${entry.data.submodule}`,
 });
-
-const jumpToState = {
-  heading: t("Reference") as string,
-  links: jumpToLinks,
-};
+// Put related links at top of the list
+jumpToState.links?.unshift(...relatedEntriesLinks);
 
 setJumpToState(jumpToState);
 
@@ -76,9 +82,12 @@ const relatedReferences = [
   topic="reference"
   className="reference"
 >
-  <div class="content-grid mt-0 max-w-screen-md">
+  <div class="content-grid mt-0 max-w-[750px]">
     <div class="col-span-9 xl:min-w-[1000px]">
-      <div set:html={description} class="[&_a]:text-type-magenta mb-xl" />
+      <div
+        set:html={description}
+        class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl"
+      />
       {
         examples && (
           <div class="mb-xl">
@@ -91,8 +100,8 @@ const relatedReferences = [
                   previewable
                   editable
                   lazyLoad={i > 0}
-                  previewHeight="120px"
-                  previewWidth="120px"
+                  previewHeight="100px"
+                  previewWidth="100px"
                   allowSideBySide={true}
                 />
               );
