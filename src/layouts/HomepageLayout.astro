@@ -14,6 +14,7 @@ interface Props {
 }
 
 const {
+  config,
   config: { data },
 } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -35,35 +36,7 @@ setJumpToState(null);
   locale={currentLocale}
 />
 
-<BaseLayout title="" variant="homepage">
-  <div class="lg:mt-sm mb-xl">
-    <div
-      class="grid grid-cols-3 lg:grid-cols-4 gap-md md:mb-lg lg:mb-xl overflow-hidden"
-    >
-      <p class="col-span-2 lg:col-span-3 mt-0 text-md md:text-xl lg:text-3xl">
-        {data.heroText}
-      </p>
-      <!-- No alt text because this image is purely ornamental and aria-hidden -->
-      <div
-        class="col-span-1 motion-safe:animate-spin-slow text-logo-color h-fit lg:min-w-28"
-      >
-        <Icon kind="asterisk-thick" />
-      </div>
-    </div>
-    <p class="text-body-caption mb-sm">{data.heroImageCaption}</p>
-    <!-- This lets us swap image url based on screen size -->
-    <picture>
-      <!-- have to hard code these because css, see variables.scss for source of truth -->
-      <source media="(max-width: 767px)" srcset={data.heroImageMobile.src} />
-      <source media="(min-width: 768px)" srcset={data.heroImageDesktop.src} />
-      <img
-        class="full-bleed-image"
-        src={data.heroImageMobile.src}
-        alt={data.heroImageAltText}
-      />
-    </picture>
-  </div>
-
+<BaseLayout title="" variant="homepage" homepageConfig={config}>
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-lg gap-y-xl mb-xl">
     <div
       class="col-span-2 lg:col-span-3 order-1 grid grid-cols-subgrid content-start"
@@ -134,20 +107,6 @@ setJumpToState(null);
     @apply mb-sm mt-0;
     @media (min-width: $breakpoint-tablet) {
       font-size: 3.5rem;
-    }
-  }
-  .full-bleed-image {
-    left: -1.25rem;
-    width: calc(100% + 1.25rem * 2);
-    max-width: calc(100% + 1.25rem * 2);
-    height: 402px; // extra 2px for border
-    position: relative;
-    object-fit: cover;
-    @apply border-b border-t border-type-color;
-    @media (min-width: $breakpoint-tablet) {
-      left: calc(-1 * var(--spacing-lg));
-      width: calc(100% + var(--spacing-lg) * 2);
-      max-width: calc(100% + var(--spacing-lg) * 2);
     }
   }
 </style>
