@@ -8,6 +8,7 @@ import HomePageHeader from "@/src/components/PageHeader/HomePage.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
 import "@styles/base.scss";
+import type { CollectionEntry } from "astro:content";
 
 interface Props {
   title: string;
@@ -16,6 +17,8 @@ interface Props {
   variant?: "root" | "item" | "search" | "homepage";
   topic?: PageTopic;
   mainContentParentClass?: string;
+  /* Only needed for the homepage */
+  homepageConfig?: CollectionEntry<"homepage">;
 }
 
 const {
@@ -24,6 +27,7 @@ const {
   className = "",
   variant = "root",
   mainContentParentClass = "mx-5 md:mx-lg pb-4xl mt-md",
+  homepageConfig,
 } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -41,7 +45,10 @@ const headerTopic = topic
   : { name: t(capitalize(fallbackTopic)) as string, url: `/${fallbackTopic}` };
 ---
 
-<html class={`${title.toLowerCase()} ${className}`} lang={currentLocale}>
+<html
+  class={`${title.toLowerCase()} ${className} scroll-smooth`}
+  lang={currentLocale}
+>
   <head>
     <script is:inline>
       // Get any theme settings and apply before load
@@ -65,7 +72,7 @@ const headerTopic = topic
     <div class="top-layout-grid">
       <Nav />
       <Settings hideSearch={variant === "search"} />
-      <header>
+      <header class={homepageConfig && "h-[100vh]"}>
         {
           variant === "root" ? (
             <RootPageHeader
@@ -79,7 +86,9 @@ const headerTopic = topic
               topic={headerTopic}
             />
           ) : (
-            variant === "homepage" && <HomePageHeader />
+            variant === "homepage" && (
+              <HomePageHeader config={homepageConfig!} />
+            )
           )
         }
       </header>
