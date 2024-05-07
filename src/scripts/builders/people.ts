@@ -1,5 +1,10 @@
 import path from "path";
-import { cloneLibraryRepo, repoRootPath, writeFile } from "../utils";
+import {
+  cloneLibraryRepo,
+  fileExistsAt,
+  repoRootPath,
+  writeFile,
+} from "../utils";
 import { readFile } from "fs/promises";
 import yaml from "js-yaml";
 
@@ -33,10 +38,19 @@ const run = async () => {
 
   await Promise.all(
     peopleObject.map(async (p) => {
-      const slug = p.name.toLowerCase().replaceAll(/[ ._]/g, "-");
+      const slug = p.name.toLowerCase().replaceAll(/[ ._<>*%]/g, "-");
+      const filePath = path.join(outputDirectory, `${slug}.yaml`);
+
+      // never overwrite an existing file
+      if (await fileExistsAt(filePath)) {
+        console.log(
+          `Entry for ${p.name} already exists (${filePath}). Skipping~`,
+        );
+        return;
+      }
 
       return await writeFile(
-        path.join(outputDirectory, `${slug}.yaml`),
+        filePath,
         yaml.dump({
           name: p.name,
           url: p.profile,
