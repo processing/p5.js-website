@@ -24,7 +24,6 @@ const SearchResults = ({
   uiTranslations,
 }: SearchResultProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [placeholder, setPlaceholder] = useState(searchTerm);
   const [currentFilter, setCurrentFilter] = useState("");
 
   const allUniqueCategoriesForResults = useMemo(() => {
@@ -47,11 +46,24 @@ const SearchResults = ({
     }
   };
 
-  useEffect(() => {
-    setPlaceholder(searchTerm);
-  }, [searchTerm]);
-
   const renderFilterByOptions = () => {
+    if (results.length === 0) {
+      return null;
+    }
+
+    const uiTranslationKey = (category: string) => {
+      return (
+        category
+          // words in a category slugs are separated by dashes
+          .split("-")
+          .map((word) => {
+            // Capitalize the first letter of the word
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          })
+          .join(" ")
+      );
+    };
+
     return (
       <div className="flex w-fit py-lg">
         <p className="mt-0 w-fit text-nowrap">Filter by</p>
@@ -59,18 +71,19 @@ const SearchResults = ({
           {allUniqueCategoriesForResults.map((category) => (
             <li
               key={category}
-              className={`${currentFilter === category ? "bg-sidebar-type-color text-sidebar-bg-color" : "bg-sidebar-bg-color text-sidebar-type-color"} h-[25px] rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-sidebar-bg-color md:h-[30px]`}
+              className={`${currentFilter === category ? "bg-sidebar-type-color text-bg-color" : "bg-bg-color text-sidebar-type-color"} h-[25px] rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-bg-color md:h-[30px]`}
             >
               <button
                 value={category}
                 className="capitalize"
                 onClick={() => toggleFilter(category)}
               >
-                {
-                  uiTranslations[
-                    category.slice(0, 1).toUpperCase() + category.slice(1)
-                  ]
-                }
+                <div class="flex flex-nowrap gap-xs">
+                  {uiTranslations[uiTranslationKey(category)]}
+                  {currentFilter === category && (
+                    <Icon kind="close" className="h-4 w-4 place-self-center" />
+                  )}
+                </div>
               </button>
             </li>
           ))}
@@ -80,7 +93,6 @@ const SearchResults = ({
   };
 
   const clearInput = () => {
-    setPlaceholder("");
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -90,20 +102,21 @@ const SearchResults = ({
     return (
       <search
         role="search"
-        class="relative flex h-[64px] w-full items-center rounded-[50px] border border-sidebar-type-color bg-sidebar-bg-color"
+        class="bg-body-color relative flex h-[64px] w-full items-center rounded-[50px] border border-sidebar-type-color"
       >
         <input
           id="search-term"
           type="search"
           ref={inputRef}
-          placeholder={placeholder}
+          value={searchTerm}
+          placeholder={uiTranslations["Search"]}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
               onSearchChange(e);
             }
           }}
-          class="h-fit w-full appearance-none bg-transparent px-md  text-4xl placeholder-sidebar-type-color"
+          class="h-fit w-full appearance-none bg-transparent px-md text-4xl placeholder-sidebar-type-color"
           aria-label="Search through site content"
           required
         />
@@ -118,43 +131,48 @@ const SearchResults = ({
     );
   };
 
-  if (results.length === 0) {
+  const renderResults = () => {
+    if (results.length === 0) {
+      return <p class="text-body-large pb-xs">No results found</p>;
+    }
     return (
-      <div class="py-2xl md:py-3xl">
-        <p class="text-body-large pb-xs">No results found</p>
-      </div>
+      <>
+        {uniqueCategories.map((category) => (
+          <div key={category}>
+            <hr />
+            <h2>
+              {
+                uiTranslations[
+                  category.slice(0, 1).toUpperCase() + category.slice(1)
+                ]
+              }
+            </h2>
+            <ul className="mb-4xl mt-lg">
+              {results
+                .filter((result) => result.category === category)
+                .map((result) => (
+                  <li key={result.id} className="text-body-large my-sm">
+                    <a href={result.relativeUrl}>{result.title}</a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+      </>
     );
-  }
+  };
 
   return (
     <div className="py-2xl md:py-3xl">
-      <p className="pb-xs">{results.length} results found for</p>
-      {renderBigSearchForm()}
+      <div class="sticky top-0 bg-bg-color">
+        <p className="mt-0 pb-xs pt-md">{results.length} results found for</p>
+        {renderBigSearchForm()}
+      </div>
       <div className="no-scrollbar w-full overflow-x-scroll">
         {renderFilterByOptions()}
       </div>
-      <hr />
-      {uniqueCategories.map((category) => (
-        <div key={category}>
-          <h2>
-            {
-              uiTranslations[
-                category.slice(0, 1).toUpperCase() + category.slice(1)
-              ]
-            }
-          </h2>
-          <ul className="mb-4xl mt-lg">
-            {results
-              .filter((result) => result.category === category)
-              .map((result) => (
-                <li key={result.id} className="text-body-large my-sm">
-                  <a href={result.relativeUrl}>{result.title}</a>
-                </li>
-              ))}
-          </ul>
-          <hr />
-        </div>
-      ))}
+
+      {renderResults()}
     </div>
   );
 };
