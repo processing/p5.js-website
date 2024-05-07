@@ -14,7 +14,7 @@ export const peopleCollection = defineCollection({
         // Name of the person
         name: z.string(),
         // Url to their personal website
-        url: z.string().url().optional(),
+        url: z.string().optional(),
         image: image().optional(),
         imageAlt: z.string().optional(),
         blurb: z.string().optional(),
