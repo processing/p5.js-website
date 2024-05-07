@@ -28,6 +28,7 @@ type ReferenceDirectoryWithFilterProps = {
       entries: ReferenceDirectoryEntry[];
     }[];
   }[];
+  uiTranslations: { [key: string]: string };
 };
 
 /**
@@ -47,6 +48,7 @@ const getOneLineDescription = (description: string): string => {
 
 export const ReferenceDirectoryWithFilter = ({
   categoryData,
+  uiTranslations,
 }: ReferenceDirectoryWithFilterProps) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -126,8 +128,11 @@ export const ReferenceDirectoryWithFilter = ({
     );
   };
 
-  const renderCategoryData = () =>
-    filteredEntries.map((category) => (
+  const renderCategoryData = () => {
+    if (filteredEntries.length === 0) {
+      return <div class="mt-lg">{uiTranslations["No Results"]}</div>;
+    }
+    return filteredEntries.map((category) => (
       <div
         class="my-md border-b border-type-color pb-2xl last:!border-0"
         key={category.name}
@@ -144,6 +149,7 @@ export const ReferenceDirectoryWithFilter = ({
         ))}
       </div>
     ));
+  };
 
   const clearInput = () => {
     if (inputRef.current) {
