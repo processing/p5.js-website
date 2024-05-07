@@ -193,6 +193,13 @@ export const ReferenceDirectoryWithFilter = ({
     }
   };
 
+  const clearInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+      setSearchKeyword("");
+    }
+  };
+
   return (
     <div>
       <div class="h-0 overflow-visible">
