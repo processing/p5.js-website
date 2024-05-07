@@ -144,13 +144,13 @@ export const ReferenceDirectoryWithFilter = ({
     ));
 
   return (
-    <>
-      <div class="border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg">
-        <div class="max-w-[750px]">
+    <div>
+      <div class="h-0 overflow-visible">
+        <div class="relative -top-[75px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg">
           <input
             type="text"
             id="search"
-            class="text-body w-full border-b border-accent-type-color bg-transparent py-xs placeholder:text-accent-type-color"
+            class="text-body w-full max-w-[750px] border-b border-accent-type-color bg-transparent py-xs placeholder:text-accent-type-color"
             placeholder="Filter by keyword"
             onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
               const target = e.target as HTMLInputElement;
@@ -159,7 +159,9 @@ export const ReferenceDirectoryWithFilter = ({
           />
         </div>
       </div>
-      <div class="mx-5 md:mx-lg">{renderCategoryData()}</div>
-    </>
+      <div class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
+        {renderCategoryData()}
+      </div>
+    </div>
   );
 };
