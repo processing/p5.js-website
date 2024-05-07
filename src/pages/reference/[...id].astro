@@ -3,6 +3,7 @@ import ReferenceItemLayout from "@/src/layouts/ReferenceItemLayout.astro";
 import {
   getCollectionInDefaultLocale,
   normalizeReferenceRoute,
+  getRelatedEntriesFromCollection,
 } from "@pages/_utils";
 
 export async function getStaticPaths() {
@@ -14,14 +15,22 @@ export async function getStaticPaths() {
     },
     props: {
       entry,
-      relatedEntries: referenceEntries.filter((relatedEntry) => {
+      moduleEntries: referenceEntries.filter((relatedEntry) => {
         return relatedEntry.data.submodule === entry.data.submodule;
       }),
+      relatedEntries: getRelatedEntriesFromCollection<"reference">(
+        referenceEntries,
+        entry.data.relatedContent?.references
+      ),
     },
   }));
 }
 
-const { entry, relatedEntries } = Astro.props;
+const { entry, moduleEntries, relatedEntries } = Astro.props;
 ---
 
-<ReferenceItemLayout entry={entry} relatedEntries={relatedEntries} />
+<ReferenceItemLayout
+  entry={entry}
+  moduleEntries={moduleEntries}
+  relatedEntries={relatedEntries}
+/>

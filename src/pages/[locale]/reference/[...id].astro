@@ -3,6 +3,7 @@ import ReferenceItemLayout from "@/src/layouts/ReferenceItemLayout.astro";
 import { nonDefaultSupportedLocales } from "@i18n/const";
 import {
   getCollectionInLocaleWithFallbacks,
+  getRelatedEntriesFromCollection,
   normalizeReferenceRoute,
 } from "@pages/_utils";
 
@@ -20,9 +21,13 @@ export async function getStaticPaths() {
         },
         props: {
           entry,
-          relatedEntries: localeEntries.filter((relatedEntry) => {
+          moduleEntries: localeEntries.filter((relatedEntry) => {
             return relatedEntry.data.submodule === entry.data.submodule;
           }),
+          relatedEntries: getRelatedEntriesFromCollection<"reference">(
+            localeEntries,
+            entry.data.relatedContent?.references
+          ),
         },
       }));
     })
@@ -31,7 +36,11 @@ export async function getStaticPaths() {
   return entries.flat();
 }
 
-const { entry, relatedEntries } = Astro.props;
+const { entry, moduleEntries, relatedEntries } = Astro.props;
 ---
 
-<ReferenceItemLayout entry={entry} relatedEntries={relatedEntries} />
+<ReferenceItemLayout
+  entry={entry}
+  moduleEntries={moduleEntries}
+  relatedEntries={relatedEntries}
+/>

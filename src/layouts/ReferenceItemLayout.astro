@@ -17,12 +17,19 @@ import type {
   ReferenceOverload,
   ReferenceParam,
 } from "@/types/parsers.interface";
-import { setJumpToState } from "../globals/state";
+import { setJumpToState, type JumpToLink } from "../globals/state";
+import type { CollectionEntry } from "astro:content";
 
-const { entry, relatedEntries } = Astro.props;
+interface Props {
+  entry: CollectionEntry<"reference">;
+  moduleEntries: CollectionEntry<"reference">[];
+  relatedEntries: CollectionEntry<"reference">[];
+}
+
+const { entry, moduleEntries, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
-const examples = separateReferenceExamples(entry.data.example)
+const examples = separateReferenceExamples(entry.data.example ?? [])
   // Remove empty lines at the beginning and end of the examples
   ?.map((example) => example.trim());
 const description = escapeCodeTagsContent(entry.data.description);
@@ -38,7 +45,7 @@ const jumpToState = await generateJumpToState(
 );
 
 // make related entry links
-const relatedEntriesLinks = relatedEntries.map((relatedEntry: any) => {
+const moduleEntriesLinks: JumpToLink[] = moduleEntries.map((relatedEntry) => {
   return {
     label: getRefEntryTitleConcatWithParen(relatedEntry),
     url: `/reference/${normalizeReferenceRoute(relatedEntry.id)}`,
@@ -47,29 +54,20 @@ const relatedEntriesLinks = relatedEntries.map((relatedEntry: any) => {
   };
 });
 // Add link for submodule itself
-relatedEntriesLinks.unshift({
-  label: entry.data.submodule,
+moduleEntriesLinks.unshift({
+  label: entry.data.submodule!,
   url: `/reference/#${entry.data.submodule}`,
 });
 // Put related links at top of the list
-jumpToState.links?.unshift(...relatedEntriesLinks);
+jumpToState.links?.unshift(...moduleEntriesLinks);
 
 setJumpToState(jumpToState);
 
-// get whatever related entries might be specified in the collection entry data
-const relatedReferencesFromEntryData =
-  entry.data.relatedContent?.references !== undefined
-    ? await getRelatedEntriesinCollection(
-        "reference",
-        currentLocale,
-        entry.data.relatedContent.references.map((r: any) => r.slug)
-      )
-    : [];
-
 // then make a list of four, backfilled with entries from the jumpTo links
-const relatedReferences = [
-  ...relatedReferencesFromEntryData,
+// @ts-expect-error this list combination confuses the compiler but its totally safe
+const relatedReferences: CollectionEntry<"reference">[] = [
   ...relatedEntries,
+  ...moduleEntries,
 ].slice(0, 4);
 ---
 
