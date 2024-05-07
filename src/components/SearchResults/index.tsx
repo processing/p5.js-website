@@ -38,6 +38,19 @@ const SearchResults = ({
     return allUniqueCategoriesForResults;
   }, [currentFilter, allUniqueCategoriesForResults]);
 
+  const uiTranslationKey = (category: string) => {
+    return (
+      category
+        // words in a category slugs are separated by dashes
+        .split("-")
+        .map((word) => {
+          // Capitalize the first letter of the word
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(" ")
+    );
+  };
+
   const toggleFilter = (category: string) => {
     if (currentFilter === category) {
       setCurrentFilter("");
@@ -50,19 +63,6 @@ const SearchResults = ({
     if (results.length === 0) {
       return null;
     }
-
-    const uiTranslationKey = (category: string) => {
-      return (
-        category
-          // words in a category slugs are separated by dashes
-          .split("-")
-          .map((word) => {
-            // Capitalize the first letter of the word
-            return word.charAt(0).toUpperCase() + word.slice(1);
-          })
-          .join(" ")
-      );
-    };
 
     return (
       <div className="flex w-fit py-lg">
@@ -125,7 +125,7 @@ const SearchResults = ({
           class="absolute right-0 top-0 px-[22px] py-[13px]"
           onClick={clearInput}
         >
-          <Icon kind="close" />
+          <Icon kind="close-lg" />
         </button>
       </search>
     );
@@ -133,20 +133,16 @@ const SearchResults = ({
 
   const renderResults = () => {
     if (results.length === 0) {
-      return <p class="text-body-large pb-xs">No results found</p>;
+      return (
+        <p class="text-body-large pb-xs">{uiTranslations["No Results"]}</p>
+      );
     }
     return (
       <>
         {uniqueCategories.map((category) => (
           <div key={category}>
             <hr />
-            <h2>
-              {
-                uiTranslations[
-                  category.slice(0, 1).toUpperCase() + category.slice(1)
-                ]
-              }
-            </h2>
+            <h2>{uiTranslations[uiTranslationKey(category)]}</h2>
             <ul className="mb-4xl mt-lg">
               {results
                 .filter((result) => result.category === category)

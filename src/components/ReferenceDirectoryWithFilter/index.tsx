@@ -1,6 +1,7 @@
 import type { ReferenceDocContentItem } from "@/src/content/types";
-import { useMemo, useState } from "preact/hooks";
+import { useMemo, useRef, useState } from "preact/hooks";
 import type { JSX } from "preact";
+import { Icon } from "../Icon";
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -27,6 +28,7 @@ type ReferenceDirectoryWithFilterProps = {
       entries: ReferenceDirectoryEntry[];
     }[];
   }[];
+  uiTranslations: { [key: string]: string };
 };
 
 /**
@@ -46,8 +48,10 @@ const getOneLineDescription = (description: string): string => {
 
 export const ReferenceDirectoryWithFilter = ({
   categoryData,
+  uiTranslations,
 }: ReferenceDirectoryWithFilterProps) => {
   const [searchKeyword, setSearchKeyword] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const filteredEntries = useMemo(() => {
     if (!searchKeyword) return categoryData;
@@ -124,8 +128,11 @@ export const ReferenceDirectoryWithFilter = ({
     );
   };
 
-  const renderCategoryData = () =>
-    filteredEntries.map((category) => (
+  const renderCategoryData = () => {
+    if (filteredEntries.length === 0) {
+      return <div class="mt-lg">{uiTranslations["No Results"]}</div>;
+    }
+    return filteredEntries.map((category) => (
       <div
         class="my-md border-b border-type-color pb-2xl last:!border-0"
         key={category.name}
@@ -142,21 +149,37 @@ export const ReferenceDirectoryWithFilter = ({
         ))}
       </div>
     ));
+  };
+
+  const clearInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+      setSearchKeyword("");
+    }
+  };
 
   return (
     <div>
       <div class="h-0 overflow-visible">
         <div class="relative -top-[75px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg">
-          <input
-            type="text"
-            id="search"
-            class="text-body w-full max-w-[750px] border-b border-accent-type-color bg-transparent py-xs placeholder:text-accent-type-color"
-            placeholder="Filter by keyword"
-            onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-              const target = e.target as HTMLInputElement;
-              setSearchKeyword(target?.value);
-            }}
-          />
+          <div class="text-body flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
+            <input
+              type="text"
+              id="search"
+              ref={inputRef}
+              class="w-full  bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color"
+              placeholder="Filter by keyword"
+              onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+                const target = e.target as HTMLInputElement;
+                setSearchKeyword(target?.value);
+              }}
+            />
+            {searchKeyword.length > 0 && (
+              <button type="reset" class="" onClick={clearInput}>
+                <Icon kind="close" className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
       <div class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
