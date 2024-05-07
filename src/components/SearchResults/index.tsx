@@ -125,7 +125,7 @@ const SearchResults = ({
           class="absolute right-0 top-0 px-[22px] py-[13px]"
           onClick={clearInput}
         >
-          <Icon kind="close" />
+          <Icon kind="close-lg" />
         </button>
       </search>
     );

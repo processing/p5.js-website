@@ -15,6 +15,7 @@ export type IconKind =
   | "option-unselected"
   | "asterisk-thick"
   | "close"
+  | "close-lg"
   | "download"
   | "heart"
   | "hamburger";
@@ -319,6 +320,24 @@ export const Icon = (props: IconProps) => {
         </svg>
       );
     case "close":
+      return (
+        <svg
+          width="17"
+          height="16"
+          viewBox="0 0 17 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M1.70707 0.221642C1.51181 0.0263798 1.19522 0.0263798 0.999962 0.221642C0.8047 0.416904 0.8047 0.733487 0.999962 0.928749L8.07121 8L1.00033 15.0709C0.805068 15.2661 0.805067 15.5827 1.00033 15.778C1.19559 15.9733 1.51217 15.9733 1.70744 15.778L8.77832 8.70711L15.8492 15.778C16.0445 15.9733 16.361 15.9733 16.5563 15.778C16.7516 15.5827 16.7516 15.2661 16.5563 15.0709L9.48543 8L16.5567 0.928749C16.7519 0.733487 16.7519 0.416904 16.5567 0.221642C16.3614 0.0263798 16.0448 0.0263798 15.8496 0.221642L8.77832 7.29289L1.70707 0.221642Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case "close-lg":
       return (
         <svg
           width="34"
