@@ -38,7 +38,11 @@ const run = async () => {
 
   await Promise.all(
     peopleObject.map(async (p) => {
-      const slug = p.name.toLowerCase().replaceAll(/[ ._<>*%]/g, "-");
+      const slug = p.name
+        .toLowerCase()
+        .normalize("NFD")
+        .replaceAll(/[\u0300-\u036f]/g, "")
+        .replaceAll(/[ ._<>*%]/g, "-");
       const filePath = path.join(outputDirectory, `${slug}.yaml`);
 
       // never overwrite an existing file
