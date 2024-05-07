@@ -133,7 +133,9 @@ const SearchResults = ({
 
   const renderResults = () => {
     if (results.length === 0) {
-      return <p class="text-body-large pb-xs">No results found</p>;
+      return (
+        <p class="text-body-large pb-xs">{uiTranslations["No Results"]}</p>
+      );
     }
     return (
       <>
