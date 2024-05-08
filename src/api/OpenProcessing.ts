@@ -2,6 +2,7 @@
 // SEE https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#intro
 
 import type { AnyEntryMap, CollectionEntry } from "astro:content";
+import memoize from "lodash/memoize";
 
 const openProcessingEndpoint = "https://openprocessing.org/api/";
 /**
@@ -72,13 +73,13 @@ export type OpenProcessingSketchResponse = {
  * @param id
  * @returns
  */
-export const getSketch = async (
+export const getSketch = memoize(async (
   id: string,
 ): Promise<OpenProcessingSketchResponse> => {
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
   const payload = await response.json();
   return payload as OpenProcessingSketchResponse;
-};
+});
 
 export const makeSketchLinkUrl = (id: string) =>
   `https://openprocessing.org/sketch/${id}`;
@@ -100,7 +101,7 @@ export function isCurationResponse<C extends keyof AnyEntryMap>(
   return "visualID" in item;
 }
 
-export const getRandomCurationSketches = async (num = 4) => {
+export const getRandomCurationSketches = memoize(async (num = 4) => {
   const curationSketches = await getCurationSketches();
   const result: OpenProcessingCurationResponse = [];
   const usedIndices: Set<number> = new Set();
@@ -114,4 +115,4 @@ export const getRandomCurationSketches = async (num = 4) => {
   }
 
   return result;
-};
+});
