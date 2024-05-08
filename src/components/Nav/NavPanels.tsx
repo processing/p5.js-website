@@ -16,6 +16,11 @@ interface NavPanelsProps {
   jumpToState: JumpToState | null;
 }
 
+/**
+ * This component primarily exists to manage open/closed state between
+ * the two link menus, which behaves differently on mobile than on desktop.
+ *
+ */
 export const NavPanels = (props: NavPanelsProps) => {
   const {
     mainLinks,
@@ -62,13 +67,13 @@ export const NavPanels = (props: NavPanelsProps) => {
         mobileMenuLabel={mobileMenuLabel}
         hasJumpTo={jumpToState !== null}
         isOpen={isOpen.main}
-        toggleCallback={handleMainNavToggle}
+        handleToggle={handleMainNavToggle}
       />
       <JumpToLinks
         heading={jumpToState?.heading || jumpToLabel}
         links={jumpToState?.links}
         isOpen={isOpen.jump}
-        toggleCallback={handleJumpToToggle}
+        handleToggle={handleJumpToToggle}
       />
     </>
   );

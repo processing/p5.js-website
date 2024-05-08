@@ -5,7 +5,7 @@ import type { JumpToLink } from "@/src/globals/state";
 type JumpToLinksProps = {
   links?: JumpToLink[];
   heading: string;
-  toggleCallback: () => void;
+  handleToggle: () => void;
   isOpen: boolean;
 };
 
@@ -13,7 +13,7 @@ export const JumpToLinks = ({
   links,
   heading,
   isOpen,
-  toggleCallback,
+  handleToggle,
 }: JumpToLinksProps) => {
   if (!links || links?.length <= 0) return null;
 
@@ -21,7 +21,7 @@ export const JumpToLinks = ({
     <div class={`${styles.jumpto} ${isOpen && "open"}`}>
       <button
         class={styles.toggle}
-        onClick={toggleCallback}
+        onClick={handleToggle}
         aria-hidden="true"
         tabIndex={-1}
       >

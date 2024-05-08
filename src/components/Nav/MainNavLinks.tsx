@@ -12,7 +12,7 @@ type MainNavLinksProps = {
   mobileMenuLabel: string;
   isHomepage: boolean;
   hasJumpTo: boolean;
-  toggleCallback: () => void;
+  handleToggle: () => void;
   isOpen: boolean;
 };
 
@@ -22,7 +22,7 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
-  toggleCallback,
+  handleToggle,
   isOpen,
   hasJumpTo,
 }: MainNavLinksProps) => {
@@ -43,7 +43,7 @@ export const MainNavLinks = ({
       </a>
       <button
         class={styles.toggle}
-        onClick={toggleCallback}
+        onClick={handleToggle}
         aria-hidden="true"
         tabIndex={-1}
       >
