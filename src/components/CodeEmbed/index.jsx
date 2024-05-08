@@ -66,7 +66,7 @@ export const CodeEmbed = (props) => {
 
   return (
     <div
-      className={`my-md flex w-full flex-col gap-md overflow-hidden ${props.allowSideBySide && "lg:flex-row"} ${props.fullWidth && "full-width"}`}
+      className={`my-md flex w-full flex-col gap-[20px] overflow-hidden ${props.allowSideBySide && "lg:flex-row"} ${props.fullWidth && "full-width"}`}
     >
       {props.previewable ? (
         <div

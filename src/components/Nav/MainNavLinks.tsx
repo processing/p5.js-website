@@ -93,8 +93,8 @@ export const MainNavLinks = ({
         ))}
       </ul>
       {
-        <ul>
-          <li class="mb-xs">
+        <ul class="flex flex-col gap-[15px]">
+          <li>
             <a className={styles.buttonlink} href="https://editor.p5js.org">
               <div class="mr-xxs">
                 <Icon kind="code-brackets" />
