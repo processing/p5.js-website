@@ -12,6 +12,7 @@ import he from "he";
 import { JSDOM } from "jsdom";
 import type { JumpToLink, JumpToState } from "../globals/state";
 import { categories as referenceCategories } from "../content/reference/config";
+import memoize from "lodash/memoize";
 
 interface EntryWithId {
   id: string;
@@ -40,7 +41,7 @@ export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
  * @param locale
  * @returns
  */
-export const getCollectionInLocaleWithFallbacks = async <
+export const getCollectionInLocaleWithFallbacks = memoize(async <
   C extends keyof AnyEntryMap,
 >(
   collectionName: C,
@@ -60,9 +61,10 @@ export const getCollectionInLocaleWithFallbacks = async <
       });
     },
   );
+
   // Merge the locale entries with the filtered default entries
   return [...localizedEntries, ...filteredDefaultEntries];
-};
+}, (...args) => args.join("_"));
 
 /**
  * Retrieves all the entries in the given collection, filtered to only include
