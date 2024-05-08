@@ -1,4 +1,4 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, passthroughImageService } from "astro/config";
 import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
 import compress from "astro-compress";
