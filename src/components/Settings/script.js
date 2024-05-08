@@ -69,13 +69,17 @@ window.addEventListener(
   "scroll",
   () => {
     let currentScroll = window.scrollY || document.documentElement.scrollTop;
-    if (
+    // if we're scrolled up to where the container lives, close immediately
+    if (currentScroll < 120) {
+      closeSettings();
+    } else if (
       lastScrollTop > currentScroll &&
       lastScrollTop - currentScroll > SCROLL_THRESHOLD &&
       !isContainerVisible // Only trigger on scroll if the container is not visible
     ) {
       openSettings(true);
     }
+
     lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
   },
   false,
