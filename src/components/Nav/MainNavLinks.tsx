@@ -45,7 +45,11 @@ export const MainNavLinks = ({
     <div class={styles.logo}>
       <a
         href="/"
-        class={`${isHomepage ? "text-logo-color" : "text-sidebar-type-color"}`}
+        class={`${
+          isHomepage
+            ? "text-logo-color hover:text-sidebar-type-color"
+            : "text-sidebar-type-color hover:text-logo-color"
+        }`}
         aria-label={isHomepage ? "Reload current page" : "Go to p5.js homepage"}
       >
         <Logo />
@@ -76,7 +80,9 @@ export const MainNavLinks = ({
 
   return (
     <div
-      class={`${styles.mainlinks} ${open && "open"} ${!hasJumpTo && "noJumpTo"}`}
+      class={`${styles.mainlinks} ${open && "open"} ${
+        !hasJumpTo && "noJumpTo"
+      }`}
     >
       {renderLogo()}
       <ul>
