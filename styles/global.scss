@@ -192,6 +192,9 @@ code {
   background-color: var(--bg-gray-80);
   border-radius: 20px;
   padding: 0 var(--spacing-xxs);
+  .dark-theme &:not(.code-box) {
+    color: var(--type-black);
+  }
 }
 
 hr {
@@ -212,16 +215,25 @@ hr {
 
 .astro-code,
 .code-box {
-  background-color: var(--bg-gray-40);
+  background-color: var(--bg-gray-40) !important;
   padding: var(--spacing-sm);
   max-width: 100%;
   overflow-x: auto;
-  white-space: break-spaces;
 
   border-radius: 20px;
   @media (max-width: $breakpoint-tablet) {
     border-radius: 10px;
   }
+
+  .dark-theme & {
+    background-color: #DDD !important;
+    filter: invert(100%);
+  }
+}
+
+.astro-code pre, pre.astro-code,
+.code-box pre, pre.code-box {
+  white-space: break-spaces;
 }
 
 .callout {
@@ -230,6 +242,10 @@ hr {
   background-color: var(--bg-magenta-20);
   margin-bottom: var(--spacing-md);
   margin-top: var(--spacing-md);
+
+  .dark-theme & {
+    color: var(--type-black);
+  }
 }
 
 .callout h5 {
@@ -275,14 +291,29 @@ hr {
   }
 
   header {
-    grid-area: header;
+    .homepage-header-top {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      // 43px is the height of the top mobile bar menu
+      height: calc(50vh - var(--spacing-5xl) - 43px);
+      max-height: calc(50vh - var(--spacing-5xl) - 43px);
+
+      @media (min-width: $breakpoint-tablet) {
+        height: 50vh;
+        max-height: calc(50vh - var(--spacing-5xl));
+      }
+
+      @media (min-width: $breakpoint-laptop) {
+        height: 50vh;
+        max-height: calc(50vh - var(--spacing-3xl));
+      }
+    }
+
     @media (min-width: $breakpoint-tablet) {
       margin-top: 0;
     }
-  }
-
-  main {
-    grid-area: main;
   }
 }
 
@@ -309,6 +340,22 @@ hr {
 td,
 th {
   padding: var(--spacing-xs);
+}
+
+.full-bleed-image {
+  left: -2.5rem;
+  width: calc(100% + 5rem);
+  max-width: calc(100% + 5rem);
+  max-height: 50vh;
+  height: 50vh;
+  position: relative;
+  object-fit: cover;
+  @apply border-b border-t border-type-color;
+  @media (min-width: $breakpoint-tablet) {
+    left: calc(-1 * var(--spacing-lg));
+    width: calc(100% + var(--spacing-lg) * 2);
+    max-width: calc(100% + var(--spacing-lg) * 2);
+  }
 }
 
 // Hide default webkit search input decoration

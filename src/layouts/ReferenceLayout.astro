@@ -9,7 +9,11 @@ import {
   normalizeReferenceRoute,
 } from "../pages/_utils";
 import { setJumpToState, type JumpToState } from "../globals/state";
-import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import {
+  getCurrentLocale,
+  getUiTranslationWithFallback,
+  getUiTranslator,
+} from "../i18n/utils";
 
 type ReferenceEntry = CollectionEntry<"reference">;
 
@@ -30,6 +34,7 @@ function strCompare(a: string, b: string) {
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
+const uiTranslations = await getUiTranslationWithFallback(currentLocale);
 
 const { entries } = Astro.props;
 
@@ -87,8 +92,8 @@ const categoryData = categories.map((category) => {
           },
         })),
     },
-    ...subcats.map((subcat) => ({
-      name: subcat,
+    ...subcats.map((subcat, i) => ({
+      name: (i === 0 && subcat === category) ? undefined : subcat,
       entry: undefined,
       entries: directEntries
         .filter(
@@ -145,5 +150,6 @@ setJumpToState(pageJumpToState);
   <ReferenceDirectoryWithFilter
     client:load
     categoryData={categoryData as any}
+    uiTranslations={uiTranslations}
   />
 </BaseLayout>

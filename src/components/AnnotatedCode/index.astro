@@ -52,7 +52,7 @@ const code = rows.map((row) => row.code).join('');
 // Convert it to HTML with style tags
 const html = await codeToHtml(code, {
   lang: props.lang || 'javascript',
-  theme: props.theme || 'github-dark',
+  theme: props.theme || 'github-light',
 })
 
 // Turn it into a DOM tree we can query
@@ -80,6 +80,7 @@ const getPreStyle = (i: number) => {
   if (i < rows.length-1) {
     style += 'border-bottom-left-radius:0;border-bottom-right-radius:0;'
   }
+  style += 'margin:0;'
   return style;
 }
 const codeAttrs: Record<string, string> = {};
@@ -87,12 +88,12 @@ for (const attr of codeTag.attributes) {
   codeAttrs[attr.name] = attr.value;
 }
 ---
-  <table class="h-1 my-md">
+  <table class="h-1 my-md full-width">
     <tbody>
       {rows.map((row, i) => {
         const lineNodes = lines.slice(row.startLine, row.endLine);
         return (
-          <tr class="[&>*]:align-top [&>*]:m-0 [&>*:not(:first-child)]:py-2 [&>*:not(:first-child)]:max-w-xl">
+          <tr class="[&>*]:align-top [&>*]:m-0 [&>*:not(:first-child)]:py-2 [&>*:not(:first-child)]:pl-6 [&>*:not(:first-child)]:max-w-xl">
             <td class="align-top p-0" style="height:100%; margin:0">
             <pre {...preAttrs} style={`${getPreStyle(i)};height:100%`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
             </td>

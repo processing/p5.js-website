@@ -21,6 +21,7 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
+  hasJumpTo,
 }: MainNavLinksProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(!isMobile);
@@ -44,7 +45,11 @@ export const MainNavLinks = ({
     <div class={styles.logo}>
       <a
         href="/"
-        class={`${isHomepage ? "text-logo-color" : "text-sidebar-type-color"}`}
+        class={`${
+          isHomepage
+            ? "text-logo-color hover:text-sidebar-type-color"
+            : "text-sidebar-type-color hover:text-logo-color"
+        }`}
         aria-label={isHomepage ? "Reload current page" : "Go to p5.js homepage"}
       >
         <Logo />
@@ -74,7 +79,11 @@ export const MainNavLinks = ({
   );
 
   return (
-    <div class={`${styles.mainlinks} ${open && "open"}`}>
+    <div
+      class={`${styles.mainlinks} ${open && "open"} ${
+        !hasJumpTo && "noJumpTo"
+      }`}
+    >
       {renderLogo()}
       <ul>
         {links.map((link) => (
@@ -84,8 +93,8 @@ export const MainNavLinks = ({
         ))}
       </ul>
       {
-        <ul>
-          <li class="mb-xs">
+        <ul class="flex flex-col gap-[15px]">
+          <li>
             <a className={styles.buttonlink} href="https://editor.p5js.org">
               <div class="mr-xxs">
                 <Icon kind="code-brackets" />

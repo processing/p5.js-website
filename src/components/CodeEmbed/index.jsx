@@ -20,6 +20,7 @@ import { Icon } from "../Icon";
  *   lazyLoad?: boolean;
  *   TODO: refactor this prop behavior
  *   allowSideBySide?: boolean
+ *   fullWidth?: boolean
  * }
  */
 export const CodeEmbed = (props) => {
@@ -65,28 +66,32 @@ export const CodeEmbed = (props) => {
 
   return (
     <div
-      className={`my-md flex w-full flex-col gap-md overflow-hidden ${props.allowSideBySide && "lg:flex-row"}`}
+      className={`my-md flex w-full flex-col gap-[20px] overflow-hidden ${props.allowSideBySide && "lg:flex-row"} ${props.fullWidth && "full-width"}`}
     >
       {props.previewable ? (
-        <div className="ml-0 flex w-fit lg:flex-col">
-          <CodeFrame
-            jsCode={previewCodeString}
-            width={props.previewWidth}
-            height={props.previewHeight}
-            base={props.base}
-            frameRef={codeFrameRef}
-            lazyLoad={props.lazyLoad}
-          />
-          <div className="gap-xs lg:flex">
+        <div
+          className={`ml-0 flex w-fit gap-[20px] ${props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
+        >
+          <div>
+            <CodeFrame
+              jsCode={previewCodeString}
+              width={props.previewWidth}
+              height={props.previewHeight}
+              base={props.base}
+              frameRef={codeFrameRef}
+              lazyLoad={props.lazyLoad}
+            />
+          </div>
+          <div className="flex gap-2.5 md:flex-row lg:flex-col">
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm"
+              className="bg-bg-gray-40"
               onClick={updateOrReRun}
               ariaLabel="Run sketch"
             >
               <Icon kind="play" />
             </CircleButton>
             <CircleButton
-              className="!bg-bg-gray-40 !p-sm "
+              className="bg-bg-gray-40"
               onClick={() => {
                 setPreviewCodeString("");
               }}
@@ -97,7 +102,7 @@ export const CodeEmbed = (props) => {
           </div>
         </div>
       ) : null}
-      <div className="relative w-full">
+      <div className="relative w-full code-editor-container">
         <CodeMirror
           value={codeString}
           theme="light"

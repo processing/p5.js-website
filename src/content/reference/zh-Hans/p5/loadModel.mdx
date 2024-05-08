@@ -1,91 +1,48 @@
 ---
 title: loadModel
-module: Shape
-submodule: 3D Models
+module: 形状
+submodule: 3D 模型
 file: src/webgl/loading.js
 description: >
-  <p>Loads a 3D model to create a
+  <p>加载一个 3D 模型以创建一个 
 
-  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object.</p>
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象。</p>
 
-  <p><code>loadModel()</code> can load 3D models from OBJ and STL files. Once
-  the model is
+  <p><code>loadModel()</code> 可以从 OBJ 和 STL 文件加载 3D 模型。一旦加载了模型，就可以使用
 
-  loaded, it can be displayed with the
+  <a href="/reference/p5/model">model()</a> 函数来显示，如
+  <code>model(shape)</code>。</p>
 
-  <a href="/reference/p5/model">model()</a> function, as in
-  <code>model(shape)</code>.</p>
+  <p>有三种调用 <code>loadModel()</code> 的方式，通过可选参数来帮助处理模型。</p>
 
-  <p>There are three ways to call <code>loadModel()</code> with optional
-  parameters to help
+  <p>第一个参数 <code>path</code>，始终是一个指向文件的 <code>String</code>。本地文件的路径应该是相对的，如
+  <code>loadModel('/assets/model.obj')</code>。像 ’<a
+  href="https://example.com/model.obj'%60">https://example.com/model.obj'`</a> 这样的 URL 可能会因为浏览器安全问题而被阻止。</p>
 
-  process the model.</p>
+  <p>第一种调用 <code>loadModel()</code> 的方式，在文件路径之后有三个可选参数。
+  
+  第一个可选参数是 <code>successCallback</code>，它是一个在模型加载完成后调用的函数。
+ 
+  例如，<code>loadModel('/assets/model.obj', handleModel)</code> 将在模型加载完成后调用 <code>handleModel()</code>。
 
-  <p>The first parameter, <code>path</code>, is always a <code>String</code>
-  with the path to the
+  第二个可选参数是 <code>failureCallback</code>，它是一个在模型加载失败时调用的函数。例如，
 
-  file. Paths to local files should be relative, as in
+  <code>loadModel('/assets/model.obj', handleModel, handleFailure)</code> 将在加载过程中出现错误时调用
 
-  <code>loadModel('/assets/model.obj'). URLs such as </code>'<a
-  href="https://example.com/model.obj'%60">https://example.com/model.obj'`</a>
-  may be blocked due to browser security.</p>
+  <code>handleFailure()</code> 函数。
 
-  <p>The first way to call <code>loadModel()</code> has three optional
-  parameters after the
-
-  file path. The first optional parameter, <code>successCallback</code>, is a
-  function
-
-  to call once the model loads. For example,
-
-  <code>loadModel('/assets/model.obj', handleModel)</code> will call the
-  <code>handleModel()</code>
-
-  function once the model loads. The second optional parameter,
-
-  <code>failureCallback</code>, is a function to call if the model fails to
-  load. For
-
-  example, <code>loadModel('/assets/model.obj', handleModel,
-  handleFailure)</code> will
-
-  call the <code>handleFailure()</code> function if an error occurs while
-  loading. The
-
-  third optional parameter, <code>fileType</code>, is the model’s file extension
-  as a
-
-  string. For example,
+  第三个可选参数是 <code>fileType</code>，它是模型的文件扩展名字符串。例如，
 
   <code>loadModel('/assets/model', handleModel, handleFailure, '.obj')</code>
-  will try to
+  
+  将尝试加载 model 文件作为 <code>.obj</code> 文件。</p>
 
-  load the file model as a <code>.obj</code> file.</p>
+  <p>第二种调用 <code>loadModel()</code> 的方式，在文件路径之后有四个可选参数。第一个可选参数是一个 <code>Boolean</code>，如果传递 <code>true</code>，
+  如 <code>loadModel('/assets/model.obj', true)</code>，则模型将被调整大小以确保适合画布。
+  接下来的三个参数分别是 <code>successCallback</code>，<code>failureCallback</code>，和 <code>fileType</code>，如上所述。</p>
 
-  <p>The second way to call <code>loadModel()</code> has four optional
-  parameters after the
-
-  file path. The first optional parameter is a <code>Boolean</code> value. If
-  <code>true</code> is
-
-  passed, as in <code>loadModel('/assets/model.obj', true)</code>, then the
-  model will be
-
-  resized to ensure it fits the canvas. The next three parameters are
-
-  <code>successCallback</code>, <code>failureCallback</code>, and
-  <code>fileType</code> as described above.</p>
-
-  <p>The third way to call <code>loadModel()</code> has one optional parameter
-  after the
-
-  file path. The optional parameter, <code>options</code>, is an
-  <code>Object</code> with options,
-
-  as in <code>loadModel('/assets/model.obj', options)</code>. The
-  <code>options</code> object can
-
-  have the following properties:</p>
+  <p>第三种调用 <code>loadModel()</code> 的方式，在文件路径之后有一个可选参数。可选参数 <code>options</code> 是一个包含选项的对象，如
+  <code>loadModel('/assets/model.obj', options)</code>，<code>options</code>对象可以具有以下属性：</p>
 
   <code>
 
@@ -111,17 +68,11 @@ description: >
 
   </p></code>
 
-  <p>Models can take time to load. Calling <code>loadModel()</code> in
+  <p>模型加载可能需要一些时间。在 <a href="/reference/p5/preload">preload()</a> 中调用 <code>loadModel()</code> 
+  可以确保模型在被用于 <a href="/reference/p5/setup">setup()</a> 或 <a
+  href="/reference/p5/draw">draw()</a> 之前加载完成。</p>
 
-  <a href="/reference/p5/preload">preload()</a> ensures models load before
-  they're
-
-  used in <a href="/reference/p5/setup">setup()</a> or <a
-  href="/reference/p5/draw">draw()</a>.</p>
-
-  <p>Note: There’s no support for colored STL files. STL files with color will
-
-  be rendered without color.</p>
+  <p>注意：不支持带有颜色的 STL 文件。带有颜色的 STL 文件将以无颜色方式呈现。</p>
 line: 12
 isConstructor: false
 itemtype: method
