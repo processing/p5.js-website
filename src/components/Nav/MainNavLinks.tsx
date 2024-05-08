@@ -1,7 +1,6 @@
 import styles from "./styles.module.scss";
 import { Logo } from "../Logo";
 import { Icon } from "../Icon";
-import { useEffect, useState } from "preact/hooks";
 
 type MainNavLinksProps = {
   links: {
@@ -13,6 +12,8 @@ type MainNavLinksProps = {
   mobileMenuLabel: string;
   isHomepage: boolean;
   hasJumpTo: boolean;
+  toggleCallback: () => void;
+  isOpen: boolean;
 };
 
 export const MainNavLinks = ({
@@ -21,24 +22,10 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
+  toggleCallback,
+  isOpen,
   hasJumpTo,
 }: MainNavLinksProps) => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [open, setOpen] = useState(!isMobile);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
-  // Defaults to closed on mobile, open on desktop
-  // Have to do this in a lifecycle method
-  // so that we can still server-side render
-  useEffect(() => {
-    const _isMobile = window.innerWidth < 768;
-    setIsMobile(_isMobile);
-    setOpen(!_isMobile);
-  }, []);
-
   if (!links || links?.length <= 0) return null;
 
   const renderLogo = () => (
@@ -56,7 +43,7 @@ export const MainNavLinks = ({
       </a>
       <button
         class={styles.toggle}
-        onClick={handleClick}
+        onClick={toggleCallback}
         aria-hidden="true"
         tabIndex={-1}
       >
@@ -67,7 +54,7 @@ export const MainNavLinks = ({
 
   return (
     <div
-      class={`${styles.mainlinks} ${open && "open"} ${
+      class={`${styles.mainlinks} ${isOpen && "open"} ${
         !hasJumpTo && "noJumpTo"
       }`}
     >
