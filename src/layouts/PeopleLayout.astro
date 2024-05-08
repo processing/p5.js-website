@@ -5,6 +5,7 @@ import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
 import { setJumpToState } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import lodash from "lodash";
 
 interface Props {
   entries: CollectionEntry<"people">[];
@@ -98,7 +99,7 @@ setJumpToState(null);
   <h2 class="mb-lg">{contributorEntries.label}</h2>
   <ul class="content-grid !gap-xs">
     {
-      contributorEntries.members.map((person) => (
+      lodash.shuffle(contributorEntries.members).map((person) => (
         <li class="col-span-3">
           <a
             href={person.data.url}
