@@ -36,33 +36,32 @@ const run = async () => {
     profile: string;
   }[];
 
-  await Promise.all(
-    peopleObject.map(async (p) => {
-      const slug = p.name
-        .toLowerCase()
-        .normalize("NFD")
-        .replaceAll(/[\u0300-\u036f]/g, "")
-        .replaceAll(/[ ._<>*%]/g, "-");
-      const filePath = path.join(outputDirectory, `${slug}.yaml`);
+  for (const p of peopleObject) {
+    const slug = p.name
+      .toLowerCase()
+      .normalize("NFD")
+      .replaceAll(/[\u0300-\u036f]/g, "")
+      .replaceAll(/[ ._<>*%]/g, "-");
+    const filePath = path.join(outputDirectory, `${slug}.yaml`);
 
-      // never overwrite an existing file
-      if (await fileExistsAt(filePath)) {
-        console.log(
-          `Entry for ${p.name} already exists (${filePath}). Skipping~`,
-        );
-        return;
-      }
-
-      return await writeFile(
-        filePath,
-        yaml.dump({
-          name: p.name,
-          url: p.profile,
-          category: "contributor",
-        }),
+    // never overwrite an existing file
+    if (await fileExistsAt(filePath)) {
+      console.log(
+        `Entry for ${p.name} already exists (${filePath}). Skipping~`,
       );
-    }),
-  );
+      continue;
+    }
+
+    await writeFile(
+      filePath,
+      yaml.dump({
+        name: p.name,
+        url: p.profile,
+        category: "contributor",
+      }),
+    );
+  }
+
   console.log("Done!");
 };
 
