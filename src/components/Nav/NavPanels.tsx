@@ -3,7 +3,7 @@ import { JumpToLinks } from "./JumpToLinks";
 import { MainNavLinks } from "./MainNavLinks";
 import { useEffect, useState } from "preact/hooks";
 
-interface NavLinksProps {
+interface NavPanelsProps {
   mainLinks: {
     label: string;
     url: string;
@@ -16,7 +16,7 @@ interface NavLinksProps {
   jumpToState: JumpToState | null;
 }
 
-export const NavLinks = (props: NavLinksProps) => {
+export const NavPanels = (props: NavPanelsProps) => {
   const {
     mainLinks,
     isHomepage,
