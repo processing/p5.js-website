@@ -33,27 +33,49 @@ export const NavPanels = (props: NavPanelsProps) => {
   } = props;
 
   const [isOpen, setIsOpen] = useState({ main: false, jump: false });
-
-  const isMobile = () => window.innerWidth <= 768;
+  const [isMobile, setIsMobile] = useState(true);
 
   // Defaults to closed on mobile, open on desktop
   // Have to do this in a lifecycle method
   // so that we can still server-side render
   useEffect(() => {
-    setIsOpen({ main: !isMobile(), jump: !isMobile() });
-  }, []);
+    const startsMobile = window.innerWidth < 768;
+    setIsMobile(startsMobile);
+    setIsOpen({ main: !startsMobile, jump: !startsMobile });
+    // We use a resize observer to the user's window crosses the
+    // threshhold between mobile and desktop
+    const documentObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (!isMobile && entry.contentRect.width < 768) {
+          setIsMobile(true);
+          setIsOpen({
+            main: false,
+            jump: false,
+          });
+        } else if (isMobile && entry.contentRect.width >= 768) {
+          setIsMobile(false);
+          setIsOpen({
+            main: true,
+            jump: true,
+          });
+        }
+      }
+    });
+    documentObserver.observe(document.body);
+    return () => documentObserver.disconnect();
+  }, [setIsMobile, setIsOpen, isMobile]);
 
   const handleMainNavToggle = () => {
     setIsOpen((prev) => ({
       main: !prev.main,
-      jump: isMobile() ? false : prev.jump || prev.main,
+      jump: isMobile ? false : prev.jump || prev.main,
     }));
   };
 
   const handleJumpToToggle = () => {
     setIsOpen((prev) => ({
       jump: !prev.jump,
-      main: isMobile() ? false : prev.main || prev.jump,
+      main: isMobile ? false : prev.main || prev.jump,
     }));
   };
 
