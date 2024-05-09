@@ -119,7 +119,7 @@ export const Dropdown = ({
       aria-expanded={isOpen}
       tabIndex={0}
     >
-      <div className={styles.icon}>
+      <div className={styles.iconTop}>
         <Icon kind={iconKind} />
       </div>
       <span>
