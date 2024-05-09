@@ -1,1 +1,41 @@
-<div class="px-lg pt-5xl lg:pt-3xl pb-0"></div>
+---
+import type { CollectionEntry } from "astro:content";
+import { Icon } from "../Icon";
+
+interface Props {
+  config: CollectionEntry<"homepage">;
+}
+const { config } = Astro.props;
+---
+
+<div class="px-lg pt-5xl lg:pt-3xl pb-0 h-full">
+  <div class="homepage-header-top">
+    <div class="grid grid-cols-3 lg:grid-cols-4 gap-md overflow-hidden h-min">
+      <p class="col-span-2 lg:col-span-3 mt-0 text-md md:text-xl lg:text-3xl">
+        {config.data.heroText}
+      </p>
+      <Icon
+        kind="asterisk-thick"
+        className="col-span-1 motion-safe:animate-spin-slow text-logo-color h-full max-w-full"
+      />
+    </div>
+    <p class="text-body-caption pb-sm mt-0">{config.data.heroImageCaption}</p>
+  </div>
+  <!-- This lets us swap image url based on screen size -->
+  <picture>
+    <!-- have to hard code these because css, see variables.scss for source of truth -->
+    <source
+      media="(max-width: 767px)"
+      srcset={config.data.heroImageMobile.src}
+    />
+    <source
+      media="(min-width: 768px)"
+      srcset={config.data.heroImageDesktop.src}
+    />
+    <img
+      class="full-bleed-image"
+      src={config.data.heroImageMobile.src}
+      alt={config.data.heroImageAltText}
+    />
+  </picture>
+</div>

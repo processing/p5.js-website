@@ -1,7 +1,6 @@
 import styles from "./styles.module.scss";
 import { Logo } from "../Logo";
 import { Icon } from "../Icon";
-import { useEffect, useState } from "preact/hooks";
 
 type MainNavLinksProps = {
   links: {
@@ -13,6 +12,8 @@ type MainNavLinksProps = {
   mobileMenuLabel: string;
   isHomepage: boolean;
   hasJumpTo: boolean;
+  handleToggle: () => void;
+  isOpen: boolean;
 };
 
 export const MainNavLinks = ({
@@ -21,31 +22,21 @@ export const MainNavLinks = ({
   editorButtonLabel,
   mobileMenuLabel,
   isHomepage = false,
+  handleToggle,
+  isOpen,
   hasJumpTo,
 }: MainNavLinksProps) => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [open, setOpen] = useState(!isMobile);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
-  // Defaults to closed on mobile, open on desktop
-  // Have to do this in a lifecycle method
-  // so that we can still server-side render
-  useEffect(() => {
-    const _isMobile = window.innerWidth < 768;
-    setIsMobile(_isMobile);
-    setOpen(!_isMobile);
-  }, []);
-
   if (!links || links?.length <= 0) return null;
 
   const renderLogo = () => (
     <div class={styles.logo}>
       <a
         href="/"
-        class={`${isHomepage ? "text-logo-color" : "text-sidebar-type-color"}`}
+        class={`${
+          isHomepage
+            ? "text-logo-color hover:text-sidebar-type-color"
+            : "text-sidebar-type-color hover:text-logo-color"
+        }`}
         aria-label={isHomepage ? "Reload current page" : "Go to p5.js homepage"}
       >
         <Logo />
@@ -53,12 +44,12 @@ export const MainNavLinks = ({
 
       <button
         class={styles.toggle}
-        onClick={handleClick}
+        onClick={handleToggle}
         aria-hidden="true"
         tabIndex={-1}
       >
         <div class={styles.mobileMenuLabel}>
-          {open ? (
+          {isOpen ? (
             <Icon kind="close" />
           ) : (
             <>
@@ -68,7 +59,7 @@ export const MainNavLinks = ({
           )}
         </div>
         <span class={styles.desktopMenuLabel}>
-          <Icon kind={open ? "chevron-up" : "chevron-down"} />
+          <Icon kind={isOpen ? "chevron-up" : "chevron-down"} />
         </span>
       </button>
     </div>
@@ -76,7 +67,9 @@ export const MainNavLinks = ({
 
   return (
     <div
-      class={`${styles.mainlinks} ${open && "open"} ${!hasJumpTo && "noJumpTo"}`}
+      class={`${styles.mainlinks} ${isOpen && "open"} ${
+        !hasJumpTo && "noJumpTo"
+      }`}
     >
       {renderLogo()}
       <ul>
@@ -87,8 +80,8 @@ export const MainNavLinks = ({
         ))}
       </ul>
       {
-        <ul>
-          <li class="mb-xs">
+        <ul class="flex flex-col gap-[15px]">
+          <li>
             <a className={styles.buttonlink} href="https://editor.p5js.org">
               <div class="mr-xxs">
                 <Icon kind="code-brackets" />

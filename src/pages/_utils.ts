@@ -11,6 +11,8 @@ import { load } from "cheerio";
 import he from "he";
 import { JSDOM } from "jsdom";
 import type { JumpToLink, JumpToState } from "../globals/state";
+import { categories as referenceCategories } from "../content/reference/config";
+import memoize from "lodash/memoize";
 
 interface EntryWithId {
   id: string;
@@ -39,7 +41,7 @@ export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
  * @param locale
  * @returns
  */
-export const getCollectionInLocaleWithFallbacks = async <
+export const getCollectionInLocaleWithFallbacks = memoize(async <
   C extends keyof AnyEntryMap,
 >(
   collectionName: C,
@@ -59,9 +61,10 @@ export const getCollectionInLocaleWithFallbacks = async <
       });
     },
   );
+
   // Merge the locale entries with the filtered default entries
   return [...localizedEntries, ...filteredDefaultEntries];
-};
+}, (...args) => args.join("_"));
 
 /**
  * Retrieves all the entries in the given collection, filtered to only include
@@ -286,6 +289,8 @@ export const decodeHtml = (html: string) => {
  * @param collectionType The type of collection
  * @param currentEntrySlug The id of the currently viewed entry
  * @param jumpToHeading The heading for the jumpToLinks
+ * @param t Pass in the result from getUiTranslator()
+ * @param currentLocale The current locale to translate the header with
  * @returns JumpToState object
  */
 export const generateJumpToState = async (
@@ -309,8 +314,7 @@ export const generateJumpToState = async (
   // Get the categories based on the collection type
   switch (collectionType) {
     case "reference":
-      // @ts-expect-error - We know that the category exists because of the collection type
-      categories = new Set(localeEntries.map((entry) => entry.data.category));
+      categories = new Set(referenceCategories);
       break;
     case "tutorials":
       // @ts-expect-error - We know that the category exists because of the collection type
@@ -331,11 +335,11 @@ export const generateJumpToState = async (
   const getCategoryLabel = (category: string) => {
     switch (collectionType) {
       case "reference":
-        return category;
+        return t("referenceCategories", "modules", category) as string;
       case "tutorials":
         return t("tutorialCategories", category) as string;
       case "examples":
-        return category;
+        return t("exampleCategories", category) as string;
       default:
         return "";
     }

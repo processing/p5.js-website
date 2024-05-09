@@ -1,75 +1,47 @@
 ---
 title: cylinder
-module: Shape
-submodule: 3D Primitives
+module: आकार
+submodule: 3D आदिम
 file: src/webgl/3d_primitives.js
 description: >
-  <p>Draws a cylinder.</p>
+  <p>एक सिलेंडर खींचता है।</p>
 
-  <p>A cylinder is a 3D shape with triangular faces that connect a flat bottom
+  <p>एक सिलेंडर त्रिकोणीय चेहरों वाला एक 3D आकार है जो एक सपाट तल को एक सपाट शीर्ष से जोड़ता है।
 
-  to a flat top. Cylinders with few faces look like boxes. Cylinders with
+  कुछ चेहरों वाले सिलेंडर बक्से की तरह दिखते हैं।
 
-  many faces have smooth surfaces.</p>
+  कई मुख वाले सिलेंडरों की सतह चिकनी होती है।</p>
 
-  <p>The first parameter, <code>radius</code>, is optional. If a
-  <code>Number</code> is passed, as in
+  <p>पहला पैरामीटर, <code>radius</code>, वैकल्पिक है। यदि एक <code>Number</code> पास किया जाता है, जैसे कि <code>cylinder(20)</code>, तो यह सिलेंडर के आधार की त्रिज्या निर्धारित करता है।
 
-  <code>cylinder(20)</code>, it sets the radius of the cylinder’s base. By
-  default,
+  डिफ़ॉल्ट रूप से, <code>radius</code> 50 है।</p>
 
-  <code>radius</code> is 50.</p>
+  <p>दूसरा पैरामीटर, <code>height</code>, भी वैकल्पिक है। यदि कोई <code>Number</code> पास किया जाता है, जैसे कि <code>cylinder(20, 30)</code>, तो यह सिलेंडर की ऊंचाई निर्धारित करता है।
 
-  <p>The second parameter, <code>height</code>, is also optional. If a
-  <code>Number</code> is passed,
+  डिफ़ॉल्ट रूप से, <code>height</code> सिलेंडर के <code>radius</code> पर सेट होता है।</p>
 
-  as in <code>cylinder(20, 30)</code>, it sets the cylinder’s height. By
-  default,
+  <p>तीसरा पैरामीटर, <code>detailX</code>, भी वैकल्पिक है। यदि एक <code>Number</code> पास किया जाता है, जैसे कि <code>cylinder(20, 30, 5)</code>, तो यह सिलेंडर के ऊपर और नीचे बनाने के लिए उपयोग किए जाने वाले किनारों की संख्या निर्धारित करता है।
 
-  <code>height</code> is set to the cylinder’s <code>radius</code>.</p>
+  अधिक किनारों का उपयोग करने से ऊपर और नीचे अधिक वृत्त जैसे दिखाई देते हैं। डिफ़ॉल्ट रूप से, <code>detailX</code> 24 है।</p>
 
-  <p>The third parameter, <code>detailX</code>, is also optional. If a
-  <code>Number</code> is passed,
+  <p>चौथा पैरामीटर, <code>detailY</code>, भी वैकल्पिक है। यदि एक <code>Number</code> पारित किया जाता है, जैसे कि <code>clinder(20, 30, 5, 2)</code>, तो यह उपयोग करने के लिए y-अक्ष के अनुदिश त्रिकोण उपविभाजनों (सिलेंडर के ऊपर और नीचे के बीच) की संख्या निर्धारित करता है।
 
-  as in <code>cylinder(20, 30, 5)</code>, it sets the number of edges used to
-  form the
+  सभी 3D आकृतियाँ त्रिभुजों को जोड़कर उनकी सतहें बनाकर बनाई जाती हैं।
 
-  cylinder's top and bottom. Using more edges makes the top and bottom look
+  डिफ़ॉल्ट रूप से, <code>detailY</code> 1 है।</p>
 
-  more like circles. By default, <code>detailX</code> is 24.</p>
+  <p>पांचवां पैरामीटर, <code>bottomCap</code>, भी वैकल्पिक है। यदि कोई <code>false</code> पास हो जाता है, जैसे कि <code>cylinder(20, 30, 5, 2, false)</code> तो सिलेंडर का निचला भाग नहीं खींचा जाएगा।
 
-  <p>The fourth parameter, <code>detailY</code>, is also optional. If a
-  <code>Number</code> is passed,
+  डिफ़ॉल्ट रूप से, <code>bottomCap</code> <code>true</code> है।</p>
 
-  as in <code>cylinder(20, 30, 5, 2)</code>, it sets the number of triangle
-  subdivisions
+  <p>छठा पैरामीटर, <code>topCap</code>, भी वैकल्पिक है। यदि कोई <code>false</code> पास हो जाता है, जैसे कि <code>cylinder(20, 30, 5, 2, false, false)</code> तो सिलेंडर का शीर्ष नहीं खींचा जाएगा।
 
-  to use along the y-axis, between cylinder's the top and bottom. All 3D
+  डिफ़ॉल्ट रूप से, <code>topCap</code> <code>true</code> है।</p>
 
-  shapes are made by connecting triangles to form their surfaces. By default,
-
-  <code>detailY</code> is 1.</p>
-
-  <p>The fifth parameter, <code>bottomCap</code>, is also optional. If a
-  <code>false</code> is passed,
-
-  as in <code>cylinder(20, 30, 5, 2, false)</code> the cylinder’s bottom won’t
-  be drawn.
-
-  By default, <code>bottomCap</code> is <code>true</code>.</p>
-
-  <p>The sixth parameter, <code>topCap</code>, is also optional. If a
-  <code>false</code> is passed, as
-
-  in <code>cylinder(20, 30, 5, 2, false, false)</code> the cylinder’s top won’t
-  be
-
-  drawn. By default, <code>topCap</code> is <code>true</code>.</p>
-
-  <p>Note: <code>cylinder()</code> can only be used in WebGL mode.</p>
+  <p>ध्यान दें: <code>cylinder()</code> का उपयोग केवल WebGL मोड में किया जा सकता है।</p>
 line: 1477
 isConstructor: false
-itemtype: method
+itemtype: तरीका
 example:
   - |-
 
@@ -242,38 +214,35 @@ class: p5
 params:
   - name: radius
     description: |
-      <p>radius of the cylinder. Defaults to 50.</p>
-    type: Number
+      <p>सिलेंडर की त्रिज्या। डिफ़ॉल्ट मान 50 है।</p>
+    type: संख्या
     optional: true
   - name: height
     description: >
-      <p>height of the cylinder. Defaults to the value of
-      <code>radius</code>.</p>
-    type: Number
+      <p>सिलेंडर की ऊंचाई। डिफ़ॉल्ट <code>radius</code> का मान।</p>
+    type: संख्या
     optional: true
   - name: detailX
     description: |
-      <p>number of edges along the top and bottom. Defaults to 24.</p>
-    type: Integer
+      <p>ऊपर और नीचे के किनारों की संख्या। डिफ़ॉल्ट मान 24 है।</p>
+    type: पूर्णांक
     optional: true
   - name: detailY
     description: |
-      <p>number of triangle subdivisions along the y-axis. Defaults to 1.</p>
-    type: Integer
+      <p>y-अक्ष के अनुदिश त्रिभुज उपखंडों की संख्या। 1 पर डिफ़ॉल्ट।</p>
+    type: पूर्णांक
     optional: true
   - name: bottomCap
     description: >
-      <p>whether to draw the cylinder's bottom. Defaults to
-      <code>true</code>.</p>
-    type: Boolean
+      <p>क्या सिलेंडर का निचला हिस्सा खींचना है। डिफ़ॉल्ट मान <code>true</code> है।</p>
+    type: बूलियन
     optional: true
   - name: topCap
     description: |
-      <p>whether to draw the cylinder's top. Defaults to <code>true</code>.</p>
-    type: Boolean
+      <p>क्या सिलेंडर का शीर्ष खींचना है। डिफ़ॉल्ट मान <code>true</code> है।</p>
+    type: बूलियन
     optional: true
 chainable: true
 ---
-
 
 # cylinder

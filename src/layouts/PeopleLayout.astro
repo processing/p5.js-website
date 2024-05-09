@@ -5,6 +5,7 @@ import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
 import { setJumpToState } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import lodash from "lodash";
 
 interface Props {
   entries: CollectionEntry<"people">[];
@@ -56,7 +57,7 @@ setJumpToState(null);
 <Head title={"People"} locale={currentLocale} />
 
 <BaseLayout title={title} variant="item" topic="about" className="about">
-  <h3 class="mb-xl max-w-screen-md">
+  <h3 class="mb-xl max-w-[750px]">
     {t("peoplePage", "PageDescription")}
   </h3>
   {
@@ -66,13 +67,14 @@ setJumpToState(null);
         <ul class="content-grid">
           {category.members.map((person) => (
             <li class="col-span-6 md:col-span-9 lg:col-span-12 content-grid">
-              <div class="col-span-4 md:col-span-9 lg:col-span-3 grayscale">
+              <div class="col-span-4 md:col-span-9 lg:col-span-4">
                 <Image
                   src={person.data.image!}
                   alt={person.data.imageAlt!}
                   width="400"
                   aspectRatio="square"
                   loading={i === 0 ? "eager" : "lazy"}
+                  class="grayscale"
                 />
                 <div class="mt-xs">
                   <a
@@ -84,7 +86,7 @@ setJumpToState(null);
                 </div>
                 <p class="text-body-caption mt-0">{person.data.role}</p>
               </div>
-              <p class="col-span-6 md:col-span-9 p-0 m-0">
+              <p class="col-span-6 md:col-span-9 lg:col-span-8 p-0 m-0">
                 {person.data.blurb}
               </p>
             </li>
@@ -97,7 +99,7 @@ setJumpToState(null);
   <h2 class="mb-lg">{contributorEntries.label}</h2>
   <ul class="content-grid !gap-xs">
     {
-      contributorEntries.members.map((person) => (
+      lodash.shuffle(contributorEntries.members).map((person) => (
         <li class="col-span-3">
           <a
             href={person.data.url}

@@ -1,119 +1,19 @@
 ---
 title: debugMode
 module: 3D
-submodule: Interaction
+submodule: इंटरैक्शन
 file: src/webgl/interaction.js
 description: >
-  <p>Adds a grid and an axes icon to clarify orientation in 3D sketches.</p>
+  <p><code>debugMode()</code> एक ग्रिड जोड़ता है जो दिखाता है कि स्केच में "ज़मीन" कहाँ है। डिफ़ॉल्ट रूप से, ग्रिड स्केच के मूल <code>(0, 0, 0)</code> से XZ समतल के साथ चलेगा। <code>debugMode()</code> एक एक्सिस आइकन भी जोड़ता है जो सकारात्मक x-, y- और z-अक्षों के साथ इंगित करता है। <code>debugMode()</code> को कॉल करने से ग्रिड और एक्सिस आइकन उनके डिफ़ॉल्ट आकार और स्थिति के साथ प्रदर्शित होते हैं।</p> <p>डीबगिंग वातावरण को अनुकूलित करने के लिए वैकल्पिक पैरामीटर के साथ <code>debugMode()</code> को कॉल करने के चार तरीके हैं।</p> 
+  
+  <p><code>debugMode()</code> को कॉल करने का पहला तरीका एक पैरामीटर, <code>mode</code> लेता है। यदि सिस्टम कॉन्स्टेंट <code>GRID</code> पास किया जाता है, जैसे <code>debugMode(GRID)</code> में, तो ग्रिड प्रदर्शित किया जाएगा और एक्सिस आइकन छिपा रहेगा। यदि कॉन्स्टेंट <code>AXES</code> पास किया जाता है, जैसे <code>debugMode(AXES)</code> में, तो एक्सिस आइकन प्रदर्शित किया जाएगा और ग्रिड छिपा रहेगा।</p>
 
-  <p><code>debugMode()</code> adds a grid that shows where the “ground” is in a
-  sketch. By
+  <p><code>debugMode()</code> को बुलाने का दूसरा तरीका छह पैरामीटर्स होते हैं। पहला पैरामीटर, <code>mode</code>, <code>GRID</code> या <code>AXES</code> को प्रदर्शित करने का चयन करता है। अगले पांच पैरामीटर, <code>gridSize</code>, <code>gridDivisions</code>, <code>xOff</code>, <code>yOff</code>, और <code>zOff</code>, वैकल्पिक होते हैं। ये संख्याएं होती हैं जो ग्रिड की उपस्थिति (<code>gridSize</code> और <code>gridDivisions</code>) और धाराओं के आइकन का स्थान सेट करती हैं (<code>xOff</code>, <code>yOff</code>, और <code>zOff</code>)। उदाहरण के लिए, <code>debugMode(20, 5, 10, 10, 10)</code> बुलाना <code>gridSize</code> को 20 पिक्सेल पर सेट करता है, <code>gridDivisions</code> की संख्या 5 को सेट करता है, और x-, y-, और z-धाराओं के साथ 10 पिक्सेल के रूप में धाराओं के आइकन को ऑफसेट करता है।</p>
 
-  default, the grid will run through the origin <code>(0, 0, 0)</code> of the
-  sketch
+  <p><code>debugMode()</code> को बुलाने का तीसरा तरीका पांच पैरामीटर्स होते हैं। पहला पैरामीटर, <code>mode</code>, <code>GRID</code> या <code>AXES</code> को प्रदर्शित करने का चयन करता है। अगले चार पैरामीटर, <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, और <code>zOff</code>, वैकल्पिक होते हैं। ये संख्याएं होती हैं जो धाराओं के आकार (<code>axesSize</code>) और उनके स्थान (<code>xOff</code>, <code>yOff</code>, और <code>zOff</code>) को सेट करती हैं।</p>
 
-  along the XZ plane. <code>debugMode()</code> also adds an axes icon that
-  points along
+  <p><code>debugMode()</code> को बुलाने का चौथा तरीका नौ वैकल्पिक पैरामीटर्स होते हैं। पहले पांच पैरामीटर, <code>gridSize</code>, <code>gridDivisions</code>, <code>gridXOff</code>, <code>gridYOff</code>, और <code>gridZOff</code> संख्याएं होती हैं जो ग्रिड की उपस्थिति को सेट करती हैं। उदाहरण के लिए, <code>debugMode(100, 5, 0, 0, 0)</code> बुलाना <code>gridSize</code> को 100 सेट करता है, <code>gridDivisions</code> की संख्या 5 को सेट करता है, और सभी ऑफसेट्स को 0 पर सेट करता है ताकि ग्रिड को मध्य में सेंटर किया जाए। अगले चार पैरामीटर, <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, और <code>zOff</code> नंबर्स होते हैं जो धाराओं आइकन की उपस्थिति को सेट करते हैं (<code>axesSize</code>) और उसका स्थान (<code>axesXOff</code>, <code>axesYOff</code>, और <code>axesZOff</code>)। उदाहरण के लिए, <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code> बुलाना <code>gridSize</code> को 100 सेट करता है, <code>gridDivisions</code> की संख्या 5 को सेट करता है, और सभी ऑफसेट्स को 0 पर सेट करता है ताकि ग्रिड को मध्य में सेंटर किया जाए। फिर यह <code>axesSize</code> को 50 सेट करता है और आइकन को प्रत्येक धारा के साथ 10 पिक्सेल के रूप में ऑफसेट करता है।</p>
 
-  the positive x-, y-, and z-axes. Calling <code>debugMode()</code> displays the
-  grid
-
-  and axes icon with their default size and position.</p>
-
-  <p>There are four ways to call <code>debugMode()</code> with optional
-  parameters to
-
-  customize the debugging environment.</p>
-
-  <p>The first way to call <code>debugMode()</code> has one parameter,
-  <code>mode</code>. If the
-
-  system constant <code>GRID</code> is passed, as in
-  <code>debugMode(GRID)</code>, then the grid
-
-  will be displayed and the axes icon will be hidden. If the constant
-  <code>AXES</code>
-
-  is passed, as in <code>debugMode(AXES)</code>, then the axes icon will be
-  displayed
-
-  and the grid will be hidden.</p>
-
-  <p>The second way to call <code>debugMode()</code> has six parameters. The
-  first
-
-  parameter, <code>mode</code>, selects either <code>GRID</code> or
-  <code>AXES</code> to be displayed. The
-
-  next five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
-  <code>xOff</code>, <code>yOff</code>, and
-
-  <code>zOff</code> are optional. They’re numbers that set the appearance of the
-  grid
-
-  (<code>gridSize</code> and <code>gridDivisions</code>) and the placement of
-  the axes icon
-
-  (<code>xOff</code>, <code>yOff</code>, and <code>zOff</code>). For example,
-  calling
-
-  <code>debugMode(20, 5, 10, 10, 10)</code> sets the <code>gridSize</code> to 20
-  pixels, the number
-
-  of <code>gridDivisions</code> to 5, and offsets the axes icon by 10 pixels
-  along the
-
-  x-, y-, and z-axes.</p>
-
-  <p>The third way to call <code>debugMode()</code> has five parameters. The
-  first
-
-  parameter, <code>mode</code>, selects either <code>GRID</code> or
-  <code>AXES</code> to be displayed. The
-
-  next four parameters, <code>axesSize</code>, <code>xOff</code>,
-  <code>yOff</code>, and <code>zOff</code> are optional.
-
-  They’re numbers that set the appearance of the size of the axes icon
-
-  (<code>axesSize</code>) and its placement (<code>xOff</code>,
-  <code>yOff</code>, and <code>zOff</code>).</p>
-
-  <p>The fourth way to call <code>debugMode()</code> has nine optional
-  parameters. The
-
-  first five parameters, <code>gridSize</code>, <code>gridDivisions</code>,
-  <code>gridXOff</code>, <code>gridYOff</code>,
-
-  and <code>gridZOff</code> are numbers that set the appearance of the grid. For
-
-  example, calling <code>debugMode(100, 5, 0, 0, 0)</code> sets the
-  <code>gridSize</code> to 100,
-
-  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
-  so that
-
-  the grid is centered at the origin. The next four parameters,
-  <code>axesSize</code>,
-
-  <code>xOff</code>, <code>yOff</code>, and <code>zOff</code> are numbers that
-  set the appearance of the size
-
-  of the axes icon (<code>axesSize</code>) and its placement
-  (<code>axesXOff</code>, <code>axesYOff</code>,
-
-  and <code>axesZOff</code>). For example, calling
-
-  <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code> sets the
-  <code>gridSize</code> to 100,
-
-  the number of <code>gridDivisions</code> to 5, and sets all the offsets to 0
-  so that
-
-  the grid is centered at the origin. It then sets the <code>axesSize</code> to
-  50 and
-
-  offsets the icon 10 pixels along each axis.</p>
 line: 471
 isConstructor: false
 itemtype: method
@@ -254,7 +154,7 @@ overloads:
     params:
       - name: mode
         description: |
-          <p>either GRID or AXES</p>
+          <p>या तो GRID या AXES</p>
         type: Constant
   - line: 655
     params:
@@ -263,27 +163,27 @@ overloads:
         type: Constant
       - name: gridSize
         description: |
-          <p>side length of the grid.</p>
+          <p>ग्रिड की पार्श्व लंबाई।</p>
         type: Number
         optional: true
       - name: gridDivisions
         description: |
-          <p>number of divisions in the grid.</p>
+          <p>ग्रिड में डिवीजनों की संख्या।</p>
         type: Number
         optional: true
       - name: xOff
         description: |
-          <p>offset from origin along the x-axis.</p>
+          <p>एक्स-अक्ष के साथ मूल से ऑफसेट।</p>
         type: Number
         optional: true
       - name: yOff
         description: |
-          <p>offset from origin along the y-axis.</p>
+          <p>y-अक्ष के साथ मूल से ऑफसेट।</p>
         type: Number
         optional: true
       - name: zOff
         description: |
-          <p>offset from origin along the z-axis.</p>
+          <p>z-अक्ष के साथ मूल से ऑफसेट।</p>
         type: Number
         optional: true
   - line: 665
@@ -293,7 +193,7 @@ overloads:
         type: Constant
       - name: axesSize
         description: |
-          <p>length of axes icon markers.</p>
+          <p>अक्ष चिह्न मार्करों की लंबाई।</p>
         type: Number
         optional: true
       - name: xOff
@@ -320,17 +220,17 @@ overloads:
         optional: true
       - name: gridXOff
         description: |
-          <p>grid offset from the origin along the x-axis.</p>
+          <p>एक्स-अक्ष के साथ मूल से ग्रिड ऑफसेट।</p>
         type: Number
         optional: true
       - name: gridYOff
         description: |
-          <p>grid offset from the origin along the y-axis.</p>
+          <p>ग्रिड y-अक्ष के साथ मूल से ऑफसेट है।</p>
         type: Number
         optional: true
       - name: gridZOff
         description: |
-          <p>grid offset from the origin along the z-axis.</p>
+          <p>जेड-अक्ष के साथ मूल से ग्रिड ऑफसेट।</p>
         type: Number
         optional: true
       - name: axesSize
@@ -339,17 +239,17 @@ overloads:
         optional: true
       - name: axesXOff
         description: |
-          <p>axes icon offset from the origin along the x-axis.</p>
+          <p>अक्ष चिह्न मूल बिंदु से x-अक्ष के अनुदिश ऑफसेट होता है।</p>
         type: Number
         optional: true
       - name: axesYOff
         description: |
-          <p>axes icon offset from the origin along the y-axis.</p>
+          <p>अक्ष चिह्न मूल बिंदु से y-अक्ष के अनुदिश ऑफसेट होता है।</p>
         type: Number
         optional: true
       - name: axesZOff
         description: |
-          <p>axes icon offset from the origin along the z-axis.</p>
+          <p>अक्ष आइकन z-अक्ष के साथ मूल से ऑफसेट होता है।</p>
         type: Number
         optional: true
 chainable: false

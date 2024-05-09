@@ -4,74 +4,19 @@ module: Transform
 submodule: Transform
 file: src/core/transform.js
 description: >
-  <p>Translates the coordinate system.</p>
+  <p>निर्देशांक प्रणाली का अनुवाद करता है।</p>
 
-  <p>By default, the origin <code>(0, 0)</code> is at the sketch's top-left
-  corner in 2D
+   <p>डिफ़ॉल्ट रूप से, मूल <code>(0, 0)</code> स्केच के शीर्ष-बाएँ पर है
+   2डी मोड में कोना और वेबजीएल मोड में केंद्र। <code>translate()</code> फ़ंक्शन मूल को एक अलग स्थिति में स्थानांतरित कर देता है। <code>translate()</code> को कॉल करने के बाद खींची गई सभी चीज़ें स्थानांतरित होती दिखाई देंगी। <code>translate()</code> को कॉल करने के दो तरीके हैं
+   उन मापदंडों के साथ जो मूल की स्थिति निर्धारित करते हैं।</p>
 
-  mode and center in WebGL mode. The <code>translate()</code> function shifts
-  the origin
+   <p>कॉल करने का पहला तरीका <code>translate()</code> अनुवाद की मात्रा निर्धारित करने के लिए संख्याओं का उपयोग करता है। पहले दो पैरामीटर, <code>x</code> और <code>y</code>, सकारात्मक x- और y-अक्ष के साथ अनुवाद करने के लिए मात्रा निर्धारित करते हैं। उदाहरण के लिए, <code>translate(20, 30)</code> को कॉल करने से मूल 20 पिक्सेल x-अक्ष पर और 30 पिक्सेल y-अक्ष पर अनुवादित हो जाता है। तीसरा पैरामीटर, <code>z</code>, वैकल्पिक है। यह सकारात्मक z-अक्ष के साथ अनुवाद करने के लिए मात्रा निर्धारित करता है। उदाहरण के लिए, <code>translate(20, 30, 40)</code> को कॉल करने से x-अक्ष पर मूल 20 पिक्सेल, y-अक्ष पर 30 पिक्सेल और z-अक्ष पर 40 पिक्सेल का अनुवाद होता है।</p>
 
-  to a different position. Everything drawn after <code>translate()</code> is
-  called
+   <p>कॉल करने का दूसरा तरीका <code>translate()</code> अनुवाद की मात्रा निर्धारित करने के लिए <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट का उपयोग करता है। उदाहरण के लिए, <code>translate(myVector)</code> को कॉल करने पर x-, y- के साथ अनुवाद करने की मात्रा निर्धारित करने के लिए <code>myVector</code> के x-, y- और z-घटकों का उपयोग किया जाता है। और z-अक्ष। ऐसा करना <code>translate(myVector.x, myVector.y, myVector.z)</code> को कॉल करने के समान है।</p> <p>डिफ़ॉल्ट रूप से, परिवर्तन जमा होते हैं। उदाहरण के लिए, <code>translate(10, 0)</code> को दो बार कॉल करने का प्रभाव <code>translate(20, 0)</code> को एक बार कॉल करने जैसा ही होता है। <a
+   href='/reference/p5/push'>push()</a> और <a href='/reference/p5/pop'>pop()</a> फ़ंक्शंस का उपयोग अलग-अलग ड्राइंग समूहों के भीतर परिवर्तनों को अलग करने के लिए किया जा सकता है। .</p>
 
-  will appear to be shifted. There are two ways to call <code>translate()</code>
-  with
-
-  parameters that set the origin's position.</p>
-
-  <p>The first way to call <code>translate()</code> uses numbers to set the
-  amount of
-
-  translation. The first two parameters, <code>x</code> and <code>y</code>, set
-  the amount to
-
-  translate along the positive x- and y-axes. For example, calling
-
-  <code>translate(20, 30)</code> translates the origin 20 pixels along the
-  x-axis and 30
-
-  pixels along the y-axis. The third parameter, <code>z</code>, is optional. It
-  sets the
-
-  amount to translate along the positive z-axis. For example, calling
-
-  <code>translate(20, 30, 40)</code> translates the origin 20 pixels along the
-  x-axis,
-
-  30 pixels along the y-axis, and 40 pixels along the z-axis.</p>
-
-  <p>The second way to call <code>translate()</code> uses a
-
-  <a href="/reference/p5/p5.Vector">p5.Vector</a> object to set the amount of
-
-  translation. For example, calling <code>translate(myVector)</code> uses the
-  x-, y-,
-
-  and z-components of <code>myVector</code> to set the amount to translate along
-  the x-,
-
-  y-, and z-axes. Doing so is the same as calling
-
-  <code>translate(myVector.x, myVector.y, myVector.z)</code>.</p>
-
-  <p>By default, transformations accumulate. For example, calling
-
-  <code>translate(10, 0)</code> twice has the same effect as calling
-
-  <code>translate(20, 0)</code> once. The <a
-  href="/reference/p5/push">push()</a> and
-
-  <a href="/reference/p5/pop">pop()</a> functions can be used to isolate
-
-  transformations within distinct drawing groups.</p>
-
-  <p>Note: Transformations are reset at the beginning of the draw loop. Calling
-
-  <code>translate(10, 0)</code> inside the <a
-  href="/reference/p5/draw">draw()</a> function won't
-
-  cause shapes to move continuously.</p>
+   <p>ध्यान दें: ट्रांसफ़ॉर्मेशन ड्रॉ लूप की शुरुआत में रीसेट किए जाते हैं। <a के अंदर <code>translate(10, 0)</code> को कॉल करना
+   href='/reference/p5/draw'>draw()</a> फ़ंक्शन के कारण आकृतियाँ लगातार हिलती नहीं रहेंगी।</p>
 line: 1224
 isConstructor: false
 itemtype: method
