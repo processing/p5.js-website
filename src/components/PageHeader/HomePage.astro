@@ -21,21 +21,34 @@ const { config } = Astro.props;
     </div>
     <p class="text-body-caption pb-sm mt-0">{config.data.heroImageCaption}</p>
   </div>
-  <!-- This lets us swap image url based on screen size -->
-  <picture>
-    <!-- have to hard code these because css, see variables.scss for source of truth -->
-    <source
-      media="(max-width: 767px)"
-      srcset={config.data.heroImageMobile.src}
-    />
-    <source
-      media="(min-width: 768px)"
-      srcset={config.data.heroImageDesktop.src}
-    />
-    <img
-      class="full-bleed-image"
-      src={config.data.heroImageMobile.src}
-      alt={config.data.heroImageAltText}
-    />
-  </picture>
+  <img
+    class="full-bleed-image"
+    src={config.data.heroImageDesktop.src}
+    alt={config.data.heroImageAltText}
+    loading="eager"
+  />
+  {
+    [
+      config.data.heroImageMobile.src,
+      config.data.heroImageMobile.src,
+      config.data.heroImageMobile.src,
+    ].map((src) => (
+      <img
+        class="full-bleed-image hidden"
+        src={src}
+        alt={config.data.heroImageAltText}
+        loading="lazy"
+      />
+    ))
+  }
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const images = document.querySelectorAll("img.full-bleed-image");
+    images[0].classList.add("hidden");
+    images[Math.round(Math.random() * images.length)].classList.remove(
+      "hidden"
+    );
+  });
+</script>
