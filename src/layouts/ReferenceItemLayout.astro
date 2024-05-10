@@ -71,6 +71,9 @@ const relatedReferences = [
   ...relatedReferencesFromEntryData,
   ...relatedEntries,
 ].slice(0, 4);
+
+const seenParams: Record<string, true> = {};
+
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
@@ -134,15 +137,19 @@ const relatedReferences = [
                 ))}
               {entry.data.overloads &&
                 entry.data.overloads.map((overload: ReferenceOverload) =>
-                  overload.params.map((param: ReferenceParam) => (
-                    <div class="grid grid-cols-6 gap-[40px] text-body">
-                      <h4 class="col-span-1">{param.name}</h4>
-                      <span
-                        class="col-span-5 [&_p]:m-0 [&_a]:underline"
-                        set:html={param.description}
-                      />
-                    </div>
-                  ))
+                  overload.params.map((param: ReferenceParam) => {
+                    if (seenParams[param.name]) return <></>;
+                    seenParams[param.name] = true;
+                    return (
+                      <div class="grid grid-cols-6 gap-[40px] text-body">
+                        <h4 class="col-span-1">{param.name}</h4>
+                        <span
+                          class="col-span-5 [&_p]:m-0 [&_a]:underline"
+                          set:html={param.description}
+                        />
+                      </div>
+                    )
+                  })
                 )}
             </div>
           </>
