@@ -19,25 +19,24 @@ const { config } = Astro.props;
         className="col-span-1 motion-safe:animate-spin-slow text-logo-color h-full max-w-full"
       />
     </div>
-    <p class="text-body-caption pb-sm mt-0">{config.data.heroImageCaption}</p>
+    {
+      config.data.heroImages.map((im, i) => (
+        <p
+          class={`hero-caption text-body-caption pb-sm mt-0 ${i > 0 ? "hidden" : ""}`}
+        >
+          {im.caption}
+        </p>
+      ))
+    }
   </div>
-  <img
-    class="full-bleed-image"
-    src={config.data.heroImageDesktop.src}
-    alt={config.data.heroImageAltText}
-    loading="eager"
-  />
+
   {
-    [
-      config.data.heroImageMobile.src,
-      config.data.heroImageMobile.src,
-      config.data.heroImageMobile.src,
-    ].map((src) => (
+    config.data.heroImages.map((im, i) => (
       <img
-        class="full-bleed-image hidden"
-        src={src}
-        alt={config.data.heroImageAltText}
-        loading="lazy"
+        class={`hero-image full-bleed-image ${i > 0 ? "hidden" : ""}`}
+        src={im.image.src}
+        alt={im.altText}
+        loading={i > 0 ? "lazy" : "eager"}
       />
     ))
   }
@@ -45,10 +44,20 @@ const { config } = Astro.props;
 
 <script>
   document.addEventListener("DOMContentLoaded", (event) => {
-    const images = document.querySelectorAll("img.full-bleed-image");
-    images[0].classList.add("hidden");
-    images[Math.round(Math.random() * images.length)].classList.remove(
-      "hidden"
-    );
+    // find all hero image elements
+    const images = document.querySelectorAll("img.hero-image");
+    if (images.length > 1) {
+      const shownImageInd = Math.round(Math.random() * images.length);
+      // hide the default one
+      images[0].classList.add("hidden");
+      // show a random one
+      images[shownImageInd].classList.remove("hidden");
+      // do the same for captions
+      const captions = document.querySelectorAll("p.hero-caption");
+      if (captions.length > 1) {
+        captions[0].classList.add("hidden");
+        captions[shownImageInd].classList.remove("hidden");
+      }
+    }
   });
 </script>
