@@ -6,10 +6,15 @@ export const homepageCollection = defineCollection({
     z.object({
       title: z.string(),
       heroText: z.string(),
-      heroImageDesktop: image(),
-      heroImageMobile: image(),
-      heroImageAltText: z.string(),
-      heroImageCaption: z.string(),
+      heroImages: z
+        .array(
+          z.object({
+            image: image(),
+            altText: z.string(),
+            caption: z.string(),
+          }),
+        )
+        .nonempty(),
       referenceHeaderText: z.string(),
       examplesHeaderText: z.string(),
       communityHeaderText: z.string(),
