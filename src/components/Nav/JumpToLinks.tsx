@@ -26,7 +26,7 @@ export const JumpToLinks = ({
         tabIndex={-1}
       >
         <span>{heading}</span>
-        <div class="pt-xs">
+        <div class="pt-[6px]">
           <Icon kind={isOpen ? "chevron-up" : "chevron-down"} />
         </div>
       </button>
@@ -35,10 +35,7 @@ export const JumpToLinks = ({
           {links?.map((link) => (
             <li
               key={link.label}
-              class={`
-              ${link.size === "small" ? "text-body-caption" : "text-body capitalize"}
-                ${link.current ? "underline" : ""}
-                `}
+              class={`${styles.linklabel} ${link.size ?? ""} ${link.current ? "current" : ""}`}
             >
               <a href={link.url}>{link.label}</a>
             </li>
