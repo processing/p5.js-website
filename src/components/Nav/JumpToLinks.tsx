@@ -27,7 +27,7 @@ export const JumpToLinks = ({
       >
         <span>{heading}</span>
         <div class="pt-[6px]">
-          <Icon kind={isOpen ? "chevron-up" : "chevron-down"} />
+          <Icon kind={isOpen ? "chevron-down" : "chevron-up"} />
         </div>
       </button>
       {isOpen && (
