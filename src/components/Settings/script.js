@@ -64,13 +64,37 @@ settingsContainer?.addEventListener("mouseleave", () => {
 settingsContainer?.addEventListener("mousemove", resetInteractionTimeout);
 settingsContainer?.addEventListener("click", resetInteractionTimeout);
 
+// Keeps track of how many clicked anchors we're waiting for
+let activeAnchorScrolls = 0;
+
+// Returns a promise that resolves when scrolling stops. It checks every 200ms
+// until the scrollTop stops changing.
+function waitUntilScrollFinishes() {
+  return new Promise((resolve) => {
+    let prevScrollTop = window.scrollY || document.documentElement.scrollTop;
+    const wait = () => setTimeout(() => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      if (scrollTop === prevScrollTop) {
+        resolve()
+      } else {
+        prevScrollTop = scrollTop;
+        wait();
+      }
+    }, 200);
+    wait();
+  })
+}
+
 // When the user scrolls up, open the settings container
 window.addEventListener(
   "scroll",
   () => {
     let currentScroll = window.scrollY || document.documentElement.scrollTop;
-    // if we're scrolled up to where the container lives, close immediately
-    if (currentScroll < 120) {
+
+    if (activeAnchorScrolls > 0) {
+      // Do nothing if the scroll is from clicking an anchor link
+    } else if (currentScroll < 120) {
+      // if we're scrolled up to where the container lives, close immediately
       closeSettings();
     } else if (
       lastScrollTop > currentScroll &&
@@ -84,3 +108,26 @@ window.addEventListener(
   },
   false,
 );
+
+const preventSettings = () => {
+  activeAnchorScrolls++;
+  waitUntilScrollFinishes().then(() => {
+    activeAnchorScrolls--;
+  });
+};
+
+const mutationObserver = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (node.nodeName === 'A' && node.getAttribute('href') && node.getAttribute('href').startsWith('#')) {
+        node.addEventListener('click', preventSettings);
+      }
+    }
+  }
+});
+mutationObserver.observe(document, { childList: true });
+window.addEventListener('load', () => {
+  for (const a of document.querySelectorAll('a[href^="#"]')) {
+    a.addEventListener('click', preventSettings);
+  }
+});
