@@ -77,29 +77,30 @@ export const ReferenceDirectoryWithFilter = ({
     }, []);
   }, [categoryData, searchKeyword]);
 
-  const renderEntries = (entries: ReferenceDirectoryEntry[]) => (
-    <div class="content-grid">
-      {entries.map((entry) => (
-        <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
-          <a
-            href={`/reference/${entry.data.path}`}
-            class="group hover:no-underline"
-            aria-label={entry.data.title}
-            aria-describedby={`${entry.data.title}-description`}
-          >
-            <span
-              class="text-body-mono group-hover:underline"
-              dangerouslySetInnerHTML={{ __html: entry.data.title }}
-            />
-            <p
-              class="mt-1 text-sm"
-              id={`${entry.data.title}-description`}
-            >{`${getOneLineDescription(entry.data.description)}`}</p>
-          </a>
-        </div>
-      ))}
-    </div>
-  );
+  const renderEntries = (entries: ReferenceDirectoryEntry[]) =>
+    entries.length === 0 ? null : (
+      <div class="content-grid">
+        {entries.map((entry) => (
+          <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
+            <a
+              href={`/reference/${entry.data.path}`}
+              class="group hover:no-underline"
+              aria-label={entry.data.title}
+              aria-describedby={`${entry.data.title}-description`}
+            >
+              <span
+                class="text-body-mono group-hover:underline"
+                dangerouslySetInnerHTML={{ __html: entry.data.title }}
+              />
+              <p
+                class="mt-1 text-sm"
+                id={`${entry.data.title}-description`}
+              >{`${getOneLineDescription(entry.data.description)}`}</p>
+            </a>
+          </div>
+        ))}
+      </div>
+    );
 
   const getSubcatHeading = (
     subcat: { name: string },
