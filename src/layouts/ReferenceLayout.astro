@@ -8,18 +8,20 @@ import {
   getRefEntryTitleConcatWithParen,
   normalizeReferenceRoute,
 } from "../pages/_utils";
-import { setJumpToState, type JumpToState } from "../globals/state";
+import {
+  setJumpToState,
+  type JumpToLink,
+  type JumpToState,
+} from "../globals/state";
 import {
   getCurrentLocale,
   getUiTranslationWithFallback,
   getUiTranslator,
 } from "../i18n/utils";
 
-type ReferenceEntry = CollectionEntry<"reference">;
-
 interface Props {
   title: string;
-  entries: ReferenceEntry[];
+  entries: CollectionEntry<"reference">[];
 }
 
 function strCompare(a: string, b: string) {
@@ -93,13 +95,13 @@ const categoryData = categories.map((category) => {
         })),
     },
     ...subcats.map((subcat, i) => ({
-      name: (i === 0 && subcat === category) ? undefined : subcat,
+      name: i === 0 && subcat === category ? undefined : subcat,
       entry: undefined,
       entries: directEntries
         .filter(
           (e) =>
             e.data.submodule === subcat &&
-            (!e.data.class || e.data.class === 'p5') &&
+            (!e.data.class || e.data.class === "p5") &&
             !e.data.isConstructor &&
             e.data.description !== ""
         )
@@ -133,14 +135,14 @@ const categoryData = categories.map((category) => {
   };
 });
 
-const pageJumpToLinks = categoryData.map((category) => ({
-  label: category.name,
+const pageJumpToLinks: JumpToLink[] = categoryData.map((category) => ({
+  label: category.name as string,
   url: `#${category.name}`,
 }));
 
-const pageJumpToState = {
+const pageJumpToState: JumpToState = {
   links: pageJumpToLinks,
-} as JumpToState;
+};
 
 setJumpToState(pageJumpToState);
 ---
