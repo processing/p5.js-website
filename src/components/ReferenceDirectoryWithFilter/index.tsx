@@ -110,16 +110,16 @@ export const ReferenceDirectoryWithFilter = ({
     }
 
     return (
-      <div class="my-lg">
+      <div class="my-[40px]">
         {subcat.name.includes("p5.") ? (
           <a
             id={subcat.name}
             href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
           >
-            <h3>{subcat.name}</h3>
+            <h3 className="m-0">{subcat.name}</h3>
           </a>
         ) : (
-          <h3>
+          <h3 className="m-0">
             {subcat.name}
             <a id={subcat.name} />
           </h3>
@@ -133,10 +133,7 @@ export const ReferenceDirectoryWithFilter = ({
       return <div class="mt-lg">{uiTranslations["No Results"]}</div>;
     }
     return filteredEntries.map((category) => (
-      <div
-        class="my-md border-b border-type-color pb-2xl last:!border-0"
-        key={category.name}
-      >
+      <section key={category.name}>
         <h2>
           {category.name}
           <a id={category.name} />
@@ -147,7 +144,7 @@ export const ReferenceDirectoryWithFilter = ({
             {renderEntries(subcat.entries)}
           </div>
         ))}
-      </div>
+      </section>
     ));
   };
 
