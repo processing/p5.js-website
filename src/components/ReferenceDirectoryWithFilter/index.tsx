@@ -77,29 +77,30 @@ export const ReferenceDirectoryWithFilter = ({
     }, []);
   }, [categoryData, searchKeyword]);
 
-  const renderEntries = (entries: ReferenceDirectoryEntry[]) => (
-    <div class="content-grid">
-      {entries.map((entry) => (
-        <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
-          <a
-            href={`/reference/${entry.data.path}`}
-            class="group hover:no-underline"
-            aria-label={entry.data.title}
-            aria-describedby={`${entry.data.title}-description`}
-          >
-            <span
-              class="text-body-mono group-hover:underline"
-              dangerouslySetInnerHTML={{ __html: entry.data.title }}
-            />
-            <p
-              class="mt-1 text-sm"
-              id={`${entry.data.title}-description`}
-            >{`${getOneLineDescription(entry.data.description)}`}</p>
-          </a>
-        </div>
-      ))}
-    </div>
-  );
+  const renderEntries = (entries: ReferenceDirectoryEntry[]) =>
+    entries.length === 0 ? null : (
+      <div class="content-grid">
+        {entries.map((entry) => (
+          <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
+            <a
+              href={`/reference/${entry.data.path}`}
+              class="group hover:no-underline"
+              aria-label={entry.data.title}
+              aria-describedby={`${entry.data.title}-description`}
+            >
+              <span
+                class="text-body-mono group-hover:underline"
+                dangerouslySetInnerHTML={{ __html: entry.data.title }}
+              />
+              <p
+                class="mt-1 text-sm"
+                id={`${entry.data.title}-description`}
+              >{`${getOneLineDescription(entry.data.description)}`}</p>
+            </a>
+          </div>
+        ))}
+      </div>
+    );
 
   const getSubcatHeading = (
     subcat: { name: string },
@@ -110,21 +111,20 @@ export const ReferenceDirectoryWithFilter = ({
     }
 
     return (
-      <div class="my-lg">
+      <>
         {subcat.name.includes("p5.") ? (
           <a
             id={subcat.name}
             href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
           >
-            <h3>{subcat.name}</h3>
+            <h3 className="m-0 py-[40px]">{subcat.name}</h3>
           </a>
         ) : (
-          <h3>
+          <h3 className="m-0 py-[40px]" id={subcat.name}>
             {subcat.name}
-            <a id={subcat.name} />
           </h3>
         )}
-      </div>
+      </>
     );
   };
 
@@ -133,13 +133,9 @@ export const ReferenceDirectoryWithFilter = ({
       return <div class="mt-lg">{uiTranslations["No Results"]}</div>;
     }
     return filteredEntries.map((category) => (
-      <div
-        class="my-md border-b border-type-color pb-2xl last:!border-0"
-        key={category.name}
-      >
-        <h2>
+      <section key={category.name}>
+        <h2 class="mb-0" id={category.name}>
           {category.name}
-          <a id={category.name} />
         </h2>
         {category.subcats.map((subcat) => (
           <div key={subcat.name}>
@@ -147,7 +143,7 @@ export const ReferenceDirectoryWithFilter = ({
             {renderEntries(subcat.entries)}
           </div>
         ))}
-      </div>
+      </section>
     ));
   };
 
@@ -162,12 +158,12 @@ export const ReferenceDirectoryWithFilter = ({
     <div>
       <div class="h-0 overflow-visible">
         <div class="relative -top-[75px] grid h-[75px] grid-cols-2 gap-x-[40px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg lg:grid-cols-4">
-          <div class="text-body col-span-3 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
+          <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
             <input
               type="text"
               id="search"
               ref={inputRef}
-              class="w-full  bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color"
+              class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
               placeholder="Filter by keyword"
               onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
                 const target = e.target as HTMLInputElement;
