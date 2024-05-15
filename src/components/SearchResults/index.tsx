@@ -116,7 +116,7 @@ const SearchResults = ({
               onSearchChange(e);
             }
           }}
-          class="h-fit w-full appearance-none bg-transparent px-md text-4xl placeholder-sidebar-type-color"
+          class="h-fit w-full appearance-none bg-transparent px-md text-4xl placeholder-sidebar-type-color focus:outline-0"
           aria-label="Search through site content"
           required
         />
