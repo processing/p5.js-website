@@ -111,21 +111,20 @@ export const ReferenceDirectoryWithFilter = ({
     }
 
     return (
-      <div class="my-[40px]">
+      <>
         {subcat.name.includes("p5.") ? (
           <a
             id={subcat.name}
             href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
           >
-            <h3 className="m-0">{subcat.name}</h3>
+            <h3 className="m-0 py-[40px]">{subcat.name}</h3>
           </a>
         ) : (
-          <h3 className="m-0">
+          <h3 className="m-0 py-[40px]" id={subcat.name}>
             {subcat.name}
-            <a id={subcat.name} />
           </h3>
         )}
-      </div>
+      </>
     );
   };
 
@@ -135,9 +134,8 @@ export const ReferenceDirectoryWithFilter = ({
     }
     return filteredEntries.map((category) => (
       <section key={category.name}>
-        <h2>
+        <h2 class="mb-0" id={category.name}>
           {category.name}
-          <a id={category.name} />
         </h2>
         {category.subcats.map((subcat) => (
           <div key={subcat.name}>
