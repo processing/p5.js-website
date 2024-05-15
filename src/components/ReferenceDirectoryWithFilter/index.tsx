@@ -167,7 +167,7 @@ export const ReferenceDirectoryWithFilter = ({
               type="text"
               id="search"
               ref={inputRef}
-              class="w-full  bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color"
+              class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
               placeholder="Filter by keyword"
               onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
                 const target = e.target as HTMLInputElement;
