@@ -41,7 +41,7 @@ const run = async () => {
       .toLowerCase()
       .normalize("NFD")
       .replaceAll(/[\u0300-\u036f]/g, "")
-      .replaceAll(/[ ._<>*%]/g, "-");
+      .replaceAll(/[ ._<>*%\\/]/g, "-");
     const filePath = path.join(outputDirectory, `${slug}.yaml`);
 
     // never overwrite an existing file
