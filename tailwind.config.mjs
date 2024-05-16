@@ -55,6 +55,10 @@ export default {
         "3xl": "var(--spacing-3xl)",
         "4xl": "var(--spacing-4xl)",
         "5xl": "var(--spacing-5xl)",
+        gutter: "var(--gutter)",
+        "gutter-sm": "var(--gutter-sm)",
+        "gutter-md": "var(--gutter-md)",
+        "gutter-lg": "var(--gutter-lg)",
       },
       animation: {
         "spin-slow": "spin 7s linear infinite",
