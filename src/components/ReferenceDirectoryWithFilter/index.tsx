@@ -117,10 +117,10 @@ export const ReferenceDirectoryWithFilter = ({
             id={subcat.name}
             href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
           >
-            <h3 className="m-0 py-[40px]">{subcat.name}</h3>
+            <h3 className="py-gutter-md m-0">{subcat.name}</h3>
           </a>
         ) : (
-          <h3 className="m-0 py-[40px]" id={subcat.name}>
+          <h3 className="py-gutter-md m-0" id={subcat.name}>
             {subcat.name}
           </h3>
         )}
@@ -157,7 +157,7 @@ export const ReferenceDirectoryWithFilter = ({
   return (
     <div>
       <div class="h-0 overflow-visible">
-        <div class="relative -top-[75px] grid h-[75px] grid-cols-2 gap-x-[40px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg lg:grid-cols-4">
+        <div class="gap-x-gutter-sm lg:gap-x-gutter-md relative -top-[75px] grid h-[75px] grid-cols-2 border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg lg:grid-cols-4">
           <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
             <input
               type="text"
