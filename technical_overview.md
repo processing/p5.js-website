@@ -1,6 +1,6 @@
 # Technical Overview
 
-## Development
+## Getting Started with Development
 
 ### Setup
 
@@ -20,17 +20,6 @@ Running this will start up a local dev server and print out the address in your 
 npm run dev
 ```
 
-### Making Changes
-
-As you make changes to the code on the site, the page you see rendered in the browser from `npm run dev` will update automatically. However, you may need to refresh to see some styling changes reflected.
-
-You can check your work with the following commands. These will run type checking on typescript files and check for common mistakes in javascript files.
-
-```shellsession
-npm run lint
-npm run check
-```
-
 ## File Organization
 
 The website code is divided into a few main folders:
@@ -43,10 +32,37 @@ The website code is divided into a few main folders:
 - `styles/` contains globally applied css styles for the website
 - `test/` contains a set of unit tests that cover some important utility functions and key components
 
-## Run Tests
+## Making Changes
+
+As you make changes to the code on the site, the page you see rendered in the browser from `npm run dev` will update automatically. However, you may need to refresh to see some styling changes reflected.
+
+You can check your work with the following commands. These will run type checking on typescript files and check for common mistakes in javascript files.
+
+```shellsession
+npm run lint
+npm run check
+```
+
+## Running Tests
 
 To run the suite of unit tests, use:
 
 ```shellsession
 npm run test
+```
+
+## Building the site
+
+We are using the [Astro framework](https://astro.build) as a [static site generator](https://docs.astro.build/en/basics/rendering-modes/#pre-rendered), which means that the build process renders every single page of the website as HTML (and JavaScript and CSS) and then serves them using a simple server. These are then uploaded to [GitHub Pages](https://pages.github.com/). This all happens automatically with GitHub Actions when code is merged to the `main` branch in this repo.
+
+You can try building the site locally with
+
+```shellsession
+npm run build
+```
+
+And then view it locally with
+
+```shellsession
+npm run preview
 ```
