@@ -107,7 +107,7 @@ export const ReferenceDirectoryWithFilter = ({
     category: { name: string },
   ) => {
     if (!subcat.name || !category.name || subcat.name === "p5.sound") {
-      return <div class="mb-sm" />;
+      return null;
     }
 
     return (
