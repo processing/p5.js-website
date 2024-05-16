@@ -1,8 +1,12 @@
-# WIP
-
-This project is undergoing **major changes** currently. This will be the case until the end of April. If you are here to edit or translate content, please do so inside [the `src/content/` folder](https://github.com/bocoup/p5.js-website/tree/main/src/content)
+# [BETA] p5.js Website
 
 ## Contributing
+
+### Content Changes
+
+If you are here to edit or translate content, please do so inside [the `src/content/` folder](https://github.com/bocoup/p5.js-website/tree/main/src/content)
+
+### Code Changes
 
 For making code changes, check out the [technical overview](./techical-overview.md) to get started.
 
