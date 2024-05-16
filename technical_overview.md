@@ -33,7 +33,7 @@ npm run check
 
 ## File Organization
 
-The website code is divided into a few main folders.
+The website code is divided into a few main folders:
 
 - `src/content/` this is where almost all content authoring happens in the repo. These files contain the content that is used to generate the website.
 - `src/components/` holds UI elements that are rendered on different pages of the website. Things like basic buttons, as well as more specialized things like the top navigation menus are here.
