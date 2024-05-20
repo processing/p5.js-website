@@ -28,7 +28,13 @@ export const ScalingIframe = ({
     <iframe
       width={width}
       {...props}
-      style={{ transform: `scale(${scale.toFixed(4)})`, transformOrigin: 'top left' }}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        transform: `scale(${scale.toFixed(4)})`,
+        transformOrigin: "top left",
+      }}
       ref={iframeRef}
     />
   );
