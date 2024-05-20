@@ -137,7 +137,7 @@ export const thumbnailDimensions = 400;
 export function isCurationResponse<C extends keyof AnyEntryMap>(
   item: OpenProcessingCurationResponse[number] | CollectionEntry<C>,
 ): item is OpenProcessingCurationResponse[number] {
-  return "visualID" in item;
+  return "visualID" in (item as any);
 }
 
 export const getRandomCurationSketches = memoize(async (num = 4) => {
