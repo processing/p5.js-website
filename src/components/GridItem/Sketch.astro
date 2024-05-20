@@ -1,17 +1,24 @@
 ---
 import Image from "@components/Image/index.astro";
 import {
-  makeThumbnailUrl,
+  getSketchThumbnailSource,
   thumbnailDimensions,
   type OpenProcessingCurationResponse,
 } from "@/src/api/OpenProcessing";
 
 interface Props {
   item: OpenProcessingCurationResponse[number];
+  scale?: number;
   lazyLoad?: boolean;
 }
 
-const { item, lazyLoad } = Astro.props;
+const { item, lazyLoad, scale = 1 } = Astro.props;
+const imgSrc = await getSketchThumbnailSource(item.visualID)
+const width = Math.min(thumbnailDimensions * scale, 1500);
+const height = Math.min(
+  (imgSrc.width && imgSrc.height ? imgSrc.height / imgSrc.width : 1) * thumbnailDimensions * scale,
+  1000,
+);
 ---
 
 <a
@@ -24,10 +31,10 @@ const { item, lazyLoad } = Astro.props;
     // doesn't include that information
   }
   <Image
-    src={makeThumbnailUrl(item.visualID)}
+    src={imgSrc}
     alt="Screenshot of sketch"
-    width={thumbnailDimensions}
-    height={thumbnailDimensions}
+    width={width}
+    height={scale}
     loading={lazyLoad ? "lazy" : "eager"}
   />
   <p
