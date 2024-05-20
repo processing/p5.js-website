@@ -3,6 +3,7 @@ import { Icon } from "../Icon";
 
 interface Props {
   title: string;
+  titleAuthor?: string
   subtitle?: string;
   topic: {
     name: string;
@@ -10,7 +11,12 @@ interface Props {
   };
 }
 
-const { title, topic, subtitle } = Astro.props;
+const { title, topic, subtitle, titleAuthor } = Astro.props;
+let fullTitle = title;
+if (titleAuthor) {
+  fullTitle += '\n';
+  fullTitle += titleAuthor;
+}
 ---
 
 <div class="px-5 md:px-lg pt-5xl lg:pt-3xl pb-sm">
@@ -24,6 +30,6 @@ const { title, topic, subtitle } = Astro.props;
     >
     <span>{title}</span>
   </div>
-  <h1 class="whitespace-pre-line my-sm">{title}</h1>
+  <h1 class="whitespace-pre-line my-sm">{fullTitle}</h1>
   {subtitle && <p class="text-h3">{subtitle}</p>}
 </div>
