@@ -64,6 +64,7 @@ export type OpenProcessingSketchResponse = {
   userID: string;
   submittedOn: string;
   createdOn: string;
+  mode: string;
 };
 
 /**
