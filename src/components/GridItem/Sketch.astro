@@ -5,7 +5,6 @@ import {
   thumbnailDimensions,
   type OpenProcessingCurationResponse,
 } from "@/src/api/OpenProcessing";
-import isString from "lodash/isstring"
 
 interface Props {
   item: OpenProcessingCurationResponse[number];
@@ -17,7 +16,7 @@ const { item, lazyLoad, scale = 1 } = Astro.props;
 const imgSrc = await getSketchThumbnailSource(item.visualID)
 const width = Math.min(thumbnailDimensions * scale, 1500);
 const height = Math.min(
-  (isString(imgSrc) ? 1 : imgSrc.height / imgSrc.width) * thumbnailDimensions * scale,
+  (typeof imgSrc === 'string' ? 1 : (imgSrc as any).height / (imgSrc as any).width) * thumbnailDimensions * scale,
   1000,
 );
 ---
@@ -31,22 +30,13 @@ const height = Math.min(
     // the thumbnail looks like, and the OpenProcessing API
     // doesn't include that information
   }
-  {isString(imgSrc) ? (
-    <img
-      src={imgSrc as any}
-      alt="Screenshot of sketch"
-      width={width}
-      height={height}
-    />
-  ) : (
-    <Image
-      src={imgSrc}
-      alt="Screenshot of sketch"
-      width={width}
-      height={height}
-      loading={lazyLoad ? "lazy" : "eager"}
-    />
-  )}
+  <Image
+    src={imgSrc as any}
+    alt="Screenshot of sketch"
+    width={width}
+    height={height}
+    loading={lazyLoad ? "lazy" : "eager"}
+  />
   <p
     class="text-body mt-xs text-wrap break-words break-keep group-hover:underline"
   >
