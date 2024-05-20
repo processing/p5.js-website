@@ -119,8 +119,8 @@ export const makeThumbnailUrl = (id: string) =>
   `https://openprocessing-usercontent.s3.amazonaws.com/thumbnails/visualThumbnail${id}@2x.jpg`;
 
 export const getSketchThumbnailSource = async (id: string) => {
-  const manualThumbs = import.meta.glob<ImageMetadata>('../content/sketches/images/*', { import: 'default' })
-  const key = `../content/sketches/images/${id}.png`;
+  const manualThumbs = import.meta.glob<ImageMetadata>('./images/*', { import: 'default' })
+  const key = `./images/${id}.png`;
   if (manualThumbs[key]) {
     const img = await manualThumbs[key]()
     return img;
