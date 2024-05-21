@@ -32,3 +32,74 @@ Both of these routes use the [TutorialsLayout](/src/layouts/TutorialsLayout.astr
 The main difference between these two routing files is how they retrieve the correct translation. The English version retreives the English version of the content. The other translations retrieve their version of the content and then fill in any gaps with English versions. See `getCollectionInLocaleWithFallbacks()` for how this works.
 
 Because of this subtle duplication, we try to keep the files in `src/pages/` as short as possible and move rendering logic into the [layout files](/src/layouts/).
+
+## Using translations
+
+When you are editing an existing page or adding a new one, there are two ways to use individual translated strings from the ["ui" content collection](/src/content/ui/). It depends on what kind of file you are editing:
+
+### Astro files (`.astro`)
+
+In .astro files you can use `getCurrentLocale()` and `getUiTranslator()` like so:
+
+```astro
+---
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+const introText = t("New intro paragraph");
+---
+
+<p>{introText}</p>
+```
+
+`getCurrentLocale()` extracts the current locale code from the page's URL. Passing this to `getUiTranslator()` tells it which language to return translations for. Whenever a translation is missing for the given language, it will return the string in English (the fallback language).
+
+The returned translator function (`t`) accepts a key or list of keys to know which translation string to return. Check [the English translation file to see the most complete list of what's already available](/src/content/ui/en.yaml). The keys you pass to the translator function are used to lookup a string in that file (or the equivalent of it in the current language). If the `en.yaml` file has the following content:
+
+```yaml
+Forum: Forum
+Sketches: Sketches
+Libraries: Libraries
+People: People
+New intro paragraph: Welcome to this new page we just added!
+sectionTitles:
+  main: An intro to squares
+```
+
+Then `t("New intro paragraph")` will return "Welcome to this new page we just added!" and `t("sectionTitles", main)` will return "An intro to squares".
+
+### Preact files (`.jsx`, `.tsx`)
+
+Preact files cannot access the current url directly with `Astro.url.pathname`, so we have to take a different approach: we pass in a translation object as a prop. Every Preact component in this project is rendered from an Astro layout or component file, so we can rely on it to get the correct current language.
+
+In our astro file, we use our old friend `getCurrentLocale()` and then pass the result to `getUiTranslationWithFallback()` to get an object of translations. And pass it to the `HelloButton` component.
+
+```astro
+---
+import { getCurrentLocale, getUiTranslationWithFallback } from "@i18n/utils";
+import { HelloButton } from "@components/HellowButton/index.jsx"
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const uiTranslations = await getUiTranslationWithFallback(currentLocale);
+---
+
+<HelloButton uiTranslations={uiTranslations} />
+
+```
+
+And then in the HelloButton Preact component, we acess the translations using object keys:
+
+```jsx
+export const HelloButton = (props) => {
+  const { uiTranslations } = props;
+  return <button>{uiTranslations["hello"]}</button>;
+};
+```
+
+Essentially, the arguments you would pass to `t` in the first example for astro files are the same you would pass as keys to the `uiTranslations` object. If its a nested key, that looks like:
+
+```jsx
+uiTranslations["sectionTitles"]["main"];
+```
