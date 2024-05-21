@@ -28,6 +28,8 @@ The website code is divided into a few main folders:
 - `src/components/` holds UI elements that are rendered on different pages of the website. Things like basic buttons, as well as more specialized things like the top navigation menus are here.
 - `src/layouts/` this contains the basic visual structure of each page. If you are looking to edit a specific page of the website, finding the layout for it in this folder is a great place to start.
 - `src/pages/` these files are primarily used to create the routes (the different URLs) for the pages of the website and pull content from `src/content/`. Note that every route basically exists twice: once in `src/pages/` and again in `src/[locale]/pages/` to support localized urls. Read more about this in [./localization-architecture.md]
+- `src/api/` holds the logic for fetching information from the OpenProcessing API, where all the gallery sketches for this website are stored
+- `src/i18n/` holds the utilities and configuration for working with translations
 - `src/scripts/` contains utility scripts that update the files in `src/content/` with changes in the p5.js repo
 - `styles/` contains globally applied css styles for the website
 - `test/` contains a set of unit tests that cover some important utility functions and key components
