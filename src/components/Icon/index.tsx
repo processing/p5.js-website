@@ -1,5 +1,6 @@
 export type IconKind =
   | "arrow"
+  | "arrow-lg"
   | "code-brackets"
   | "refresh"
   | "play"
@@ -42,6 +43,27 @@ export const Icon = (props: IconProps) => {
         >
           <path
             d="M15.353 0.146446L20.7065 5.5L15.353 10.8536C15.1577 11.0488 14.8411 11.0488 14.6459 10.8536C14.4506 10.6583 14.4506 10.3417 14.6459 10.1464L18.7923 6L4.99951 6C4.72337 6 4.49951 5.77614 4.49951 5.5C4.49951 5.22386 4.72337 5 4.99951 5L18.7923 5L14.6459 0.853553C14.4506 0.658291 14.4506 0.341708 14.6459 0.146446C14.8411 -0.0488155 15.1577 -0.0488155 15.353 0.146446Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case "arrow-lg":
+      return (
+        <svg
+          width="61"
+          height="32"
+          viewBox="0 0 61 32"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={props.className}
+        >
+          <path
+            d="M45 31L60 16L45 0.999999"
+            stroke="currentColor"
+            stroke-linecap="round"
+          />
+          <path
+            d="M15 15.5C14.7239 15.5 14.5 15.7239 14.5 16C14.5 16.2761 14.7239 16.5 15 16.5L15 15.5ZM60 15.5L15 15.5L15 16.5L60 16.5L60 15.5Z"
             fill="currentColor"
           />
         </svg>
