@@ -6,6 +6,7 @@ import type { CollectionEntry } from "astro:content";
 import { setJumpToState } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import lodash from "lodash";
+import { removeLocaleAndExtension } from "../pages/_utils";
 
 interface Props {
   entries: CollectionEntry<"people">[];
@@ -66,7 +67,10 @@ setJumpToState(null);
         <h2>{category.label}</h2>
         <ul class="content-grid">
           {category.members.map((person) => (
-            <li class="col-span-6 md:col-span-9 lg:col-span-12 content-grid">
+            <li
+              id={removeLocaleAndExtension(person.id)}
+              class="col-span-6 md:col-span-9 lg:col-span-12 content-grid"
+            >
               <div class="col-span-4 md:col-span-9 lg:col-span-4">
                 <Image
                   src={person.data.image!}
@@ -101,7 +105,7 @@ setJumpToState(null);
     <ul class="content-grid-simple !gap-y-0">
       {
         lodash.shuffle(contributorEntries.members).map((person) => (
-          <li class="col-span-1">
+          <li class="col-span-1" id={removeLocaleAndExtension(person.id)}>
             <a
               href={person.data.url}
               aria-label={`Link to ${person.data.name}'s personal website'`}
