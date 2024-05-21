@@ -10,6 +10,7 @@ import keywordExtractor from "keyword-extractor";
 import { contentTypes } from "../../globals/globals";
 import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
+import { removeLocalePrefix } from "@/src/i18n/utils";
 
 interface SearchIndex {
   [title: string]: {
@@ -248,7 +249,12 @@ const generateSearchIndex = async (
         break;
       case "people":
         title = data.name;
-        relativeUrl = `/people/`;
+        relativeUrl = `/people/#${data.name
+          // copied from people build script
+          .toLowerCase()
+          .normalize("NFD")
+          .replaceAll(/[\u0300-\u036f]/g, "")
+          .replaceAll(/[ ._<>*%\\/]/g, "-")}`;
         break;
       case "events":
         title = data.title;
