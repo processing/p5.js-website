@@ -217,7 +217,8 @@ const generateSearchIndex = async (
         description = data.description;
         break;
       case "contributor-docs":
-        title = file.split("/")[4].replace(".mdx", "");
+        relativeUrl = relativeUrl.replace(`/${contentType}`, "/contribute");
+        title = data.title;
         description = getKeywordsFromContent(content, locale);
         break;
       case "examples":
