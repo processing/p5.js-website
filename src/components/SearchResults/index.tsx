@@ -13,7 +13,7 @@ type SearchResultProps = {
   results: SearchResult[];
   searchTerm: string;
   currentLocale: string;
-  onSearchChange: JSX.GenericEventHandler<HTMLInputElement>;
+  onSearchChange: (term?: string) => void;
   uiTranslations: Record<string, string>;
 };
 
@@ -25,6 +25,7 @@ const SearchResults = ({
 }: SearchResultProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [currentFilter, setCurrentFilter] = useState("");
+  const [isInputEdited, setInputEdited] = useState(false);
 
   const allUniqueCategoriesForResults = useMemo(() => {
     const categories = results.map((result) => result.category);
@@ -97,6 +98,11 @@ const SearchResults = ({
       inputRef.current.value = "";
     }
   };
+  const submitInput = () => {
+    if (inputRef.current) {
+      onSearchChange(inputRef.current.value);
+    }
+  };
 
   const renderBigSearchForm = () => {
     return (
@@ -111,22 +117,33 @@ const SearchResults = ({
           value={searchTerm}
           placeholder={uiTranslations["Search"]}
           onKeyDown={(e) => {
+            setInputEdited(true);
             if (e.key === "Enter") {
               e.preventDefault();
-              onSearchChange(e);
+              submitInput();
             }
           }}
           class="h-fit w-full appearance-none bg-transparent px-md text-4xl placeholder-sidebar-type-color focus:outline-0"
           aria-label="Search through site content"
           required
         />
-        <button
-          type="reset"
-          class="absolute right-0 top-0 px-[22px] py-[13px]"
-          onClick={clearInput}
-        >
-          <Icon kind="close-lg" />
-        </button>
+        {isInputEdited ? (
+          <button
+            type="submit"
+            class="absolute right-0 top-[2px] px-[22px] py-[13px]"
+            onClick={submitInput}
+          >
+            <Icon kind="arrow-lg" />
+          </button>
+        ) : (
+          <button
+            type="reset"
+            class="absolute right-0 top-0 px-[22px] py-[13px]"
+            onClick={clearInput}
+          >
+            <Icon kind="close-lg" />
+          </button>
+        )}
       </search>
     );
   };

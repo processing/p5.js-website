@@ -108,11 +108,9 @@ const SearchProvider = ({
       );
   }, [searchTerm, currentLocale]);
 
-  const handleSearchTermChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    const { value } = target;
-    if (value) {
-      setSearchTerm(target.value);
+  const handleSearchTermChange = (term?: string) => {
+    if (term !== undefined) {
+      setSearchTerm(term);
     }
   };
 
@@ -123,6 +121,7 @@ const SearchProvider = ({
       currentLocale={currentLocale as string}
       onSearchChange={handleSearchTermChange}
       uiTranslations={uiTranslations}
+      key={searchTerm}
     />
   );
 };
