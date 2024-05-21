@@ -8,10 +8,12 @@ import {
   makeSketchEmbedUrl,
   makeSketchLinkUrl,
   makeThumbnailUrl,
+  getSketchSize,
 } from "@/src/api/OpenProcessing";
 import LinkButton from "@components/LinkButton/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { setJumpToState } from "../globals/state";
+import { ScalingIframe } from "@components/ScalingIframe";
 
 interface Props {
   sketchId: string;
@@ -35,6 +37,16 @@ const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
 setJumpToState(null);
 const moreSketches = await getRandomCurationSketches(4);
 const featuredImageURL = makeThumbnailUrl(sketchInfo.visualID);
+
+let { width, height } = await getSketchSize(sketchInfo.visualID);
+let heightOverWidth = 1 / 1.5;
+if (width && height) {
+  // Account for OP header bar
+  height += 50;
+  heightOverWidth = height / width;
+}
+
+const iframeTitle = `OpenProcessing Sketch: ${sketchInfo.title} by ${authorName}`;
 ---
 
 <Head
@@ -45,19 +57,37 @@ const featuredImageURL = makeThumbnailUrl(sketchInfo.visualID);
 />
 
 <BaseLayout
-  title={`${sketchInfo.title}\n${authorName}`}
+  title={sketchInfo.title}
+  titleAuthor={authorName}
   subtitle={dateString}
   variant="item"
   topic={"community"}
 >
-  <div class="max-w-[750px]">
-    <iframe
-      src={makeSketchEmbedUrl(sketchInfo.visualID)}
-      width="400"
-      height="400"
-      title={`OpenProcessing Sketch: ${sketchInfo.title} by ${authorName}`}
-      class="py-md"></iframe>
-    <div class="grid gap-y-sm md:gap-y-md">
+  <div class="max-w-[767px]">
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      paddingBottom: `${(heightOverWidth * 100).toFixed(4)}%`,
+    }}>
+      {width ? (
+        <ScalingIframe
+          client:load
+          src={makeSketchEmbedUrl(sketchInfo.visualID)}
+          width={width}
+          height={height}
+          title={iframeTitle}
+        />
+      ) : (
+        <iframe
+          src={makeSketchEmbedUrl(sketchInfo.visualID)}
+          width="100%"
+          height="100%"
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+          title={iframeTitle}
+        />
+      )}
+    </div>
+    <div class="py-md grid gap-y-sm md:gap-y-md">
       <LinkButton
         variant="code"
         url={`${makeSketchLinkUrl(sketchInfo.visualID)}/#code`}
