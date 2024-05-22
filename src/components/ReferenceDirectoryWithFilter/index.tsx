@@ -60,7 +60,9 @@ export const ReferenceDirectoryWithFilter = ({
       const filteredSubcats = category.subcats.reduce(
         (subAcc, subcat) => {
           const filteredEntries = subcat.entries.filter((entry) =>
-            entry.data.title.includes(searchKeyword),
+            entry.data.title
+              .toLowerCase()
+              .includes(searchKeyword.toLowerCase()),
           );
           if (filteredEntries.length > 0) {
             subAcc.push({ ...subcat, entries: filteredEntries });
@@ -117,10 +119,10 @@ export const ReferenceDirectoryWithFilter = ({
             id={subcat.name}
             href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
           >
-            <h3 className="py-gutter-md m-0">{subcat.name}</h3>
+            <h3 className="m-0 py-gutter-md">{subcat.name}</h3>
           </a>
         ) : (
-          <h3 className="py-gutter-md m-0" id={subcat.name}>
+          <h3 className="m-0 py-gutter-md" id={subcat.name}>
             {subcat.name}
           </h3>
         )}
