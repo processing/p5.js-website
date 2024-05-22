@@ -1,6 +1,5 @@
 import { useMemo, useRef, useState } from "preact/hooks";
 import { Icon } from "../Icon";
-import { type JSX } from "preact";
 
 type SearchResult = {
   id: number;

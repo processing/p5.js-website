@@ -10,7 +10,6 @@ import keywordExtractor from "keyword-extractor";
 import { contentTypes } from "../../globals/globals";
 import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
-import { removeLocalePrefix } from "@/src/i18n/utils";
 
 interface SearchIndex {
   [title: string]: {
