@@ -18,7 +18,11 @@ To update the content on the p5.js website following a new release of p5.js, you
 
 ## Contributors List Build Script
 
-`npm run build:contribtuors` parses the list of contributors from the all contributors [config file](https://github.com/processing/p5.js/blob/main/.all-contributorsrc) in the p5.js repo and adds entries in the [people collection](src/content/people/en) for anyone who is missing. These are used to render the list of contributors on the [People page](https://p5js.org/people/). This script will **not** remove or update existing entries, that must be done manually.
+`npm run build:contributors` parses the list of contributors from the all contributors [config file](https://github.com/processing/p5.js/blob/main/.all-contributorsrc) in the p5.js repo and adds entries in the [people collection](src/content/people/en) for anyone who is missing. These are used to render the list of contributors on the [People page](https://p5js.org/people/). This script will **not** remove or update existing entries, that must be done manually.
+
+## Update p5 version Build Script
+
+`npm run build:p5-version` reads the latest version of the p5.js library (for example, "2.19.3") and updates the website config to use that version of the library for embeds and download links across the site.
 
 ## Search Indices Build Script
 
