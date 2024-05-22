@@ -1,10 +1,5 @@
 import { useRef, useLayoutEffect, useEffect } from "preact/hooks";
-import { p5VersionForEmbeds } from "@/src/globals/globals";
-
-/*
- * Url to fetch the p5.js library from
- */
-const p5LibraryUrl = `https://cdnjs.cloudflare.com/ajax/libs/p5.js/${p5VersionForEmbeds}/p5.min.js`;
+import { cdnLibraryUrl } from "@/src/globals/globals";
 
 interface CodeBundle {
   css?: string;
@@ -53,7 +48,7 @@ ${code.css || ""}
   window.addEventListener("message", event => {
     // Include check to prevent p5.min.js from being loaded twice
     const scriptExists = !!document.getElementById("p5ScriptTagInIframe");
-    if (!scriptExists && event.data?.sender === '${p5LibraryUrl}') {
+    if (!scriptExists && event.data?.sender === '${cdnLibraryUrl}') {
       const p5ScriptElement = document.createElement('script');
       p5ScriptElement.id = "p5ScriptTagInIframe";
       p5ScriptElement.type = 'text/javascript';
@@ -136,7 +131,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
         );
         iframeRef.current.contentWindow?.postMessage(
           {
-            sender: p5LibraryUrl,
+            sender: cdnLibraryUrl,
             message: p5ScriptText,
           },
           "*",
