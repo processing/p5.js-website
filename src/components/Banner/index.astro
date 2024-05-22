@@ -14,18 +14,21 @@ const { link, title } = entry.data;
 
 <script>
 const banner = document.querySelector('.banner');
-const hiddenBanner = window.localStorage.getItem('hideBanner');
-const title = banner.getAttribute('data-title');
-if (hiddenBanner !== title) {
-  banner.removeAttribute('style');
-}
-const hideBanner = () => {
-  banner.setAttribute('style', 'display: none');
-  try {
-    window.localStorage.setItem('hideBanner', title);
-  } catch (e) {
-    console.error(e);
+const hideBannerBtn = document.querySelector('#hideBanner');
+if (banner && hideBannerBtn) {
+  const hiddenBanner = window.localStorage.getItem('hideBanner');
+  const title = banner.getAttribute('data-title');
+  if (hiddenBanner !== title) {
+    banner.removeAttribute('style');
   }
+  const hideBanner = () => {
+    banner.setAttribute('style', 'display: none');
+    try {
+      window.localStorage.setItem('hideBanner', title || '');
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  hideBannerBtn.addEventListener('click', hideBanner);
 }
-document.querySelector('#hideBanner').addEventListener('click', hideBanner);
 </script>
