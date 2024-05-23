@@ -1,6 +1,6 @@
 import { z, defineCollection } from "astro:content";
 
-export const textDetailCollection = defineCollection({
+export const bannerCollection = defineCollection({
   type: "content",
   schema: () =>
     z.object({
