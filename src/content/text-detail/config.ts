@@ -7,7 +7,5 @@ export const textDetailCollection = defineCollection({
       title: z.string(),
       featuredImage: image().optional(),
       featuredImageAlt: z.string().optional(),
-      link: z.string().optional(),
-      hidden: z.boolean().optional(),
     }),
 });
