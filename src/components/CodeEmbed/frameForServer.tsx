@@ -1,10 +1,5 @@
 import { useRef, useLayoutEffect } from "preact/hooks";
-import { p5VersionForEmbeds } from "@/src/globals/globals";
-
-/*
- * Url to fetch the p5.js library from
- */
-const p5LibraryUrl = `https://cdnjs.cloudflare.com/ajax/libs/p5.js/${p5VersionForEmbeds}/p5.min.js`;
+import { cdnLibraryUrl } from "@/src/globals/globals";
 
 interface CodeBundle {
   css?: string;
@@ -33,7 +28,7 @@ ${code.css || ""}
 </style>
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${code.js || ""}</script>
-<script src="${p5LibraryUrl}"></script>
+<script src="${cdnLibraryUrl}"></script>
 `.replace(/\u00A0/g, " ");
 
 export interface CodeFrameProps {
@@ -63,23 +58,29 @@ export const CodeFrameForServer = (props: CodeFrameProps) => {
     const { IntersectionObserver } = window;
     if (!IntersectionObserver) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!iframeRef.current) return;
-        if (entry.isIntersecting) {
-          iframeRef.current.style.removeProperty('display');
-        } else {
-          iframeRef.current.style.display = 'none';
-        }
-      });
-    }, { rootMargin: '20px' });
-    observer.observe(containerRef.current)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!iframeRef.current) return;
+          if (entry.isIntersecting) {
+            iframeRef.current.style.removeProperty("display");
+          } else {
+            iframeRef.current.style.display = "none";
+          }
+        });
+      },
+      { rootMargin: "20px" },
+    );
+    observer.observe(containerRef.current);
 
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={containerRef} style={{ width: props.width, height: props.height }}>
+    <div
+      ref={containerRef}
+      style={{ width: props.width, height: props.height }}
+    >
       <iframe
         ref={iframeRef}
         srcDoc={wrapInMarkup({
@@ -96,4 +97,4 @@ export const CodeFrameForServer = (props: CodeFrameProps) => {
       />
     </div>
   );
-}
+};
