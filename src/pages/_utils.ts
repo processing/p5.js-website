@@ -388,7 +388,7 @@ export const generateJumpToState = async (
       categories = new Set(referenceCategories);
       break;
     case "tutorials":
-      categories = new Set(localeEntries.map((entry) => entry.data.category));
+      categories = new Set((localeEntries as CollectionEntry<"tutorials">[]).map((entry) => entry.data.category));
       break;
     case "examples":
       categories = new Set(
