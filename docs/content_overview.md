@@ -45,7 +45,8 @@
 
 ## About page
 
-- All translations are stored in `/src/content/text-detail/[lang]/about.mdx` (where `[lang]` is the appropriate language code)
+- All translations for the first half of the page are stored in `/src/content/text-detail/[lang]/about.mdx` (where `[lang]` is the appropriate language code)
+- The second half of the page (from the "People" section to the bottom) is in `/src/layouts/AboutLayout.astro`
 
 ## Simple static pages (like Privacy Policy and Code of Conduct)
 
