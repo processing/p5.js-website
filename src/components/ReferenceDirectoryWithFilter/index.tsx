@@ -104,11 +104,18 @@ export const ReferenceDirectoryWithFilter = ({
       </div>
     );
 
+  const subcatShouldHaveHeading = (
+    subcat: { name: string },
+    category: { name: string },
+  ) => {
+    return !(!subcat.name || !category.name || subcat.name === "p5.sound");
+  }
+
   const getSubcatHeading = (
     subcat: { name: string },
     category: { name: string },
   ) => {
-    if (!subcat.name || !category.name || subcat.name === "p5.sound") {
+    if (!subcatShouldHaveHeading(subcat, category)) {
       return null;
     }
 
@@ -136,7 +143,14 @@ export const ReferenceDirectoryWithFilter = ({
     }
     return filteredEntries.map((category) => (
       <section key={category.name}>
-        <h2 class="mb-0" id={category.name}>
+        <h2
+          class={
+            subcatShouldHaveHeading(category.subcats[0], category)
+              ? "mb-0"
+              : "mb-[var(--gutter-md)]"
+          }
+          id={category.name}
+        >
           {category.name}
         </h2>
         {category.subcats.map((subcat) => (
