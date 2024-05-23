@@ -317,7 +317,6 @@ export const generateJumpToState = async (
       categories = new Set(referenceCategories);
       break;
     case "tutorials":
-      // @ts-expect-error - We know that the category exists because of the collection type
       categories = new Set(localeEntries.map((entry) => entry.data.category));
       break;
     case "examples":
@@ -365,8 +364,7 @@ export const generateJumpToState = async (
           category ===
           (collectionType === "examples"
             ? getExampleCategory(entry.slug)
-            : // @ts-expect-error - We know that the category exists because of the collection type
-              entry.data.category ?? ""),
+            : entry.data.category ?? ""),
       );
 
       // Add the entries in the category to the jumpToLinks
