@@ -365,8 +365,8 @@ export const generateJumpToState = async (
           category ===
           (collectionType === "examples"
             ? getExampleCategory(entry.slug)
-            // @ts-expect-error - We know that the category exists because of the collection type
-            : entry.data.category ?? ""),
+            : // @ts-expect-error - We know that the category exists because of the collection type
+              entry.data.category ?? ""),
       );
 
       // Add the entries in the category to the jumpToLinks
