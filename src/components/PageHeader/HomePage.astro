@@ -32,12 +32,20 @@ const { config } = Astro.props;
 
   {
     config.data.heroImages.map((im, i) => (
-      <img
-        class={`hero-image ${i > 0 ? "hidden" : ""}`}
-        src={im.image.src}
-        alt={im.altText}
-        loading={i > 0 ? "lazy" : "eager"}
-      />
+      <div class={`relative hero-image-container ${i > 0 ? "hidden" : ""}`}>
+        <img
+          class={"hero-image"}
+          src={im.image.src}
+          alt={im.altText}
+          loading={i > 0 ? "lazy" : "eager"}
+        />
+        <p
+          aria-hidden
+          class={"renderable-alt bg-bg-gray-40 line-clamp-3 absolute top-0 mt-sm mx-sm px-[7.5px] pb-[2.5px] rounded-xl text-body-caption text-ellipsis"}
+        >
+          {im.altText}
+        </p>
+      </div>
     ))
   }
 </div>
@@ -45,7 +53,7 @@ const { config } = Astro.props;
 <script>
   document.addEventListener("DOMContentLoaded", (event) => {
     // find all hero image elements
-    const images = document.querySelectorAll("img.hero-image");
+    const images = document.querySelectorAll(".hero-image-container");
     if (images.length > 1) {
       const shownImageInd = Math.round(Math.random() * (images.length - 1));
       console.log(shownImageInd);
