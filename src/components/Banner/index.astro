@@ -1,0 +1,34 @@
+---
+import { Icon } from "@components/Icon"
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { link, title } = entry.data;
+---
+
+<div class="banner bg-accent-color text-accent-type-color" style={{ display: 'none' }} data-title={title}>
+  <a class="banner-content" href={link} target="_blank">
+    <Content />
+  </a>
+  <button id="hideBanner"><Icon kind="close"></button>
+</div>
+
+<script>
+const banner = document.querySelector('.banner');
+const hideBannerBtn = document.querySelector('#hideBanner');
+if (banner && hideBannerBtn) {
+  const hiddenBanner = window.localStorage.getItem('hideBanner');
+  const title = banner.getAttribute('data-title');
+  if (hiddenBanner !== title) {
+    banner.removeAttribute('style');
+  }
+  const hideBanner = () => {
+    banner.setAttribute('style', 'display: none');
+    try {
+      window.localStorage.setItem('hideBanner', title || '');
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  hideBannerBtn.addEventListener('click', hideBanner);
+}
+</script>

@@ -1,9 +1,13 @@
 ---
+import { getEntry } from "astro:content";
 import { getCurrentLocale, getUiTranslator } from "@/src/i18n/utils";
 import { Icon } from "../Icon";
+import Banner from "@components/Banner/index.astro";
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
+
+const bannerEntry = await getEntry("banner", currentLocale);
 ---
 
 <footer
@@ -58,5 +62,6 @@ const t = await getUiTranslator(currentLocale);
     </div>
   </div>
 </footer>
+{bannerEntry && !bannerEntry.data.hidden && (<Banner entry={bannerEntry} />)}
 
 <style></style>
