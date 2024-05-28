@@ -1,4 +1,5 @@
 ---
+import { getCurrentLocale, getUiTranslator } from "@/src/i18n/utils";
 import type { ComponentProps } from "astro/types";
 import { Image } from "astro:assets";
 type Props = ComponentProps<typeof Image> & {
@@ -6,8 +7,13 @@ type Props = ComponentProps<typeof Image> & {
   aspectRatio?: "photo" | "square" | "none";
   caption?: string;
   containerClass?: string;
+  visibleAltTextClass?: string;
 };
 const { props } = Astro;
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+const noAltText = t("No alt text");
 ---
 
 <div class={props.containerClass || "relative w-fit h-fit"}>
@@ -16,19 +22,28 @@ const { props } = Astro;
   <Image
     {...props}
     class=""
-    class:list={(props.class,
-    {
-      "object-cover": props.aspectRatio !== "none",
-      "aspect-square": props.aspectRatio === "square",
-      "aspect-photo":
-        props.aspectRatio === "photo" || props.aspectRatio === undefined,
-    })}
+    class:list={[
+      props.class,
+      {
+        "object-cover": props.aspectRatio !== "none",
+        "aspect-square": props.aspectRatio === "square",
+        "aspect-photo":
+          props.aspectRatio === "photo" || props.aspectRatio === undefined,
+      },
+    ]}
   />
   <p
     aria-hidden
-    class="renderable-alt bg-bg-gray-40 line-clamp-3 absolute top-0 mt-sm mx-sm px-[7.5px] pb-[2.5px] rounded-xl text-body-caption text-ellipsis"
+    class:list={[
+      "renderable-alt",
+      "text-body-caption",
+      "bg-bg-gray-40 line-clamp-3 absolute top-0 mt-sm mx-sm px-[7.5px] pb-[2.5px] rounded-xl text-ellipsis",
+      props.visibleAltTextClass,
+    ]}
   >
-    {props.alt}
+    <!-- It shouldn't be possible to pass no alt text, but if its missing
+    show a '?' so the component doesn't look broken  -->
+    {props.alt || noAltText}
   </p>
   {props.caption && <p class="text-body-caption mt-xs">{props.caption}</p>}
 </div>
