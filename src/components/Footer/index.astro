@@ -1,9 +1,13 @@
 ---
+import { getEntry } from "astro:content";
 import { getCurrentLocale, getUiTranslator } from "@/src/i18n/utils";
 import { Icon } from "../Icon";
+import Banner from "@components/Banner/index.astro";
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
+
+const bannerEntry = await getEntry("banner", currentLocale);
 ---
 
 <footer
@@ -48,7 +52,6 @@ const t = await getUiTranslator(currentLocale);
       <ul aria-labelledby="socials-footer-category">
         <li><a href="https://github.com/processing/p5.js">GitHub</a></li>
         <li><a href="https://www.instagram.com/p5xjs/">Instagram</a></li>
-        <li><a href="https://www.facebook.com/groups/p5dotjs/">Facebook</a></li>
         <li><a href="https://www.youtube.com/@pjs-dz1rv">YouTube</a></li>
         <li><a href="https://twitter.com/p5xjs">X</a></li>
         <li><a href="https://discord.gg/SHQ8dH25r9">Discord</a></li>
@@ -59,5 +62,6 @@ const t = await getUiTranslator(currentLocale);
     </div>
   </div>
 </footer>
+{bannerEntry && !bannerEntry.data.hidden && (<Banner entry={bannerEntry} />)}
 
 <style></style>

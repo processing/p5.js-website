@@ -1,4 +1,5 @@
 ---
+import Image from "@components/Image/index.astro";
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "../Icon";
 
@@ -32,9 +33,11 @@ const { config } = Astro.props;
 
   {
     config.data.heroImages.map((im, i) => (
-      <img
-        class={`hero-image ${i > 0 ? "hidden" : ""}`}
-        src={im.image.src}
+      <Image
+        containerClass={`relative hero-image-container ${i > 0 ? "hidden" : ""}`}
+        class={"hero-image"}
+        aspectRatio="none"
+        src={im.image}
         alt={im.altText}
         loading={i > 0 ? "lazy" : "eager"}
       />
@@ -45,9 +48,9 @@ const { config } = Astro.props;
 <script>
   document.addEventListener("DOMContentLoaded", (event) => {
     // find all hero image elements
-    const images = document.querySelectorAll("img.hero-image");
+    const images = document.querySelectorAll(".hero-image-container");
     if (images.length > 1) {
-      const shownImageInd = Math.round(Math.random() * images.length);
+      const shownImageInd = Math.round(Math.random() * (images.length - 1));
       // hide the default one
       images[0].classList.add("hidden");
       // show a random one
