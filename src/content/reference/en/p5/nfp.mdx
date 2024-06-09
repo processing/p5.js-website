@@ -4,17 +4,63 @@ module: Data
 submodule: String Functions
 file: src/utilities/string_functions.js
 description: >
-  <p>Utility function for formatting numbers into strings. Similar to <a
-  href="/reference/p5/nf">nf()</a> but
+  <p>Converts a <code>Number</code> into a <code>String</code> with a plus or
+  minus sign.</p>
 
-  puts a "+" in front of positive numbers and a "-" in front of negative
+  <p><code>nfp()</code> converts numbers such as 123 into strings formatted with
+  a <code>+</code> or
 
-  numbers. There are two versions: one for formatting floats, and one for
+  <code>-</code> symbol to mark whether they're positive or negative, as in
+  <code>'+123'</code>.</p>
 
-  formatting ints. The values for left, and right parameters
+  <p>The first parameter, <code>num</code>, is the number to convert to a
+  string. For
 
-  should always be positive integers.</p>
-line: 289
+  example, calling <code>nfp(123.45)</code> returns the string
+  <code>'+123.45'</code>. If an array
+
+  of numbers is passed, as in <code>nfp([123.45, -6.78])</code>, an array of
+  formatted
+
+  strings will be returned.</p>
+
+  <p>The second parameter, <code>left</code>, is optional. If a number is
+  passed, as in
+
+  <code>nfp(123.45, 4)</code>, it sets the minimum number of digits to include
+  to the
+
+  left of the decimal place. If <code>left</code> is larger than the number of
+  digits in
+
+  <code>num</code>, then unused digits will be set to 0. For example, calling
+
+  <code>nfp(123.45, 4)</code> returns the string <code>'+0123.45'</code>.</p>
+
+  <p>The third parameter, <code>right</code>, is also optional. If a number is
+  passed, as
+
+  in <code>nfp(123.45, 4, 1)</code>, it sets the minimum number of digits to
+  include to
+
+  the right of the decimal place. If <code>right</code> is smaller than the
+  number of
+
+  decimal places in <code>num</code>, then <code>num</code> will be rounded to
+  the given number of
+
+  decimal places.  For example, calling <code>nfp(123.45, 4, 1)</code> returns
+  the
+
+  string <code>'+0123.5'</code>. If <code>right</code> is larger than the number
+  of decimal places
+
+  in <code>num</code>, then unused decimal places will be set to 0.  For
+  example,
+
+  calling <code>nfp(123.45, 4, 3)</code> returns the string
+  <code>'+0123.450'</code>.</p>
+line: 440
 isConstructor: false
 itemtype: method
 example:
@@ -23,57 +69,103 @@ example:
     <div>
     <code>
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
-      let num1 = 11253106.115;
-      let num2 = -11253106.115;
 
-      noStroke();
-      fill(0);
-      textSize(12);
+      // Create number variables.
+      let positive = 123;
+      let negative = -123;
 
-      // Draw formatted numbers
-      text(nfp(num1, 4, 2), 10, 30);
-      text(nfp(num2, 4, 2), 10, 80);
+      // Convert the positive number to a formatted string.
+      let p = nfp(positive);
 
-      // Draw dividing line
-      stroke(120);
-      line(0, 50, width, 50);
+      // Convert the negative number to a formatted string
+      // with four digits to the left of the decimal
+      // and two digits to the right of the decimal.
+      let n = nfp(negative, 4, 2);
 
-      describe('“+11253106.11” top middle and “-11253106.11” displayed bottom middle');
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Display the original and formatted numbers.
+      text(`${positive} : ${p}`, 50, 33);
+      text(`${negative} : ${n}`, 50, 67);
+
+      describe(
+        'The text "123 : +123" and "-123 : -123.00" written on separate lines. The text is in black on a gray background.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create number variables.
+      let numbers = [123, -4.56];
+
+      // Convert the numbers to formatted strings
+      // with four digits to the left of the decimal
+      // and one digit to the right of the decimal.
+      let formatted = nfp(numbers, 4, 1);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Iterate over the array.
+      for (let i = 0; i < formatted.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 33;
+
+        // Display the original and formatted numbers.
+        text(`${numbers[i]} : ${formatted[i]}`, 50, y);
+      }
+
+      describe(
+        'The text "123 : +0123.0" and "-4.56 : 00-4.6" written on separate lines. The text is in black on a gray background.'
+      );
     }
     </code>
     </div>
 class: p5
 return:
-  description: formatted String
+  description: formatted string.
   type: String
 overloads:
-  - line: 289
+  - line: 440
     params:
       - name: num
         description: |
-          <p>the Number to format</p>
+          <p>number to format.</p>
         type: Number
       - name: left
         description: |
-          <p>number of digits to the left of the decimal
-                                         point</p>
+          <p>number of digits to include to the left of the
+                                  decimal point.</p>
         type: Integer
         optional: true
       - name: right
         description: |
-          <p>number of digits to the right of the
-                                         decimal point</p>
+          <p>number of digits to include to the right of the
+                                   decimal point.</p>
         type: Integer
         optional: true
     return:
-      description: formatted String
+      description: formatted string.
       type: String
-  - line: 329
+  - line: 545
     params:
       - name: nums
         description: |
-          <p>the Numbers to format</p>
+          <p>numbers to format.</p>
         type: 'Number[]'
       - name: left
         description: ''
@@ -84,7 +176,7 @@ overloads:
         type: Integer
         optional: true
     return:
-      description: formatted Strings
+      description: formatted strings.
       type: 'String[]'
 chainable: false
 ---

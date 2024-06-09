@@ -4,59 +4,61 @@ module: Structure
 submodule: Structure
 file: src/core/main.js
 description: >
-  <p>Called directly before <a href="/reference/p5/setup">setup()</a>, the <a
-  href="/reference/p5/preload">preload()</a> function is used to handle
+  <p>A function that's called once to load assets before the sketch runs.</p>
 
-  asynchronous loading of external files in a blocking way. If a preload
+  <p>Declaring the function <code>preload()</code> sets a code block to run once
 
-  function is defined, <a href="/reference/p5/setup">setup()</a> will wait until
-  any load calls within have
+  automatically before <a href="/reference/p5/setup">setup()</a> or
 
-  finished. Nothing besides load calls (<a
-  href="/reference/p5/loadImage">loadImage</a>, <a
-  href="/reference/p5/loadJSON">loadJSON</a>, <a
-  href="/reference/p5/loadFont">loadFont</a>,
+  <a href="/reference/p5/draw">draw()</a>. It's used to load assets including
 
-  <a href="/reference/p5/loadStrings">loadStrings</a>, etc.) should be inside
-  the preload function. If asynchronous
+  multimedia files, fonts, data, and 3D models:</p>
 
-  loading is preferred, the load methods can instead be called in <a
-  href="/reference/p5/setup">setup()</a>
+  <pre><code class="language-js">function preload() {
+    // Code to run before the rest of the sketch.
+  }
 
-  or anywhere else with the use of a callback parameter.</p>
+  </code></pre>
 
-  <p>By default the text "loading..." will be displayed. To make your own
+  <p>Functions such as <a href="/reference/p5/loadImage">loadImage()</a>,
 
-  loading page, include an HTML element with id "p5_loading" in your
+  <a href="/reference/p5/loadFont">loadFont()</a>,
 
-  page. More information <a href="http://bit.ly/2kQ6Nio">here</a>.</p>
+  <a href="/reference/p5/loadJSON">loadJSON()</a>, and
+
+  <a href="/reference/p5/loadModel">loadModel()</a> are guaranteed to either
+
+  finish loading or raise an error if they're called within
+  <code>preload()</code>.
+
+  Doing so ensures that assets are available when the sketch begins
+
+  running.</p>
 line: 41
 isConstructor: false
 itemtype: method
-alt: nothing displayed
 example:
   - |-
 
-    <div><code>
+    <div>
+    <code>
     let img;
-    let c;
+
+    // Load an image and create a p5.Image object.
     function preload() {
-      // preload() runs once
-      img = loadImage('/assets/laDefense.jpg');
+      img = loadImage('/assets/bricks.jpg');
     }
 
     function setup() {
-      // setup() waits until preload() is done
-      img.loadPixels();
-      // get color of middle pixel
-      c = img.get(img.width / 2, img.height / 2);
-    }
+      createCanvas(100, 100);
 
-    function draw() {
-      background(c);
-      image(img, 25, 25, 50, 50);
+      // Draw the image.
+      image(img, 0, 0);
+
+      describe('A red brick wall.');
     }
-    </code></div>
+    </code>
+    </div>
 class: p5
 chainable: false
 ---

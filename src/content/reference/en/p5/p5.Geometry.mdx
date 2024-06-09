@@ -3,8 +3,48 @@ title: p5.Geometry
 module: Shape
 submodule: 3D Primitives
 file: src/webgl/p5.Geometry.js
-description: |
-  <p>p5 Geometry class</p>
+description: >
+  <p>A class to describe a 3D shape.</p>
+
+  <p>Each <code>p5.Geometry</code> object represents a 3D shape as a set of
+  connected
+
+  points called <em>vertices</em>. All 3D shapes are made by connecting vertices
+  to
+
+  form triangles that are stitched together. Each triangular patch on the
+
+  geometry's surface is called a <em>face</em>. The geometry stores information
+
+  about its vertices and faces for use with effects such as lighting and
+
+  texture mapping.</p>
+
+  <p>The first parameter, <code>detailX</code>, is optional. If a number is
+  passed, as in
+
+  <code>new p5.Geometry(24)</code>, it sets the number of triangle subdivisions
+  to use
+
+  along the geometry's x-axis. By default, <code>detailX</code> is 1.</p>
+
+  <p>The second parameter, <code>detailY</code>, is also optional. If a number
+  is passed,
+
+  as in <code>new p5.Geometry(24, 16)</code>, it sets the number of triangle
+
+  subdivisions to use along the geometry's y-axis. By default,
+  <code>detailX</code> is
+
+  1.</p>
+
+  <p>The third parameter, <code>callback</code>, is also optional. If a function
+  is passed,
+
+  as in <code>new p5.Geometry(24, 16, createShape)</code>, it will be called
+  once to add
+
+  vertices to the new 3D shape.</p>
 line: 13
 isConstructor: true
 params:
@@ -20,97 +60,693 @@ params:
     optional: true
   - name: callback
     description: |
-      <p>function to call upon object instantiation.</p>
+      <p>function to call once the geometry is created.</p>
     type: Function
     optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      myGeometry = new p5.Geometry();
+
+      // Create p5.Vector objects to position the vertices.
+      let v0 = createVector(-40, 0, 0);
+      let v1 = createVector(0, -40, 0);
+      let v2 = createVector(40, 0, 0);
+
+      // Add the vertices to the p5.Geometry object's vertices array.
+      myGeometry.vertices.push(v0, v1, v2);
+
+      describe('A white triangle drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the p5.Geometry object.
+      model(myGeometry);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object using a callback function.
+      myGeometry = new p5.Geometry(1, 1, createShape);
+
+      describe('A white triangle drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the p5.Geometry object.
+      model(myGeometry);
+    }
+
+    function createShape() {
+      // Create p5.Vector objects to position the vertices.
+      let v0 = createVector(-40, 0, 0);
+      let v1 = createVector(0, -40, 0);
+      let v2 = createVector(40, 0, 0);
+
+      // "this" refers to the p5.Geometry object being created.
+
+      // Add the vertices to the p5.Geometry object's vertices array.
+      this.vertices.push(v0, v1, v2);
+
+      // Add an array to list which vertices belong to the face.
+      // Vertices are listed in clockwise "winding" order from
+      // left to top to right.
+      this.faces.push([0, 1, 2]);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object using a callback function.
+      myGeometry = new p5.Geometry(1, 1, createShape);
+
+      describe('A white triangle drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the p5.Geometry object.
+      model(myGeometry);
+    }
+
+    function createShape() {
+      // Create p5.Vector objects to position the vertices.
+      let v0 = createVector(-40, 0, 0);
+      let v1 = createVector(0, -40, 0);
+      let v2 = createVector(40, 0, 0);
+
+      // "this" refers to the p5.Geometry object being created.
+
+      // Add the vertices to the p5.Geometry object's vertices array.
+      this.vertices.push(v0, v1, v2);
+
+      // Add an array to list which vertices belong to the face.
+      // Vertices are listed in clockwise "winding" order from
+      // left to top to right.
+      this.faces.push([0, 1, 2]);
+
+      // Compute the surface normals to help with lighting.
+      this.computeNormals();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    // Adapted from Paul Wheeler's wonderful p5.Geometry tutorial.
+    // https://www.paulwheeler.us/articles/custom-3d-geometry-in-p5js/
+    // CC-BY-SA 4.0
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the p5.Geometry object.
+      // Set detailX to 48 and detailY to 2.
+      // >>> try changing them.
+      myGeometry = new p5.Geometry(48, 2, createShape);
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the p5.Geometry object.
+      strokeWeight(0.2);
+
+      // Draw the p5.Geometry object.
+      model(myGeometry);
+    }
+
+    function createShape() {
+      // "this" refers to the p5.Geometry object being created.
+
+      // Define the Möbius strip with a few parameters.
+      let spread = 0.1;
+      let radius = 30;
+      let stripWidth = 15;
+      let xInterval = 4 * PI / this.detailX;
+      let yOffset = -stripWidth / 2;
+      let yInterval = stripWidth / this.detailY;
+
+      for (let j = 0; j <= this.detailY; j += 1) {
+        // Calculate the "vertical" point along the strip.
+        let v = yOffset + yInterval * j;
+
+        for (let i = 0; i <= this.detailX; i += 1) {
+          // Calculate the angle of rotation around the strip.
+          let u = i * xInterval;
+
+          // Calculate the coordinates of the vertex.
+          let x = (radius + v * cos(u / 2)) * cos(u) - sin(u / 2) * 2 * spread;
+          let y = (radius + v * cos(u / 2)) * sin(u);
+          if (u < TWO_PI) {
+            y += sin(u) * spread;
+          } else {
+            y -= sin(u) * spread;
+          }
+          let z = v * sin(u / 2) + sin(u / 4) * 4 * spread;
+
+          // Create a p5.Vector object to position the vertex.
+          let vert = createVector(x, y, z);
+
+          // Add the vertex to the p5.Geometry object's vertices array.
+          this.vertices.push(vert);
+        }
+      }
+
+      // Compute the faces array.
+      this.computeFaces();
+
+      // Compute the surface normals to help with lighting.
+      this.computeNormals();
+    }
+    </code>
+    </div>
 methods:
   calculateBoundingBox:
     description: >
-      <p>Custom bounding box calculation based on the object's vertices.
+      <p>Calculates the position and size of the smallest box that contains the
+      geometry.</p>
 
-      The bounding box is a rectangular prism that encompasses the entire
-      object.
+      <p>A bounding box is the smallest rectangular prism that contains the
+      entire
 
-      It is defined by the minimum and maximum coordinates along each axis, as
-      well
+      geometry. It's defined by the box's minimum and maximum coordinates along
 
-      as the size and offset of the box.</p>
+      each axis, as well as the size (length) and offset (center).</p>
 
-      <p>It returns an object containing the bounding box properties:</p>
+      <p>Calling <code>myGeometry.calculateBoundingBox()</code> returns an
+      object with four
 
-      <ul>
+      properties that describe the bounding box:</p>
 
-      <li><code>min</code>: The minimum coordinates of the bounding box as a
-      p5.Vector.</li>
+      <pre><code class="language-js">// Get myGeometry's bounding box.
 
-      <li><code>max</code>: The maximum coordinates of the bounding box as a
-      p5.Vector.</li>
+      let bbox = myGeometry.calculateBoundingBox();
 
-      <li><code>size</code>: The size of the bounding box as a p5.Vector.</li>
 
-      <li><code>offset</code>: The offset of the bounding box as a
-      p5.Vector.</li>
+      // Print the bounding box to the console.
 
-      </ul>
+      console.log(bbox);
+
+
+      // {
+
+      //  // The minimum coordinate along each axis.
+
+      //  min: { x: -1, y: -2, z: -3 },
+
+      //
+
+      //  // The maximum coordinate along each axis.
+
+      //  max: { x: 1, y: 2, z: 3},
+
+      //
+
+      //  // The size (length) along each axis.
+
+      //  size: { x: 2, y: 4, z: 6},
+
+      //
+
+      //  // The offset (center) along each axis.
+
+      //  offset: { x: 0, y: 0, z: 0}
+
+      // }
+
+      </code></pre>
     path: p5.Geometry/calculateBoundingBox
   clearColors:
     description: >
-      <p>Removes the internal colors of p5.Geometry.
+      <p>Removes the geometry’s internal colors.</p>
 
-      Using <code>clearColors()</code>, you can use <code>fill()</code> to
-      supply new colors before drawing each shape.
+      <p><code>p5.Geometry</code> objects can be created with "internal colors"
+      assigned to
 
-      If <code>clearColors()</code> is not used, the shapes will use their
-      internal colors by ignoring <code>fill()</code>.</p>
+      vertices or the entire shape. When a geometry has internal colors,
+
+      <a href="/reference/p5/fill">fill()</a> has no effect. Calling
+
+      <code>myGeometry.clearColors()</code> allows the
+
+      <a href="/reference/p5/fill">fill()</a> function to apply color to the
+      geometry.</p>
     path: p5.Geometry/clearColors
   flipU:
-    description: |
-      <p>Flips the U texture coordinates of the model.</p>
+    description: >
+      <p>Flips the geometry’s texture u-coordinates.</p>
+
+      <p>In order for <a href="/reference/p5/texture">texture()</a> to work, the
+      geometry
+
+      needs a way to map the points on its surface to the pixels in a
+      rectangular
+
+      image that's used as a texture. The geometry's vertex at coordinates
+
+      <code>(x, y, z)</code> maps to the texture image's pixel at coordinates
+      <code>(u, v)</code>.</p>
+
+      <p>The <a href="/reference/p5.Geometry/uvs">myGeometry.uvs</a> array
+      stores the
+
+      <code>(u, v)</code> coordinates for each vertex in the order it was added
+      to the
+
+      geometry. Calling <code>myGeometry.flipU()</code> flips a geometry's
+      u-coordinates
+
+      so that the texture appears mirrored horizontally.</p>
+
+      <p>For example, a plane's four vertices are added clockwise starting from
+      the
+
+      top-left corner. Here's how calling <code>myGeometry.flipU()</code> would
+      change a
+
+      plane's texture coordinates:</p>
+
+      <pre><code class="language-js">// Print the original texture coordinates.
+
+      // Output: [0, 0, 1, 0, 0, 1, 1, 1]
+
+      console.log(myGeometry.uvs);
+
+
+      // Flip the u-coordinates.
+
+      myGeometry.flipU();
+
+
+      // Print the flipped texture coordinates.
+
+      // Output: [1, 0, 0, 0, 1, 1, 0, 1]
+
+      console.log(myGeometry.uvs);
+
+
+      // Notice the swaps:
+
+      // Top vertices: [0, 0, 1, 0] --> [1, 0, 0, 0]
+
+      // Bottom vertices: [0, 1, 1, 1] --> [1, 1, 0, 1]
+
+      </code></pre>
     path: p5.Geometry/flipU
   flipV:
-    description: |
-      <p>Flips the V texture coordinates of the model.</p>
+    description: >
+      <p>Flips the geometry’s texture v-coordinates.</p>
+
+      <p>In order for <a href="/reference/p5/texture">texture()</a> to work, the
+      geometry
+
+      needs a way to map the points on its surface to the pixels in a
+      rectangular
+
+      image that's used as a texture. The geometry's vertex at coordinates
+
+      <code>(x, y, z)</code> maps to the texture image's pixel at coordinates
+      <code>(u, v)</code>.</p>
+
+      <p>The <a href="/reference/p5.Geometry/uvs">myGeometry.uvs</a> array
+      stores the
+
+      <code>(u, v)</code> coordinates for each vertex in the order it was added
+      to the
+
+      geometry. Calling <code>myGeometry.flipV()</code> flips a geometry's
+      v-coordinates
+
+      so that the texture appears mirrored vertically.</p>
+
+      <p>For example, a plane's four vertices are added clockwise starting from
+      the
+
+      top-left corner. Here's how calling <code>myGeometry.flipV()</code> would
+      change a
+
+      plane's texture coordinates:</p>
+
+      <pre><code class="language-js">// Print the original texture coordinates.
+
+      // Output: [0, 0, 1, 0, 0, 1, 1, 1]
+
+      console.log(myGeometry.uvs);
+
+
+      // Flip the v-coordinates.
+
+      myGeometry.flipV();
+
+
+      // Print the flipped texture coordinates.
+
+      // Output: [0, 1, 1, 1, 0, 0, 1, 0]
+
+      console.log(myGeometry.uvs);
+
+
+      // Notice the swaps:
+
+      // Left vertices: [0, 0] <--> [1, 0]
+
+      // Right vertices: [1, 0] <--> [1, 1]
+
+      </--></--></code></pre>
     path: p5.Geometry/flipV
   computeFaces:
-    description: |
-      <p>computes faces for geometry objects based on the vertices.</p>
+    description: >
+      <p>Computes the geometry's faces using its vertices.</p>
+
+      <p>All 3D shapes are made by connecting sets of points called
+      <em>vertices</em>. A
+
+      geometry's surface is formed by connecting vertices to form triangles that
+
+      are stitched together. Each triangular patch on the geometry's surface is
+
+      called a <em>face</em>. <code>myGeometry.computeFaces()</code> performs
+      the math needed to
+
+      define each face based on the distances between vertices.</p>
+
+      <p>The geometry's vertices are stored as <a
+      href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      objects in the <a
+      href="/reference/p5.Geometry/vertices">myGeometry.vertices</a>
+
+      array. The geometry's first vertex is the
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> object at
+      <code>myGeometry.vertices[0]</code>,
+
+      its second vertex is <code>myGeometry.vertices[1]</code>, its third vertex
+      is
+
+      <code>myGeometry.vertices[2]</code>, and so on.</p>
+
+      <p>Calling <code>myGeometry.computeFaces()</code> fills the
+
+      <a href="/reference/p5.Geometry/faces">myGeometry.faces</a> array with
+      three-element
+
+      arrays that list the vertices that form each face. For example, a geometry
+
+      made from a rectangle has two faces because a rectangle is made by joining
+
+      two triangles. <a href="/reference/p5.Geometry/faces">myGeometry.faces</a>
+      for a
+
+      rectangle would be the two-dimensional array
+
+      <code>[[0, 1, 2], [2, 1, 3]]</code>. The first face,
+      <code>myGeometry.faces[0]</code>, is the
+
+      array <code>[0, 1, 2]</code> because it's formed by connecting
+
+      <code>myGeometry.vertices[0]</code>,
+      <code>myGeometry.vertices[1]</code>,and
+
+      <code>myGeometry.vertices[2]</code>. The second face,
+      <code>myGeometry.faces[1]</code>, is the
+
+      array <code>[2, 1, 3]</code> because it's formed by connecting
+
+      <code>myGeometry.vertices[2]</code>, <code>myGeometry.vertices[1]</code>,
+      and
+
+      <code>myGeometry.vertices[3]</code>.</p>
+
+      <p>Note: <code>myGeometry.computeFaces()</code> only works when geometries
+      have four or more vertices.</p>
     path: p5.Geometry/computeFaces
   computeNormals:
     description: >
-      <p>This function calculates normals for each face, where each vertex's
-      normal is the average of the normals of all faces it's connected to.
+      <p>Calculates the normal vector for each vertex on the geometry.</p>
 
-      i.e computes smooth normals per vertex as an average of each face.</p>
+      <p>All 3D shapes are made by connecting sets of points called
+      <em>vertices</em>. A
 
-      <p>When using <code>FLAT</code> shading, vertices are
-      disconnected/duplicated i.e each face has its own copy of vertices.
+      geometry's surface is formed by connecting vertices to create triangles
 
-      When using <code>SMOOTH</code> shading, vertices are
-      connected/deduplicated i.e each face has its vertices shared with other
+      that are stitched together. Each triangular patch on the geometry's
+
+      surface is called a <em>face</em>.
+      <code>myGeometry.computeNormals()</code> performs the
+
+      math needed to orient each face. Orientation is important for lighting
+
+      and other effects.</p>
+
+      <p>A face's orientation is defined by its <em>normal vector</em> which
+      points out
+
+      of the face and is normal (perpendicular) to the surface. Calling
+
+      <code>myGeometry.computeNormals()</code> first calculates each face's
+      normal vector.
+
+      Then it calculates the normal vector for each vertex by averaging the
+
+      normal vectors of the faces surrounding the vertex. The vertex normals
+
+      are stored as <a href="/reference/p5/p5.Vector">p5.Vector</a> objects in
+      the
+
+      <a
+      href="/reference/p5.Geometry/vertexNormals">myGeometry.vertexNormals</a>
+      array.</p>
+
+      <p>The first parameter, <code>shadingType</code>, is optional. Passing the
+      constant
+
+      <code>FLAT</code>, as in <code>myGeometry.computeNormals(FLAT)</code>,
+      provides neighboring
+
+      faces with their own copies of the vertices they share. Surfaces appear
+
+      tiled with flat shading. Passing the constant <code>SMOOTH</code>, as in
+
+      <code>myGeometry.computeNormals(SMOOTH)</code>, makes neighboring faces
+      reuse their
+
+      shared vertices. Surfaces appear smoother with smooth shading. By
+
+      default, <code>shadingType</code> is <code>FLAT</code>.</p>
+
+      <p>The second parameter, <code>options</code>, is also optional. If an
+      object with a
+
+      <code>roundToPrecision</code> property is passed, as in
+
+      <code>myGeometry.computeNormals(SMOOTH, { roundToPrecision: 5 })</code>,
+      it sets the
+
+      number of decimal places to use for calculations. By default,
+
+      <code>roundToPrecision</code> uses 3 decimal places.</p>
+    path: p5.Geometry/computeNormals
+  normalize:
+    description: >
+      <p>Transforms the geometry's vertices to fit snugly within a 100×100×100
+      box
+
+      centered at the origin.</p>
+
+      <p>Calling <code>myGeometry.normalize()</code> translates the geometry's
+      vertices so that
+
+      they're centered at the origin <code>(0, 0, 0)</code>. Then it scales the
+      vertices so
+
+      that they fill a 100×100×100 box. As a result, small geometries will grow
+
+      and large geometries will shrink.</p>
+
+      <p>Note: <code>myGeometry.normalize()</code> only works when called in the
+
+      <a href="/reference/p5/setup">setup()</a> function.</p>
+    path: p5.Geometry/normalize
+properties:
+  vertices:
+    description: >
+      <p>An array with the geometry's vertices.</p>
+
+      <p>The geometry's vertices are stored as
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> objects in the
+      <code>myGeometry.vertices</code>
+
+      array. The geometry's first vertex is the
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> object at
+      <code>myGeometry.vertices[0]</code>,
+
+      its second vertex is <code>myGeometry.vertices[1]</code>, its third vertex
+      is
+
+      <code>myGeometry.vertices[2]</code>, and so on.</p>
+    path: p5.Geometry/vertices
+  vertexNormals:
+    description: >
+      <p>An array with the vectors that are normal to the geometry's
+      vertices.</p>
+
+      <p>A face's orientation is defined by its <em>normal vector</em> which
+      points out
+
+      of the face and is normal (perpendicular) to the surface. Calling
+
+      <code>myGeometry.computeNormals()</code> first calculates each face's
+      normal
+
+      vector. Then it calculates the normal vector for each vertex by
+
+      averaging the normal vectors of the faces surrounding the vertex. The
+
+      vertex normals are stored as <a
+      href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      objects in the <code>myGeometry.vertexNormals</code> array.</p>
+    path: p5.Geometry/vertexNormals
+  faces:
+    description: >
+      <p>An array that lists which of the geometry's vertices form each of its
+
       faces.</p>
 
-      <p>Options can include:</p>
+      <p>All 3D shapes are made by connecting sets of points called
+      <em>vertices</em>. A
 
-      <ul>
+      geometry's surface is formed by connecting vertices to form triangles
 
-      <li><code>roundToPrecision</code>: Precision value for rounding
-      computations. Defaults to 3.</li>
+      that are stitched together. Each triangular patch on the geometry's
 
-      </ul>
-    path: p5.Geometry/computeNormals
-  averageNormals:
-    description: |
-      <p>Averages the vertex normals. Used in curved
-      surfaces</p>
-    path: p5.Geometry/averageNormals
-  averagePoleNormals:
-    description: |
-      <p>Averages pole normals.  Used in spherical primitives</p>
-    path: p5.Geometry/averagePoleNormals
-  normalize:
-    description: |
-      <p>Modifies all vertices to be centered within the range -100 to 100.</p>
-    path: p5.Geometry/normalize
+      surface is called a <em>face</em>.</p>
+
+      <p>The geometry's vertices are stored as
+
+      <a href="/reference/p5/p5.Vector">p5.Vector</a> objects in the
+
+      <a href="/reference/p5.Geometry/vertices">myGeometry.vertices</a> array.
+      The
+
+      geometry's first vertex is the <a
+      href="/reference/p5/p5.Vector">p5.Vector</a>
+
+      object at <code>myGeometry.vertices[0]</code>, its second vertex is
+
+      <code>myGeometry.vertices[1]</code>, its third vertex is
+      <code>myGeometry.vertices[2]</code>,
+
+      and so on.</p>
+
+      <p>For example, a geometry made from a rectangle has two faces because a
+
+      rectangle is made by joining two triangles. <code>myGeometry.faces</code>
+      for a
+
+      rectangle would be the two-dimensional array <code>[[0, 1, 2], [2, 1,
+      3]]</code>.
+
+      The first face, <code>myGeometry.faces[0]</code>, is the array <code>[0,
+      1, 2]</code> because
+
+      it's formed by connecting <code>myGeometry.vertices[0]</code>,
+
+      <code>myGeometry.vertices[1]</code>,and
+      <code>myGeometry.vertices[2]</code>. The second face,
+
+      <code>myGeometry.faces[1]</code>, is the array <code>[2, 1, 3]</code>
+      because it's formed by
+
+      connecting <code>myGeometry.vertices[2]</code>,
+      <code>myGeometry.vertices[1]</code>,and
+
+      <code>myGeometry.vertices[3]</code>.</p>
+    path: p5.Geometry/faces
+  uvs:
+    description: >
+      <p>An array that lists the texture coordinates for each of the geometry's
+
+      vertices.</p>
+
+      <p>In order for <a href="/reference/p5/texture">texture()</a> to work, the
+      geometry
+
+      needs a way to map the points on its surface to the pixels in a
+
+      rectangular image that's used as a texture. The geometry's vertex at
+
+      coordinates <code>(x, y, z)</code> maps to the texture image's pixel at
+      coordinates
+
+      <code>(u, v)</code>.</p>
+
+      <p>The <code>myGeometry.uvs</code> array stores the <code>(u, v)</code>
+      coordinates for each
+
+      vertex in the order it was added to the geometry. For example, the
+
+      first vertex, <code>myGeometry.vertices[0]</code>, has its <code>(u,
+      v)</code> coordinates
+
+      stored at <code>myGeometry.uvs[0]</code> and
+      <code>myGeometry.uvs[1]</code>.</p>
+    path: p5.Geometry/uvs
 chainable: false
 ---
 

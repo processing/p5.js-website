@@ -4,20 +4,147 @@ module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
 description: >
-  <p>Creates and returns a new
+  <p>Creates a new
 
-  <a href="/reference/p5/p5.FramebufferCamera">p5.FramebufferCamera</a> to be
-  used
+  <a href="/reference/p5/p5.Camera">p5.Camera</a> object to use with the
+  framebuffer.</p>
 
-  while drawing to this framebuffer. The camera will be set as the
+  <p>The new camera is initialized with a default position <code>(0, 0,
+  800)</code> and a
 
-  currently active camera.</p>
-line: 702
+  default perspective projection. Its properties can be controlled with
+
+  <a href="/reference/p5/p5.Camera">p5.Camera</a> methods such as
+  <code>myCamera.lookAt(0, 0, 0)</code>.</p>
+
+  <p>Framebuffer cameras should be created between calls to
+
+  <a href="/reference/p5.Framebuffer/begin">myBuffer.begin()</a> and
+
+  <a href="/reference/p5.Framebuffer/end">myBuffer.end()</a> like so:</p>
+
+  <pre><code class="language-js">let myCamera;
+
+
+  myBuffer.begin();
+
+
+  // Create the camera for the framebuffer.
+
+  myCamera = myBuffer.createCamera();
+
+
+  myBuffer.end();
+
+  </code></pre>
+
+  <p>Calling <a href="/reference/p5/setCamera">setCamera()</a> updates the
+
+  framebuffer's projection using the camera.
+
+  <a href="/reference/p5/resetMatrix">resetMatrix()</a> must also be called for
+  the
+
+  view to change properly:</p>
+
+  <pre><code class="language-js">myBuffer.begin();
+
+
+  // Set the camera for the framebuffer.
+
+  setCamera(myCamera);
+
+
+  // Reset all transformations.
+
+  resetMatrix();
+
+
+  // Draw stuff...
+
+
+  myBuffer.end();
+
+  </code></pre>
+line: 892
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let myBuffer;
+    let cam1;
+    let cam2;
+    let usingCam1 = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      // Create the cameras between begin() and end().
+      myBuffer.begin();
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = myBuffer.createCamera();
+
+      // Create the second camera.
+      // Place it at the top-left.
+      // Point it at the origin.
+      cam2 = myBuffer.createCamera();
+      cam2.setPosition(400, -400, 800);
+      cam2.lookAt(0, 0, 0);
+
+      myBuffer.end();
+
+      describe(
+        'A white cube on a gray background. The camera toggles between frontal and aerial views when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      // Draw to the p5.Framebuffer object.
+      myBuffer.begin();
+      background(200);
+
+      // Set the camera.
+      if (usingCam1 === true) {
+        setCamera(cam1);
+      } else {
+        setCamera(cam2);
+      }
+
+      // Reset all transformations.
+      resetMatrix();
+
+      // Draw the box.
+      box();
+
+      myBuffer.end();
+
+      // Display the p5.Framebuffer object.
+      image(myBuffer, -50, -50);
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (usingCam1 === true) {
+        usingCam1 = false;
+      } else {
+        usingCam1 = true;
+      }
+    }
+    </code>
+    </div>
 class: p5.Framebuffer
 return:
-  description: A new camera
+  description: new camera.
   type: p5.Camera
 chainable: false
 ---

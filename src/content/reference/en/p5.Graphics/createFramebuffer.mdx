@@ -4,21 +4,309 @@ module: Rendering
 submodule: Rendering
 file: src/core/p5.Graphics.js
 description: >
-  <p>Creates and returns a new <a
-  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
+  <p>Creates a new <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
+  object with
 
-  inside a p5.Graphics WebGL context.</p>
+  the same WebGL context as the graphics buffer.</p>
 
-  <p>This takes the same parameters as the <a
-  href="/reference/p5/createFramebuffer">global
+  <p><a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> objects are
+  separate drawing
 
-  createFramebuffer function.</a></p>
-line: 203
+  surfaces that can be used as textures in WebGL mode. They're similar to
+
+  <a href="/reference/p5/p5.Graphics">p5.Graphics</a> objects and generally run
+  much
+
+  faster when used as textures. Creating a
+
+  <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object in the same
+  context
+
+  as the graphics buffer makes this speedup possible.</p>
+
+  <p>The parameter, <code>options</code>, is optional. An object can be passed
+  to configure
+
+  the <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. The
+  available
+
+  properties are:</p>
+
+  <ul>
+
+  <li><code>format</code>: data format of the texture, either
+  <code>UNSIGNED_BYTE</code>, <code>FLOAT</code>, or <code>HALF_FLOAT</code>.
+  Default is <code>UNSIGNED_BYTE</code>.</li>
+
+  <li><code>channels</code>: whether to store <code>RGB</code> or
+  <code>RGBA</code> color channels. Default is to match the graphics buffer
+  which is <code>RGBA</code>.</li>
+
+  <li><code>depth</code>: whether to include a depth buffer. Default is
+  <code>true</code>.</li>
+
+  <li><code>depthFormat</code>: data format of depth information, either
+  <code>UNSIGNED_INT</code> or <code>FLOAT</code>. Default is
+  <code>FLOAT</code>.</li>
+
+  <li><code>stencil</code>: whether to include a stencil buffer for masking.
+  <code>depth</code> must be <code>true</code> for this feature to work.
+  Defaults to the value of <code>depth</code> which is <code>true</code>.</li>
+
+  <li><code>antialias</code>: whether to perform anti-aliasing. If set to
+  <code>true</code>, as in <code>{ antialias: true }</code>, 2 samples will be
+  used by default. The number of samples can also be set, as in <code>{
+  antialias: 4 }</code>. Default is to match <a
+  href="/reference/p5/setAttributes">setAttributes()</a> which is
+  <code>false</code> (<code>true</code> in Safari).</li>
+
+  <li><code>width</code>: width of the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is to
+  always match the graphics buffer width.</li>
+
+  <li><code>height</code>: height of the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is to
+  always match the graphics buffer height.</li>
+
+  <li><code>density</code>: pixel density of the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is to
+  always match the graphics buffer pixel density.</li>
+
+  <li><code>textureFiltering</code>: how to read values from the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Either
+  <code>LINEAR</code> (nearby pixels will be interpolated) or
+  <code>NEAREST</code> (no interpolation). Generally, use <code>LINEAR</code>
+  when using the texture as an image and <code>NEAREST</code> if reading the
+  texture as data. Default is <code>LINEAR</code>.</li>
+
+  </ul>
+
+  <p>If the <code>width</code>, <code>height</code>, or <code>density</code>
+  attributes are set, they won't
+
+  automatically match the graphics buffer and must be changed manually.</p>
+line: 400
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and hold a mouse button to change shapes.
+
+    let pg;
+    let torusLayer;
+    let boxLayer;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a p5.Graphics object using WebGL mode.
+      pg = createGraphics(100, 100, WEBGL);
+
+      // Create the p5.Framebuffer objects.
+      torusLayer = pg.createFramebuffer();
+      boxLayer = pg.createFramebuffer();
+
+      describe('A grid of white toruses rotating against a dark gray background. The shapes become boxes while the user holds a mouse button.');
+    }
+
+    function draw() {
+      // Update and draw the layers offscreen.
+      drawTorus();
+      drawBox();
+
+      // Choose the layer to display.
+      let layer;
+      if (mouseIsPressed === true) {
+        layer = boxLayer;
+      } else {
+        layer = torusLayer;
+      }
+
+      // Draw to the p5.Graphics object.
+      pg.background(50);
+
+      // Iterate from left to right.
+      for (let x = -50; x < 50; x += 25) {
+        // Iterate from top to bottom.
+        for (let y = -50; y < 50; y += 25) {
+          // Draw the layer to the p5.Graphics object
+          pg.image(layer, x, y, 25, 25);
+        }
+      }
+
+      // Display the p5.Graphics object.
+      image(pg, 0, 0);
+    }
+
+    // Update and draw the torus layer offscreen.
+    function drawTorus() {
+      // Start drawing to the torus p5.Framebuffer.
+      torusLayer.begin();
+
+      // Clear the drawing surface.
+      pg.clear();
+
+      // Turn on the lights.
+      pg.lights();
+
+      // Rotate the coordinate system.
+      pg.rotateX(frameCount * 0.01);
+      pg.rotateY(frameCount * 0.01);
+
+      // Style the torus.
+      pg.noStroke();
+
+      // Draw the torus.
+      pg.torus(20);
+
+      // Start drawing to the torus p5.Framebuffer.
+      torusLayer.end();
+    }
+
+    // Update and draw the box layer offscreen.
+    function drawBox() {
+      // Start drawing to the box p5.Framebuffer.
+      boxLayer.begin();
+
+      // Clear the drawing surface.
+      pg.clear();
+
+      // Turn on the lights.
+      pg.lights();
+
+      // Rotate the coordinate system.
+      pg.rotateX(frameCount * 0.01);
+      pg.rotateY(frameCount * 0.01);
+
+      // Style the box.
+      pg.noStroke();
+
+      // Draw the box.
+      pg.box(30);
+
+      // Start drawing to the box p5.Framebuffer.
+      boxLayer.end();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and hold a mouse button to change shapes.
+
+    let pg;
+    let torusLayer;
+    let boxLayer;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create an options object.
+      let options = { width: 25, height: 25 };
+
+      // Create a p5.Graphics object using WebGL mode.
+      pg = createGraphics(100, 100, WEBGL);
+
+      // Create the p5.Framebuffer objects.
+      // Use options for configuration.
+      torusLayer = pg.createFramebuffer(options);
+      boxLayer = pg.createFramebuffer(options);
+
+      describe('A grid of white toruses rotating against a dark gray background. The shapes become boxes while the user holds a mouse button.');
+    }
+
+    function draw() {
+      // Update and draw the layers offscreen.
+      drawTorus();
+      drawBox();
+
+      // Choose the layer to display.
+      let layer;
+      if (mouseIsPressed === true) {
+        layer = boxLayer;
+      } else {
+        layer = torusLayer;
+      }
+
+      // Draw to the p5.Graphics object.
+      pg.background(50);
+
+      // Iterate from left to right.
+      for (let x = -50; x < 50; x += 25) {
+        // Iterate from top to bottom.
+        for (let y = -50; y < 50; y += 25) {
+          // Draw the layer to the p5.Graphics object
+          pg.image(layer, x, y);
+        }
+      }
+
+      // Display the p5.Graphics object.
+      image(pg, 0, 0);
+    }
+
+    // Update and draw the torus layer offscreen.
+    function drawTorus() {
+      // Start drawing to the torus p5.Framebuffer.
+      torusLayer.begin();
+
+      // Clear the drawing surface.
+      pg.clear();
+
+      // Turn on the lights.
+      pg.lights();
+
+      // Rotate the coordinate system.
+      pg.rotateX(frameCount * 0.01);
+      pg.rotateY(frameCount * 0.01);
+
+      // Style the torus.
+      pg.noStroke();
+
+      // Draw the torus.
+      pg.torus(5, 2.5);
+
+      // Start drawing to the torus p5.Framebuffer.
+      torusLayer.end();
+    }
+
+    // Update and draw the box layer offscreen.
+    function drawBox() {
+      // Start drawing to the box p5.Framebuffer.
+      boxLayer.begin();
+
+      // Clear the drawing surface.
+      pg.clear();
+
+      // Turn on the lights.
+      pg.lights();
+
+      // Rotate the coordinate system.
+      pg.rotateX(frameCount * 0.01);
+      pg.rotateY(frameCount * 0.01);
+
+      // Style the box.
+      pg.noStroke();
+
+      // Draw the box.
+      pg.box(7.5);
+
+      // Start drawing to the box p5.Framebuffer.
+      boxLayer.end();
+    }
+    </code>
+    </div>
 class: p5.Graphics
+params:
+  - name: options
+    description: |
+      <p>configuration options.</p>
+    type: Object
+    optional: true
 return:
-  description: ''
+  description: new framebuffer.
   type: p5.Framebuffer
 chainable: false
 ---

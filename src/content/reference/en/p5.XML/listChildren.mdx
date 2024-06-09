@@ -3,46 +3,56 @@ title: listChildren
 module: IO
 submodule: Input
 file: src/io/p5.XML.js
-description: >
-  <p>Get the names of all of the element's children, and returns the names as an
-
-  array of Strings. This is the same as looping through and calling <a
-  href="/reference/p5.XML/getName">getName()</a>
-
-  on each child element individually.</p>
-line: 217
+description: |
+  <p>Returns an array with the names of the element's child elements as
+  <code>String</code>s.</p>
+line: 287
 isConstructor: false
 itemtype: method
 example:
   - |-
-    &lt;animal
-    <div class='norender'><code>
-    // The following short XML file called "mammals.xml" is parsed
-    // in the code below.
-    //
-    // <?xml version="1.0"?>
-    // &lt;mammals&gt;
-    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-    // &lt;/mammals&gt;
 
-    let xml;
+    <div>
+    <code>
+    let myXML;
 
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      print(xml.listChildren());
-    }
+      createCanvas(100, 100);
 
-    // Sketch prints:
-    // ["animal", "animal", "animal"]
-    </code></div>
+      background(200);
+
+      // Get the names of the element's children as an array.
+      let children = myXML.listChildren();
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Iterate over the array.
+      for (let i = 0; i < children.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 25;
+
+        // Display the child element's name.
+        text(children[i], 10, y);
+      }
+
+      describe(
+        'The words "mammal", "mammal", "mammal", and "reptile" written on separate lines. The text is black on a gray background.'
+      );
+    }
+    </code>
+    </div>
 class: p5.XML
 return:
-  description: names of the children of the element
+  description: names of the child elements.
   type: 'String[]'
 chainable: false
 ---

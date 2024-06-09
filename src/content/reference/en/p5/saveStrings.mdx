@@ -3,60 +3,176 @@ title: saveStrings
 module: IO
 submodule: Output
 file: src/io/files.js
-description: |
-  <p>Writes an array of Strings to a text file, one line per String.
-  The file saving process and location of the saved file will
-  vary between web browsers.</p>
-line: 1578
+description: >
+  <p>Saves an <code>Array</code> of <code>String</code>s to a file, one per
+  line.</p>
+
+  <p>The first parameter, <code>list</code>, is an array with the strings to
+  save.</p>
+
+  <p>The second parameter, <code>filename</code>, is a string that sets the
+  file's name.
+
+  For example, calling <code>saveStrings(['0', '01', '011'], 'data.txt')</code>
+  saves
+
+  the array <code>['0', '01', '011']</code> to a file called
+  <code>data.txt</code> on the user's
+
+  computer.</p>
+
+  <p>The third parameter, <code>extension</code>, is optional. If a string is
+  passed, as in
+
+  <code>saveStrings(['0', '01', '0</code>1'], 'data', 'txt')`, the second
+  parameter will
+
+  be interpreted as the file name and the third parameter as the extension.</p>
+
+  <p>The fourth parameter, <code>isCRLF</code>, is also optional, If
+  <code>true</code> is passed, as
+
+  in <code>saveStrings(['0', '01', '011'], 'data', 'txt', true)</code>, then two
+
+  characters, <code>\r\n</code> , will be added to the end of each string to
+  create new
+
+  lines in the saved file. <code>\r</code> is a carriage return (CR) and
+  <code>\n</code> is a line
+
+  feed (LF). By default, only <code>\n</code> (line feed) is added to each
+  string in
+
+  order to create new lines.</p>
+
+  <p>Note: The browser will either save the file immediately or prompt the user
+
+  with a dialogue window.</p>
+line: 2118
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
 
-     <div><code>
-     let words = 'apple bear cat dog';
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
 
-     // .split() outputs an Array
-     let list = split(words, ' ');
+      background(200);
 
-     function setup() {
-     createCanvas(100, 100);
-     background(200);
-     text('click here to save', 10, 10, 70, 80);
-     describe('no image displayed');
-     }
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
 
-     function mousePressed() {
-     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-       saveStrings(list, 'nouns.txt');
-     }
-     }
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
 
-     // Saves the following to a file called 'nouns.txt':
-     //
-     // apple
-     // bear
-     // cat
-     // dog
-     </code></div>
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create an array.
+        let data = ['0', '01', '011'];
+
+        // Save the text file.
+        saveStrings(data, 'data.txt');
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create an array.
+        // ASCII art courtesy Wikipedia:
+        // https://en.wikipedia.org/wiki/ASCII_art
+        let data = [' (\\_/) ', "(='.'=)", '(")_(")'];
+
+        // Save the text file.
+        saveStrings(data, 'cat', 'txt');
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create an array.
+        //   +--+
+        //  /  /|
+        // +--+ +
+        // |  |/
+        // +--+
+        let data = ['  +--+', ' /  /|', '+--+ +', '|  |/', '+--+'];
+
+        // Save the text file.
+        // Use CRLF for line endings.
+        saveStrings(data, 'box', 'txt', true);
+      }
+    }
+    </code>
+    </div>
 class: p5
 params:
   - name: list
     description: |
-      <p>string array to be written</p>
+      <p>data to save.</p>
     type: 'String[]'
   - name: filename
     description: |
-      <p>filename for output</p>
+      <p>name of file to be saved.</p>
     type: String
   - name: extension
     description: |
-      <p>the filename's extension</p>
+      <p>format to use for the file.</p>
     type: String
     optional: true
   - name: isCRLF
     description: |
-      <p>if true, change line-break to CRLF</p>
+      <p>whether to add <code>\r\n</code> to the end of each
+                                  string. Defaults to <code>false</code>.</p>
     type: Boolean
     optional: true
 chainable: false

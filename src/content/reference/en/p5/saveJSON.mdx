@@ -3,57 +3,161 @@ title: saveJSON
 module: IO
 submodule: Output
 file: src/io/files.js
-description: |
-  <p>Writes the contents of an Array or a JSON object to a .json file.
-  The file saving process and location of the saved file will
-  vary between web browsers.</p>
-line: 1523
+description: >
+  <p>Saves an <code>Object</code> or <code>Array</code> to a JSON file.</p>
+
+  <p>JavaScript Object Notation
+
+  (<a href="https://developer.mozilla.org/en-US/docs/Glossary/JSON"
+  target="_blank">JSON</a>)
+
+  is a standard format for sending data between applications. The format is
+
+  based on JavaScript objects which have keys and values. JSON files store
+
+  data in an object with strings as keys. Values can be strings, numbers,
+
+  Booleans, arrays, <code>null</code>, or other objects.</p>
+
+  <p>The first parameter, <code>json</code>, is the data to save. The data can
+  be an array,
+
+  as in <code>[1, 2, 3]</code>, or an object, as in
+
+  <code>{ x: 50, y: 50, color: 'deeppink' }</code>.</p>
+
+  <p>The second parameter, <code>filename</code>, is a string that sets the
+  file's name.
+
+  For example, calling <code>saveJSON([1, 2, 3], 'data.json')</code> saves the
+  array
+
+  <code>[1, 2, 3]</code> to a file called <code>data.json</code> on the user's
+  computer.</p>
+
+  <p>The third parameter, <code>optimize</code>, is optional. If
+  <code>true</code> is passed, as in
+
+  <code>saveJSON([1, 2, 3], 'data.json', true)</code>, then all unneeded
+  whitespace will
+
+  be removed to reduce the file size.</p>
+
+  <p>Note: The browser will either save the file immediately or prompt the user
+
+  with a dialogue window.</p>
+line: 1979
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
 
-     <div><code>
-     let json = {}; // new  JSON Object
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
 
-     json.id = 0;
-     json.species = 'Panthera leo';
-     json.name = 'Lion';
+      background(200);
 
-     function setup() {
-     createCanvas(100, 100);
-     background(200);
-     text('click here to save', 10, 10, 70, 80);
-     describe('no image displayed');
-     }
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
 
-     function mousePressed() {
-     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-       saveJSON(json, 'lion.json');
-     }
-     }
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
 
-     // saves the following to a file called "lion.json":
-     // {
-     //   "id": 0,
-     //   "species": "Panthera leo",
-     //   "name": "Lion"
-     // }
-     </code></div>
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create an array.
+        let data = [1, 2, 3];
+
+        // Save the JSON file.
+        saveJSON(data, 'numbers.json');
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create an object.
+        let data = { x: mouseX, y: mouseY };
+
+        // Save the JSON file.
+        saveJSON(data, 'state.json');
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create an object.
+        let data = { x: mouseX, y: mouseY };
+
+        // Save the JSON file and reduce its size.
+        saveJSON(data, 'state.json', true);
+      }
+    }
+    </code>
+    </div>
 class: p5
 params:
   - name: json
-    description: ''
+    description: |
+      <p>data to save.</p>
     type: Array|Object
   - name: filename
-    description: ''
+    description: |
+      <p>name of the file to be saved.</p>
     type: String
   - name: optimize
     description: |
-      <p>If true, removes line breaks
-                                     and spaces from the output
-                                     file to optimize filesize
-                                     (but not readability).</p>
+      <p>whether to trim unneeded whitespace. Defaults
+                                   to <code>true</code>.</p>
     type: Boolean
     optional: true
 chainable: false

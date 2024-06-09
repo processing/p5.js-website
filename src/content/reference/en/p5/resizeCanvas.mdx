@@ -3,43 +3,123 @@ title: resizeCanvas
 module: Rendering
 submodule: Rendering
 file: src/core/rendering.js
-description: |
-  <p>Resizes the canvas to given width and height. The canvas will be cleared
-  and draw will be called immediately, allowing the sketch to re-render itself
-  in the resized canvas.</p>
-line: 166
+description: >
+  <p>Resizes the canvas to a given width and height.</p>
+
+  <p><code>resizeCanvas()</code> immediately clears the canvas and calls
+
+  <a href="/reference/p5/redraw">redraw()</a>. It's common to call
+  <code>resizeCanvas()</code>
+
+  within the body of <a href="/reference/p5/windowResized">windowResized()</a>
+  like
+
+  so:</p>
+
+  <pre><code class="language-js">function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+  }
+
+  </code></pre>
+
+  <p>The first two parameters, <code>width</code> and <code>height</code>, set
+  the dimensions of the
+
+  canvas. They also the values of the <a href="/reference/p5/width">width</a>
+  and
+
+  <a href="/reference/p5/height">height</a> system variables. For example,
+  calling
+
+  <code>resizeCanvas(300, 500)</code> resizes the canvas to 300×500 pixels, then
+  sets
+
+  <a href="/reference/p5/width">width</a> to 300 and
+
+  <a href="/reference/p5/height">height</a> 500.</p>
+
+  <p>The third parameter, <code>noRedraw</code>, is optional. If
+  <code>true</code> is passed, as in
+
+  <code>resizeCanvas(300, 500, true)</code>, then the canvas will be canvas to
+  300×500
+
+  pixels but the <a href="/reference/p5/redraw">redraw()</a> function won't be
+  called
+
+  immediately. By default, <a href="/reference/p5/redraw">redraw()</a> is called
+
+  immediately when <code>resizeCanvas()</code> finishes executing.</p>
+line: 221
 isConstructor: false
 itemtype: method
-alt: No image displayed.
 example:
   - |-
 
-    <div class="norender"><code>
+    <div>
+    <code>
+    // Double-click to resize the canvas.
+
     function setup() {
-      createCanvas(windowWidth, windowHeight);
+      createCanvas(100, 100);
+
+      describe(
+        'A white circle drawn on a gray background. The canvas shrinks by half the first time the user double-clicks.'
+      );
     }
 
     function draw() {
-      background(0, 100, 200);
+      background(200);
+
+      // Draw a circle at the center of the canvas.
+      circle(width / 2, height / 2, 20);
     }
 
+    // Resize the canvas when the user double-clicks.
+    function doubleClicked() {
+      resizeCanvas(50, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Resize the web browser to change the canvas size.
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+
+      describe('A white circle drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a circle at the center of the canvas.
+      circle(width / 2, height / 2, 20);
+    }
+
+    // Always resize the canvas to fill the browser window.
     function windowResized() {
       resizeCanvas(windowWidth, windowHeight);
     }
-    </code></div>
+    </code>
+    </div>
 class: p5
 params:
-  - name: w
+  - name: width
     description: |
-      <p>width of the canvas</p>
+      <p>width of the canvas.</p>
     type: Number
-  - name: h
+  - name: height
     description: |
-      <p>height of the canvas</p>
+      <p>height of the canvas.</p>
     type: Number
   - name: noRedraw
     description: |
-      <p>don't redraw the canvas immediately</p>
+      <p>whether to delay calling
+                                   <a href="#/p5/redraw">redraw()</a>. Defaults
+                                   to <code>false</code>.</p>
     type: Boolean
     optional: true
 chainable: false

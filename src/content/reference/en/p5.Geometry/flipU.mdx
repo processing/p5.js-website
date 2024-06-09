@@ -3,9 +3,64 @@ title: flipU
 module: Shape
 submodule: 3D Primitives
 file: src/webgl/p5.Geometry.js
-description: |
-  <p>Flips the U texture coordinates of the model.</p>
-line: 285
+description: >
+  <p>Flips the geometry’s texture u-coordinates.</p>
+
+  <p>In order for <a href="/reference/p5/texture">texture()</a> to work, the
+  geometry
+
+  needs a way to map the points on its surface to the pixels in a rectangular
+
+  image that's used as a texture. The geometry's vertex at coordinates
+
+  <code>(x, y, z)</code> maps to the texture image's pixel at coordinates
+  <code>(u, v)</code>.</p>
+
+  <p>The <a href="/reference/p5.Geometry/uvs">myGeometry.uvs</a> array stores
+  the
+
+  <code>(u, v)</code> coordinates for each vertex in the order it was added to
+  the
+
+  geometry. Calling <code>myGeometry.flipU()</code> flips a geometry's
+  u-coordinates
+
+  so that the texture appears mirrored horizontally.</p>
+
+  <p>For example, a plane's four vertices are added clockwise starting from the
+
+  top-left corner. Here's how calling <code>myGeometry.flipU()</code> would
+  change a
+
+  plane's texture coordinates:</p>
+
+  <pre><code class="language-js">// Print the original texture coordinates.
+
+  // Output: [0, 0, 1, 0, 0, 1, 1, 1]
+
+  console.log(myGeometry.uvs);
+
+
+  // Flip the u-coordinates.
+
+  myGeometry.flipU();
+
+
+  // Print the flipped texture coordinates.
+
+  // Output: [1, 0, 0, 0, 1, 1, 0, 1]
+
+  console.log(myGeometry.uvs);
+
+
+  // Notice the swaps:
+
+  // Top vertices: [0, 0, 1, 0] --> [1, 0, 0, 0]
+
+  // Bottom vertices: [0, 1, 1, 1] --> [1, 1, 0, 1]
+
+  </code></pre>
+line: 928
 isConstructor: false
 itemtype: method
 example:
@@ -14,61 +69,50 @@ example:
     <div>
     <code>
     let img;
-    let model1;
-    let model2;
 
     function preload() {
       img = loadImage('/assets/laDefense.jpg');
     }
 
     function setup() {
-      createCanvas(150, 150, WEBGL);
+      createCanvas(100, 100, WEBGL);
+
       background(200);
 
-      model1 = createShape(50, 50);
-      model2 = createShape(50, 50);
-      model2.flipU();
-    }
+      // Create p5.Geometry objects.
+      let geom1 = buildGeometry(createShape);
+      let geom2 = buildGeometry(createShape);
 
-    function draw() {
-      background(0);
+      // Flip geom2's U texture coordinates.
+      geom2.flipU();
 
-      // original
+      // Left (original).
       push();
-      translate(-40, 0, 0);
+      translate(-25, 0, 0);
       texture(img);
       noStroke();
-      plane(50);
-      model(model1);
+      model(geom1);
       pop();
 
-      // flipped
+      // Right (flipped).
       push();
-      translate(40, 0, 0);
+      translate(25, 0, 0);
       texture(img);
       noStroke();
-      plane(50);
-      model(model2);
+      model(geom2);
       pop();
+
+      describe(
+        'Two photos of a ceiling on a gray background. The photos are mirror images of each other.'
+      );
     }
 
-    function createShape(w, h) {
-      return buildGeometry(() => {
-        textureMode(NORMAL);
-        beginShape();
-        vertex(-w / 2, -h / 2, 0, 0);
-        vertex(w / 2, -h / 2, 1, 0);
-        vertex(w / 2, h / 2, 1, 1);
-        vertex(-w / 2, h / 2, 0, 1);
-        endShape(CLOSE);
-      });
+    function createShape() {
+      plane(40);
     }
     </code>
     </div>
 class: p5.Geometry
-return:
-  description: ''
-  type: p5.Geometry
 chainable: false
 ---
 

@@ -4,99 +4,212 @@ module: IO
 submodule: Input
 file: src/io/files.js
 description: >
-  <p>Reads the contents of a file and creates an XML object with its values.
-
-  If the name of the file is used as the parameter, as in the above example,
-
-  the file must be located in the sketch directory/folder.</p>
-
-  <p>Alternatively, the file maybe be loaded from anywhere on the local
-
-  computer using an absolute path (something that starts with / on Unix and
-
-  Linux, or a drive letter on Windows), or the filename parameter can be a
-
-  URL for a file found on a network.</p>
-
-  <p>This method is asynchronous, meaning it may not finish before the next
-
-  line in your sketch is executed. Calling <a
-  href="/reference/p5/loadXML">loadXML()</a> inside <a
-  href="/reference/p5/preload">preload()</a>
-
-  guarantees to complete the operation before <a
-  href="/reference/p5/setup">setup()</a> and <a
-  href="/reference/p5/draw">draw()</a> are called.</p>
-
-  <p>Outside of <a href="/reference/p5/preload">preload()</a>, you may supply a
-  callback function to handle the
-
+  <p>Loads an XML file to create a <a href="/reference/p5/p5.XML">p5.XML</a>
   object.</p>
 
-  <p>This method is suitable for fetching files up to size of 64MB.</p>
-line: 575
+  <p>Extensible Markup Language
+
+  (<a href="https://developer.mozilla.org/en-US/docs/Web/XML/XML_introduction"
+  target="_blank">XML</a>)
+
+  is a standard format for sending data between applications. Like HTML, the
+
+  XML format is based on tags and attributes, as in
+
+  <code><time units="s">1234</time></code>.</p>
+
+  <p>The first parameter, <code>path</code>, is always a string with the path to
+  the file.
+
+  Paths to local files should be relative, as in
+
+  <code>loadXML('/assets/data.xml')</code>. URLs such as
+  <code>'https://example.com/data.xml'</code>
+
+  may be blocked due to browser security.</p>
+
+  <p>The second parameter, <code>successCallback</code>, is optional. If a
+  function is
+
+  passed, as in <code>loadXML('/assets/data.xml', handleData)</code>, then the
+
+  <code>handleData()</code> function will be called once the data loads. The
+
+  <a href="/reference/p5/p5.XML">p5.XML</a> object created from the data will be
+  passed
+
+  to <code>handleData()</code> as its only argument.</p>
+
+  <p>The third parameter, <code>failureCallback</code>, is also optional. If a
+  function is
+
+  passed, as in <code>loadXML('/assets/data.xml', handleData,
+  handleFailure)</code>, then
+
+  the <code>handleFailure()</code> function will be called if an error occurs
+  while
+
+  loading. The <code>Error</code> object will be passed to
+  <code>handleFailure()</code> as its only
+
+  argument.</p>
+
+  <p>Note: Data can take time to load. Calling <code>loadXML()</code> within
+
+  <a href="/reference/p5/preload">preload()</a> ensures data loads before it's
+  used in
+
+  <a href="/reference/p5/setup">setup()</a> or <a
+  href="/reference/p5/draw">draw()</a>.</p>
+line: 780
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    // The following short XML file called "mammals.xml" is parsed
-    // in the code below.
-    //
-    // <?xml version="1.0"?>
-    // &lt;mammals&gt;
-    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-    // &lt;/mammals&gt;
+    <div>
+    <code>
+    let myXML;
 
-    let xml;
-
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      let children = xml.getChildren('animal');
+      createCanvas(100, 100);
 
-      for (let i = 0; i < children.length; i++) {
-        let id = children[i].getNum('id');
-        let coloring = children[i].getString('species');
-        let name = children[i].getContent();
-        print(id + ', ' + coloring + ', ' + name);
+      background(200);
+
+      // Get an array with all mammal tags.
+      let mammals = myXML.getChildren('mammal');
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Iterate over the mammals array.
+      for (let i = 0; i < mammals.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 25;
+
+        // Get the mammal's common name.
+        let name = mammals[i].getContent();
+
+        // Display the mammal's name.
+        text(name, 20, y);
       }
-      describe('no image displayed');
+
+      describe(
+        'The words "Goat", "Leopard", and "Zebra" written on three separate lines. The text is black on a gray background.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let lastMammal;
+
+    // Load the XML and create a p5.XML object.
+    function preload() {
+      loadXML('/assets/animals.xml', handleData);
     }
 
-    // Sketch prints:
-    // 0, Capra hircus, Goat
-    // 1, Panthera pardus, Leopard
-    // 2, Equus zebra, Zebra
-    </code></div>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(16);
+
+      // Display the content of the last mammal element.
+      text(lastMammal, 50, 50);
+
+      describe('The word "Zebra" written in black on a gray background.');
+    }
+
+    // Get the content of the last mammal element.
+    function handleData(data) {
+      // Get an array with all mammal elements.
+      let mammals = data.getChildren('mammal');
+
+      // Get the content of the last mammal.
+      lastMammal = mammals[mammals.length - 1].getContent();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let lastMammal;
+
+    // Load the XML and preprocess it.
+    function preload() {
+      loadXML('/assets/animals.xml', handleData, handleError);
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(16);
+
+      // Display the content of the last mammal element.
+      text(lastMammal, 50, 50);
+
+      describe('The word "Zebra" written in black on a gray background.');
+    }
+
+    // Get the content of the last mammal element.
+    function handleData(data) {
+      // Get an array with all mammal elements.
+      let mammals = data.getChildren('mammal');
+
+      // Get the content of the last mammal.
+      lastMammal = mammals[mammals.length - 1].getContent();
+    }
+
+    // Log any errors to the console.
+    function handleError(error) {
+      console.error('Oops!', error);
+    }
+    </code>
+    </div>
 class: p5
 params:
-  - name: filename
+  - name: path
     description: |
-      <p>name of the file or URL to load</p>
+      <p>path of the XML file to be loaded.</p>
     type: String
-  - name: callback
+  - name: successCallback
     description: |
-      <p>function to be executed after <a href="#/p5/loadXML">loadXML()</a>
-                                    completes, XML object is passed in as
-                                    first argument</p>
+      <p>function to call once the data is
+                                           loaded. Will be passed the
+                                           <a href="#/p5.XML">p5.XML</a> object.</p>
     type: Function
     optional: true
   - name: errorCallback
     description: |
-      <p>function to be executed if
-                                    there is an error, response is passed
-                                    in as first argument</p>
+      <p>function to call if the data fails to
+                                         load. Will be passed an <code>Error</code> event
+                                         object.</p>
     type: Function
     optional: true
 return:
-  description: XML object containing data
-  type: Object
+  description: |-
+    XML data loaded into a <a href="#/p5.XML">p5.XML</a>
+                     object.
+  type: p5.XML
 chainable: false
 ---
 

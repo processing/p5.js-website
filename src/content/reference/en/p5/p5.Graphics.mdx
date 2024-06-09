@@ -3,66 +3,253 @@ title: p5.Graphics
 module: Rendering
 submodule: Rendering
 file: src/core/p5.Graphics.js
-description: |
-  <p>Thin wrapper around a renderer, to be used for creating a
-  graphics buffer object. Use this class if you need
-  to draw into an off-screen graphics buffer. The two parameters define the
-  width and height in pixels. The fields and methods for this class are
-  extensive, but mirror the normal drawing API for p5.</p>
+description: >
+  <p>A class to describe a drawing surface that's separate from the main
+  canvas.</p>
+
+  <p>Each <code>p5.Graphics</code> object provides a dedicated drawing surface
+  called a
+
+  <em>graphics buffer</em>. Graphics buffers are helpful when drawing should
+  happen
+
+  offscreen. For example, separate scenes can be drawn offscreen and
+
+  displayed only when needed.</p>
+
+  <p><code>p5.Graphics</code> objects have nearly all the drawing features of
+  the main
+
+  canvas. For example, calling the method <code>myGraphics.circle(50, 50,
+  20)</code>
+
+  draws to the graphics buffer. The resulting image can be displayed on the
+
+  main canvas by passing the <code>p5.Graphics</code> object to the
+
+  <a href="/reference/p5/image">image()</a> function, as in
+  <code>image(myGraphics, 0, 0)</code>.</p>
+
+  <p>Note: <a href="/reference/p5/createGraphics">createGraphics()</a> is the
+  recommended
+
+  way to create an instance of this class.</p>
 line: 10
 isConstructor: true
 params:
-  - name: w
+  - name: width
     description: |
-      <p>width</p>
+      <p>width of the graphics buffer in pixels.</p>
     type: Number
-  - name: h
+  - name: height
     description: |
-      <p>height</p>
+      <p>height of the graphics buffer in pixels.</p>
     type: Number
   - name: renderer
     description: |
-      <p>the renderer to use, either P2D or WEBGL</p>
+      <p>renderer to use, either P2D or WEBGL.</p>
     type: Constant
   - name: pInst
     description: |
-      <p>pointer to p5 instance</p>
+      <p>sketch instance.</p>
     type: P5
     optional: true
   - name: canvas
     description: |
-      <p>existing html canvas element</p>
+      <p>existing <code>&lt;canvas&gt;</code> element to use.</p>
     type: HTMLCanvasElement
     optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    let pg;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a p5.Graphics object.
+      pg = createGraphics(50, 50);
+
+      // Draw to the p5.Graphics object.
+      pg.background(100);
+      pg.circle(25, 25, 20);
+
+      describe('A dark gray square with a white circle at its center drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Display the p5.Graphics object.
+      image(pg, 25, 25);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the canvas to display the graphics buffer.
+
+    let pg;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a p5.Graphics object.
+      pg = createGraphics(50, 50);
+
+      describe('A square appears on a gray background when the user presses the mouse. The square cycles between white and black.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the background color.
+      let bg = frameCount % 255;
+
+      // Draw to the p5.Graphics object.
+      pg.background(bg);
+
+      // Display the p5.Graphics object while
+      // the user presses the mouse.
+      if (mouseIsPressed === true) {
+        image(pg, 25, 25);
+      }
+    }
+    </code>
+    </div>
 methods:
   reset:
     description: >
-      <p>Resets certain values such as those modified by functions in the
-      Transform category
+      <p>Resets the graphics buffer's transformations and lighting.</p>
 
-      and in the Lights category that are not automatically reset
+      <p>By default, the main canvas resets certain transformation and lighting
 
-      with graphics buffer objects. Calling this in <a
-      href="/reference/p5/draw">draw()</a> will copy the behavior
+      values each time <a href="/reference/p5/draw">draw()</a> executes.
+      <code>p5.Graphics</code>
 
-      of the standard canvas.</p>
+      objects must reset these values manually by calling
+      <code>myGraphics.reset()</code>.</p>
     path: p5.Graphics/reset
   remove:
-    description: |
-      <p>Removes a Graphics object from the page and frees any resources
-      associated with it.</p>
+    description: >
+      <p>Removes the graphics buffer from the web page.</p>
+
+      <p>Calling <code>myGraphics.remove()</code> removes the graphics buffer's
+
+      <code><canvas></code> element from the web page. The graphics buffer also
+      uses
+
+      a bit of memory on the CPU that can be freed like so:</p>
+
+      <pre><code class="language-js">// Remove the graphics buffer from the web
+      page.
+
+      myGraphics.remove();
+
+
+      // Delete the graphics buffer from CPU memory.
+
+      myGraphics = undefined;
+
+      </code></pre>
+
+      <p>Note: All variables that reference the graphics buffer must be assigned
+
+      the value <code>undefined</code> to delete the graphics buffer from CPU
+      memory. If any
+
+      variable still refers to the graphics buffer, then it won't be garbage
+
+      collected.</p>
     path: p5.Graphics/remove
   createFramebuffer:
     description: >
-      <p>Creates and returns a new <a
-      href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
+      <p>Creates a new <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
+      object with
 
-      inside a p5.Graphics WebGL context.</p>
+      the same WebGL context as the graphics buffer.</p>
 
-      <p>This takes the same parameters as the <a
-      href="/reference/p5/createFramebuffer">global
+      <p><a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> objects are
+      separate drawing
 
-      createFramebuffer function.</a></p>
+      surfaces that can be used as textures in WebGL mode. They're similar to
+
+      <a href="/reference/p5/p5.Graphics">p5.Graphics</a> objects and generally
+      run much
+
+      faster when used as textures. Creating a
+
+      <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object in the
+      same context
+
+      as the graphics buffer makes this speedup possible.</p>
+
+      <p>The parameter, <code>options</code>, is optional. An object can be
+      passed to configure
+
+      the <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. The
+      available
+
+      properties are:</p>
+
+      <ul>
+
+      <li><code>format</code>: data format of the texture, either
+      <code>UNSIGNED_BYTE</code>, <code>FLOAT</code>, or
+      <code>HALF_FLOAT</code>. Default is <code>UNSIGNED_BYTE</code>.</li>
+
+      <li><code>channels</code>: whether to store <code>RGB</code> or
+      <code>RGBA</code> color channels. Default is to match the graphics buffer
+      which is <code>RGBA</code>.</li>
+
+      <li><code>depth</code>: whether to include a depth buffer. Default is
+      <code>true</code>.</li>
+
+      <li><code>depthFormat</code>: data format of depth information, either
+      <code>UNSIGNED_INT</code> or <code>FLOAT</code>. Default is
+      <code>FLOAT</code>.</li>
+
+      <li><code>stencil</code>: whether to include a stencil buffer for masking.
+      <code>depth</code> must be <code>true</code> for this feature to work.
+      Defaults to the value of <code>depth</code> which is
+      <code>true</code>.</li>
+
+      <li><code>antialias</code>: whether to perform anti-aliasing. If set to
+      <code>true</code>, as in <code>{ antialias: true }</code>, 2 samples will
+      be used by default. The number of samples can also be set, as in <code>{
+      antialias: 4 }</code>. Default is to match <a
+      href="/reference/p5/setAttributes">setAttributes()</a> which is
+      <code>false</code> (<code>true</code> in Safari).</li>
+
+      <li><code>width</code>: width of the <a
+      href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is
+      to always match the graphics buffer width.</li>
+
+      <li><code>height</code>: height of the <a
+      href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is
+      to always match the graphics buffer height.</li>
+
+      <li><code>density</code>: pixel density of the <a
+      href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is
+      to always match the graphics buffer pixel density.</li>
+
+      <li><code>textureFiltering</code>: how to read values from the <a
+      href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Either
+      <code>LINEAR</code> (nearby pixels will be interpolated) or
+      <code>NEAREST</code> (no interpolation). Generally, use
+      <code>LINEAR</code> when using the texture as an image and
+      <code>NEAREST</code> if reading the texture as data. Default is
+      <code>LINEAR</code>.</li>
+
+      </ul>
+
+      <p>If the <code>width</code>, <code>height</code>, or <code>density</code>
+      attributes are set, they won't
+
+      automatically match the graphics buffer and must be changed manually.</p>
     path: p5.Graphics/createFramebuffer
 chainable: false
 ---

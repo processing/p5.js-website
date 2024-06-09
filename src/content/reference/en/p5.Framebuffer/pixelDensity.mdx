@@ -3,23 +3,121 @@ title: pixelDensity
 module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
-description: |
-  <p>Gets or sets the pixel scaling for high pixel density displays. By
-  default, the density will match that of the canvas the framebuffer was
-  created on, which will match the display density.</p>
-  <p>Call this method with no arguments to get the current density, or pass
-  in a number to set the density.</p>
-line: 239
+description: >
+  <p>Sets the framebuffer's pixel density or returns its current density.</p>
+
+  <p>Computer displays are grids of little lights called pixels. A display's
+
+  pixel density describes how many pixels it packs into an area. Displays
+
+  with smaller pixels have a higher pixel density and create sharper
+
+  images.</p>
+
+  <p>The parameter, <code>density</code>, is optional. If a number is passed, as
+  in
+
+  <code>myBuffer.pixelDensity(1)</code>, it sets the framebuffer's pixel
+  density. By
+
+  default, the framebuffer's pixel density will match that of the canvas
+
+  where it was created. All canvases default to match the display's pixel
+
+  density.</p>
+
+  <p>Calling <code>myBuffer.pixelDensity()</code> without an argument returns
+  its current
+
+  pixel density.</p>
+line: 297
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let myBuffer;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      describe("A white circle on a gray canvas. The circle's edge become fuzzy while the user presses and holds the mouse.");
+    }
+
+    function draw() {
+      // Draw to the p5.Framebuffer object.
+      myBuffer.begin();
+      background(200);
+      circle(0, 0, 40);
+      myBuffer.end();
+
+      // Display the p5.Framebuffer object.
+      image(myBuffer, -50, -50);
+    }
+
+    // Decrease the pixel density when the user
+    // presses the mouse.
+    function mousePressed() {
+      myBuffer.pixelDensity(1);
+    }
+
+    // Increase the pixel density when the user
+    // releases the mouse.
+    function mouseReleased() {
+      myBuffer.pixelDensity(2);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myBuffer;
+    let myFont;
+
+    // Load a font and create a p5.Font object.
+    function preload() {
+      myFont = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      // Get the p5.Framebuffer object's pixel density.
+      let d = myBuffer.pixelDensity();
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont(myFont);
+      textSize(16);
+      fill(0);
+
+      // Display the pixel density.
+      text(`Density: ${d}`, 0, 0);
+
+      describe(`The text "Density: ${d}" written in black on a gray background.`);
+    }
+    </code>
+    </div>
 class: p5.Framebuffer
 params:
   - name: density
     description: |
-      <p>A scaling factor for the number of pixels per
-      side of the framebuffer</p>
+      <p>pixel density to set.</p>
     type: Number
     optional: true
+return:
+  description: current pixel density.
+  type: Number
 chainable: false
 ---
 
