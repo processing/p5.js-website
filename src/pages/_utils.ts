@@ -152,7 +152,7 @@ export const getExampleCategory = (slug: string): string =>
   slug.split("/")[1].split("_").splice(1).join(" ");
 
 export const normalizeReferenceRoute = (route: string): string =>
-  removeLocaleAndExtension(route).replace("constants/", "");
+  removeLocaleAndExtension(route).replace(/constants\/|types\//, "");
 
 export const removeLocaleAndExtension = (id: string): string =>
   removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
