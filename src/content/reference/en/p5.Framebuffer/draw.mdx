@@ -4,47 +4,68 @@ module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
 description: >
-  <p>Run a function while drawing to the framebuffer rather than to its canvas.
+  <p>Draws to the framebuffer by calling a function that contains drawing
 
-  This is equivalent to calling <code>framebuffer.begin()</code>, running the
-  function,
+  instructions.</p>
 
-  and then calling <code>framebuffer.end()</code>, but ensures that one never
+  <p>The parameter, <code>callback</code>, is a function with the drawing
+  instructions
 
-  accidentally forgets <code>begin</code> or <code>end</code>.</p>
-line: 952
+  for the framebuffer. For example, calling
+  <code>myBuffer.draw(myFunction)</code>
+
+  will call a function named <code>myFunction()</code> to draw to the
+  framebuffer.
+
+  Doing so has the same effect as the following:</p>
+
+  <pre><code class="language-js">myBuffer.begin();
+
+  myFunction();
+
+  myBuffer.end();
+
+  </code></pre>
+line: 1323
 isConstructor: false
 itemtype: method
-alt: |-
-  A video of a floating and rotating red cube is pasted twice on the
-  canvas: once in the top left, and again, larger, in the bottom right.
 example:
   - |-
 
     <div>
     <code>
-    let framebuffer;
+    // Click the canvas to display the framebuffer.
+
+    let myBuffer;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      framebuffer = createFramebuffer();
-      noStroke();
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      describe('An empty gray canvas. The canvas gets darker and a rotating, multicolor torus appears while the user presses and holds the mouse.');
     }
 
     function draw() {
-      // Draw to the framebuffer
-      framebuffer.draw(function() {
-        background(255);
-        translate(0, 10*sin(frameCount * 0.01), 0);
-        rotateX(frameCount * 0.01);
-        rotateY(frameCount * 0.01);
-        fill(255, 0, 0);
-        box(50);
-      });
+      background(200);
 
-      background(100);
-      // Draw the framebuffer to the main canvas
-      image(framebuffer, -50, -50, 25, 25);
-      image(framebuffer, 0, 0, 35, 35);
+      // Draw to the p5.Framebuffer object.
+      myBuffer.draw(bagel);
+
+      // Display the p5.Framebuffer object while
+      // the user presses the mouse.
+      if (mouseIsPressed === true) {
+        image(myBuffer, -50, -50);
+      }
+    }
+
+    // Draw a rotating, multicolor torus.
+    function bagel() {
+      background(50);
+      rotateY(frameCount * 0.01);
+      normalMaterial();
+      torus(30);
     }
     </code>
     </div>
@@ -52,9 +73,7 @@ class: p5.Framebuffer
 params:
   - name: callback
     description: |
-      <p>A function to run that draws to the canvas. The
-      function will immediately be run, but it will draw to the framebuffer
-      instead of the canvas.</p>
+      <p>function that draws to the framebuffer.</p>
     type: Function
 chainable: false
 ---

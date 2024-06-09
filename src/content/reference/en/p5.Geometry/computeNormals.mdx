@@ -4,120 +4,352 @@ module: Shape
 submodule: 3D Primitives
 file: src/webgl/p5.Geometry.js
 description: >
-  <p>This function calculates normals for each face, where each vertex's normal
-  is the average of the normals of all faces it's connected to.
+  <p>Calculates the normal vector for each vertex on the geometry.</p>
 
-  i.e computes smooth normals per vertex as an average of each face.</p>
+  <p>All 3D shapes are made by connecting sets of points called
+  <em>vertices</em>. A
 
-  <p>When using <code>FLAT</code> shading, vertices are disconnected/duplicated
-  i.e each face has its own copy of vertices.
+  geometry's surface is formed by connecting vertices to create triangles
 
-  When using <code>SMOOTH</code> shading, vertices are connected/deduplicated
-  i.e each face has its vertices shared with other faces.</p>
+  that are stitched together. Each triangular patch on the geometry's
 
-  <p>Options can include:</p>
+  surface is called a <em>face</em>. <code>myGeometry.computeNormals()</code>
+  performs the
 
-  <ul>
+  math needed to orient each face. Orientation is important for lighting
 
-  <li><code>roundToPrecision</code>: Precision value for rounding computations.
-  Defaults to 3.</li>
+  and other effects.</p>
 
-  </ul>
-line: 472
+  <p>A face's orientation is defined by its <em>normal vector</em> which points
+  out
+
+  of the face and is normal (perpendicular) to the surface. Calling
+
+  <code>myGeometry.computeNormals()</code> first calculates each face's normal
+  vector.
+
+  Then it calculates the normal vector for each vertex by averaging the
+
+  normal vectors of the faces surrounding the vertex. The vertex normals
+
+  are stored as <a href="/reference/p5/p5.Vector">p5.Vector</a> objects in the
+
+  <a href="/reference/p5.Geometry/vertexNormals">myGeometry.vertexNormals</a>
+  array.</p>
+
+  <p>The first parameter, <code>shadingType</code>, is optional. Passing the
+  constant
+
+  <code>FLAT</code>, as in <code>myGeometry.computeNormals(FLAT)</code>,
+  provides neighboring
+
+  faces with their own copies of the vertices they share. Surfaces appear
+
+  tiled with flat shading. Passing the constant <code>SMOOTH</code>, as in
+
+  <code>myGeometry.computeNormals(SMOOTH)</code>, makes neighboring faces reuse
+  their
+
+  shared vertices. Surfaces appear smoother with smooth shading. By
+
+  default, <code>shadingType</code> is <code>FLAT</code>.</p>
+
+  <p>The second parameter, <code>options</code>, is also optional. If an object
+  with a
+
+  <code>roundToPrecision</code> property is passed, as in
+
+  <code>myGeometry.computeNormals(SMOOTH, { roundToPrecision: 5 })</code>, it
+  sets the
+
+  number of decimal places to use for calculations. By default,
+
+  <code>roundToPrecision</code> uses 3 decimal places.</p>
+line: 1286
 isConstructor: false
 itemtype: method
-alt: >-
-  A star-like geometry, here the computeNormals(SMOOTH) is applied for a smooth
-  shading effect.
-
-  This helps to avoid the faceted appearance that can occur with flat shading.
 example:
   - |-
 
     <div>
     <code>
-    let helix;
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      helix = buildGeometry(() => {
-        beginShape();
+      // Create a p5.Geometry object.
+      beginGeometry();
+      torus();
+      myGeometry = endGeometry();
 
-        for (let i = 0; i < TWO_PI * 3; i += 0.6) {
-          let radius = 20;
-          let x = cos(i) * radius;
-          let y = sin(i) * radius;
-          let z = map(i, 0, TWO_PI * 3, -30, 30);
-          vertex(x, y, z);
-        }
-        endShape();
-      });
-      helix.computeNormals();
+      // Compute the vertex normals.
+      myGeometry.computeNormals();
+
+      describe(
+        "A white torus drawn on a dark gray background. Red lines extend outward from the torus' vertices."
+      );
     }
+
     function draw() {
-      background(255);
-      stroke(0);
-      fill(150, 200, 250);
-      lights();
-      rotateX(PI*0.2);
+      background(50);
+
+      // Enable orbiting with the mouse.
       orbitControl();
-      model(helix);
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
+      rotateX(1);
+
+      // Style the helix.
+      stroke(0);
+
+      // Display the helix.
+      model(myGeometry);
+
+      // Style the normal vectors.
+      stroke(255, 0, 0);
+
+      // Iterate over the vertices and vertexNormals arrays.
+      for (let i = 0; i < myGeometry.vertices.length; i += 1) {
+
+        // Get the vertex p5.Vector object.
+        let v = myGeometry.vertices[i];
+
+        // Get the vertex normal p5.Vector object.
+        let n = myGeometry.vertexNormals[i];
+
+        // Calculate a point along the vertex normal.
+        let p = p5.Vector.mult(n, 5);
+
+        // Draw the vertex normal as a red line.
+        push();
+        translate(v);
+        line(0, 0, 0, p.x, p.y, p.z);
+        pop();
+      }
     }
     </code>
     </div>
-  - |-
 
     <div>
     <code>
-    let star;
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
 
-      star = buildGeometry(() => {
-        beginShape();
-        for (let i = 0; i < TWO_PI; i += PI / 5) {
-          let outerRadius = 60;
-          let innerRadius = 30;
-          let xOuter = cos(i) * outerRadius;
-          let yOuter = sin(i) * outerRadius;
-          let zOuter = random(-20, 20);
-          vertex(xOuter, yOuter, zOuter);
+      // Create a p5.Geometry object using a callback function.
+      myGeometry = new p5.Geometry();
 
-          let nextI = i + PI / 5 / 2;
-          let xInner = cos(nextI) * innerRadius;
-          let yInner = sin(nextI) * innerRadius;
-          let zInner = random(-20, 20);
-          vertex(xInner, yInner, zInner);
-        }
-        endShape(CLOSE);
-      });
-      star.computeNormals(SMOOTH);
+      // Create p5.Vector objects to position the vertices.
+      let v0 = createVector(-40, 0, 0);
+      let v1 = createVector(0, -40, 0);
+      let v2 = createVector(0, 40, 0);
+      let v3 = createVector(40, 0, 0);
+
+      // Add the vertices to the p5.Geometry object's vertices array.
+      myGeometry.vertices.push(v0, v1, v2, v3);
+
+      // Compute the faces array.
+      myGeometry.computeFaces();
+
+      // Compute the surface normals.
+      myGeometry.computeNormals();
+
+      describe('A red square drawn on a gray background.');
     }
+
     function draw() {
-      background(255);
-      stroke(0);
-      fill(150, 200, 250);
-      lights();
-      rotateX(PI*0.2);
+      background(200);
+
+      // Enable orbiting with the mouse.
       orbitControl();
-      model(star);
+
+      // Add a white point light.
+      pointLight(255, 255, 255, 0, 0, 10);
+
+      // Style the p5.Geometry object.
+      noStroke();
+      fill(255, 0, 0);
+
+      // Draw the p5.Geometry object.
+      model(myGeometry);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      myGeometry = buildGeometry(createShape);
+
+      // Compute normals using default (FLAT) shading.
+      myGeometry.computeNormals(FLAT);
+
+      describe('A white, helical structure drawn on a dark gray background. Its faces appear faceted.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
+      rotateX(1);
+
+      // Style the helix.
+      noStroke();
+
+      // Display the helix.
+      model(myGeometry);
+    }
+
+    function createShape() {
+      // Create a helical shape.
+      beginShape();
+      for (let i = 0; i < TWO_PI * 3; i += 0.5) {
+        let x = 30 * cos(i);
+        let y = 30 * sin(i);
+        let z = map(i, 0, TWO_PI * 3, -40, 40);
+        vertex(x, y, z);
+      }
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      myGeometry = buildGeometry(createShape);
+
+      // Compute normals using smooth shading.
+      myGeometry.computeNormals(SMOOTH);
+
+      describe('A white, helical structure drawn on a dark gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
+      rotateX(1);
+
+      // Style the helix.
+      noStroke();
+
+      // Display the helix.
+      model(myGeometry);
+    }
+
+    function createShape() {
+      // Create a helical shape.
+      beginShape();
+      for (let i = 0; i < TWO_PI * 3; i += 0.5) {
+        let x = 30 * cos(i);
+        let y = 30 * sin(i);
+        let z = map(i, 0, TWO_PI * 3, -40, 40);
+        vertex(x, y, z);
+      }
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      myGeometry = buildGeometry(createShape);
+
+      // Create an options object.
+      let options = { roundToPrecision: 5 };
+
+      // Compute normals using smooth shading.
+      myGeometry.computeNormals(SMOOTH, options);
+
+      describe('A white, helical structure drawn on a dark gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
+      rotateX(1);
+
+      // Style the helix.
+      noStroke();
+
+      // Display the helix.
+      model(myGeometry);
+    }
+
+    function createShape() {
+      // Create a helical shape.
+      beginShape();
+      for (let i = 0; i < TWO_PI * 3; i += 0.5) {
+        let x = 30 * cos(i);
+        let y = 30 * sin(i);
+        let z = map(i, 0, TWO_PI * 3, -40, 40);
+        vertex(x, y, z);
+      }
+      endShape();
     }
     </code>
     </div>
 class: p5.Geometry
 params:
   - name: shadingType
-    description: >
-      <p>shading type (<code>FLAT</code> for flat shading or <code>SMOOTH</code>
-      for smooth shading) for buildGeometry() outputs. Defaults to
-      <code>FLAT</code>.</p>
+    description: |
+      <p>shading type. either FLAT or SMOOTH. Defaults to <code>FLAT</code>.</p>
     type: String
     optional: true
   - name: options
     description: |
-      <p>An optional object with configuration.</p>
+      <p>shading options.</p>
     type: Object
     optional: true
 chainable: true

@@ -4,49 +4,67 @@ module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
 description: >
-  <p>A texture with the color information of the framebuffer. Pass this (or the
+  <p>An object that stores the framebuffer's color data.</p>
 
-  framebuffer itself) to <a href="/reference/p5/texture">texture()</a> to draw
-  it to
+  <p>Each framebuffer uses a
 
-  the canvas, or pass it to a shader with
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLTexture"
+  target="_blank">WebGLTexture</a>
 
-  <a href="/reference/p5.Shader/setUniform">setUniform()</a> to read its
-  data.</p>
+  object internally to store its color data. The <code>myBuffer.color</code>
+  property
 
-  <p>Since Framebuffers are controlled by WebGL, their y coordinates are stored
+  makes it possible to pass this data directly to other functions. For
 
-  flipped compared to images and videos. When texturing with a framebuffer
+  example, calling <code>texture(myBuffer.color)</code> or
 
-  texture, you may want to flip vertically, e.g. with
+  <code>myShader.setUniform('colorTexture', myBuffer.color)</code>  may be
+  helpful for
 
-  <code>plane(framebuffer.width, -framebuffer.height)</code>.</p>
-line: 1284
+  advanced use cases.</p>
+
+  <p>Note: By default, a framebuffer's y-coordinates are flipped compared to
+
+  images and videos. It's easy to flip a framebuffer's y-coordinates as
+
+  needed when applying it as a texture. For example, calling
+
+  <code>plane(myBuffer.width, -myBuffer.height)</code> will flip the
+  framebuffer.</p>
+line: 1701
 isConstructor: false
 itemtype: property
-alt: 'A red, green, and blue sphere in the middle of the canvas'
 example:
   - |-
 
     <div>
     <code>
-    let framebuffer;
     function setup() {
       createCanvas(100, 100, WEBGL);
-      framebuffer = createFramebuffer();
+
+      background(200);
+
+      // Create a p5.Framebuffer object.
+      let myBuffer = createFramebuffer();
+
+      // Start drawing to the p5.Framebuffer object.
+      myBuffer.begin();
+
+      triangle(-25, 25, 0, -25, 25, 25);
+
+      // Stop drawing to the p5.Framebuffer object.
+      myBuffer.end();
+
+      // Use the p5.Framebuffer object's WebGLTexture.
+      texture(myBuffer.color);
+
+      // Style the plane.
       noStroke();
-    }
 
-    function draw() {
-      // Draw to the framebuffer
-      framebuffer.begin();
-      background(255);
-      normalMaterial();
-      sphere(20);
-      framebuffer.end();
+      // Draw the plane.
+      plane(myBuffer.width, myBuffer.height);
 
-      // Draw the framebuffer to the main canvas
-      image(framebuffer.color, -width/2, -height/2);
+      describe('A white triangle on a gray background.');
     }
     </code>
     </div>

@@ -3,36 +3,64 @@ title: serialize
 module: IO
 submodule: Input
 file: src/io/p5.XML.js
-description: |
-  <p>Serializes the element into a string. This function is useful for preparing
-  the content to be sent over a http request or saved to file.</p>
-line: 833
+description: >
+  <p>Returns the element as a <code>String</code>.</p>
+
+  <p><code>myXML.serialize()</code> is useful for sending the element over the
+  network or
+
+  saving it to a file.</p>
+line: 1291
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    let xml;
+    <div>
+    <code>
+    let myXML;
 
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      print(xml.serialize());
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
     }
 
-    // Sketch prints:
-    // <mammals>
-    //   <animal id="0" species="Capra hircus">Goat</animal>
-    //   <animal id="1" species="Panthera pardus">Leopard</animal>
-    //   <animal id="2" species="Equus zebra">Zebra</animal>
-    // </mammals>
-    </code></div>
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      // Create a p5.PrintWriter object.
+      // Use the file format .xml.
+      let myWriter = createWriter('animals', 'xml');
+
+      // Serialize the XML data to a string.
+      let data = myXML.serialize();
+
+      // Write the data to the print stream.
+      myWriter.write(data);
+
+      // Save the file and close the print stream.
+      myWriter.close();
+    }
+    </code>
+    </div>
 class: p5.XML
 return:
-  description: Serialized string of the element
+  description: element as a string.
   type: String
 chainable: false
 ---

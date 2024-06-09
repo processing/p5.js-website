@@ -3,171 +3,281 @@ title: loadJSON
 module: IO
 submodule: Input
 file: src/io/files.js
-description: |
-  <p>Loads a JSON file from a file or a URL, and returns an Object.
-  Note that even if the JSON file contains an Array, an Object will be
-  returned with index numbers as keys.</p>
-  <p>This method is asynchronous, meaning it may not finish before the next
-  line in your sketch is executed. JSONP is supported via a polyfill and you
-  can pass in as the second argument an object with definitions of the json
-  callback following the syntax specified <a href="https://github.com/camsong/
-  fetch-jsonp">here</a>.</p>
-  <p>This method is suitable for fetching files up to size of 64MB.</p>
+description: >
+  <p>Loads a JSON file to create an <code>Object</code>.</p>
+
+  <p>JavaScript Object Notation
+
+  (<a href="https://developer.mozilla.org/en-US/docs/Glossary/JSON"
+  target="_blank">JSON</a>)
+
+  is a standard format for sending data between applications. The format is
+
+  based on JavaScript objects which have keys and values. JSON files store
+
+  data in an object with strings as keys. Values can be strings, numbers,
+
+  Booleans, arrays, <code>null</code>, or other objects.</p>
+
+  <p>The first parameter, <code>path</code>, is always a string with the path to
+  the file.
+
+  Paths to local files should be relative, as in
+
+  <code>loadJSON('/assets/data.json')</code>. URLs such as
+
+  <code>'https://example.com/data.json'</code> may be blocked due to browser
+  security.</p>
+
+  <p>The second parameter, <code>successCallback</code>, is optional. If a
+  function is
+
+  passed, as in <code>loadJSON('/assets/data.json', handleData)</code>, then the
+
+  <code>handleData()</code> function will be called once the data loads. The
+  object
+
+  created from the JSON data will be passed to <code>handleData()</code> as its
+  only argument.</p>
+
+  <p>The third parameter, <code>failureCallback</code>, is also optional. If a
+  function is
+
+  passed, as in <code>loadJSON('/assets/data.json', handleData,
+  handleFailure)</code>,
+
+  then the <code>handleFailure()</code> function will be called if an error
+  occurs while
+
+  loading. The <code>Error</code> object will be passed to
+  <code>handleFailure()</code> as its only
+
+  argument.</p>
+
+  <p>Note: Data can take time to load. Calling <code>loadJSON()</code> within
+
+  <a href="/reference/p5/preload">preload()</a> ensures data loads before it's
+  used in
+
+  <a href="/reference/p5/setup">setup()</a> or <a
+  href="/reference/p5/draw">draw()</a>.</p>
 line: 17
 isConstructor: false
 itemtype: method
 example:
-  - >-
+  - |-
 
 
-    Calling <a href="#/p5/loadJSON">loadJSON()</a> inside <a
-    href="#/p5/preload">preload()</a> guarantees to complete the
+    <div>
+    <code>
+    let myData;
 
-    operation before <a href="#/p5/setup">setup()</a> and <a
-    href="#/p5/draw">draw()</a> are called.
-
-
-    <div><code>
-
-    // Examples use USGS Earthquake API:
-
-    //   https://earthquake.usgs.gov/fdsnws/event/1/#methods
-
-    let earthquakes;
-
+    // Load the JSON and create an object.
     function preload() {
-      // Get the most recent earthquake in the database
-      let url =
-       'https://earthquake.usgs.gov/earthquakes/feed/v1.0/' +
-        'summary/all_day.geojson';
-      earthquakes = loadJSON(url);
+      myData = loadJSON('/assets/data.json');
     }
-
 
     function setup() {
-      noLoop();
-    }
+      createCanvas(100, 100);
 
-
-    function draw() {
       background(200);
-      // Get the magnitude and name of the earthquake out of the loaded JSON
-      let earthquakeMag = earthquakes.features[0].properties.mag;
-      let earthquakeName = earthquakes.features[0].properties.place;
-      ellipse(width / 2, height / 2, earthquakeMag * 10, earthquakeMag * 10);
-      textAlign(CENTER);
-      text(earthquakeName, 0, height - 30, width, 30);
-      describe(`50×50 ellipse that changes from black to white
-        depending on the current humidity`);
+
+      // Style the circle.
+      fill(myData.color);
+      noStroke();
+
+      // Draw the circle.
+      circle(myData.x, myData.y, myData.d);
+
+      describe('A pink circle on a gray background.');
     }
+    </code>
+    </div>
 
-    </code></div>
+    <div>
+    <code>
+    let myData;
 
-
-    Outside of preload(), you may supply a callback function to handle the
-
-    object:
-
-    <div><code>
+    // Load the JSON and create an object.
+    function preload() {
+      myData = loadJSON('/assets/data.json');
+    }
 
     function setup() {
-      noLoop();
-      let url =
-       'https://earthquake.usgs.gov/earthquakes/feed/v1.0/' +
-        'summary/all_day.geojson';
-      loadJSON(url, drawEarthquake);
-    }
+      createCanvas(100, 100);
 
-
-    function draw() {
       background(200);
-      describe(`50×50 ellipse that changes from black to white
-        depending on the current humidity`);
+
+      // Create a p5.Color object and make it transparent.
+      let c = color(myData.color);
+      c.setAlpha(80);
+
+      // Style the circles.
+      fill(c);
+      noStroke();
+
+      // Iterate over the myData.bubbles array.
+      for (let b of myData.bubbles) {
+        // Draw a circle for each bubble.
+        circle(b.x, b.y, b.d);
+      }
+
+      describe('Several pink bubbles floating in a blue sky.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myData;
+
+    // Load the GeoJSON and create an object.
+    function preload() {
+      myData = loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
     }
 
+    function setup() {
+      createCanvas(100, 100);
 
-    function drawEarthquake(earthquakes) {
-      // Get the magnitude and name of the earthquake out of the loaded JSON
-      let earthquakeMag = earthquakes.features[0].properties.mag;
-      let earthquakeName = earthquakes.features[0].properties.place;
-      ellipse(width / 2, height / 2, earthquakeMag * 10, earthquakeMag * 10);
-      textAlign(CENTER);
-      text(earthquakeName, 0, height - 30, width, 30);
+      background(200);
+
+      // Get data about the most recent earthquake.
+      let quake = myData.features[0].properties;
+
+      // Draw a circle based on the earthquake's magnitude.
+      circle(50, 50, quake.mag * 10);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(11);
+
+      // Display the earthquake's location.
+      text(quake.place, 5, 80, 100);
+
+      describe(`A white circle on a gray background. The text "${quake.place}" is written beneath the circle.`);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let bigQuake;
+
+    // Load the GeoJSON and preprocess it.
+    function preload() {
+      loadJSON(
+        'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson',
+        handleData
+      );
     }
 
-    </code></div>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw a circle based on the earthquake's magnitude.
+      circle(50, 50, bigQuake.mag * 10);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(11);
+
+      // Display the earthquake's location.
+      text(bigQuake.place, 5, 80, 100);
+
+      describe(`A white circle on a gray background. The text "${bigQuake.place}" is written beneath the circle.`);
+    }
+
+    // Find the biggest recent earthquake.
+    function handleData(data) {
+      let maxMag = 0;
+      // Iterate over the earthquakes array.
+      for (let quake of data.features) {
+        // Reassign bigQuake if a larger
+        // magnitude quake is found.
+        if (quake.properties.mag > maxMag) {
+          bigQuake = quake.properties;
+        }
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let bigQuake;
+
+    // Load the GeoJSON and preprocess it.
+    function preload() {
+      loadJSON(
+        'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson',
+        handleData,
+        handleError
+      );
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw a circle based on the earthquake's magnitude.
+      circle(50, 50, bigQuake.mag * 10);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(11);
+
+      // Display the earthquake's location.
+      text(bigQuake.place, 5, 80, 100);
+
+      describe(`A white circle on a gray background. The text "${bigQuake.place}" is written beneath the circle.`);
+    }
+
+    // Find the biggest recent earthquake.
+    function handleData(data) {
+      let maxMag = 0;
+      // Iterate over the earthquakes array.
+      for (let quake of data.features) {
+        // Reassign bigQuake if a larger
+        // magnitude quake is found.
+        if (quake.properties.mag > maxMag) {
+          bigQuake = quake.properties;
+        }
+      }
+    }
+
+    // Log any errors to the console.
+    function handleError(error) {
+      console.log('Oops!', error);
+    }
+    </code>
+    </div>
 class: p5
+params:
+  - name: path
+    description: |
+      <p>path of the JSON file to be loaded.</p>
+    type: String
+  - name: successCallback
+    description: >
+      <p>function to call once the data is loaded. Will be passed the
+      object.</p>
+    type: Function
+    optional: true
+  - name: errorCallback
+    description: >
+      <p>function to call if the data fails to load. Will be passed an
+      <code>Error</code> event object.</p>
+    type: Function
+    optional: true
 return:
-  description: JSON data
-  type: Object|Array
-overloads:
-  - line: 17
-    params:
-      - name: path
-        description: |
-          <p>name of the file or url to load</p>
-        type: String
-      - name: jsonpOptions
-        description: |
-          <p>options object for jsonp related settings</p>
-        type: Object
-        optional: true
-      - name: datatype
-        description: |
-          <p>"json" or "jsonp"</p>
-        type: String
-        optional: true
-      - name: callback
-        description: |
-          <p>function to be executed after
-                                             <a href="#/p5/loadJSON">loadJSON()</a> completes, data is passed
-                                             in as first argument</p>
-        type: Function
-        optional: true
-      - name: errorCallback
-        description: |
-          <p>function to be executed if
-                                             there is an error, response is passed
-                                             in as first argument</p>
-        type: Function
-        optional: true
-    return:
-      description: JSON data
-      type: Object|Array
-  - line: 101
-    params:
-      - name: path
-        description: ''
-        type: String
-      - name: datatype
-        description: ''
-        type: String
-      - name: callback
-        description: ''
-        type: Function
-        optional: true
-      - name: errorCallback
-        description: ''
-        type: Function
-        optional: true
-    return:
-      description: ''
-      type: Object|Array
-  - line: 109
-    params:
-      - name: path
-        description: ''
-        type: String
-      - name: callback
-        description: ''
-        type: Function
-      - name: errorCallback
-        description: ''
-        type: Function
-        optional: true
-    return:
-      description: ''
-      type: Object|Array
+  description: object containing the loaded data.
+  type: Object
 chainable: false
 ---
 

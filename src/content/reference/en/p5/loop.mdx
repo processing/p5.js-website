@@ -4,51 +4,99 @@ module: Structure
 submodule: Structure
 file: src/core/structure.js
 description: >
-  <p>By default, p5.js loops through draw() continuously, executing the code
-  within
+  <p>Resumes the draw loop after <a href="/reference/p5/noLoop">noLoop()</a> has
+  been
 
-  it. However, the <a href="/reference/p5/draw">draw()</a> loop may be stopped
-  by calling
+  called.</p>
 
-  <a href="/reference/p5/noLoop">noLoop()</a>. In that case, the <a
-  href="/reference/p5/draw">draw()</a>
+  <p>By default, <a href="/reference/p5/draw">draw()</a> tries to run 60 times
+  per
 
-  loop can be resumed with loop().</p>
+  second. Calling <a href="/reference/p5/noLoop">noLoop()</a> stops
 
-  <p>Avoid calling loop() from inside setup().</p>
+  <a href="/reference/p5/draw">draw()</a> from repeating. The draw loop can be
 
-  <p>Use <a href="/reference/p5/isLooping">isLooping()</a> to check the current
-  state of <a href="/reference/p5/loop">loop()</a>.</p>
-line: 82
+  restarted by calling <code>loop()</code>.</p>
+
+  <p>The <a href="/reference/p5/isLooping">isLooping()</a> function can be used
+  to check
+
+  whether a sketch is looping, as in <code>isLooping() === true</code>.</p>
+line: 127
 isConstructor: false
 itemtype: method
-alt: horizontal line moves slowly from left. Loops but stops on mouse press.
 example:
   - |-
 
     <div>
     <code>
-    let x = 0;
     function setup() {
       createCanvas(100, 100);
+
+      // Turn off the draw loop.
       noLoop();
+
+      describe(
+        'A white half-circle on the left edge of a gray square. The circle starts moving to the right when the user double-clicks.'
+      );
     }
 
     function draw() {
-      background(204);
-      x = x + 0.1;
-      if (x > width) {
-        x = 0;
-      }
-      line(x, 0, x, height);
+      background(200);
+
+      // Calculate the circle's x-coordinate.
+      let x = frameCount;
+
+      // Draw the circle.
+      circle(x, 50, 20);
     }
 
-    function mousePressed() {
+    // Resume the draw loop when the user double-clicks.
+    function doubleClicked() {
       loop();
     }
+    </code>
+    </div>
 
-    function mouseReleased() {
-      noLoop();
+    <div>
+    <code>
+    let startButton;
+    let stopButton;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the button elements and place them
+      // beneath the canvas.
+      startButton = createButton('▶');
+      startButton.position(0, 100);
+      startButton.size(50, 20);
+      stopButton = createButton('◾');
+      stopButton.position(50, 100);
+      stopButton.size(50, 20);
+
+      // Set functions to call when the buttons are pressed.
+      startButton.mousePressed(loop);
+      stopButton.mousePressed(noLoop);
+
+      // Slow the frame rate.
+      frameRate(5);
+
+      describe(
+        'A white circle moves randomly on a gray background. Play and stop buttons are shown beneath the canvas. The circle stops or starts moving when the user presses a button.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the circle's coordinates.
+      let x = random(0, 100);
+      let y = random(0, 100);
+
+      // Draw the circle.
+      // Normally, the circle would move from left to right.
+      circle(x, y, 20);
     }
     </code>
     </div>

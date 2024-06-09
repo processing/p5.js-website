@@ -4,95 +4,106 @@ module: Structure
 submodule: Structure
 file: src/core/structure.js
 description: >
-  <p>Executes the code within <a href="/reference/p5/draw">draw()</a> one time.
-  This
+  <p>Runs the code in <a href="/reference/p5/draw">draw()</a> once.</p>
 
-  function allows the program to update the display window only when necessary,
+  <p>By default, <a href="/reference/p5/draw">draw()</a> tries to run 60 times
+  per
 
-  for example when an event registered by <a
-  href="/reference/p5/mousePressed">mousePressed()</a>
+  second. Calling <a href="/reference/p5/noLoop">noLoop()</a> stops
 
-  or <a href="/reference/p5/keyPressed">keyPressed()</a> occurs.</p>
+  <a href="/reference/p5/draw">draw()</a> from repeating. Calling
+  <code>redraw()</code> will
 
-  <p>In structuring a program, it only makes sense to call <a
-  href="/reference/p5/redraw">redraw()</a>
+  execute the code in the <a href="/reference/p5/draw">draw()</a> function a set
 
-  within events such as <a href="/reference/p5/mousePressed">mousePressed()</a>.
-  This
+  number of times.</p>
 
-  is because <a href="/reference/p5/redraw">redraw()</a> does not run
+  <p>The parameter, <code>n</code>, is optional. If a number is passed, as in
+  <code>redraw(5)</code>,
 
-  <a href="/reference/p5/draw">draw()</a> immediately (it only sets a flag that
-  indicates
+  then the draw loop will run the given number of times. By default,
+  <code>n</code> is
 
-  an update is needed).</p>
-
-  <p>The <a href="/reference/p5/redraw">redraw()</a> function does not work
-  properly when
-
-  called inside <a href="/reference/p5/draw">draw()</a>.To enable/disable
-  animations,
-
-  use <a href="/reference/p5/loop">loop()</a> and <a
-  href="/reference/p5/noLoop">noLoop()</a>.</p>
-
-  <p>In addition you can set the number of redraws per method call. Just
-
-  add an integer as single parameter for the number of redraws.</p>
-line: 391
+  1.</p>
+line: 838
 isConstructor: false
 itemtype: method
-alt: |-
-  black line on far left of canvas
-  black line on far left of canvas
 example:
   - |-
 
-    <div><code>
+    <div>
+    <code>
+    // Double-click the canvas to move the circle.
+
     let x = 0;
 
     function setup() {
       createCanvas(100, 100);
+
+      // Turn off the draw loop.
       noLoop();
+
+      describe(
+        'A white half-circle on the left edge of a gray square. The circle moves a little to the right when the user double-clicks.'
+      );
     }
 
     function draw() {
-      background(204);
-      line(x, 0, x, height);
+      background(200);
+
+      // Draw the circle.
+      circle(x, 50, 20);
+
+      // Increment x.
+      x += 5;
     }
 
-    function mousePressed() {
-      x += 1;
+    // Run the draw loop when the user double-clicks.
+    function doubleClicked() {
       redraw();
     }
     </code>
     </div>
 
-    <div class='norender'>
+    <div>
     <code>
+    // Double-click the canvas to move the circle.
+
     let x = 0;
 
     function setup() {
       createCanvas(100, 100);
+
+      // Turn off the draw loop.
       noLoop();
+
+      describe(
+        'A white half-circle on the left edge of a gray square. The circle hops to the right when the user double-clicks.'
+      );
     }
 
     function draw() {
-      background(204);
-      x += 1;
-      line(x, 0, x, height);
+      background(200);
+
+      // Draw the circle.
+      circle(x, 50, 20);
+
+      // Increment x.
+      x += 5;
     }
 
-    function mousePressed() {
-      redraw(5);
+    // Run the draw loop three times when the user double-clicks.
+    function doubleClicked() {
+      redraw(3);
     }
     </code>
     </div>
 class: p5
 params:
   - name: 'n'
-    description: |
-      <p>Redraw for n-times. The default value is 1.</p>
+    description: >
+      <p>number of times to run <a href="#/p5/draw">draw()</a>. Defaults to
+      1.</p>
     type: Integer
     optional: true
 chainable: false

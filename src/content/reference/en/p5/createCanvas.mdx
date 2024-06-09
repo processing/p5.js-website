@@ -4,120 +4,182 @@ module: Rendering
 submodule: Rendering
 file: src/core/rendering.js
 description: >
-  <p>Creates a canvas element in the document and sets its dimensions
+  <p>Creates a canvas element on the web page.</p>
 
-  in pixels. This method should be called only once at the start of <a
+  <p><code>createCanvas()</code> creates the main drawing canvas for a sketch.
+  It should
+
+  only be called once at the beginning of <a
   href="/reference/p5/setup">setup()</a>.
 
-  Calling <a href="/reference/p5/createCanvas">createCanvas</a> more than once
-  in a
+  Calling <code>createCanvas()</code> more than once causes unpredictable
+  behavior.</p>
 
-  sketch will result in very unpredictable behavior. If you want more than
+  <p>The first two parameters, <code>width</code> and <code>height</code>, are
+  optional. They set the
 
-  one drawing canvas you could use <a
-  href="/reference/p5/createGraphics">createGraphics()</a>
+  dimensions of the canvas and the values of the
 
-  (hidden by default but it can be shown).</p>
+  <a href="/reference/p5/width">width</a> and <a
+  href="/reference/p5/height">height</a> system
 
-  <p>Important note: in 2D mode (i.e. when <code>p5.Renderer</code> is not set)
-  the origin (0,0)
+  variables. For example, calling <code>createCanvas(900, 500)</code> creates a
+  canvas
 
-  is positioned at the top left of the screen. In 3D mode (i.e. when
-  <code>p5.Renderer</code>
+  that's 900×500 pixels. By default, <code>width</code> and <code>height</code>
+  are both 100.</p>
 
-  is set to <code>WEBGL</code>), the origin is positioned at the center of the
-  canvas.
+  <p>The third parameter is also optional. If either of the constants
+  <code>P2D</code> or
 
-  See <a href="https://github.com/processing/p5.js/issues/1545">this issue</a>
-  for more information.</p>
+  <code>WEBGL</code> is passed, as in <code>createCanvas(900, 500,
+  WEBGL)</code>, then it will set
 
-  <p>A WebGL canvas will use a WebGL2 context if it is supported by the browser.
+  the sketch's rendering mode. If an existing
 
-  Check the <a href="/reference/p5/webglVersion">webglVersion</a> property to
-  check what
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement"
+  target="_blank">HTMLCanvasElement</a>
 
-  version is being used, or call <a
-  href="/reference/p5/setAttributes">setAttributes({ version: 1 })</a>
+  is passed, as in <code>createCanvas(900, 500, myCanvas)</code>, then it will
+  be used
 
-  to create a WebGL1 context.</p>
+  by the sketch.</p>
 
-  <p>The system variables width and height are set by the parameters passed to
-  this
+  <p>The fourth parameter is also optional. If an existing
 
-  function. If <a href="/reference/p5/createCanvas">createCanvas()</a> is not
-  used, the
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement"
+  target="_blank">HTMLCanvasElement</a>
 
-  window will be given a default size of 100×100 pixels.</p>
+  is passed, as in <code>createCanvas(900, 500, WEBGL, myCanvas)</code>, then it
+  will be
 
-  <p>Optionally, an existing canvas can be passed using a selector, ie.
-  <code>document.getElementById('')</code>.
+  used by the sketch.</p>
 
-  If specified, avoid using <code>setAttributes()</code> afterwards, as this
-  will remove and recreate the existing canvas.</p>
+  <p>Note: In WebGL mode, the canvas will use a WebGL2 context if it's supported
 
-  <p>For more ways to position the canvas, see the
+  by the browser. Check the <a
+  href="/reference/p5/webglVersion">webglVersion</a>
 
-  <a href="https://github.com/processing/p5.js/wiki/Positioning-your-canvas">
+  system variable to check what version is being used, or call
 
-  positioning the canvas</a> wiki page.</p>
+  <code>setAttributes({ version: 1 })</code> to create a WebGL1 context.</p>
 line: 15
 isConstructor: false
 itemtype: method
-alt: Black line extending from top-left of canvas to bottom right.
 example:
   - |-
 
     <div>
     <code>
     function setup() {
-      createCanvas(100, 50);
-      background(153);
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw a diagonal line.
       line(0, 0, width, height);
+
+      describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 50);
+
+      background(200);
+
+      // Draw a diagonal line.
+      line(0, 0, width, height);
+
+      describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Use WebGL mode.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Draw a diagonal line.
+      line(-width / 2, -height / 2, width / 2, height / 2);
+
+      describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      // Create a p5.Render object.
+      let cnv = createCanvas(50, 50);
+
+      // Position the canvas.
+      cnv.position(10, 20);
+
+      background(200);
+
+      // Draw a diagonal line.
+      line(0, 0, width, height);
+
+      describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
     }
     </code>
     </div>
 class: p5
 return:
-  description: pointer to p5.Renderer holding canvas
+  description: new `p5.Renderer` that holds the canvas.
   type: p5.Renderer
 overloads:
   - line: 15
     params:
-      - name: w
+      - name: width
         description: |
-          <p>width of the canvas</p>
+          <p>width of the canvas. Defaults to 100.</p>
         type: Number
-      - name: h
+        optional: true
+      - name: height
         description: |
-          <p>height of the canvas</p>
+          <p>width of the canvas. Defaults to 100.</p>
         type: Number
+        optional: true
       - name: renderer
         description: |
-          <p>either P2D or WEBGL</p>
+          <p>either P2D or WEBGL. Defaults to <code>P2D</code>.</p>
         type: Constant
         optional: true
       - name: canvas
         description: |
-          <p>existing html canvas element</p>
+          <p>existing canvas element that should be used for the sketch.</p>
         type: HTMLCanvasElement
         optional: true
     return:
-      description: pointer to p5.Renderer holding canvas
+      description: new `p5.Renderer` that holds the canvas.
       type: p5.Renderer
-  - line: 64
+  - line: 119
     params:
-      - name: w
+      - name: width
         description: ''
         type: Number
-      - name: h
+        optional: true
+      - name: height
         description: ''
         type: Number
+        optional: true
       - name: canvas
         description: ''
         type: HTMLCanvasElement
         optional: true
     return:
-      description: pointer to p5.Renderer holding canvas
+      description: ''
       type: p5.Renderer
 chainable: false
 ---

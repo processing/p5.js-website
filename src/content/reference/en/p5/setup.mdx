@@ -4,42 +4,102 @@ module: Structure
 submodule: Structure
 file: src/core/main.js
 description: >
-  <p>The <a href="/reference/p5/setup">setup()</a> function is called once when
-  the program starts. It's used to
+  <p>A function that's called once when the sketch begins running.</p>
 
-  define initial environment properties such as screen size and background
+  <p>Declaring the function <code>setup()</code> sets a code block to run once
 
-  color and to load media such as images and fonts as the program starts.
+  automatically when the sketch starts running. It's used to perform
 
-  There can only be one <a href="/reference/p5/setup">setup()</a> function for
-  each program and it shouldn't
+  setup tasks such as creating the canvas and initializing variables:</p>
 
-  be called again after its initial execution.</p>
+  <pre><code class="language-js">function setup() {
+    // Code to run once at the start of the sketch.
+  }
 
-  <p>Note: Variables declared within <a href="/reference/p5/setup">setup()</a>
-  are not accessible within other
+  </code></pre>
 
-  functions, including <a href="/reference/p5/draw">draw()</a>.</p>
-line: 82
+  <p>Code placed in <code>setup()</code> will run once before code placed in
+
+  <a href="/reference/p5/draw">draw()</a> begins looping. If the
+
+  <a href="/reference/p5/preload">preload()</a> is declared, then
+  <code>setup()</code> will
+
+  run immediately after <a href="/reference/p5/preload">preload()</a> finishes
+
+  loading assets.</p>
+
+  <p>Note: <code>setup()</code> doesn’t have to be declared, but it’s common
+  practice to do so.</p>
+line: 87
 isConstructor: false
 itemtype: method
-alt: nothing displayed
 example:
   - |-
 
-    <div><code>
-    let a = 0;
-
+    <div>
+    <code>
     function setup() {
-      background(0);
-      noStroke();
-      fill(102);
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw the circle.
+      circle(50, 50, 40);
+
+      describe('A white circle on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Paint the background once.
+      background(200);
+
+      describe(
+        'A white circle on a gray background. The circle follows the mouse as the user moves, leaving a trail.'
+      );
     }
 
     function draw() {
-      rect(a++ % width, 10, 2, 80);
+      // Draw circles repeatedly.
+      circle(mouseX, mouseY, 40);
     }
-    </code></div>
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/bricks.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Draw the image.
+      image(img, 0, 0);
+
+      describe(
+        'A white circle on a brick wall. The circle follows the mouse as the user moves, leaving a trail.'
+      );
+    }
+
+    function draw() {
+      // Style the circle.
+      noStroke();
+
+      // Draw the circle.
+      circle(mouseX, mouseY, 10);
+    }
+    </code>
+    </div>
 class: p5
 chainable: false
 ---

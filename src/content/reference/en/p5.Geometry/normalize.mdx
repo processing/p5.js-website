@@ -3,11 +3,66 @@ title: normalize
 module: Shape
 submodule: 3D Primitives
 file: src/webgl/p5.Geometry.js
-description: |
-  <p>Modifies all vertices to be centered within the range -100 to 100.</p>
-line: 974
+description: >
+  <p>Transforms the geometry's vertices to fit snugly within a 100×100×100 box
+
+  centered at the origin.</p>
+
+  <p>Calling <code>myGeometry.normalize()</code> translates the geometry's
+  vertices so that
+
+  they're centered at the origin <code>(0, 0, 0)</code>. Then it scales the
+  vertices so
+
+  that they fill a 100×100×100 box. As a result, small geometries will grow
+
+  and large geometries will shrink.</p>
+
+  <p>Note: <code>myGeometry.normalize()</code> only works when called in the
+
+  <a href="/reference/p5/setup">setup()</a> function.</p>
+line: 2000
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a very small torus.
+      beginGeometry();
+      torus(1, 0.25);
+      myGeometry = endGeometry();
+
+      // Normalize the torus so its vertices fill
+      // the range [-100, 100].
+      myGeometry.normalize();
+
+      describe('A white torus rotates slowly against a dark gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Style the torus.
+      noStroke();
+
+      // Draw the torus.
+      model(myGeometry);
+    }
+    </code>
+    </div>
 class: p5.Geometry
 chainable: true
 ---

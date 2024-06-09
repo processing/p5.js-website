@@ -3,55 +3,122 @@ title: getString
 module: IO
 submodule: Input
 file: src/io/p5.XML.js
-description: |
-  <p>Returns an attribute value of the element as an String. If the defaultValue
-  parameter is specified and the attribute doesn't exist, then defaultValue
-  is returned. If no defaultValue is specified and the attribute doesn't
-  exist, null is returned.</p>
-line: 663
+description: >
+  <p>Return an attribute's value as a string.</p>
+
+  <p>The first parameter, <code>name</code>, is a string with the name of the
+  attribute
+
+  being checked. For example, calling <code>myXML.getString('color')</code>
+  returns the
+
+  element's <code>id</code> attribute as a string.</p>
+
+  <p>The second parameter, <code>defaultValue</code>, is optional. If a string
+  is passed,
+
+  as in <code>myXML.getString('color', 'deeppink')</code>, it will be returned
+  if the
+
+  attribute doesn't exist.</p>
+
+  <p>Note: Use
+
+  <a href="/reference/p5.XML/getString">myXML.getString()</a> or
+
+  <a href="/reference/p5.XML/getNum">myXML.getNum()</a> to return an attribute's
+  value.</p>
+line: 989
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    // The following short XML file called "mammals.xml" is parsed
-    // in the code below.
-    //
-    // <?xml version="1.0"?>
-    // &lt;mammals&gt;
-    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-    // &lt;/mammals&gt;
+    <div>
+    <code>
+    let myXML;
 
-    let xml;
-
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      let firstChild = xml.getChild('animal');
-      print(firstChild.getString('species'));
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Get the first reptile child element.
+      let reptile = myXML.getChild('reptile');
+
+      // Get the reptile's content.
+      let content = reptile.getContent();
+
+      // Get the reptile's species.
+      let species = reptile.getString('species');
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Display the species attribute.
+      text(`${content}: ${species}`, 5, 50, 90);
+
+      describe(`The text "${content}: ${species}" written in black on a gray background.`);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myXML;
+
+    // Load the XML and create a p5.XML object.
+    function preload() {
+      myXML = loadXML('/assets/animals.xml');
     }
 
-    // Sketch prints:
-    // "Capra hircus"
-    </code></div>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Get the first reptile child element.
+      let reptile = myXML.getChild('reptile');
+
+      // Get the reptile's content.
+      let content = reptile.getContent();
+
+      // Get the reptile's color.
+      let attribute = reptile.getString('color', 'green');
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(14);
+      fill(attribute);
+
+      // Display the element's content.
+      text(content, 50, 50);
+
+      describe(`The text "${content}" written in green on a gray background.`);
+    }
+    </code>
+    </div>
 class: p5.XML
 params:
   - name: name
     description: |
-      <p>the non-null full name of the attribute</p>
+      <p>name of the attribute to be checked.</p>
     type: String
   - name: defaultValue
     description: |
-      <p>the default value of the attribute</p>
+      <p>value to return if the attribute doesn't exist.</p>
     type: Number
     optional: true
 return:
-  description: ''
+  description: attribute value as a string.
   type: String
 chainable: false
 ---

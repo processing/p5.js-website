@@ -3,39 +3,109 @@ title: float
 module: Data
 submodule: Conversion
 file: src/utilities/conversion.js
-description: |
-  <p>Converts a string to its floating point representation. The contents of a
-  string must resemble a number, or NaN (not a number) will be returned.
-  For example, float("1234.56") evaluates to 1234.56, but float("giraffe")
-  will return NaN.</p>
-  <p>When an array of values is passed in, then an array of floats of the same
-  length is returned.</p>
+description: >
+  <p>Converts a <code>String</code> to a floating point (decimal)
+  <code>Number</code>.</p>
+
+  <p><code>float()</code> converts strings that resemble numbers, such as
+  <code>'12.34'</code>, into
+
+  numbers.</p>
+
+  <p>The parameter, <code>str</code>, is the string value to convert. For
+  example, calling
+
+  <code>float('12.34')</code> returns the number <code>12.34</code>.  If an
+  array of strings is
+
+  passed, as in <code>float(['12.34', '56.78'])</code>, then an array of numbers
+  will be
+
+  returned.</p>
+
+  <p>Note: If a string can't be converted to a number, as in
+  <code>float('giraffe')</code>,
+
+  then the value <code>NaN</code> (not a number) will be returned.</p>
 line: 10
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div><code>
-    let str = '20';
-    let diameter = float(str);
-    ellipse(width / 2, height / 2, diameter, diameter);
-    describe('20-by-20 white ellipse in the center of the canvas');
-    </code></div>
-    <div class='norender'><code>
-    print(float('10.31')); // 10.31
-    print(float('Infinity')); // Infinity
-    print(float('-Infinity')); // -Infinity
-    </code></div>
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let original = '12.3';
+
+      // Convert the string to a number.
+      let converted = float(original);
+
+      // Double the converted value.
+      let twice = converted * 2;
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(12);
+
+      // Display the original and converted values.
+      text(`${original} × 2 = ${twice}`, 50, 50);
+
+      describe('The text "12.3 × 2 = 24.6" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of strings.
+      let original = ['60', '30', '15'];
+
+      // Convert the strings to numbers.
+      let diameters = float(original);
+
+      for (let d of diameters) {
+        // Draw a circle.
+        circle(50, 50, d);
+      }
+
+      describe('Three white, concentric circles on a gray background.');
+    }
+    </code>
+    </div>
 class: p5
-params:
-  - name: str
-    description: |
-      <p>float string to parse</p>
-    type: String
 return:
-  description: floating point representation of string
+  description: converted number.
   type: Number
+overloads:
+  - line: 10
+    params:
+      - name: str
+        description: |
+          <p>string to convert.</p>
+        type: String
+    return:
+      description: converted number.
+      type: Number
+  - line: 80
+    params:
+      - name: ns
+        description: |
+          <p>array of strings to convert.</p>
+        type: 'String[]'
+    return:
+      description: converted numbers.
+      type: 'Number[]'
 chainable: false
 ---
 

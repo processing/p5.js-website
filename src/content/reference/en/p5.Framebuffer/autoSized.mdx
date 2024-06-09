@@ -3,22 +3,80 @@ title: autoSized
 module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
-description: |
-  <p>Gets or sets whether or not this framebuffer will automatically resize
-  along with the canvas it's attached to in order to match its size.</p>
-  <p>Call this method with no arguments to see if it is currently auto-sized,
-  or pass in a boolean to set this property.</p>
-line: 261
+description: >
+  <p>Toggles the framebuffer's autosizing mode or returns the current mode.</p>
+
+  <p>By default, the framebuffer automatically resizes to match the canvas
+
+  that created it. Calling <code>myBuffer.autoSized(false)</code> disables this
+
+  behavior and calling <code>myBuffer.autoSized(true)</code> re-enables it.</p>
+
+  <p>Calling <code>myBuffer.autoSized()</code> without an argument returns
+  <code>true</code> if
+
+  the framebuffer automatically resizes and <code>false</code> if not.</p>
+line: 402
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle the autosizing mode.
+
+    let myBuffer;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      describe('A multicolor sphere on a gray background. The image resizes when the user moves the mouse.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Draw to the p5.Framebuffer object.
+      myBuffer.begin();
+      background(200);
+      normalMaterial();
+      sphere(width / 4);
+      myBuffer.end();
+
+      // Display the p5.Framebuffer object.
+      image(myBuffer, -width / 2, -height / 2);
+    }
+
+    // Resize the canvas when the user moves the mouse.
+    function mouseMoved() {
+      let w = constrain(mouseX, 0, 100);
+      let h = constrain(mouseY, 0, 100);
+      resizeCanvas(w, h);
+    }
+
+    // Toggle autoSizing when the user double-clicks.
+    // Note: opened an issue to fix(?) this.
+    function doubleClicked() {
+      let isAuto = myBuffer.autoSized();
+      myBuffer.autoSized(!isAuto);
+    }
+    </code>
+    </div>
 class: p5.Framebuffer
 params:
   - name: autoSized
-    description: |
-      <p>Whether or not the framebuffer should resize
-      along with the canvas it's attached to</p>
+    description: >
+      <p>whether to automatically resize the framebuffer to match the
+      canvas.</p>
     type: Boolean
     optional: true
+return:
+  description: current autosize setting.
+  type: Boolean
 chainable: false
 ---
 

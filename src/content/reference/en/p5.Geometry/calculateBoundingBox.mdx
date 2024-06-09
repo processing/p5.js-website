@@ -4,86 +4,128 @@ module: Shape
 submodule: 3D Primitives
 file: src/webgl/p5.Geometry.js
 description: >
-  <p>Custom bounding box calculation based on the object's vertices.
+  <p>Calculates the position and size of the smallest box that contains the
+  geometry.</p>
 
-  The bounding box is a rectangular prism that encompasses the entire object.
+  <p>A bounding box is the smallest rectangular prism that contains the entire
 
-  It is defined by the minimum and maximum coordinates along each axis, as well
+  geometry. It's defined by the box's minimum and maximum coordinates along
 
-  as the size and offset of the box.</p>
+  each axis, as well as the size (length) and offset (center).</p>
 
-  <p>It returns an object containing the bounding box properties:</p>
+  <p>Calling <code>myGeometry.calculateBoundingBox()</code> returns an object
+  with four
 
-  <ul>
+  properties that describe the bounding box:</p>
 
-  <li><code>min</code>: The minimum coordinates of the bounding box as a
-  p5.Vector.</li>
+  <pre><code class="language-js">// Get myGeometry's bounding box.
 
-  <li><code>max</code>: The maximum coordinates of the bounding box as a
-  p5.Vector.</li>
+  let bbox = myGeometry.calculateBoundingBox();
 
-  <li><code>size</code>: The size of the bounding box as a p5.Vector.</li>
 
-  <li><code>offset</code>: The offset of the bounding box as a p5.Vector.</li>
+  // Print the bounding box to the console.
 
-  </ul>
-line: 80
+  console.log(bbox);
+
+
+  // {
+
+  //  // The minimum coordinate along each axis.
+
+  //  min: { x: -1, y: -2, z: -3 },
+
+  //
+
+  //  // The maximum coordinate along each axis.
+
+  //  max: { x: 1, y: 2, z: 3},
+
+  //
+
+  //  // The size (length) along each axis.
+
+  //  size: { x: 2, y: 4, z: 6},
+
+  //
+
+  //  // The offset (center) along each axis.
+
+  //  offset: { x: 0, y: 0, z: 0}
+
+  // }
+
+  </code></pre>
+line: 682
 isConstructor: false
 itemtype: method
 example:
-  - |
-
+  - |-
 
     <div>
     <code>
+    // Click and drag the mouse to view the scene from different angles.
+
     let particles;
-    let button;
-    let resultParagraph;
 
     function setup() {
       createCanvas(100, 100, WEBGL);
-      button = createButton('New');
-      button.mousePressed(makeParticles);
 
-      resultParagraph = createElement('pre').style('width', '200px' );
-      resultParagraph.style('font-family', 'monospace');
-      resultParagraph.style('font-size', '12px');
-      makeParticles();
-    }
+      // Create a new p5.Geometry object with random spheres.
+      particles = buildGeometry(createParticles);
 
-    function makeParticles() {
-      if (particles) freeGeometry(particles);
-
-      particles = buildGeometry(() => {
-        for (let i = 0; i < 60; i++) {
-          push();
-          translate(
-            randomGaussian(0, 200),
-            randomGaussian(0, 100),
-            randomGaussian(0, 150)
-          );
-          sphere(10);
-          pop();
-        }
-      });
-
-      const boundingBox = particles.calculateBoundingBox();
-      resultParagraph.html('Bounding Box: \n' + JSON.stringify(boundingBox, null, 2));
+      describe('Ten white spheres placed randomly against a gray background. A box encloses the spheres.');
     }
 
     function draw() {
-      background(255);
-      noStroke();
-      lights();
+      background(50);
+
+      // Enable orbiting with the mouse.
       orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the particles.
+      noStroke();
+      fill(255);
+
+      // Draw the particles.
       model(particles);
+
+      // Calculate the bounding box.
+      let bbox = particles.calculateBoundingBox();
+
+      // Translate to the bounding box's center.
+      translate(bbox.offset.x, bbox.offset.y, bbox.offset.z);
+
+      // Style the bounding box.
+      stroke(255);
+      noFill();
+
+      // Draw the bounding box.
+      box(bbox.size.x, bbox.size.y, bbox.size.z);
     }
 
+    function createParticles() {
+      for (let i = 0; i < 10; i += 1) {
+        // Calculate random coordinates.
+        let x = randomGaussian(0, 15);
+        let y = randomGaussian(0, 15);
+        let z = randomGaussian(0, 15);
+
+        push();
+        // Translate to the particle's coordinates.
+        translate(x, y, z);
+        // Draw the particle.
+        sphere(3);
+        pop();
+      }
+    }
     </code>
     </div>
 class: p5.Geometry
 return:
-  description: ''
+  description: bounding box of the geometry.
   type: Object
 chainable: false
 ---

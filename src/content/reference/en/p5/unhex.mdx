@@ -3,43 +3,113 @@ title: unhex
 module: Data
 submodule: Conversion
 file: src/utilities/conversion.js
-description: |
-  <p>Converts a string representation of a hexadecimal number to its equivalent
-  integer value. When an array of strings in hexadecimal notation is passed
-  in, an array of integers of the same length is returned.</p>
-line: 293
+description: >
+  <p>Converts a <code>String</code> with a hexadecimal value to a 
+  <code>Number</code>.</p>
+
+  <p><code>unhex()</code> converts a string with its hexadecimal number value to
+  a number.
+
+  Hexadecimal (hex) numbers are base-16, which means there are 16 unique
+
+  digits. Hex extends the numbers 0–9 with the letters A–F. For example, the
+
+  number <code>11</code> (eleven) in base-10 is written as the letter
+  <code>B</code> in hex.</p>
+
+  <p>The first parameter, <code>n</code>, is the hex string to convert. For
+  example,
+
+  <code>unhex('FF')</code>, returns the number 255. If an array is passed, as in
+
+  <code>unhex(['00', '80', 'FF'])</code>, an array of numbers is returned.</p>
+line: 956
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    print(unhex('A')); // 10
-    print(unhex('FF')); // 255
-    print(unhex(['FF', 'AA', '00'])); // [ 255, 170, 0 ]
-    </code></div>
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a a hex string variable
+      let original = 'FF';
+
+      // Convert the hex string to a number.
+      let converted = unhex(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Display the original and converted values.
+      text(`${original} = ${converted}`, 50, 50);
+
+      describe('The text "FF = 255" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of numbers.
+      let original = ['00', '80', 'FF'];
+
+      // Convert the numbers to hex strings.
+      // Only use two hex digits.
+      let converted = unhex(original, 2);
+
+      // Style the text.
+      textAlign(RIGHT, CENTER);
+      textSize(16);
+
+      // Iterate over the converted values.
+      for (let i = 0; i < converted.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 25;
+
+        // Display the original and converted values.
+        text(`${ original[i]} = ${converted[i]}`, 80, y);
+      }
+
+      describe(
+        'The text "00 = 0", "80 = 128", and "FF = 255" written on three separate lines. The text is in black on a gray background.'
+      );
+    }
+    </code>
+    </div>
 class: p5
 return:
-  description: integer representation of hexadecimal value
+  description: converted number.
   type: Number
 overloads:
-  - line: 293
+  - line: 956
     params:
       - name: 'n'
         description: |
-          <p>value to parse</p>
+          <p>value to convert.</p>
         type: String
     return:
-      description: integer representation of hexadecimal value
+      description: converted number.
       type: Number
-  - line: 309
+  - line: 1033
     params:
       - name: ns
         description: |
-          <p>values to parse</p>
-        type: Array
+          <p>values to convert.</p>
+        type: 'String[]'
     return:
-      description: integer representations of hexadecimal value
+      description: converted numbers.
       type: 'Number[]'
 chainable: false
 ---

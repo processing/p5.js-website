@@ -3,41 +3,57 @@ title: getName
 module: IO
 submodule: Input
 file: src/io/p5.XML.js
-description: |
-  <p>Gets the element's full name, which is returned as a String.</p>
-line: 100
+description: >
+  <p>Returns the element's name as a <code>String</code>.</p>
+
+  <p>An XML element's name is given by its tag. For example, the element
+
+  <code><language>JavaScript</language></code> has the name
+  <code>language</code>.</p>
+line: 128
 isConstructor: false
 itemtype: method
 example:
   - |-
-    &lt;animal
-     <div class='norender'><code>
-     // The following short XML file called "mammals.xml" is parsed
-     // in the code below.
-     //
-     // <?xml version="1.0"?>
-     // &lt;mammals&gt;
-     //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-     //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-     //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-     // &lt;/mammals&gt;
 
-     let xml;
+    <div>
+    <code>
+    let myXML;
 
-     function preload() {
-     xml = loadXML('/assets/mammals.xml');
-     }
+    // Load the XML and create a p5.XML object.
+    function preload() {
+      myXML = loadXML('/assets/animals.xml');
+    }
 
-     function setup() {
-     print(xml.getName());
-     }
+    function setup() {
+      createCanvas(100, 100);
 
-     // Sketch prints:
-     // mammals
-     </code></div>
+      background(200);
+
+      // Get an array with all mammal elements.
+      let mammals = myXML.getChildren('mammal');
+
+      // Get the first mammal element.
+      let firstMammal = mammals[0];
+
+      // Get the mammal element's name.
+      let name = firstMammal.getName();
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Display the element's name.
+      text(name, 50, 50);
+
+      describe('The word "mammal" written in black on a gray background.');
+    }
+    </code>
+    </div>
 class: p5.XML
 return:
-  description: the name of the node
+  description: name of the element.
   type: String
 chainable: false
 ---

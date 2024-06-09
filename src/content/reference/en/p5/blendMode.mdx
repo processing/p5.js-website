@@ -4,119 +4,527 @@ module: Rendering
 submodule: Rendering
 file: src/core/rendering.js
 description: >
-  <p>Blends the pixels in the display window according to the defined mode.
+  <p>Sets the way colors blend when added to the canvas.</p>
 
-  There is a choice of the following modes to blend the source pixels (A)
+  <p>By default, drawing with a solid color paints over the current pixel values
 
-  with the ones of pixels already in the display window (B):</p>
+  on the canvas. <code>blendMode()</code> offers many options for blending
+  colors.</p>
+
+  <p>Shapes, images, and text can be used as sources for drawing to the canvas.
+
+  A source pixel changes the color of the canvas pixel where it's drawn. The
+
+  final color results from blending the source pixel's color with the canvas
+
+  pixel's color. RGB color values from the source and canvas pixels are
+
+  compared, added, subtracted, multiplied, and divided to create different
+
+  effects. Red values with red values, greens with greens, and blues with
+
+  blues.</p>
+
+  <p>The parameter, <code>mode</code>, sets the blend mode. For example, calling
+
+  <code>blendMode(ADD)</code> sets the blend mode to <code>ADD</code>. The
+  following blend modes
+
+  are available in both 2D and WebGL mode:</p>
 
   <ul>
 
-  <li><code>BLEND</code> - linear interpolation of colours: C =
+  <li><code>BLEND</code>: color values from the source overwrite the canvas.
+  This is the default mode.</li>
 
-  A*factor + B. <b>This is the default blending mode.</b></li>
+  <li><code>ADD</code>: color values from the source are added to values from
+  the canvas.</li>
 
-  <li><code>ADD</code> - sum of A and B</li>
+  <li><code>DARKEST</code>: keeps the darkest color value.</li>
 
-  <li><code>DARKEST</code> - only the darkest colour succeeds: C =
+  <li><code>LIGHTEST</code>: keeps the lightest color value.</li>
 
-  min(A*factor, B).</li>
+  <li><code>EXCLUSION</code>: similar to <code>DIFFERENCE</code> but with less
+  contrast.</li>
 
-  <li><code>LIGHTEST</code> - only the lightest colour succeeds: C =
+  <li><code>MULTIPLY</code>: color values from the source are multiplied with
+  values from the canvas. The result is always darker.</li>
 
-  max(A*factor, B).</li>
+  <li><code>SCREEN</code>: all color values are inverted, then multiplied, then
+  inverted again. The result is always lighter. (Opposite of
+  <code>MULTIPLY</code>)</li>
 
-  <li><code>DIFFERENCE</code> - subtract colors from underlying image.
+  <li><code>REPLACE</code>: the last source drawn completely replaces the rest
+  of the canvas.</li>
 
-  <em>(2D)</em></li>
-
-  <li><code>EXCLUSION</code> - similar to <code>DIFFERENCE</code>, but less
-
-  extreme.</li>
-
-  <li><code>MULTIPLY</code> - multiply the colors, result will always be
-
-  darker.</li>
-
-  <li><code>SCREEN</code> - opposite multiply, uses inverse values of the
-
-  colors.</li>
-
-  <li><code>REPLACE</code> - the pixels entirely replace the others and
-
-  don't utilize alpha (transparency) values.</li>
-
-  <li><code>REMOVE</code> - removes pixels from B with the alpha strength of
-  A.</li>
-
-  <li><code>OVERLAY</code> - mix of <code>MULTIPLY</code> and <code>SCREEN
-
-  </code>. Multiplies dark values, and screens light values. <em>(2D)</em></li>
-
-  <li><code>HARD_LIGHT</code> - <code>SCREEN</code> when greater than 50%
-
-  gray, <code>MULTIPLY</code> when lower. <em>(2D)</em></li>
-
-  <li><code>SOFT_LIGHT</code> - mix of <code>DARKEST</code> and
-
-  <code>LIGHTEST</code>. Works like <code>OVERLAY</code>, but not as harsh.
-  <em>(2D)</em>
-
-  </li>
-
-  <li><code>DODGE</code> - lightens light tones and increases contrast,
-
-  ignores darks. <em>(2D)</em></li>
-
-  <li><code>BURN</code> - darker areas are applied, increasing contrast,
-
-  ignores lights. <em>(2D)</em></li>
-
-  <li><code>SUBTRACT</code> - remainder of A and B <em>(3D)</em></li>
+  <li><code>REMOVE</code>: overlapping pixels are removed by making them
+  completely transparent.</li>
 
   </ul>
 
+  <p>The following blend modes are only available in 2D mode:</p>
 
-  <p><em>(2D)</em> indicates that this blend mode <b>only</b> works in the 2D
-  renderer.<br>
+  <ul>
 
-  <em>(3D)</em> indicates that this blend mode <b>only</b> works in the WEBGL
-  renderer.</br></p>
-line: 461
+  <li><code>DIFFERENCE</code>: color values from the source are subtracted from
+  the values from the canvas. If the difference is a negative number, it's made
+  positive.</li>
+
+  <li><code>OVERLAY</code>: combines <code>MULTIPLY</code> and
+  <code>SCREEN</code>. Dark values in the canvas get darker and light values get
+  lighter.</li>
+
+  <li><code>HARD_LIGHT</code>: combines <code>MULTIPLY</code> and
+  <code>SCREEN</code>. Dark values in the source get darker and light values get
+  lighter.</li>
+
+  <li><code>SOFT_LIGHT</code>: a softer version of <code>HARD_LIGHT</code>.</li>
+
+  <li><code>DODGE</code>: lightens light tones and increases contrast. Divides
+  the canvas color values by the inverted color values from the source.</li>
+
+  <li><code>BURN</code>: darkens dark tones and increases contrast. Divides the
+  source color values by the inverted color values from the canvas, then inverts
+  the result.</li>
+
+  </ul>
+
+  <p>The following blend modes are only available in WebGL mode:</p>
+
+  <ul>
+
+  <li><code>SUBTRACT</code>: RGB values from the source are subtracted from the
+  values from the canvas. If the difference is a negative number, it's made
+  positive. Alpha (transparency) values from the source and canvas are
+  added.</li>
+
+  </ul>
+line: 720
 isConstructor: false
 itemtype: method
-alt: |-
-  translucent image thick red & blue diagonal rounded lines intersecting center
-  Thick red & blue diagonal rounded lines intersecting center. dark at overlap
 example:
   - |-
 
     <div>
     <code>
-    blendMode(LIGHTEST);
-    strokeWeight(30);
-    stroke(80, 150, 255);
-    line(25, 25, 75, 75);
-    stroke(255, 50, 50);
-    line(75, 25, 25, 75);
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Use the default blend mode.
+      blendMode(BLEND);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A blue line and a red line form an X on a gray background.');
+    }
     </code>
     </div>
 
     <div>
     <code>
-    blendMode(MULTIPLY);
-    strokeWeight(30);
-    stroke(80, 150, 255);
-    line(25, 25, 75, 75);
-    stroke(255, 50, 50);
-    line(75, 25, 25, 75);
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(ADD);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A faint blue line and a faint red line form an X on a gray background. The area where they overlap is faint magenta.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(DARKEST);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A blue line and a red line form an X on a gray background. The area where they overlap is black.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(LIGHTEST);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A faint blue line and a faint red line form an X on a gray background. The area where they overlap is faint magenta.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(EXCLUSION);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A yellow line and a cyan line form an X on a gray background. The area where they overlap is green.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(MULTIPLY);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A blue line and a red line form an X on a gray background. The area where they overlap is black.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(SCREEN);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A faint blue line and a faint red line form an X on a gray background. The area where they overlap is faint magenta.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(REPLACE);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A diagonal red line.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(REMOVE);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('The silhouette of an X is missing from a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(DIFFERENCE);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A yellow line and a cyan line form an X on a gray background. The area where they overlap is green.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(OVERLAY);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A faint blue line and a faint red line form an X on a gray background. The area where they overlap is bright magenta.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(HARD_LIGHT);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A blue line and a red line form an X on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(SOFT_LIGHT);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A faint blue line and a faint red line form an X on a gray background. The area where they overlap is violet.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(DODGE);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A faint blue line and a faint red line form an X on a gray background. The area where they overlap is faint violet.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(BURN);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A blue line and a red line form an X on a gray background. The area where they overlap is black.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the blend mode.
+      blendMode(SUBTRACT);
+
+      // Style the lines.
+      strokeWeight(30);
+
+      // Draw the blue line.
+      stroke('blue');
+      line(25, 25, 75, 75);
+
+      // Draw the red line.
+      stroke('red');
+      line(75, 25, 25, 75);
+
+      describe('A yellow line and a turquoise line form an X on a gray background. The area where they overlap is green.');
+    }
     </code>
     </div>
 class: p5
 params:
   - name: mode
     description: |
-      <p>blend mode to set for canvas.
+      <p>blend mode to set.
                      either BLEND, DARKEST, LIGHTEST, DIFFERENCE, MULTIPLY,
                      EXCLUSION, SCREEN, REPLACE, OVERLAY, HARD_LIGHT,
                      SOFT_LIGHT, DODGE, BURN, ADD, REMOVE or SUBTRACT</p>

@@ -3,28 +3,88 @@ title: removeItem
 module: Data
 submodule: LocalStorage
 file: src/data/local_storage.js
-description: |
-  <p>Removes an item that was stored with storeItem()</p>
-line: 201
+description: >
+  <p>Removes an item from the web browser's local storage.</p>
+
+  <p>Web browsers can save small amounts of data using the built-in
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+  target="_blank">localStorage object</a>.
+
+  Data stored in <code>localStorage</code> can be retrieved at any point, even
+  after
+
+  refreshing a page or restarting the browser. Data are stored as key-value
+
+  pairs.</p>
+
+  <p><a href="/reference/p5/storeItem">storeItem()</a> makes it easy to store
+  values in
+
+  <code>localStorage</code> and <code>removeItem()</code> makes it easy to
+  delete them.</p>
+
+  <p>The parameter, <code>key</code>, is the name of the value to remove as a
+  string. For
+
+  example, calling <code>removeItem('size')</code> removes the item with the key
+  <code>size</code>.</p>
+
+  <p>Note: Sensitive data such as passwords or personal information shouldn't be
+
+  stored in <code>localStorage</code>.</p>
+line: 380
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
 
-     <div class="norender">
-     <code>
-     function setup() {
-       let myVar = 10;
-       storeItem('myVar', myVar);
-       print(getItem('myVar')); // logs 10 to the console
-       removeItem('myVar');
-       print(getItem('myVar')); // logs null to the console
-     }
-     </code></div>
+    <div>
+    <code>
+    // Double-click to remove an item from localStorage.
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Store the player's name.
+      storeItem('name', 'Feist');
+
+      // Store the player's score.
+      storeItem('score', 1234);
+
+      describe(
+        'The text "Feist: 1234" written in black on a gray background. The text "Feist: null" appears when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Retrieve the name.
+      let name = getItem('name');
+
+      // Retrieve the score.
+      let score = getItem('score');
+
+      // Display the score.
+      text(`${name}: ${score}`, 50, 50);
+    }
+
+    // Remove the word from localStorage when the user double-clicks.
+    function doubleClicked() {
+      removeItem('score');
+    }
+    </code>
+    </div>
 class: p5
 params:
   - name: key
-    description: ''
+    description: |
+      <p>name of the value to remove.</p>
     type: String
 chainable: false
 ---

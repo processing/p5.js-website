@@ -4,88 +4,174 @@ module: Rendering
 submodule: Rendering
 file: src/core/rendering.js
 description: >
-  <p>Creates and returns a new p5.Graphics object. Use this class if you need
+  <p>Creates a <a href="/reference/p5/p5.Graphics">p5.Graphics</a> object.</p>
 
-  to draw into an off-screen graphics buffer. The two parameters define the
+  <p><code>createGraphics()</code> creates an offscreen drawing canvas (graphics
+  buffer)
 
-  width and height in pixels.</p>
+  and returns it as a <a href="/reference/p5/p5.Graphics">p5.Graphics</a>
+  object. Drawing
 
-  <p>A WebGL p5.Graphics will use a WebGL2 context if it is supported by the
-  browser.
+  to a separate graphics buffer can be helpful for performance and for
 
-  Check the <a href="/reference/p5/webglVersion">pg.webglVersion</a> property of
-  the renderer
+  organizing code.</p>
 
-  to check what version is being used, or call <a
-  href="/reference/p5/setAttributes">pg.setAttributes({ version: 1 })</a>
+  <p>The first two parameters, <code>width</code> and <code>height</code>, are
+  optional. They set the
 
-  to create a WebGL1 context.</p>
+  dimensions of the <a href="/reference/p5/p5.Graphics">p5.Graphics</a> object.
+  For
 
-  <p>Optionally, an existing canvas can be passed using a selector, ie.
-  document.getElementById('').
+  example, calling <code>createGraphics(900, 500)</code> creates a graphics
+  buffer
 
-  By default this canvas will be hidden (offscreen buffer), to make visible, set
-  element's style to display:block;</p>
-line: 253
+  that's 900×500 pixels.</p>
+
+  <p>The third parameter is also optional. If either of the constants
+  <code>P2D</code> or
+
+  <code>WEBGL</code> is passed, as in <code>createGraphics(900, 500,
+  WEBGL)</code>, then it will set
+
+  the <a href="/reference/p5/p5.Graphics">p5.Graphics</a> object's rendering
+  mode. If an
+
+  existing
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement"
+  target="_blank">HTMLCanvasElement</a>
+
+  is passed, as in <code>createGraphics(900, 500, myCanvas)</code>, then it will
+  be used
+
+  by the graphics buffer.</p>
+
+  <p>The fourth parameter is also optional. If an existing
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement"
+  target="_blank">HTMLCanvasElement</a>
+
+  is passed, as in <code>createGraphics(900, 500, WEBGL, myCanvas)</code>, then
+  it will be
+
+  used by the graphics buffer.</p>
+
+  <p>Note: In WebGL mode, the <a
+  href="/reference/p5/p5.Graphics">p5.Graphics</a> object
+
+  will use a WebGL2 context if it's supported by the browser. Check the
+
+  <a href="/reference/p5/webglVersion">webglVersion</a> system variable to check
+  what
+
+  version is being used, or call <code>setAttributes({ version: 1 })</code> to
+  create a
+
+  WebGL1 context.</p>
+line: 370
 isConstructor: false
 itemtype: method
-alt: 4 grey squares alternating light and dark grey. White quarter circle mid-left.
 example:
   - |-
 
     <div>
     <code>
+    //  Double-click to draw the contents of the graphics buffer.
+
     let pg;
+
     function setup() {
       createCanvas(100, 100);
-      pg = createGraphics(100, 100);
+
+      background(200);
+
+      // Create the p5.Graphics object.
+      pg = createGraphics(50, 50);
+
+      // Draw to the graphics buffer.
+      pg.background(100);
+      pg.circle(pg.width / 2, pg.height / 2, 20);
+
+      describe('A gray square. A smaller, darker square with a white circle at its center appears when the user double-clicks.');
     }
 
-    function draw() {
+    // Display the graphics buffer when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        image(pg, 25, 25);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    //  Double-click to draw the contents of the graphics buffer.
+
+    let pg;
+
+    function setup() {
+      createCanvas(100, 100);
+
       background(200);
+
+      // Create the p5.Graphics object in WebGL mode.
+      pg = createGraphics(50, 50, WEBGL);
+
+      // Draw to the graphics buffer.
       pg.background(100);
+      pg.lights();
       pg.noStroke();
-      pg.ellipse(pg.width / 2, pg.height / 2, 50, 50);
-      image(pg, 50, 50);
-      image(pg, 0, 0, 50, 50);
+      pg.rotateX(QUARTER_PI);
+      pg.rotateY(QUARTER_PI);
+      pg.torus(15, 5);
+
+      describe('A gray square. A smaller, darker square with a white torus at its center appears when the user double-clicks.');
+    }
+
+    // Display the graphics buffer when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        image(pg, 25, 25);
+      }
     }
     </code>
     </div>
 class: p5
 return:
-  description: offscreen graphics buffer
+  description: new graphics buffer.
   type: p5.Graphics
 overloads:
-  - line: 253
+  - line: 370
     params:
-      - name: w
+      - name: width
         description: |
-          <p>width of the offscreen graphics buffer</p>
+          <p>width of the graphics buffer.</p>
         type: Number
-      - name: h
+      - name: height
         description: |
-          <p>height of the offscreen graphics buffer</p>
+          <p>height of the graphics buffer.</p>
         type: Number
       - name: renderer
         description: |
-          <p>either P2D or WEBGL
-                                        undefined defaults to p2d</p>
+          <p>either P2D or WEBGL. Defaults to P2D.</p>
         type: Constant
         optional: true
       - name: canvas
         description: |
-          <p>existing html canvas element</p>
+          <p>existing canvas element that should be
+                                               used for the graphics buffer..</p>
         type: HTMLCanvasElement
         optional: true
     return:
-      description: offscreen graphics buffer
+      description: new graphics buffer.
       type: p5.Graphics
-  - line: 296
+  - line: 475
     params:
-      - name: w
+      - name: width
         description: ''
         type: Number
-      - name: h
+      - name: height
         description: ''
         type: Number
       - name: canvas
@@ -93,7 +179,7 @@ overloads:
         type: HTMLCanvasElement
         optional: true
     return:
-      description: offscreen graphics buffer
+      description: ''
       type: p5.Graphics
 chainable: false
 ---

@@ -3,46 +3,84 @@ title: remove
 module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
-description: |
-  <p>Removes the framebuffer and frees its resources.</p>
-line: 733
+description: >
+  <p>Deletes the framebuffer from GPU memory.</p>
+
+  <p>Calling <code>myBuffer.remove()</code> frees the GPU memory used by the
+  framebuffer.
+
+  The framebuffer also uses a bit of memory on the CPU which can be freed
+
+  like so:</p>
+
+  <pre><code class="language-js">// Delete the framebuffer from GPU memory.
+
+  myBuffer.remove();
+
+
+  // Delete the framebuffer from CPU memory.
+
+  myBuffer = undefined;
+
+  </code></pre>
+
+  <p>Note: All variables that reference the framebuffer must be assigned
+
+  the value <code>undefined</code> to delete the framebuffer from CPU memory. If
+  any
+
+  variable still refers to the framebuffer, then it won't be garbage
+
+  collected.</p>
+line: 1031
 isConstructor: false
 itemtype: method
-alt: A rotating red cube blinks on and off every second.
 example:
   - |-
 
     <div>
     <code>
-    let framebuffer;
+    // Double-click to remove the p5.Framebuffer object.
+
+    let myBuffer;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
+
+      // Create an options object.
+      let options = { width: 60, height: 60 };
+
+      // Create a p5.Framebuffer object and
+      // configure it using options.
+      myBuffer = createFramebuffer(options);
+
+      describe('A white circle at the center of a dark gray square disappears when the user double-clicks.');
     }
 
     function draw() {
-      const useFramebuffer = (frameCount % 120) > 60;
-      if (useFramebuffer && !framebuffer) {
-        // Create a new framebuffer for us to use
-        framebuffer = createFramebuffer();
-      } else if (!useFramebuffer && framebuffer) {
-        // Free the old framebuffer's resources
-        framebuffer.remove();
-        framebuffer = undefined;
-      }
+      background(200);
 
-      background(255);
-      if (useFramebuffer) {
-        // Draw to the framebuffer
-        framebuffer.begin();
-        background(255);
-        rotateX(frameCount * 0.01);
-        rotateY(frameCount * 0.01);
-        fill(255, 0, 0);
-        box(30);
-        framebuffer.end();
+      // Display the p5.Framebuffer object if
+      // it's available.
+      if (myBuffer) {
+        // Draw to the p5.Framebuffer object.
+        myBuffer.begin();
+        background(100);
+        circle(0, 0, 20);
+        myBuffer.end();
 
-        image(framebuffer, -width/2, -height/2);
+        image(myBuffer, -30, -30);
       }
+    }
+
+    // Remove the p5.Framebuffer object when the
+    // the user double-clicks.
+    function doubleClicked() {
+      // Delete the framebuffer from GPU memory.
+      myBuffer.remove();
+
+      // Delete the framebuffer from CPU memory.
+      myBuffer = undefined;
     }
     </code>
     </div>

@@ -4,19 +4,63 @@ module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
 description: >
-  <p>After having previously called
+  <p>Stops drawing shapes to the framebuffer.</p>
 
-  <a href="/reference/p5.Framebuffer/begin">begin()</a>, this method stops
-  drawing
+  <p><a href="/reference/p5.Framebuffer/begin">myBuffer.begin()</a> and
+  <code>myBuffer.end()</code>
 
-  functions from going to the framebuffer's texture, allowing them to go
+  allow shapes to be drawn to the framebuffer.
 
-  right to the canvas again. After this, one can read from the framebuffer's
+  <a href="/reference/p5.Framebuffer/begin">myBuffer.begin()</a> begins drawing
+  to
 
-  texture.</p>
-line: 923
+  the framebuffer and <code>myBuffer.end()</code> stops drawing to the
+  framebuffer.
+
+  Changes won't be visible until the framebuffer is displayed as an image
+
+  or texture.</p>
+line: 1254
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let myBuffer;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      describe('An empty gray canvas. The canvas gets darker and a rotating, multicolor torus appears while the user presses and holds the mouse.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Start drawing to the p5.Framebuffer object.
+      myBuffer.begin();
+
+      background(50);
+      rotateY(frameCount * 0.01);
+      normalMaterial();
+      torus(30);
+
+      // Stop drawing to the p5.Framebuffer object.
+      myBuffer.end();
+
+      // Display the p5.Framebuffer object while
+      // the user presses the mouse.
+      if (mouseIsPressed === true) {
+        image(myBuffer, -50, -50);
+      }
+    }
+    </code>
+    </div>
 class: p5.Framebuffer
 chainable: false
 ---

@@ -3,64 +3,98 @@ title: getChild
 module: IO
 submodule: Input
 file: src/io/p5.XML.js
-description: |
-  <p>Returns the first of the element's children that matches the name parameter
-  or the child of the given index.It returns undefined if no matching
-  child is found.</p>
-line: 308
+description: >
+  <p>Returns the first matching child element as a new
+
+  <a href="/reference/p5/p5.XML">p5.XML</a> object.</p>
+
+  <p>The parameter, <code>name</code>, is optional. If a string is passed, as in
+
+  <code>myXML.getChild('cat')</code>, then the first child element with the tag
+
+  <code><cat></code> will be returned. If a number is passed, as in
+
+  <code>myXML.getChild(1)</code>, then the child element at that index will be
+  returned.</p>
+line: 448
 isConstructor: false
 itemtype: method
 example:
   - |-
-    &lt;animal
-    <div class='norender'><code>
-    // The following short XML file called "mammals.xml" is parsed
-    // in the code below.
-    //
-    // <?xml version="1.0"?>
-    // &lt;mammals&gt;
-    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-    // &lt;/mammals&gt;
 
-    let xml;
+    <div>
+    <code>
+    let myXML;
 
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      let firstChild = xml.getChild('animal');
-      print(firstChild.getContent());
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Get the first child element that is a mammal.
+      let goat = myXML.getChild('mammal');
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Get the child element's content.
+      let content = goat.getContent();
+
+      // Display the child element's content.
+      text(content, 50, 50);
+
+      describe('The word "Goat" written in black on a gray background.');
     }
+    </code>
+    </div>
 
-    // Sketch prints:
-    // "Goat"
-    </code></div>
-    <div class='norender'><code>
-    let xml;
+    <div>
+    <code>
+    let myXML;
 
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      let secondChild = xml.getChild(1);
-      print(secondChild.getContent());
-    }
+      createCanvas(100, 100);
 
-    // Sketch prints:
-    // "Leopard"
-    </code></div>
+      background(200);
+
+      // Get the child element at index 1.
+      let leopard = myXML.getChild(1);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Get the child element's content.
+      let content = leopard.getContent();
+
+      // Display the child element's content.
+      text(content, 50, 50);
+
+      describe('The word "Leopard" written in black on a gray background.');
+    }
+    </code>
+    </div>
 class: p5.XML
 params:
   - name: name
     description: |
-      <p>element name or index</p>
+      <p>element name or index.</p>
     type: String|Integer
 return:
-  description: ''
+  description: child element.
   type: p5.XML
 chainable: false
 ---

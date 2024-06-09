@@ -3,57 +3,161 @@ title: int
 module: Data
 submodule: Conversion
 file: src/utilities/conversion.js
-description: |
-  <p>Converts a boolean, string, or float to its integer representation.
-  When an array of values is passed in, then an int array of the same length
-  is returned.</p>
-line: 42
+description: >
+  <p>Converts a <code>Boolean</code>, <code>String</code>, or decimal
+  <code>Number</code> to an integer.</p>
+
+  <p><code>int()</code> converts values to integers. Integers are positive or
+  negative
+
+  numbers without decimals. If the original value has decimals, as in -34.56,
+
+  they're removed to produce an integer such as -34.</p>
+
+  <p>The parameter, <code>n</code>, is the value to convert. If <code>n</code>
+  is a Boolean, as in
+
+  <code>int(false)</code> or <code>int(true)</code>, then the number 0
+  (<code>false</code>) or 1 (<code>true</code>) will
+
+  be returned. If <code>n</code> is a string or number, as in
+  <code>int('45')</code> or
+
+  <code>int(67.89)</code>, then an integer will be returned. If an array is
+  passed, as
+
+  in <code>int([12.34, 56.78])</code>, then an array of integers will be
+  returned.</p>
+
+  <p>Note: If a value can't be converted to a number, as in
+  <code>int('giraffe')</code>,
+
+  then the value <code>NaN</code> (not a number) will be returned.</p>
+line: 92
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    print(int('10')); // 10
-    print(int(10.31)); // 10
-    print(int(-10)); // -10
-    print(int(true)); // 1
-    print(int(false)); // 0
-    print(int([false, true, '10.3', 9.8])); // [0, 1, 10, 9]
-    print(int(Infinity)); // Infinity
-    print(int('-Infinity')); // -Infinity
-    </code></div>
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a Boolean variable.
+      let original = false;
+
+      // Convert the Boolean to an integer.
+      let converted = int(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Display the original and converted values.
+      text(`${original} : ${converted}`, 50, 50);
+
+      describe('The text "false : 0" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let original = '12.34';
+
+      // Convert the string to an integer.
+      let converted = int(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Display the original and converted values.
+      text(`${original} ≈ ${converted}`, 50, 50);
+
+      describe('The text "12.34 ≈ 12" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a decimal number variable.
+      let original = 12.34;
+
+      // Convert the decimal number to an integer.
+      let converted = int(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Display the original and converted values.
+      text(`${original} ≈ ${converted}`, 50, 50);
+
+      describe('The text "12.34 ≈ 12" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of strings.
+      let original = ['60', '30', '15'];
+
+      // Convert the strings to integers.
+      let diameters = int(original);
+
+      for (let d of diameters) {
+        // Draw a circle.
+        circle(50, 50, d);
+      }
+
+      describe('Three white, concentric circles on a gray background.');
+    }
+    </code>
+    </div>
 class: p5
 return:
-  description: integer representation of value
+  description: converted number.
   type: Number
 overloads:
-  - line: 42
+  - line: 92
     params:
       - name: 'n'
         description: |
-          <p>value to parse</p>
+          <p>value to convert.</p>
         type: String|Boolean|Number
-      - name: radix
-        description: |
-          <p>the radix to convert to (default: 10)</p>
-        type: Integer
-        optional: true
     return:
-      description: integer representation of value
+      description: converted number.
       type: Number
-  - line: 64
+  - line: 211
     params:
       - name: ns
         description: |
-          <p>values to parse</p>
+          <p>values to convert.</p>
         type: Array
-      - name: radix
-        description: ''
-        type: Integer
-        optional: true
     return:
-      description: integer representation of values
+      description: converted numbers.
       type: 'Number[]'
 chainable: false
 ---

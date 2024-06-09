@@ -4,48 +4,53 @@ module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
 description: >
-  <p>A texture with the depth information of the framebuffer. If the framebuffer
+  <p>An object that stores the framebuffer's dpeth data.</p>
 
-  was created with <code>{ depth: false }</code> in its settings, then this
-  property will
+  <p>Each framebuffer uses a
 
-  be undefined. Pass this to <a href="/reference/p5/texture">texture()</a> to
-  draw it to
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLTexture"
+  target="_blank">WebGLTexture</a>
 
-  the canvas, or pass it to a shader with
+  object internally to store its depth data. The <code>myBuffer.depth</code>
+  property
 
-  <a href="/reference/p5.Shader/setUniform">setUniform()</a> to read its
-  data.</p>
+  makes it possible to pass this data directly to other functions. For
 
-  <p>Since Framebuffers are controlled by WebGL, their y coordinates are stored
+  example, calling <code>texture(myBuffer.depth)</code> or
 
-  flipped compared to images and videos. When texturing with a framebuffer
+  <code>myShader.setUniform('depthTexture', myBuffer.depth)</code>  may be
+  helpful for
 
-  texture, you may want to flip vertically, e.g. with
+  advanced use cases.</p>
 
-  <code>plane(framebuffer.width, -framebuffer.height)</code>.</p>
-line: 1326
+  <p>Note: By default, a framebuffer's y-coordinates are flipped compared to
+
+  images and videos. It's easy to flip a framebuffer's y-coordinates as
+
+  needed when applying it as a texture. For example, calling
+
+  <code>plane(myBuffer.width, -myBuffer.height)</code> will flip the
+  framebuffer.</p>
+line: 1754
 isConstructor: false
 itemtype: property
-alt: |-
-  A video of a rectangular prism rotating, with parts closest to the camera
-  appearing yellow and colors getting progressively more blue the farther
-  from the camera they go
 example:
   - |-
 
     <div>
     <code>
-    let framebuffer;
-    let depthShader;
+    // Note: A "uniform" is a global variable within a shader program.
 
-    const vert = `
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
     precision highp float;
     attribute vec3 aPosition;
     attribute vec2 aTexCoord;
     uniform mat4 uModelViewMatrix;
     uniform mat4 uProjectionMatrix;
     varying vec2 vTexCoord;
+
     void main() {
       vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
       gl_Position = uProjectionMatrix * viewModelPosition;
@@ -53,45 +58,65 @@ example:
     }
     `;
 
-    const frag = `
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
     precision highp float;
     varying vec2 vTexCoord;
     uniform sampler2D depth;
+
     void main() {
+      // Get the pixel's depth value.
       float depthVal = texture2D(depth, vTexCoord).r;
+
+      // Set the pixel's color based on its depth.
       gl_FragColor = mix(
-        vec4(1., 1., 0., 1.), // yellow
-        vec4(0., 0., 1., 1.), // blue
-        pow(depthVal, 6.)
-      );
+        vec4(0., 0., 0., 1.),
+        vec4(1., 0., 1., 1.),
+        depthVal);
     }
     `;
 
+    let myBuffer;
+    let myShader;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      framebuffer = createFramebuffer();
-      depthShader = createShader(vert, frag);
-      noStroke();
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      // Create a p5.Shader object.
+      myShader = createShader(vertSrc, fragSrc);
+
+      // Compile and apply the shader.
+      shader(myShader);
+
+      describe('The shadow of a box rotates slowly against a magenta background.');
     }
 
     function draw() {
-      // Draw to the framebuffer
-      framebuffer.begin();
+      // Draw to the p5.Framebuffer object.
+      myBuffer.begin();
       background(255);
       rotateX(frameCount * 0.01);
-      box(20, 20, 100);
-      framebuffer.end();
+      box(20, 20, 80);
+      myBuffer.end();
 
-      push();
-      shader(depthShader);
-      depthShader.setUniform('depth', framebuffer.depth);
-      plane(framebuffer.width, framebuffer.height);
-      pop();
+      // Set the shader's depth uniform using
+      // the framebuffer's depth texture.
+      myShader.setUniform('depth', myBuffer.depth);
+
+      // Style the plane.
+      noStroke();
+
+      // Draw the plane.
+      plane(myBuffer.width, myBuffer.height);
     }
     </code>
     </div>
 class: p5.Framebuffer
-type: p5.FramebufferTexture|undefined
+type: p5.FramebufferTexture
 ---
 
 

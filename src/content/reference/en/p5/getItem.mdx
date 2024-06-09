@@ -3,48 +3,143 @@ title: getItem
 module: Data
 submodule: LocalStorage
 file: src/data/local_storage.js
-description: |
-  <p>Returns the value of an item that was stored in local storage
-   using storeItem()</p>
-line: 99
+description: >
+  <p>Returns a value in the web browser's local storage.</p>
+
+  <p>Web browsers can save small amounts of data using the built-in
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+  target="_blank">localStorage object</a>.
+
+  Data stored in <code>localStorage</code> can be retrieved at any point, even
+  after
+
+  refreshing a page or restarting the browser. Data are stored as key-value
+
+  pairs.</p>
+
+  <p><a href="/reference/p5/storeItem">storeItem()</a> makes it easy to store
+  values in
+
+  <code>localStorage</code> and <code>getItem()</code> makes it easy to retrieve
+  them.</p>
+
+  <p>The first parameter, <code>key</code>, is the name of the value to be
+  stored as a
+
+  string.</p>
+
+  <p>The second parameter, <code>value</code>, is the value to be retrieved a
+  string. For
+
+  example, calling <code>getItem('size')</code> retrieves the value with the key
+  <code>size</code>.</p>
+
+  <p>Note: Sensitive data such as passwords or personal information shouldn't be
+
+  stored in <code>localStorage</code>.</p>
+line: 164
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
 
-     <div><code>
-     // Click the mouse to change
-     // the color of the background
-     // Once you have changed the color
-     // it will stay changed even when you
-     // reload the page.
-    let myColor;
+    <div>
+    <code>
     function setup() {
-       createCanvas(100, 100);
-       myColor = getItem('myColor');
-     }
+      createCanvas(100, 100);
+
+      // Store the player's name.
+      storeItem('name', 'Feist');
+
+      // Store the player's score.
+      storeItem('score', 1234);
+
+      describe('The text "Feist: 1234" written in black on a gray background.');
+    }
+
     function draw() {
-       if (myColor !== null) {
-         background(myColor);
-       }
-       describe(`If you click, the canvas changes to a random color.·
-         If you reload the page, the canvas is still the color it was when the
-         page was previously loaded.`);
-     }
-    function mousePressed() {
-       myColor = color(random(255), random(255), random(255));
-       storeItem('myColor', myColor);
-     }
-     </code></div>
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Retrieve the name.
+      let name = getItem('name');
+
+      // Retrieve the score.
+      let score = getItem('score');
+
+      // Display the score.
+      text(`${name}: ${score}`, 50, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create an object.
+      let p = { x: 50, y: 50 };
+
+      // Store the object.
+      storeItem('position', p);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Retrieve the object.
+      let p = getItem('position');
+
+      // Draw the circle.
+      circle(p.x, p.y, 30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a p5.Color object.
+      let c = color('deeppink');
+
+      // Store the object.
+      storeItem('color', c);
+
+      describe('A pink circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Retrieve the object.
+      let c = getItem('color');
+
+      // Style the circle.
+      fill(c);
+
+      // Draw the circle.
+      circle(50, 50, 30);
+    }
+    </code>
+    </div>
 class: p5
 params:
   - name: key
     description: |
-      <p>name that you wish to use to store in local storage</p>
+      <p>name of the value.</p>
     type: String
 return:
-  description: Value of stored item
-  type: Number|Object|String|Boolean|p5.Color|p5.Vector
+  description: stored item.
+  type: String|Number|Boolean|Object|Array
 chainable: false
 ---
 

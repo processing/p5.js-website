@@ -3,49 +3,72 @@ title: hasAttribute
 module: IO
 submodule: Input
 file: src/io/p5.XML.js
-description: |
-  <p>Checks whether or not an element has the specified attribute.</p>
-line: 571
+description: >
+  <p>Returns <code>true</code> if the element has a given attribute and
+  <code>false</code> if not.</p>
+
+  <p>The parameter, <code>name</code>, is a string with the name of the
+  attribute being
+
+  checked.</p>
+
+  <p>Note: Use
+
+  <a href="/reference/p5.XML/getString">myXML.getString()</a> or
+
+  <a href="/reference/p5.XML/getNum">myXML.getNum()</a> to return an attribute's
+  value.</p>
+line: 821
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
 
-     <div class='norender'><code>
-     // The following short XML file called "mammals.xml" is parsed
-     // in the code below.
-     //
-     // <?xml version="1.0"?>
-     // &lt;mammals&gt;
-     //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-     //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-     //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-     // &lt;/mammals&gt;
+    <div>
+    <code>
+    let myXML;
 
-     let xml;
+    // Load the XML and create a p5.XML object.
+    function preload() {
+      myXML = loadXML('/assets/animals.xml');
+    }
 
-     function preload() {
-     xml = loadXML('/assets/mammals.xml');
-     }
+    function setup() {
+      createCanvas(100, 100);
 
-     function setup() {
-     let firstChild = xml.getChild('animal');
-     print(firstChild.hasAttribute('species'));
-     print(firstChild.hasAttribute('color'));
-     }
+      background(200);
 
-     // Sketch prints:
-     // true
-     // false
-     </code></div>
+      // Get the first mammal child element.
+      let mammal = myXML.getChild('mammal');
+
+      // Check whether the element has an
+      // species attribute.
+      let hasSpecies = mammal.hasAttribute('species');
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Display whether the element has a species attribute.
+      if (hasSpecies === true) {
+        text('Species', 50, 50);
+      } else {
+        text('No species', 50, 50);
+      }
+
+      describe('The text "Species" written in black on a gray background.');
+    }
+    </code>
+    </div>
 class: p5.XML
 params:
-  - name: the
+  - name: name
     description: |
-      <p>attribute to be checked</p>
+      <p>name of the attribute to be checked.</p>
     type: String
 return:
-  description: true if attribute found else false
+  description: whether the element has the attribute.
   type: Boolean
 chainable: false
 ---

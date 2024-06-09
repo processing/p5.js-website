@@ -4,13 +4,27 @@ module: IO
 submodule: Time & Date
 file: src/utilities/time_date.js
 description: >
-  <p>Returns the number of milliseconds (thousandths of a second) since
+  <p>Returns the number of milliseconds since a sketch started running.</p>
 
-  starting the sketch (when <code>setup()</code> is called). This information is
-  often
+  <p><code>millis()</code> keeps track of how long a sketch has been running in
 
-  used for timing events and animation sequences.</p>
-line: 67
+  milliseconds (thousandths of a second). This information is often
+
+  helpful for timing events and animations.</p>
+
+  <p>If a sketch has a
+
+  <a href="/reference/p5/setup">setup()</a> function, then <code>millis()</code>
+  begins tracking
+
+  time before the code in <a href="/reference/p5/setup">setup()</a> runs. If a
+
+  sketch includes a <a href="/reference/p5/preload">preload()</a> function, then
+
+  <code>millis()</code> begins tracking time as soon as the code in
+
+  <a href="/reference/p5/preload">preload()</a> starts running.</p>
+line: 112
 isConstructor: false
 itemtype: method
 example:
@@ -18,14 +32,109 @@ example:
 
     <div>
     <code>
-    let millisecond = millis();
-    text('Milliseconds \nrunning: \n' + millisecond, 5, 40);
-    describe('number of milliseconds since sketch has started displayed');
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Get the number of milliseconds the sketch has run.
+      let ms = millis();
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textSize(10);
+      textFont('Courier New');
+
+      // Display how long it took setup() to be called.
+      text(`Startup time: ${round(ms, 2)} ms`, 5, 50, 90);
+
+      describe(
+        `The text 'Startup time: ${round(ms, 2)} ms' written in black on a gray background.`
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('The text "Running time: S sec" written in black on a gray background. The number S increases as the sketch runs.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Get the number of seconds the sketch has run.
+      let s = millis() / 1000;
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textSize(10);
+      textFont('Courier New');
+
+      // Display how long the sketch has run.
+      text(`Running time: ${nf(s, 1, 1)} sec`, 5, 50, 90);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle oscillates left and right on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Get the number of seconds the sketch has run.
+      let s = millis() / 1000;
+
+      // Calculate an x-coordinate.
+      let x = 30 * sin(s) + 50;
+
+      // Draw the circle.
+      circle(x, 50, 30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Load the GeoJSON.
+    function preload() {
+      loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Get the number of milliseconds the sketch has run.
+      let ms = millis();
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(11);
+
+      // Display how long it took to load the data.
+      text(`It took ${round(ms, 2)} ms to load the data`, 5, 50, 100);
+
+      describe(
+        `The text "It took ${round(ms, 2)} ms to load the data" written in black on a gray background.`
+      );
+    }
     </code>
     </div>
 class: p5
 return:
-  description: the number of milliseconds since starting the sketch
+  description: number of milliseconds since starting the sketch.
   type: Number
 chainable: false
 ---

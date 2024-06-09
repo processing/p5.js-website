@@ -4,31 +4,155 @@ module: Data
 submodule: String Functions
 file: src/utilities/string_functions.js
 description: >
-  <p>The <a href="/reference/p5/splitTokens">splitTokens()</a> function splits a
-  String at one or many character
+  <p>Splits a <code>String</code> into pieces and returns an array containing
+  the pieces.</p>
 
-  delimiters or "tokens." The delim parameter specifies the character or
+  <p><code>splitTokens()</code> is an enhanced version of
 
-  characters to be used as a boundary.</p>
+  <a href="/reference/p5/split">split()</a>. It can split a string when any
+  characters
 
-  <p>If no delim characters are specified, any whitespace character is used to
+  from a list are detected.</p>
 
-  split. Whitespace characters include tab (\t), line feed (\n), carriage
+  <p>The first parameter, <code>value</code>, is the string to split.</p>
 
-  return (\r), form feed (\f), and space.</p>
-line: 458
+  <p>The second parameter, <code>delim</code>, is optional. It sets the
+  character(s) that
+
+  should be used to split the string. <code>delim</code> can be a single string,
+  as in
+
+  <code>splitTokens('rock...paper...scissors...shoot', '...')</code>, or an
+  array of
+
+  strings, as in
+
+  <code>splitTokens('rock;paper,scissors...shoot, [';', ',', '...'])</code>. By
+  default,
+
+  if no <code>delim</code> characters are specified, then any whitespace
+  character is
+
+  used to split. Whitespace characters include tab (<code>\t</code>), line feed
+  (<code>\n</code>),
+
+  carriage return (<code>\r</code>), form feed (<code>\f</code>), and space.</p>
+line: 744
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class = "norender">
+    <div>
     <code>
     function setup() {
-      let myStr = 'Mango, Banana, Lime';
-      let myStrArr = splitTokens(myStr, ',');
+      createCanvas(100, 100);
 
-      print(myStrArr); // prints : ["Mango"," Banana"," Lime"]
+      background(200);
+
+      // Create a string variable.
+      let string = 'rock paper scissors shoot';
+
+      // Split the string at each space.
+      let words = splitTokens(string);
+
+      // Print the array to the console.
+      print(words);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Iterate over the words array.
+      for (let i = 0; i < words.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 20;
+
+        // Display the word.
+        text(words[i], 50, y);
+      }
+
+      describe(
+        'The words "rock", "paper", "scissors", and "shoot" written on separate lines. The text is black on a gray background.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let string = 'rock...paper...scissors...shoot';
+
+      // Split the string at each ...
+      let words = splitTokens(string, '...');
+
+      // Print the array to the console.
+      print(words);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Iterate over the words array.
+      for (let i = 0; i < words.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 20;
+
+        // Display the word.
+        text(words[i], 50, y);
+      }
+
+      describe(
+        'The words "rock", "paper", "scissors", and "shoot" written on separate lines. The text is black on a gray background.'
+      );
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let string = 'rock;paper,scissors...shoot';
+
+      // Split the string at each semicolon, comma, or ...
+      let words = splitTokens(string, [';', ',', '...']);
+
+      // Print the array to the console.
+      print(words);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Iterate over the words array.
+      for (let i = 0; i < words.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 20;
+
+        // Display the word.
+        text(words[i], 50, y);
+      }
+
+      describe(
+        'The words "rock", "paper", "scissors", and "shoot" written on separate lines. The text is black on a gray background.'
+      );
     }
     </code>
     </div>
@@ -36,16 +160,15 @@ class: p5
 params:
   - name: value
     description: |
-      <p>the String to be split</p>
+      <p>string to split.</p>
     type: String
   - name: delim
     description: |
-      <p>list of individual Strings that will be used as
-                               separators</p>
+      <p>character(s) to use for splitting the string.</p>
     type: String
     optional: true
 return:
-  description: Array of Strings
+  description: separated strings.
   type: 'String[]'
 chainable: false
 ---

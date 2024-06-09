@@ -4,14 +4,20 @@ module: Shape
 submodule: 3D Primitives
 file: src/webgl/p5.Geometry.js
 description: >
-  <p>Removes the internal colors of p5.Geometry.
+  <p>Removes the geometry’s internal colors.</p>
 
-  Using <code>clearColors()</code>, you can use <code>fill()</code> to supply
-  new colors before drawing each shape.
+  <p><code>p5.Geometry</code> objects can be created with "internal colors"
+  assigned to
 
-  If <code>clearColors()</code> is not used, the shapes will use their internal
-  colors by ignoring <code>fill()</code>.</p>
-line: 231
+  vertices or the entire shape. When a geometry has internal colors,
+
+  <a href="/reference/p5/fill">fill()</a> has no effect. Calling
+
+  <code>myGeometry.clearColors()</code> allows the
+
+  <a href="/reference/p5/fill">fill()</a> function to apply color to the
+  geometry.</p>
+line: 863
 isConstructor: false
 itemtype: method
 example:
@@ -19,42 +25,48 @@ example:
 
     <div>
     <code>
-    let shape01;
-    let shape02;
-    let points = [];
-
     function setup() {
       createCanvas(100, 100, WEBGL);
-      points.push(new p5.Vector(-1, -1, 0), new p5.Vector(-1, 1, 0),
-        new p5.Vector(1, -1, 0), new p5.Vector(-1, -1, 0));
-      buildShape01();
-      buildShape02();
-    }
-    function draw() {
-      background(0);
-      fill('pink'); // shape01 retains its internal blue color, so it won't turn pink.
-      model(shape01);
-      fill('yellow'); // Now, shape02 is yellow.
-      model(shape02);
-    }
 
-    function buildShape01() {
-      beginGeometry();
-      fill('blue'); // shape01's color is blue because its internal colors remain.
-      beginShape();
-      for (let vec of points) vertex(vec.x * 100, vec.y * 100, vec.z * 100);
-      endShape(CLOSE);
-      shape01 = endGeometry();
-    }
+      background(200);
 
-    function buildShape02() {
+      // Create a p5.Geometry object.
+      // Set its internal color to red.
       beginGeometry();
-      fill('red');  // shape02.clearColors() removes its internal colors. Now, shape02 is red.
-      beginShape();
-      for (let vec of points) vertex(vec.x * 200, vec.y * 200, vec.z * 200);
-      endShape(CLOSE);
-      shape02 = endGeometry();
-      shape02.clearColors(); // Resets shape02's colors.
+      fill(255, 0, 0);
+      plane(20);
+      let myGeometry = endGeometry();
+
+      // Style the shape.
+      noStroke();
+
+      // Draw the p5.Geometry object (center).
+      model(myGeometry);
+
+      // Translate the origin to the bottom-right.
+      translate(25, 25, 0);
+
+      // Try to fill the geometry with green.
+      fill(0, 255, 0);
+
+      // Draw the geometry again (bottom-right).
+      model(myGeometry);
+
+      // Clear the geometry's colors.
+      myGeometry.clearColors();
+
+      // Fill the geometry with blue.
+      fill(0, 0, 255);
+
+      // Translate the origin up.
+      translate(0, -50, 0);
+
+      // Draw the geometry again (top-right).
+      model(myGeometry);
+
+      describe(
+        'Three squares drawn against a gray background. Red squares are at the center and the bottom-right. A blue square is at the top-right.'
+      );
     }
     </code>
     </div>

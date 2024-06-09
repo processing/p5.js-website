@@ -3,46 +3,61 @@ title: begin
 module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
-description: |
-  <p>Begin drawing to this framebuffer. Subsequent drawing functions to the
-  canvas the framebuffer is attached to will not be immediately visible, and
-  will instead be drawn to the framebuffer's texture. Call
-  <a href="/reference/p5.Framebuffer/end">end()</a> when finished to make draw
-  functions go right to the canvas again and to be able to read the
-  contents of the framebuffer's texture.</p>
-line: 794
+description: >
+  <p>Begins drawing shapes to the framebuffer.</p>
+
+  <p><code>myBuffer.begin()</code> and <a
+  href="/reference/p5.Framebuffer/end">myBuffer.end()</a>
+
+  allow shapes to be drawn to the framebuffer. <code>myBuffer.begin()</code>
+  begins
+
+  drawing to the framebuffer and
+
+  <a href="/reference/p5.Framebuffer/end">myBuffer.end()</a> stops drawing to
+  the
+
+  framebuffer. Changes won't be visible until the framebuffer is displayed
+
+  as an image or texture.</p>
+line: 1118
 isConstructor: false
 itemtype: method
-alt: |-
-  A video of a floating and rotating red cube is pasted twice on the
-  canvas: once in the top left, and again, larger, in the bottom right.
 example:
   - |-
 
     <div>
     <code>
-    let framebuffer;
+    let myBuffer;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      framebuffer = createFramebuffer();
-      noStroke();
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      describe('An empty gray canvas. The canvas gets darker and a rotating, multicolor torus appears while the user presses and holds the mouse.');
     }
 
     function draw() {
-      // Draw to the framebuffer
-      framebuffer.begin();
-      background(255);
-      translate(0, 10*sin(frameCount * 0.01), 0);
-      rotateX(frameCount * 0.01);
-      rotateY(frameCount * 0.01);
-      fill(255, 0, 0);
-      box(50);
-      framebuffer.end();
+      background(200);
 
-      background(100);
-      // Draw the framebuffer to the main canvas
-      image(framebuffer, -50, -50, 25, 25);
-      image(framebuffer, 0, 0, 35, 35);
+      // Start drawing to the p5.Framebuffer object.
+      myBuffer.begin();
+
+      background(50);
+      rotateY(frameCount * 0.01);
+      normalMaterial();
+      torus(30);
+
+      // Stop drawing to the p5.Framebuffer object.
+      myBuffer.end();
+
+      // Display the p5.Framebuffer object while
+      // the user presses the mouse.
+      if (mouseIsPressed === true) {
+        image(myBuffer, -50, -50);
+      }
     }
     </code>
     </div>

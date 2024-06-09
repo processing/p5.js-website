@@ -4,53 +4,171 @@ module: Data
 submodule: Conversion
 file: src/utilities/conversion.js
 description: >
-  <p>Converts a number, string representation of a number, or boolean to its
+  <p>Converts a <code>Boolean</code>, <code>String</code>, or
+  <code>Number</code> to its byte value.</p>
+
+  <p><code>byte()</code> converts a value to an integer (whole number) between
+  -128 and
+
+  127. Values greater than 127 wrap around while negative values are
+
+  unchanged. For example, 128 becomes -128 and -129 remains the same.</p>
+
+  <p>The parameter, <code>n</code>, is the value to convert. If <code>n</code>
+  is a Boolean, as in
+
+  <code>byte(false)</code> or <code>byte(true)</code>, the number 0
+  (<code>false</code>) or 1 (<code>true</code>) will be
+
+  returned. If <code>n</code> is a string or number, as in
+  <code>byte('256')</code> or <code>byte(256)</code>,
+
+  then the byte value will be returned. Decimal values are ignored. If an
+
+  array is passed, as in <code>byte([true, 123, '456'])</code>, then an array of
   byte
 
-  representation. A byte can be only a whole number between -128 and 127, so
+  values will be returned.</p>
 
-  when a value outside of this range is converted, it wraps around to the
+  <p>Note: If a value can't be converted to a number, as in
+  <code>byte('giraffe')</code>,
 
-  corresponding byte representation. When an array of number, string or boolean
-
-  values is passed in, then an array of bytes the same length is returned.</p>
-line: 144
+  then the value <code>NaN</code> (not a number) will be returned.</p>
+line: 468
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    print(byte(127)); // 127
-    print(byte(128)); // -128
-    print(byte(23.4)); // 23
-    print(byte('23.4')); // 23
-    print(byte('hello')); // NaN
-    print(byte(true)); // 1
-    print(byte([0, 255, '100'])); // [0, -1, 100]
-    </code></div>
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a Boolean variable.
+      let original = true;
+
+      // Convert the Boolean to its byte value.
+      let converted = byte(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Display the original and converted values.
+      text(`${original} : ${converted}`, 50, 50);
+
+      describe('The text "true : 1" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let original = '256';
+
+      // Convert the string to its byte value.
+      let converted = byte(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Display the original and converted values.
+      text(`${original} : ${converted}`, 50, 50);
+
+      describe('The text "256 : 0" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a number variable.
+      let original = 256;
+
+      // Convert the number to its byte value.
+      let converted = byte(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Display the original and converted values.
+      text(`${original} : ${converted}`, 50, 50);
+
+      describe('The text "256 : 0" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of values.
+      let original = [false, '64', 383];
+
+      // Convert the array elements to their byte values.
+      let converted = byte(original);
+
+      // Iterate over the converted array elements.
+      for (let i = 0; i < converted.length; i += 1) {
+
+        // Style the circle.
+        fill(converted[i]);
+
+        // Calculate the x-coordinate.
+        let x = (i + 1) * 25;
+
+        // Draw the circle.
+        circle(x, 50, 20);
+      }
+
+      describe(
+        'Three gray circles on a gray background. The circles get lighter from left to right.'
+      );
+    }
+    </code>
+    </div>
 class: p5
 return:
-  description: byte representation of value
+  description: converted byte value.
   type: Number
 overloads:
-  - line: 144
+  - line: 468
     params:
       - name: 'n'
         description: |
-          <p>value to parse</p>
+          <p>value to convert.</p>
         type: String|Boolean|Number
     return:
-      description: byte representation of value
+      description: converted byte value.
       type: Number
-  - line: 166
+  - line: 598
     params:
       - name: ns
         description: |
-          <p>values to parse</p>
+          <p>values to convert.</p>
         type: Array
     return:
-      description: array of byte representation of values
+      description: converted byte values.
       type: 'Number[]'
 chainable: false
 ---

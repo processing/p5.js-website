@@ -4,62 +4,50 @@ module: Structure
 submodule: Structure
 file: src/core/structure.js
 description: >
-  <p>By default, p5.js loops through <a href="/reference/p5/draw">draw()</a>
-  continuously,
+  <p>Returns <code>true</code> if the draw loop is running and
+  <code>false</code> if not.</p>
 
-  executing the code within it. If the sketch is stopped with
+  <p>By default, <a href="/reference/p5/draw">draw()</a> tries to run 60 times
+  per
 
-  <a href="/reference/p5/noLoop">noLoop()</a> or resumed with <a
-  href="/reference/p5/loop">loop()</a>,
+  second. Calling <a href="/reference/p5/noLoop">noLoop()</a> stops
 
-  isLooping() returns the current state for use within custom event
-  handlers.</p>
-line: 133
+  <a href="/reference/p5/draw">draw()</a> from repeating. The draw loop can be
+
+  restarted by calling <a href="/reference/p5/loop">loop()</a>.</p>
+
+  <p>The <code>isLooping()</code> function can be used to check whether a sketch
+  is
+
+  looping, as in <code>isLooping() === true</code>.</p>
+line: 224
 isConstructor: false
 itemtype: method
-alt: |-
-  Ellipse moves slowly from left. Checkbox toggles loop()/noLoop().
-  Button colorizes sketch if isLooping().
 example:
   - |-
 
     <div>
     <code>
-    let checkbox, button, colBG, colFill;
-
     function setup() {
       createCanvas(100, 100);
 
-      button = createButton('Colorize if loop()');
-      button.position(0, 120);
-      button.mousePressed(changeBG);
-
-      checkbox = createCheckbox('loop()', true);
-      checkbox.changed(checkLoop);
-
-      colBG = color(0);
-      colFill = color(255);
-    }
-
-    function changeBG() {
-      if (isLooping()) {
-        colBG = color(random(255), random(255), random(255));
-        colFill = color(random(255), random(255), random(255));
-      }
-    }
-
-    function checkLoop() {
-      if (this.checked()) {
-        loop();
-      } else {
-        noLoop();
-      }
+      describe('A white circle drawn against a gray background. When the user double-clicks, the circle stops or resumes following the mouse.');
     }
 
     function draw() {
-      background(colBG);
-      fill(colFill);
-      ellipse(frameCount % width, height / 2, 50);
+      background(200);
+
+      // Draw the circle at the mouse's position.
+      circle(mouseX, mouseY, 20);
+    }
+
+    // Toggle the draw loop when the user double-clicks.
+    function doubleClicked() {
+      if (isLooping() === true) {
+        noLoop();
+      } else {
+        loop();
+      }
     }
     </code>
     </div>
