@@ -4,173 +4,312 @@ module: IO
 submodule: Input
 file: src/io/p5.XML.js
 description: >
-  <p>XML is a representation of an XML object, able to parse XML code. Use
+  <p>A class to describe an XML object.</p>
 
-  <a href="/reference/p5/loadXML">loadXML()</a> to load external XML files and
-  create XML objects.</p>
+  <p>Each <code>p5.XML</code> object provides an easy way to interact with XML
+  data.
+
+  Extensible Markup Language
+
+  (<a href="https://developer.mozilla.org/en-US/docs/Web/XML/XML_introduction"
+  target="_blank">XML</a>)
+
+  is a standard format for sending data between applications. Like HTML, the
+
+  XML format is based on tags and attributes, as in
+
+  <code><time units="s">1234</time></code>.</p>
+
+  <p>Note: Use <a href="/reference/p5/loadXML">loadXML()</a> to load external
+  XML files.</p>
 line: 9
 isConstructor: true
 example:
   - |-
 
-    <div class='norender'><code>
-    // The following short XML file called "mammals.xml" is parsed
-    // in the code below.
-    //
-    // <?xml version="1.0"?>
-    // &lt;mammals&gt;
-    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-    // &lt;/mammals&gt;
+    <div>
+    <code>
+    let myXML;
 
-    let xml;
-
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      let children = xml.getChildren('animal');
+      createCanvas(100, 100);
 
-      for (let i = 0; i < children.length; i++) {
-        let id = children[i].getNum('id');
-        let coloring = children[i].getString('species');
-        let name = children[i].getContent();
-        print(id + ', ' + coloring + ', ' + name);
+      background(200);
+
+      // Get an array with all mammal tags.
+      let mammals = myXML.getChildren('mammal');
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Iterate over the mammals array.
+      for (let i = 0; i < mammals.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 25;
+
+        // Get the mammal's common name.
+        let name = mammals[i].getContent();
+
+        // Display the mammal's name.
+        text(name, 20, y);
       }
 
-      describe('no image displayed');
+      describe(
+        'The words "Goat", "Leopard", and "Zebra" written on three separate lines. The text is black on a gray background.'
+      );
     }
-
-    // Sketch prints:
-    // 0, Capra hircus, Goat
-    // 1, Panthera pardus, Leopard
-    // 2, Equus zebra, Zebra
-    </code></div>
+    </code>
+    </div>
 methods:
   getParent:
-    description: |
-      <p>Gets a copy of the element's parent. Returns the parent as another
-      <a href="/reference/p5/p5.XML">p5.XML</a> object.</p>
+    description: >
+      <p>Returns the element's parent element as a new <a
+      href="/reference/p5/p5.XML">p5.XML</a>
+
+      object.</p>
     path: p5.XML/getParent
   getName:
-    description: |
-      <p>Gets the element's full name, which is returned as a String.</p>
+    description: >
+      <p>Returns the element's name as a <code>String</code>.</p>
+
+      <p>An XML element's name is given by its tag. For example, the element
+
+      <code><language>JavaScript</language></code> has the name
+      <code>language</code>.</p>
     path: p5.XML/getName
   setName:
-    description: |
-      <p>Sets the element's name, which is specified as a String.</p>
+    description: >
+      <p>Sets the element's tag name.</p>
+
+      <p>An XML element's name is given by its tag. For example, the element
+
+      <code><language>JavaScript</language></code> has the name
+      <code>language</code>.</p>
+
+      <p>The parameter, <code>name</code>, is the element's new name as a
+      string. For example,
+
+      calling <code>myXML.setName('planet')</code> will make the element's new
+      tag name
+
+      <code><planet></planet></code>.</p>
     path: p5.XML/setName
   hasChildren:
     description: >
-      <p>Checks whether or not the element has any children, and returns the
-      result
-
-      as a boolean.</p>
+      <p>Returns <code>true</code> if the element has child elements and
+      <code>false</code> if not.</p>
     path: p5.XML/hasChildren
   listChildren:
-    description: >
-      <p>Get the names of all of the element's children, and returns the names
-      as an
-
-      array of Strings. This is the same as looping through and calling <a
-      href="/reference/p5.XML/getName">getName()</a>
-
-      on each child element individually.</p>
+    description: |
+      <p>Returns an array with the names of the element's child elements as
+      <code>String</code>s.</p>
     path: p5.XML/listChildren
   getChildren:
     description: >
-      <p>Returns all of the element's children as an array of <a
-      href="/reference/p5/p5.XML">p5.XML</a> objects. When
+      <p>Returns an array with the element's child elements as new
 
-      the name parameter is specified, then it will return all children that
-      match
+      <a href="/reference/p5/p5.XML">p5.XML</a> objects.</p>
 
-      that name.</p>
+      <p>The parameter, <code>name</code>, is optional. If a string is passed,
+      as in
+
+      <code>myXML.getChildren('cat')</code>, then the method will only return
+      child elements
+
+      with the tag <code><cat></code>.</p>
     path: p5.XML/getChildren
   getChild:
     description: >
-      <p>Returns the first of the element's children that matches the name
-      parameter
+      <p>Returns the first matching child element as a new
 
-      or the child of the given index.It returns undefined if no matching
+      <a href="/reference/p5/p5.XML">p5.XML</a> object.</p>
 
-      child is found.</p>
+      <p>The parameter, <code>name</code>, is optional. If a string is passed,
+      as in
+
+      <code>myXML.getChild('cat')</code>, then the first child element with the
+      tag
+
+      <code><cat></code> will be returned. If a number is passed, as in
+
+      <code>myXML.getChild(1)</code>, then the child element at that index will
+      be returned.</p>
     path: p5.XML/getChild
   addChild:
     description: >
-      <p>Appends a new child to the element. The child can be specified with
+      <p>Adds a new child element and returns a reference to it.</p>
 
-      either a String, which will be used as the new tag's name, or as a
+      <p>The parameter, <code>child</code>, is the <a
+      href="/reference/p5/p5.XML">p5.XML</a> object to add
 
-      reference to an existing <a href="/reference/p5/p5.XML">p5.XML</a> object.
+      as a child element. For example, calling
+      <code>myXML.addChild(otherXML)</code> inserts
 
-      A reference to the newly created child is returned as an <a
-      href="/reference/p5/p5.XML">p5.XML</a> object.</p>
+      <code>otherXML</code> as a child element of <code>myXML</code>.</p>
     path: p5.XML/addChild
   removeChild:
-    description: |
-      <p>Removes the element specified by name or index.</p>
+    description: >
+      <p>Removes the first matching child element.</p>
+
+      <p>The parameter, <code>name</code>, is the child element to remove. If a
+      string is
+
+      passed, as in <code>myXML.removeChild('cat')</code>, then the first child
+      element
+
+      with the tag <code><cat></code> will be removed. If a number is passed, as
+      in
+
+      <code>myXML.removeChild(1)</code>, then the child element at that index
+      will be
+
+      removed.</p>
     path: p5.XML/removeChild
   getAttributeCount:
-    description: >
-      <p>Counts the specified element's number of attributes, returned as an
-      Number.</p>
+    description: |
+      <p>Returns the number of attributes the element has.</p>
     path: p5.XML/getAttributeCount
   listAttributes:
-    description: |
-      <p>Gets all of the specified element's attributes, and returns them as an
-      array of Strings.</p>
+    description: >
+      <p>Returns an <code>Array</code> with the names of the element's
+      attributes.</p>
+
+      <p>Note: Use
+
+      <a href="/reference/p5.XML/getString">myXML.getString()</a> or
+
+      <a href="/reference/p5.XML/getNum">myXML.getNum()</a> to return an
+      attribute's value.</p>
     path: p5.XML/listAttributes
   hasAttribute:
-    description: |
-      <p>Checks whether or not an element has the specified attribute.</p>
+    description: >
+      <p>Returns <code>true</code> if the element has a given attribute and
+      <code>false</code> if not.</p>
+
+      <p>The parameter, <code>name</code>, is a string with the name of the
+      attribute being
+
+      checked.</p>
+
+      <p>Note: Use
+
+      <a href="/reference/p5.XML/getString">myXML.getString()</a> or
+
+      <a href="/reference/p5.XML/getNum">myXML.getNum()</a> to return an
+      attribute's value.</p>
     path: p5.XML/hasAttribute
   getNum:
     description: >
-      <p>Returns an attribute value of the element as an Number. If the
-      defaultValue
+      <p>Return an attribute's value as a <code>Number</code>.</p>
 
-      parameter is specified and the attribute doesn't exist, then defaultValue
+      <p>The first parameter, <code>name</code>, is a string with the name of
+      the attribute
 
-      is returned. If no defaultValue is specified and the attribute doesn't
+      being checked. For example, calling <code>myXML.getNum('id')</code>
+      returns the
 
-      exist, the value 0 is returned.</p>
+      element's <code>id</code> attribute as a number.</p>
+
+      <p>The second parameter, <code>defaultValue</code>, is optional. If a
+      number is passed,
+
+      as in <code>myXML.getNum('id', -1)</code>, it will be returned if the
+      attribute
+
+      doesn't exist or can't be converted to a number.</p>
+
+      <p>Note: Use
+
+      <a href="/reference/p5.XML/getString">myXML.getString()</a> or
+
+      <a href="/reference/p5.XML/getNum">myXML.getNum()</a> to return an
+      attribute's value.</p>
     path: p5.XML/getNum
   getString:
     description: >
-      <p>Returns an attribute value of the element as an String. If the
-      defaultValue
+      <p>Return an attribute's value as a string.</p>
 
-      parameter is specified and the attribute doesn't exist, then defaultValue
+      <p>The first parameter, <code>name</code>, is a string with the name of
+      the attribute
 
-      is returned. If no defaultValue is specified and the attribute doesn't
+      being checked. For example, calling <code>myXML.getString('color')</code>
+      returns the
 
-      exist, null is returned.</p>
+      element's <code>id</code> attribute as a string.</p>
+
+      <p>The second parameter, <code>defaultValue</code>, is optional. If a
+      string is passed,
+
+      as in <code>myXML.getString('color', 'deeppink')</code>, it will be
+      returned if the
+
+      attribute doesn't exist.</p>
+
+      <p>Note: Use
+
+      <a href="/reference/p5.XML/getString">myXML.getString()</a> or
+
+      <a href="/reference/p5.XML/getNum">myXML.getNum()</a> to return an
+      attribute's value.</p>
     path: p5.XML/getString
   setAttribute:
     description: >
-      <p>Sets the content of an element's attribute. The first parameter
-      specifies
+      <p>Sets an attribute to a given value.</p>
 
-      the attribute name, while the second specifies the new content.</p>
+      <p>The first parameter, <code>name</code>, is a string with the name of
+      the attribute
+
+      being set.</p>
+
+      <p>The second parameter, <code>value</code>, is the attribute's new value.
+      For example,
+
+      calling <code>myXML.setAttribute('id', 123)</code> sets the
+      <code>id</code> attribute to the
+
+      value 123.</p>
     path: p5.XML/setAttribute
   getContent:
-    description: |
-      <p>Returns the content of an element. If there is no such content,
-      defaultValue is returned if specified, otherwise null is returned.</p>
+    description: >
+      <p>Returns the element's content as a <code>String</code>.</p>
+
+      <p>The parameter, <code>defaultValue</code>, is optional. If a string is
+      passed, as in
+
+      <code>myXML.getContent('???')</code>, it will be returned if the element
+      has no
+
+      content.</p>
     path: p5.XML/getContent
   setContent:
-    description: |
+    description: >
       <p>Sets the element's content.</p>
+
+      <p>An element's content is the text between its tags. For example, the
+      element
+
+      <code><language>JavaScript</language></code> has the content
+      <code>JavaScript</code>.</p>
+
+      <p>The parameter, <code>content</code>, is a string with the element's new
+      content.</p>
     path: p5.XML/setContent
   serialize:
     description: >
-      <p>Serializes the element into a string. This function is useful for
-      preparing
+      <p>Returns the element as a <code>String</code>.</p>
 
-      the content to be sent over a http request or saved to file.</p>
+      <p><code>myXML.serialize()</code> is useful for sending the element over
+      the network or
+
+      saving it to a file.</p>
     path: p5.XML/serialize
 chainable: false
 ---

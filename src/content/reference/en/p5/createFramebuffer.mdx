@@ -4,114 +4,187 @@ module: Rendering
 submodule: Rendering
 file: src/core/rendering.js
 description: >
-  <p>Creates and returns a new <a
-  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>, a
+  <p>Creates and a new <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
+  object.</p>
 
-  high-performance WebGL object that you can draw to and then use as a
-  texture.</p>
+  <p><a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> objects are
+  separate drawing
 
-  <p>Options can include:</p>
+  surfaces that can be used as textures in WebGL mode. They're similar to
+
+  <a href="/reference/p5/p5.Graphics">p5.Graphics</a> objects and generally run
+  much
+
+  faster when used as textures.</p>
+
+  <p>The parameter, <code>options</code>, is optional. An object can be passed
+  to configure
+
+  the <a href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. The
+  available
+
+  properties are:</p>
 
   <ul>
 
-  <li><code>format</code>: The data format of the texture, either
+  <li><code>format</code>: data format of the texture, either
   <code>UNSIGNED_BYTE</code>, <code>FLOAT</code>, or <code>HALF_FLOAT</code>.
-  The default is <code>UNSIGNED_BYTE</code>.</li>
+  Default is <code>UNSIGNED_BYTE</code>.</li>
 
-  <li><code>channels</code>: What color channels to store, either
-  <code>RGB</code> or <code>RGBA</code>. The default is to match the channels in
-  the main canvas (with alpha unless disabled with
-  <code>setAttributes</code>.)</li>
+  <li><code>channels</code>: whether to store <code>RGB</code> or
+  <code>RGBA</code> color channels. Default is to match the main canvas which is
+  <code>RGBA</code>.</li>
 
-  <li><code>depth</code>: A boolean, whether or not to include a depth buffer.
-  Defaults to true.</li>
+  <li><code>depth</code>: whether to include a depth buffer. Default is
+  <code>true</code>.</li>
 
-  <li><code>depthFormat</code>: The data format for depth information, either
-  <code>UNSIGNED_INT</code> or <code>FLOAT</code>. The default is
-  <code>FLOAT</code> if available, or <code>UNSIGNED_INT</code> otherwise.</li>
+  <li><code>depthFormat</code>: data format of depth information, either
+  <code>UNSIGNED_INT</code> or <code>FLOAT</code>. Default is
+  <code>FLOAT</code>.</li>
 
-  <li><code>stencil</code>: A boolean, whether or not to include a stencil
-  buffer, which can be used for masking. This may only be used if also using a
-  depth buffer. Defaults to the value of <code>depth</code>, which is true if
-  not provided.</li>
+  <li><code>stencil</code>: whether to include a stencil buffer for masking.
+  <code>depth</code> must be <code>true</code> for this feature to work.
+  Defaults to the value of <code>depth</code> which is <code>true</code>.</li>
 
-  <li><code>antialias</code>: Boolean or Number, whether or not to render with
-  antialiased edges, and if so, optionally the number of samples to use.
-  Defaults to whether or not the main canvas is antialiased, using a default of
-  2 samples if so. Antialiasing is only supported when WebGL 2 is
-  available.</li>
+  <li><code>antialias</code>: whether to perform anti-aliasing. If set to
+  <code>true</code>, as in <code>{ antialias: true }</code>, 2 samples will be
+  used by default. The number of samples can also be set, as in <code>{
+  antialias: 4 }</code>. Default is to match <a
+  href="/reference/p5/setAttributes">setAttributes()</a> which is
+  <code>false</code> (<code>true</code> in Safari).</li>
 
-  <li><code>width</code>: The width of the texture. Defaults to matching the
-  main canvas.</li>
+  <li><code>width</code>: width of the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is to
+  always match the main canvas width.</li>
 
-  <li><code>height</code>: The height of the texture. Defaults to matching the
-  main canvas.</li>
+  <li><code>height</code>: height of the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is to
+  always match the main canvas height.</li>
 
-  <li><code>density</code>: The pixel density of the texture. Defaults to the
-  pixel density of the main canvas.</li>
+  <li><code>density</code>: pixel density of the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Default is to
+  always match the main canvas pixel density.</li>
 
-  <li><code>textureFiltering</code>: Either <code>LINEAR</code> (nearby pixels
-  will be interpolated when reading values from the color texture) or
-  <code>NEAREST</code> (no interpolation.) Generally, use <code>LINEAR</code>
-  when using the texture as an image, and use <code>NEAREST</code> if reading
-  the texture as data. Defaults to <code>LINEAR</code>.</li>
+  <li><code>textureFiltering</code>: how to read values from the <a
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a> object. Either
+  <code>LINEAR</code> (nearby pixels will be interpolated) or
+  <code>NEAREST</code> (no interpolation). Generally, use <code>LINEAR</code>
+  when using the texture as an image and <code>NEAREST</code> if reading the
+  texture as data. Default is <code>LINEAR</code>.</li>
 
   </ul>
 
-  <p>If <code>width</code>, <code>height</code>, or <code>density</code> are
-  specified, then the framebuffer will
+  <p>If the <code>width</code>, <code>height</code>, or <code>density</code>
+  attributes are set, they won't automatically match the main canvas and must be
+  changed manually.</p>
 
-  keep that size until manually changed. Otherwise, it will be autosized, and
-
-  it will update to match the main canvas's size and density when the main
-
-  canvas changes.</p>
-line: 316
+  <p>Note: <code>createFramebuffer()</code> can only be used in WebGL mode.</p>
+line: 495
 isConstructor: false
 itemtype: method
-alt: |-
-  A red, green, and blue box (using normalMaterial) moves and rotates around
-  the canvas, leaving a trail behind it that slowly grows and fades away.
 example:
   - |-
 
     <div>
     <code>
-    let prev, next;
+    let myBuffer;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      prev = createFramebuffer({ format: FLOAT });
-      next = createFramebuffer({ format: FLOAT });
-      noStroke();
+
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      describe('A grid of white toruses rotating against a dark gray background.');
     }
 
     function draw() {
-      // Swap prev and next so that we can use the previous
-      // frame as a texture when drawing the current frame
-      [prev, next] = [next, prev];
+      background(50);
 
-      // Draw to the framebuffer
-      next.begin();
-      background(255);
+      // Start drawing to the p5.Framebuffer object.
+      myBuffer.begin();
 
-      push();
-      tint(255, 253);
-      image(prev, -width/2, -height/2);
-      // Make sure the image plane doesn't block you from seeing any part
-      // of the scene
-      clearDepth();
-      pop();
+      // Clear the drawing surface.
+      clear();
 
-      push();
-      normalMaterial();
-      translate(25*sin(frameCount * 0.014), 25*sin(frameCount * 0.02), 0);
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
       rotateX(frameCount * 0.01);
       rotateY(frameCount * 0.01);
-      box(12);
-      pop();
-      next.end();
 
-      image(next, -width/2, -height/2);
+      // Style the torus.
+      noStroke();
+
+      // Draw the torus.
+      torus(20);
+
+      // Stop drawing to the p5.Framebuffer object.
+      myBuffer.end();
+
+      // Iterate from left to right.
+      for (let x = -50; x < 50; x += 25) {
+        // Iterate from top to bottom.
+        for (let y = -50; y < 50; y += 25) {
+          // Draw the p5.Framebuffer object to the canvas.
+          image(myBuffer, x, y, 25, 25);
+        }
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myBuffer;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create an options object.
+      let options = { width: 25, height: 25 };
+
+      // Create a p5.Framebuffer object.
+      // Use options for configuration.
+      myBuffer = createFramebuffer(options);
+
+      describe('A grid of white toruses rotating against a dark gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Start drawing to the p5.Framebuffer object.
+      myBuffer.begin();
+
+      // Clear the drawing surface.
+      clear();
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+
+      // Style the torus.
+      noStroke();
+
+      // Draw the torus.
+      torus(5, 2.5);
+
+      // Stop drawing to the p5.Framebuffer object.
+      myBuffer.end();
+
+      // Iterate from left to right.
+      for (let x = -50; x < 50; x += 25) {
+        // Iterate from top to bottom.
+        for (let y = -50; y < 50; y += 25) {
+          // Draw the p5.Framebuffer object to the canvas.
+          image(myBuffer, x, y);
+        }
+      }
     }
     </code>
     </div>
@@ -119,11 +192,11 @@ class: p5
 params:
   - name: options
     description: |
-      <p>An optional object with configuration</p>
+      <p>configuration options.</p>
     type: Object
     optional: true
 return:
-  description: ''
+  description: new framebuffer.
   type: p5.Framebuffer
 chainable: false
 ---

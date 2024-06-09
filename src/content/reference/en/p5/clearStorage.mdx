@@ -3,29 +3,72 @@ title: clearStorage
 module: Data
 submodule: LocalStorage
 file: src/data/local_storage.js
-description: |
-  <p>Clears all local storage items set with storeItem()
-   for the current domain.</p>
-line: 173
+description: >
+  <p>Removes all items in the web browser's local storage.</p>
+
+  <p>Web browsers can save small amounts of data using the built-in
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+  target="_blank">localStorage object</a>.
+
+  Data stored in <code>localStorage</code> can be retrieved at any point, even
+  after
+
+  refreshing a page or restarting the browser. Data are stored as key-value
+
+  pairs. Calling <code>clearStorage()</code> removes all data from
+  <code>localStorage</code>.</p>
+
+  <p>Note: Sensitive data such as passwords or personal information shouldn't be
+
+  stored in <code>localStorage</code>.</p>
+line: 313
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
 
-     <div class="norender">
-     <code>
-     function setup() {
-       let myNum = 10;
-       let myBool = false;
-       storeItem('myNum', myNum);
-       storeItem('myBool', myBool);
-       print(getItem('myNum')); // logs 10 to the console
-       print(getItem('myBool')); // logs false to the console
-       clearStorage();
-       print(getItem('myNum')); // logs null to the console
-       print(getItem('myBool')); // logs null to the console
-     }
-     </code></div>
+    <div>
+    <code>
+    // Double-click to clear localStorage.
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Store the player's name.
+      storeItem('name', 'Feist');
+
+      // Store the player's score.
+      storeItem('score', 1234);
+
+      describe(
+        'The text "Feist: 1234" written in black on a gray background. The text "null: null" appears when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Retrieve the name.
+      let name = getItem('name');
+
+      // Retrieve the score.
+      let score = getItem('score');
+
+      // Display the score.
+      text(`${name}: ${score}`, 50, 50);
+    }
+
+    // Clear localStorage when the user double-clicks.
+    function doubleClicked() {
+      clearStorage();
+    }
+    </code>
+    </div>
 class: p5
 chainable: false
 ---

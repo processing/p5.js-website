@@ -3,47 +3,99 @@ title: matchAll
 module: Data
 submodule: String Functions
 file: src/utilities/string_functions.js
-description: |
-  <p>This function is used to apply a regular expression to a piece of text,
-  and return a list of matching groups (elements found inside parentheses)
-  as a two-dimensional String array. If there are no matches, a null value
-  will be returned. If no groups are specified in the regular expression,
-  but the sequence matches, a two dimensional array is still returned, but
-  the second dimension is only of length one.</p>
-  <p>To use the function, first check to see if the result is null. If the
-  result is null, then the sequence did not match at all. If the sequence
-  did match, a 2D array is returned.</p>
-  <p>If there are groups (specified by sets of parentheses) in the regular
-  expression, then the contents of each will be returned in the array.
-  Assuming a loop with counter variable i, element [i][0] of a regular
-  expression match returns the entire matching string, and the match groups
-  start at element [i][1] (the first group is [i][1], the second [i][2],
-  and so on).</p>
-line: 79
+description: >
+  <p>Applies a regular expression to a string and returns an array of
+  matches.</p>
+
+  <p><code>match()</code> uses regular expressions (regex) to match patterns in
+  text. For
+
+  example, the regex <code>abc</code> can be used to search a string for the
+  exact
+
+  sequence of characters <code>abc</code>. See
+
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#tools"
+  target="_blank">MDN</a>.
+
+  for more information about regexes. <code>matchAll()</code> is different from
+
+  <a href="/reference/p5/match">match()</a> because it returns every match, not
+  just
+
+  the first.</p>
+
+  <p>The first parameter, <code>str</code>, is the string to search.</p>
+
+  <p>The second parameter, <code>regex</code>, is a string with the regular
+  expression to
+
+  apply. For example, calling
+
+  <code>matchAll('p5*js is easier than abc123', '[a-z][0-9]')</code> would
+  return the
+
+  2D array <code>[['p5'], ['c1']]</code>.</p>
+
+  <p>Note: If no matches are found, an empty array <code>[]</code> is
+  returned.</p>
+line: 119
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class="norender">
+    <div>
     <code>
-    let string = 'Hello p5js*! Hello world!';
-    let regexp = 'Hello';
-    matchAll(string, regexp);
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let string = 'p5*js is easier than abc123';
+
+      // Match the character sequences that are
+      // lowercase letters followed by digits.
+      let matches = matchAll(string, '[a-z][0-9]');
+
+      // Print the matches array to the console:
+      // [['p5'], ['c1']]
+      print(matches);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Iterate over the matches array.
+      for (let i = 0; i < matches.length; i += 1) {
+
+        // Calculate the y-coordainate.
+        let y = (i + 1) * 33;
+
+        // Display the match.
+        text(matches[i], 50, y);
+      }
+
+      describe(
+        'The text "p5" and "c1" written on separate lines. The text is black on a gray background.'
+      );
+    }
     </code>
     </div>
 class: p5
 params:
   - name: str
     description: |
-      <p>the String to be searched</p>
+      <p>string to search.</p>
     type: String
   - name: regexp
     description: |
-      <p>the regexp to be used for matching</p>
+      <p>regular expression to match.</p>
     type: String
 return:
-  description: 2d Array of Strings found
+  description: matches found.
   type: 'String[]'
 chainable: false
 ---

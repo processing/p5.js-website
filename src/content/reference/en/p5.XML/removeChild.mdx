@@ -3,67 +3,121 @@ title: removeChild
 module: IO
 submodule: Input
 file: src/io/p5.XML.js
-description: |
-  <p>Removes the element specified by name or index.</p>
-line: 420
+description: >
+  <p>Removes the first matching child element.</p>
+
+  <p>The parameter, <code>name</code>, is the child element to remove. If a
+  string is
+
+  passed, as in <code>myXML.removeChild('cat')</code>, then the first child
+  element
+
+  with the tag <code><cat></code> will be removed. If a number is passed, as in
+
+  <code>myXML.removeChild(1)</code>, then the child element at that index will
+  be
+
+  removed.</p>
+line: 603
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    // The following short XML file called "mammals.xml" is parsed
-    // in the code below.
-    //
-    // <?xml version="1.0"?>
-    // &lt;mammals&gt;
-    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-    // &lt;/mammals&gt;
+    <div>
+    <code>
+    let myXML;
 
-    let xml;
-
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      xml.removeChild('animal');
-      let children = xml.getChildren();
-      for (let i = 0; i < children.length; i++) {
-        print(children[i].getContent());
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Remove the first mammal element.
+      myXML.removeChild('mammal');
+
+      // Get an array of child elements.
+      let children = myXML.getChildren();
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Iterate over the array.
+      for (let i = 0; i < children.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 25;
+
+        // Get the child element's content.
+        let content = children[i].getContent();
+
+        // Display the child element's content.
+        text(content, 10, y);
       }
+
+      describe(
+        'The words "Leopard", "Zebra", and "Turtle" written on separate lines. The text is black on a gray background.'
+      );
     }
+    </code>
+    </div>
 
-    // Sketch prints:
-    // "Leopard"
-    // "Zebra"
-    </code></div>
-    <div class='norender'><code>
-    let xml;
+    <div>
+    <code>
+    let myXML;
 
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      xml.removeChild(1);
-      let children = xml.getChildren();
-      for (let i = 0; i < children.length; i++) {
-        print(children[i].getContent());
-      }
-    }
+      createCanvas(100, 100);
 
-    // Sketch prints:
-    // "Goat"
-    // "Zebra"
-    </code></div>
+      background(200);
+
+      // Remove the element at index 2.
+      myXML.removeChild(2);
+
+      // Get an array of child elements.
+      let children = myXML.getChildren();
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Iterate over the array.
+      for (let i = 0; i < children.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 25;
+
+        // Get the child element's content.
+        let content = children[i].getContent();
+
+        // Display the child element's content.
+        text(content, 10, y);
+      }
+
+      describe(
+        'The words "Goat", "Leopard", and "Turtle" written on separate lines. The text is black on a gray background.'
+      );
+    }
+    </code>
+    </div>
 class: p5.XML
 params:
   - name: name
     description: |
-      <p>element name or index</p>
+      <p>name or index of the child element to remove.</p>
     type: String|Integer
 chainable: false
 ---

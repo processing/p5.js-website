@@ -1,0 +1,90 @@
+---
+title: uvs
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>An array that lists the texture coordinates for each of the geometry's
+
+  vertices.</p>
+
+  <p>In order for <a href="/reference/p5/texture">texture()</a> to work, the
+  geometry
+
+  needs a way to map the points on its surface to the pixels in a
+
+  rectangular image that's used as a texture. The geometry's vertex at
+
+  coordinates <code>(x, y, z)</code> maps to the texture image's pixel at
+  coordinates
+
+  <code>(u, v)</code>.</p>
+
+  <p>The <code>myGeometry.uvs</code> array stores the <code>(u, v)</code>
+  coordinates for each
+
+  vertex in the order it was added to the geometry. For example, the
+
+  first vertex, <code>myGeometry.vertices[0]</code>, has its <code>(u, v)</code>
+  coordinates
+
+  stored at <code>myGeometry.uvs[0]</code> and
+  <code>myGeometry.uvs[1]</code>.</p>
+line: 591
+isConstructor: false
+itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image and create a p5.Image object.
+    function preload() {
+      img = loadImage('/assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Create p5.Geometry objects.
+      let geom1 = buildGeometry(createShape);
+      let geom2 = buildGeometry(createShape);
+
+      // Left (original).
+      push();
+      translate(-25, 0, 0);
+      texture(img);
+      noStroke();
+      model(geom1);
+      pop();
+
+      // Set geom2's texture coordinates.
+      geom2.uvs = [0.25, 0.25, 0.75, 0.25, 0.25, 0.75, 0.75, 0.75];
+
+      // Right (zoomed in).
+      push();
+      translate(25, 0, 0);
+      texture(img);
+      noStroke();
+      model(geom2);
+      pop();
+
+      describe(
+        'Two photos of a ceiling on a gray background. The photo on the right zooms in to the center of the photo.'
+      );
+    }
+
+    function createShape() {
+      plane(40);
+    }
+    </code>
+    </div>
+class: p5.Geometry
+---
+
+
+# uvs

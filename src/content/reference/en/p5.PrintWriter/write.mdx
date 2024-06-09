@@ -3,61 +3,54 @@ title: write
 module: IO
 submodule: Output
 file: src/io/files.js
-description: |
-  <p>Writes data to the PrintWriter stream</p>
-line: 1196
+description: >
+  <p>Writes data to the print stream without adding new lines.</p>
+
+  <p>The parameter, <code>data</code>, is the data to write. <code>data</code>
+  can be a number or
+
+  string, as in <code>myWriter.write('hi')</code>, or an array of numbers and
+  strings,
+
+  as in <code>myWriter.write([1, 2, 3])</code>. A comma will be inserted between
+  array
+
+  array elements when they're added to the print stream.</p>
+line: 1622
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class="norender notest">
-    <code>
-    // creates a file called 'newFile.txt'
-    let writer = createWriter('newFile.txt');
-    // write 'Hello world!'' to the file
-    writer.write(['Hello world!']);
-    // close the PrintWriter and save the file
-    writer.close();
-    </code>
-    </div>
-    <div class='norender notest'>
-    <code>
-    // creates a file called 'newFile2.txt'
-    let writer = createWriter('newFile2.txt');
-    // write 'apples,bananas,123' to the file
-    writer.write(['apples', 'bananas', 123]);
-    // close the PrintWriter and save the file
-    writer.close();
-    </code>
-    </div>
-    <div class='norender notest'>
-    <code>
-    // creates a file called 'newFile3.txt'
-    let writer = createWriter('newFile3.txt');
-    // write 'My name is: Teddy' to the file
-    writer.write('My name is:');
-    writer.write(' Teddy');
-    // close the PrintWriter and save the file
-    writer.close();
-    </code>
-    </div>
     <div>
     <code>
     function setup() {
       createCanvas(100, 100);
-      button = createButton('SAVE FILE');
-      button.position(21, 40);
-      button.mousePressed(createFile);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
     }
 
-    function createFile() {
-      // creates a file called 'newFile.txt'
-      let writer = createWriter('newFile.txt');
-      // write 'Hello world!'' to the file
-      writer.write(['Hello world!']);
-      // close the PrintWriter and save the file
-      writer.close();
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      // Create a p5.PrintWriter object.
+      let myWriter = createWriter('numbers.txt');
+
+      // Add some data to the print stream.
+      myWriter.write('1,2,3,');
+      myWriter.write(['4', '5', '6']);
+
+      // Save the file and close the print stream.
+      myWriter.close();
     }
     </code>
     </div>
@@ -65,8 +58,9 @@ class: p5.PrintWriter
 params:
   - name: data
     description: |
-      <p>all data to be written by the PrintWriter</p>
-    type: Array
+      <p>data to be written as a string, number,
+                                        or array of strings and numbers.</p>
+    type: String|Number|Array
 chainable: false
 ---
 

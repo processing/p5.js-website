@@ -4,37 +4,46 @@ module: Structure
 submodule: Structure
 file: src/core/main.js
 description: >
-  <p>Turn off some features of the friendly error system (FES), which can give
+  <p>Turns off the parts of the Friendly Error System (FES) that impact
+  performance.</p>
 
-  a significant boost to performance when needed.</p>
+  <p>The <a
+  href="https://github.com/processing/p5.js/blob/main/contributor_docs/friendly_error_system.md"
+  target="_blank">FES</a>
 
-  <p>Note that this will disable the parts of the FES that cause performance
+  can cause sketches to draw slowly because it does extra work behind the
 
-  slowdown (like argument checking). Friendly errors that have no performance
+  scenes. For example, the FES checks the arguments passed to functions,
 
-  cost (like giving a descriptive error if a file load fails, or warning you
+  which takes time to process. Disabling the FES can significantly improve
 
-  if you try to override p5.js functions in the global space),
-
-  will remain in place.</p>
-
-  <p>See <a
-  href="https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance#disable-the-friendly-error-system-fes">
-
-  disabling the friendly error system</a>.</p>
-line: 751
+  performance by turning off these checks.</p>
+line: 874
 isConstructor: false
 itemtype: property
 example:
   - |-
 
-    <div class="norender notest"><code>
+    <div>
+    <code>
+    // Disable the FES.
     p5.disableFriendlyErrors = true;
 
     function setup() {
-      createCanvas(100, 50);
+      createCanvas(100, 100);
+
+      background(200);
+
+      // The circle() function requires three arguments. The
+      // next line would normally display a friendly error that
+      // points this out. Instead, nothing happens and it fails
+      // silently.
+      circle(50, 50);
+
+      describe('A gray square.');
     }
-    </code></div>
+    </code>
+    </div>
 class: p5
 type: Boolean
 ---

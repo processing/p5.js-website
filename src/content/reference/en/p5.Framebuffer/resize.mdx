@@ -3,55 +3,68 @@ title: resize
 module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
-description: |
-  <p>Resizes the framebuffer to the given width and height.</p>
-line: 184
+description: >
+  <p>Resizes the framebuffer to a given width and height.</p>
+
+  <p>The parameters, <code>width</code> and <code>height</code>, set the
+  dimensions of the
+
+  framebuffer. For example, calling <code>myBuffer.resize(300, 500)</code>
+  resizes
+
+  the framebuffer to 300×500 pixels, then sets <code>myBuffer.width</code> to
+  300
+
+  and <code>myBuffer.height</code> 500.</p>
+line: 238
 isConstructor: false
 itemtype: method
-alt: |-
-  A red, green, and blue sphere is drawn in the middle of a white rectangle
-  which starts in the top left of the canvas and whose bottom right is at
-  the user's mouse
 example:
   - |-
 
     <div>
     <code>
-    let framebuffer;
+    let myBuffer;
+
     function setup() {
       createCanvas(100, 100, WEBGL);
-      framebuffer = createFramebuffer();
-      noStroke();
-    }
 
-    function mouseMoved() {
-      framebuffer.resize(
-        max(20, mouseX),
-        max(20, mouseY)
-      );
+      // Create a p5.Framebuffer object.
+      myBuffer = createFramebuffer();
+
+      describe('A multicolor sphere on a white surface. The image grows larger or smaller when the user moves the mouse, revealing a gray background.');
     }
 
     function draw() {
-      // Draw to the framebuffer
-      framebuffer.begin();
+      background(200);
+
+      // Draw to the p5.Framebuffer object.
+      myBuffer.begin();
       background(255);
       normalMaterial();
       sphere(20);
-      framebuffer.end();
+      myBuffer.end();
 
-      background(100);
-      // Draw the framebuffer to the main canvas
-      image(framebuffer, -width/2, -height/2);
+      // Display the p5.Framebuffer object.
+      image(myBuffer, -50, -50);
+    }
+
+    // Resize the p5.Framebuffer object when the
+    // user moves the mouse.
+    function mouseMoved() {
+      myBuffer.resize(mouseX, mouseY);
     }
     </code>
     </div>
 class: p5.Framebuffer
 params:
   - name: width
-    description: ''
+    description: |
+      <p>width of the framebuffer.</p>
     type: Number
   - name: height
-    description: ''
+    description: |
+      <p>height of the framebuffer.</p>
     type: Number
 chainable: false
 ---

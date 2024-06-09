@@ -4,60 +4,29 @@ module: Structure
 submodule: Structure
 file: src/core/structure.js
 description: >
-  <p>Stops p5.js from continuously executing the code within <a
-  href="/reference/p5/draw">draw()</a>.
+  <p>Stops the code in <a href="/reference/p5/draw">draw()</a> from running
+  repeatedly.</p>
 
-  If <a href="/reference/p5/loop">loop()</a> is called, the code in <a
-  href="/reference/p5/draw">draw()</a>
+  <p>By default, <a href="/reference/p5/draw">draw()</a> tries to run 60 times
+  per
 
-  begins to run continuously again. If using <a
-  href="/reference/p5/noLoop">noLoop()</a>
+  second. Calling <code>noLoop()</code> stops <a
+  href="/reference/p5/draw">draw()</a> from
 
-  in <a href="/reference/p5/setup">setup()</a>, it should be the last line
-  inside the block.</p>
+  repeating. The draw loop can be restarted by calling
 
-  <p>When <a href="/reference/p5/noLoop">noLoop()</a> is used, it's not possible
-  to manipulate
+  <a href="/reference/p5/loop">loop()</a>. <a
+  href="/reference/p5/draw">draw()</a> can be run
 
-  or access the screen inside event handling functions such as
+  once by calling <a href="/reference/p5/redraw">redraw()</a>.</p>
 
-  <a href="/reference/p5/mousePressed">mousePressed()</a> or
+  <p>The <a href="/reference/p5/isLooping">isLooping()</a> function can be used
+  to check
 
-  <a href="/reference/p5/keyPressed">keyPressed()</a>. Instead, use those
-  functions to
-
-  call <a href="/reference/p5/redraw">redraw()</a> or <a
-  href="/reference/p5/loop">loop()</a>,
-
-  which will run <a href="/reference/p5/draw">draw()</a>, which can update the
-  screen
-
-  properly. This means that when <a href="/reference/p5/noLoop">noLoop()</a> has
-  been
-
-  called, no drawing can happen, and functions like <a
-  href="/reference/p5/saveFrames">saveFrames()</a>
-
-  or <a href="/reference/p5/loadPixels">loadPixels()</a> may not be used.</p>
-
-  <p>Note that if the sketch is resized, <a
-  href="/reference/p5/redraw">redraw()</a> will
-
-  be called to update the sketch, even after <a
-  href="/reference/p5/noLoop">noLoop()</a>
-
-  has been specified. Otherwise, the sketch would enter an odd state until
-
-  <a href="/reference/p5/loop">loop()</a> was called.</p>
-
-  <p>Use <a href="/reference/p5/isLooping">isLooping()</a> to check the current
-  state of <a href="/reference/p5/loop">loop()</a>.</p>
+  whether a sketch is looping, as in <code>isLooping() === true</code>.</p>
 line: 9
 isConstructor: false
 itemtype: method
-alt: |-
-  113 pixel long line extending from top-left to bottom right of canvas.
-  horizontal line moves slowly from left. Loops but stops on mouse press.
 example:
   - |-
 
@@ -65,38 +34,97 @@ example:
     <code>
     function setup() {
       createCanvas(100, 100);
-      background(200);
+
+      // Turn off the draw loop.
       noLoop();
+
+      describe('A white half-circle on the left edge of a gray square.');
     }
 
     function draw() {
-      line(10, 10, 90, 90);
+      background(200);
+
+      // Calculate the circle's x-coordinate.
+      let x = frameCount;
+
+      // Draw the circle.
+      // Normally, the circle would move from left to right.
+      circle(x, 50, 20);
     }
     </code>
     </div>
 
     <div>
     <code>
-    let x = 0;
+    // Double-click to stop the draw loop.
+
     function setup() {
       createCanvas(100, 100);
+
+      // Slow the frame rate.
+      frameRate(5);
+
+      describe('A white circle moves randomly on a gray background. It stops moving when the user double-clicks.');
     }
 
     function draw() {
-      background(204);
-      x = x + 0.1;
-      if (x > width) {
-        x = 0;
-      }
-      line(x, 0, x, height);
+      background(200);
+
+      // Calculate the circle's coordinates.
+      let x = random(0, 100);
+      let y = random(0, 100);
+
+      // Draw the circle.
+      // Normally, the circle would move from left to right.
+      circle(x, y, 20);
     }
 
-    function mousePressed() {
+    // Stop the draw loop when the user double-clicks.
+    function doubleClicked() {
       noLoop();
     }
+    </code>
+    </div>
 
-    function mouseReleased() {
-      loop();
+    <div>
+    <code>
+    let startButton;
+    let stopButton;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create the button elements and place them
+      // beneath the canvas.
+      startButton = createButton('▶');
+      startButton.position(0, 100);
+      startButton.size(50, 20);
+      stopButton = createButton('◾');
+      stopButton.position(50, 100);
+      stopButton.size(50, 20);
+
+      // Set functions to call when the buttons are pressed.
+      startButton.mousePressed(loop);
+      stopButton.mousePressed(noLoop);
+
+      // Slow the frame rate.
+      frameRate(5);
+
+      describe(
+        'A white circle moves randomly on a gray background. Play and stop buttons are shown beneath the canvas. The circle stops or starts moving when the user presses a button.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the circle's coordinates.
+      let x = random(0, 100);
+      let y = random(0, 100);
+
+      // Draw the circle.
+      // Normally, the circle would move from left to right.
+      circle(x, y, 20);
     }
     </code>
     </div>

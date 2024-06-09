@@ -3,8 +3,44 @@ title: createWriter
 module: IO
 submodule: Output
 file: src/io/files.js
-description: ''
-line: 1141
+description: >
+  <p>Creates a new <a href="/reference/p5/p5.PrintWriter">p5.PrintWriter</a>
+  object.</p>
+
+  <p><a href="/reference/p5/p5.PrintWriter">p5.PrintWriter</a> objects provide a
+  way to
+
+  save a sequence of text data, called the <em>print stream</em>, to the user's
+
+  computer. They're low-level objects that enable precise control of text
+
+  output. Functions such as
+
+  <a href="/reference/p5/saveStrings">saveStrings()</a> and
+
+  <a href="/reference/p5/saveJSON">saveJSON()</a> are easier to use for simple
+  file
+
+  saving.</p>
+
+  <p>The first parameter, <code>filename</code>, is the name of the file to be
+  written. If
+
+  a string is passed, as in <code>createWriter('words.txt')</code>, a new
+
+  <a href="/reference/p5/p5.PrintWriter">p5.PrintWriter</a> object will be
+  created that
+
+  writes to a file named <code>words.txt</code>.</p>
+
+  <p>The second parameter, <code>extension</code>, is optional. If a string is
+  passed, as
+
+  in <code>createWriter('words', 'csv')</code>, the first parameter will be
+  interpreted
+
+  as the file name and the second parameter as the extension.</p>
+line: 1444
 isConstructor: false
 itemtype: method
 example:
@@ -14,18 +50,74 @@ example:
     <code>
     function setup() {
       createCanvas(100, 100);
+
       background(200);
-      text('click here to save', 10, 10, 70, 80);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
     }
 
-    function mousePressed() {
-      if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-        const writer = createWriter('squares.txt');
-        for (let i = 0; i < 10; i++) {
-          writer.print(i * i);
-        }
-        writer.close();
-        writer.clear();
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create a p5.PrintWriter object.
+        let myWriter = createWriter('xo.txt');
+
+        // Add some lines to the print stream.
+        myWriter.print('XOO');
+        myWriter.print('OXO');
+        myWriter.print('OOX');
+
+        // Save the file and close the print stream.
+        myWriter.close();
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+        // Create a p5.PrintWriter object.
+        // Use the file format .csv.
+        let myWriter = createWriter('mauna_loa_co2', 'csv');
+
+        // Add some lines to the print stream.
+        myWriter.print('date,ppm_co2');
+        myWriter.print('1960-01-01,316.43');
+        myWriter.print('1970-01-01,325.06');
+        myWriter.print('1980-01-01,337.9');
+        myWriter.print('1990-01-01,353.86');
+        myWriter.print('2000-01-01,369.45');
+        myWriter.print('2020-01-01,413.61');
+
+        // Save the file and close the print stream.
+        myWriter.close();
       }
     }
     </code>
@@ -34,14 +126,15 @@ class: p5
 params:
   - name: name
     description: |
-      <p>name of the file to be created</p>
+      <p>name of the file to create.</p>
     type: String
   - name: extension
-    description: ''
+    description: |
+      <p>format to use for the file.</p>
     type: String
     optional: true
 return:
-  description: ''
+  description: stream for writing data.
   type: p5.PrintWriter
 chainable: false
 ---

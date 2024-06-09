@@ -1,0 +1,121 @@
+---
+title: faces
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>An array that lists which of the geometry's vertices form each of its
+
+  faces.</p>
+
+  <p>All 3D shapes are made by connecting sets of points called
+  <em>vertices</em>. A
+
+  geometry's surface is formed by connecting vertices to form triangles
+
+  that are stitched together. Each triangular patch on the geometry's
+
+  surface is called a <em>face</em>.</p>
+
+  <p>The geometry's vertices are stored as
+
+  <a href="/reference/p5/p5.Vector">p5.Vector</a> objects in the
+
+  <a href="/reference/p5.Geometry/vertices">myGeometry.vertices</a> array. The
+
+  geometry's first vertex is the <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+  object at <code>myGeometry.vertices[0]</code>, its second vertex is
+
+  <code>myGeometry.vertices[1]</code>, its third vertex is
+  <code>myGeometry.vertices[2]</code>,
+
+  and so on.</p>
+
+  <p>For example, a geometry made from a rectangle has two faces because a
+
+  rectangle is made by joining two triangles. <code>myGeometry.faces</code> for
+  a
+
+  rectangle would be the two-dimensional array <code>[[0, 1, 2], [2, 1,
+  3]]</code>.
+
+  The first face, <code>myGeometry.faces[0]</code>, is the array <code>[0, 1,
+  2]</code> because
+
+  it's formed by connecting <code>myGeometry.vertices[0]</code>,
+
+  <code>myGeometry.vertices[1]</code>,and <code>myGeometry.vertices[2]</code>.
+  The second face,
+
+  <code>myGeometry.faces[1]</code>, is the array <code>[2, 1, 3]</code> because
+  it's formed by
+
+  connecting <code>myGeometry.vertices[2]</code>,
+  <code>myGeometry.vertices[1]</code>,and
+
+  <code>myGeometry.vertices[3]</code>.</p>
+line: 505
+isConstructor: false
+itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      beginGeometry();
+      sphere();
+      myGeometry = endGeometry();
+
+      describe("A sphere drawn on a gray background. The sphere's surface is a grayscale patchwork of triangles.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the p5.Geometry object.
+      noStroke();
+
+      // Set a random seed.
+      randomSeed(1234);
+
+      // Iterate over the faces array.
+      for (let face of myGeometry.faces) {
+
+        // Style the face.
+        let g = random(0, 255);
+        fill(g);
+
+        // Draw the face.
+        beginShape();
+        // Iterate over the vertices that form the face.
+        for (let f of face) {
+          // Get the vertex's p5.Vector object.
+          let v = myGeometry.vertices[f];
+          vertex(v.x, v.y, v.z);
+        }
+        endShape();
+
+      }
+    }
+    </code>
+    </div>
+class: p5.Geometry
+---
+
+
+# faces
