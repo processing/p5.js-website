@@ -3,35 +3,150 @@ title: boolean
 module: Data
 submodule: Conversion
 file: src/utilities/conversion.js
-description: |
-  <p>Converts a number or string to its boolean representation.
-  For a number, any non-zero value (positive or negative) evaluates to true,
-  while zero evaluates to false. For a string, the value "true" evaluates to
-  true, while any other value evaluates to false. When an array of number or
-  string values is passed in, then a array of booleans of the same length is
-  returned.</p>
-line: 112
+description: >
+  <p>Converts a <code>String</code> or <code>Number</code> to a
+  <code>Boolean</code>.</p>
+
+  <p><code>boolean()</code> converts values to <code>true</code> or
+  <code>false</code>.</p>
+
+  <p>The parameter, <code>n</code>, is the value to convert. If <code>n</code>
+  is a string, then
+
+  <code>boolean('true')</code> will return <code>true</code> and every other
+  string value will
+
+  return <code>false</code>. If <code>n</code> is a number, then
+  <code>boolean(0)</code> will return <code>false</code>
+
+  and every other numeric value will return <code>true</code>. If an array is
+  passed, as
+
+  <code>in boolean([0, 1, 'true', 'blue'])</code>, then an array of Boolean
+  values will
+
+  be returned.</p>
+line: 341
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    print(boolean(0)); // false
-    print(boolean(1)); // true
-    print(boolean('true')); // true
-    print(boolean('abcd')); // false
-    print(boolean([0, 12, 'true'])); // [false, true, true]
-    </code></div>
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a number variable.
+      let original = 0;
+
+      // Convert the number to a Boolean value.
+      let converted = boolean(original);
+
+      // Style the circle based on the converted value.
+      if (converted === true) {
+        fill('blue');
+      } else {
+        fill('red');
+      }
+
+      // Draw the circle.
+      circle(50, 50, 40);
+
+      describe('A red circle on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let original = 'true';
+
+      // Convert the string to a Boolean value.
+      let converted = boolean(original);
+
+      // Style the circle based on the converted value.
+      if (converted === true) {
+        fill('blue');
+      } else {
+        fill('red');
+      }
+
+      // Draw the circle.
+      circle(50, 50, 40);
+
+      describe('A blue circle on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of values.
+      let original = [0, 'hi', 123, 'true'];
+
+      // Convert the array to a Boolean values.
+      let converted = boolean(original);
+
+      // Iterate over the array of converted Boolean values.
+      for (let i = 0; i < converted.length; i += 1) {
+
+        // Style the circle based on the converted value.
+        if (converted[i] === true) {
+          fill('blue');
+        } else {
+          fill('red');
+        }
+
+        // Calculate the x-coordinate.
+        let x = (i + 1) * 20;
+
+        // Draw the circle.
+        circle(x, 50, 15);
+      }
+
+      describe(
+        'A row of circles on a gray background. The two circles on the left are red and the two on the right are blue.'
+      );
+    }
+    </code>
+    </div>
 class: p5
-params:
-  - name: 'n'
-    description: |
-      <p>value to parse</p>
-    type: String|Boolean|Number|Array
 return:
-  description: boolean representation of value
+  description: converted Boolean value.
   type: Boolean
+overloads:
+  - line: 341
+    params:
+      - name: 'n'
+        description: |
+          <p>value to convert.</p>
+        type: String|Boolean|Number
+    return:
+      description: converted Boolean value.
+      type: Boolean
+  - line: 451
+    params:
+      - name: ns
+        description: |
+          <p>values to convert.</p>
+        type: Array
+    return:
+      description: converted Boolean values.
+      type: 'Boolean[]'
 chainable: false
 ---
 
