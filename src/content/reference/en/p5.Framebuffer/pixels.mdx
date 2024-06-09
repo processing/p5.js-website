@@ -4,32 +4,65 @@ module: Rendering
 submodule: ''
 file: src/webgl/p5.Framebuffer.js
 description: >
-  <p>A <a
-  href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
+  <p>An array containing the color of each pixel in the framebuffer.</p>
 
-  /Global_Objects/Uint8ClampedArray" target="_blank">Uint8ClampedArray</a>
+  <p><a href="/reference/p5.Framebuffer/loadPixels">myBuffer.loadPixels()</a>
+  must be
 
-  containing the values for all the pixels in the Framebuffer.</p>
+  called before accessing the <code>myBuffer.pixels</code> array.
 
-  <p>Like the <a href="/reference/p5/pixels">main canvas pixels property</a>,
-  call
+  <a href="/reference/p5.Framebuffer/updatePixels">myBuffer.updatePixels()</a>
 
-  <a href="/reference/p5.Framebuffer/loadPixels">loadPixels()</a> before reading
+  must be called after any changes are made.</p>
 
-  it, and call <a
-  href="/reference/p5/p5.Framebuffer.updatePixels">updatePixels()</a>
+  <p>Note: Updating pixels via this property is slower than drawing to the
 
-  afterwards to update its data.</p>
+  framebuffer directly. Consider using a
 
-  <p>Note that updating pixels via this property will be slower than
+  <a href="/reference/p5/p5.Shader">p5.Shader</a> object instead of looping over
 
-  <a href="/reference/p5.Framebuffer/begin">drawing to the framebuffer
-  directly.</a>
-
-  Consider using a shader instead of looping over pixels.</p>
-line: 93
+  <code>myBuffer.pixels</code>.</p>
+line: 111
 isConstructor: false
 itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Create a p5.Framebuffer object.
+      let myBuffer = createFramebuffer();
+
+      // Load the pixels array.
+      myBuffer.loadPixels();
+
+      // Get the number of pixels in the
+      // top half of the framebuffer.
+      let numPixels = myBuffer.pixels.length / 2;
+
+      // Set the framebuffer's top half to pink.
+      for (let i = 0; i < numPixels; i += 4) {
+        myBuffer.pixels[i] = 255;
+        myBuffer.pixels[i + 1] = 102;
+        myBuffer.pixels[i + 2] = 204;
+        myBuffer.pixels[i + 3] = 255;
+      }
+
+      // Update the pixels array.
+      myBuffer.updatePixels();
+
+      // Draw the p5.Framebuffer object to the canvas.
+      image(myBuffer, -50, -50);
+
+      describe('A pink rectangle above a gray rectangle.');
+    }
+    </code>
+    </div>
 class: p5.Framebuffer
 type: 'Number[]'
 ---

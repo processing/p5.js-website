@@ -3,11 +3,28 @@ title: trim
 module: Data
 submodule: String Functions
 file: src/utilities/string_functions.js
-description: |
-  <p>Removes whitespace characters from the beginning and end of a String. In
-  addition to standard whitespace characters such as space, carriage return,
-  and tab, this function also removes the Unicode "nbsp" character.</p>
-line: 511
+description: >
+  <p>Removes whitespace from the start and end of a <code>String</code> without
+  changing the middle.</p>
+
+  <p><code>trim()</code> trims
+
+  <a href="https://developer.mozilla.org/en-US/docs/Glossary/whitespace"
+  target="_blank">whitespace characters</a>
+
+  such as spaces, carriage returns, tabs, Unicode "nbsp" character.</p>
+
+  <p>The parameter, <code>str</code>, is the string to trim. If a single string
+  is passed,
+
+  as in <code>trim('   pad   ')</code>, a single string is returned. If an array
+  of
+
+  strings is passed, as in <code>trim(['    pad   ', '\n space \n'])</code>, an
+  array of
+
+  strings is returned.</p>
+line: 909
 isConstructor: false
 itemtype: method
 example:
@@ -15,33 +32,76 @@ example:
 
     <div>
     <code>
-    let string = trim('  No new lines\n   ');
-    text(string + ' here', 2, 50);
-    describe('“No new lines here” displayed center canvas');
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a string variable.
+      let string = '   p5*js   ';
+
+      // Trim the whitespace.
+      let trimmed = trim(string);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Display the text.
+      text(`Hello, ${trimmed}!`, 50, 50);
+
+      describe('The text "Hello, p5*js!" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of strings.
+      let strings = ['   wide  ', '\n  open  ', '\n spaces  '];
+
+      // Trim the whitespace.
+      let trimmed = trim(strings);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(10);
+
+      // Display the text.
+      text(`${trimmed[0]} ${trimmed[1]} ${trimmed[2]}`, 50, 50);
+
+      describe('The text "wide open spaces" written in black on a gray background.');
+    }
     </code>
     </div>
 class: p5
 return:
-  description: a trimmed String
+  description: trimmed string.
   type: String
 overloads:
-  - line: 511
+  - line: 909
     params:
       - name: str
         description: |
-          <p>a String to be trimmed</p>
+          <p>string to trim.</p>
         type: String
     return:
-      description: a trimmed String
+      description: trimmed string.
       type: String
-  - line: 529
+  - line: 977
     params:
       - name: strs
         description: |
-          <p>an Array of Strings to be trimmed</p>
-        type: Array
+          <p>strings to trim.</p>
+        type: 'String[]'
     return:
-      description: an Array of trimmed Strings
+      description: trimmed strings.
       type: 'String[]'
 chainable: false
 ---

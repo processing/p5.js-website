@@ -4,41 +4,67 @@ module: Rendering
 submodule: Rendering
 file: src/core/rendering.js
 description: >
-  <p>The p5.js API provides a lot of functionality for creating graphics, but
-  there is
+  <p>A system variable that provides direct access to the sketch's
 
-  some native HTML5 Canvas functionality that is not exposed by p5. You can
-  still call
+  <code><canvas></code> element.</p>
 
-  it directly using the variable <code>drawingContext</code>, as in the example
-  shown. This is
+  <p>The <code><canvas></code> element provides many specialized features that
+  aren't
 
-  the equivalent of calling <code>canvas.getContext('2d');</code> or
-  <code>canvas.getContext('webgl');</code>.
+  included in the p5.js library. The <code>drawingContext</code> system variable
 
-  See this
+  provides access to these features by exposing the sketch's
 
   <a
-  href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">
+  href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">CanvasRenderingContext2D</a>
 
-  reference for the native canvas API</a> for possible drawing functions you can
-  call.</p>
-line: 545
+  object.</p>
+line: 1196
 isConstructor: false
 itemtype: property
-alt: white ellipse with shadow blur effect around edges
 example:
   - |-
 
     <div>
     <code>
     function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the circle using shadows.
       drawingContext.shadowOffsetX = 5;
       drawingContext.shadowOffsetY = -5;
       drawingContext.shadowBlur = 10;
       drawingContext.shadowColor = 'black';
-      background(200);
-      ellipse(width / 2, height / 2, 50, 50);
+
+      // Draw the circle.
+      circle(50, 50, 40);
+
+      describe("A white circle on a gray background. The circle's edges are shadowy.");
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background('skyblue');
+
+      // Style the circle using a color gradient.
+      let myGradient = drawingContext.createRadialGradient(50, 50, 3, 50, 50, 40);
+      myGradient.addColorStop(0, 'yellow');
+      myGradient.addColorStop(0.6, 'orangered');
+      myGradient.addColorStop(1, 'yellow');
+      drawingContext.fillStyle = myGradient;
+      drawingContext.strokeStyle = 'rgba(0, 0, 0, 0)';
+
+      // Draw the circle.
+      circle(50, 50, 40);
+
+      describe('A fiery sun drawn on a light blue background.');
     }
     </code>
     </div>

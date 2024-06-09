@@ -4,41 +4,59 @@ module: Data
 submodule: String Functions
 file: src/utilities/string_functions.js
 description: >
-  <p>Utility function for formatting numbers into strings. Similar to <a
-  href="/reference/p5/nf">nf()</a> but
+  <p>Converts a positive <code>Number</code> into a <code>String</code> with an
+  extra space in front.</p>
 
-  puts an additional "_" (space) in front of positive numbers just in case to
-  align it with negative
+  <p><code>nfs()</code> converts positive numbers such as 123.45 into strings
+  formatted
 
-  numbers which includes "-" (minus) sign.</p>
+  with an extra space in front, as in ' 123.45'. Doing so can be helpful for
 
-  <p>The main usecase of nfs() can be seen when one wants to align the digits
-  (place values) of a non-negative
+  aligning positive and negative numbers.</p>
 
-  number with some negative number (See the example to get a clear picture).
+  <p>The first parameter, <code>num</code>, is the number to convert to a
+  string. For
 
-  There are two versions: one for formatting float, and one for formatting
-  int.</p>
+  example, calling <code>nfs(123.45)</code> returns the string <code>'
+  123.45'</code>.</p>
 
-  <p>The values for the digits, left, and right parameters should always be
-  positive integers.</p>
+  <p>The second parameter, <code>left</code>, is optional. If a number is
+  passed, as in
 
-  <p>(IMP): The result on the canvas basically the expected alignment can vary
-  based on the typeface you are using.</p>
+  <code>nfs(123.45, 4)</code>, it sets the minimum number of digits to include
+  to the
 
-  <p>(NOTE): Be cautious when using left and right parameters as it prepends
-  numbers of 0's if the parameter
+  left of the decimal place. If <code>left</code> is larger than the number of
+  digits in
 
-  if greater than the current length of the number.</p>
+  <code>num</code>, then unused digits will be set to 0. For example, calling
 
-  <p>For example if number is 123.2 and left parameter passed is 4 which is
-  greater than length of 123
+  <code>nfs(123.45, 4)</code> returns the string <code>' 0123.45'</code>.</p>
 
-  (integer part) i.e 3 than result will be 0123.2. Same case for right parameter
-  i.e. if right is 3 than
+  <p>The third parameter, <code>right</code>, is also optional. If a number is
+  passed, as
 
-  the result will be 123.200.</p>
-line: 350
+  in <code>nfs(123.45, 4, 1)</code>, it sets the minimum number of digits to
+  include to
+
+  the right of the decimal place. If <code>right</code> is smaller than the
+  number of
+
+  decimal places in <code>num</code>, then <code>num</code> will be rounded to
+  the given number of
+
+  decimal places.  For example, calling <code>nfs(123.45, 4, 1)</code> returns
+  the
+
+  string <code>' 0123.5'</code>. If <code>right</code> is larger than the number
+  of decimal places
+
+  in <code>num</code>, then unused decimal places will be set to 0.  For
+  example,
+
+  calling <code>nfs(123.45, 4, 3)</code> returns the string <code>'
+  0123.450'</code>.</p>
+line: 566
 isConstructor: false
 itemtype: method
 example:
@@ -47,60 +65,95 @@ example:
     <div>
     <code>
     function setup() {
-      background(200);
-      let num1 = 321;
-      let num2 = -1321;
+      createCanvas(100, 100);
 
-      noStroke();
-      fill(0);
+      background(200);
+
+      // Create number variables.
+      let positive = 123;
+      let negative = -123;
+
+      // Convert the positive number to a formatted string.
+      let formatted = nfs(positive);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
       textSize(16);
 
-      // nfs() aligns num1 (positive number) with num2 (negative number) by
-      // adding a blank space in front of the num1 (positive number)
-      // [left = 4] in num1 add one 0 in front, to align the digits with num2
-      // [right = 2] in num1 and num2 adds two 0's after both numbers
-      // To see the differences check the example of nf() too.
-      text(nfs(num1, 4, 2), 10, 30);
-      text(nfs(num2, 4, 2), 10, 80);
-      // Draw dividing line
-      stroke(120);
-      line(0, 50, width, 50);
+      // Display the negative number and the formatted positive number.
+      text(negative, 50, 33);
+      text(formatted, 50, 67);
 
-      describe('“0321.00” top middle and “-1321.00” displayed bottom middle');
+      describe(
+        'The numbers -123 and 123 written on separate lines. The numbers align vertically. The text is in black on a gray background.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a number variable.
+      let number = 123.45;
+
+      // Convert the positive number to a formatted string.
+      // Use four digits to the left of the decimal and
+      // one digit to the right.
+      let formatted = nfs(number, 4, 1);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textFont('Courier New');
+      textSize(16);
+
+      // Display a negative version of the number and
+      // the formatted positive version.
+      text('-0123.5', 50, 33);
+      text(formatted, 50, 67);
+
+      describe(
+        'The numbers "-0123.5" and "0123.5" written on separate lines. The numbers align vertically. The text is in black on a gray background.'
+      );
     }
     </code>
     </div>
 class: p5
 return:
-  description: formatted String
+  description: formatted string.
   type: String
 overloads:
-  - line: 350
+  - line: 566
     params:
       - name: num
         description: |
-          <p>the Number to format</p>
+          <p>number to format.</p>
         type: Number
       - name: left
         description: |
-          <p>number of digits to the left of the decimal
-                                         point</p>
+          <p>number of digits to include to the left of the
+                                  decimal point.</p>
         type: Integer
         optional: true
       - name: right
         description: |
-          <p>number of digits to the right of the
-                                         decimal point</p>
+          <p>number of digits to include to the right of the
+                                   decimal point.</p>
         type: Integer
         optional: true
     return:
-      description: formatted String
+      description: formatted string.
       type: String
-  - line: 406
+  - line: 662
     params:
       - name: nums
         description: |
-          <p>the Numbers to format</p>
+          <p>numbers to format.</p>
         type: Array
       - name: left
         description: ''
@@ -111,7 +164,7 @@ overloads:
         type: Integer
         optional: true
     return:
-      description: formatted Strings
+      description: formatted strings.
       type: 'String[]'
 chainable: false
 ---

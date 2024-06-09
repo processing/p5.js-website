@@ -3,54 +3,158 @@ title: hex
 module: Data
 submodule: Conversion
 file: src/utilities/conversion.js
-description: |
-  <p>Converts a number to a string in its equivalent hexadecimal notation. If a
-  second parameter is passed, it is used to set the number of characters to
-  generate in the hexadecimal notation. When an array is passed in, an
-  array of strings in hexadecimal notation of the same length is returned.</p>
-line: 243
+description: >
+  <p>Converts a <code>Number</code> to a <code>String</code> with its
+  hexadecimal value.</p>
+
+  <p><code>hex()</code> converts a number to a string with its hexadecimal
+  number value.
+
+  Hexadecimal (hex) numbers are base-16, which means there are 16 unique
+
+  digits. Hex extends the numbers 0–9 with the letters A–F. For example, the
+
+  number <code>11</code> (eleven) in base-10 is written as the letter
+  <code>B</code> in hex.</p>
+
+  <p>The first parameter, <code>n</code>, is the number to convert. For example,
+  <code>hex(20)</code>,
+
+  returns the string <code>'00000014'</code>. If an array is passed, as in
+
+  <code>hex([1, 10, 100])</code>, an array of hexadecimal strings is
+  returned.</p>
+
+  <p>The second parameter, <code>digits</code>, is optional. If a number is
+  passed, as in
+
+  <code>hex(20, 2)</code>, it sets the number of hexadecimal digits to display.
+  For
+
+  example, calling <code>hex(20, 2)</code> returns the string
+  <code>'14'</code>.</p>
+line: 818
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div class='norender'><code>
-    print(hex(255)); // "000000FF"
-    print(hex(255, 6)); // "0000FF"
-    print(hex([0, 127, 255], 6)); // [ "000000", "00007F", "0000FF" ]
-    print(Infinity); // "FFFFFFFF"
-    print(-Infinity); // "00000000"
-    </code></div>
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a number variable.
+      let original = 20;
+
+      // Convert the number to a hex string.
+      let converted = hex(original);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Display the original and converted values.
+      text(`${original} = ${converted}`, 50, 50);
+
+      describe('The text "20 = 00000014" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a number variable.
+      let original = 20;
+
+      // Convert the number to a hex string.
+      // Only display two hex digits.
+      let converted = hex(original, 2);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(16);
+
+      // Display the original and converted values.
+      text(`${original} = ${converted}`, 50, 50);
+
+      describe('The text "20 = 14" written in black on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of numbers.
+      let original = [1, 10, 100];
+
+      // Convert the numbers to hex strings.
+      // Only use two hex digits.
+      let converted = hex(original, 2);
+
+      // Style the text.
+      textAlign(RIGHT, CENTER);
+      textSize(16);
+
+      // Iterate over the converted values.
+      for (let i = 0; i < converted.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 25;
+
+        // Display the original and converted values.
+        text(`${ original[i]} = ${converted[i]}`, 75, y);
+      }
+
+      describe(
+        'The text "1 = 01", "10 = 0A", and "100 = 64" written on three separate lines. The text is in black on a gray background.'
+      );
+    }
+    </code>
+    </div>
 class: p5
 return:
-  description: hexadecimal string representation of value
+  description: converted hexadecimal value.
   type: String
 overloads:
-  - line: 243
+  - line: 818
     params:
       - name: 'n'
         description: |
-          <p>value to parse</p>
+          <p>value to convert.</p>
         type: Number
       - name: digits
-        description: ''
+        description: |
+          <p>number of digits to include.</p>
         type: Number
         optional: true
     return:
-      description: hexadecimal string representation of value
+      description: converted hexadecimal value.
       type: String
-  - line: 263
+  - line: 926
     params:
       - name: ns
         description: |
-          <p>array of values to parse</p>
+          <p>values to convert.</p>
         type: 'Number[]'
       - name: digits
         description: ''
         type: Number
         optional: true
     return:
-      description: hexadecimal string representation of values
+      description: converted hexadecimal values.
       type: 'String[]'
 chainable: false
 ---

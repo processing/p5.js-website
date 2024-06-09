@@ -3,93 +3,180 @@ title: loadStrings
 module: IO
 submodule: Input
 file: src/io/files.js
-description: |
-  <p>Reads the contents of a file and creates a String array of its individual
-  lines. If the name of the file is used as the parameter, as in the above
-  example, the file must be located in the sketch directory/folder.</p>
-  <p>Alternatively, the file may be loaded from anywhere on the local
-  computer using an absolute path (something that starts with / on Unix and
-  Linux, or a drive letter on Windows), or the filename parameter can be a
-  URL for a file found on a network.</p>
-  <p>This method is asynchronous, meaning it may not finish before the next
-  line in your sketch is executed.</p>
-  <p>This method is suitable for fetching files up to size of 64MB.</p>
-line: 180
+description: >
+  <p>Loads a text file to create an <code>Array</code>.</p>
+
+  <p>The first parameter, <code>path</code>, is always a string with the path to
+  the file.
+
+  Paths to local files should be relative, as in
+
+  <code>loadStrings('/assets/data.txt')</code>. URLs such as
+
+  <code>'https://example.com/data.txt'</code> may be blocked due to browser
+  security.</p>
+
+  <p>The second parameter, <code>successCallback</code>, is optional. If a
+  function is
+
+  passed, as in <code>loadStrings('/assets/data.txt', handleData)</code>, then
+  the
+
+  <code>handleData()</code> function will be called once the data loads. The
+  array
+
+  created from the text data will be passed to <code>handleData()</code> as its
+  only
+
+  argument.</p>
+
+  <p>The third parameter, <code>failureCallback</code>, is also optional. If a
+  function is
+
+  passed, as in <code>loadStrings('/assets/data.txt', handleData,
+  handleFailure)</code>,
+
+  then the <code>handleFailure()</code> function will be called if an error
+  occurs while
+
+  loading. The <code>Error</code> object will be passed to
+  <code>handleFailure()</code> as its only
+
+  argument.</p>
+
+  <p>Note: Data can take time to load. Calling <code>loadStrings()</code> within
+
+  <a href="/reference/p5/preload">preload()</a> ensures data loads before it's
+  used in
+
+  <a href="/reference/p5/setup">setup()</a> or <a
+  href="/reference/p5/draw">draw()</a>.</p>
+line: 309
 isConstructor: false
 itemtype: method
 example:
-  - >-
+  - |-
 
 
-    Calling loadStrings() inside <a href="#/p5/preload">preload()</a> guarantees
-    to complete the
+    <div>
+    <code>
+    let myData;
 
-    operation before <a href="#/p5/setup">setup()</a> and <a
-    href="#/p5/draw">draw()</a> are called.
-
-
-    <div><code>
-
-    let result;
-
+    // Load the text and create an array.
     function preload() {
-      result = loadStrings('/assets/test.txt');
+      myData = loadStrings('/assets/test.txt');
     }
-
 
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
-      text(random(result), 10, 10, 80, 80);
-      describe(`randomly generated text from a file,
-        for example "i smell like butter"`);
+
+      // Select a random line from the text.
+      let phrase = random(myData);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display the text.
+      text(phrase, 10, 50, 90);
+
+      describe(`The text "${phrase}" written in black on a gray background.`);
     }
+    </code>
+    </div>
 
-    </code></div>
+    <div>
+    <code>
+    let lastLine;
 
-
-    Outside of preload(), you may supply a callback function to handle the
-
-    object:
-
-
-    <div><code>
+    // Load the text and preprocess it.
+    function preload() {
+      loadStrings('/assets/test.txt', handleData);
+    }
 
     function setup() {
-      loadStrings('/assets/test.txt', pickString);
-      describe(`randomly generated text from a file,
-        for example "i have three feet"`);
-    }
+      createCanvas(100, 100);
 
-
-    function pickString(result) {
       background(200);
-      text(random(result), 10, 10, 80, 80);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display the text.
+      text(lastLine, 10, 50, 90);
+
+      describe('The text "I talk like an orange" written in black on a gray background.');
     }
 
-    </code></div>
+    // Select the last line from the text.
+    function handleData(data) {
+      lastLine = data[data.length - 1];
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let lastLine;
+
+    // Load the text and preprocess it.
+    function preload() {
+      loadStrings('/assets/test.txt', handleData, handleError);
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display the text.
+      text(lastLine, 10, 50, 90);
+
+      describe('The text "I talk like an orange" written in black on a gray background.');
+    }
+
+    // Select the last line from the text.
+    function handleData(data) {
+      lastLine = data[data.length - 1];
+    }
+
+    // Log any errors to the console.
+    function handleError(error) {
+      console.error('Oops!', error);
+    }
+    </code>
+    </div>
 class: p5
 params:
-  - name: filename
+  - name: path
     description: |
-      <p>name of the file or url to load</p>
+      <p>path of the text file to be loaded.</p>
     type: String
-  - name: callback
-    description: >
-      <p>function to be executed after <a
-      href="#/p5/loadStrings">loadStrings()</a>
-                                    completes, Array is passed in as first
-                                    argument</p>
+  - name: successCallback
+    description: |
+      <p>function to call once the data is
+                                           loaded. Will be passed the array.</p>
     type: Function
     optional: true
   - name: errorCallback
     description: |
-      <p>function to be executed if
-                                    there is an error, response is passed
-                                    in as first argument</p>
+      <p>function to call if the data fails to
+                                         load. Will be passed an <code>Error</code> event
+                                         object.</p>
     type: Function
     optional: true
 return:
-  description: Array of Strings
+  description: new array containing the loaded text.
   type: 'String[]'
 chainable: false
 ---

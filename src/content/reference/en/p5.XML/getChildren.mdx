@@ -4,57 +4,115 @@ module: IO
 submodule: Input
 file: src/io/p5.XML.js
 description: >
-  <p>Returns all of the element's children as an array of <a
-  href="/reference/p5/p5.XML">p5.XML</a> objects. When
+  <p>Returns an array with the element's child elements as new
 
-  the name parameter is specified, then it will return all children that match
+  <a href="/reference/p5/p5.XML">p5.XML</a> objects.</p>
 
-  that name.</p>
-line: 258
+  <p>The parameter, <code>name</code>, is optional. If a string is passed, as in
+
+  <code>myXML.getChildren('cat')</code>, then the method will only return child
+  elements
+
+  with the tag <code><cat></code>.</p>
+line: 342
 isConstructor: false
 itemtype: method
 example:
   - |-
-    &lt;animal
-    <div class='norender'><code>
-    // The following short XML file called "mammals.xml" is parsed
-    // in the code below.
-    //
-    // <?xml version="1.0"?>
-    // &lt;mammals&gt;
-    //   &lt;animal id="0" species="Capra hircus">Goat&lt;/animal&gt;
-    //   &lt;animal id="1" species="Panthera pardus">Leopard&lt;/animal&gt;
-    //   &lt;animal id="2" species="Equus zebra">Zebra&lt;/animal&gt;
-    // &lt;/mammals&gt;
 
-    let xml;
+    <div>
+    <code>
+    let myXML;
 
+    // Load the XML and create a p5.XML object.
     function preload() {
-      xml = loadXML('/assets/mammals.xml');
+      myXML = loadXML('/assets/animals.xml');
     }
 
     function setup() {
-      let animals = xml.getChildren('animal');
+      createCanvas(100, 100);
 
-      for (let i = 0; i < animals.length; i++) {
-        print(animals[i].getContent());
+      background(200);
+
+      // Get an array of the child elements.
+      let children = myXML.getChildren();
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Iterate over the array.
+      for (let i = 0; i < children.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 20;
+
+        // Get the child element's content.
+        let content = children[i].getContent();
+
+        // Display the child element's content.
+        text(content, 10, y);
       }
+
+      describe(
+        'The words "Goat", "Leopard", "Zebra", and "Turtle" written on separate lines. The text is black on a gray background.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myXML;
+
+    // Load the XML and create a p5.XML object.
+    function preload() {
+      myXML = loadXML('/assets/animals.xml');
     }
 
-    // Sketch prints:
-    // "Goat"
-    // "Leopard"
-    // "Zebra"
-    </code></div>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Get an array of the child elements
+      // that are mammals.
+      let children = myXML.getChildren('mammal');
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(14);
+
+      // Iterate over the array.
+      for (let i = 0; i < children.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 20;
+
+        // Get the child element's content.
+        let content = children[i].getContent();
+
+        // Display the child element's content.
+        text(content, 10, y);
+      }
+
+      describe(
+        'The words "Goat", "Leopard", and "Zebra" written on separate lines. The text is black on a gray background.'
+      );
+    }
+    </code>
+    </div>
 class: p5.XML
 params:
   - name: name
     description: |
-      <p>element name</p>
+      <p>name of the elements to return.</p>
     type: String
     optional: true
 return:
-  description: children of the element
+  description: child elements.
   type: 'p5.XML[]'
 chainable: false
 ---

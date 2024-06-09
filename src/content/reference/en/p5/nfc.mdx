@@ -3,12 +3,45 @@ title: nfc
 module: Data
 submodule: String Functions
 file: src/utilities/string_functions.js
-description: |
-  <p>Utility function for formatting numbers into strings and placing
-  appropriate commas to mark units of 1000. There are two versions: one
-  for formatting ints, and one for formatting an array of ints. The value
-  for the right parameter should always be a positive integer.</p>
-line: 216
+description: >
+  <p>Converts a <code>Number</code> into a <code>String</code> with commas to
+  mark units of 1,000.</p>
+
+  <p><code>nfc()</code> converts numbers such as 12345 into strings formatted
+  with commas
+
+  to mark the thousands place, as in <code>'12,345'</code>.</p>
+
+  <p>The first parameter, <code>num</code>, is the number to convert to a
+  string. For
+
+  example, calling <code>nfc(12345)</code> returns the string
+  <code>'12,345'</code>.</p>
+
+  <p>The second parameter, <code>right</code>, is optional. If a number is
+  passed, as in
+
+  <code>nfc(12345, 1)</code>, it sets the minimum number of digits to include to
+  the
+
+  right of the decimal place. If <code>right</code> is smaller than the number
+  of
+
+  decimal places in <code>num</code>, then <code>num</code> will be rounded to
+  the given number of
+
+  decimal places. For example, calling <code>nfc(12345.67, 1)</code> returns the
+  string
+
+  <code>'12,345.7'</code>. If <code>right</code> is larger than the number of
+  decimal places in
+
+  <code>num</code>, then unused decimal places will be set to 0. For example,
+  calling
+
+  <code>nfc(12345.67, 3)</code> returns the string
+  <code>'12,345.670'</code>.</p>
+line: 315
 isConstructor: false
 itemtype: method
 example:
@@ -17,58 +50,98 @@ example:
     <div>
     <code>
     function setup() {
+      createCanvas(100, 100);
+
       background(200);
-      let num = 11253106.115;
-      let numArr = [1, 1, 2];
 
-      noStroke();
-      fill(0);
-      textSize(12);
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textSize(16);
 
-      // Draw formatted numbers
-      text(nfc(num, 4), 10, 30);
-      text(nfc(numArr, 2), 10, 80);
+      // Create a number variable.
+      let number = 12345;
 
-      // Draw dividing line
-      stroke(120);
-      line(0, 50, width, 50);
+      // Display the number as a string.
+      let commas = nfc(number);
+      text(commas, 15, 33);
 
-      describe('“11,253,106.115” top middle and “1.00,1.00,2.00” displayed bottom mid');
+      // Display the number with four digits
+      // to the left of the decimal.
+      let decimals = nfc(number, 2);
+      text(decimals, 15, 67);
+
+      describe(
+        'The numbers "12,345" and "12,345.00" written on separate lines. The text is in black on a gray background.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create an array of numbers.
+      let numbers = [12345, 6789];
+
+      // Convert the numbers to formatted strings.
+      let formatted = nfc(numbers);
+
+      // Style the text.
+      textAlign(CENTER, CENTER);
+      textSize(14);
+
+      // Iterate over the array.
+      for (let i = 0; i < formatted.length; i += 1) {
+
+        // Calculate the y-coordinate.
+        let y = (i + 1) * 33;
+
+        // Display the original and formatted numbers.
+        text(`${numbers[i]} : ${formatted[i]}`, 50, y);
+      }
+
+      describe(
+        'The text "12345 : 12,345" and "6789 : 6,789" written on two separate lines. The text is in black on a gray background.'
+      );
     }
     </code>
     </div>
 class: p5
 return:
-  description: formatted String
+  description: formatted string.
   type: String
 overloads:
-  - line: 216
+  - line: 315
     params:
       - name: num
         description: |
-          <p>the Number to format</p>
+          <p>number to format.</p>
         type: Number|String
       - name: right
         description: |
-          <p>number of digits to the right of the
-                                           decimal point</p>
+          <p>number of digits to include to the right
+                                           of the decimal point.</p>
         type: Integer|String
         optional: true
     return:
-      description: formatted String
+      description: formatted string.
       type: String
-  - line: 253
+  - line: 404
     params:
       - name: nums
         description: |
-          <p>the Numbers to format</p>
-        type: Array
+          <p>numbers to format.</p>
+        type: 'Number[]'
       - name: right
         description: ''
         type: Integer|String
         optional: true
     return:
-      description: formatted Strings
+      description: formatted strings.
       type: 'String[]'
 chainable: false
 ---
