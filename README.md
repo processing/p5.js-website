@@ -8,7 +8,7 @@ If you are here to edit or translate content, please do so inside [the `src/cont
 
 ### Code Changes
 
-For making code changes, check out the [technical overview](./docs/techical-overview.md) to get started.
+For making code changes, check out the [technical overview](./docs/techical_overview.md) to get started.
 
 ### Adding Libraries
 
