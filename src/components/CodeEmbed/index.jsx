@@ -34,6 +34,8 @@ export const CodeEmbed = (props) => {
     initialCode.replace(/\u00A0/g, " "),
   );
 
+  const largeSketch = props.previewWidth && props.previewWidth > 650;
+
   const codeFrameRef = useRef(null);
 
   const updateOrReRun = () => {
@@ -65,7 +67,7 @@ export const CodeEmbed = (props) => {
     >
       {props.previewable ? (
         <div
-          className={`ml-0 flex w-fit gap-[20px] ${props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
+          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
         >
           <div>
             <CodeFrame
@@ -77,7 +79,7 @@ export const CodeEmbed = (props) => {
               lazyLoad={props.lazyLoad}
             />
           </div>
-          <div className="flex gap-2.5 md:flex-row lg:flex-col">
+          <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
             <CircleButton
               className="bg-bg-gray-40"
               onClick={updateOrReRun}
