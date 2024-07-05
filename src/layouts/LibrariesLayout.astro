@@ -3,21 +3,25 @@ import type { CollectionEntry } from "astro:content";
 import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import GridItemLibrary from "@components/GridItem/Library.astro";
+import LibraryListing from "@components/LibraryListing/index.astro";
 import { setJumpToState, type JumpToLink } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { categories } from "../content/libraries/config";
+import Button from "@components/Button/index.astro";
+import _ from "lodash";
 
 interface Props {
   entries: CollectionEntry<"libraries">[];
   page: CollectionEntry<"pages">;
   title: string;
+  full?: boolean;
 }
 type LibraryEntry = CollectionEntry<"libraries">;
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const { entries, page } = Astro.props;
+const { entries, page, full } = Astro.props;
 const { Content } = await page.render();
 
 function strCompare(a: string, b: string) {
@@ -30,18 +34,55 @@ function strCompare(a: string, b: string) {
   return 0;
 }
 
-const sections = categories
+let sections = categories
   .map((slug) => {
     const name = t("libraryCategories", slug);
-    const sectionEntries = entries
+    let sectionEntries = entries
       .filter((e: LibraryEntry) => e.data.category === slug)
       .sort((a: LibraryEntry, b: LibraryEntry) =>
         strCompare(a.data.name.toLowerCase(), b.data.name.toLowerCase())
       );
 
+
     return { slug, name, sectionEntries };
   })
   .filter((section) => section.sectionEntries.length > 0);
+
+if (!full) {
+  // On the featured libraries page, we want to show as close to 4 entries
+  // per section as possible, while also trying to give all contributors
+  // approximately equal footing of being featured. To do this, we don't
+  // let contributors show up >3x on the featured page, and we try a
+  // Monte Carlo approach to try to get as close to this as possible.
+  const targetEntriesPerSection = 4
+
+  let minScore = 1000
+  let bestSections = sections
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const entriesByAuthor = _.groupBy(entries, (e: LibraryEntry) => e.data.author[0].name)
+    const toRemove = new Set()
+    for (const key in entriesByAuthor) {
+      if (entriesByAuthor[key].length > 3) {
+        for (const entry of _.shuffle(entriesByAuthor[key]).slice(3)) {
+          toRemove.add(entry.id)
+        }
+      }
+    }
+    const candidateSections = sections.map((s) => ({
+      ...s,
+      sectionEntries: s.sectionEntries.filter((e) => !toRemove.has(e.id)).slice(0, targetEntriesPerSection),
+      allEntries: s.sectionEntries,
+    }));
+    const score = candidateSections
+      .map((s) => Math.abs(s.sectionEntries.length - targetEntriesPerSection))
+      .reduce((acc, next) => acc + next, 0);
+    if (score < minScore) {
+      minScore = score;
+      bestSections = candidateSections;
+    }
+  }
+  sections = bestSections;
+}
 
 const pageJumpToLinks = categories.map((category) => ({
   url: `/libraries#${category}`,
