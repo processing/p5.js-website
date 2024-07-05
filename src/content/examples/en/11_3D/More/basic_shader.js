@@ -10,7 +10,7 @@ let theShader;
 
 function preload(){
   // load the shader
-  theShader = loadShader('/assets/basic.vert', 'assets/basic.frag');
+  theShader = loadShader('/assets/basic.vert', '/assets/basic.frag');
 }
 
 function setup() {

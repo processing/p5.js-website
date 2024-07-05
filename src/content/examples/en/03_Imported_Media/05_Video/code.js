@@ -13,7 +13,7 @@ function setup() {
   // This createVideo() function will build a p5.MediaElement class.
   // It's best to upload multiple video formats so the video
   // is visible within different browsers.
-  video = createVideo(['assets/fingers.mov', 'assets/fingers.webm']);
+  video = createVideo(['/assets/fingers.mov', '/assets/fingers.webm']);
 
   // Create a button next to the video that says 'play.'
   button = createButton('play');
