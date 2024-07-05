@@ -34,7 +34,7 @@ export const CodeEmbed = (props) => {
     initialCode.replace(/\u00A0/g, " "),
   );
 
-  const largeSketch = props.previewWidth && props.previewWidth > 650;
+  const largeSketch = props.previewWidth && props.previewWidth > 767 - 60;
 
   const codeFrameRef = useRef(null);
 
