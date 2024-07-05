@@ -4,7 +4,7 @@ export default {
   theme: {
     // These values are mirrored in variables.scss
     screens: {
-      md: "767px",
+      md: "770px",
       lg: "1024px",
       xl: "1280px",
     },
