@@ -15,7 +15,7 @@ export const CircleButton = ({
   href,
   className = "",
 }: CircleButtonProps) => {
-  const sharedClassName = `grid place-items-center w-[40px] h-[40px] rounded-full p-xs hover:border-type-white hover:!bg-bg-black hover:text-type-white ${className}`;
+  const sharedClassName = `circle-button grid place-items-center w-[40px] h-[40px] rounded-full p-xs hover:border-type-white text-black hover:!bg-bg-black hover:text-type-white ${className}`;
   if (href) {
     return (
       <a
