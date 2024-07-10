@@ -194,11 +194,23 @@ export const getLibraryLink = (library: CollectionEntry<"libraries">) =>
  * @param examples Reference example strings from MDX
  * @returns The examples separated into individual strings
  */
-export const separateReferenceExamples = (examples: string[]): string[] =>
+ // separateReferenceExamples
+export const parseReferenceExamplesAndMetadata = (examples: string[]): { src: string, classes: Record<string, any> }[] =>
   examples
     ?.flatMap((example: string) => example.split("</div>"))
-    .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
-    .filter((cleanExample: string) => cleanExample);
+    .map((src: string) => {
+      const matches = [...src.matchAll(/<div class=['"]([^"']*)['"]>/g)]
+      const classes: Record<string, boolean> = {}
+      for (const match of matches) {
+        const tokens = match[1].split(/\s+/g)
+        for (const token of tokens) {
+          classes[token] = true
+        }
+      }
+      return { classes, src }
+    })
+    .map(({ src, classes }) => ({ classes, src: src.replace(/<\/?div[^>]*>|<\/?code>/g, "") }))
+    .filter(({ src }) => src);
 
 /**
  * Returns the title concatenated with parentheses if the reference entry is a constructor or method
