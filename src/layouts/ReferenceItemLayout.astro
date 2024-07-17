@@ -18,6 +18,7 @@ import type {
   ReferenceParam,
 } from "@/types/parsers.interface";
 import { setJumpToState } from "../globals/state";
+import { p5Version } from "../globals/p5-version";
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -204,6 +205,21 @@ const seenParams: Record<string, true> = {};
                 </div>
               );
             })}
+          </div>
+        )
+      }
+      {
+        entry.data.file && entry.data.line &&(
+          <div class="my-xl">
+           <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
+            Notice any errors or typos? <a href ="https://github.com/processing/p5.js/issues">Please let us know</a>. Please feel free to edit 
+            <a
+                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
+                  >
+                  {entry.data.file}
+                  </a>
+                and open a pull request!
+           </div>
           </div>
         )
       }
