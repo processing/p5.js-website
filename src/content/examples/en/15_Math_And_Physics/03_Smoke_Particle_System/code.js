@@ -3,7 +3,7 @@ let particleTexture;
 let particleSystem;
 
 function preload() {
-  particleTexture = loadImage('assets/particle_texture.png');
+  particleTexture = loadImage('/assets/particle_texture.png');
 }
 
 function setup() {

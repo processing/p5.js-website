@@ -12,7 +12,7 @@ function setup() {
   createCanvas(710, 400, WEBGL);
 
   img = loadImage('/assets/cat.jpg');
-  vid = createVideo(['assets/360video_256crop_v2.mp4']);
+  vid = createVideo(['/assets/360video_256crop_v2.mp4']);
   vid.elt.muted = true;
   vid.loop();
   vid.hide();
