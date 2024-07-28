@@ -235,7 +235,9 @@ const generateSearchIndex = async (
         description = getKeywordsFromContent(content, locale);
         break;
       case "reference":
-        title = data.title;
+        // If the class is "p5", the method will be "global"
+        // so we don't need to include the class in the title
+        title = `${data?.class && data.class !== "p5" ? `${data.class}.` : ""}${data.title}`;
         // Skip items without a description
         if (!data.description) {
           continue;
