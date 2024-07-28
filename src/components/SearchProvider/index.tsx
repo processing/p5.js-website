@@ -90,7 +90,11 @@ const SearchProvider = ({
 
         const fuseOptions = {
           includeScore: true,
-          keys: ["title", "description"],
+          keys: [
+            { name: "title", weight: 0.7 },
+            { name: "alias", weight: 0.5 },
+            { name: "description", weight: 0.3 },
+          ],
           shouldSort: true,
           threshold: 0.3,
         };
