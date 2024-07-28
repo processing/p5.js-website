@@ -15,6 +15,7 @@ interface SearchIndex {
   [title: string]: {
     relativeUrl: string;
     description?: string;
+    alias?: string;
   };
 }
 
@@ -167,7 +168,7 @@ const generateContentTypesSearchIndex = async (
  * @param locale The locale to generate the search index for
  * @returns The search index for the content type
  */
-const generateSearchIndex = async (
+export const generateSearchIndex = async (
   contentType: ContentType,
   locale: SearchSupportedLocales,
 ) => {
