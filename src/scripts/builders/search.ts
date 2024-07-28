@@ -209,7 +209,7 @@ const generateSearchIndex = async (
       .replace(".mdx", "")
       .replace(".yaml", "");
     let relativeUrl = `/${contentType}/${contentRelativeUrl}`;
-    let description, title;
+    let description, title, alias;
     // Each content type has a slightly different structure
     switch (contentType) {
       case "tutorials":
@@ -235,9 +235,14 @@ const generateSearchIndex = async (
         description = getKeywordsFromContent(content, locale);
         break;
       case "reference":
-        // If the class is "p5", the method will be "global"
-        // so we don't need to include the class in the title
-        title = `${data?.class && data.class !== "p5" ? `${data.class}.` : ""}${data.title}`;
+        // If the class is something like "p5.Vector"
+        // we include the class in the title and add an alias for easier searching
+        if (data?.class?.includes(".")) {
+          title = `${data.class}.${data.title}`;
+          alias = data.title;
+        } else {
+          title = data.title;
+        }
         // Skip items without a description
         if (!data.description) {
           continue;
@@ -271,6 +276,8 @@ const generateSearchIndex = async (
     searchIndex[title] = {
       relativeUrl,
       description,
+      // Add alias if it exists
+      ...(alias ? { alias } : {}),
     };
   }
   return searchIndex;
