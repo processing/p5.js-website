@@ -235,14 +235,20 @@ const generateSearchIndex = async (
         description = getKeywordsFromContent(content, locale);
         break;
       case "reference":
+        title = data.title;
         // If the class is something like "p5.Vector"
         // we include the class in the title and add an alias for easier searching
-        if (data?.class?.includes(".")) {
-          title = `${data.class}.${data.title}`;
+        if (data.class?.includes(".")) {
+          title = `${data.class}.${title}`;
           alias = data.title;
-        } else {
-          title = data.title;
         }
+        // If the itemtype is "method" we add parentheses to the title
+        if (data.itemtype === "method") {
+          title += "()";
+          // Keep an alias without the parentheses
+          alias = data.title;
+        }
+
         // Skip items without a description
         if (!data.description) {
           continue;
