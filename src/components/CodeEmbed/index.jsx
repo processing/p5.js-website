@@ -72,8 +72,8 @@ export const CodeEmbed = (props) => {
           <div>
             <CodeFrame
               jsCode={previewCodeString}
-              width={props.previewWidth}
-              height={props.previewHeight}
+              width={previewWidth}
+              height={previewHeight}
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
