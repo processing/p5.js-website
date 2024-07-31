@@ -34,6 +34,19 @@ export const CodeEmbed = (props) => {
     initialCode.replace(/\u00A0/g, " "),
   );
 
+  let { previewWidth, previewHeight } = props;
+  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
+  if (canvasMatch) {
+    previewWidth = previewWidth || parseFloat(canvasMatch[1]);
+    previewHeight = previewHeight || parseFloat(canvasMatch[2]);
+  }
+
+  // Quick hack to make room for DOM that gets added below the canvas by default
+  const domMatch = /create(Button|Select|P|Div|Input)/.exec(initialCode);
+  if (domMatch && previewHeight) {
+    previewHeight += 100;
+  }
+
   const codeFrameRef = useRef(null);
 
   const updateOrReRun = () => {
@@ -70,8 +83,8 @@ export const CodeEmbed = (props) => {
           <div>
             <CodeFrame
               jsCode={previewCodeString}
-              width={props.previewWidth}
-              height={props.previewHeight}
+              width={previewWidth}
+              height={previewHeight}
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
