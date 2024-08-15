@@ -13,6 +13,7 @@ import { JSDOM } from "jsdom";
 import type { JumpToLink, JumpToState } from "../globals/state";
 import { categories as referenceCategories } from "../content/reference/config";
 import memoize from "lodash/memoize";
+import { removeNestedReferencePaths } from "./_utils-node";
 
 interface EntryWithId {
   id: string;
@@ -152,7 +153,7 @@ export const getExampleCategory = (slug: string): string =>
   slug.split("/")[1].split("_").splice(1).join(" ");
 
 export const normalizeReferenceRoute = (route: string): string =>
-  removeLocaleAndExtension(route).replace(/constants\/|types\//, "");
+  removeNestedReferencePaths(removeLocaleAndExtension(route));
 
 export const removeLocaleAndExtension = (id: string): string =>
   removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
