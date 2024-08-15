@@ -40,3 +40,6 @@ export const getExampleCode = async (exampleId: string): Promise<string> => {
   const assetMigratedCode = code.replaceAll(/\(["']assets/g, "('/assets");
   return assetMigratedCode;
 };
+
+export const removeNestedReferencePaths = (route: string): string =>
+  route.replace(/constants\/|types\//, "")
