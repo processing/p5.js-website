@@ -10,6 +10,7 @@ import keywordExtractor from "keyword-extractor";
 import { contentTypes } from "../../globals/globals";
 import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
+import { removeNestedReferencePaths } from "../../pages/_utils-node";
 
 interface SearchIndex {
   [title: string]: {
@@ -236,6 +237,7 @@ export const generateSearchIndex = async (
         description = getKeywordsFromContent(content, locale);
         break;
       case "reference":
+        relativeUrl = removeNestedReferencePaths(relativeUrl);
         title = data.title;
         // If the class is something like "p5.Vector"
         // we include the class in the title and add an alias for easier searching
