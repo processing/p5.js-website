@@ -9,7 +9,7 @@ If you discover a bug or have an idea for a new feature you'd like to add, begin
 If you are here to edit or translate content, please do so inside [the `src/content/` folder](/src/content).
 
 ### Code Changes
-For making code changes, please check out the [technical overview](./docs/techical_overview.md) to get started.
+For making code changes, please check out the [technical overview](./docs/technical_overview.md) to get started.
 
 ### Adding Libraries
 Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your libary to the collection!

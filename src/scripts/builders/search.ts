@@ -10,11 +10,13 @@ import keywordExtractor from "keyword-extractor";
 import { contentTypes } from "../../globals/globals";
 import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
+import { removeNestedReferencePaths } from "../../pages/_utils-node";
 
 interface SearchIndex {
   [title: string]: {
     relativeUrl: string;
     description?: string;
+    alias?: string;
   };
 }
 
@@ -167,7 +169,7 @@ const generateContentTypesSearchIndex = async (
  * @param locale The locale to generate the search index for
  * @returns The search index for the content type
  */
-const generateSearchIndex = async (
+export const generateSearchIndex = async (
   contentType: ContentType,
   locale: SearchSupportedLocales,
 ) => {
@@ -209,7 +211,7 @@ const generateSearchIndex = async (
       .replace(".mdx", "")
       .replace(".yaml", "");
     let relativeUrl = `/${contentType}/${contentRelativeUrl}`;
-    let description, title;
+    let description, title, alias;
     // Each content type has a slightly different structure
     switch (contentType) {
       case "tutorials":
@@ -235,7 +237,21 @@ const generateSearchIndex = async (
         description = getKeywordsFromContent(content, locale);
         break;
       case "reference":
+        relativeUrl = removeNestedReferencePaths(relativeUrl);
         title = data.title;
+        // If the class is something like "p5.Vector"
+        // we include the class in the title and add an alias for easier searching
+        if (data.class?.includes(".")) {
+          title = `${data.class}.${title}`;
+          alias = data.title;
+        }
+        // If the itemtype is "method" we add parentheses to the title
+        if (data.itemtype === "method") {
+          title += "()";
+          // Keep an alias without the parentheses
+          alias = data.title;
+        }
+
         // Skip items without a description
         if (!data.description) {
           continue;
@@ -269,6 +285,8 @@ const generateSearchIndex = async (
     searchIndex[title] = {
       relativeUrl,
       description,
+      // Add alias if it exists
+      ...(alias ? { alias } : {}),
     };
   }
   return searchIndex;
