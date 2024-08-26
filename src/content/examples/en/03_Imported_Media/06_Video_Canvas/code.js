@@ -10,7 +10,7 @@ function setup() {
   // use the createVideo() function to load the video into the code.
   // It's best to upload multiple video formats so the video
   // is visible within different browsers.
-  video = createVideo(['assets/fingers.mov', 'assets/fingers.webm']);
+  video = createVideo(['/assets/fingers.mov', '/assets/fingers.webm']);
 
   // By default, the video will render as its own DOM element.
   // Use the hide() method to remove the DOM instance of the video.

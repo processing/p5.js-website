@@ -9,6 +9,7 @@ import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
 import "@styles/base.scss";
 import type { CollectionEntry } from "astro:content";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 
 interface Props {
   title: string;
@@ -33,7 +34,18 @@ const {
   mainContentParentClass = "mx-5 md:mx-lg mt-md",
   homepageConfig,
 } = Astro.props;
+
 const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const slug = title.toLowerCase().split(/\s+/).join('-');
+const pages = await getCollectionInLocaleWithFallbacks("pages", currentLocale);
+const headerPage = pages.find((page) => page.slug === slug);
+let HeaderContent: any = undefined;
+if (headerPage) {
+  const { Content } = await headerPage.render();
+  HeaderContent = Content;
+}
+
 const t = await getUiTranslator(currentLocale);
 const localizedTitle = t(title);
 const localizedSubtitle = subtitle
@@ -97,7 +109,14 @@ const headerTopic = topic
           )
         }
       </header>
-      <main id="main-content">
+      <main id="main-content" class="relative">
+        {HeaderContent && (
+          <div class="px-5 md:px-lg pt-sm pb-lg">
+            <div class="rendered-markdown">
+              <HeaderContent />
+            </div>
+          </div>
+        )}
         <div class={mainContentParentClass}>
           <slot />
         </div>
