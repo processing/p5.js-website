@@ -278,6 +278,6 @@ export const rewriteRelativeMdLinks = (markdownText: string): string => {
    */
   const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/?[^)]+)\.md\)/g;
   return markdownText.replace(regexPattern, (_match, linkText, url) => {
-    return `[${linkText}](${url}/)`;
+    return `[${linkText}](.${url}/)`;
   });
 };
