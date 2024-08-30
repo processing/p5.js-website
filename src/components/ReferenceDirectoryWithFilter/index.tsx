@@ -85,7 +85,7 @@ export const ReferenceDirectoryWithFilter = ({
         {entries.map((entry) => (
           <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
             <a
-              href={`/reference/${entry.data.path}`}
+              href={`/reference/${entry.data.path}/`}
               class="group hover:no-underline"
               aria-label={entry.data.title}
               aria-describedby={`${entry.data.title}-description`}
