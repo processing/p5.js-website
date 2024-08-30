@@ -182,6 +182,18 @@ const correctRelativeLinksInDescription = (description: string | undefined) => {
       // Replace it with /reference/
       href = href.replace("/reference/#", "/reference/");
     }
+    
+    // Add a trailing / if the link isn't to a file and does not have query params or a hash reference
+    if (
+      !href.startsWith('#') &&
+      !href.endsWith('/') &&
+      !/(\.\w+)$/.exec(href) &&
+      !href.includes('?') &&
+      !/#([\w\-]+)$/.exec(href)
+    ) {
+      href += '/';
+    }
+
     $(this).attr("href", href);
   });
 

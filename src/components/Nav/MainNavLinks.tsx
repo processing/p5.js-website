@@ -77,7 +77,7 @@ export const MainNavLinks = ({
             </a>
           </li>
           <li>
-            <a className={styles.buttonlink} href="/donate">
+            <a className={styles.buttonlink} href="/donate/">
               <div class="mr-xxs">
                 <Icon kind="heart" />
               </div>
