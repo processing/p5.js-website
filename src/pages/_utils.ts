@@ -432,7 +432,7 @@ const getUrl = (
 export const rewriteRelativeLink = (url: string): string => {
   let updatedUrl: string;
     
-  if (/^(https?:\/)?\//.exec(url) || url.startsWith('mailto:')) {
+  if (/^((https?:\/)?)\//.exec(url) || url.startsWith('mailto:')) {
     // Leave absolute paths alone
     updatedUrl = url;
   } else if (url.startsWith('#')) {
@@ -448,14 +448,19 @@ export const rewriteRelativeLink = (url: string): string => {
     } else {
       updatedUrl = url;
     }
+
+    // Relative links to md files should be turned into pages
+    if (updatedUrl.endsWith('.md')) {
+      updatedUrl = updatedUrl.replace(/\.md$/, '');
+    }
   }
 
   // Add a trailing / if the link isn't to a file and does not have query params or a hash reference
   if (
-    !url.endsWith('/') &&
-    !/(\.\w+)$/.exec(url) &&
-    !url.includes('?') &&
-    !/#([\w\-]+)$/.exec(url)
+    !updatedUrl.endsWith('/') &&
+    !/(\.\w+)$/.exec(updatedUrl) &&
+    !updatedUrl.includes('?') &&
+    !/#([\w\-]+)$/.exec(updatedUrl)
   ) {
     updatedUrl += '/';
   }
