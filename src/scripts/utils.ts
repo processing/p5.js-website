@@ -3,6 +3,7 @@ import fs, { cp, readdir } from "fs/promises";
 import path from "path";
 import type { CopyOptions, Dirent } from "fs";
 import { fileURLToPath } from "url";
+import { rewriteRelativeLink } from "../pages/_utils-node";
 
 /* Absolute path to the root of this project repo */
 export const repoRootPath = path.join(
@@ -276,8 +277,12 @@ export const rewriteRelativeMdLinks = (markdownText: string): string => {
    * 1. Text for the link
    * 2. Link url (but not the .md extension at the end)
    */
-  const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/?[^)]+)\.md\)/g;
-  return markdownText.replace(regexPattern, (_match, linkText, url) => {
-    return `[${linkText}](${url}/)`;
+  const regexPattern: RegExp = /(\!?)\[([^\]]+)\]\(([^\)]+)\)/g;
+  return markdownText.replace(regexPattern, (match, img, linkText, url: string) => {
+    // Don't convert images
+    if (img) return match;
+
+    const updatedUrl = rewriteRelativeLink(url);
+    return `[${linkText}](${updatedUrl})`;
   });
 };
