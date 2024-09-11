@@ -43,3 +43,42 @@ export const getExampleCode = async (exampleId: string): Promise<string> => {
 
 export const removeNestedReferencePaths = (route: string): string =>
   route.replace(/constants\/|types\//, "")
+
+export const rewriteRelativeLink = (url: string): string => {
+  let updatedUrl: string;
+
+  if (/^((https?:\/)?)\//.exec(url) || url.startsWith('mailto:')) {
+    // Leave absolute paths alone
+    updatedUrl = url;
+  } else if (url.startsWith('#')) {
+    // Leave links to headings alone
+    updatedUrl = url;
+  } else {
+    // Convert relative paths to '../' (because pages that started as files in the same directory
+    // get turned into directories themselves, we need to go up a directory in the link)
+    if (url.startsWith('./')) {
+      updatedUrl = `.${url}`;
+    } else if (!url.startsWith('../')) {
+      updatedUrl = `../${url}`;
+    } else {
+      updatedUrl = url;
+    }
+
+    // Relative links to md files should be turned into pages
+    if (updatedUrl.endsWith('.md')) {
+      updatedUrl = updatedUrl.replace(/\.md$/, '');
+    }
+  }
+
+  // Add a trailing / if the link isn't to a file and does not have query params or a hash reference
+  if (
+    !updatedUrl.endsWith('/') &&
+    !/(\.\w+)$/.exec(updatedUrl) &&
+    !updatedUrl.includes('?') &&
+    !/#([\w\-]+)$/.exec(updatedUrl)
+  ) {
+    updatedUrl += '/';
+  }
+
+  return updatedUrl;
+};

@@ -3,7 +3,7 @@ import fs, { cp, readdir } from "fs/promises";
 import path from "path";
 import type { CopyOptions, Dirent } from "fs";
 import { fileURLToPath } from "url";
-import { rewriteRelativeLink } from "../pages/_utils";
+import { rewriteRelativeLink } from "../pages/_utils-node";
 
 /* Absolute path to the root of this project repo */
 export const repoRootPath = path.join(
