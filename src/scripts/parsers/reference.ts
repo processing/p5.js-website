@@ -19,8 +19,19 @@ export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
     await cloneLibraryRepo(localPath);
     await saveYuidocOutput();
+    await serveYuidocOutput();
     return getYuidocOutput();
   };
+
+/**
+ * Gets the parsed YUIDoc output from the saved file and parses it as JSON
+ * returns the parsed YUIDoc output
+ */
+const serveYuidocOutput = async (): Promise<void> => {
+  const outputFilePath = path.join(yuidocOutputPath, "data.json");
+  const destinationPath = path.join(__dirname, '../../../public/reference/data.json');
+  await fs.copyFile(outputFilePath, destinationPath);
+};
 
 /**
  * Gets the parsed YUIDoc output from the saved file and parses it as JSON

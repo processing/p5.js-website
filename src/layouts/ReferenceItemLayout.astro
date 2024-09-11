@@ -5,7 +5,7 @@ import Head from "@components/Head/index.astro";
 import {
   getRefEntryTitleConcatWithParen,
   escapeCodeTagsContent,
-  separateReferenceExamples,
+  parseReferenceExamplesAndMetadata,
   normalizeReferenceRoute,
   getRelatedEntriesinCollection,
   generateJumpToState,
@@ -18,13 +18,14 @@ import type {
   ReferenceParam,
 } from "@/types/parsers.interface";
 import { setJumpToState } from "../globals/state";
+import { p5Version } from "../globals/p5-version";
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
-const examples = separateReferenceExamples(entry.data.example)
+const examples = parseReferenceExamplesAndMetadata(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
-  ?.map((example) => example.trim());
+  ?.map((example) => ({ ...example, src: example.src.trim() }));
 const description = escapeCodeTagsContent(entry.data.description);
 const t = await getUiTranslator(currentLocale);
 const title = getRefEntryTitleConcatWithParen(entry);
@@ -85,26 +86,24 @@ const seenParams: Record<string, true> = {};
   topic="reference"
   className="reference-item"
 >
-  <div class="content-grid mt-0 max-w-[750px]">
+  <div class="content-grid mt-0 max-w-[770px]">
     <div class="col-span-9 xl:min-w-[1000px]">
       <div
         set:html={description}
-        class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item"
+        class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
       />
       {
         examples && (
           <div class="mb-xl">
             <h2 class="text-h3">{t("Examples")}</h2>
-            {examples.map((exampleCode: string, i: number) => {
+            {examples.map(({ src: exampleCode, classes }, i: number) => {
               return (
                 <CodeEmbed
                   client:load
                   initialValue={exampleCode}
-                  previewable
+                  previewable={!classes.norender}
                   editable
-                  lazyLoad={i > 0}
-                  previewHeight="100px"
-                  previewWidth="100px"
+                  lazyLoad={false}
                   allowSideBySide={true}
                 />
               );
@@ -204,6 +203,21 @@ const seenParams: Record<string, true> = {};
                 </div>
               );
             })}
+          </div>
+        )
+      }
+      {
+        entry.data.file && entry.data.line &&(
+          <div class="my-xl">
+           <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
+            Notice any errors or typos? <a href ="https://github.com/processing/p5.js/issues">Please let us know</a>. Please feel free to edit 
+            <a
+                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
+                  >
+                  {entry.data.file}
+                  </a>
+                and open a pull request!
+           </div>
           </div>
         )
       }

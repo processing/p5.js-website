@@ -1,0 +1,74 @@
+---
+title: saveObj
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>The <code>saveObj()</code> function exports <code>p5.Geometry</code>
+  objects as
+
+  3D models in the Wavefront .obj file format.
+
+  This way, you can use the 3D shapes you create in p5.js in other software
+
+  for rendering, animation, 3D printing, or more.</p>
+
+  <p>The exported .obj file will include the faces and vertices of the
+  <code>p5.Geometry</code>,
+
+  as well as its texture coordinates and normals, if it has them.</p>
+line: 928
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let myModel;
+    let saveBtn;
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myModel = buildGeometry(() => {
+        for (let i = 0; i < 5; i++) {
+          push();
+          translate(
+            random(-75, 75),
+            random(-75, 75),
+            random(-75, 75)
+          );
+          sphere(random(5, 50));
+          pop();
+        }
+      });
+
+      saveBtn = createButton('Save .obj');
+      saveBtn.mousePressed(() => myModel.saveObj());
+
+      describe('A few spheres rotating in space');
+    }
+
+    function draw() {
+      background(0);
+      noStroke();
+      lights();
+      rotateX(millis() * 0.001);
+      rotateY(millis() * 0.002);
+      model(myModel);
+    }
+    </code>
+    </div>
+class: p5.Geometry
+params:
+  - name: fileName
+    description: |
+      <p>The name of the file to save the model as.
+                                             If not specified, the default file name will be 'model.obj'.</p>
+    type: String
+    optional: true
+    optdefault: '''model.obj'''
+chainable: false
+---
+
+
+# saveObj
