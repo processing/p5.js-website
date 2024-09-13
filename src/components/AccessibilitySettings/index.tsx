@@ -2,6 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { Dropdown, type DropdownOption } from "../Dropdown";
 
 type AccessibilitySettingsProps = {
+  dropdownLabel: string;
   options: DropdownOption[];
 };
 
@@ -12,6 +13,7 @@ type PossibleA11ySettings =
   | "reduced-motion";
 
 export const AccessibilitySettings = ({
+  dropdownLabel,
   options,
 }: AccessibilitySettingsProps) => {
   const [selectedSettings, setSelectedSettings] = useState<
@@ -51,7 +53,7 @@ export const AccessibilitySettings = ({
   return (
     <Dropdown
       options={options}
-      dropdownLabel="Accessibility"
+      dropdownLabel={dropdownLabel}
       onChange={(option) => toggleSetting(option.value as PossibleA11ySettings)}
       iconKind="settings"
       variant="radio"
