@@ -1,7 +1,8 @@
 import type { ReferenceDocContentItem } from "@/src/content/types";
 import { useMemo, useRef, useState } from "preact/hooks";
-import type { JSX } from "preact";
+import { type JSX } from "preact";
 import { Icon } from "../Icon";
+import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -94,12 +95,9 @@ export const ReferenceDirectoryWithFilter = ({
                 class="text-body-mono group-hover:underline"
               >
                 {entry.data.beta && (
-                  <img
-                    className="inline-block align-center mr-2"
-                    src="/icons/flask.svg"
-                    alt="(Experimental)"
-                    width={16}
-                    height={16}
+                  <div
+                    className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
+                    dangerouslySetInnerHTML={{ __html: flask }}
                   />
                 )}
                 <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />
