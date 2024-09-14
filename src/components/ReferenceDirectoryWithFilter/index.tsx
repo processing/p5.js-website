@@ -92,8 +92,18 @@ export const ReferenceDirectoryWithFilter = ({
             >
               <span
                 class="text-body-mono group-hover:underline"
-                dangerouslySetInnerHTML={{ __html: entry.data.title }}
-              />
+              >
+                {entry.data.beta && (
+                  <img
+                    className="inline-block align-center mr-2"
+                    src="/icons/flask.svg"
+                    alt="(Experimental)"
+                    width={16}
+                    height={16}
+                  />
+                )}
+                <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />
+              </span>
               <p
                 class="mt-1 text-sm"
                 id={`${entry.data.title}-description`}
