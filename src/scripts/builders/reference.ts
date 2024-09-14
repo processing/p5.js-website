@@ -293,6 +293,7 @@ const getMethodFrontmatter = (doc: ReferenceClassItemMethod) => {
     overloads,
     itemtype,
     chainable: doc.chainable === 1,
+    beta: doc.beta ? !!doc.beta : undefined,
   };
 };
 

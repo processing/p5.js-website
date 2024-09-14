@@ -98,8 +98,12 @@ interface Return {
   type: string;
 }
 
+interface MaybeBeta {
+  beta?: number;
+}
+
 /* Represents a method within a class */
-export interface ReferenceClassItemMethod extends BaseClassItem, Chainable {
+export interface ReferenceClassItemMethod extends BaseClassItem, Chainable, MaybeBeta {
   params?: ReferenceParam[];
   return?: Return;
   example?: string[];
