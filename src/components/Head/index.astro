@@ -10,7 +10,7 @@ interface Props {
 
 const {
   title,
-  featuredImageSrc = "/favicon.svg",
+  featuredImageSrc = "/assets/img/p5js.png",
   locale,
   description,
 } = Astro.props;
@@ -28,6 +28,9 @@ const t = await getUiTranslator(locale);
 const localizedTitle = t(title) as string;
 const localizedDescription =
   description || (t("briefPageDescriptions", title) as string);
+
+const rootUrl = new URL('/', process.env.NODE_ENV === "production" ? Astro.site : Astro.url.href);
+const ogpImageSrc = new URL(featuredImageSrc, rootUrl);
 ---
 
 <head>
@@ -38,7 +41,7 @@ const localizedDescription =
   <meta name="description" content={localizedDescription} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={localizedDescription} />
-  <meta property="og:image" content={featuredImageSrc} />
+  <meta property="og:image" content={ogpImageSrc} />
   <meta property="og:url" content={Astro.url.href} />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content={localeContentMap[locale]} />
@@ -46,6 +49,6 @@ const localizedDescription =
   <meta name="twitter:site" content="@p5xjs" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={localizedDescription} />
-  <meta name="twitter:image" content={featuredImageSrc} />
+  <meta name="twitter:image" content={ogpImageSrc} />
   <meta name="twitter:url" content={Astro.url.href} />
 </head>
