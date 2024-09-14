@@ -70,6 +70,7 @@ export const referenceSchema = z.object({
   itemtype: z.string().optional(),
   class: z.string().optional(),
   chainable: z.coerce.boolean().optional(),
+  beta: z.coerce.boolean().optional(),
   return: returnSchema.optional(),
   example: z.array(exampleSchema).optional(),
   relatedContent: relatedContent().optional(),
