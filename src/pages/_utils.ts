@@ -233,6 +233,10 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
   const $ = load(htmlString);
   // Loop through all <code> tags
   $("code").each(function () {
+    // Don't escape code in multiline blocks, as these will already
+    // be escaped
+    if ($(this).parent().prop('tagName') === 'PRE') return;
+
     // Get the current text and HTML inside the <code> tag
     const currentHtml = $(this).html() ?? "";
     // Use he to escape HTML entities
