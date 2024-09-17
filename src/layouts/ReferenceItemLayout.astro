@@ -19,6 +19,7 @@ import type {
 } from "@/types/parsers.interface";
 import { setJumpToState } from "../globals/state";
 import { p5Version } from "../globals/p5-version";
+import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -88,6 +89,18 @@ const seenParams: Record<string, true> = {};
 >
   <div class="content-grid mt-0 max-w-[770px]">
     <div class="col-span-9 xl:min-w-[1000px]">
+      {entry.data.beta && (
+        <div class="experimental">
+          <h5>
+            <div
+              class="inline-block mr-2 w-[20px] h-[20px] mb-[-2px]"
+              set:html={flask}
+            />
+            {t('experimentalApi', 'title')}
+          </h5>
+          <p>{t('experimentalApi', 'description')}</p>
+        </div>
+      )}
       <div
         set:html={description}
         class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
