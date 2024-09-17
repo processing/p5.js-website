@@ -15,6 +15,10 @@ if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
 
 export const p5RepoUrl = "https://github.com/processing/p5.js.git";
 
+// This should correspond to the latest release tag name from
+// https://github.com/processing/p5.js/releases.
+export const latestRelease = "v1.10.0";
+
 /* Absolute path to the root of this project repo */
 export const repoRootPath = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
