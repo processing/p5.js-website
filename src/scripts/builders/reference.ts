@@ -49,7 +49,7 @@ export const buildReference = async () => {
   const existing = await fs.readdir(prefix)
   for (const f of existing) {
     if ((await fs.lstat(path.join(prefix, f))).isDirectory()) {
-      await fs.rmdir(path.join(prefix, f), { recursive: true });
+      await fs.rm(path.join(prefix, f), { recursive: true });
     }
   }
 
