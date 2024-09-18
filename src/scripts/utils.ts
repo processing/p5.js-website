@@ -5,6 +5,10 @@ import type { CopyOptions, Dirent } from "fs";
 import { fileURLToPath } from "url";
 import { rewriteRelativeLink } from "../pages/_utils-node";
 
+// This should correspond to the latest release tag name from
+// https://github.com/processing/p5.js/releases.
+export const latestRelease = "v1.10.0";
+
 /* Absolute path to the root of this project repo */
 export const repoRootPath = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -42,6 +46,8 @@ export const cloneLibraryRepo = async (
         "--depth",
         "1",
         "--filter=blob:none",
+        "--branch",
+        latestRelease
       ]);
       console.log("Repository cloned successfully.");
       await fixAbsolutePathInPreprocessor(localSavePath);
