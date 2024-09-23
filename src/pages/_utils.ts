@@ -377,7 +377,7 @@ export const generateJumpToState = async (
       category === getExampleCategory(currentEntrySlug)
     ) {
       // Get all entries in the current category
-      const currentCategoryEntries = localeEntries.filter(
+      let currentCategoryEntries = localeEntries.filter(
         (entry) =>
           category ===
           (collectionType === "examples"
@@ -385,6 +385,14 @@ export const generateJumpToState = async (
             : // @ts-expect-error - We know that the category exists because of the collection type
               entry.data.category ?? ""),
       );
+
+      if (collectionType === "tutorials") {
+        currentCategoryEntries = currentCategoryEntries.sort(
+          (a, b) =>
+            ((a.data as any).categoryIndex ?? 1000) -
+            ((b.data as any).categoryIndex ?? 1000),
+        );
+      }
 
       // Add the entries in the category to the jumpToLinks
       categoryLinks.push(
