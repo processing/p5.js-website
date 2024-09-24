@@ -141,10 +141,12 @@ const seenParams: Record<string, true> = {};
                 entry.data.params.map((param: ReferenceParam) => (
                   <div class="grid grid-cols-6 gap-gutter-md text-body">
                     <span class="col-span-1 text-body">{param.name}</span>
-                    <span
-                      class="col-span-5 [&_p]:m-0 [&_a]:underline"
-                      set:html={param.description}
-                    />
+                    <div
+                          class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                    >
+                      {param.type && <span>{param.type}: </span>}
+                      <span set:html={param.description} />
+                    </div>
                   </div>
                 ))}
               {entry.data.overloads &&
@@ -165,6 +167,23 @@ const seenParams: Record<string, true> = {};
                     )
                   })
                 )}
+            </div>
+          </>
+        )
+      }
+      {
+        (entry.data.return) && (
+          <>
+            <div class="mb-xl">
+              <h2 class="mb-md text-h3">{t("Returns")}</h2>
+              <div class="grid grid-cols-6 gap-gutter-md text-body">
+                <div
+                      class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                >
+                  {entry.data.return.type && <span>{entry.data.return.type}: </span>}
+                  <span set:html={entry.data.return.description} />
+                </div>
+              </div>
             </div>
           </>
         )
