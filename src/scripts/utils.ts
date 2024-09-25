@@ -7,7 +7,7 @@ import { rewriteRelativeLink } from "../pages/_utils-node";
 
 // This should correspond to the latest release tag name from
 // https://github.com/processing/p5.js/releases.
-export const latestRelease = "v1.10.0";
+export const latestRelease = "v1.11.0";
 
 /* Absolute path to the root of this project repo */
 export const repoRootPath = path.join(
