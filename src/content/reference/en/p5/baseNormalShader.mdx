@@ -1,0 +1,208 @@
+---
+title: baseNormalShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Get the shader used by <a
+  href="/reference/p5/normalMaterial/"><code>normalMaterial()</code></a>.</p>
+
+  <p>You can call <a
+  href="/reference/p5.Shader/modify/"><code>baseNormalShader().modify()</code></a>
+
+  and change any of the following hooks:</p>
+
+  <table>
+
+  <thead>
+
+  <tr>
+
+  <th>Hook</th>
+
+  <th>Description</th>
+
+  </tr>
+
+  </thead>
+
+  <tbody><tr>
+
+  <td><code>void beforeVertex</code></td>
+
+  <td>Called at the start of the vertex shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getLocalPosition</code></td>
+
+  <td>Update the position of vertices before transforms are applied. It takes in
+  <code>vec3 position</code> and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getWorldPosition</code></td>
+
+  <td>Update the position of vertices after transforms are applied. It takes in
+  <code>vec3 position</code> and pust return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getLocalNormal</code></td>
+
+  <td>Update the normal before transforms are applied. It takes in <code>vec3
+  normal</code> and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getWorldNormal</code></td>
+
+  <td>Update the normal after transforms are applied. It takes in <code>vec3
+  normal</code> and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec2 getUV</code></td>
+
+  <td>Update the texture coordinates. It takes in <code>vec2 uv</code> and must
+  return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec4 getVertexColor</code></td>
+
+  <td>Update the color of each vertex. It takes in a <code>vec4 color</code> and
+  must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void afterVertex</code></td>
+
+  <td>Called at the end of the vertex shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void beforeFragment</code></td>
+
+  <td>Called at the start of the fragment shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec4 getFinalColor</code></td>
+
+  <td>Update the final color after mixing. It takes in a <code>vec4 color</code>
+  and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void afterFragment</code></td>
+
+  <td>Called at the end of the fragment shader.</td>
+
+  </tr>
+
+  </tbody></table>
+
+  <p>Most of the time, you will need to write your hooks in GLSL ES version 300.
+  If you
+
+  are using WebGL 1 instead of 2, write your hooks in GLSL ES 100 instead.</p>
+
+  <p>Call <code>baseNormalShader().inspectHooks()</code> to see all the possible
+  hooks and
+
+  their default implementations.</p>
+line: 1197
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseNormalShader().modify({
+        uniforms: {
+          'float time': () => millis()
+        },
+        'vec3 getWorldPosition': `(vec3 pos) {
+          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+          return pos;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      noStroke();
+      sphere(50);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseNormalShader().modify({
+        'vec3 getWorldNormal': '(vec3 normal) { return abs(normal); }',
+        'vec4 getFinalColor': `(vec4 color) {
+          // Map the r, g, and b values of the old normal to new colors
+          // instead of just red, green, and blue:
+          vec3 newColor =
+            color.r * vec3(89.0, 240.0, 232.0) / 255.0 +
+            color.g * vec3(240.0, 237.0, 89.0) / 255.0 +
+            color.b * vec3(205.0, 55.0, 222.0) / 255.0;
+          newColor = newColor / (color.r + color.g + color.b);
+          return vec4(newColor, 1.0) * color.a;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      noStroke();
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.015);
+      box(100);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: The `normalMaterial` shader
+  type: p5.Shader
+chainable: false
+beta: true
+---
+
+
+# baseNormalShader

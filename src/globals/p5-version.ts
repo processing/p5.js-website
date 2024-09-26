@@ -1,1 +1,1 @@
-export const p5Version = "1.10.0" as const;
+export const p5Version = "1.11.0" as const;
