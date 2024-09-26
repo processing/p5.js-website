@@ -1,0 +1,353 @@
+---
+title: baseStrokeShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Get the shader used when drawing the strokes of shapes.</p>
+
+  <p>You can call <a
+  href="/reference/p5.Shader/modify/"><code>baseStrokeShader().modify()</code></a>
+
+  and change any of the following hooks:</p>
+
+  <table>
+
+  <tr><th>Hook</th><th>Description</th></tr>
+
+  <tr><td>
+
+
+  <p><code>void beforeVertex</code></p>
+
+  </td><td>
+
+
+  <p>Called at the start of the vertex shader.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>vec3 getLocalPosition</code></p>
+
+  </td><td>
+
+
+  <p>Update the position of vertices before transforms are applied. It takes in
+  <code>vec3 position</code> and must return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>vec3 getWorldPosition</code></p>
+
+  </td><td>
+
+
+  <p>Update the position of vertices after transforms are applied. It takes in
+  <code>vec3 position</code> and pust return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>float getStrokeWeight</code></p>
+
+  </td><td>
+
+
+  <p>Update the stroke weight. It takes in <code>float weight</code> and pust
+  return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>vec2 getLineCenter</code></p>
+
+  </td><td>
+
+
+  <p>Update the center of the line. It takes in <code>vec2 center</code> and
+  must return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>vec2 getLinePosition</code></p>
+
+  </td><td>
+
+
+  <p>Update the position of each vertex on the edge of the line. It takes in
+  <code>vec2 position</code> and must return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>vec4 getVertexColor</code></p>
+
+  </td><td>
+
+
+  <p>Update the color of each vertex. It takes in a <code>vec4 color</code> and
+  must return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>void afterVertex</code></p>
+
+  </td><td>
+
+
+  <p>Called at the end of the vertex shader.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>void beforeFragment</code></p>
+
+  </td><td>
+
+
+  <p>Called at the start of the fragment shader.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>Inputs getPixelInputs</code></p>
+
+  </td><td>
+
+
+  <p>Update the inputs to the shader. It takes in a struct <code>Inputs
+  inputs</code>, which includes:</p>
+
+  <ul>
+
+  <li><code>vec4 color</code>, the color of the stroke</li>
+
+  <li><code>vec2 tangent</code>, the direction of the stroke in screen
+  space</li>
+
+  <li><code>vec2 center</code>, the coordinate of the center of the stroke in
+  screen space p5.js pixels</li>
+
+  <li><code>vec2 position</code>, the coordinate of the current pixel in screen
+  space p5.js pixels</li>
+
+  <li><code>float strokeWeight</code>, the thickness of the stroke in p5.js
+  pixels</li>
+
+  </ul>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>bool shouldDiscard</code></p>
+
+  </td><td>
+
+
+  <p>Caps and joins are made by discarded pixels in the fragment shader to carve
+  away unwanted areas. Use this to change this logic. It takes in a <code>bool
+  willDiscard</code> and must return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>vec4 getFinalColor</code></p>
+
+  </td><td>
+
+
+  <p>Update the final color after mixing. It takes in a <code>vec4 color</code>
+  and must return a modified version.</p>
+
+  </td></tr>
+
+  <tr><td>
+
+
+  <p><code>void afterFragment</code></p>
+
+  </td><td>
+
+
+  <p>Called at the end of the fragment shader.</p>
+
+  </td></tr>
+
+  </table>
+
+
+  <p>Most of the time, you will need to write your hooks in GLSL ES version 300.
+  If you
+
+  are using WebGL 1 instead of 2, write your hooks in GLSL ES 100 instead.</p>
+
+  <p>Call <code>baseStrokeShader().inspectHooks()</code> to see all the possible
+  hooks and
+
+  their default implementations.</p>
+line: 1355
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseStrokeShader().modify({
+        'Inputs getPixelInputs': `(Inputs inputs) {
+          float opacity = 1.0 - smoothstep(
+            0.0,
+            15.0,
+            length(inputs.position - inputs.center)
+          );
+          inputs.color *= opacity;
+          return inputs;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      strokeWeight(30);
+      line(
+        -width/3,
+        sin(millis()*0.001) * height/4,
+        width/3,
+        sin(millis()*0.001 + 1) * height/4
+      );
+    }
+    </code>
+    </div>
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseStrokeShader().modify({
+        uniforms: {
+          'float time': () => millis()
+        },
+        declarations: 'vec3 myPosition;',
+        'vec3 getWorldPosition': `(vec3 pos) {
+          myPosition = pos;
+          return pos;
+        }`,
+        'float getStrokeWeight': `(float w) {
+          // Add a somewhat random offset to the weight
+          // that varies based on position and time
+          float scale = 0.8 + 0.2*sin(10.0 * sin(
+            floor(time/250.) +
+            myPosition.x*0.01 +
+            myPosition.y*0.01
+          ));
+          return w * scale;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      myShader.setUniform('time', millis());
+      strokeWeight(10);
+      beginShape();
+      for (let i = 0; i <= 50; i++) {
+        let r = map(i, 0, 50, 0, width/3);
+        let x = r*cos(i*0.2);
+        let y = r*sin(i*0.2);
+        vertex(x, y);
+      }
+      endShape();
+    }
+    </code>
+    </div>
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseStrokeShader().modify({
+        'float random': `(vec2 p) {
+          vec3 p3  = fract(vec3(p.xyx) * .1031);
+          p3 += dot(p3, p3.yzx + 33.33);
+          return fract((p3.x + p3.y) * p3.z);
+        }`,
+        'Inputs getPixelInputs': `(Inputs inputs) {
+          // Replace alpha in the color with dithering by
+          // randomly setting pixel colors to 0 based on opacity
+          float a = inputs.color.a;
+          inputs.color.a = 1.0;
+          inputs.color *= random(inputs.position.xy) > a ? 0.0 : 1.0;
+          return inputs;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      strokeWeight(10);
+      beginShape();
+      for (let i = 0; i <= 50; i++) {
+        stroke(
+          0,
+          255
+            * map(i, 0, 20, 0, 1, true)
+            * map(i, 30, 50, 1, 0, true)
+        );
+        vertex(
+          map(i, 0, 50, -1, 1) * width/3,
+          50 * sin(i/10 + frameCount/100)
+        );
+      }
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: The stroke shader
+  type: p5.Shader
+chainable: false
+beta: true
+---
+
+
+# baseStrokeShader

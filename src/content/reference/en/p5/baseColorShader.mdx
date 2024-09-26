@@ -1,0 +1,175 @@
+---
+title: baseColorShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Get the shader used when no lights or materials are applied.</p>
+
+  <p>You can call <a
+  href="/reference/p5.Shader/modify/"><code>baseColorShader().modify()</code></a>
+
+  and change any of the following hooks:</p>
+
+  <table>
+
+  <thead>
+
+  <tr>
+
+  <th>Hook</th>
+
+  <th>Description</th>
+
+  </tr>
+
+  </thead>
+
+  <tbody><tr>
+
+  <td><code>void beforeVertex</code></td>
+
+  <td>Called at the start of the vertex shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getLocalPosition</code></td>
+
+  <td>Update the position of vertices before transforms are applied. It takes in
+  <code>vec3 position</code> and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getWorldPosition</code></td>
+
+  <td>Update the position of vertices after transforms are applied. It takes in
+  <code>vec3 position</code> and pust return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getLocalNormal</code></td>
+
+  <td>Update the normal before transforms are applied. It takes in <code>vec3
+  normal</code> and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec3 getWorldNormal</code></td>
+
+  <td>Update the normal after transforms are applied. It takes in <code>vec3
+  normal</code> and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec2 getUV</code></td>
+
+  <td>Update the texture coordinates. It takes in <code>vec2 uv</code> and must
+  return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec4 getVertexColor</code></td>
+
+  <td>Update the color of each vertex. It takes in a <code>vec4 color</code> and
+  must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void afterVertex</code></td>
+
+  <td>Called at the end of the vertex shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void beforeFragment</code></td>
+
+  <td>Called at the start of the fragment shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec4 getFinalColor</code></td>
+
+  <td>Update the final color after mixing. It takes in a <code>vec4 color</code>
+  and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void afterFragment</code></td>
+
+  <td>Called at the end of the fragment shader.</td>
+
+  </tr>
+
+  </tbody></table>
+
+  <p>Most of the time, you will need to write your hooks in GLSL ES version 300.
+  If you
+
+  are using WebGL 1 instead of 2, write your hooks in GLSL ES 100 instead.</p>
+
+  <p>Call <code>baseColorShader().inspectHooks()</code> to see all the possible
+  hooks and
+
+  their default implementations.</p>
+line: 1292
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseColorShader().modify({
+        uniforms: {
+          'float time': () => millis()
+        },
+        'vec3 getWorldPosition': `(vec3 pos) {
+          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+          return pos;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      noStroke();
+      fill('red');
+      circle(0, 0, 50);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: The color shader
+  type: p5.Shader
+chainable: false
+beta: true
+---
+
+
+# baseColorShader
