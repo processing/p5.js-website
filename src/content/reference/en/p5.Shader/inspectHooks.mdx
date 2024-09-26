@@ -1,0 +1,88 @@
+---
+title: inspectHooks
+module: 3D
+submodule: Material
+file: src/webgl/p5.Shader.js
+description: >
+  <p>Logs the hooks available in this shader, and their current
+  implementation.</p>
+
+  <p>Each shader may let you override bits of its behavior. Each bit is called
+
+  a <em>hook.</em> A hook is either for the <em>vertex</em> shader, if it
+  affects the
+
+  position of vertices, or in the <em>fragment</em> shader, if it affects the
+  pixel
+
+  color. This method logs those values to the console, letting you know what
+
+  you are able to use in a call to
+
+  <a href="/reference/p5.Shader/modify/"><code>modify()</code></a>.</p>
+
+  <p>For example, this shader will produce the following output:</p>
+
+  <pre><code class="language-js">myShader = baseMaterialShader().modify({
+    declarations: 'uniform float time;',
+    'vec3 getWorldPosition': `(vec3 pos) {
+      pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+      return pos;
+    }`
+  });
+
+  myShader.inspectHooks();
+
+  </code></pre>
+
+  <pre><code>==== Vertex shader hooks: ====
+
+  void beforeVertex() {}
+
+  vec3 getLocalPosition(vec3 position) { return position; }
+
+  [MODIFIED] vec3 getWorldPosition(vec3 pos) {
+        pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+        return pos;
+      }
+  vec3 getLocalNormal(vec3 normal) { return normal; }
+
+  vec3 getWorldNormal(vec3 normal) { return normal; }
+
+  vec2 getUV(vec2 uv) { return uv; }
+
+  vec4 getVertexColor(vec4 color) { return color; }
+
+  void afterVertex() {}
+
+
+  ==== Fragment shader hooks: ====
+
+  void beforeFragment() {}
+
+  Inputs getPixelInputs(Inputs inputs) { return inputs; }
+
+  vec4 combineColors(ColorComponents components) {
+                  vec4 color = vec4(0.);
+                  color.rgb += components.diffuse * components.baseColor;
+                  color.rgb += components.ambient * components.ambientColor;
+                  color.rgb += components.specular * components.specularColor;
+                  color.rgb += components.emissive;
+                  color.a = components.opacity;
+                  return color;
+                }
+  vec4 getFinalColor(vec4 color) { return color; }
+
+  void afterFragment() {}
+
+  </code></pre>
+line: 259
+isConstructor: false
+itemtype: method
+class: p5.Shader
+chainable: false
+beta: true
+---
+
+
+# inspectHooks
