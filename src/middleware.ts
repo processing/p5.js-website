@@ -65,7 +65,13 @@ export const ensureCorrectLocalePrefixesInHtmlLinks = (
   $("a").each(function () {
     let href = $(this).attr("href");
     // Skip if href is undefined, an external link, or written with a dot slash
-    if (!href || href.startsWith("http") || href.startsWith("./")) return;
+    if (
+      !href ||
+      href.startsWith("http") ||
+      href.startsWith("./") ||
+      href.startsWith("#")
+    )
+      return;
 
     const startsWithLocale = nonDefaultSupportedLocales.some(
       (locale) => href && href.startsWith(`/${locale}/`),
