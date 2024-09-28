@@ -16,6 +16,11 @@ const handlers = [
       readFileSync("./assets/p5.min.js", { encoding: "utf-8" }),
     );
   }),
+  http.get("https://cdn.jsdelivr.net/npm/p5*", () => {
+    return HttpResponse.text(
+      readFileSync("./assets/p5.min.js", { encoding: "utf-8" }),
+    );
+  }),
 ];
 
 /**
