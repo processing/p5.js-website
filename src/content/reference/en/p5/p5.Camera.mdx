@@ -52,6 +52,604 @@ description: >
 
   </ul>
 line: 723
+isConstructor: true
+params:
+  - name: rendererGL
+    description: |
+      <p>instance of WebGL renderer</p>
+    type: RendererGL
+example:
+  - |-
+
+    <div>
+    <code>
+    let cam;
+    let delta = 0.001;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Camera object.
+      cam = createCamera();
+
+      // Place the camera at the top-center.
+      cam.setPosition(0, -400, 800);
+
+      // Point the camera at the origin.
+      cam.lookAt(0, 0, 0);
+
+      describe(
+        'A white cube on a gray background. The cube goes in and out of view as the camera pans left and right.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Turn the camera left and right, called "panning".
+      cam.pan(delta);
+
+      // Switch directions every 120 frames.
+      if (frameCount % 120 === 0) {
+        delta *= -1;
+      }
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      // Place it at the top-left.
+      // Point it at the origin.
+      cam2 = createCamera();
+      cam2.setPosition(400, -400, 800);
+      cam2.lookAt(0, 0, 0);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe(
+        'A white cube on a gray background. The camera toggles between frontal and aerial views when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the box.
+      box();
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+methods:
+  perspective:
+    description: >
+      <p>Sets a perspective projection for the camera.</p>
+
+      <p>In a perspective projection, shapes that are further from the camera
+      appear
+
+      smaller than shapes that are near the camera. This technique, called
+
+      foreshortening, creates realistic 3D scenes. It’s applied by default in
+      new
+
+      <code>p5.Camera</code> objects.</p>
+
+      <p><code>myCamera.perspective()</code> changes the camera’s perspective by
+      changing its
+
+      viewing frustum. The frustum is the volume of space that’s visible to the
+
+      camera. The frustum’s shape is a pyramid with its top cut off. The camera
+
+      is placed where the top of the pyramid should be and points towards the
+
+      base of the pyramid. It views everything within the frustum.</p>
+
+      <p>The first parameter, <code>fovy</code>, is the camera’s vertical field
+      of view. It’s
+
+      an angle that describes how tall or narrow a view the camera has. For
+
+      example, calling <code>myCamera.perspective(0.5)</code> sets the camera’s
+      vertical
+
+      field of view to 0.5 radians. By default, <code>fovy</code> is calculated
+      based on the
+
+      sketch’s height and the camera’s default z-coordinate, which is 800. The
+
+      formula for the default <code>fovy</code> is <code>2 * atan(height / 2 /
+      800)</code>.</p>
+
+      <p>The second parameter, <code>aspect</code>, is the camera’s aspect
+      ratio. It’s a number
+
+      that describes the ratio of the top plane’s width to its height. For
+
+      example, calling <code>myCamera.perspective(0.5, 1.5)</code> sets the
+      camera’s field
+
+      of view to 0.5 radians and aspect ratio to 1.5, which would make shapes
+
+      appear thinner on a square canvas. By default, <code>aspect</code> is set
+      to
+
+      <code>width / height</code>.</p>
+
+      <p>The third parameter, <code>near</code>, is the distance from the camera
+      to the near
+
+      plane. For example, calling <code>myCamera.perspective(0.5, 1.5,
+      100)</code> sets the
+
+      camera’s field of view to 0.5 radians, its aspect ratio to 1.5, and places
+
+      the near plane 100 pixels from the camera. Any shapes drawn less than 100
+
+      pixels from the camera won’t be visible. By default, <code>near</code> is
+      set to
+
+      <code>0.1 * 800</code>, which is 1/10th the default distance between the
+      camera and
+
+      the origin.</p>
+
+      <p>The fourth parameter, <code>far</code>, is the distance from the camera
+      to the far
+
+      plane. For example, calling <code>myCamera.perspective(0.5, 1.5, 100,
+      10000)</code>
+
+      sets the camera’s field of view to 0.5 radians, its aspect ratio to 1.5,
+
+      places the near plane 100 pixels from the camera, and places the far plane
+
+      10,000 pixels from the camera. Any shapes drawn more than 10,000 pixels
+
+      from the camera won’t be visible. By default, <code>far</code> is set to
+      <code>10 * 800</code>,
+
+      which is 10 times the default distance between the camera and the
+      origin.</p>
+    path: p5.Camera/perspective
+  ortho:
+    description: >
+      <p>Sets an orthographic projection for the camera.</p>
+
+      <p>In an orthographic projection, shapes with the same size always appear
+      the
+
+      same size, regardless of whether they are near or far from the camera.</p>
+
+      <p><code>myCamera.ortho()</code> changes the camera’s perspective by
+      changing its viewing
+
+      frustum from a truncated pyramid to a rectangular prism. The frustum is
+      the
+
+      volume of space that’s visible to the camera. The camera is placed in
+      front
+
+      of the frustum and views everything within the frustum.
+      <code>myCamera.ortho()</code>
+
+      has six optional parameters to define the viewing frustum.</p>
+
+      <p>The first four parameters, <code>left</code>, <code>right</code>,
+      <code>bottom</code>, and <code>top</code>, set the
+
+      coordinates of the frustum’s sides, bottom, and top. For example, calling
+
+      <code>myCamera.ortho(-100, 100, 200, -200)</code> creates a frustum that’s
+      200 pixels
+
+      wide and 400 pixels tall. By default, these dimensions are set based on
+
+      the sketch’s width and height, as in
+
+      <code>myCamera.ortho(-width / 2, width / 2, -height / 2, height /
+      2)</code>.</p>
+
+      <p>The last two parameters, <code>near</code> and <code>far</code>, set
+      the distance of the
+
+      frustum’s near and far plane from the camera. For example, calling
+
+      <code>myCamera.ortho(-100, 100, 200, -200, 50, 1000)</code> creates a
+      frustum that’s
+
+      200 pixels wide, 400 pixels tall, starts 50 pixels from the camera, and
+
+      ends 1,000 pixels from the camera. By default, <code>near</code> and
+      <code>far</code> are set to
+
+      0 and <code>max(width, height) + 800</code>, respectively.</p>
+    path: p5.Camera/ortho
+  frustum:
+    description: >
+      <p>Sets the camera's frustum.</p>
+
+      <p>In a frustum projection, shapes that are further from the camera appear
+
+      smaller than shapes that are near the camera. This technique, called
+
+      foreshortening, creates realistic 3D scenes.</p>
+
+      <p><code>myCamera.frustum()</code> changes the camera’s perspective by
+      changing its
+
+      viewing frustum. The frustum is the volume of space that’s visible to the
+
+      camera. The frustum’s shape is a pyramid with its top cut off. The camera
+
+      is placed where the top of the pyramid should be and points towards the
+
+      base of the pyramid. It views everything within the frustum.</p>
+
+      <p>The first four parameters, <code>left</code>, <code>right</code>,
+      <code>bottom</code>, and <code>top</code>, set the
+
+      coordinates of the frustum’s sides, bottom, and top. For example, calling
+
+      <code>myCamera.frustum(-100, 100, 200, -200)</code> creates a frustum
+      that’s 200
+
+      pixels wide and 400 pixels tall. By default, these coordinates are set
+
+      based on the sketch’s width and height, as in
+
+      <code>myCamera.frustum(-width / 20, width / 20, height / 20, -height /
+      20)</code>.</p>
+
+      <p>The last two parameters, <code>near</code> and <code>far</code>, set
+      the distance of the
+
+      frustum’s near and far plane from the camera. For example, calling
+
+      <code>myCamera.frustum(-100, 100, 200, -200, 50, 1000)</code> creates a
+      frustum that’s
+
+      200 pixels wide, 400 pixels tall, starts 50 pixels from the camera, and
+      ends
+
+      1,000 pixels from the camera. By default, near is set to <code>0.1 *
+      800</code>, which
+
+      is 1/10th the default distance between the camera and the origin.
+      <code>far</code> is
+
+      set to <code>10 * 800</code>, which is 10 times the default distance
+      between the
+
+      camera and the origin.</p>
+    path: p5.Camera/frustum
+  roll:
+    description: >
+      <p>Rotates the camera in a clockwise/counter-clockwise direction.</p>
+
+      <p>Rolling rotates the camera without changing its orientation. The
+      rotation
+
+      happens in the camera’s "local" space.</p>
+
+      <p>The parameter, <code>angle</code>, is the angle the camera should
+      rotate. Passing a
+
+      positive angle, as in <code>myCamera.roll(0.001)</code>, rotates the
+      camera in counter-clockwise direction.
+
+      Passing a negative angle, as in <code>myCamera.roll(-0.001)</code>,
+      rotates the
+
+      camera in clockwise direction.</p>
+
+      <p>Note: Angles are interpreted based on the current
+
+      <a href="/reference/p5/angleMode/">angleMode()</a>.</p>
+    path: p5.Camera/roll
+  pan:
+    description: >
+      <p>Rotates the camera left and right.</p>
+
+      <p>Panning rotates the camera without changing its position. The rotation
+
+      happens in the camera’s "local" space.</p>
+
+      <p>The parameter, <code>angle</code>, is the angle the camera should
+      rotate. Passing a
+
+      positive angle, as in <code>myCamera.pan(0.001)</code>, rotates the camera
+      to the
+
+      right. Passing a negative angle, as in <code>myCamera.pan(-0.001)</code>,
+      rotates the
+
+      camera to the left.</p>
+
+      <p>Note: Angles are interpreted based on the current
+
+      <a href="/reference/p5/angleMode/">angleMode()</a>.</p>
+    path: p5.Camera/pan
+  tilt:
+    description: >
+      <p>Rotates the camera up and down.</p>
+
+      <p>Tilting rotates the camera without changing its position. The rotation
+
+      happens in the camera’s "local" space.</p>
+
+      <p>The parameter, <code>angle</code>, is the angle the camera should
+      rotate. Passing a
+
+      positive angle, as in <code>myCamera.tilt(0.001)</code>, rotates the
+      camera down.
+
+      Passing a negative angle, as in <code>myCamera.tilt(-0.001)</code>,
+      rotates the camera
+
+      up.</p>
+
+      <p>Note: Angles are interpreted based on the current
+
+      <a href="/reference/p5/angleMode/">angleMode()</a>.</p>
+    path: p5.Camera/tilt
+  lookAt:
+    description: >
+      <p>Points the camera at a location.</p>
+
+      <p><code>myCamera.lookAt()</code> changes the camera’s orientation without
+      changing its
+
+      position.</p>
+
+      <p>The parameters, <code>x</code>, <code>y</code>, and <code>z</code>, are
+      the coordinates in "world" space
+
+      where the camera should point. For example, calling
+
+      <code>myCamera.lookAt(10, 20, 30)</code> points the camera at the
+      coordinates
+
+      <code>(10, 20, 30)</code>.</p>
+    path: p5.Camera/lookAt
+  camera:
+    description: >
+      <p>Sets the position and orientation of the camera.</p>
+
+      <p><code>myCamera.camera()</code> allows objects to be viewed from
+      different angles. It
+
+      has nine parameters that are all optional.</p>
+
+      <p>The first three parameters, <code>x</code>, <code>y</code>, and
+      <code>z</code>, are the coordinates of the
+
+      camera’s position in "world" space. For example, calling
+
+      <code>myCamera.camera(0, 0, 0)</code> places the camera at the origin
+      <code>(0, 0, 0)</code>. By
+
+      default, the camera is placed at <code>(0, 0, 800)</code>.</p>
+
+      <p>The next three parameters, <code>centerX</code>, <code>centerY</code>,
+      and <code>centerZ</code> are the
+
+      coordinates of the point where the camera faces in "world" space. For
+
+      example, calling <code>myCamera.camera(0, 0, 0, 10, 20, 30)</code> places
+      the camera
+
+      at the origin <code>(0, 0, 0)</code> and points it at <code>(10, 20,
+      30)</code>. By default, the
+
+      camera points at the origin <code>(0, 0, 0)</code>.</p>
+
+      <p>The last three parameters, <code>upX</code>, <code>upY</code>, and
+      <code>upZ</code> are the components of
+
+      the "up" vector in "local" space. The "up" vector orients the camera’s
+
+      y-axis. For example, calling
+
+      <code>myCamera.camera(0, 0, 0, 10, 20, 30, 0, -1, 0)</code> places the
+      camera at the
+
+      origin <code>(0, 0, 0)</code>, points it at <code>(10, 20, 30)</code>, and
+      sets the "up" vector
+
+      to <code>(0, -1, 0)</code> which is like holding it upside-down. By
+      default, the "up"
+
+      vector is <code>(0, 1, 0)</code>.</p>
+    path: p5.Camera/camera
+  move:
+    description: >
+      <p>Moves the camera along its "local" axes without changing its
+      orientation.</p>
+
+      <p>The parameters, <code>x</code>, <code>y</code>, and <code>z</code>, are
+      the distances the camera should
+
+      move. For example, calling <code>myCamera.move(10, 20, 30)</code> moves
+      the camera 10
+
+      pixels to the right, 20 pixels down, and 30 pixels backward in its "local"
+
+      space.</p>
+    path: p5.Camera/move
+  setPosition:
+    description: >
+      <p>Sets the camera’s position in "world" space without changing its
+
+      orientation.</p>
+
+      <p>The parameters, <code>x</code>, <code>y</code>, and <code>z</code>, are
+      the coordinates where the camera
+
+      should be placed. For example, calling <code>myCamera.setPosition(10, 20,
+      30)</code>
+
+      places the camera at coordinates <code>(10, 20, 30)</code> in "world"
+      space.</p>
+    path: p5.Camera/setPosition
+  set:
+    description: >
+      <p>Sets the camera’s position, orientation, and projection by copying
+      another
+
+      camera.</p>
+
+      <p>The parameter, <code>cam</code>, is the <code>p5.Camera</code> object
+      to copy. For example, calling
+
+      <code>cam2.set(cam1)</code> will set <code>cam2</code> using
+      <code>cam1</code>’s configuration.</p>
+    path: p5.Camera/set
+  slerp:
+    description: >
+      <p>Sets the camera’s position and orientation to values that are
+      in-between
+
+      those of two other cameras.</p>
+
+      <p><code>myCamera.slerp()</code> uses spherical linear interpolation to
+      calculate a
+
+      position and orientation that’s in-between two other cameras. Doing so is
+
+      helpful for transitioning smoothly between two perspectives.</p>
+
+      <p>The first two parameters, <code>cam0</code> and <code>cam1</code>, are
+      the <code>p5.Camera</code> objects
+
+      that should be used to set the current camera.</p>
+
+      <p>The third parameter, <code>amt</code>, is the amount to interpolate
+      between <code>cam0</code> and
+
+      <code>cam1</code>. 0.0 keeps the camera’s position and orientation equal
+      to <code>cam0</code>’s,
+
+      0.5 sets them halfway between <code>cam0</code>’s and <code>cam1</code>’s
+      , and 1.0 sets the
+
+      position and orientation equal to <code>cam1</code>’s.</p>
+
+      <p>For example, calling <code>myCamera.slerp(cam0, cam1, 0.1)</code> sets
+      cam’s position
+
+      and orientation very close to <code>cam0</code>’s. Calling
+
+      <code>myCamera.slerp(cam0, cam1, 0.9)</code> sets cam’s position and
+      orientation very
+
+      close to <code>cam1</code>’s.</p>
+
+      <p>Note: All of the cameras must use the same projection.</p>
+    path: p5.Camera/slerp
+properties:
+  eyeX:
+    description: |
+      <p>The camera’s x-coordinate.</p>
+      <p>By default, the camera’s x-coordinate is set to 0 in "world" space.</p>
+    path: p5.Camera/eyeX
+  eyeY:
+    description: |
+      <p>The camera’s y-coordinate.</p>
+      <p>By default, the camera’s y-coordinate is set to 0 in "world" space.</p>
+    path: p5.Camera/eyeY
+  eyeZ:
+    description: >
+      <p>The camera’s z-coordinate.</p>
+
+      <p>By default, the camera’s z-coordinate is set to 800 in "world"
+      space.</p>
+    path: p5.Camera/eyeZ
+  centerX:
+    description: >
+      <p>The x-coordinate of the place where the camera looks.</p>
+
+      <p>By default, the camera looks at the origin <code>(0, 0, 0)</code> in
+      "world" space, so
+
+      <code>myCamera.centerX</code> is 0.</p>
+    path: p5.Camera/centerX
+  centerY:
+    description: >
+      <p>The y-coordinate of the place where the camera looks.</p>
+
+      <p>By default, the camera looks at the origin <code>(0, 0, 0)</code> in
+      "world" space, so
+
+      <code>myCamera.centerY</code> is 0.</p>
+    path: p5.Camera/centerY
+  centerZ:
+    description: >
+      <p>The y-coordinate of the place where the camera looks.</p>
+
+      <p>By default, the camera looks at the origin <code>(0, 0, 0)</code> in
+      "world" space, so
+
+      <code>myCamera.centerZ</code> is 0.</p>
+    path: p5.Camera/centerZ
+  upX:
+    description: >
+      <p>The x-component of the camera's "up" vector.</p>
+
+      <p>The camera's "up" vector orients its y-axis. By default, the "up"
+      vector is
+
+      <code>(0, 1, 0)</code>, so its x-component is 0 in "local" space.</p>
+    path: p5.Camera/upX
+  upY:
+    description: >
+      <p>The y-component of the camera's "up" vector.</p>
+
+      <p>The camera's "up" vector orients its y-axis. By default, the "up"
+      vector is
+
+      <code>(0, 1, 0)</code>, so its y-component is 1 in "local" space.</p>
+    path: p5.Camera/upY
+  upZ:
+    description: >
+      <p>The z-component of the camera's "up" vector.</p>
+
+      <p>The camera's "up" vector orients its y-axis. By default, the "up"
+      vector is
+
+      <code>(0, 1, 0)</code>, so its z-component is 0 in "local" space.</p>
+    path: p5.Camera/upZ
+chainable: false
 ---
 
 

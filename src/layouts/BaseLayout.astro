@@ -10,6 +10,7 @@ import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
 import "@styles/base.scss";
 import type { CollectionEntry } from "astro:content";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
 
 interface Props {
   title: string;
@@ -39,7 +40,7 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 
 const slug = title.toLowerCase().split(/\s+/).join('-');
 const pages = await getCollectionInLocaleWithFallbacks("pages", currentLocale);
-const headerPage = pages.find((page) => page.slug === slug);
+const headerPage = pages.find((page) => removeLocalePrefix(page.slug).slice(1) === slug);
 let HeaderContent: any = undefined;
 if (headerPage) {
   const { Content } = await headerPage.render();

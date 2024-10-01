@@ -40,6 +40,65 @@ description: >
 
   that contains the fragment shader program written in GLSL.</p>
 
+  <p>A shader can optionally describe <em>hooks,</em> which are functions in
+  GLSL that
+
+  users may choose to provide to customize the behavior of the shader using the
+
+  <a href="/reference/p5.Shader/modify/"><code>modify()</code></a> method of
+  <code>p5.Shader</code>. These are added by
+
+  describing the hooks in a third parameter, <code>options</code>, and
+  referencing the hooks in
+
+  your <code>vertSrc</code> or <code>fragSrc</code>. Hooks for the vertex or
+  fragment shader are described under
+
+  the <code>vertex</code> and <code>fragment</code> keys of
+  <code>options</code>. Each one is an object. where each key is
+
+  the type and name of a hook function, and each value is a string with the
+
+  parameter list and default implementation of the hook. For example, to let
+  users
+
+  optionally run code at the start of the vertex shader, the options object
+  could
+
+  include:</p>
+
+  <pre><code class="language-js">{
+    vertex: {
+      'void beforeVertex': '() {}'
+    }
+  }
+
+  </code></pre>
+
+  <p>Then, in your vertex shader source, you can run a hook by calling a
+  function
+
+  with the same name prefixed by <code>HOOK_</code>. If you want to check if the
+  default
+
+  hook has been replaced, maybe to avoid extra overhead, you can check if the
+
+  same name prefixed by <code>AUGMENTED_HOOK_</code> has been defined:</p>
+
+  <pre><code class="language-glsl">void main() {
+    // In most cases, just calling the hook is fine:
+    HOOK_beforeVertex();
+
+    // Alternatively, for more efficiency:
+    #ifdef AUGMENTED_HOOK_beforeVertex
+    HOOK_beforeVertex();
+    #endif
+
+    // Add the rest of your shader code here!
+  }
+
+  </code></pre>
+
   <p>Note: Only filter shaders can be used in 2D mode. All shaders can be used
 
   in WebGL mode.</p>
@@ -268,6 +327,75 @@ example:
     }
     </code>
     </div>
+
+    <div>
+    <code>
+    // A shader with hooks.
+    let myShader;
+
+    // A shader with modified hooks.
+    let modifiedShader;
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+
+    void main() {
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a fragment shader that uses a hook.
+    let fragSrc = `
+    precision highp float;
+    void main() {
+      // Let users override the color
+      gl_FragColor = HOOK_getColor(vec4(1., 0., 0., 1.));
+    }
+    `;
+
+    function setup() {
+      createCanvas(50, 50, WEBGL);
+
+      // Create a shader with hooks
+      myShader = createShader(vertSrc, fragSrc, {
+        fragment: {
+          'vec4 getColor': '(vec4 color) { return color; }'
+        }
+      });
+
+      // Make a version of the shader with a hook overridden
+      modifiedShader = myShader.modify({
+        'vec4 getColor': `(vec4 color) {
+          return vec4(0., 0., 1., 1.);
+        }`
+      });
+    }
+
+    function draw() {
+      noStroke();
+
+      push();
+      shader(myShader);
+      translate(-width/3, 0);
+      sphere(10);
+      pop();
+
+      push();
+      shader(modifiedShader);
+      translate(width/3, 0);
+      sphere(10);
+      pop();
+    }
+    </code>
+    </div>
 class: p5
 params:
   - name: vertSrc
@@ -278,6 +406,23 @@ params:
     description: |
       <p>source code for the fragment shader.</p>
     type: String
+  - name: options
+    description: >
+      <p>An optional object describing how this shader can
+
+      be augmented with hooks. It can include:</p>
+
+      <ul>
+
+      <li><code>vertex</code>: An object describing the available vertex shader
+      hooks.</li>
+
+      <li><code>fragment</code>: An object describing the available frament
+      shader hooks.</li>
+
+      </ul>
+    type: Object
+    optional: true
 return:
   description: |-
     new shader object created from the

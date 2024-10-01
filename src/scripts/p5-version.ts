@@ -1,5 +1,5 @@
 import path from "path";
-import { cloneLibraryRepo, repoRootPath, writeFile } from "./utils";
+import { cloneLibraryRepo, p5RepoUrl, repoRootPath, writeFile } from "./utils";
 import { readFile } from "fs/promises";
 
 /* Where to clone the repo to */
@@ -13,7 +13,7 @@ const outputString = (version: string) =>
 const run = async () => {
   console.log("Reading latest p5 version to update config...");
 
-  await cloneLibraryRepo(clonedRepoPath);
+  await cloneLibraryRepo(clonedRepoPath, p5RepoUrl, "main");
 
   // read version from package.json
   const packageConfigContents = await readFile(

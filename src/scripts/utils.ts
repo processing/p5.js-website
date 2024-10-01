@@ -4,10 +4,16 @@ import path from "path";
 import type { CopyOptions, Dirent } from "fs";
 import { fileURLToPath } from "url";
 import { rewriteRelativeLink } from "../pages/_utils-node";
+import { p5Version } from "../globals/p5-version";
 
-// This should correspond to the latest release tag name from
-// https://github.com/processing/p5.js/releases.
-export const latestRelease = "v1.10.0";
+let latestRelease = p5Version;
+// If the latest release is a version number (e.g. 1.10.0) without a 'v'
+// prefix, add the v prefix
+if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
+  latestRelease = 'v' + latestRelease;
+}
+
+export const p5RepoUrl = "https://github.com/processing/p5.js.git";
 
 /* Absolute path to the root of this project repo */
 export const repoRootPath = path.join(
@@ -23,12 +29,13 @@ export const repoRootPath = path.join(
  */
 export const cloneLibraryRepo = async (
   localSavePath: string,
-  repoUrl = "https://github.com/processing/p5.js.git",
+  repoUrl: string = p5RepoUrl,
+  branch: string = latestRelease,
 ) => {
   const git = simpleGit();
 
   const repoExists = await fileExistsAt(localSavePath);
-  const hasRecentRepo = repoExists && (await fileModifiedSince(localSavePath));
+  const hasRecentRepo = branch !== 'main' && repoExists && (await fileModifiedSince(localSavePath));
 
   if (!hasRecentRepo) {
     console.log("Preparing to clone repository...");
@@ -47,7 +54,7 @@ export const cloneLibraryRepo = async (
         "1",
         "--filter=blob:none",
         "--branch",
-        latestRelease
+        branch
       ]);
       console.log("Repository cloned successfully.");
       await fixAbsolutePathInPreprocessor(localSavePath);
