@@ -31,6 +31,9 @@ export const cloneLibraryRepo = async (
   localSavePath: string,
   repoUrl: string = p5RepoUrl,
   branch: string = latestRelease,
+  { shouldFixAbsolutePathInPreprocessor = true }: {
+    shouldFixAbsolutePathInPreprocessor?: boolean
+  } = {}
 ) => {
   const git = simpleGit();
 
@@ -57,7 +60,9 @@ export const cloneLibraryRepo = async (
         branch
       ]);
       console.log("Repository cloned successfully.");
-      await fixAbsolutePathInPreprocessor(localSavePath);
+      if (shouldFixAbsolutePathInPreprocessor) {
+        await fixAbsolutePathInPreprocessor(localSavePath);
+      }
     } catch (err) {
       console.error(`Error cloning repo: ${err}`);
       throw err;
