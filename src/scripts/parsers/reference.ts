@@ -19,15 +19,20 @@ export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
     // Clone p5.js
     await cloneLibraryRepo(localPath);
-    await saveYuidocOutput('p5.js', 'data-p5');
+    // TODO(dave): let this happen via `npm run docs` in the p5 repo once we
+    // merge the 2.0 branch
+    await saveYuidocOutput('p5.js', 'data-p5', {
+      flags: `--config ${path.join(__dirname, '../../../yuidoc.json')}`,
+      inputPath: './src',
+    });
     const p5Data = await getYuidocOutput('data-p5');
     if (!p5Data) throw new Error('Error generating p5 reference data!');
 
     // Clone p5.sound.js
     await cloneLibraryRepo(
       localSoundPath,
-      'https://github.com/processing/p5.sound.js.git',
-      'moduleref', // 'main',
+      'https://github.com/davepagurek/p5.sound.js-pre-release.git', // 'https://github.com/processing/p5.sound.js.git',
+      'moduleref-doc-comments', // 'main',
       { shouldFixAbsolutePathInPreprocessor: false }
     );
     await saveYuidocOutput('p5.sound.js', 'data-sound');
@@ -76,7 +81,17 @@ const getYuidocOutput = async (outDirName: string): Promise<ParsedLibraryReferen
 /**
  * Parses the p5.js library using YUIDoc and captures the output
  */
-export const saveYuidocOutput = async (inDirName: string, outDirName: string) => {
+export const saveYuidocOutput = async (
+  inDirName: string,
+  outDirName: string,
+  {
+    flags = '',
+    inputPath = '.',
+  }: {
+    flags?: string
+    inputPath?: string
+  } = {}
+) => {
   console.log("Running YUIDoc command and capturing output...");
   const outputFilePath = path.join(yuidocOutputPath, outDirName);
   try {
@@ -84,7 +99,7 @@ export const saveYuidocOutput = async (inDirName: string, outDirName: string) =>
     const inPath = path.join(__dirname, "in", inDirName);
     console.log(inPath)
     await new Promise((resolve, reject) => {
-      exec(`yuidoc -p --outdir ${outputFilePath} .`, { cwd: inPath }, (error, stdout) => {
+      exec(`yuidoc -p --outdir ${outputFilePath} ${flags} ${inputPath}`, { cwd: inPath }, (error, stdout) => {
         if (error) {
           console.error(`Error running YUIDoc command: ${error}`);
           reject(error);

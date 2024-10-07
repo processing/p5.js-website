@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { cdnLibraryUrl } from "@/src/globals/globals";
+import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -21,6 +21,7 @@ import { Icon } from "../Icon";
  *   TODO: refactor this prop behavior
  *   allowSideBySide?: boolean
  *   fullWidth?: boolean
+ *   includeSound?: boolean
  * }
  */
 export const CodeEmbed = (props) => {
@@ -77,6 +78,7 @@ export const CodeEmbed = (props) => {
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
+              scripts={props.includeSound ? [cdnSoundUrl] : []}
             />
           </div>
           <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>

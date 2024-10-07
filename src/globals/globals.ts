@@ -21,3 +21,5 @@ export const libraryDownloadUrl =
   `https://github.com/processing/p5.js/releases/download/v${p5Version}/p5.js` as const;
 export const minifiedLibraryDownloadUrl =
   `https://github.com/processing/p5.js/releases/download/v${p5Version}/p5.min.js` as const;
+export const cdnSoundUrl =
+  `https://cdn.jsdelivr.net/npm/p5@${p5Version}/lib/addons/p5.sound.js` as const;
