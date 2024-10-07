@@ -21,6 +21,7 @@ export const categories = [
   "Structure", // TODO: move to top once revised
   "Constants",
   "Foundation",
+  "p5.sound",
 ] as const;
 
 const paramSchema = z.object({
@@ -32,7 +33,7 @@ const paramSchema = z.object({
 
 const returnSchema = z.object({
   description: z.string(),
-  type: z.string(),
+  type: z.string().optional(),
 });
 
 const exampleSchema = z.string();
