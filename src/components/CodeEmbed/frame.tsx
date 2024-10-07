@@ -6,6 +6,7 @@ interface CodeBundle {
   htmlBody?: string;
   js?: string;
   base?: string;
+  scripts?: string[];
 }
 
 /*
@@ -41,6 +42,7 @@ canvas {
 }
 ${code.css || ""}
 </style>
+${(code.scripts || []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${wrapSketch(code.js) || ""}</script>
 <script type="text/javascript">
@@ -67,6 +69,7 @@ export interface CodeFrameProps {
   width?: number | string;
   base?: string;
   lazyLoad?: boolean;
+  scripts?: string[];
 }
 
 /*
@@ -155,6 +158,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
           css: props.cssCode,
           htmlBody: props.htmlBodyCode,
           base: props.base,
+          scripts: props.scripts,
         })}
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
