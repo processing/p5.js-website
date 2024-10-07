@@ -27,7 +27,7 @@ export const parseLibraryReference =
     await cloneLibraryRepo(
       localSoundPath,
       'https://github.com/processing/p5.sound.js.git',
-      'main',
+      'moduleref', // 'main',
       { shouldFixAbsolutePathInPreprocessor: false }
     );
     await saveYuidocOutput('p5.sound.js', 'data-sound');
