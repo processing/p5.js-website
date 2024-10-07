@@ -339,7 +339,7 @@ export const generateJumpToState = async (
       break;
     case "examples":
       categories = new Set(
-        localeEntries.map((entry) => getExampleCategory(entry.slug)),
+        localeEntries.map((entry) => getExampleCategory(entry.id)),
       );
       break;
     default:
@@ -374,14 +374,15 @@ export const generateJumpToState = async (
     // Examples are a special case where subentries are only shown if they are in the current category
     if (
       collectionType !== "examples" ||
-      category === getExampleCategory(currentEntrySlug)
+      category === getExampleCategory(currentEntrySlug) ||
+      category.toLowerCase() === getExampleCategory(currentEntrySlug)
     ) {
       // Get all entries in the current category
       let currentCategoryEntries = localeEntries.filter(
         (entry) =>
           category ===
           (collectionType === "examples"
-            ? getExampleCategory(entry.slug)
+            ? getExampleCategory(entry.id)
             : // @ts-expect-error - We know that the category exists because of the collection type
               entry.data.category ?? ""),
       );
