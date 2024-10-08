@@ -367,7 +367,10 @@ export const generateJumpToState = async (
     const categoryLinks = [] as JumpToLink[];
     categoryLinks.push({
       label: getCategoryLabel(category),
-      url: `/${collectionType}#${category}`,
+      url:
+        collectionType === "examples"
+          ? `/${collectionType}#${getCategoryLabel(category).toLocaleLowerCase()}`
+          : `/${collectionType}#${category}`,
       current: false,
     });
 
