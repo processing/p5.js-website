@@ -365,12 +365,13 @@ export const generateJumpToState = async (
   // Loop through each category and add entries to the jumpToLinks
   for (const category of categories ?? []) {
     const categoryLinks = [] as JumpToLink[];
+    const categoryLabel = getCategoryLabel(category);
     categoryLinks.push({
-      label: getCategoryLabel(category),
+      label: categoryLabel,
       url:
         collectionType === "examples"
-          ? `/${collectionType}#${getCategoryLabel(category).toLocaleLowerCase()}`
-          : `/${collectionType}#${category}`,
+          ? `/${collectionType}/#${categoryLabel.toLowerCase()}`
+          : `/${collectionType}/#${category}`,
       current: false,
     });
 
