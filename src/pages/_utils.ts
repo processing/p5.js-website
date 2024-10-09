@@ -339,7 +339,7 @@ export const generateJumpToState = async (
       break;
     case "examples":
       categories = new Set(
-        localeEntries.map((entry) => getExampleCategory(entry.slug)),
+        localeEntries.map((entry) => getExampleCategory(entry.id)),
       );
       break;
     default:
@@ -365,23 +365,28 @@ export const generateJumpToState = async (
   // Loop through each category and add entries to the jumpToLinks
   for (const category of categories ?? []) {
     const categoryLinks = [] as JumpToLink[];
+    const categoryLabel = getCategoryLabel(category);
     categoryLinks.push({
-      label: getCategoryLabel(category),
-      url: `/${collectionType}#${category}`,
+      label: categoryLabel,
+      url:
+        collectionType === "examples"
+          ? `/${collectionType}/#${categoryLabel.toLowerCase()}`
+          : `/${collectionType}/#${category}`,
       current: false,
     });
 
     // Examples are a special case where subentries are only shown if they are in the current category
     if (
       collectionType !== "examples" ||
-      category === getExampleCategory(currentEntrySlug)
+      category === getExampleCategory(currentEntrySlug) ||
+      category.toLowerCase() === getExampleCategory(currentEntrySlug)
     ) {
       // Get all entries in the current category
       let currentCategoryEntries = localeEntries.filter(
         (entry) =>
           category ===
           (collectionType === "examples"
-            ? getExampleCategory(entry.slug)
+            ? getExampleCategory(entry.id)
             : // @ts-expect-error - We know that the category exists because of the collection type
               entry.data.category ?? ""),
       );
