@@ -2,22 +2,50 @@
 title: onended
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: |
-  <p>Schedule an event to be called when the soundfile
-  reaches the end of a buffer. If the soundfile is
-  playing through once, this will be called when it
-  ends. If it is looping, it will be called when
-  stop is called.</p>
-line: 2497
+file: src/SoundFile.js
+description: Define a function to call when the soundfile is done playing.
+line: 348
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let player;
+
+    function preload() {
+      player = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      background(220);
+      textAlign(CENTER);
+      textSize(10);
+      text('click to play', width/2, height/2);
+      cnv.mousePressed(playSound);
+      player.onended(coolFunction);
+    }
+
+    function coolFunction() {
+      background(220);
+      text('sound is done', width/2, height/2);
+    }
+
+    function playSound() {
+      background(0, 255, 255);
+      text('sound is playing', width/2, height/2);
+      if (!player.isPlaying()) {
+        player.play();
+      }
+    }
+    </code>
+    </div>
 class: p5.SoundFile
 params:
   - name: callback
-    description: |
-      <p>function to call when the
-                                  soundfile has ended.</p>
+    description: Name of a function that will be called when the soundfile is done playing.
     type: Function
 chainable: false
 ---

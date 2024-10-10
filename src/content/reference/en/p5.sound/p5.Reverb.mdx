@@ -2,91 +2,55 @@
 title: p5.Reverb
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: >
-  <p>Reverb adds depth to a sound through a large number of decaying
-
-  echoes. It creates the perception that sound is occurring in a
-
-  physical space. The p5.Reverb has paramters for Time (how long does the
-
-  reverb last) and decayRate (how much the sound decays with each echo)
-
-  that can be set with the .set() or .process() methods. The p5.Convolver
-
-  extends p5.Reverb allowing you to recreate the sound of actual physical
-
-  spaces through convolution.</p>
-
-  <p>This class extends <a href="/reference//p5.Effect">p5.Effect</a>.
-
-  Methods <a href="/reference//p5.Effect/amp/">amp()</a>, <a
-  href="/reference//p5.Effect/chain/">chain()</a>,
-
-  <a href="/reference//p5.Effect/drywet/">drywet()</a>, <a
-  href="/reference//p5.Effect/connect/">connect()</a>, and
-
-  <a href="/reference//p5.Effect/disconnect/">disconnect()</a> are
-  available.</p>
-line: 8308
+file: src/Reverb.js
+description: Add reverb to a sound by specifying duration and decay.
+line: 10
 isConstructor: true
+params:
+  - name: decayTime
+    description: Set the decay time of the reverb
+    type: Number
+    optional: true
 example:
   - |-
 
-    <div><code>
-    let soundFile, reverb;
-    function preload() {
-      soundFile = loadSound('/assets/Damscray_DancingTiger.mp3');
-    }
+    <div>
+    <code>
+    let noise, osc, env, reverb;
+    let randomTime = 0;
 
     function setup() {
       let cnv = createCanvas(100, 100);
       cnv.mousePressed(playSound);
-
+      noise = new p5.Noise();
+      env = new p5.Envelope();
       reverb = new p5.Reverb();
-      soundFile.disconnect(); // so we'll only hear reverb...
-
-      // connect soundFile to reverb, process w/
-      // 3 second reverbTime, decayRate of 2%
-      reverb.process(soundFile, 3, 2);
-    }
-
-    function draw() {
-      let dryWet = constrain(map(mouseX, 0, width, 0, 1), 0, 1);
-      // 1 = all reverb, 0 = no reverb
-      reverb.drywet(dryWet);
-
-      background(220);
-      text('tap to play', 10, 20);
-      text('dry/wet: ' + round(dryWet * 100) + '%', 10, height - 20);
+      noise.disconnect();
+      noise.connect(env);
+      env.disconnect();
+      env.connect(reverb);
+      noise.start();
+      textAlign(CENTER);
     }
 
     function playSound() {
-      soundFile.play();
+     randomTime = random(0.1, 3);
+     reverb.set(randomTime); 
+     env.play();
     }
-    </code></div>
+
+    function draw() {
+      background(220);
+      text('click to play', width/2, 20);
+      text('decay ' + round(randomTime, 2), width/2, 40);
+      describe('Click to play a sound with a random decay time.');
+    }
+    </code>
+    </div>
 methods:
-  process:
-    description: |
-      <p>Connect a source to the reverb, and assign reverb parameters.</p>
-    path: p5.Reverb/process
   set:
-    description: |
-      <p>Set the reverb settings. Similar to .process(), but without
-      assigning a new input.</p>
+    description: Set the decay time of the reverb.
     path: p5.Reverb/set
-  amp:
-    description: |
-      <p>Set the output level of the reverb effect.</p>
-    path: p5.Reverb/amp
-  connect:
-    description: |
-      <p>Send output to a p5.sound or web audio object</p>
-    path: p5.Reverb/connect
-  disconnect:
-    description: |
-      <p>Disconnect all output.</p>
-    path: p5.Reverb/disconnect
 chainable: false
 ---
 

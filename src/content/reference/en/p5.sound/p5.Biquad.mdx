@@ -1,0 +1,92 @@
+---
+title: p5.Biquad
+module: p5.sound
+submodule: p5.sound
+file: src/Biquad.js
+description: Filter the frequency range of a sound.
+line: 11
+isConstructor: true
+params:
+  - name: cutoff
+    description: 'cutoff frequency of the filter, a value between 0 and 24000.'
+    type: Number
+    optional: true
+  - name: type
+    description: |-
+      filter type. Options: "lowpass", 
+                             "highpass", "bandpass", "lowshelf",
+                             "highshelf", "notch", "allpass", 
+                             "peaking"
+    type: String
+    optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    ///kind of Karplus-Strong string synthesis using p5.sound.js
+
+    let noise, lowPass, hiPass, delay, env, gain;
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      background(220);
+      textAlign(CENTER);
+      textSize(9);
+      text('click and drag mouse', width/2, height/2);
+      
+      noise = new Noise('white');
+      env = new Envelope(0);
+      lowPass = new Biquad(1200, 'lowpass');
+      hiPass = new Biquad(55, 'highpass');
+      delay = new Delay(0.0005, 0.97);
+      gain = new Gain(0.5);
+      noise.disconnect();
+      noise.connect(hiPass);
+      hiPass.disconnect();
+      hiPass.connect(env);
+      env.disconnect();
+      env.connect(lowPass);
+      lowPass.disconnect();
+      lowPass.connect(delay);
+
+      cnv.mousePressed(pluckStart);
+      cnv.mouseReleased(pluckStop);
+      cnv.mouseOut(pluckStop);
+      describe('A sketch that synthesizes string sounds.');
+    }
+
+    function pluckStart() {
+      background(0, 255, 255);
+      text('release to trigger decay', width/2, height/2);
+      let dtime = map(mouseX, 0, width, 0.009, 0.001);
+      delay.delayTime(dtime, 0);
+      noise.start();
+      env.triggerAttack();
+    }
+
+    function pluckStop() {
+      background(220);
+      text('click to pluck', width/2, height/2);
+      env.triggerRelease();
+    }
+    </code>
+    </div>
+methods:
+  res:
+    description: The filter's resonance factor.
+    path: p5.Biquad/res
+  gain:
+    description: The gain of the filter in dB units.
+    path: p5.Biquad/gain
+  setType:
+    description: Set the type of the filter.
+    path: p5.Biquad/setType
+  freq:
+    description: Set the cutoff frequency of the filter.
+    path: p5.Biquad/freq
+chainable: false
+---
+
+
+# p5.Biquad
