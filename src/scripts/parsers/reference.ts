@@ -31,13 +31,26 @@ export const parseLibraryReference =
     // Clone p5.sound.js
     await cloneLibraryRepo(
       localSoundPath,
-      'https://github.com/davepagurek/p5.sound.js-pre-release.git', // 'https://github.com/processing/p5.sound.js.git',
-      'moduleref-doc-comments', // 'main',
-      { shouldFixAbsolutePathInPreprocessor: false }
+      'https://github.com/processing/p5.sound.js.git',
+      'main'
     );
     await saveYuidocOutput('p5.sound.js', 'data-sound');
     const soundData = await getYuidocOutput('data-sound');
     if (!soundData) throw new Error('Error generating p5.sound reference data!');
+
+    // Fix p5.sound classes
+    for (const key in soundData.classes) {
+      const newName = 'p5.' + soundData.classes[key].name;
+      const updated = {
+        ...soundData.classes[key],
+        name: newName,
+      };
+      soundData.classes[newName] = updated;
+      delete soundData.classes[key];
+    }
+    for (const item of soundData.classitems) {
+      item.class = 'p5.' + item.class;
+    }
 
     const combined = await combineYuidocData(
       [

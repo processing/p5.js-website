@@ -42,9 +42,10 @@ canvas {
 }
 ${code.css || ""}
 </style>
-${(code.scripts || []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
+${(code.scripts ? [cdnLibraryUrl, ...code.scripts] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${wrapSketch(code.js) || ""}</script>
+${(code.scripts?.length ?? 0) > 0 ? '' : `
 <script type="text/javascript">
   // Listen for p5.min.js text content and include in iframe's head as script
   window.addEventListener("message", event => {
@@ -59,6 +60,7 @@ ${(code.scripts || []).map((src) => `<script type="text/javascript" src="${src}"
     }
   })
 </script>
+`}
 `.replace(/\u00A0/g, " ");
 
 export interface CodeFrameProps {

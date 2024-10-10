@@ -2,74 +2,41 @@
 title: p5.FFT
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: |-
-  <p>FFT (Fast Fourier Transform) is an analysis algorithm that
-  isolates individual
-  <a href="https://en.wikipedia.org/wiki/Audio_frequency/">
-  audio frequencies</a> within a waveform.</p>
-
-  <p>Once instantiated, a p5.FFT object can return an array based on
-  two types of analyses: <br> • <code>FFT.waveform()</code> computes
-  amplitude values along the time domain. The array indices correspond
-  to samples across a brief moment in time. Each value represents
-  amplitude of the waveform at that sample of time.<br>
-  • <code>FFT.analyze() </code> computes amplitude values along the
-  frequency domain. The array indices correspond to frequencies (i.e.
-  pitches), from the lowest to the highest that humans can hear. Each
-  value represents amplitude at that slice of the frequency spectrum.
-  Use with <code>getEnergy()</code> to measure amplitude at specific
-  frequencies, or within a range of frequencies. </br></br></p>
-
-  <p>FFT analyzes a very short snapshot of sound called a sample
-  buffer. It returns an array of amplitude measurements, referred
-  to as <code>bins</code>. The array is 1024 bins long by default.
-  You can change the bin array length, but it must be a power of 2
-  between 16 and 1024 in order for the FFT algorithm to function
-  correctly. The actual size of the FFT buffer is twice the
-  number of bins, so given a standard sample rate, the buffer is
-  2048/44100 seconds long.</p>
-line: 3347
+file: src/FFT.js
+description: Analyze the frequency spectrum and waveform of sounds.
+line: 11
 isConstructor: true
 params:
-  - name: smoothing
-    description: |
-      <p>Smooth results of Freq Spectrum.
-                                    0.0 < smoothing < 1.0.
-                                    Defaults to 0.8.</p>
-    type: Number
-    optional: true
-  - name: bins
-    description: |
-      <p>Length of resulting array.
-                                Must be a power of two between
-                                16 and 1024. Defaults to 1024.</p>
+  - name: fftSize
+    description: >-
+      FFT anaylsis size. Must be a power of two between 16 and 1024. Defaults to
+      32.
     type: Number
     optional: true
 example:
   - |-
 
-    <div><code>
-    function preload(){
-      sound = loadSound('/assets/Damscray_DancingTiger.mp3');
-    }
+    <div>
+    <code>
+    let osc;
 
     function setup(){
       let cnv = createCanvas(100,100);
       cnv.mouseClicked(togglePlay);
-      fft = new p5.FFT();
-      sound.amp(0.2);
+      fft = new p5.FFT(32);
+      osc = new p5.TriOsc(440);
+      osc.connect(fft);
     }
 
     function draw(){
       background(220);
-
       let spectrum = fft.analyze();
       noStroke();
-      fill(255, 0, 255);
-      for (let i = 0; i< spectrum.length; i++){
-        let x = map(i, 0, spectrum.length, 0, width);
-        let h = -height + map(spectrum[i], 0, 255, height, 0);
+      fill(255, 0, 0);
+
+      for (let i = 0; i < spectrum.length; i++) {
+        let x = map(i, 0, spectrum.length, 0, width);     
+        let h = -height + map(spectrum[i], 0, 0.1, height, 0);
         rect(x, height, width / spectrum.length, h )
       }
 
@@ -77,119 +44,32 @@ example:
       noFill();
       beginShape();
       stroke(20);
+      
       for (let i = 0; i < waveform.length; i++){
         let x = map(i, 0, waveform.length, 0, width);
         let y = map( waveform[i], -1, 1, 0, height);
         vertex(x,y);
       }
       endShape();
-
-      text('tap to play', 20, 20);
+      
+      textAlign(CENTER);
+      text('tap to play', width/2, 20);
+      osc.freq(map(mouseX, 0, width, 100, 2000));
+      describe('The sketch displays the frequency spectrum and waveform of the sound that plays.');
     }
 
     function togglePlay() {
-      if (sound.isPlaying()) {
-        sound.pause();
-      } else {
-        sound.loop();
-      }
+      osc.start();
     }
-    </code></div>
+    </code>
+    </div>
 methods:
-  setInput:
-    description: |
-      <p>Set the input source for the FFT analysis. If no source is
-      provided, FFT will analyze all sound in the sketch.</p>
-    path: p5.FFT/setInput
-  waveform:
-    description: >
-      <p>Returns an array of amplitude values (between -1.0 and +1.0) that
-      represent
-
-      a snapshot of amplitude readings in a single buffer. Length will be
-
-      equal to bins (defaults to 1024). Can be used to draw the waveform
-
-      of a sound.</p>
-    path: p5.FFT/waveform
   analyze:
-    description: |
-      <p>Returns an array of amplitude values (between 0 and 255)
-      across the frequency spectrum. Length is equal to FFT bins
-      (1024 by default). The array indices correspond to frequencies
-      (i.e. pitches), from the lowest to the highest that humans can
-      hear. Each value represents amplitude at that slice of the
-      frequency spectrum. Must be called prior to using
-      <code>getEnergy()</code>.</p>
+    description: Returns the frequency spectrum of the input signal.
     path: p5.FFT/analyze
-  getEnergy:
-    description: |
-      <p>Returns the amount of energy (volume) at a specific
-      <a href="https://en.wikipedia.org/wiki/Audio_frequency/" target="_blank">
-      frequency</a>, or the average amount of energy between two
-      frequencies. Accepts Number(s) corresponding
-      to frequency (in Hz), or a "string" corresponding to predefined
-      frequency ranges ("bass", "lowMid", "mid", "highMid", "treble").
-      Returns a range between 0 (no energy/volume at that frequency) and
-      255 (maximum energy).
-      <em>NOTE: analyze() must be called prior to getEnergy(). analyze()
-      tells the FFT to analyze frequency data, and getEnergy() uses
-      the results to determine the value at a specific frequency or
-      range of frequencies.</em></p>
-    path: p5.FFT/getEnergy
-  getCentroid:
-    description: |
-      <p>Returns the
-      <a href="http://en.wikipedia.org/wiki/Spectral_centroid/" target="_blank">
-      spectral centroid</a> of the input signal.
-      <em>NOTE: analyze() must be called prior to getCentroid(). Analyze()
-      tells the FFT to analyze frequency data, and getCentroid() uses
-      the results determine the spectral centroid.</em></p>
-    path: p5.FFT/getCentroid
-  smooth:
-    description: |
-      <p>Smooth FFT analysis by averaging with the last analysis frame.</p>
-    path: p5.FFT/smooth
-  linAverages:
-    description: |
-      <p>Returns an array of average amplitude values for a given number
-      of frequency bands split equally. N defaults to 16.
-      <em>NOTE: analyze() must be called prior to linAverages(). Analyze()
-      tells the FFT to analyze frequency data, and linAverages() uses
-      the results to group them into a smaller set of averages.</em></p>
-    path: p5.FFT/linAverages
-  logAverages:
-    description: >
-      <p>Returns an array of average amplitude values of the spectrum, for a
-      given
-
-      set of <a href="https://en.wikipedia.org/wiki/Octave_band/"
-      target="_blank">
-
-      Octave Bands</a>
-
-      <em>NOTE: analyze() must be called prior to logAverages(). Analyze()
-
-      tells the FFT to analyze frequency data, and logAverages() uses
-
-      the results to group them into a smaller set of averages.</em></p>
-    path: p5.FFT/logAverages
-  getOctaveBands:
-    description: >
-      <p>Calculates and Returns the 1/N
-
-      <a href="https://en.wikipedia.org/wiki/Octave_band/"
-      target="_blank">Octave Bands</a>
-
-      N defaults to 3 and minimum central frequency to 15.625Hz.
-
-      (1/3 Octave Bands ~= 31 Frequency Bands)
-
-      Setting fCtr0 to a central value of a higher octave will ignore the lower
-      bands
-
-      and produce less frequency groups.</p>
-    path: p5.FFT/getOctaveBands
+  waveform:
+    description: Returns an array of sample values from the input audio.
+    path: p5.FFT/waveform
 chainable: false
 ---
 

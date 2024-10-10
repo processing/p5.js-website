@@ -2,50 +2,51 @@
 title: pause
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: |
-  <p>Pauses a file that is currently playing. If the file is not
-  playing, then nothing will happen.</p>
-  <p>After pausing, .play() will resume from the paused
-  position.
-  If p5.SoundFile had been set to loop before it was paused,
-  it will continue to loop after it is unpaused with .play().</p>
-line: 1847
+file: src/SoundFile.js
+description: Pause the soundfile.
+line: 148
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div><code>
-    let soundFile;
+    <div>
+    <code>
+    let player;
+
     function preload() {
-      soundFormats('ogg', 'mp3');
-      soundFile = loadSound('/assets/Damscray_-_Dancing_Tiger_02.mp3');
+      player = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');
     }
+
     function setup() {
+      describe('A sketch that pauses and resumes sound file playback.');
       let cnv = createCanvas(100, 100);
-      cnv.mousePressed(canvasPressed);
+      cnv.mousePressed(playSound);
       background(220);
-      text('tap to play, release to pause', 10, 20, width - 20);
-    }
-    function canvasPressed() {
-      soundFile.loop();
-      background(0, 200, 50);
-    }
-    function mouseReleased() {
-      soundFile.pause();
+      textAlign(CENTER);
+      textWrap(WORD);
+      textSize(10);
       background(220);
+      text('click to play', 0, 20, 100);
+      
+      player.loop();
+    }
+
+    function playSound() {
+      if (!player.isPlaying()) {
+        player.play();
+        background(220);
+        text('click to pause', 0, 20, 100);
+      }
+      else {
+        player.pause();
+        background(220);
+        text('click to play', 0, 20, 100);
+      }
     }
     </code>
     </div>
 class: p5.SoundFile
-params:
-  - name: startTime
-    description: |
-      <p>(optional) schedule event to occur
-                                   seconds from now</p>
-    type: Number
-    optional: true
 chainable: false
 ---
 

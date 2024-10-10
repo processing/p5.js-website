@@ -1,0 +1,54 @@
+---
+title: p5.PitchShifter
+module: p5.sound
+submodule: p5.sound
+file: src/PitshShifter.js
+description: Change the pitch of a sound.
+line: 10
+isConstructor: true
+example:
+  - |-
+
+    <div>
+    <code>
+     let cnv, soundFile, pitchShifter;
+     
+    function preload() {
+      soundFile = loadSound('/assets/gtrSample.mp3');
+    }
+     
+    function setup() {
+      cnv = createCanvas(100, 100);
+      cnv.mousePressed(startSound);
+      background(220);
+      textAlign(CENTER);
+      textSize(9);
+      text('click to play sound', width/2, height/2);
+      pitchShifter = new p5.PitchShifter();
+      
+      soundFile.disconnect();
+      soundFile.connect(pitchShifter);
+      //change the pitch and retrigger sample when done playing
+      soundFile.onended(changePitch);
+    }
+
+    function startSound () {
+      soundFile.play();
+    }
+     
+    function changePitch () {
+      let pitchValue = random(-12, 12);
+      pitchShifter.shift(pitchValue);
+      soundFile.play();
+    }
+    </code>
+    </div>
+methods:
+  shift:
+    description: Shift the pitch of the source audio.
+    path: p5.PitchShifter/shift
+chainable: false
+---
+
+
+# p5.PitchShifter
