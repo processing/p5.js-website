@@ -22,6 +22,7 @@ import {
 interface Props {
   title: string;
   entries: CollectionEntry<"reference">[];
+  categories?: string[];
 }
 
 function strCompare(a: string, b: string) {
@@ -40,7 +41,7 @@ const uiTranslations = await getUiTranslationWithFallback(currentLocale);
 
 const { entries } = Astro.props;
 
-const categoryData = categories.map((category) => {
+const categoryData = (Astro.props.categories ?? categories).map((category) => {
   // Get all reference entries in the module
   const directEntries = entries.filter(
     (e) => e.data.module === t("referenceCategories", "modules", category)
@@ -135,7 +136,11 @@ const categoryData = categories.map((category) => {
   };
 });
 
-const pageJumpToLinks: JumpToLink[] = categoryData.map((category) => ({
+const jumpCategoryData = categoryData.length === 1
+  ? [...categoryData, ...categoryData[0].subcats]
+  : categoryData;
+
+const pageJumpToLinks: JumpToLink[] = jumpCategoryData.map((category) => ({
   label: category.name as string,
   url: `#${category.name}`,
 }));
@@ -147,9 +152,9 @@ const pageJumpToState: JumpToState = {
 setJumpToState(pageJumpToState);
 ---
 
-<Head title="Reference" locale={currentLocale} />
+<Head title={Astro.props.title} locale={currentLocale} />
 
-<BaseLayout title="Reference" mainContentParentClass="mx-0">
+<BaseLayout title={Astro.props.title} mainContentParentClass="mx-0">
   <ReferenceDirectoryWithFilter
     client:load
     categoryData={categoryData as any}
