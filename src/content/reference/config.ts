@@ -21,7 +21,6 @@ export const categories = [
   "Structure", // TODO: move to top once revised
   "Constants",
   "Foundation",
-  "p5.sound",
 ] as const;
 
 const paramSchema = z.object({
