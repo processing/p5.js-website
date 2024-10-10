@@ -6,6 +6,7 @@ interface CodeBundle {
   htmlBody?: string;
   js?: string;
   base?: string;
+  scripts?: string[];
 }
 
 /*
@@ -41,8 +42,10 @@ canvas {
 }
 ${code.css || ""}
 </style>
+${(code.scripts ? [cdnLibraryUrl, ...code.scripts] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${wrapSketch(code.js) || ""}</script>
+${(code.scripts?.length ?? 0) > 0 ? '' : `
 <script type="text/javascript">
   // Listen for p5.min.js text content and include in iframe's head as script
   window.addEventListener("message", event => {
@@ -57,6 +60,7 @@ ${code.css || ""}
     }
   })
 </script>
+`}
 `.replace(/\u00A0/g, " ");
 
 export interface CodeFrameProps {
@@ -67,6 +71,7 @@ export interface CodeFrameProps {
   width?: number | string;
   base?: string;
   lazyLoad?: boolean;
+  scripts?: string[];
 }
 
 /*
@@ -155,6 +160,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
           css: props.cssCode,
           htmlBody: props.htmlBodyCode,
           base: props.base,
+          scripts: props.scripts,
         })}
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"

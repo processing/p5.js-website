@@ -116,11 +116,11 @@ export const ReferenceDirectoryWithFilter = ({
     subcat: { name: string },
     category: { name: string },
   ) => {
-    return !(!subcat.name || !category.name || subcat.name === "p5.sound");
+    return !(!subcat.name || !category.name);
   }
 
   const getSubcatHeading = (
-    subcat: { name: string },
+    subcat: { name: string; entry?: any },
     category: { name: string },
   ) => {
     if (!subcatShouldHaveHeading(subcat, category)) {
@@ -129,10 +129,10 @@ export const ReferenceDirectoryWithFilter = ({
 
     return (
       <>
-        {subcat.name.includes("p5.") ? (
+        {subcat.entry ? (
           <a
             id={subcat.name}
-            href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
+            href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}/`}
           >
             <h3 className="m-0 py-gutter-md">{subcat.name}</h3>
           </a>

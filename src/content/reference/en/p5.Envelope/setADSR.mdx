@@ -2,86 +2,25 @@
 title: setADSR
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: >
-  <p>Set values like a traditional
-
-  <a
-  href="https://en.wikipedia.org/wiki/Synthesizer#/media/File:ADSR_parameter.svg">
-
-  ADSR envelope
-
-  </a>.</p>
-line: 4895
+file: src/Envelope.js
+description: 'Sets the attack, decay, sustain, and release times of the envelope.'
+line: 152
 isConstructor: false
 itemtype: method
-example:
-  - |-
-
-    <div><code>
-    let attackLevel = 1.0;
-    let releaseLevel = 0;
-
-    let attackTime = 0.001;
-    let decayTime = 0.2;
-    let susPercent = 0.2;
-    let releaseTime = 0.5;
-
-    let env, triOsc;
-
-    function setup() {
-      let cnv = createCanvas(100, 100);
-      cnv.mousePressed(playEnv);
-
-      env = new p5.Envelope();
-      triOsc = new p5.Oscillator('triangle');
-      triOsc.amp(env);
-      triOsc.freq(220);
-    }
-
-    function draw() {
-      background(220);
-      text('tap here to play', 5, 20);
-      attackTime = map(mouseX, 0, width, 0, 1.0);
-      text('attack time: ' + attackTime, 5, height - 40);
-    }
-
-    function playEnv() {
-      triOsc.start();
-      env.setADSR(attackTime, decayTime, susPercent, releaseTime);
-      env.play();
-    }
-    </code></div>
 class: p5.Envelope
 params:
-  - name: attackTime
-    description: |
-      <p>Time (in seconds before envelope
-                                    reaches Attack Level</p>
+  - name: attack
+    description: how quickly the envelope reaches the maximum level
     type: Number
-  - name: decayTime
-    description: |
-      <p>Time (in seconds) before envelope
-                                    reaches Decay/Sustain Level</p>
+  - name: decay
+    description: how quickly the envelope reaches the sustain level
     type: Number
-    optional: true
-  - name: susRatio
-    description: |
-      <p>Ratio between attackLevel and releaseLevel, on a scale from 0 to 1,
-                                    where 1.0 = attackLevel, 0.0 = releaseLevel.
-                                    The susRatio determines the decayLevel and the level at which the
-                                    sustain portion of the envelope will sustain.
-                                    For example, if attackLevel is 0.4, releaseLevel is 0,
-                                    and susAmt is 0.5, the decayLevel would be 0.2. If attackLevel is
-                                    increased to 1.0 (using <code>setRange</code>),
-                                    then decayLevel would increase proportionally, to become 0.5.</p>
+  - name: sustain
+    description: how long the envelope stays at the decay level
     type: Number
-    optional: true
-  - name: releaseTime
-    description: |
-      <p>Time in seconds from now (defaults to 0)</p>
+  - name: release
+    description: how quickly the envelope fades out after the sustain level
     type: Number
-    optional: true
 chainable: false
 ---
 

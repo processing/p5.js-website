@@ -2,24 +2,62 @@
 title: p5.Noise
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: >
-  <p>Noise is a type of oscillator that generates a buffer with random
-  values.</p>
-line: 5620
+file: src/Noise.js
+description: Generate a buffer with random values.
+line: 10
 isConstructor: true
 params:
   - name: type
-    description: |
-      <p>Type of noise can be 'white' (default),
-                           'brown' or 'pink'.</p>
+    description: '- the type of noise (white, pink, brown)'
     type: String
+    optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    let noise, env, cnv;
+    let types = ['white', 'pink', 'brown'];
+    let noiseType = 'brown';
+
+    function setup() {
+      cnv = createCanvas(100, 100);
+      textAlign(CENTER);
+      cnv.mousePressed(start);
+      noise = new p5.Noise(noiseType);
+      env = new p5.Envelope(0.01, 0.1, 0.15, 0.5);
+      noise.disconnect();
+      noise.connect(env);
+      noise.start();
+    }
+
+    function start() {
+      noiseType = random(types);
+      noise.type(noiseType);
+      env.play();
+    }
+
+    function draw() {
+      background(noiseType);
+      text('tap to play', width/2, 20);
+      let txt = 'type: ' + noiseType;
+      text(txt, width/2, 40);
+    }
+    </code>
+    </div>
 methods:
-  setType:
-    description: |
-      <p>Set type of noise to 'white', 'pink' or 'brown'.
-      White is the default.</p>
-    path: p5.Noise/setType
+  type:
+    description: ''
+    path: p5.Noise/type
+  amp:
+    description: Adjust the amplitude of the noise source.
+    path: p5.Noise/amp
+  start:
+    description: Starts the noise source.
+    path: p5.Noise/start
+  stop:
+    description: Stops the noise source.
+    path: p5.Noise/stop
 chainable: false
 ---
 

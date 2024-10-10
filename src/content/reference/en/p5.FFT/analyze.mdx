@@ -2,88 +2,14 @@
 title: analyze
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: |
-  <p>Returns an array of amplitude values (between 0 and 255)
-  across the frequency spectrum. Length is equal to FFT bins
-  (1024 by default). The array indices correspond to frequencies
-  (i.e. pitches), from the lowest to the highest that humans can
-  hear. Each value represents amplitude at that slice of the
-  frequency spectrum. Must be called prior to using
-  <code>getEnergy()</code>.</p>
-line: 3553
+file: src/FFT.js
+description: Returns the frequency spectrum of the input signal.
+line: 84
 isConstructor: false
 itemtype: method
-example:
-  - |+
-
-    <div><code>
-    let osc, fft;
-
-    function setup(){
-      let cnv = createCanvas(100,100);
-      cnv.mousePressed(startSound);
-      osc = new p5.Oscillator();
-      osc.amp(0);
-      fft = new p5.FFT();
-    }
-
-    function draw(){
-      background(220);
-
-      let freq = map(mouseX, 0, windowWidth, 20, 10000);
-      freq = constrain(freq, 1, 20000);
-      osc.freq(freq);
-
-      let spectrum = fft.analyze();
-      noStroke();
-      fill(255, 0, 255);
-      for (let i = 0; i< spectrum.length; i++){
-        let x = map(i, 0, spectrum.length, 0, width);
-        let h = -height + map(spectrum[i], 0, 255, height, 0);
-        rect(x, height, width / spectrum.length, h );
-      }
-
-      stroke(255);
-      if (!osc.started) {
-        text('tap here and drag to change frequency', 10, 20, width - 20);
-      } else {
-        text(round(freq)+'Hz', 10, 20);
-      }
-    }
-
-    function startSound() {
-      osc.start();
-      osc.amp(0.5, 0.2);
-    }
-
-    function mouseReleased() {
-      osc.amp(0, 0.2);
-    }
-    </code></div>
-
 class: p5.FFT
-params:
-  - name: bins
-    description: |
-      <p>Must be a power of two between
-                                 16 and 1024. Defaults to 1024.</p>
-    type: Number
-    optional: true
-  - name: scale
-    description: |
-      <p>If "dB," returns decibel
-                                 float measurements between
-                                 -140 and 0 (max).
-                                 Otherwise returns integers from 0-255.</p>
-    type: Number
-    optional: true
 return:
-  description: |-
-    spectrum    Array of energy (amplitude/volume)
-                                values across the frequency spectrum.
-                                Lowest energy (silence) = 0, highest
-                                possible is 255.
+  description: Array of amplitude values from 0 to 1.
   type: Array
 chainable: false
 ---

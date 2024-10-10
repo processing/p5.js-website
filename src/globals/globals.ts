@@ -1,4 +1,4 @@
-import { p5Version } from "./p5-version";
+import { p5Version, p5SoundVersion } from "./p5-version";
 
 export const contentTypes = [
   "contributor-docs",
@@ -21,3 +21,5 @@ export const libraryDownloadUrl =
   `https://github.com/processing/p5.js/releases/download/v${p5Version}/p5.js` as const;
 export const minifiedLibraryDownloadUrl =
   `https://github.com/processing/p5.js/releases/download/v${p5Version}/p5.min.js` as const;
+export const cdnSoundUrl =
+  `https://cdn.jsdelivr.net/npm/p5.sound@${p5SoundVersion}` as const;

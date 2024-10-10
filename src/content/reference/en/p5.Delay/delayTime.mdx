@@ -2,19 +2,71 @@
 title: delayTime
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: |
-  <p>Set the delay (echo) time, in seconds. Usually this value will be
-  a floating point number between 0.0 and 1.0.</p>
-line: 8094
+file: src/Delay.js
+description: Set the delay time in seconds.
+line: 57
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let osc, delay, env;
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      background(220);
+      textAlign(CENTER);
+      textSize(9);
+      text('click and drag mouse', width/2, height/2);
+
+      osc = new p5.Oscillator('sawtooth');
+      osc.amp(0.74);
+      env = new p5.Envelope(0.01);
+      delay = new p5.Delay(0.12, 0.7);
+      
+      osc.disconnect();
+      osc.connect(env);
+      env.disconnect();
+      env.connect(delay);
+
+      cnv.mousePressed(oscStart);
+      cnv.mouseReleased(oscStop);
+      cnv.mouseOut(oscStop);
+      describe('Tap to play a square wave with delay effect.');
+    }
+
+    function oscStart() {
+      background(0, 255, 255);
+      text('release to hear delay', width/2, height/2);
+      osc.start();
+      env.triggerAttack();
+    }
+
+    function oscStop() {
+      background(220);
+      text('click and drag mouse', width/2, height/2);
+      env.triggerRelease();
+    } 
+      
+    function draw() {
+      
+      let dtime = map(mouseX, 0, width, 0.1, 0.5);
+      delay.delayTime(dtime);
+    }
 class: p5.Delay
 params:
   - name: delayTime
-    description: |
-      <p>Time (in seconds) of the delay</p>
+    description: The delay time in seconds.
     type: Number
+  - name: rampTime
+    description: |-
+      The time in seconds it takes to ramp to the new delay time. 
+                                 By default it is 0.1 seconds. Setting it to 0 will change 
+                                 the delay time immediately and demonstrate legacy behavior.
+    type: Number
+    optional: true
 chainable: false
 ---
 

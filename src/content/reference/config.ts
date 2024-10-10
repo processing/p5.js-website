@@ -32,7 +32,7 @@ const paramSchema = z.object({
 
 const returnSchema = z.object({
   description: z.string(),
-  type: z.string(),
+  type: z.string().optional(),
 });
 
 const exampleSchema = z.string();
