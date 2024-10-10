@@ -71,6 +71,7 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
   if ("class" in doc && doc.class) {
     docClass = doc.class;
   } else {
+    if (!doc.module) console.log(doc)
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
