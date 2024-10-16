@@ -839,7 +839,9 @@
     },
     "src/Amplitude.js": {
       "name": "src/Amplitude.js",
-      "modules": {},
+      "modules": {
+        "p5.sound": 1
+      },
       "classes": {
         "Amplitude": 1
       },
@@ -1000,15 +1002,26 @@
     "src/SoundFile.js": {
       "name": "src/SoundFile.js",
       "modules": {
-        "p5.sound": 1
+        "SoundFile": 1
       },
       "classes": {
         "SoundFile": 1
       },
       "fors": {
         "p5.sound": 1,
-        "p5sound": 1,
+        "sound": 1,
         "SoundFile": 1
+      },
+      "namespaces": {}
+    },
+    "src/Utils.js": {
+      "name": "src/Utils.js",
+      "modules": {
+        "Sound Utilities": 1
+      },
+      "classes": {},
+      "fors": {
+        "sound": 1
       },
       "namespaces": {}
     }
@@ -1987,7 +2000,9 @@
     },
     "p5.sound": {
       "name": "p5.sound",
-      "submodules": {},
+      "submodules": {
+        "SoundFile": 1
+      },
       "elements": {},
       "classes": {
         "p5.sound": 1,
@@ -2008,7 +2023,7 @@
         "Panner3D": 1,
         "PitchShifter": 1,
         "Reverb": 1,
-        "p5sound": 1,
+        "sound": 1,
         "SoundFile": 1
       },
       "fors": {
@@ -2026,16 +2041,62 @@
         "Panner3D": 1,
         "PitchShifter": 1,
         "Reverb": 1,
-        "p5sound": 1,
+        "sound": 1,
         "SoundFile": 1
       },
       "namespaces": {},
       "module": "p5.sound",
       "file": "src/SoundFile.js",
-      "line": 61,
-      "description": "p5.sound.js extends p5.js with Web Audio functionality including audio input, playback, analysis and synthesis.",
-      "tag": "main",
-      "itemtype": "main"
+      "line": 60,
+      "description": "Get the current volume of a sound."
+    },
+    "SoundFile": {
+      "name": "SoundFile",
+      "submodules": {},
+      "elements": {},
+      "classes": {
+        "sound": 1,
+        "SoundFile": 1
+      },
+      "fors": {
+        "p5.sound": 1,
+        "sound": 1,
+        "SoundFile": 1
+      },
+      "is_submodule": 1,
+      "namespaces": {},
+      "module": "p5.sound",
+      "namespace": "",
+      "file": "src/SoundFile.js",
+      "line": 60,
+      "description": "p5.sound.js extends p5.js with Web Audio functionality including audio input, playback, analysis and synthesis."
+    },
+    "Sound": {
+      "name": "Sound",
+      "submodules": {
+        "Sound Utilities": 1
+      },
+      "elements": {},
+      "classes": {},
+      "fors": {
+        "sound": 1
+      },
+      "namespaces": {}
+    },
+    "Sound Utilities": {
+      "name": "Sound Utilities",
+      "submodules": {},
+      "elements": {},
+      "classes": {},
+      "fors": {
+        "sound": 1
+      },
+      "is_submodule": 1,
+      "namespaces": {},
+      "module": "Sound",
+      "namespace": "",
+      "file": "src/Utils.js",
+      "line": 1
     }
   },
   "classes": {
@@ -2684,7 +2745,7 @@
       "description": "Get the current volume of a sound.",
       "is_constructor": 1,
       "example": [
-        "\n<div>\n<code>\nlet sound, amp, cnv;\n  \nfunction preload() {\n  //replace this sound with something local with rights to distribute\n  sound = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n}\n\nfunction setup() {\n  cnv = createCanvas(100, 100);\n  cnv.mousePressed(playSound);\n  textAlign(CENTER);\n  fill(255);\n  amp = new p5.Amplitude();\n  sound.connect(amp);\n}\n\nfunction playSound() {\n  sound.play();\n}\n\nfunction draw() {\n  let level = amp.getLevel();\n  level = map(level, 0, 0.2, 0, 255);\n  background(level, 0, 0);\n  text('tap to play', width/2, 20);\n  describe('The color of the background changes based on the amplitude of the sound.');\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet sound, amp, cnv;\n  \nfunction preload() {\n  //replace this sound with something local with rights to distribute\n  sound = loadSound('/assets/Damscray_DancingTiger.mp3');\n}\n\nfunction setup() {\n  cnv = createCanvas(100, 100);\n  cnv.mousePressed(playSound);\n  textAlign(CENTER);\n  fill(255);\n  amp = new p5.Amplitude();\n  sound.connect(amp);\n}\n\nfunction playSound() {\n  sound.play();\n}\n\nfunction draw() {\n  let level = amp.getLevel();\n  level = map(level, 0, 0.2, 0, 255);\n  background(level, 0, 0);\n  text('tap to play', width/2, 20);\n  describe('The color of the background changes based on the amplitude of the sound.');\n}\n</code>\n</div>"
       ]
     },
     "p5.AudioIn": {
@@ -3039,7 +3100,7 @@
       "description": "A panning effect.",
       "is_constructor": 1,
       "example": [
-        "\n<div>\n<code>\nlet panner, lfo, soundfile, cnv;\n\nfunction preload() {\n  soundfile = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n}\n\nfunction setup() {\n  cnv = createCanvas(100, 100);\n  background(220);\n  cnv.mousePressed(startSound);\n  \n  panner = new p5.Panner();\n  lfo = new p5.Oscillator(1);\n  //disconnect lfo from speakers because we don't want to hear it!\n  lfo.disconnect();\n  panner.pan(lfo);\n\n  soundfile.loop();\n  soundfile.disconnect();\n  soundfile.connect(panner);\n  \n}\n\nfunction startSound() {\n  lfo.start();\n  soundfile.start();\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet panner, lfo, soundfile, cnv;\n\nfunction preload() {\n  soundfile = loadSound('/assets/beat.mp3');\n}\n\nfunction setup() {\n  cnv = createCanvas(100, 100);\n  background(220);\n  cnv.mousePressed(startSound);\n  \n  panner = new p5.Panner();\n  lfo = new p5.Oscillator(1);\n  //disconnect lfo from speakers because we don't want to hear it!\n  lfo.disconnect();\n  panner.pan(lfo);\n\n  soundfile.loop();\n  soundfile.disconnect();\n  soundfile.connect(panner);\n  \n}\n\nfunction startSound() {\n  lfo.start();\n  soundfile.start();\n}\n</code>\n</div>"
       ]
     },
     "p5.Panner3D": {
@@ -3058,7 +3119,7 @@
       "description": "A 3D sound spatializer.",
       "is_constructor": 1,
       "example": [
-        "\n<div>\n<code>\nlet radius = 10 ; \nlet soundSource, spatializer;\nlet font;\nlet cnv;\n\nlet x = 0;\nlet y = 0;\nlet z = 100;\n\nlet vX;\nlet vY;\nlet vZ;\n\nfunction preload() {\n  soundSource = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n  font = loadFont('https://cdn.glitch.global/3db712b6-c53c-49eb-a8ea-83c7a363871d/Canterbury.ttf?v=1715211442728');\n}\n\nfunction setup() {\n  describe(\n    'A 3D shape with a sound source attached to it. The sound source is spatialized using the Panner3D class. Click to play the sound.'\n  );\n  cnv = createCanvas(100, 100, WEBGL);\n  cnv.mousePressed(playSound);\n\n  camera(0, 0, 0, 0, 0, 1);\n  \n  textFont(font);\n  textAlign(CENTER,CENTER);\n  \n  angleMode(DEGREES);\n\n  vX = random(-0.5, 0.5);\n  vY = random(-0.5, 0.5);\n  vZ = random(-0.5, 0.5) * 1.5;\n\n  spatializer = new p5.Panner3D();\n  spatializer.maxDist(100);\n  soundSource.loop();\n  soundSource.disconnect();\n  soundSource.connect(spatializer);\n}\n\nfunction playSound() {\n  soundSource.play();\n}\n\nfunction draw() {\n  background(220);\n  push();\n  textSize(5);\n  fill(0);\n  translate(0,0,100);\n  //text('click to play', 0, 0);\n  pop();\n  // Update Box and Sound Source Position\n  push();\n  moveSoundBox();\n  box(5, 5, 5);\n  pop();\n}\n\n// Rotate 1 degree per frame along all three axes\nfunction moveSoundBox() {\n  x = x + vX;\n  y = y + vY;\n  z = z + vZ;\n\n  if (x > radius || x < -radius) {\n    vX = -vX;\n  }\n  if (y > radius || y < -radius) {\n    vY = -vY;\n  }\n  if (z > 250 || z < 80) {\n    vZ = -vZ;\n  }\n  //set the position of the 3D panner\n  spatializer.set(x, y, z);\n  //set the postion of the box\n  translate(x, y, z);\n  rotateX(45 + frameCount);\n  rotateZ(45);\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet radius = 10 ; \nlet soundSource, spatializer;\nlet font;\nlet cnv;\n\nlet x = 0;\nlet y = 0;\nlet z = 100;\n\nlet vX;\nlet vY;\nlet vZ;\n\nfunction preload() {\n  soundSource = loadSound('/assets/beat.mp3');\n  font = loadFont('/assets/SourceSansPro-Regular.otf');\n}\n\nfunction setup() {\n  describe(\n    'A 3D shape with a sound source attached to it. The sound source is spatialized using the Panner3D class. Click to play the sound.'\n  );\n  cnv = createCanvas(100, 100, WEBGL);\n  cnv.mousePressed(playSound);\n\n  camera(0, 0, 0, 0, 0, 1);\n  \n  textFont(font);\n  textAlign(CENTER,CENTER);\n  \n  angleMode(DEGREES);\n\n  vX = random(-0.5, 0.5);\n  vY = random(-0.5, 0.5);\n  vZ = random(-0.5, 0.5) * 1.5;\n\n  spatializer = new p5.Panner3D();\n  spatializer.maxDist(100);\n  soundSource.loop();\n  soundSource.disconnect();\n  soundSource.connect(spatializer);\n}\n\nfunction playSound() {\n  soundSource.play();\n}\n\nfunction draw() {\n  background(220);\n  push();\n  textSize(5);\n  fill(0);\n  translate(0,0,100);\n  //text('click to play', 0, 0);\n  pop();\n  // Update Box and Sound Source Position\n  push();\n  moveSoundBox();\n  box(5, 5, 5);\n  pop();\n}\n\n// Rotate 1 degree per frame along all three axes\nfunction moveSoundBox() {\n  x = x + vX;\n  y = y + vY;\n  z = z + vZ;\n\n  if (x > radius || x < -radius) {\n    vX = -vX;\n  }\n  if (y > radius || y < -radius) {\n    vY = -vY;\n  }\n  if (z > 250 || z < 80) {\n    vZ = -vZ;\n  }\n  //set the position of the 3D panner\n  spatializer.set(x, y, z);\n  //set the postion of the box\n  translate(x, y, z);\n  rotateX(45 + frameCount);\n  rotateZ(45);\n}\n</code>\n</div>"
       ]
     },
     "p5.PitchShifter": {
@@ -3077,7 +3138,7 @@
       "description": "Change the pitch of a sound.",
       "is_constructor": 1,
       "example": [
-        "\n<div>\n<code>\n let cnv, soundFile, pitchShifter;\n \nfunction preload() {\n  soundFile = loadSound('assets/gtrSample.mp3');\n}\n \nfunction setup() {\n  cnv = createCanvas(100, 100);\n  cnv.mousePressed(startSound);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  text('click to play sound', width/2, height/2);\n  pitchShifter = new p5.PitchShifter();\n  \n  soundFile.disconnect();\n  soundFile.connect(pitchShifter);\n  //change the pitch and retrigger sample when done playing\n  soundFile.onended(changePitch);\n}\n\nfunction startSound () {\n  soundFile.play();\n}\n \nfunction changePitch () {\n  let pitchValue = random(-12, 12);\n  pitchShifter.shift(pitchValue);\n  soundFile.play();\n}\n</code>\n</div>"
+        "\n<div>\n<code>\n let cnv, soundFile, pitchShifter;\n \nfunction preload() {\n  soundFile = loadSound('/assets/beatbox.mp3');\n}\n \nfunction setup() {\n  cnv = createCanvas(100, 100);\n  cnv.mousePressed(startSound);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  text('click to play sound', width/2, height/2);\n  pitchShifter = new p5.PitchShifter();\n  \n  soundFile.disconnect();\n  soundFile.connect(pitchShifter);\n  //change the pitch and retrigger sample when done playing\n  soundFile.onended(changePitch);\n}\n\nfunction startSound () {\n  soundFile.play();\n}\n \nfunction changePitch () {\n  let pitchValue = random(-12, 12);\n  pitchShifter.shift(pitchValue);\n  soundFile.play();\n}\n</code>\n</div>"
       ]
     },
     "p5.Reverb": {
@@ -3107,16 +3168,16 @@
         "\n<div>\n<code>\nlet noise, osc, env, reverb;\nlet randomTime = 0;\n\nfunction setup() {\n  let cnv = createCanvas(100, 100);\n  cnv.mousePressed(playSound);\n  noise = new p5.Noise();\n  env = new p5.Envelope();\n  reverb = new p5.Reverb();\n  noise.disconnect();\n  noise.connect(env);\n  env.disconnect();\n  env.connect(reverb);\n  noise.start();\n  textAlign(CENTER);\n}\n\nfunction playSound() {\n randomTime = random(0.1, 3);\n reverb.set(randomTime); \n env.play();\n}\n\nfunction draw() {\n  background(220);\n  text('click to play', width/2, 20);\n  text('decay ' + round(randomTime, 2), width/2, 40);\n  describe('Click to play a sound with a random decay time.');\n}\n</code>\n</div>"
       ]
     },
-    "p5.p5sound": {
-      "name": "p5.p5sound",
-      "shortname": "p5sound",
+    "p5.sound": {
+      "name": "p5.sound",
+      "shortname": "sound",
       "classitems": [],
       "plugins": [],
       "extensions": [],
       "plugin_for": [],
       "extension_for": [],
       "module": "p5.sound",
-      "submodule": "p5.sound",
+      "submodule": "SoundFile",
       "namespace": ""
     },
     "p5.SoundFile": {
@@ -3128,14 +3189,14 @@
       "plugin_for": [],
       "extension_for": [],
       "module": "p5.sound",
-      "submodule": "p5.sound",
+      "submodule": "SoundFile",
       "namespace": "",
       "file": "src/SoundFile.js",
-      "line": 61,
+      "line": 60,
       "description": "Load and play sound files.",
       "is_constructor": 1,
       "example": [
-        "\n<div>\n<code>\nlet sound, amp, delay, cnv;\n\nfunction preload() {\n  //replace this sound with something local with rights to distribute\n  //need to fix local asset loading first though :) \n  sound = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n}\n\nfunction setup() {\n  cnv = createCanvas(100, 100);\n  textAlign(CENTER);\n  cnv.mousePressed(playSound);\n  amp = new p5.Amplitude();\n  delay = new p5.Delay();\n  sound.disconnect();\n  sound.connect(delay);\n  delay.connect(amp);\n}\n\nfunction playSound() {\n  sound.play();\n}\n\nfunction draw() {\n  let dtime = map(mouseX, 0, width, 0, 1);\n  delay.delayTime(dtime);\n  let f = map(mouseY, 0, height, 0, .75);\n  delay.feedback(f);\n  let level = map(amp.getLevel(), 0, 0.5, 0, 255);\n  background(level, 0, 0);\n  fill(255);\n  text('click to play', width/2, 20);\n }\n</code>\n</div>"
+        "\n<div>\n<code>\nlet sound, amp, delay, cnv;\n\nfunction preload() {\n  //replace this sound with something local with rights to distribute\n  //need to fix local asset loading first though :) \n  sound = loadSound('/assets/doorbell.mp3');\n}\n\nfunction setup() {\n  cnv = createCanvas(100, 100);\n  textAlign(CENTER);\n  cnv.mousePressed(playSound);\n  amp = new p5.Amplitude();\n  delay = new p5.Delay();\n  sound.disconnect();\n  sound.connect(delay);\n  delay.connect(amp);\n}\n\nfunction playSound() {\n  sound.play();\n}\n\nfunction draw() {\n  let dtime = map(mouseX, 0, width, 0, 1);\n  delay.delayTime(dtime);\n  let f = map(mouseY, 0, height, 0, .75);\n  delay.feedback(f);\n  let level = map(amp.getLevel(), 0, 0.5, 0, 255);\n  background(level, 0, 0);\n  fill(255);\n  text('click to play', width/2, 20);\n }\n</code>\n</div>"
       ]
     }
   },
@@ -25762,7 +25823,7 @@
     },
     {
       "file": "src/SoundFile.js",
-      "line": 13,
+      "line": 12,
       "description": "loadSound() returns a new SoundFile from a specified\npath. If called during preload(), the SoundFile will be ready\nto play in time for setup() and draw(). If called outside of\npreload, the SoundFile will not be ready immediately, so\nloadSound accepts a callback as the second parameter. Using a\n<a href=\"https://github.com/processing/p5.js/wiki/Local-server\">\nlocal server</a> is recommended when loading external files.",
       "itemtype": "method",
       "name": "loadSound",
@@ -25778,58 +25839,58 @@
         "type": "SoundFile"
       },
       "example": [
-        "\n<div><code>\nlet mySound;\nfunction preload() {\n  mySound = loadSound('assets/doorbell');\n}\n\nfunction setup() {\n  let cnv = createCanvas(100, 100);\n  cnv.mousePressed(canvasPressed);\n  background(220);\n  text('tap here to play', 10, 20);\n}\n\nfunction canvasPressed() {\n  // playing a sound file on a user gesture\n  // is equivalent to `userStartAudio()`\n  mySound.play();\n}\n</code></div>"
+        "\n<div><code>\nlet mySound;\nfunction preload() {\n  mySound = loadSound('/assets/doorbell.mp3');\n}\n\nfunction setup() {\n  let cnv = createCanvas(100, 100);\n  cnv.mousePressed(canvasPressed);\n  background(220);\n  text('tap here to play', 10, 20);\n}\n\nfunction canvasPressed() {\n  // playing a sound file on a user gesture\n  // is equivalent to `userStartAudio()`\n  mySound.play();\n}\n</code></div>"
       ],
-      "class": "p5.p5sound",
+      "class": "p5.sound",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 112,
+      "line": 111,
       "description": "Start the soundfile.",
       "itemtype": "method",
       "name": "start",
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 125,
+      "line": 124,
       "description": "Start the soundfile.",
       "itemtype": "method",
       "name": "play",
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 138,
+      "line": 137,
       "description": "Stop the soundfile.",
       "itemtype": "method",
       "name": "stop",
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 148,
+      "line": 147,
       "description": "Pause the soundfile.",
       "itemtype": "method",
       "name": "pause",
       "example": [
-        "\n<div>\n<code>\nlet player;\n\nfunction preload() {\n  player = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n}\n\nfunction setup() {\n  describe('A sketch that pauses and resumes sound file playback.');\n  let cnv = createCanvas(100, 100);\n  cnv.mousePressed(playSound);\n  background(220);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(10);\n  background(220);\n  text('click to play', 0, 20, 100);\n  \n  player.loop();\n}\n\nfunction playSound() {\n  if (!player.isPlaying()) {\n    player.play();\n    background(220);\n    text('click to pause', 0, 20, 100);\n  }\n  else {\n    player.pause();\n    background(220);\n    text('click to play', 0, 20, 100);\n  }\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet player;\n\nfunction preload() {\n  player = loadSound('/assets/Damscray_DancingTiger.mp3');\n}\n\nfunction setup() {\n  describe('A sketch that pauses and resumes sound file playback.');\n  let cnv = createCanvas(100, 100);\n  cnv.mousePressed(playSound);\n  background(220);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(10);\n  background(220);\n  text('click to play', 0, 20, 100);\n  \n  player.loop();\n}\n\nfunction playSound() {\n  if (!player.isPlaying()) {\n    player.play();\n    background(220);\n    text('click to pause', 0, 20, 100);\n  }\n  else {\n    player.pause();\n    background(220);\n    text('click to play', 0, 20, 100);\n  }\n}\n</code>\n</div>"
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 197,
+      "line": 196,
       "description": "Loop the soundfile.",
       "itemtype": "method",
       "name": "loop",
@@ -25842,11 +25903,11 @@
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 207,
+      "line": 206,
       "description": "Set a loop region, and optionally a playback rate, and amplitude for the soundfile.",
       "itemtype": "method",
       "name": "setLoop",
@@ -25878,11 +25939,11 @@
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 221,
+      "line": 220,
       "description": "Adjust the amplitude of the soundfile.",
       "itemtype": "method",
       "name": "amp",
@@ -25895,11 +25956,11 @@
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 232,
+      "line": 231,
       "description": "Change the path for the soundfile.",
       "itemtype": "method",
       "name": "setPath",
@@ -25917,15 +25978,15 @@
         }
       ],
       "example": [
-        "\n<div>\n<code>\nlet soundSource, cnv, btn;\n\nfunction preload() {\n  soundSource = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n}\n\nfunction setup() {\n  describe(\n    'a sketch that says click to play sound. there is a button that says load sound. when you click the button, the path of the sound file player changes and the new sound plays.');\n  cnv = createCanvas(100, 100);\n  cnv.mousePressed(playSound);\n  background(220);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(10);\n  text('click to play sound or the button to load a new sound', 0, 20, 100);\n  btn = createButton('New Sound');\n  btn.mousePressed(setNewPath);\n  soundSource.loop();  \n}\n\nfunction playSound() {\n  soundSource.play();\n}\n\nfunction setNewPath() {\n  background(220);\n  text('a new sound was loaded', 0, 20, 100);\n  soundSource.setPath('https://tonejs.github.io/audio/berklee/gong_2.mp3', playSound); \n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet soundSource, cnv, btn;\n\nfunction preload() {\n  soundSource = loadSound('/assets/Damscray_-_Dancing_Tiger_01.mp3');\n}\n\nfunction setup() {\n  describe(\n    'a sketch that says click to play sound. there is a button that says load sound. when you click the button, the path of the sound file player changes and the new sound plays.');\n  cnv = createCanvas(100, 100);\n  cnv.mousePressed(playSound);\n  background(220);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(10);\n  text('click to play sound or the button to load a new sound', 0, 20, 100);\n  btn = createButton('New Sound');\n  btn.mousePressed(setNewPath);\n  soundSource.loop();  \n}\n\nfunction playSound() {\n  soundSource.play();\n}\n\nfunction setNewPath() {\n  background(220);\n  text('a new sound was loaded', 0, 20, 100);\n  soundSource.setPath('/assets/Damscray_-_Dancing_Tiger_02.mp3', playSound); \n}\n</code>\n</div>"
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 287,
+      "line": 286,
       "description": "Set the playback rate of the soundfile.",
       "itemtype": "method",
       "name": "rate",
@@ -25938,11 +25999,11 @@
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 298,
+      "line": 297,
       "description": "Returns the duration of a sound file in seconds.",
       "itemtype": "method",
       "name": "duration",
@@ -25952,11 +26013,11 @@
       },
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 308,
+      "line": 307,
       "description": "Return the sample rate of the sound file.",
       "itemtype": "method",
       "name": "sampleRate",
@@ -25966,11 +26027,11 @@
       },
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 318,
+      "line": 317,
       "description": "Move the playhead of a soundfile that is currently playing to a new position.",
       "itemtype": "method",
       "name": "jump",
@@ -25983,11 +26044,11 @@
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 328,
+      "line": 327,
       "description": "Return the playback state of the soundfile.",
       "itemtype": "method",
       "name": "isPlaying",
@@ -25997,11 +26058,11 @@
       },
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 338,
+      "line": 337,
       "description": "Return the playback state of the soundfile.",
       "itemtype": "method",
       "name": "isLooping",
@@ -26011,11 +26072,11 @@
       },
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 348,
+      "line": 347,
       "description": "Define a function to call when the soundfile is done playing.",
       "itemtype": "method",
       "name": "onended",
@@ -26027,15 +26088,15 @@
         }
       ],
       "example": [
-        "\n<div>\n<code>\nlet player;\n\nfunction preload() {\n  player = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n}\n\nfunction setup() {\n  let cnv = createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(10);\n  text('click to play', width/2, height/2);\n  cnv.mousePressed(playSound);\n  player.onended(coolFunction);\n}\n\nfunction coolFunction() {\n  background(220);\n  text('sound is done', width/2, height/2);\n}\n\nfunction playSound() {\n  background(0, 255, 255);\n  text('sound is playing', width/2, height/2);\n  if (!player.isPlaying()) {\n    player.play();\n  }\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet player;\n\nfunction preload() {\n  player = loadSound('/assets/lucky_dragons_-_power_melody.mp3');\n}\n\nfunction setup() {\n  let cnv = createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(10);\n  text('click to play', width/2, height/2);\n  cnv.mousePressed(playSound);\n  player.onended(coolFunction);\n}\n\nfunction coolFunction() {\n  background(220);\n  text('sound is done', width/2, height/2);\n}\n\nfunction playSound() {\n  background(0, 255, 255);\n  text('sound is playing', width/2, height/2);\n  if (!player.isPlaying()) {\n    player.play();\n  }\n}\n</code>\n</div>"
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 391,
+      "line": 390,
       "description": "Return the number of samples in a sound file.",
       "itemtype": "method",
       "name": "frames",
@@ -26044,15 +26105,15 @@
         "type": "Number"
       },
       "example": [
-        "\n<div>\n<code>\nlet player;\n\nfunction preload() {\n  player = loadSound('https://tonejs.github.io/audio/berklee/gong_1.mp3');\n}\n\nfunction setup() {\n  describe('A sketch that calculates and displays the length of a sound file using number of samples and sample rate.');\n  createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(10);\n  frames = player.frames();\n  sampleRate = player.sampleRate();\n  sampleLength = round((frames / sampleRate), 2);\n  info = `sample is ${sampleLength} seconds long`;\n  text(info, 0, 20, 100);\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet player;\n\nfunction preload() {\n  player = loadSound('/assets/lucky_dragons_-_power_melody.mp3');\n}\n\nfunction setup() {\n  describe('A sketch that calculates and displays the length of a sound file using number of samples and sample rate.');\n  createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(10);\n  frames = player.frames();\n  sampleRate = player.sampleRate();\n  sampleLength = round((frames / sampleRate), 2);\n  info = `sample is ${sampleLength} seconds long`;\n  text(info, 0, 20, 100);\n}\n</code>\n</div>"
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 425,
+      "line": 424,
       "description": "Gets the number of channels in the sound file.",
       "itemtype": "method",
       "name": "sampleRate",
@@ -26061,11 +26122,11 @@
       },
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
     },
     {
       "file": "src/SoundFile.js",
-      "line": 435,
+      "line": 434,
       "description": "Gets the number of channels in the sound file.",
       "itemtype": "method",
       "name": "channels",
@@ -26074,7 +26135,58 @@
       },
       "class": "p5.SoundFile",
       "module": "p5.sound",
-      "submodule": "p5.sound"
+      "submodule": "SoundFile"
+    },
+    {
+      "file": "src/Utils.js",
+      "line": 14,
+      "description": "Get the window's audio context.",
+      "itemtype": "method",
+      "name": "getAudioContext",
+      "return": {
+        "description": "the audio context",
+        "type": "AudioContext"
+      },
+      "class": "p5.sound",
+      "module": "Sound",
+      "submodule": "Sound Utilities"
+    },
+    {
+      "file": "src/Utils.js",
+      "line": 24,
+      "description": "Sets the AudioContext to a specified context to enable cross library compatibility.",
+      "itemtype": "method",
+      "name": "setAudioContext",
+      "params": [
+        {
+          "name": "the",
+          "description": "desired AudioContext.",
+          "type": "AudioContext"
+        }
+      ],
+      "class": "p5.sound",
+      "module": "Sound",
+      "submodule": "Sound Utilities"
+    },
+    {
+      "file": "src/Utils.js",
+      "line": 33,
+      "description": "userStartAudio() starts the AudioContext on a user gesture. It can be placed in a specific interaction function, such as mousePressed().",
+      "itemtype": "method",
+      "name": "userStartAudio",
+      "class": "p5.sound",
+      "module": "Sound",
+      "submodule": "Sound Utilities"
+    },
+    {
+      "file": "src/Utils.js",
+      "line": 41,
+      "description": "userStopAudio() stops the AudioContext on a user gesture.",
+      "itemtype": "method",
+      "name": "userStopAudio",
+      "class": "p5.sound",
+      "module": "Sound",
+      "submodule": "Sound Utilities"
     }
   ],
   "consts": {
