@@ -1,6 +1,6 @@
 import { cloneLibraryRepo, readFile } from "../utils";
 import fs from "fs/promises";
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 import type { ParsedLibraryReference } from "../../../types/parsers.interface";
@@ -18,13 +18,16 @@ const yuidocOutputPath = path.join(__dirname, "out")
 export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
     // Clone p5.js
-    await cloneLibraryRepo(localPath);
+    await cloneLibraryRepo(localPath, 'https://github.com/Garima3110/p5.js.git', 'shaders', { shouldFixAbsolutePathInPreprocessor: false });
     // TODO(dave): let this happen via `npm run docs` in the p5 repo once we
     // merge the 2.0 branch
-    await saveYuidocOutput('p5.js', 'data-p5', {
+    await createP5Docs('p5.js', 'data-p5')
+    // If dev
+    await createP5Build('p5.js')
+    /*await saveYuidocOutput('p5.js', 'data-p5', {
       flags: `--config ${path.join(__dirname, '../../../yuidoc.json')}`,
       inputPath: './src',
-    });
+    });*/
     const p5Data = await getYuidocOutput('data-p5');
     if (!p5Data) throw new Error('Error generating p5 reference data!');
 
@@ -127,6 +130,31 @@ export const saveYuidocOutput = async (
     throw err;
   }
 };
+
+export const createP5Docs = async (inDirName: string, outDirName: string) => {
+  execSync('npm install', {
+    cwd: path.join(__dirname, 'in', inDirName),
+  })
+  execSync('npm run docs', {
+    cwd: path.join(__dirname, 'in', inDirName),
+  })
+  const outputFilePath = path.join(yuidocOutputPath, outDirName);
+  await fs.mkdir(outputFilePath, { recursive: true })
+  await fs.cp(
+    path.join(__dirname, 'in', inDirName, 'docs', 'reference', 'data.json'),
+    path.join(outputFilePath, 'data.json'),
+  )
+}
+
+export const createP5Build = async (inDirName: string) => {
+  execSync('npm run build', {
+    cwd: path.join(__dirname, 'in', inDirName)
+  })
+  await fs.cp(
+    path.join(__dirname, 'in', inDirName, 'lib', 'p5.min.js'),
+    path.join(__dirname, '../../../public', 'p5.min.js'),
+  )
+}
 
 export async function combineYuidocData(
   inputData: ParsedLibraryReference[],
