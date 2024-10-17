@@ -31,6 +31,10 @@ export const Dropdown = ({
   const optionRefs = useRef<HTMLButtonElement[]>([]);
 
   // In order to support instant update of the selected option
+  // the selected state can be updated in this component
+  // There are instances where the parent component controls it
+  // instead (asynchronous loading of localStorage setting, etc)
+  // Support updating the selected option from the parent component
   useEffect(() => {
     setSelected(initialSelected);
   }, [initialSelected]);
@@ -39,6 +43,7 @@ export const Dropdown = ({
     setIsOpen(!isOpen);
   };
 
+    // Handle blur event, focus moving away from open dropdown
   const handleBlur = () => {
     setTimeout(() => {
       if (
@@ -50,12 +55,14 @@ export const Dropdown = ({
     }, 0);
   };
 
+   // Handle option selection
   const handleOptionClick = (option: DropdownOption) => {
     if (variant === "dropdown") {
       setSelected(option.value);
       setIsOpen(false);
     }
 
+     // With a radio variant, multiple options can be selected
     if (variant === "radio" && Array.isArray(selected)) {
       const newSelected = selected.includes(option.value)
         ? selected.filter((value) => value !== option.value)
@@ -65,6 +72,7 @@ export const Dropdown = ({
     onChange(option);
   };
 
+  // Handle keyboard navigation
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       setIsOpen(false);
@@ -85,6 +93,7 @@ export const Dropdown = ({
     }
   };
 
+  // Manage focus back to the button when the dropdown is closed
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
@@ -93,14 +102,14 @@ export const Dropdown = ({
     }
   }, [isOpen]);
 
+   // Determine if an option is selected
   const isSelected = (option: DropdownOption) => {
     if (variant === "dropdown") {
       return selected === option.value || selected === option.id;
     }
     return selected.includes(option.value);
   };
-
-  // Checkmark SVG
+   // Render the collapsed dropdown button
   const checkmarkSVG = (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fillRule="evenodd" clipRule="evenodd" d="m 16.371092,6.6210937 c 0.513245,0.5203285 0.507123,1.3583198 -0.01367,1.8710938 L 9.8535158,14.896484 c -0.5147559,0.506589 -1.3407128,0.506589 -1.8554687,0 L 3.6425783,10.607422 C 3.1217848,10.094649 3.1156616,9.2566574 3.6289063,8.7363283 4.1416797,8.2155349 4.9796709,8.2094117 5.5,8.7226563 L 8.9257813,12.097656 14.5,6.6074219 c 0.519236,-0.5121001 1.35949,-0.5058647 1.871092,0.013672 z M 10,20 C 15.5228,20 20,15.5228 20,10 20,4.47715 15.5228,0 10,0 4.47715,0 0,4.47715 0,10 0,15.5228 4.47715,20 10,20 Z" fill="currentColor"></path>
@@ -128,7 +137,7 @@ export const Dropdown = ({
       </div>
     </button>
   );
-
+  // Render the expanded dropdown options
   const renderExpandedDropdown = () => (
     <ul className={styles.options} role="listbox" tabIndex={-1}>
       {options.map((option, index) => (
