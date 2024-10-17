@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState, useCallback } from "preact/hooks";
 import Fuse, { type FuseResult } from "fuse.js";
 import SearchResults from "../SearchResults";
 import { defaultLocale } from "@/src/i18n/const";
@@ -29,8 +29,8 @@ const SearchProvider = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
 
-  // Flattens the search index data
-  const flattenData = (data: FuseResult<SearchResult>) => {
+  // Memoize flattenData function
+  const flattenData = useCallback((data: FuseResult<SearchResult>) => {
     const flatData: SearchResult[] = [];
     let flatId = 0;
     Object.entries(data).forEach(([category, entries]) => {
@@ -53,7 +53,7 @@ const SearchProvider = ({
     });
 
     return flatData;
-  };
+  }, [currentLocale]); // Include currentLocale in dependencies
 
   // Read the search term from query params on first load
   useEffect(() => {
@@ -86,7 +86,7 @@ const SearchProvider = ({
     fetch(`/search-indices/${currentLocale}.json`)
       .then((response) => response.json())
       .then((data) => {
-        flatData = flattenData(data);
+        flatData = flattenData(data); // Use memoized function
 
         const fuseOptions = {
           includeScore: true,
@@ -110,7 +110,7 @@ const SearchProvider = ({
       .catch((error) =>
         console.error("Error fetching or indexing data:", error),
       );
-  }, [searchTerm, currentLocale]);
+  }, [searchTerm, currentLocale, flattenData]); // Added flattenData to dependencies
 
   const handleSearchTermChange = (term?: string) => {
     if (term !== undefined) {

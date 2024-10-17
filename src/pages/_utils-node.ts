@@ -75,7 +75,7 @@ export const rewriteRelativeLink = (url: string): string => {
     !updatedUrl.endsWith('/') &&
     !/(\.\w+)$/.exec(updatedUrl) &&
     !updatedUrl.includes('?') &&
-    !/#([\w\-]+)$/.exec(updatedUrl)
+    !/#([\w-]+)$/.exec(updatedUrl) // Removed the unnecessary escape character
   ) {
     updatedUrl += '/';
   }

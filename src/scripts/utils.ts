@@ -10,7 +10,7 @@ let latestRelease = p5Version;
 // If the latest release is a version number (e.g. 1.10.0) without a 'v'
 // prefix, add the v prefix
 if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
-  latestRelease = 'v' + latestRelease;
+  latestRelease = `v${  latestRelease}`;
 }
 
 export const p5RepoUrl = "https://github.com/processing/p5.js.git";

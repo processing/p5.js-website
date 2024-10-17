@@ -40,7 +40,7 @@ export const parseLibraryReference =
 
     // Fix p5.sound classes
     for (const key in soundData.classes) {
-      const newName = 'p5.' + soundData.classes[key].name;
+      const newName = `p5.${  soundData.classes[key].name}`;
       const updated = {
         ...soundData.classes[key],
         name: newName,
@@ -49,7 +49,7 @@ export const parseLibraryReference =
       delete soundData.classes[key];
     }
     for (const item of soundData.classitems) {
-      item.class = 'p5.' + item.class;
+      item.class = `p5.${  item.class}`;
     }
 
     const combined = await combineYuidocData(
