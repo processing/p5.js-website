@@ -239,6 +239,18 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
 
     // Get the current text and HTML inside the <code> tag
     const currentHtml = $(this).html() ?? "";
+
+    // Check if the content is already escaped by looking for common HTML entities
+    if (
+      currentHtml.includes("&lt;") ||
+      currentHtml.includes("&gt;") ||
+      currentHtml.includes("&amp;") ||
+      currentHtml.includes("&quot;") ||
+      currentHtml.includes("&#39;")
+    ) {
+      return; // Already escaped, skip this <code> tag
+    }
+
     // Use he to escape HTML entities
     const escapedHtml = he.escape(currentHtml);
     // Update the <code> tag content with the escaped HTML
