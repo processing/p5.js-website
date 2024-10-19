@@ -17,9 +17,7 @@ const bannerEntry = await getEntry("banner", currentLocale);
     <div>
       <div class="mb-5">p5.js</div>
     </div>
-    <div
-      class="self-end w-28 max-w-full lg:w-32 text-accent-type-color lg:-top-2 relative"
-    >
+    <div class="self-end w-28 max-w-full lg:w-32 text-accent-type-color lg:-top-2 relative">
       <Icon kind="asterisk-thick" />
     </div>
   </div>
@@ -61,7 +59,54 @@ const bannerEntry = await getEntry("banner", currentLocale);
       </ul>
     </div>
   </div>
+
+  <!-- Clean and Simple "Move to Top" Button -->
+  <button id="moveToTop" title="Go to top" class="move-to-top">
+    ↑
+  </button>
 </footer>
+
 {bannerEntry && !bannerEntry.data.hidden && (<Banner entry={bannerEntry} />)}
 
-<style></style>
+<script>
+  // Show the button when the user scrolls 100px down from the top
+  window.onscroll = function() {
+    const moveToTopButton = document.getElementById("moveToTop");
+    if (moveToTopButton) { // Check if the button exists
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        moveToTopButton.style.display = "block";
+      } else {
+        moveToTopButton.style.display = "none";
+      }
+    }
+  };
+
+  // Scroll smoothly to the top when the button is clicked
+  document.getElementById("moveToTop").addEventListener("click", function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+<style>
+  .move-to-top {
+    position: fixed;
+    bottom: 80px; /* Adjusted position to move it slightly higher */
+    right: 20px;
+    background-color: #000; /* Solid black background */
+    color: #fff; /* White text */
+    border: none; /* Remove borders */
+    padding: 10px 15px; /* Comfortable padding */
+    border-radius: 50%; /* Rounded button */
+    font-size: 24px; /* Larger text for visibility */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    cursor: pointer; /* Pointer on hover */
+    display: none; /* Hidden by default */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 1000; /* Ensure it appears above other content */
+  }
+
+  .move-to-top:hover {
+    background-color: #333; /* Darken on hover */
+    transform: translateY(-2px); /* Slight upward shift on hover */
+  }
+</style>
