@@ -1,9 +1,9 @@
 import { defineConfig, passthroughImageService } from "astro/config";
 import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
-import compress from "astro-compress";
 import tailwind from "@astrojs/tailwind";
 import serviceWorker from "astrojs-service-worker";
+import fast from "./scripts/fast-compress";
 
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
@@ -18,13 +18,14 @@ if (shouldSkipCompress) {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://p5js.org',
+  compressHTML: false,
   integrations: [
     preact({
       compat: true,
     }),
     mdx(),
     tailwind(),
-    shouldSkipCompress ? null : compress(),
+    shouldSkipCompress ? null : fast(),
     serviceWorker({
       workbox: {
         globPatterns: [
@@ -54,6 +55,7 @@ export default defineConfig({
   trailingSlash: "always",
   build: {
     format: "directory",
+    concurrency: 2
   },
   server: {
     watch: {
