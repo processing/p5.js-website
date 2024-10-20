@@ -3,7 +3,7 @@ import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 import serviceWorker from "astrojs-service-worker";
-import fast from "./scripts/fast-compress";
+import fast from "./src/scripts/fast-compress";
 
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
