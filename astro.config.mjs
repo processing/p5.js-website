@@ -25,7 +25,7 @@ export default defineConfig({
     }),
     mdx(),
     tailwind(),
-    shouldSkipCompress ? null : fast(),
+    fast(),
     serviceWorker({
       workbox: {
         globPatterns: [
