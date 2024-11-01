@@ -1,9 +1,10 @@
-import { cloneLibraryRepo, readFile } from "../utils";
+import { cloneLibraryRepo, p5RepoUrl, readFile } from "../utils";
 import fs from "fs/promises";
 import { exec, execSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 import type { ParsedLibraryReference } from "../../../types/parsers.interface";
+import { p5Version } from "@/src/globals/p5-version";
 
 // Derive the directory name (__dirname equivalent) in ES Module scope
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,16 +19,18 @@ const yuidocOutputPath = path.join(__dirname, "out")
 export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
     // Clone p5.js
-    await cloneLibraryRepo(localPath, 'https://github.com/Garima3110/p5.js.git', 'shaders', { shouldFixAbsolutePathInPreprocessor: false });
-    // TODO(dave): let this happen via `npm run docs` in the p5 repo once we
-    // merge the 2.0 branch
+    await cloneLibraryRepo(localPath, process.env.P5_REPO_URL || p5RepoUrl, process.env.P5_BRANCH || p5Version, { shouldFixAbsolutePathInPreprocessor: false });
+
+    // Install dependencies and build docs in the p5 repo
     await createP5Docs('p5.js', 'data-p5')
-    // If dev
-    await createP5Build('p5.js')
-    /*await saveYuidocOutput('p5.js', 'data-p5', {
-      flags: `--config ${path.join(__dirname, '../../../yuidoc.json')}`,
-      inputPath: './src',
-    });*/
+
+    // If we're using a custom build of p5 instead of a public release, create
+    // a build and copy it to the specified path
+    if (process.env.P5_LIBRARY_PATH) {
+      await createP5Build('p5.js', '../../../public' + process.env.P5_LIBRARY_PATH)
+    }
+
+    // Copy the reference output so we can process it
     const p5Data = await getYuidocOutput('data-p5');
     if (!p5Data) throw new Error('Error generating p5 reference data!');
 
@@ -146,13 +149,13 @@ export const createP5Docs = async (inDirName: string, outDirName: string) => {
   )
 }
 
-export const createP5Build = async (inDirName: string) => {
+export const createP5Build = async (inDirName: string, outPath: string) => {
   execSync('npm run build', {
     cwd: path.join(__dirname, 'in', inDirName)
   })
   await fs.cp(
     path.join(__dirname, 'in', inDirName, 'lib', 'p5.min.js'),
-    path.join(__dirname, '../../../public', 'p5.min.js'),
+    path.join(__dirname, outPath),
   )
 }
 
