@@ -24,13 +24,13 @@ export const repoRootPath = path.join(
 /**
  * Clone the library repo if it doesn't exist or if it's not recent
  * @param localSavePath The path to save the library repo to
- * @param [repoUrl] The URL of the library repo to clone, default to p5.js library
+ * @param repoUrl The URL of the library repo to clone, default to p5.js library
  * @returns void
  */
 export const cloneLibraryRepo = async (
   localSavePath: string,
-  repoUrl: string = p5RepoUrl,
-  branch: string = latestRelease,
+  repoUrl: string,
+  branch: string,
   { shouldFixAbsolutePathInPreprocessor = true }: {
     shouldFixAbsolutePathInPreprocessor?: boolean
   } = {}
