@@ -19,7 +19,12 @@ const yuidocOutputPath = path.join(__dirname, "out")
 export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
     // Clone p5.js
-    await cloneLibraryRepo(localPath, process.env.P5_REPO_URL || p5RepoUrl, process.env.P5_BRANCH || p5Version, { shouldFixAbsolutePathInPreprocessor: false });
+    await cloneLibraryRepo(
+      localPath,
+      process.env.P5_REPO_URL || p5RepoUrl,
+      process.env.P5_BRANCH || p5Version,
+      { shouldFixAbsolutePathInPreprocessor: false },
+    );
 
     // Install dependencies and build docs in the p5 repo
     await createP5Docs('p5.js', 'data-p5')
