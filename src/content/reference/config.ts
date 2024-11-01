@@ -57,7 +57,7 @@ const propertySchema = z.object({
  * Property schema for properties associated with a class in the Reference collection.
  */
 const propertySchema = z.object({
-  description: z.string(),
+  description: z.string().optional(),
   path: z.string(),
 });
 
