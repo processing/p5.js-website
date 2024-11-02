@@ -26,8 +26,8 @@ export const categories = [
 const paramSchema = z.object({
   name: z.string(),
   description: z.string(),
-  type: z.string(),
-  optional: z.boolean().optional(),
+  type: z.string().optional(),
+  optional: z.coerce.boolean().optional(),
 });
 
 const returnSchema = z.object({
@@ -41,7 +41,7 @@ const exampleSchema = z.string();
  * Method schema for methods associated with a class in the Reference collection.
  */
 const methodSchema = z.object({
-  description: z.string(),
+  description: z.string().optional(),
   path: z.string(),
 });
 
@@ -49,7 +49,7 @@ const methodSchema = z.object({
  * Property schema for properties associated with a class in the Reference collection.
  */
 const propertySchema = z.object({
-  description: z.string(),
+  description: z.string().optional(),
   path: z.string(),
 });
 
@@ -78,6 +78,7 @@ export const referenceSchema = z.object({
   properties: z.record(propertySchema).optional(),
   isConstructor: z
     .boolean()
+    .or(z.number().transform((n: number) => !!n))
     .or(z.literal("true").transform(() => true))
     .or(z.literal("false").transform(() => false))
     .optional(),
