@@ -19,6 +19,7 @@ import matter from "gray-matter";
 import { compile } from "@mdx-js/mdx";
 import isAbsoluteUrl from "is-absolute-url";
 import { nonDefaultSupportedLocales } from "@/src/i18n/const";
+import { p5Version } from "@/src/globals/p5-version";
 
 /* Repo to pull the contributor documentation from */
 const docsRepoUrl = "https://github.com/processing/p5.js.git";
@@ -258,7 +259,7 @@ const moveContentDirectory = async (
 const buildContributorDocs = async () => {
   console.log("Building contributor docs...");
 
-  await cloneLibraryRepo(clonedRepoPath, docsRepoUrl);
+  await cloneLibraryRepo(clonedRepoPath, docsRepoUrl, p5Version);
 
   // Clean out previous files
   console.log("Cleaning out current content collection...");
