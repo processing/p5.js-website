@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { existsSync, rmSync } from "fs";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -17,7 +17,16 @@ if (!match) {
 const repoUrl = match[1];
 const branch = match[2];
 
-const env = `P5_LIBRARY_PATH='/p5.min.js' P5_REPO_URL='${repoUrl}' P5_BRANCH='${branch}'`;
+const envVars = [`PUBLIC_P5_LIBRARY_PATH='/p5.min.js'`, `P5_REPO_URL='${repoUrl}'`, `P5_BRANCH='${branch}'`];
+const env = envVars.join(' ');
+
+const envFilePath = path.join(__dirname, '../../.env');
+let currentEnv = existsSync(envFilePath) ? readFileSync(envFilePath).toString() : '';
+currentEnv = currentEnv
+  .split('\n')
+  .filter((line: string) => !line.startsWith('P5_') && !line.startsWith('PUBLIC_P5_'))
+  .join('\n')
+writeFileSync(envFilePath, currentEnv + '\n' + envVars.join('\n'));
 
 // First delete the existing cloned p5 to make sure we clone fresh
 const parsedP5Path = path.join(__dirname, "./parsers/in/p5.js/");
