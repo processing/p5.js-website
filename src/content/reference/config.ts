@@ -25,7 +25,7 @@ export const categories = [
 
 const paramSchema = z.object({
   name: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   type: z.string().optional(),
   optional: z.coerce.boolean().optional(),
 });
@@ -60,10 +60,10 @@ export const referenceSchema = z.object({
   // Name of the reference item
   title: z.string(),
   // Module this item is within (for example: Color)
-  module: z.string(),
+  module: z.string().optional().default('Shape'),
   submodule: z.string().optional(),
   file: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   line: z.number().or(z.string().transform((v) => parseInt(v, 10))),
   params: z.array(paramSchema).optional(),
   overloads: z.array(z.object({ params: z.array(paramSchema) })).optional(),

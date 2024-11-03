@@ -14,8 +14,8 @@ export const sketchesPerPage = 12 as const;
 export const eventsPerPage = 12 as const;
 
 export const cdnLibraryUrl =
-  process.env.P5_LIBRARY_PATH ||
-  `https://cdn.jsdelivr.net/npm/p5@${p5Version}/lib/p5.min.js` as const;
+  import.meta.env.PUBLIC_P5_LIBRARY_PATH ||
+  (`https://cdn.jsdelivr.net/npm/p5@${p5Version}/lib/p5.min.js` as const);
 export const fullDownloadUrl =
   `https://github.com/processing/p5.js/releases/download/v${p5Version}/p5.zip` as const;
 export const libraryDownloadUrl =
