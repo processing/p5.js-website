@@ -13,6 +13,7 @@ import { JSDOM } from "jsdom";
 import type { JumpToLink, JumpToState } from "../globals/state";
 import { categories as referenceCategories } from "../content/reference/config";
 import memoize from "lodash/memoize";
+import { removeNestedReferencePaths } from "./_utils-node";
 
 interface EntryWithId {
   id: string;
@@ -152,7 +153,7 @@ export const getExampleCategory = (slug: string): string =>
   slug.split("/")[1].split("_").splice(1).join(" ");
 
 export const normalizeReferenceRoute = (route: string): string =>
-  removeLocaleAndExtension(route).replace(/constants\/|types\//, "");
+  removeNestedReferencePaths(removeLocaleAndExtension(route));
 
 export const removeLocaleAndExtension = (id: string): string =>
   removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
@@ -194,11 +195,23 @@ export const getLibraryLink = (library: CollectionEntry<"libraries">) =>
  * @param examples Reference example strings from MDX
  * @returns The examples separated into individual strings
  */
-export const separateReferenceExamples = (examples: string[]): string[] =>
+ // separateReferenceExamples
+export const parseReferenceExamplesAndMetadata = (examples: string[]): { src: string, classes: Record<string, any> }[] =>
   examples
     ?.flatMap((example: string) => example.split("</div>"))
-    .map((htmlFrag: string) => htmlFrag.replace(/<\/?div>|<\/?code>/g, ""))
-    .filter((cleanExample: string) => cleanExample);
+    .map((src: string) => {
+      const matches = [...src.matchAll(/<div class=['"]([^"']*)['"]>/g)]
+      const classes: Record<string, boolean> = {}
+      for (const match of matches) {
+        const tokens = match[1].split(/\s+/g)
+        for (const token of tokens) {
+          classes[token] = true
+        }
+      }
+      return { classes, src }
+    })
+    .map(({ src, classes }) => ({ classes, src: src.replace(/<\/?div[^>]*>|<\/?code>/g, "") }))
+    .filter(({ src }) => src);
 
 /**
  * Returns the title concatenated with parentheses if the reference entry is a constructor or method
@@ -220,8 +233,24 @@ export const escapeCodeTagsContent = (htmlString: string): string => {
   const $ = load(htmlString);
   // Loop through all <code> tags
   $("code").each(function () {
+    // Don't escape code in multiline blocks, as these will already
+    // be escaped
+    if ($(this).parent().prop('tagName') === 'PRE') return;
+
     // Get the current text and HTML inside the <code> tag
     const currentHtml = $(this).html() ?? "";
+
+    // Check if the content is already escaped by looking for common HTML entities
+    if (
+      currentHtml.includes("&lt;") ||
+      currentHtml.includes("&gt;") ||
+      currentHtml.includes("&amp;") ||
+      currentHtml.includes("&quot;") ||
+      currentHtml.includes("&#39;")
+    ) {
+      return; // Already escaped, skip this <code> tag
+    }
+
     // Use he to escape HTML entities
     const escapedHtml = he.escape(currentHtml);
     // Update the <code> tag content with the escaped HTML
@@ -322,7 +351,7 @@ export const generateJumpToState = async (
       break;
     case "examples":
       categories = new Set(
-        localeEntries.map((entry) => getExampleCategory(entry.slug)),
+        localeEntries.map((entry) => getExampleCategory(entry.id)),
       );
       break;
     default:
@@ -348,26 +377,39 @@ export const generateJumpToState = async (
   // Loop through each category and add entries to the jumpToLinks
   for (const category of categories ?? []) {
     const categoryLinks = [] as JumpToLink[];
+    const categoryLabel = getCategoryLabel(category);
     categoryLinks.push({
-      label: getCategoryLabel(category),
-      url: `/${collectionType}#${category}`,
+      label: categoryLabel,
+      url:
+        collectionType === "examples"
+          ? `/${collectionType}/#${categoryLabel.toLowerCase()}`
+          : `/${collectionType}/#${category}`,
       current: false,
     });
 
     // Examples are a special case where subentries are only shown if they are in the current category
     if (
       collectionType !== "examples" ||
-      category === getExampleCategory(currentEntrySlug)
+      category === getExampleCategory(currentEntrySlug) ||
+      category.toLowerCase() === getExampleCategory(currentEntrySlug)
     ) {
       // Get all entries in the current category
-      const currentCategoryEntries = localeEntries.filter(
+      let currentCategoryEntries = localeEntries.filter(
         (entry) =>
           category ===
           (collectionType === "examples"
-            ? getExampleCategory(entry.slug)
+            ? getExampleCategory(entry.id)
             : // @ts-expect-error - We know that the category exists because of the collection type
               entry.data.category ?? ""),
       );
+
+      if (collectionType === "tutorials") {
+        currentCategoryEntries = currentCategoryEntries.sort(
+          (a, b) =>
+            ((a.data as any).categoryIndex ?? 1000) -
+            ((b.data as any).categoryIndex ?? 1000),
+        );
+      }
 
       // Add the entries in the category to the jumpToLinks
       categoryLinks.push(

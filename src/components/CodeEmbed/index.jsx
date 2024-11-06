@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { cdnLibraryUrl } from "@/src/globals/globals";
+import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -21,6 +21,7 @@ import { Icon } from "../Icon";
  *   TODO: refactor this prop behavior
  *   allowSideBySide?: boolean
  *   fullWidth?: boolean
+ *   includeSound?: boolean
  * }
  */
 export const CodeEmbed = (props) => {
@@ -33,6 +34,21 @@ export const CodeEmbed = (props) => {
   const [codeString, setCodeString] = useState(
     initialCode.replace(/\u00A0/g, " "),
   );
+
+  let { previewWidth, previewHeight } = props;
+  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
+  if (canvasMatch) {
+    previewWidth = previewWidth || parseFloat(canvasMatch[1]);
+    previewHeight = previewHeight || parseFloat(canvasMatch[2]);
+  }
+
+  const largeSketch = previewWidth && previewWidth > 770 - 60;
+
+  // Quick hack to make room for DOM that gets added below the canvas by default
+  const domMatch = /create(Button|Select|P|Div|Input)/.exec(initialCode);
+  if (domMatch && previewHeight) {
+    previewHeight += 100;
+  }
 
   const codeFrameRef = useRef(null);
 
@@ -61,23 +77,24 @@ export const CodeEmbed = (props) => {
 
   return (
     <div
-      className={`my-md flex w-full flex-col gap-[20px] overflow-hidden ${props.allowSideBySide && "lg:flex-row"} ${props.fullWidth && "full-width"}`}
+      className={`my-md flex w-full flex-col gap-[20px] overflow-hidden ${props.allowSideBySide ? "lg:flex-row" : ""} ${props.fullWidth ? "full-width" : ""}`}
     >
       {props.previewable ? (
         <div
-          className={`ml-0 flex w-fit gap-[20px] ${props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
+          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
         >
           <div>
             <CodeFrame
               jsCode={previewCodeString}
-              width={props.previewWidth}
-              height={props.previewHeight}
+              width={previewWidth}
+              height={previewHeight}
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
+              scripts={props.includeSound ? [cdnSoundUrl] : []}
             />
           </div>
-          <div className="flex gap-2.5 md:flex-row lg:flex-col">
+          <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
             <CircleButton
               className="bg-bg-gray-40"
               onClick={updateOrReRun}
@@ -130,7 +147,7 @@ export const CodeEmbed = (props) => {
               setPreviewCodeString(initialCode);
             }}
             ariaLabel="Reset code to initial value"
-            className="bg-sidebar-bg-color"
+            className="bg-white text-black"
           >
             <Icon kind="refresh" />
           </CircleButton>

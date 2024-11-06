@@ -2,189 +2,64 @@
 title: p5.Envelope
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: >-
-  <p>Envelopes are pre-defined amplitude distribution over time.
-
-  Typically, envelopes are used to control the output volume
-
-  of an object, a series of fades referred to as Attack, Decay,
-
-  Sustain and Release (
-
-  <a
-  href="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">ADSR</a>
-
-  ). Envelopes can also control other Web Audio Parameters—for example, a
-  p5.Envelope can
-
-  control an Oscillator's frequency like this: <code>osc.freq(env)</code>.</p>
-
-  <p>Use <code><a href="/reference/p5.Envelope/setRange">setRange</a></code> to
-  change the attack/release level.
-
-  Use <code><a href="/reference/p5.Envelope/setADSR">setADSR</a></code> to
-  change attackTime, decayTime, sustainPercent and releaseTime.</p>
-
-  <p>Use the <code><a href="/reference/p5.Envelope/play">play</a></code> method
-  to play the entire envelope,
-
-  the <code><a href="/reference/p5.Envelope/ramp">ramp</a></code> method for a
-  pingable trigger,
-
-  or <code><a
-  href="/reference/p5.Envelope/triggerAttack">triggerAttack</a></code>/
-
-  <code><a
-  href="/reference/p5.Envelope/triggerRelease">triggerRelease</a></code> to
-  trigger noteOn/noteOff.</p>
-line: 4721
+file: src/Envelope.js
+description: Generate an amplitude envelope.
+line: 10
 isConstructor: true
+params:
+  - name: attack
+    description: how quickly the envelope reaches the maximum level
+    type: Number
+    optional: true
+  - name: decay
+    description: how quickly the envelope reaches the sustain level
+    type: Number
+    optional: true
+  - name: sustain
+    description: how long the envelope stays at the decay level
+    type: Number
+    optional: true
+  - name: release
+    description: how quickly the envelope fades out after the sustain level
+    type: Number
+    optional: true
 example:
   - |-
 
-    <div><code>
-    let t1 = 0.1; // attack time in seconds
-    let l1 = 0.7; // attack level 0.0 to 1.0
-    let t2 = 0.3; // decay time in seconds
-    let l2 = 0.1; // decay level  0.0 to 1.0
-
-    let env;
-    let triOsc;
-
-    function setup() {
-      let cnv = createCanvas(100, 100);
-      background(220);
-      text('tap to play', 20, 20);
-      cnv.mousePressed(playSound);
-
-      env = new p5.Envelope(t1, l1, t2, l2);
-      triOsc = new p5.Oscillator('triangle');
-    }
-
-    function playSound() {
-      // starting the oscillator ensures that audio is enabled.
-      triOsc.start();
-      env.play(triOsc);
-    }
-    </code></div>
+    <div>
+    <code>
+    consoe.log('do an example here');
+    </code>
+    </div>
 methods:
-  set:
-    description: |
-      <p>Reset the envelope with a series of time/value pairs.</p>
-    path: p5.Envelope/set
-  setADSR:
-    description: >
-      <p>Set values like a traditional
-
-      <a
-      href="https://en.wikipedia.org/wiki/Synthesizer#/media/File:ADSR_parameter.svg">
-
-      ADSR envelope
-
-      </a>.</p>
-    path: p5.Envelope/setADSR
-  setRange:
-    description: |
-      <p>Set max (attackLevel) and min (releaseLevel) of envelope.</p>
-    path: p5.Envelope/setRange
-  setInput:
-    description: |
-      <p>Assign a parameter to be controlled by this envelope.
-      If a p5.Sound object is given, then the p5.Envelope will control its
-      output gain. If multiple inputs are provided, the env will
-      control all of them.</p>
-    path: p5.Envelope/setInput
-  setExp:
-    description: |
-      <p>Set whether the envelope ramp is linear (default) or exponential.
-      Exponential ramps can be useful because we perceive amplitude
-      and frequency logarithmically.</p>
-    path: p5.Envelope/setExp
   play:
-    description: |-
-      <p>Play tells the envelope to start acting on a given input.
-      If the input is a p5.sound object (i.e. AudioIn, Oscillator,
-      SoundFile), then Envelope will control its output volume.
-      Envelopes can also be used to control any <a href="
-      http://docs.webplatform.org/wiki/apis/webaudio/AudioParam">
-      Web Audio Audio Param.</a></p>
+    description: Trigger the envelope and release it after the sustain time.
     path: p5.Envelope/play
   triggerAttack:
-    description: |
-      <p>Trigger the Attack, and Decay portion of the Envelope.
-      Similar to holding down a key on a piano, but it will
-      hold the sustain level until you let go. Input can be
-      any p5.sound object, or a <a href="
-      http://docs.webplatform.org/wiki/apis/webaudio/AudioParam">
-      Web Audio Param</a>.</p>
+    description: >-
+      Trigger the Attack, and Decay portion of the Envelope. Similar to holding
+
+      down a key on a piano, but it will hold the sustain level until you let
+      go.
     path: p5.Envelope/triggerAttack
   triggerRelease:
-    description: |
-      <p>Trigger the Release of the Envelope. This is similar to releasing
-      the key on a piano and letting the sound fade according to the
-      release level and release time.</p>
+    description: |-
+      Trigger the Release of the envelope. Similar to releasing the key on 
+      a piano and letting the sound fade according to the release level and 
+      release time.
     path: p5.Envelope/triggerRelease
-  ramp:
-    description: >
-      <p>Exponentially ramp to a value using the first two
-
-      values from <code><a
-      href="/reference/p5.Envelope/setADSR">setADSR(attackTime,
-      decayTime)</a></code>
-
-      as <a href="https://en.wikipedia.org/wiki/RC_time_constant">
-
-      time constants</a> for simple exponential ramps.
-
-      If the value is higher than current value, it uses attackTime,
-
-      while a decrease uses decayTime.</p>
-    path: p5.Envelope/ramp
-  add:
-    description: |
-      <p>Add a value to the p5.Oscillator's output amplitude,
-      and return the oscillator. Calling this method
-      again will override the initial add() with new values.</p>
-    path: p5.Envelope/add
-  mult:
-    description: |
-      <p>Multiply the p5.Envelope's output amplitude
-      by a fixed value. Calling this method
-      again will override the initial mult() with new values.</p>
-    path: p5.Envelope/mult
-  scale:
-    description: |
-      <p>Scale this envelope's amplitude values to a given
-      range, and return the envelope. Calling this method
-      again will override the initial scale() with new values.</p>
-    path: p5.Envelope/scale
-properties:
-  attackTime:
-    description: |
-      <p>Time until envelope reaches attackLevel</p>
-    path: p5.Envelope/attackTime
-  attackLevel:
-    description: |
-      <p>Level once attack is complete.</p>
-    path: p5.Envelope/attackLevel
-  decayTime:
-    description: |
-      <p>Time until envelope reaches decayLevel.</p>
-    path: p5.Envelope/decayTime
-  decayLevel:
-    description: >
-      <p>Level after decay. The envelope will sustain here until it is
-      released.</p>
-    path: p5.Envelope/decayLevel
+  setInput:
+    description: ''
+    path: p5.Envelope/setInput
+  setADSR:
+    description: 'Sets the attack, decay, sustain, and release times of the envelope.'
+    path: p5.Envelope/setADSR
   releaseTime:
-    description: |
-      <p>Duration of the release portion of the envelope.</p>
+    description: Sets the release time of the envelope.
     path: p5.Envelope/releaseTime
-  releaseLevel:
-    description: |
-      <p>Level at the end of the release.</p>
-    path: p5.Envelope/releaseLevel
+  attackTime:
+    description: Sets the attack time of the envelope.
+    path: p5.Envelope/attackTime
 chainable: false
 ---
 

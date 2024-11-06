@@ -1,7 +1,8 @@
 import type { ReferenceDocContentItem } from "@/src/content/types";
 import { useMemo, useRef, useState } from "preact/hooks";
-import type { JSX } from "preact";
+import { type JSX } from "preact";
 import { Icon } from "../Icon";
+import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -85,15 +86,22 @@ export const ReferenceDirectoryWithFilter = ({
         {entries.map((entry) => (
           <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
             <a
-              href={`/reference/${entry.data.path}`}
+              href={`/reference/${entry.data.path}/`}
               class="group hover:no-underline"
               aria-label={entry.data.title}
               aria-describedby={`${entry.data.title}-description`}
             >
               <span
                 class="text-body-mono group-hover:underline"
-                dangerouslySetInnerHTML={{ __html: entry.data.title }}
-              />
+              >
+                {entry.data.beta && (
+                  <div
+                    className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
+                    dangerouslySetInnerHTML={{ __html: flask }}
+                  />
+                )}
+                <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />
+              </span>
               <p
                 class="mt-1 text-sm"
                 id={`${entry.data.title}-description`}
@@ -108,11 +116,11 @@ export const ReferenceDirectoryWithFilter = ({
     subcat: { name: string },
     category: { name: string },
   ) => {
-    return !(!subcat.name || !category.name || subcat.name === "p5.sound");
+    return !(!subcat.name || !category.name);
   }
 
   const getSubcatHeading = (
-    subcat: { name: string },
+    subcat: { name: string; entry?: any },
     category: { name: string },
   ) => {
     if (!subcatShouldHaveHeading(subcat, category)) {
@@ -121,10 +129,10 @@ export const ReferenceDirectoryWithFilter = ({
 
     return (
       <>
-        {subcat.name.includes("p5.") ? (
+        {subcat.entry ? (
           <a
             id={subcat.name}
-            href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}`}
+            href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}/`}
           >
             <h3 className="m-0 py-gutter-md">{subcat.name}</h3>
           </a>
@@ -173,14 +181,14 @@ export const ReferenceDirectoryWithFilter = ({
   return (
     <div>
       <div class="h-0 overflow-visible">
-        <div class="content-grid-simple relative -top-[75px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
+        <div class="content-grid-simple absolute -top-[75px] -left-0 -right-0 h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
           <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
             <input
               type="text"
               id="search"
               ref={inputRef}
               class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
-              placeholder="Filter by keyword"
+              placeholder={uiTranslations["Filter by keyword"]}
               onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
                 const target = e.target as HTMLInputElement;
                 setSearchKeyword(target?.value);

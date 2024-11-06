@@ -25,14 +25,14 @@ export const categories = [
 
 const paramSchema = z.object({
   name: z.string(),
-  description: z.string(),
-  type: z.string(),
-  optional: z.boolean().optional(),
+  description: z.string().optional(),
+  type: z.string().optional(),
+  optional: z.coerce.boolean().optional(),
 });
 
 const returnSchema = z.object({
   description: z.string(),
-  type: z.string(),
+  type: z.string().optional(),
 });
 
 const exampleSchema = z.string();
@@ -41,7 +41,7 @@ const exampleSchema = z.string();
  * Method schema for methods associated with a class in the Reference collection.
  */
 const methodSchema = z.object({
-  description: z.string(),
+  description: z.string().optional(),
   path: z.string(),
 });
 
@@ -49,7 +49,7 @@ const methodSchema = z.object({
  * Property schema for properties associated with a class in the Reference collection.
  */
 const propertySchema = z.object({
-  description: z.string(),
+  description: z.string().optional(),
   path: z.string(),
 });
 
@@ -60,16 +60,17 @@ export const referenceSchema = z.object({
   // Name of the reference item
   title: z.string(),
   // Module this item is within (for example: Color)
-  module: z.string(),
+  module: z.string().optional().default('Shape'),
   submodule: z.string().optional(),
   file: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   line: z.number().or(z.string().transform((v) => parseInt(v, 10))),
   params: z.array(paramSchema).optional(),
   overloads: z.array(z.object({ params: z.array(paramSchema) })).optional(),
   itemtype: z.string().optional(),
   class: z.string().optional(),
   chainable: z.coerce.boolean().optional(),
+  beta: z.coerce.boolean().optional(),
   return: returnSchema.optional(),
   example: z.array(exampleSchema).optional(),
   relatedContent: relatedContent().optional(),
@@ -77,6 +78,7 @@ export const referenceSchema = z.object({
   properties: z.record(propertySchema).optional(),
   isConstructor: z
     .boolean()
+    .or(z.number().transform((n: number) => !!n))
     .or(z.literal("true").transform(() => true))
     .or(z.literal("false").transform(() => false))
     .optional(),

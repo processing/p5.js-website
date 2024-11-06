@@ -3,6 +3,17 @@ import fs, { cp, readdir } from "fs/promises";
 import path from "path";
 import type { CopyOptions, Dirent } from "fs";
 import { fileURLToPath } from "url";
+import { rewriteRelativeLink } from "../pages/_utils-node";
+import { p5Version } from "../globals/p5-version";
+
+let latestRelease = p5Version;
+// If the latest release is a version number (e.g. 1.10.0) without a 'v'
+// prefix, add the v prefix
+if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
+  latestRelease = 'v' + latestRelease;
+}
+
+export const p5RepoUrl = "https://github.com/processing/p5.js.git";
 
 /* Absolute path to the root of this project repo */
 export const repoRootPath = path.join(
@@ -13,17 +24,21 @@ export const repoRootPath = path.join(
 /**
  * Clone the library repo if it doesn't exist or if it's not recent
  * @param localSavePath The path to save the library repo to
- * @param [repoUrl] The URL of the library repo to clone, default to p5.js library
+ * @param repoUrl The URL of the library repo to clone, default to p5.js library
  * @returns void
  */
 export const cloneLibraryRepo = async (
   localSavePath: string,
-  repoUrl = "https://github.com/processing/p5.js.git",
+  repoUrl: string,
+  branch: string,
+  { shouldFixAbsolutePathInPreprocessor = true }: {
+    shouldFixAbsolutePathInPreprocessor?: boolean
+  } = {}
 ) => {
   const git = simpleGit();
 
   const repoExists = await fileExistsAt(localSavePath);
-  const hasRecentRepo = repoExists && (await fileModifiedSince(localSavePath));
+  const hasRecentRepo = branch !== 'main' && repoExists && (await fileModifiedSince(localSavePath));
 
   if (!hasRecentRepo) {
     console.log("Preparing to clone repository...");
@@ -41,9 +56,13 @@ export const cloneLibraryRepo = async (
         "--depth",
         "1",
         "--filter=blob:none",
+        "--branch",
+        branch
       ]);
       console.log("Repository cloned successfully.");
-      await fixAbsolutePathInPreprocessor(localSavePath);
+      if (shouldFixAbsolutePathInPreprocessor) {
+        await fixAbsolutePathInPreprocessor(localSavePath);
+      }
     } catch (err) {
       console.error(`Error cloning repo: ${err}`);
       throw err;
@@ -276,8 +295,12 @@ export const rewriteRelativeMdLinks = (markdownText: string): string => {
    * 1. Text for the link
    * 2. Link url (but not the .md extension at the end)
    */
-  const regexPattern: RegExp = /\[([^\]]+)\]\((.?\/?[^)]+)\.md\)/g;
-  return markdownText.replace(regexPattern, (_match, linkText, url) => {
-    return `[${linkText}](${url}/)`;
+  const regexPattern: RegExp = /(\!?)\[([^\]]+)\]\(([^\)]+)\)/g;
+  return markdownText.replace(regexPattern, (match, img, linkText, url: string) => {
+    // Don't convert images
+    if (img) return match;
+
+    const updatedUrl = rewriteRelativeLink(url);
+    return `[${linkText}](${updatedUrl})`;
   });
 };

@@ -2,89 +2,126 @@
 title: p5.Panner3D
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: >
-  <p>Panner3D is based on the <a title="Web Audio Panner docs"
-  href="https://developer.mozilla.org/en-US/docs/Web/API/PannerNode">
-
-  Web Audio Spatial Panner Node</a>.
-
-  This panner is a spatial processing node that allows audio to be positioned
-
-  and oriented in 3D space.</p>
-
-  <p>The position is relative to an <a title="Web Audio Listener docs"
-  href="https://developer.mozilla.org/en-US/docs/Web/API/AudioListener">
-
-  Audio Context Listener</a>, which can be accessed
-
-  by <code>p5.soundOut.audiocontext.listener</code></p>
-line: 7602
+file: src/Panner3D.js
+description: A 3D sound spatializer.
+line: 10
 isConstructor: true
+example:
+  - |-
+
+    <div>
+    <code>
+    let radius = 10 ; 
+    let soundSource, spatializer;
+    let font;
+    let cnv;
+
+    let x = 0;
+    let y = 0;
+    let z = 100;
+
+    let vX;
+    let vY;
+    let vZ;
+
+    function preload() {
+      soundSource = loadSound('//assets/beat.mp3');
+      font = loadFont('//assets/SourceSansPro-Regular.otf');
+    }
+
+    function setup() {
+      describe(
+        'A 3D shape with a sound source attached to it. The sound source is spatialized using the Panner3D class. Click to play the sound.'
+      );
+      cnv = createCanvas(100, 100, WEBGL);
+      cnv.mousePressed(playSound);
+
+      camera(0, 0, 0, 0, 0, 1);
+      
+      textFont(font);
+      textAlign(CENTER,CENTER);
+      
+      angleMode(DEGREES);
+
+      vX = random(-0.5, 0.5);
+      vY = random(-0.5, 0.5);
+      vZ = random(-0.5, 0.5) * 1.5;
+
+      spatializer = new p5.Panner3D();
+      spatializer.maxDist(100);
+      soundSource.loop();
+      soundSource.disconnect();
+      soundSource.connect(spatializer);
+    }
+
+    function playSound() {
+      soundSource.play();
+    }
+
+    function draw() {
+      background(220);
+      push();
+      textSize(5);
+      fill(0);
+      translate(0,0,100);
+      //text('click to play', 0, 0);
+      pop();
+      // Update Box and Sound Source Position
+      push();
+      moveSoundBox();
+      box(5, 5, 5);
+      pop();
+    }
+
+    // Rotate 1 degree per frame along all three axes
+    function moveSoundBox() {
+      x = x + vX;
+      y = y + vY;
+      z = z + vZ;
+
+      if (x > radius || x < -radius) {
+        vX = -vX;
+      }
+      if (y > radius || y < -radius) {
+        vY = -vY;
+      }
+      if (z > 250 || z < 80) {
+        vZ = -vZ;
+      }
+      //set the position of the 3D panner
+      spatializer.set(x, y, z);
+      //set the postion of the box
+      translate(x, y, z);
+      rotateX(45 + frameCount);
+      rotateZ(45);
+    }
+    </code>
+    </div>
 methods:
   process:
-    description: |
-      <p>Connect an audio sorce</p>
+    description: Connects an input source to the 3D panner.
     path: p5.Panner3D/process
   set:
-    description: |
-      <p>Set the X,Y,Z position of the Panner</p>
+    description: 'Set the x, y, and z position of the 3D panner.'
     path: p5.Panner3D/set
-  positionX:
-    description: |
-      <p>Getter and setter methods for position coordinates</p>
-    path: p5.Panner3D/positionX
-  positionY:
-    description: |
-      <p>Getter and setter methods for position coordinates</p>
-    path: p5.Panner3D/positionY
-  positionZ:
-    description: |
-      <p>Getter and setter methods for position coordinates</p>
-    path: p5.Panner3D/positionZ
-  orient:
-    description: |
-      <p>Set the X,Y,Z position of the Panner</p>
-    path: p5.Panner3D/orient
-  orientX:
-    description: |
-      <p>Getter and setter methods for orient coordinates</p>
-    path: p5.Panner3D/orientX
-  orientY:
-    description: |
-      <p>Getter and setter methods for orient coordinates</p>
-    path: p5.Panner3D/orientY
-  orientZ:
-    description: |
-      <p>Getter and setter methods for orient coordinates</p>
-    path: p5.Panner3D/orientZ
   setFalloff:
-    description: |
-      <p>Set the rolloff factor and max distance</p>
+    description: The rolloff rate of the panner.
     path: p5.Panner3D/setFalloff
   maxDist:
-    description: |
-      <p>Maxium distance between the source and the listener</p>
+    description: Set the maximum distance of the panner.
     path: p5.Panner3D/maxDist
-  rollof:
-    description: >
-      <p>How quickly the volume is reduced as the source moves away from the
-      listener</p>
-    path: p5.Panner3D/rollof
-properties:
-  panner:
-    description: >
-      <p><a title="Web Audio Panner docs"
-      href="https://developer.mozilla.org/en-US/docs/Web/API/PannerNode">
-
-      Web Audio Spatial Panner Node</a></p>
-
-      <p>Properties include<br>
-       <a href="https://www.w3.org/TR/webaudio/#idl-def-PanningModelType">Panning Model</a>
-       : "equal power" or "HRTF"<br>
-       <a href="https://www.w3.org/TR/webaudio/#idl-def-DistanceModelType">DistanceModel</a>
-      : "linear", "inverse", or "exponential"</br></br></p>
-    path: p5.Panner3D/panner
+  rolloff:
+    description: Set the rolloff rate of the panner.
+    path: p5.Panner3D/rolloff
+  positionX:
+    description: Set the X position of the sound source.
+    path: p5.Panner3D/positionX
+  positionY:
+    description: Set the Y position of the sound source.
+    path: p5.Panner3D/positionY
+  positionZ:
+    description: Set the Z position of the sound source.
+    path: p5.Panner3D/positionZ
 chainable: false
 ---
 

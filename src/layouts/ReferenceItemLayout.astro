@@ -5,7 +5,7 @@ import Head from "@components/Head/index.astro";
 import {
   getRefEntryTitleConcatWithParen,
   escapeCodeTagsContent,
-  separateReferenceExamples,
+  parseReferenceExamplesAndMetadata,
   normalizeReferenceRoute,
   getRelatedEntriesinCollection,
   generateJumpToState,
@@ -18,13 +18,15 @@ import type {
   ReferenceParam,
 } from "@/types/parsers.interface";
 import { setJumpToState } from "../globals/state";
+import { p5Version } from "../globals/p5-version";
+import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
-const examples = separateReferenceExamples(entry.data.example)
+const examples = parseReferenceExamplesAndMetadata(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
-  ?.map((example) => example.trim());
+  ?.map((example) => ({ ...example, src: example.src.trim() }));
 const description = escapeCodeTagsContent(entry.data.description);
 const t = await getUiTranslator(currentLocale);
 const title = getRefEntryTitleConcatWithParen(entry);
@@ -85,27 +87,38 @@ const seenParams: Record<string, true> = {};
   topic="reference"
   className="reference-item"
 >
-  <div class="content-grid mt-0 max-w-[750px]">
+  <div class="content-grid mt-0 max-w-[770px]">
     <div class="col-span-9 xl:min-w-[1000px]">
+      {entry.data.beta && (
+        <div class="experimental">
+          <h5>
+            <div
+              class="inline-block mr-2 w-[20px] h-[20px] mb-[-2px]"
+              set:html={flask}
+            />
+            {t('experimentalApi', 'title')}
+          </h5>
+          <p>{t('experimentalApi', 'description')}</p>
+        </div>
+      )}
       <div
         set:html={description}
-        class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item"
+        class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
       />
       {
         examples && (
           <div class="mb-xl">
             <h2 class="text-h3">{t("Examples")}</h2>
-            {examples.map((exampleCode: string, i: number) => {
+            {examples.map(({ src: exampleCode, classes }, i: number) => {
               return (
                 <CodeEmbed
                   client:load
                   initialValue={exampleCode}
-                  previewable
+                  previewable={!classes.norender}
                   editable
-                  lazyLoad={i > 0}
-                  previewHeight="100px"
-                  previewWidth="100px"
+                  lazyLoad={false}
                   allowSideBySide={true}
+                  includeSound={entry.data.module === 'p5.sound'}
                 />
               );
             })}
@@ -129,10 +142,12 @@ const seenParams: Record<string, true> = {};
                 entry.data.params.map((param: ReferenceParam) => (
                   <div class="grid grid-cols-6 gap-gutter-md text-body">
                     <span class="col-span-1 text-body">{param.name}</span>
-                    <span
-                      class="col-span-5 [&_p]:m-0 [&_a]:underline"
-                      set:html={param.description}
-                    />
+                    <div
+                          class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                    >
+                      {param.type && <span>{param.type}: </span>}
+                      <span set:html={param.description} />
+                    </div>
                   </div>
                 ))}
               {entry.data.overloads &&
@@ -142,7 +157,7 @@ const seenParams: Record<string, true> = {};
                     seenParams[param.name] = true;
                     return (
                       <div class="grid grid-cols-6 gap-gutter-md text-body">
-                        <h4 class="col-span-1">{param.name}</h4>
+                        <span class="col-span-1">{param.name}</span>
                         <div
                           class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                         >
@@ -153,6 +168,23 @@ const seenParams: Record<string, true> = {};
                     )
                   })
                 )}
+            </div>
+          </>
+        )
+      }
+      {
+        (entry.data.return) && (
+          <>
+            <div class="mb-xl">
+              <h2 class="mb-md text-h3">{t("Returns")}</h2>
+              <div class="grid grid-cols-6 gap-gutter-md text-body">
+                <div
+                      class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                >
+                  {entry.data.return.type && <span>{entry.data.return.type}: </span>}
+                  <span set:html={entry.data.return.description} />
+                </div>
+              </div>
             </div>
           </>
         )
@@ -204,6 +236,21 @@ const seenParams: Record<string, true> = {};
                 </div>
               );
             })}
+          </div>
+        )
+      }
+      {
+        entry.data.file && entry.data.line &&(
+          <div class="my-xl">
+           <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
+            Notice any errors or typos? <a href ="https://github.com/processing/p5.js/issues">Please let us know</a>. Please feel free to edit 
+            <a
+                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
+                  >
+                  {entry.data.file}
+                  </a>
+                and open a pull request!
+           </div>
           </div>
         )
       }

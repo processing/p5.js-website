@@ -4,6 +4,23 @@ This repo includes a few scripts to pull content from external sources, primaril
 
 They are all runnable via npm scripts.
 
+## Testing the docs of your fork
+
+If you are contributing a change to the main p5.js repo that affects documentation, you will want to preview how your changes will look on the website. To do so, make sure you have committed your changes to a branch of your fork of p5.js.
+
+Then, in the p5.js-website repo, run the following command, using the URL of your fork  of p5 before the `#`, and the name of your branch after the `#`:
+
+```sh
+npm run custom:dev https://github.com/yourUsername/p5.js.git#yourBranch
+```
+
+This will build the reference from your branch and start a development preview of the website. A URL will be logged in the console that you can go to in your browser to test out your changes.
+
+When you're done, you can run this command to reset your changes:
+```sh
+npm run custom:cleanup
+```
+
 ## After a p5.js release
 
 To update the content on the p5.js website following a new release of p5.js, you should run all of these commands to pull in the latest content. **Be sure to run the search indices script last as it depends on the results of the other scripts to be accurate.**

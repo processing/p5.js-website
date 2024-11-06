@@ -43,6 +43,16 @@ export const buildReference = async () => {
     ...(await convertDocsToMDX(Object.values(parsedOutput.classitems))),
     ...(await convertDocsToMDX(Object.values(parsedOutput.classes))),
   ];
+
+  // Remove the old .mdx files so that reference items that no longer
+  // exist don't linger
+  const existing = await fs.readdir(prefix)
+  for (const f of existing) {
+    if ((await fs.lstat(path.join(prefix, f))).isDirectory()) {
+      await fs.rm(path.join(prefix, f), { recursive: true });
+    }
+  }
+
   // Save the MDX files to the file system
   await saveMDX(mdxDocs);
   console.log("Done building reference docs!");
@@ -57,10 +67,19 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
 
   if (doc.module === "Constants") {
     sortedModule = "constants";
+  } else if ([
+    "Array",
+    "Boolean",
+    "Number",
+    "Object",
+    "String"
+  ].includes(doc.name)) {
+    sortedModule = "types";
   }
   if ("class" in doc && doc.class) {
     docClass = doc.class;
   } else {
+    if (!doc.module) console.log(doc)
     docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
   }
 
@@ -182,6 +201,18 @@ const correctRelativeLinksInDescription = (description: string | undefined) => {
       // Replace it with /reference/
       href = href.replace("/reference/#", "/reference/");
     }
+    
+    // Add a trailing / if the link isn't to a file and does not have query params or a hash reference
+    if (
+      !href.startsWith('#') &&
+      !href.endsWith('/') &&
+      !/(\.\w+)$/.exec(href) &&
+      !href.includes('?') &&
+      !/#([\w\-]+)$/.exec(href)
+    ) {
+      href += '/';
+    }
+
     $(this).attr("href", href);
   });
 
@@ -281,6 +312,7 @@ const getMethodFrontmatter = (doc: ReferenceClassItemMethod) => {
     overloads,
     itemtype,
     chainable: doc.chainable === 1,
+    beta: doc.beta ? !!doc.beta : undefined,
   };
 };
 

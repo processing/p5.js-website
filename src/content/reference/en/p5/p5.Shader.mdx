@@ -16,7 +16,7 @@ description: >
   language called
 
   <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders/"
   target="_blank">GLSL</a>
 
   and run along with the rest of the code in a sketch.</p>
@@ -28,15 +28,52 @@ description: >
   and the fragment shader affects color. Once the <code>p5.Shader</code> object
   is
 
-  created, it can be used with the <a href="/reference/p5/shader">shader()</a>
+  created, it can be used with the <a href="/reference/p5/shader/">shader()</a>
 
   function, as in <code>shader(myShader)</code>.</p>
 
-  <p>Note: <a href="/reference/p5/createShader">createShader()</a>,
+  <p>A shader can optionally describe <em>hooks,</em> which are functions in
+  GLSL that
 
-  <a href="/reference/p5/createFilterShader">createFilterShader()</a>, and
+  users may choose to provide to customize the behavior of the shader. For the
 
-  <a href="/reference/p5/loadShader">loadShader()</a> are the recommended ways
+  vertex or the fragment shader, users can pass in an object where each key is
+
+  the type and name of a hook function, and each value is a string with the
+
+  parameter list and default implementation of the hook. For example, to let
+  users
+
+  optionally run code at the start of the vertex shader, the options object
+  could
+
+  include:</p>
+
+  <pre><code class="language-js">{
+    vertex: {
+      'void beforeVertex': '() {}'
+    }
+  }
+
+  </code></pre>
+
+  <p>Then, in your vertex shader source, you can run a hook by calling a
+  function
+
+  with the same name prefixed by <code>HOOK_</code>:</p>
+
+  <pre><code class="language-glsl">void main() {
+    HOOK_beforeVertex();
+    // Add the rest ofy our shader code here!
+  }
+
+  </code></pre>
+
+  <p>Note: <a href="/reference/p5/createShader/">createShader()</a>,
+
+  <a href="/reference/p5/createFilterShader/">createFilterShader()</a>, and
+
+  <a href="/reference/p5/loadShader/">loadShader()</a> are the recommended ways
   to
 
   create an instance of this class.</p>
@@ -55,6 +92,23 @@ params:
     description: |
       <p>source code for the fragment shader program.</p>
     type: String
+  - name: options
+    description: >
+      <p>An optional object describing how this shader can
+
+      be augmented with hooks. It can include:</p>
+
+      <ul>
+
+      <li><code>vertex</code>: An object describing the available vertex shader
+      hooks.</li>
+
+      <li><code>fragment</code>: An object describing the available frament
+      shader hooks.</li>
+
+      </ul>
+    type: Object
+    optional: true
 example:
   - |-
 
@@ -144,14 +198,150 @@ example:
     </code>
     </div>
 methods:
+  inspectHooks:
+    description: >
+      <p>Logs the hooks available in this shader, and their current
+      implementation.</p>
+
+      <p>Each shader may let you override bits of its behavior. Each bit is
+      called
+
+      a <em>hook.</em> A hook is either for the <em>vertex</em> shader, if it
+      affects the
+
+      position of vertices, or in the <em>fragment</em> shader, if it affects
+      the pixel
+
+      color. This method logs those values to the console, letting you know what
+
+      you are able to use in a call to
+
+      <a href="/reference/p5.Shader/modify/"><code>modify()</code></a>.</p>
+
+      <p>For example, this shader will produce the following output:</p>
+
+      <pre><code class="language-js">myShader = baseMaterialShader().modify({
+        declarations: 'uniform float time;',
+        'vec3 getWorldPosition': `(vec3 pos) {
+          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+          return pos;
+        }`
+      });
+
+      myShader.inspectHooks();
+
+      </code></pre>
+
+      <pre><code>==== Vertex shader hooks: ====
+
+      void beforeVertex() {}
+
+      vec3 getLocalPosition(vec3 position) { return position; }
+
+      [MODIFIED] vec3 getWorldPosition(vec3 pos) {
+            pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+            return pos;
+          }
+      vec3 getLocalNormal(vec3 normal) { return normal; }
+
+      vec3 getWorldNormal(vec3 normal) { return normal; }
+
+      vec2 getUV(vec2 uv) { return uv; }
+
+      vec4 getVertexColor(vec4 color) { return color; }
+
+      void afterVertex() {}
+
+
+      ==== Fragment shader hooks: ====
+
+      void beforeFragment() {}
+
+      Inputs getPixelInputs(Inputs inputs) { return inputs; }
+
+      vec4 combineColors(ColorComponents components) {
+                      vec4 color = vec4(0.);
+                      color.rgb += components.diffuse * components.baseColor;
+                      color.rgb += components.ambient * components.ambientColor;
+                      color.rgb += components.specular * components.specularColor;
+                      color.rgb += components.emissive;
+                      color.a = components.opacity;
+                      return color;
+                    }
+      vec4 getFinalColor(vec4 color) { return color; }
+
+      void afterFragment() {}
+
+      </code></pre>
+    path: p5.Shader/inspectHooks
+  modify:
+    description: >
+      <p>Returns a new shader, based on the original, but with custom snippets
+
+      of shader code replacing default behaviour.</p>
+
+      <p>Each shader may let you override bits of its behavior. Each bit is
+      called
+
+      a <em>hook.</em> A hook is either for the <em>vertex</em> shader, if it
+      affects the
+
+      position of vertices, or in the <em>fragment</em> shader, if it affects
+      the pixel
+
+      color. You can inspect the different hooks available by calling
+
+      <a
+      href="/reference/p5.Shader/inspectHooks/"><code>yourShader.inspectHooks()</code></a>.
+      You can
+
+      also read the reference for the default material, normal material, color,
+      line, and point shaders to
+
+      see what hooks they have available.</p>
+
+      <p><code>modify()</code> takes one parameter, <code>hooks</code>, an
+      object with the hooks you want
+
+      to override. Each key of the <code>hooks</code> object is the name
+
+      of a hook, and the value is a string with the GLSL code for your hook.</p>
+
+      <p>If you supply functions that aren't existing hooks, they will get added
+      at the start of
+
+      the shader as helper functions so that you can use them in your hooks.</p>
+
+      <p>To add new <a href="/reference/p5.Shader/setUniform/">uniforms</a> to
+      your shader, you can pass in a <code>uniforms</code> object containing
+
+      the type and name of the uniform as the key, and a default value or
+      function returning
+
+      a default value as its value. These will be automatically set when the
+      shader is set
+
+      with <code>shader(yourShader)</code>.</p>
+
+      <p>You can also add a <code>declarations</code> key, where the value is a
+      GLSL string declaring
+
+      custom uniform variables, globals, and functions shared
+
+      between hooks. To add declarations just in a vertex or fragment shader,
+      add
+
+      <code>vertexDeclarations</code> and <code>fragmentDeclarations</code>
+      keys.</p>
+    path: p5.Shader/modify
   copyToContext:
     description: >
       <p>Copies the shader from one drawing context to another.</p>
 
       <p>Each <code>p5.Shader</code> object must be compiled by calling
 
-      <a href="/reference/p5/shader">shader()</a> before it can run. Compilation
-      happens
+      <a href="/reference/p5/shader/">shader()</a> before it can run.
+      Compilation happens
 
       in a drawing context which is usually the main canvas or an instance of
 
@@ -184,18 +374,18 @@ methods:
       <p>Note: A <a href="/reference/p5/p5.Shader">p5.Shader</a> object created
       with
 
-      <a href="/reference/p5/createShader">createShader()</a>,
+      <a href="/reference/p5/createShader/">createShader()</a>,
 
-      <a href="/reference/p5/createFilterShader">createFilterShader()</a>, or
+      <a href="/reference/p5/createFilterShader/">createFilterShader()</a>, or
 
-      <a href="/reference/p5/loadShader">loadShader()</a>
+      <a href="/reference/p5/loadShader/">loadShader()</a>
 
       can be used directly with a <a
       href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>
 
       object created with
 
-      <a href="/reference/p5/createFramebuffer">createFramebuffer()</a>. Both
+      <a href="/reference/p5/createFramebuffer/">createFramebuffer()</a>. Both
       objects
 
       have the same context as the main canvas.</p>

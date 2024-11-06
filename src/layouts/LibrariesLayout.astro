@@ -12,7 +12,6 @@ import _ from "lodash";
 
 interface Props {
   entries: CollectionEntry<"libraries">[];
-  page: CollectionEntry<"pages">;
   title: string;
   full?: boolean;
 }
@@ -22,7 +21,6 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
 const { entries, page, full } = Astro.props;
-const { Content } = await page.render();
 
 function strCompare(a: string, b: string) {
   if (a < b) {
@@ -103,15 +101,11 @@ setJumpToState({
   variant="item"
   topic="community"
 >
-  <div class="rendered-markdown">
-    <Content />
-  </div>
 
   <div class="flex">
     <Button selected={!full} href="/libraries">{t("LibrariesLayout", "Featured")}</Button>
     <Button selected={full} href="/libraries/directory">{t("LibrariesLayout", "Everything")}</Button>
   </div>
-
   {
     sections.map(({ slug, name, sectionEntries, allEntries }) => (
       <section>
