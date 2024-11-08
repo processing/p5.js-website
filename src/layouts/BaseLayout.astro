@@ -11,6 +11,8 @@ import "@styles/base.scss";
 import type { CollectionEntry } from "astro:content";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
+import MoveToTopButton from "@components/MoveToTopButton/index.astro";
+import "@styles/move-to-top.scss";
 
 interface Props {
   title: string;
@@ -21,7 +23,6 @@ interface Props {
   variant?: "root" | "item" | "search" | "homepage";
   topic?: PageTopic;
   mainContentParentClass?: string;
-  /* Only needed for the homepage */
   homepageConfig?: CollectionEntry<"homepage">;
 }
 
@@ -62,10 +63,7 @@ const headerTopic = topic
   : { name: t(capitalize(fallbackTopic)) as string, url: `/${fallbackTopic}` };
 ---
 
-<html
-  class={`${titleClass.toLowerCase()} ${className} scroll-smooth`}
-  lang={currentLocale}
->
+<html class={`${titleClass.toLowerCase()} ${className} scroll-smooth`} lang={currentLocale}>
   <head>
     <script is:inline>
       // Get any theme settings and apply before load
@@ -124,5 +122,6 @@ const headerTopic = topic
       </main>
       <Footer />
     </div>
+    <MoveToTopButton />
   </body>
 </html>

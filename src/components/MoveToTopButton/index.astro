@@ -1,0 +1,38 @@
+---
+const { class: customClass = "" } = Astro.props;
+---
+
+<a
+  id="moveToTop"
+  class={`move-to-top hidden outline outline-1 outline-type-color py-2 px-4 flex flex-nowrap w-fit items-center justify-center rounded-full hover:bg-sidebar-type-color hover:text-bg-color hover:no-underline ${customClass}`}
+  href="#"
+  title="Go to top"
+>
+  <span>↑</span>
+</a>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const moveToTopButton = document.getElementById("moveToTop");
+
+    // Function to toggle visibility based on scroll position
+    const toggleVisibility = () => {
+      if (window.scrollY > 100) {
+        moveToTopButton.classList.remove("hidden");
+        moveToTopButton.classList.add("visible");
+      } else {
+        moveToTopButton.classList.add("hidden");
+        moveToTopButton.classList.remove("visible");
+      }
+    };
+
+    // Attach scroll event listener
+    window.addEventListener("scroll", toggleVisibility);
+
+    // Smooth scroll to top
+    moveToTopButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+</script>
