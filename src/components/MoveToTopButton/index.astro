@@ -12,27 +12,26 @@ const { class: customClass = "" } = Astro.props;
 </a>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const moveToTopButton = document.getElementById("moveToTop");
+  const moveToTopButton = document.getElementById("moveToTop");
 
-    // Function to toggle visibility based on scroll position
-    const toggleVisibility = () => {
-      if (window.scrollY > 100) {
-        moveToTopButton.classList.remove("hidden");
+  // Ensure the element exists before accessing its methods
+  if (moveToTopButton) {
+    // Show the button when the user scrolls 100px down from the top
+    window.onscroll = function () {
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
         moveToTopButton.classList.add("visible");
+        moveToTopButton.classList.remove("hidden");
       } else {
         moveToTopButton.classList.add("hidden");
         moveToTopButton.classList.remove("visible");
       }
     };
 
-    // Attach scroll event listener
-    window.addEventListener("scroll", toggleVisibility);
-
-    // Smooth scroll to top
+    // Scroll smoothly to the top when the button is clicked
     moveToTopButton.addEventListener("click", (event) => {
-      event.preventDefault();
+      event.preventDefault(); // Prevent default anchor behavior
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-  });
+  }
 </script>
+
