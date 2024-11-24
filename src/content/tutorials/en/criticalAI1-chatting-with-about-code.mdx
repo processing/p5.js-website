@@ -19,7 +19,6 @@ authors:
 ---
 
 # Chatting With/About Code
-#### Critical AI: Tutorial 1
 
 ## What are we making?
 
@@ -54,13 +53,13 @@ For this example, I chose a tutorial I haven't been able to find elsewhere:
 >[!TIP]  
 >Keep the project scope small to start. Do you have different versions of the idea, a simpler version and a more complex one? Write them out separately. For example, here are some other features that would be nice to include, but let's wait to add them later:  
 
-`- Output as a GIF`   
-`- Make 2-color halftone pixels instead of grayscale`  
+>`- Output as a GIF`   
+>`- Make 2-color halftone pixels instead of grayscale`
+
+You can follow along with this example in the [p5.js Web Editor](https://editor.p5js.org/sarahciston/sketches/LiHcPXdv1), and you can also follow the [chat thread](https://chatgpt.com/share/67094820-dc28-8003-bd34-14cc1e7b4572) used to create it.
 
 >![IMPORTANT]  
 >Critical Context: When will you choose to use GPT tools for your project, and when will you skip them? A ChatGPT query requires almost 10 times as much electricity as a Google search (O'Brien 2024). Sometimes the code challenge is something you can easily find on Google or StackOverflow. Sometimes it's better just to call a friend and figure it out together!
-
-You can follow along with this example in the [p5.js Web Editor](https://editor.p5js.org/sarahciston/sketches/LiHcPXdv1), and you can also follow the [chat thread](https://chatgpt.com/share/67094820-dc28-8003-bd34-14cc1e7b4572) used to create it.
 
 ### 2. Gather your tools
 
@@ -85,23 +84,23 @@ With all this in mind, once you've picked your tools, you can begin by prompting
 Pause. Rather than prompting ChatGPT with your whole project idea at once, let's break it down into parts. It's okay if you don't know every part of the process you want to create — that's why we're asking for help. We do this to understand more about what we are trying to make, and so that we receive less generic code more tailored to our project. Don't forget to tell it we're coding in p5.js!
 
 `Help me code a project in p5.js. I'd like to describe features and then have them added please.`  
-`First, import webcam video`  
-`Convert video to pixels`  
-`Turn pixels into dots`  
-`Make dot size based on the brightness and contrast of the pixel`
+`- First, import webcam video`  
+`- Convert video to pixels`  
+`- Turn pixels into dots`  
+`- Make dot size based on the brightness and contrast of the pixel`
 
 >[!TIP]  
 >Try writing the steps out in pseudocode, where you describe the steps of coding it without actually writing the code. This breaks your steps into smaller, more programmatic steps. For example, I could change the video processing steps to read: 
 
-`Import webcam video`  
-`Access each frame of the video`  
-`Convert each video frame to pixels`  
-`Make each pixel of each frame into a dot`  
-`Convert the dots to grayscale`  
-`Make dot size based on how dark they are. Darker pixels will have larger dots, while brighter pixels will have smaller dots.`
+>`- Import webcam video`  
+>`- Access each frame of the video`  
+>`- Convert each video frame to pixels`  
+>`- Make each pixel of each frame into a dot`  
+>`- Convert the dots to grayscale`  
+>`- Make dot size based on how dark they are. Darker pixels will have larger dots, while brighter pixels will have smaller dots.`
 
 >[!TIP]  
->You can run and compare the code at each step. This may also help you learn more about how the code works interactively, and give you new ideas to try.
+>Type out, run, and compare the code at each step. This may also help you learn more about how the code works interactively, and give you new ideas to try.
 
 >![WARNING]  
 >Review the answers it provides before you decide to use them. The code may include more advanced techniques than you know or than you actually need for your problem. 
@@ -154,7 +153,7 @@ Interestingly, this still looks gray, because the two colors it chose for our pi
 
 Find the line of code that says `let fillColor = isDark ? 0 : 255;` . This determines the two colors it uses to fill the dots. Let's try changing them by first creating some new fill colors, then updating the `fillColor` variable:
 
-```javascript
+```js
 let fillA = color(255,0,0) //red 
 let fillB = color(0,255,0) //green  
 let fillColor = isDark ? fillA : fillB;
@@ -162,7 +161,7 @@ let fillColor = isDark ? fillA : fillB;
 
 You can also change the background from gray to black or white, so it pops more.
 
-```javascript
+```js
 function draw() { 
    background(255)   
 ...}
@@ -170,7 +169,7 @@ function draw() {
 
 Now let's add an additional feature, so we can output our videos as GIFs. Here ChatGPT actually gets it wrong, but p5.js has a simple [`saveGif()`](https://p5js.org/reference/p5/saveGif/) function built in. You can add this code at the bottom of your sketch:
 
-```javascript
+```js
 function keyPressed() {
   if (key === 's') { 
 	saveGif('halftoneGif', 3);  
