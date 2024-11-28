@@ -1,0 +1,127 @@
+---
+title: p5.SoundLoop
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |
+  <p>SoundLoop</p>
+line: 9673
+isConstructor: true
+params:
+  - name: callback
+    description: |
+      <p>this function will be called on each iteration of theloop</p>
+    type: Function
+  - name: interval
+    description: >
+      <p>amount of time (if a number) or beats (if a string, following <a href =
+      "https://github.com/Tonejs/Tone.js/wiki/Time">Tone.Time</a> convention)
+      for each iteration of the loop. Defaults to 1 second.</p>
+    type: Number|String
+    optional: true
+example:
+  - |-
+
+    <div><code>
+     let synth, soundLoop;
+     let notePattern = [60, 62, 64, 67, 69, 72];
+
+     function setup() {
+       let cnv = createCanvas(100, 100);
+       cnv.mousePressed(canvasPressed);
+       colorMode(HSB);
+       background(0, 0, 86);
+       text('tap to start/stop', 10, 20);
+
+       //the looper's callback is passed the timeFromNow
+       //this value should be used as a reference point from
+       //which to schedule sounds
+       let intervalInSeconds = 0.2;
+       soundLoop = new p5.SoundLoop(onSoundLoop, intervalInSeconds);
+
+       synth = new p5.MonoSynth();
+    }
+
+    function canvasPressed() {
+      // ensure audio is enabled
+      userStartAudio();
+
+      if (soundLoop.isPlaying) {
+        soundLoop.stop();
+      } else {
+        // start the loop
+        soundLoop.start();
+      }
+    }
+
+    function onSoundLoop(timeFromNow) {
+      let noteIndex = (soundLoop.iterations - 1) % notePattern.length;
+      let note = midiToFreq(notePattern[noteIndex]);
+      synth.play(note, 0.5, timeFromNow);
+      background(noteIndex * 360 / notePattern.length, 50, 100);
+    }
+    </code></div>
+methods:
+  start:
+    description: |
+      <p>Start the loop</p>
+    path: p5.SoundLoop/start
+  stop:
+    description: |
+      <p>Stop the loop</p>
+    path: p5.SoundLoop/stop
+  pause:
+    description: |
+      <p>Pause the loop</p>
+    path: p5.SoundLoop/pause
+  syncedStart:
+    description: >
+      <p>Synchronize loops. Use this method to start two or more loops in
+      synchronization
+
+      or to start a loop in synchronization with a loop that is already playing
+
+      This method will schedule the implicit loop in sync with the explicit
+      master loop
+
+      i.e. loopToStart.syncedStart(loopToSyncWith)</p>
+    path: p5.SoundLoop/syncedStart
+properties:
+  bpm:
+    description: >
+      <p>Getters and Setters, setting any paramter will result in a change in
+      the clock's
+
+      frequency, that will be reflected after the next callback
+
+      beats per minute (defaults to 60)</p>
+    path: p5.SoundLoop/bpm
+  timeSignature:
+    description: |
+      <p>number of quarter notes in a measure (defaults to 4)</p>
+    path: p5.SoundLoop/timeSignature
+  interval:
+    description: |
+      <p>length of the loops interval</p>
+    path: p5.SoundLoop/interval
+  iterations:
+    description: |
+      <p>how many times the callback has been called so far</p>
+    path: p5.SoundLoop/iterations
+  musicalTimeMode:
+    description: >
+      <p>musicalTimeMode uses <a
+      href="https://github.com/Tonejs/Tone.js/wiki/Time/">Tone.Time</a>
+      convention
+
+      true if string, false if number</p>
+    path: p5.SoundLoop/musicalTimeMode
+  maxIterations:
+    description: |
+      <p>Set a limit to the number of loops to play. defaults to Infinity</p>
+    path: p5.SoundLoop/maxIterations
+chainable: false
+---
+
+
+# p5.SoundLoop
