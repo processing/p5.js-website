@@ -259,7 +259,12 @@ const moveContentDirectory = async (
 const buildContributorDocs = async () => {
   console.log("Building contributor docs...");
 
-  await cloneLibraryRepo(clonedRepoPath, docsRepoUrl, p5Version);
+  let latestRelease = p5Version;
+  if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
+    latestRelease = 'v' + latestRelease;
+  }
+
+  await cloneLibraryRepo(clonedRepoPath, docsRepoUrl, latestRelease);
 
   // Clean out previous files
   console.log("Cleaning out current content collection...");
