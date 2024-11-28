@@ -1,0 +1,127 @@
+---
+title: p5.Convolver
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |-
+  <p>p5.Convolver extends p5.Reverb. It can emulate the sound of real
+  physical spaces through a process called <a href="
+  https://en.wikipedia.org/wiki/Convolution_reverb#Real_space_simulation">
+  convolution</a>.</p>
+
+  <p>Convolution multiplies any audio input by an "impulse response"
+  to simulate the dispersion of sound over time. The impulse response is
+  generated from an audio file that you provide. One way to
+  generate an impulse response is to pop a balloon in a reverberant space
+  and record the echo. Convolution can also be used to experiment with
+  sound.</p>
+
+  <p>Use the method <code>createConvolution(path)</code> to instantiate a
+  p5.Convolver with a path to your impulse response audio file.</p>
+line: 8549
+isConstructor: true
+params:
+  - name: path
+    description: |
+      <p>path to a sound file</p>
+    type: String
+  - name: callback
+    description: |
+      <p>function to call when loading succeeds</p>
+    type: Function
+    optional: true
+  - name: errorCallback
+    description: |
+      <p>function to call if loading fails.
+                                         This function will receive an error or
+                                         XMLHttpRequest object with information
+                                         about what went wrong.</p>
+    type: Function
+    optional: true
+example:
+  - |-
+
+    <div><code>
+    let cVerb, sound;
+    function preload() {
+      // We have both MP3 and OGG versions of all sound assets
+      soundFormats('ogg', 'mp3');
+
+      // Try replacing 'bx-spring' with other soundfiles like
+      // 'concrete-tunnel' 'small-plate' 'drum' 'beatbox'
+      cVerb = createConvolver('/assets/bx-spring.mp3');
+
+      // Try replacing 'Damscray_DancingTiger' with
+      // 'beat', 'doorbell', lucky_dragons_-_power_melody'
+      sound = loadSound('/assets/Damscray_DancingTiger.mp3');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playSound);
+      background(220);
+      text('tap to play', 20, 20);
+
+      // disconnect from main output...
+      sound.disconnect();
+
+      // ...and process with cVerb
+      // so that we only hear the convolution
+      cVerb.process(sound);
+    }
+
+    function playSound() {
+      sound.play();
+    }
+    </code></div>
+methods:
+  process:
+    description: |
+      <p>Connect a source to the convolver.</p>
+    path: p5.Convolver/process
+  addImpulse:
+    description: |
+      <p>Load and assign a new Impulse Response to the p5.Convolver.
+      The impulse is added to the <code>.impulses</code> array. Previous
+      impulses can be accessed with the <code>.toggleImpulse(id)</code>
+      method.</p>
+    path: p5.Convolver/addImpulse
+  resetImpulse:
+    description: |
+      <p>Similar to .addImpulse, except that the <code>.impulses</code>
+      Array is reset to save memory. A new <code>.impulses</code>
+      array is created with this impulse as the only item.</p>
+    path: p5.Convolver/resetImpulse
+  toggleImpulse:
+    description: |
+      <p>If you have used <code>.addImpulse()</code> to add multiple impulses
+      to a p5.Convolver, then you can use this method to toggle between
+      the items in the <code>.impulses</code> Array. Accepts a parameter
+      to identify which impulse you wish to use, identified either by its
+      original filename (String) or by its position in the <code>.impulses
+      </code> Array (Number).<br/>
+      You can access the objects in the .impulses Array directly. Each
+      Object has two attributes: an <code>.audioBuffer</code> (type:
+      Web Audio <a href="
+      http://webaudio.github.io/web-audio-api/#the-audiobuffer-interface">
+      AudioBuffer)</a> and a <code>.name</code>, a String that corresponds
+      with the original filename.</p>
+    path: p5.Convolver/toggleImpulse
+properties:
+  convolverNode:
+    description: |
+      <p>Internally, the p5.Convolver uses the a
+      <a href="http://www.w3.org/TR/webaudio/#ConvolverNode">
+      Web Audio Convolver Node</a>.</p>
+    path: p5.Convolver/convolverNode
+  impulses:
+    description: |
+      <p>If you load multiple impulse files using the .addImpulse method,
+      they will be stored as Objects in this Array. Toggle between them
+      with the <code>toggleImpulse(id)</code> method.</p>
+    path: p5.Convolver/impulses
+chainable: false
+---
+
+
+# p5.Convolver
