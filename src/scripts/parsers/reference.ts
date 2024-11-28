@@ -18,11 +18,16 @@ const yuidocOutputPath = path.join(__dirname, "out")
  */
 export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
+    let latestRelease = p5Version;
+    if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
+      latestRelease = 'v' + latestRelease;
+    }
+
     // Clone p5.js
     await cloneLibraryRepo(
       localPath,
       process.env.P5_REPO_URL || p5RepoUrl,
-      process.env.P5_BRANCH || p5Version,
+      process.env.P5_BRANCH || latestRelease,
       { shouldFixAbsolutePathInPreprocessor: false },
     );
 

@@ -1,0 +1,59 @@
+---
+title: process
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |
+  <p>Connect a source to the convolver.</p>
+line: 8737
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div><code>
+    let cVerb, sound;
+    function preload() {
+      // We have both MP3 and OGG versions of all sound assets
+      soundFormats('ogg', 'mp3');
+
+      // Try replacing 'bx-spring' with other soundfiles like
+      // 'concrete-tunnel' 'small-plate' 'drum' 'beatbox'
+      cVerb = createConvolver('/assets/bx-spring.mp3');
+
+      // Try replacing 'Damscray_DancingTiger' with
+      // 'beat', 'doorbell', lucky_dragons_-_power_melody'
+      sound = loadSound('/assets/Damscray_DancingTiger.mp3');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playSound);
+      background(220);
+      text('tap to play', 20, 20);
+
+      // disconnect from main output...
+      sound.disconnect();
+
+      // ...and process with cVerb
+      // so that we only hear the convolution
+      cVerb.process(sound);
+    }
+
+    function playSound() {
+      sound.play();
+    }
+
+    </code></div>
+class: p5.Convolver
+params:
+  - name: src
+    description: |
+      <p>p5.sound / Web Audio object with a sound
+                               output.</p>
+    type: Object
+chainable: false
+---
+
+
+# process
