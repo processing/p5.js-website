@@ -1,0 +1,84 @@
+---
+title: onPeak
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |
+  <p>onPeak accepts two arguments: a function to call when
+  a peak is detected. The value of the peak,
+  between 0.0 and 1.0, is passed to the callback.</p>
+line: 10470
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div><code>
+    var cnv, soundFile, fft, peakDetect;
+    var ellipseWidth = 0;
+
+    function preload() {
+      soundFile = loadSound('/assets/beat.mp3');
+    }
+
+    function setup() {
+      cnv = createCanvas(100,100);
+      textAlign(CENTER);
+
+      fft = new p5.FFT();
+      peakDetect = new p5.PeakDetect();
+
+      setupSound();
+
+      // when a beat is detected, call triggerBeat()
+      peakDetect.onPeak(triggerBeat);
+    }
+
+    function draw() {
+      background(0);
+      fill(255);
+      text('click to play', width/2, height/2);
+
+      fft.analyze();
+      peakDetect.update(fft);
+
+      ellipseWidth *= 0.95;
+      ellipse(width/2, height/2, ellipseWidth, ellipseWidth);
+    }
+
+    // this function is called by peakDetect.onPeak
+    function triggerBeat() {
+      ellipseWidth = 50;
+    }
+
+    // mouseclick starts/stops sound
+    function setupSound() {
+      cnv.mouseClicked( function() {
+        if (soundFile.isPlaying() ) {
+          soundFile.stop();
+        } else {
+          soundFile.play();
+        }
+      });
+    }
+    </code></div>
+class: p5.PeakDetect
+params:
+  - name: callback
+    description: |
+      <p>Name of a function that will
+                                  be called when a peak is
+                                  detected.</p>
+    type: Function
+  - name: val
+    description: |
+      <p>Optional value to pass
+                                  into the function when
+                                  a peak is detected.</p>
+    type: Object
+    optional: true
+chainable: false
+---
+
+
+# onPeak
