@@ -18,7 +18,7 @@ import type {
   ReferenceParam,
 } from "@/types/parsers.interface";
 import { setJumpToState } from "../globals/state";
-import { p5Version } from "../globals/p5-version";
+import { p5Version, p5SoundVersion } from "../globals/p5-version";
 import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
 
 const { entry, relatedEntries } = Astro.props;
@@ -75,6 +75,12 @@ const relatedReferences = [
 ].slice(0, 4);
 
 const seenParams: Record<string, true> = {};
+
+const isSoundModule = entry.data.module === "p5.sound"
+const ghSourceRepo = isSoundModule ? "p5.sound.js" : "p5.js"
+const ghVersion = isSoundModule ? p5SoundVersion : p5Version
+const ghIssuesUrl =  `https://github.com/processing/${ghSourceRepo}/issues` 
+const ghSourceCodeUrl = `https://github.com/processing/${ghSourceRepo}/blob/v${ghVersion}`
 
 ---
 
@@ -243,9 +249,9 @@ const seenParams: Record<string, true> = {};
         entry.data.file && entry.data.line &&(
           <div class="my-xl">
            <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
-            Notice any errors or typos? <a href ="https://github.com/processing/p5.js/issues">Please let us know</a>. Please feel free to edit 
+            Notice any errors or typos? <a href ={ghIssuesUrl}>Please let us know</a>. Please feel free to edit 
             <a
-                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
+                href={`${ghSourceCodeUrl}/${entry.data.file}#L${entry.data.line}`}     
                   >
                   {entry.data.file}
                   </a>
