@@ -6,6 +6,7 @@ export const categories = [
   "drawing",
   "web-design",
   "accessibility",
+  "criticalAI",
   "webgl",
   "advanced",
 ] as const;
