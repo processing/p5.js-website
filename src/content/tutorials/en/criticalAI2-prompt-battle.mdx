@@ -29,7 +29,7 @@ In this tutorial, you can build a tool to run several AI text prompts at once an
 ![A screenshot of three AI-generated images from the prompt `The doctor is ['a Pakistani woman', 'a Black man', 'a white man'].` The first image is a portrait, the second a cartoon, and the third is a hallway in shadows.](../images/featured/criticalAItutorial2.png)
 Prompt: `The doctor is ['a Pakistani woman', 'a Black man', 'a white man'].`
 
-## Why compare prompts?
+## How to use it: Why compare prompts?
 
 When we use generative AI to make text, code, or images, how are we able to understand its point of view? How does that point of view influence our work? Can we understand the perspectives it absorbed from data if it is hidden behind an interface? We can build our own tools to test subtle variations that show how our word choices shape results. With it, we can glimpse the underlying assumptions contained in the training dataset. That gives us more information to decide how we select and use these models — and for which contexts. 
 
@@ -51,9 +51,9 @@ This tutorial is Part 2 in a series of four tutorials that focus on using AI cre
 - Part 3: [Sentiment Training Dataset Explorer](criticalAI3-sentiment-dataset-explorer)  
 - Part 4: [The No-AI Critical AI Chatbot](criticalAI4-no-ai-chatbot) 
 
-## Steps
+## How to make it
 
-### 1. Brainstorm prompts
+### Step 1. Brainstorm prompts
 
 Make a list of topics that interest you to try with the tool we will make. Experiment with adding variety and specificity to your prompts and some blanks you propose. Try different sentence structures and topics. 
 
@@ -87,7 +87,7 @@ Here are a few more examples:
 Subtle changes in your inputs can lead to large changes in the output. Sometimes these also reveal large gaps in the model's available knowledge. What does the model 'know' about communities who are less represented in its data? How has this data been limited? 
 </Callout>
 
-### 2. Import the Hugging Face library
+### Step 2. Import the Hugging Face library
 
 Open the [tutorial example](https://editor.p5js.org/sarahciston/sketches/siBTII_bC) in the p5.js Web Editor. Make a copy and rename it "My Critical AI Prompt Battle" to use as your own template.
 
@@ -108,11 +108,13 @@ But we don't yet have an access token! On the line just above that, create a var
 
 Hugging Face keeps a public repository of models and datasets that anyone can contribute to. In order to access the Hugging Face models, you'll want to create an account and get an access token, so that they know it is you when you log on from your p5.js program. This is free. 
 
-Create an account at [Hugging Face](https://huggingface.co). Click "Settings," then "Access Token," then "New Token." Name your token something like "p5 Web Editor" and give it write access, which means it can interact with your Hugging Face account. Click "Generate the token," and make sure to copy the long text string that results. This is your token. Paste it into `const HF_TOKEN = "hf_..."`
+Create an account at [Hugging Face](https://huggingface.co). Click "Settings," then "Access Token," then "New Token." Name your token something like "p5 Web Editor" and your choices for token type are "Fine-grained," "Read," or "Write." Select "Write," which means the token has permission interact with your Hugging Face account and make API calls as you. You don't need to select specific fine-grained choices, but you can if you want. Click "Generate the token," and make sure to copy the long text string that results. This is your token. Paste it into `const HF_TOKEN = "hf_..."`.
 
 Once you have your access token, we are ready to connect to Hugging Face to access their machine learning models.
 
-### 4. Create global variables
+![screenshot of access token setup](../images/criticalAI/criticalAI-t2-accesstoken.png)
+
+### Step 3. Create global variables
 
 Declare these variables at the top of your script so that they can be referenced in multiple functions throughout our project:
 
@@ -131,7 +133,7 @@ When writing your prompt, replace one of these aspects with `*`. We will fill th
 
 The remaining variables `promptField`, `blanksArray`, `modelOutput`, `resText,` and `resImg` are created at the top of our program as global variables so that we can access their values from inside different functions at various parts of the program.
 
-### 5. Select the task and type of model
+### Step 4. Select the task and type of model
 
 Let's write a function to keep all our machine learning model activity together. The first task we will do is called "chat-completion." Create a function `chatCompTask()` and put `async` in front of the function call.
 
@@ -178,7 +180,7 @@ Then, we can run the function by trying `console.log(chatCompTask("The woman has
 
 For example, one output we got from that prompt was, `The woman has a job as a nurse and wishes for different jobs. The man has a job as an engineer and wishes for different careers. The non-binary person has a job as an architect and hopes to pursue her dreams of becoming the best designer in the world.`
 
-### 6. Update model to process multiple prompts
+### Step 5. Update model to process multiple prompts
 
 Let's make our model process more than one prompt at once, so that we can compare. Here's the new version:
 
@@ -236,7 +238,7 @@ async function textImgGroupTask(pArray){
 }  
 ```
 
-### 6. Use p5.js DOM elements to display model results
+### Step 6. Use p5.js DOM elements to display model results
 
 We already have a pre-built, friendly web interface using p5.js DOM functions, which lets you enter a prompt to send to the AI model. These tools will also allow you to display the results of your model on the same web page. The console is helpful for testing, so we will keep using `console.log()` as our backup. 
 
@@ -322,7 +324,7 @@ We assign new variables to the results of these models, so that we can then iter
 Look for additional comments in the code for descriptions of each function. If you are not sure what a function or variable does, try putting it inside `console.log()` to print its results out to the console below your code.
 </Callout>
 
-### 8. Bonus: Put your tool to the test
+### Step 7. Bonus: Put your tool to the test
 
 <Callout title="Critical Context">
 Is the model capable of representing a variety of contexts? What do you notice the model does well at representing, and where does it fall short? Where do you sense gaps, and how does it expose these or patch them over? Consider your own creative practice, as well as how you currently use generative AI tools. What kinds of questions do you usually ask, and how can you test these kinds of questions for their implicit perspectives? How do these perspectives impact your practice?

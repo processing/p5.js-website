@@ -29,21 +29,31 @@ In this tutorial, you will learn how a machine learning sentiment analysis tool 
 
 ![A screenshot of the Dataset Explorer comparing two sentences with different sentiment scores; the one with a gay son ranks highly and the one with a gay daughter ranks low.](../images/featured/criticalAItutorial3.png)
 
+## How to use it: Datasets for machine learning
+
+[XXX]
+
 This tutorial is Part 3 in a series of four tutorials that focus on using AI creatively and thoughtfully. Feel free to adapt them for your own critical exploration of AI systems: 
 
 - Part 1: [Chatting With/About Code](criticalAI1-chatting-with-about-code)  
 - Part 2: [Critical AI Prompt Battle](criticalAI2-prompt-battle)  
 - Part 4: [The No-AI Critical AI Chatbot](criticalAI4-no-ai-chatbot) 
 
-## Steps
+## How to make it
 
-### 1. Make a copy of the [p5.js Web Editor Demo](https://editor.p5js.org/sarahciston/sketches/4X5sRkWi0)
+### Step 1. Make a copy of the [p5.js Web Editor Demo](https://editor.p5js.org/sarahciston/sketches/4X5sRkWi0)
 
 You can follow along with this tutorial, as well as play with the finished example in the interactive demo. This demo builds on a pre-existing example created for ml5.js. For background on how the original example was created in ml5.js, see the Step-by-Step Guide in the [ml5.js Sentiment Model](https://docs.ml5js.org/#/reference/sentiment?id=step-by-step-guide) documentation.
 
-### 2. Try out sentiment analysis
+### Step 2. Try out sentiment analysis
 
-Enter a test phrase in the input field and press `ANALYZE`. When you do this, the sentiment analysis model scores the text somewhere between 0 and 1 for what it describes as negative to positive sentiment. What does negative or positive mean in this case? You might have an intuitive sense, but it's hard to pin down and even harder to quantify accurately.
+Enter a test phrase in the input field and press `ANALYZE`. When you do this, the sentiment analysis model scores the text somewhere between 0 and 1 for what it describes as negative to positive sentiment. What does negative or positive mean in this case? You might have an intuitive sense, but it's hard to pin down and even harder to quantify accurately. 
+
+<Callout title="Critical Context">
+In this case, although the model documentation does not say so, we might guess that these terms refer to positive or negative film reviews, due to the origins of its training dataset. This training context is important, because words like "sad" or "afraid," which might be widely considered to carry negative sentiment, end up scoring neutral to highly. "Sad" is scored 0.511 and "afraid" is scored 0.752. This seems confusing until considering that a sad or scary movie might get a very positive review. Without this context, we cannot rely on this model as an indicator of sentiment because we do not understand what "sentiment" means here. (With thanks to Katie Luo for this example.)
+</Callout>
+
+![screenshot of sentiment analysis tool with analysis of words sad scoring 0.511 and afraid scoring 0.752](../images/criticalAI/criticalAI-t3-sadafraid.png)
 
 <Callout> 
 By trying out a few different phrases, we can quickly see how subjective (even suspect) the tool is. For example, "Today is a happy day" ranks very high, but so does "Today is a sad day." "Today" itself has a very high score, while "tomorrow" has a quite low score, and "yesterday" is fairly high. How do words rank that are not sentimental values at all, but potentially value judgments?  
@@ -51,11 +61,11 @@ By trying out a few different phrases, we can quickly see how subjective (even s
 In the example from the image above, using text excerpted from the training dataset itself, the phrase `Each of the families has a gay son` ranks highly, while swapping only the word `daughter` causes the score to drop from an almost fully positive 95.9 for a gay son to a low 36.8 for a gay daughter. 
 </Callout>
 
-<Callout title="Critical Context" style="color:green">
+<Callout title="Critical Context">
 This tool analyzes only a single dimension of sentiment from negative to positive, so what does it actually understand sentiment (or feeling) to mean? It is unclear. What other dimensions would you consider important when thinking about feeling? Psychologist James A Russel began with two intersecting scales: valence (mild to intense) and affect (positive to negative). Other researchers have suggested various numbers of emotion categories, but none agree on a standard set of universal emotions (Barrett 2017). We might imagine many other measures besides emotional qualities for analyzing text as well. This variability shows how impossible it can be to quantify subjective qualities, no matter how many categories are specified. 
 </Callout>
 
-### 3. Import the IMDB Sentiment dataset
+### Step 3. Import the IMDB Sentiment dataset
 
 The sentiment model our tool uses is trained on a dataset of movie reviews from IMDB that have been hand-scored by data workers as either all "positive" (1) or all "negative" (0) in sentiment. 
 
@@ -104,7 +114,7 @@ For example, can you tell with this tool how often the word "queer" appears in t
 You might even paste excerpts back into the sentiment input to see how they score.  
 </Callout>
 
-### 4. View selections from dataset
+### Step 4. View selections from dataset
 
 Once fetch runs, the results appear in the console, thanks to our addition of `console.log(res)`. We can see the first 10 entries from the dataset by opening up the object with the drop down arrows. Each of them will have a `row_idx` and a `row`, which contains two items: `text` for the text of the training data and `label` for whether that text was scored as having positive (`1`) or negative (`0`) sentiment. The initial number is an array number displayed by your own console. 
 
@@ -128,7 +138,7 @@ The dataset content is uncensored. Some of it may be offensive, uncomfortable, o
 As you read reviews from the dataset, see if you agree with the hand-coded scores of 0 or 1 that were provided as part of creating the dataset. Note that these are the only choices: Human scorers often must focus on one aspect of the text in order to score it as completely positive or completely negative, because these scores cannot describe the text as a whole. Would you score the texts the same way as the dataset creators did? These decisions have implications for the scores you see as you tested the sentiment analysis tool in step 2, because they trained the tool. When taken together they determine what words and phrases score higher and lower. Now that you've seen how the sentiment analyzer works, it might not feel as intuitive.   
 </Callout>
 
-### 5. Search dataset by keyword
+### Step 5. Search dataset by keyword
 
 Now let's look for themes in the dataset by searching for keywords. We have added some parameters to our search so that we can do this. At the top of your code, add the variable `let SEARCH = 'rainbow';` or any word you want. 
 
@@ -150,7 +160,7 @@ To filter for positive or negative reviews only, you can also add a variable for
 As you try different keywords in your search, look for differences in the tone of the text you find and how it is scored. What do you notice about how the dataset has scored different kinds of texts? Look for differences in the depiction of topics. You may notice that even keywords that seem "neutral" can also bring up problematic representations of race, gender, sexuality.
 </Callout>
 
-### 6. Try this: Find and import another dataset
+### Step 6. Bonus: Find and import another dataset
 
 Visit the [Hugging Face Hub](https://huggingface.co/datasets/) or other data repositories to find other datasets available for exploring. You can use `fetch()` and adapt this same basic template to work with another dataset, by modifying the URL you fetch and then modifying the JSON object you get as results. 
 
