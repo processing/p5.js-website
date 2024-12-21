@@ -25,7 +25,11 @@ const { config } = Astro.props;
         <p
           class={`hero-caption text-body-caption pb-sm mt-0 ${i > 0 ? "hidden" : ""}`}
         >
-          {im.caption}
+        {im.linkTarget ? (
+          <a href={im.linkTarget}>{im.caption}</a>
+        ) : (
+          im.caption
+        )}
         </p>
       ))
     }
@@ -33,14 +37,14 @@ const { config } = Astro.props;
 
   {
     config.data.heroImages.map((im, i) => (
-      <Image
-        containerClass={`relative hero-image-container ${i > 0 ? "hidden" : ""}`}
-        class={"hero-image"}
-        aspectRatio="none"
-        src={im.image}
-        alt={im.altText}
-        loading={i > 0 ? "lazy" : "eager"}
-      />
+        <Image
+          containerClass={`relative hero-image-container ${i > 0 ? "hidden" : ""}`}
+          class={"hero-image"}
+          aspectRatio="none"
+          src={im.image}
+          alt={im.altText}
+          loading={i > 0 ? "lazy" : "eager"}
+        />
     ))
   }
 </div>

@@ -12,6 +12,7 @@ export const homepageCollection = defineCollection({
             image: image(),
             altText: z.string(),
             caption: z.string(),
+            linkTarget: z.string(),
           }),
         )
         .nonempty(),
