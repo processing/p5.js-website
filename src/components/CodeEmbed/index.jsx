@@ -119,6 +119,7 @@ export const CodeEmbed = (props) => {
             foldGutter: false,
             autocompletion: false,
           }}
+          indentWithTab={false}
           extensions={[javascript(), EditorView.lineWrapping]}
           onChange={(val) => setCodeString(val)}
           editable={props.editable}
