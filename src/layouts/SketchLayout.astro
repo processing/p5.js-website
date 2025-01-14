@@ -35,6 +35,18 @@ const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
 );
 
 setJumpToState(null);
+const moreSketches = await getRandomCurationSketches(4);
+const featuredImageURL = makeThumbnailUrl(sketchInfo.visualID);
+
+let { width, height } = await getSketchSize(sketchInfo.visualID);
+let heightOverWidth = 1 / 1.5;
+if (width && height) {
+  // Account for OP header bar
+  height += 50;
+  heightOverWidth = height / width;
+}
+
+const iframeTitle = `OpenProcessing Sketch: ${sketchInfo.title} by ${authorName}`;
 ---
 
 <Head

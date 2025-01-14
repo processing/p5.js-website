@@ -65,4 +65,13 @@ export default defineConfig({
       external: ["/src/scripts/*"],
     },
   },
+  image: {
+    domains: ["openprocessing.org"],
+    service: passthroughImageService()
+  },
+  markdown: {
+    shikiConfig: {
+      theme: 'github-light',
+    },
+  },
 });

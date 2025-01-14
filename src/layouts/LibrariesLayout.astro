@@ -20,8 +20,7 @@ type LibraryEntry = CollectionEntry<"libraries">;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-const { entries, page, full } = Astro.props;
-const { Content } = await page.render();
+const { entries, full } = Astro.props;
 
 function strCompare(a: string, b: string) {
   if (a < b) {
@@ -94,15 +93,42 @@ setJumpToState({
 });
 ---
 
-<BaseLayout title="Libraries" variant="item" topic="community">
-  <hr />
-  <ul class="grid grid-cols-2 gap-y-xl gap-x-md lg:grid-cols-4">
-    {
-      entries.map((lib) => (
-        <li>
-          <GridItemLibrary item={lib} />
-        </li>
-      ))
-    }
-  </ul>
+<Head title="Libraries" locale={currentLocale} />
+
+<BaseLayout
+  title="Libraries"
+  subtitle={t("briefPageDescriptions", "Libraries") as string}
+  variant="item"
+  topic="community"
+>
+
+  <div class="flex">
+    <Button selected={!full} href="/libraries/">{t("LibrariesLayout", "Featured")}</Button>
+    <Button selected={full} href="/libraries/directory/">{t("LibrariesLayout", "Everything")}</Button>
+  </div>
+  {
+    sections.map(({ slug, name, sectionEntries, allEntries }) => (
+      <section>
+        <h2 id={slug}>{name}</h2>
+        {full ? (
+          <>
+            {sectionEntries.map((entry: LibraryEntry) => (
+              <LibraryListing item={entry} />
+            ))}
+          </>
+        ) : (
+          <>
+            <ul class="content-grid-simple">
+              {sectionEntries.map((entry: LibraryEntry) => (
+                <li>
+                  <GridItemLibrary item={entry} />
+                </li>
+              ))}
+            </ul>
+            <Button href={`/libraries/directory/#${slug}`}>{t("LibrariesLayout", "View All")} ({allEntries.length})</Button>
+          </>
+        )}
+      </section>
+    ))
+  }
 </BaseLayout>
