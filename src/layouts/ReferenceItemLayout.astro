@@ -76,6 +76,10 @@ const relatedReferences = [
 
 const seenParams: Record<string, true> = {};
 
+const descriptionParts = description.split(
+  /(<pre><code class="language-js example">[\s\S]+?<\/code><\/pre>)/gm
+);
+
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
@@ -101,10 +105,32 @@ const seenParams: Record<string, true> = {};
           <p>{t('experimentalApi', 'description')}</p>
         </div>
       )}
-      <div
-        set:html={description}
-        class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
-      />
+      {descriptionParts.map((part) => {
+        if (part.startsWith('<pre')) {
+          const exampleCode = part
+            .replace(/<pre><code class="language-js example">/, '')
+            .replace(/<\/code><\/pre>/, '');
+
+          return (
+            <CodeEmbed
+              client:load
+              initialValue={exampleCode}
+              previewable
+              editable
+              lazyLoad={false}
+              allowSideBySide={true}
+              includeSound={entry.data.module === 'p5.sound'}
+            />
+          )
+        } else {
+          return (
+            <div
+              set:html={part}
+              class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
+            />
+          );
+        }
+      })}
       {
         examples && (
           <div class="mb-xl">
