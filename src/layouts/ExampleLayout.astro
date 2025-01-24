@@ -10,6 +10,8 @@ import {
 import BaseLayout from "./BaseLayout.astro";
 import EditableSketch from "@components/EditableSketch/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
+import authorData from 'public/assets/exampleAuthors.json'
+import type { AuthorData } from "../scripts/builders/exampleAuthors";
 
 interface Props {
   example: CollectionEntry<"examples">;
@@ -42,6 +44,13 @@ const relatedReferences =
     : [];
 
 const { Content } = await example.render();
+
+const [categoryDir, exampleDir] = example.id.split("/").slice(1);
+
+
+const categoryAuthors = authorData[categoryDir as keyof typeof authorData];
+
+const exampleAuthors = categoryAuthors[exampleDir as keyof (typeof categoryAuthors)] as AuthorData[];
 ---
 
 <Head
@@ -62,6 +71,15 @@ const { Content } = await example.render();
   <div class="mt-xl mb-4xl lg:mb-3xl max-w-[770px]">
     <div class="rendered-markdown">
       <Content />
+      <p>Contributors: {exampleAuthors.map((author, index) => {
+        const name = author.name.length ? author.name : author.login;
+
+        const comma = index < exampleAuthors.length - 1 ? ', ' : ''
+        
+        if(author.url.length === 0) return <>{name}{comma}</>;
+      
+        return <><a href={author.url} target="_blank">{name}</a>{comma}</>
+      })}</p>
     </div>
     <EditableSketch code={code} />
     <p>{example.data.arialabel}</p>

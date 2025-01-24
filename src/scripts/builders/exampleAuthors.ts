@@ -3,6 +3,12 @@ import fs from "fs";
 import { Octokit } from "octokit";
 import path from "path";
 
+export type AuthorData = {
+  name: string;
+  url: string;
+  login: string
+}
+
 const examplesPath = "src/content/examples/en";
 const currentOwner = "calebfoss";
 const currentRepo = "p5.js-website";
@@ -117,7 +123,7 @@ async function getAuthorDataForExample(category: string, exampleName: string) {
   const authorUserData = await Promise.all(
     authors.map((author) =>
       author.id === -1
-        ? { name: author.name, login: "", url: "" }
+        ? { name: author.name ?? '', login: "", url: "" }
         : idToUserData(author.id),
     ),
   );
@@ -245,8 +251,6 @@ async function getCommitsBeforeRenamed(
   if (targetFile.previous_filename === undefined)
     return [] as Awaited<ReturnType<typeof getCommitsForFile>>;
 
-  console.log(`\t${filePath} renamed from ${targetFile.previous_filename}`);
-
   return await getCommitsForFile(
     repo,
     owner,
@@ -265,9 +269,9 @@ async function idToUserData(id: number) {
     account_id: id,
   });
 
-  const { name, url, login } = response.data;
+  const { name, html_url, login } = response.data;
 
-  const data = { login, name, url };
+  const data: AuthorData = { login, name: name ?? '', url: html_url };
 
   cachedUserData.set(id, data);
 
