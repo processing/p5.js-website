@@ -6,13 +6,13 @@ import path from "path";
 export type AuthorData = {
   name: string;
   url: string;
-  login: string
-}
+  login: string;
+};
 
 const examplesPath = "src/content/examples/en";
 const currentOwner = "calebfoss";
 const currentRepo = "p5.js-website";
-const currentBranch = "restored-history";
+const currentBranch = "main";
 
 const legacyOwner = "processing";
 const legacyRepo = "p5.js-website-legacy";
@@ -69,7 +69,7 @@ async function getAuthorDataInCategory(category: string) {
   // Ignore More directory
   const exampleNames = fs
     .readdirSync(path.join(examplesPath, category))
-    .slice(0, -1);
+    .filter((name) => name !== "More");
 
   const authorEntries = await Promise.all(
     exampleNames.map(async (exampleName) => {
@@ -123,7 +123,7 @@ async function getAuthorDataForExample(category: string, exampleName: string) {
   const authorUserData = await Promise.all(
     authors.map((author) =>
       author.id === -1
-        ? { name: author.name ?? '', login: "", url: "" }
+        ? { name: author.name ?? "", login: "", url: "" }
         : idToUserData(author.id),
     ),
   );
@@ -271,7 +271,7 @@ async function idToUserData(id: number) {
 
   const { name, html_url, login } = response.data;
 
-  const data: AuthorData = { login, name: name ?? '', url: html_url };
+  const data: AuthorData = { login, name: name ?? "", url: html_url };
 
   cachedUserData.set(id, data);
 
