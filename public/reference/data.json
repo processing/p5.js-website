@@ -2,7 +2,7 @@
   "project": {
     "name": "p5",
     "description": "[![npm version](https://badge.fury.io/js/p5.svg)](https://www.npmjs.com/package/p5)",
-    "version": "1.11.1",
+    "version": "1.11.2",
     "url": "https://github.com/processing/p5.js#readme"
   },
   "files": {
@@ -945,7 +945,10 @@
       "name": "src/Biquad.js",
       "modules": {},
       "classes": {
-        "Biquad": 1
+        "Biquad": 1,
+        "LowPass": 1,
+        "HighPass": 1,
+        "BandPass": 1
       },
       "fors": {
         "p5.sound": 1,
@@ -1053,8 +1056,8 @@
       },
       "namespaces": {}
     },
-    "src/PitshShifter.js": {
-      "name": "src/PitshShifter.js",
+    "src/PitchShifter.js": {
+      "name": "src/PitchShifter.js",
       "modules": {},
       "classes": {
         "PitchShifter": 1
@@ -1340,7 +1343,7 @@
       "namespaces": {},
       "module": "DOM",
       "file": "src/dom/dom.js",
-      "line": 5468,
+      "line": 5482,
       "description": "<p>The web is much more than just canvas and the DOM functionality makes it easy to interact\nwith other HTML5 objects, including text, hyperlink, image, input, video,\naudio, and webcam.\nThere is a set of creation methods, DOM manipulation methods, and\nan extended <a href=\"#/p5.Element\">p5.Element</a> that supports a range of HTML elements. See the\n<a href='https://github.com/processing/p5.js/wiki/Beyond-the-canvas'>\nbeyond the canvas tutorial</a> for a full overview of how this addon works.</p>\n<p>See <a href='https://github.com/processing/p5.js/wiki/Beyond-the-canvas'>tutorial: beyond the canvas</a>\nfor more info on how to use this library.</a></p>\n",
       "requires": [
         "p5"
@@ -2087,6 +2090,9 @@
         "Amplitude": 1,
         "AudioIn": 1,
         "Biquad": 1,
+        "LowPass": 1,
+        "HighPass": 1,
+        "BandPass": 1,
         "Delay": 1,
         "Envelope": 1,
         "FFT": 1,
@@ -2418,7 +2424,7 @@
       "submodule": "DOM",
       "namespace": "",
       "file": "src/dom/dom.js",
-      "line": 4085,
+      "line": 4099,
       "description": "<p>A class to handle audio and video.</p>\n<p><code>p5.MediaElement</code> extends <a href=\"#/p5.Element\">p5.Element</a> with\nmethods to handle audio and video. <code>p5.MediaElement</code> objects are created by\ncalling <a href=\"#/p5/createVideo\">createVideo</a>,\n<a href=\"#/p5/createAudio\">createAudio</a>, and\n<a href=\"#/p5/createCapture\">createCapture</a>.</p>\n",
       "is_constructor": 1,
       "params": [
@@ -2445,7 +2451,7 @@
       "submodule": "DOM",
       "namespace": "",
       "file": "src/dom/dom.js",
-      "line": 5468,
+      "line": 5482,
       "description": "<p>A class to describe a file.</p>\n<p><code>p5.File</code> objects are used by\n<a href=\"#/p5.Element/drop\">myElement.drop()</a> and\ncreated by\n<a href=\"#/p5/createFileInput\">createFileInput</a>.</p>\n",
       "is_constructor": 1,
       "params": [
@@ -2925,7 +2931,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 256,
+      "line": 261,
       "description": "Creates a sine oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -2950,7 +2956,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 242,
+      "line": 247,
       "description": "Creates a triangle oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -2975,7 +2981,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 214,
+      "line": 219,
       "description": "Creates a sawtooth oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -3000,7 +3006,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 228,
+      "line": 233,
       "description": "Creates a square oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -3070,7 +3076,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Noise.js",
-      "line": 10,
+      "line": 11,
       "description": "Generate a buffer with random values.",
       "is_constructor": 1,
       "params": [
@@ -3216,7 +3222,7 @@
     },
     "p5.LowPass": {
       "name": "p5.LowPass",
-      "shortname": "p5.LowPass",
+      "shortname": "LowPass",
       "classitems": [],
       "plugins": [],
       "extensions": [],
@@ -3225,15 +3231,23 @@
       "module": "p5.sound",
       "submodule": "p5.sound",
       "namespace": "",
-      "file": "lib/addons/p5.sound.js",
-      "line": 6914,
-      "description": "<p>Constructor: <code>new p5.LowPass()</code> Filter.\nThis is the same as creating a p5.Filter and then calling\nits method <code>setType('lowpass')</code>.\nSee p5.Filter for methods.</p>\n",
+      "file": "src/Biquad.js",
+      "line": 136,
+      "description": "Creates a Lowpass Biquad filter.",
       "is_constructor": 1,
-      "extends": "p5.Filter"
+      "extends": "Biquad",
+      "params": [
+        {
+          "name": "freq",
+          "description": "Set the cutoff frequency of the filter",
+          "type": "Number",
+          "optional": true
+        }
+      ]
     },
     "p5.HighPass": {
       "name": "p5.HighPass",
-      "shortname": "p5.HighPass",
+      "shortname": "HighPass",
       "classitems": [],
       "plugins": [],
       "extensions": [],
@@ -3242,15 +3256,23 @@
       "module": "p5.sound",
       "submodule": "p5.sound",
       "namespace": "",
-      "file": "lib/addons/p5.sound.js",
-      "line": 6938,
-      "description": "<p>Constructor: <code>new p5.HighPass()</code> Filter.\nThis is the same as creating a p5.Filter and then calling\nits method <code>setType('highpass')</code>.\nSee p5.Filter for methods.</p>\n",
+      "file": "src/Biquad.js",
+      "line": 150,
+      "description": "Creates a Highpass Biquad filter.",
       "is_constructor": 1,
-      "extends": "p5.Filter"
+      "extends": "Biquad",
+      "params": [
+        {
+          "name": "freq",
+          "description": "Set the cutoff frequency of the filter",
+          "type": "Number",
+          "optional": true
+        }
+      ]
     },
     "p5.BandPass": {
       "name": "p5.BandPass",
-      "shortname": "p5.BandPass",
+      "shortname": "BandPass",
       "classitems": [],
       "plugins": [],
       "extensions": [],
@@ -3259,11 +3281,19 @@
       "module": "p5.sound",
       "submodule": "p5.sound",
       "namespace": "",
-      "file": "lib/addons/p5.sound.js",
-      "line": 6962,
-      "description": "<p>Constructor: <code>new p5.BandPass()</code> Filter.\nThis is the same as creating a p5.Filter and then calling\nits method <code>setType('bandpass')</code>.\nSee p5.Filter for methods.</p>\n",
+      "file": "src/Biquad.js",
+      "line": 164,
+      "description": "Creates a Bandpass Biquad filter.",
       "is_constructor": 1,
-      "extends": "p5.Filter"
+      "extends": "Biquad",
+      "params": [
+        {
+          "name": "freq",
+          "description": "Set the cutoff frequency of the filter",
+          "type": "Number",
+          "optional": true
+        }
+      ]
     },
     "p5.EQ": {
       "name": "p5.EQ",
@@ -3822,7 +3852,7 @@
         }
       ],
       "example": [
-        "\n<div>\n<code>\n///kind of Karplus-Strong string synthesis using p5.sound.js\n\nlet noise, lowPass, hiPass, delay, env, gain;\n\nfunction setup() {\n  let cnv = createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  text('click and drag mouse', width/2, height/2);\n  \n  noise = new Noise('white');\n  env = new Envelope(0);\n  lowPass = new Biquad(1200, 'lowpass');\n  hiPass = new Biquad(55, 'highpass');\n  delay = new Delay(0.0005, 0.97);\n  gain = new Gain(0.5);\n  noise.disconnect();\n  noise.connect(hiPass);\n  hiPass.disconnect();\n  hiPass.connect(env);\n  env.disconnect();\n  env.connect(lowPass);\n  lowPass.disconnect();\n  lowPass.connect(delay);\n\n  cnv.mousePressed(pluckStart);\n  cnv.mouseReleased(pluckStop);\n  cnv.mouseOut(pluckStop);\n  describe('A sketch that synthesizes string sounds.');\n}\n\nfunction pluckStart() {\n  background(0, 255, 255);\n  text('release to trigger decay', width/2, height/2);\n  let dtime = map(mouseX, 0, width, 0.009, 0.001);\n  delay.delayTime(dtime, 0);\n  noise.start();\n  env.triggerAttack();\n}\n\nfunction pluckStop() {\n  background(220);\n  text('click to pluck', width/2, height/2);\n  env.triggerRelease();\n}\n</code>\n</div>"
+        "\n<div>\n<code>\n///kind of Karplus-Strong string synthesis using p5.sound.js\n\nlet noise, lowPass, hiPass, delay, env, gain;\n\nfunction setup() {\n  let cnv = createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  text('click and drag mouse', width/2, height/2);\n  \n  noise = new p5.Noise('white');\n  env = new p5.Envelope(0);\n  lowPass = new p5.Biquad(1200, 'lowpass');\n  hiPass = new p5.Biquad(55, 'highpass');\n  delay = new p5.Delay(0.0005, 0.97);\n  gain = new p5.Gain(0.5);\n  noise.disconnect();\n  noise.connect(hiPass);\n  hiPass.disconnect();\n  hiPass.connect(env);\n  env.disconnect();\n  env.connect(lowPass);\n  lowPass.disconnect();\n  lowPass.connect(delay);\n\n  cnv.mousePressed(pluckStart);\n  cnv.mouseReleased(pluckStop);\n  cnv.mouseOut(pluckStop);\n  describe('A sketch that synthesizes string sounds.');\n}\n\nfunction pluckStart() {\n  background(0, 255, 255);\n  text('release to trigger decay', width/2, height/2);\n  let dtime = map(mouseX, 0, width, 0.009, 0.001);\n  delay.delayTime(dtime, 0);\n  noise.start();\n  env.triggerAttack();\n}\n\nfunction pluckStop() {\n  background(220);\n  text('click to pluck', width/2, height/2);\n  env.triggerRelease();\n}\n</code>\n</div>"
       ]
     },
     "p5.Panner": {
@@ -3855,7 +3885,7 @@
       "module": "p5.sound",
       "submodule": "p5.sound",
       "namespace": "",
-      "file": "src/PitshShifter.js",
+      "file": "src/PitchShifter.js",
       "line": 10,
       "description": "Change the pitch of a sound.",
       "is_constructor": 1,
@@ -3868,7 +3898,7 @@
     {
       "file": "src/accessibility/describe.js",
       "line": 18,
-      "description": "<p>Creates a screen reader-accessible description of the canvas.</p>\n<p>The first parameter, <code>text</code>, is the description of the canvas.</p>\n<p>The second parameter, <code>display</code>, is optional. It determines how the\ndescription is displayed. If <code>LABEL</code> is passed, as in\n<code>describe('A description.', LABEL)</code>, the description will be visible in\na div element next to the canvas. If <code>FALLBACK</code> is passed, as in\n<code>describe('A description.', FALLBACK)</code>, the description will only be\nvisible to screen readers. This is the default mode.</p>\n<p>Read\n<a href=\"/learn/accessible-labels.html\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
+      "description": "<p>Creates a screen reader-accessible description of the canvas.</p>\n<p>The first parameter, <code>text</code>, is the description of the canvas.</p>\n<p>The second parameter, <code>display</code>, is optional. It determines how the\ndescription is displayed. If <code>LABEL</code> is passed, as in\n<code>describe('A description.', LABEL)</code>, the description will be visible in\na div element next to the canvas. If <code>FALLBACK</code> is passed, as in\n<code>describe('A description.', FALLBACK)</code>, the description will only be\nvisible to screen readers. This is the default mode.</p>\n<p>Read\n<a href=\"https://p5js.org/tutorials/writing-accessible-canvas-descriptions/\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
       "itemtype": "method",
       "name": "describe",
       "params": [
@@ -3894,7 +3924,7 @@
     {
       "file": "src/accessibility/describe.js",
       "line": 162,
-      "description": "<p>Creates a screen reader-accessible description of elements in the canvas.</p>\n<p>Elements are shapes or groups of shapes that create meaning together. For\nexample, a few overlapping circles could make an \"eye\" element.</p>\n<p>The first parameter, <code>name</code>, is the name of the element.</p>\n<p>The second parameter, <code>text</code>, is the description of the element.</p>\n<p>The third parameter, <code>display</code>, is optional. It determines how the\ndescription is displayed. If <code>LABEL</code> is passed, as in\n<code>describe('A description.', LABEL)</code>, the description will be visible in\na div element next to the canvas. Using <code>LABEL</code> creates unhelpful\nduplicates for screen readers. Only use <code>LABEL</code> during development. If\n<code>FALLBACK</code> is passed, as in <code>describe('A description.', FALLBACK)</code>, the\ndescription will only be visible to screen readers. This is the default\nmode.</p>\n<p>Read\n<a href=\"/learn/accessible-labels.html\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
+      "description": "<p>Creates a screen reader-accessible description of elements in the canvas.</p>\n<p>Elements are shapes or groups of shapes that create meaning together. For\nexample, a few overlapping circles could make an \"eye\" element.</p>\n<p>The first parameter, <code>name</code>, is the name of the element.</p>\n<p>The second parameter, <code>text</code>, is the description of the element.</p>\n<p>The third parameter, <code>display</code>, is optional. It determines how the\ndescription is displayed. If <code>LABEL</code> is passed, as in\n<code>describe('A description.', LABEL)</code>, the description will be visible in\na div element next to the canvas. Using <code>LABEL</code> creates unhelpful\nduplicates for screen readers. Only use <code>LABEL</code> during development. If\n<code>FALLBACK</code> is passed, as in <code>describe('A description.', FALLBACK)</code>, the\ndescription will only be visible to screen readers. This is the default\nmode.</p>\n<p>Read\n<a href=\"https://p5js.org/tutorials/writing-accessible-canvas-descriptions/\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
       "itemtype": "method",
       "name": "describeElement",
       "params": [
@@ -3925,7 +3955,7 @@
     {
       "file": "src/accessibility/outputs.js",
       "line": 10,
-      "description": "<p>Creates a screen reader-accessible description of shapes on the canvas.</p>\n<p><code>textOutput()</code> adds a general description, list of shapes, and\ntable of shapes to the web page. The general description includes the\ncanvas size, canvas color, and number of shapes. For example,\n<code>Your output is a, 100 by 100 pixels, gray canvas containing the following 2 shapes:</code>.</p>\n<p>A list of shapes follows the general description. The list describes the\ncolor, location, and area of each shape. For example,\n<code>a red circle at middle covering 3% of the canvas</code>. Each shape can be\nselected to get more details.</p>\n<p><code>textOutput()</code> uses its table of shapes as a list. The table describes the\nshape, color, location, coordinates and area. For example,\n<code>red circle location = middle area = 3%</code>. This is different from\n<a href=\"#/p5/gridOutput\">gridOutput()</a>, which uses its table as a grid.</p>\n<p>The <code>display</code> parameter is optional. It determines how the description is\ndisplayed. If <code>LABEL</code> is passed, as in <code>textOutput(LABEL)</code>, the description\nwill be visible in a div element next to the canvas. Using <code>LABEL</code> creates\nunhelpful duplicates for screen readers. Only use <code>LABEL</code> during\ndevelopment. If <code>FALLBACK</code> is passed, as in <code>textOutput(FALLBACK)</code>, the\ndescription will only be visible to screen readers. This is the default\nmode.</p>\n<p>Read\n<a href=\"/learn/accessible-labels.html\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
+      "description": "<p>Creates a screen reader-accessible description of shapes on the canvas.</p>\n<p><code>textOutput()</code> adds a general description, list of shapes, and\ntable of shapes to the web page. The general description includes the\ncanvas size, canvas color, and number of shapes. For example,\n<code>Your output is a, 100 by 100 pixels, gray canvas containing the following 2 shapes:</code>.</p>\n<p>A list of shapes follows the general description. The list describes the\ncolor, location, and area of each shape. For example,\n<code>a red circle at middle covering 3% of the canvas</code>. Each shape can be\nselected to get more details.</p>\n<p><code>textOutput()</code> uses its table of shapes as a list. The table describes the\nshape, color, location, coordinates and area. For example,\n<code>red circle location = middle area = 3%</code>. This is different from\n<a href=\"#/p5/gridOutput\">gridOutput()</a>, which uses its table as a grid.</p>\n<p>The <code>display</code> parameter is optional. It determines how the description is\ndisplayed. If <code>LABEL</code> is passed, as in <code>textOutput(LABEL)</code>, the description\nwill be visible in a div element next to the canvas. Using <code>LABEL</code> creates\nunhelpful duplicates for screen readers. Only use <code>LABEL</code> during\ndevelopment. If <code>FALLBACK</code> is passed, as in <code>textOutput(FALLBACK)</code>, the\ndescription will only be visible to screen readers. This is the default\nmode.</p>\n<p>Read\n<a href=\"https://p5js.org/tutorials/writing-accessible-canvas-descriptions/\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
       "itemtype": "method",
       "name": "textOutput",
       "params": [
@@ -3946,7 +3976,7 @@
     {
       "file": "src/accessibility/outputs.js",
       "line": 144,
-      "description": "<p>Creates a screen reader-accessible description of shapes on the canvas.</p>\n<p><code>gridOutput()</code> adds a general description, table of shapes, and list of\nshapes to the web page. The general description includes the canvas size,\ncanvas color, and number of shapes. For example,\n<code>gray canvas, 100 by 100 pixels, contains 2 shapes:  1 circle 1 square</code>.</p>\n<p><code>gridOutput()</code> uses its table of shapes as a grid. Each shape in the grid\nis placed in a cell whose row and column correspond to the shape's location\non the canvas. The grid cells describe the color and type of shape at that\nlocation. For example, <code>red circle</code>. These descriptions can be selected\nindividually to get more details. This is different from\n<a href=\"#/p5/textOutput\">textOutput()</a>, which uses its table as a list.</p>\n<p>A list of shapes follows the table. The list describes the color, type,\nlocation, and area of each shape. For example,\n<code>red circle, location = middle, area = 3 %</code>.</p>\n<p>The <code>display</code> parameter is optional. It determines how the description is\ndisplayed. If <code>LABEL</code> is passed, as in <code>gridOutput(LABEL)</code>, the description\nwill be visible in a div element next to the canvas. Using <code>LABEL</code> creates\nunhelpful duplicates for screen readers. Only use <code>LABEL</code> during\ndevelopment. If <code>FALLBACK</code> is passed, as in <code>gridOutput(FALLBACK)</code>, the\ndescription will only be visible to screen readers. This is the default\nmode.</p>\n<p>Read\n<a href=\"/learn/accessible-labels.html\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
+      "description": "<p>Creates a screen reader-accessible description of shapes on the canvas.</p>\n<p><code>gridOutput()</code> adds a general description, table of shapes, and list of\nshapes to the web page. The general description includes the canvas size,\ncanvas color, and number of shapes. For example,\n<code>gray canvas, 100 by 100 pixels, contains 2 shapes:  1 circle 1 square</code>.</p>\n<p><code>gridOutput()</code> uses its table of shapes as a grid. Each shape in the grid\nis placed in a cell whose row and column correspond to the shape's location\non the canvas. The grid cells describe the color and type of shape at that\nlocation. For example, <code>red circle</code>. These descriptions can be selected\nindividually to get more details. This is different from\n<a href=\"#/p5/textOutput\">textOutput()</a>, which uses its table as a list.</p>\n<p>A list of shapes follows the table. The list describes the color, type,\nlocation, and area of each shape. For example,\n<code>red circle, location = middle, area = 3 %</code>.</p>\n<p>The <code>display</code> parameter is optional. It determines how the description is\ndisplayed. If <code>LABEL</code> is passed, as in <code>gridOutput(LABEL)</code>, the description\nwill be visible in a div element next to the canvas. Using <code>LABEL</code> creates\nunhelpful duplicates for screen readers. Only use <code>LABEL</code> during\ndevelopment. If <code>FALLBACK</code> is passed, as in <code>gridOutput(FALLBACK)</code>, the\ndescription will only be visible to screen readers. This is the default\nmode.</p>\n<p>Read\n<a href=\"https://p5js.org/tutorials/writing-accessible-canvas-descriptions/\">Writing accessible canvas descriptions</a>\nto learn more about making sketches accessible.</p>\n",
       "itemtype": "method",
       "name": "gridOutput",
       "params": [
@@ -4892,7 +4922,7 @@
             },
             {
               "name": "alpha",
-              "description": "",
+              "description": "<p>optional alpha value, controls transparency (0 - transparent, 255 - opaque).</p>\n",
               "type": "Number",
               "optional": true
             }
@@ -5798,7 +5828,7 @@
     },
     {
       "file": "src/core/shape/2d_primitives.js",
-      "line": 1359,
+      "line": 1368,
       "description": "<p>Draws a triangle.</p>\n<p>A triangle is a three-sided shape defined by three points. The\nfirst two parameters specify the triangle's first point <code>(x1, y1)</code>. The\nmiddle two parameters specify its second point <code>(x2, y2)</code>. And the last two\nparameters specify its third point <code>(x3, y3)</code>.</p>\n",
       "itemtype": "method",
       "name": "triangle",
@@ -11382,7 +11412,7 @@
     {
       "file": "src/dom/dom.js",
       "line": 1440,
-      "description": "<p>Creates a radio button element.</p>\n<p>The parameter is optional. If a string is passed, as in\n<code>let myRadio = createSelect('food')</code>, then each radio option will\nhave <code>\"food\"</code> as its <code>name</code> parameter: <code>&lt;input name=\"food\"&gt;&lt;/input&gt;</code>.\nIf an existing <code>&lt;div&gt;&lt;/div&gt;</code> or <code>&lt;span&gt;&lt;/span&gt;</code>\nelement is passed, as in <code>let myRadio = createSelect(container)</code>, it will\nbecome the radio button's parent element.</p>\n<p>Radio buttons extend the <a href=\"#/p5.Element\">p5.Element</a> class with a few\nhelpful methods for managing options:</p>\n<ul>\n<li><code>myRadio.option(value, [label])</code> adds an option to the menu. The first paremeter, <code>value</code>, is a string that sets the option's value and label. The second parameter, <code>label</code>, is optional. If provided, it sets the label displayed for the <code>value</code>. If an option with <code>value</code> already exists, its label is changed and its value is returned.</li>\n<li><code>myRadio.value()</code> returns the currently-selected option's value.</li>\n<li><code>myRadio.selected()</code> returns the currently-selected option.</li>\n<li><code>myRadio.selected(value)</code> selects the given option and returns it as an <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement\" target=\"_blank\"><code>HTMLInputElement</code></a>.</li>\n<li><code>myRadio.disable(shouldDisable)</code> enables the entire radio button if <code>true</code> is passed and disables it if <code>false</code> is passed.</li>\n</ul>\n",
+      "description": "<p>Creates a radio button element.</p>\n<p>The parameter is optional. If a string is passed, as in\n<code>let myRadio = createSelect('food')</code>, then each radio option will\nhave <code>\"food\"</code> as its <code>name</code> parameter: <code>&lt;input name=\"food\"&gt;</code>.\nIf an existing <code>&lt;div&gt;&lt;/div&gt;</code> or <code>&lt;span&gt;&lt;/span&gt;</code>\nelement is passed, as in <code>let myRadio = createSelect(container)</code>, it will\nbecome the radio button's parent element.</p>\n<p>Radio buttons extend the <a href=\"#/p5.Element\">p5.Element</a> class with a few\nhelpful methods for managing options:</p>\n<ul>\n<li><code>myRadio.option(value, [label])</code> adds an option to the menu. The first parameter, <code>value</code>, is a string that sets the option's value and label. The second parameter, <code>label</code>, is optional. If provided, it sets the label displayed for the <code>value</code>. If an option with <code>value</code> already exists, its label is changed and its value is returned.</li>\n<li><code>myRadio.value()</code> returns the currently-selected option's value.</li>\n<li><code>myRadio.selected()</code> returns the currently-selected option.</li>\n<li><code>myRadio.selected(value)</code> selects the given option and returns it as an <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement\" target=\"_blank\"><code>HTMLInputElement</code></a>.</li>\n<li><code>myRadio.disable(shouldDisable)</code> Disables the radio button if <code>true</code> is passed, and enables it if <code>false</code> is passed.</li>\n</ul>\n",
       "itemtype": "method",
       "name": "createRadio",
       "return": {
@@ -11390,7 +11420,7 @@
         "type": "p5.Element"
       },
       "example": [
-        "\n<div>\n<code>\nlet myRadio;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Create a radio button element and place it\n  // in the top-left corner.\n  myRadio = createRadio();\n  myRadio.position(0, 0);\n  myRadio.size(60);\n\n  // Add a few color options.\n  myRadio.option('red');\n  myRadio.option('yellow');\n  myRadio.option('blue');\n\n  // Choose a default option.\n  myRadio.selected('yellow');\n\n  describe('A yellow square with three color options listed, \"red\", \"yellow\", and \"blue\". The square changes color when the user selects a new option.');\n}\n\nfunction draw() {\n  // Set the background color using the radio button.\n  let g = myRadio.value();\n  background(g);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet myRadio;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Create a radio button element and place it\n  // in the top-left corner.\n  myRadio = createRadio();\n  myRadio.position(0, 0);\n  myRadio.size(50);\n\n  // Add a few color options.\n  // Color values are labeled with\n  // emotions they evoke.\n  myRadio.option('red', 'love');\n  myRadio.option('yellow', 'joy');\n  myRadio.option('blue', 'trust');\n\n  // Choose a default option.\n  myRadio.selected('yellow');\n\n  describe('A yellow square with three options listed, \"love\", \"joy\", and \"trust\". The square changes color when the user selects a new option.');\n}\n\nfunction draw() {\n  // Set the background color using the radio button.\n  let c = myRadio.value();\n  background(c);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet myRadio;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Create a radio button element and place it\n  // in the top-left corner.\n  myRadio = createRadio();\n  myRadio.position(0, 0);\n  myRadio.size(50);\n\n  // Add a few color options.\n  myRadio.option('red');\n  myRadio.option('yellow');\n  myRadio.option('blue');\n\n  // Choose a default option.\n  myRadio.selected('yellow');\n\n  // Create a button and place it beneath the canvas.\n  let btn = createButton('disable');\n  btn.position(0, 100);\n\n  // Call disableRadio() when btn is pressed.\n  btn.mousePressed(disableRadio);\n\n  describe('A yellow square with three options listed, \"red\", \"yellow\", and \"blue\". The square changes color when the user selects a new option. A \"disable\" button beneath the canvas disables the color options when pressed.');\n}\n\nfunction draw() {\n  // Set the background color using the radio button.\n  let c = myRadio.value();\n  background(c);\n}\n\n// Disable myRadio.\nfunction disableRadio() {\n  myRadio.disable(true);\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet style = document.createElement('style');\nstyle.innerHTML = `\n.p5-radio label {\n   display: flex;\n   align-items: center;\n }\n .p5-radio input {\n   margin-right: 5px;\n }\n `;\ndocument.head.appendChild(style);\n\nlet myRadio;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Create a radio button element and place it\n  // in the top-left corner.\n  myRadio = createRadio();\n  myRadio.position(0, 0);\n  myRadio.class('p5-radio');\n  myRadio.size(60);\n\n  // Add a few color options.\n  myRadio.option('red');\n  myRadio.option('yellow');\n  myRadio.option('blue');\n\n  // Choose a default option.\n  myRadio.selected('yellow');\n\n  describe('A yellow square with three color options listed, \"red\", \"yellow\", and \"blue\". The square changes color when the user selects a new option.');\n}\n\nfunction draw() {\n  // Set the background color using the radio button.\n  let g = myRadio.value();\n  background(g);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet myRadio;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Create a radio button element and place it\n  // in the top-left corner.\n  myRadio = createRadio();\n  myRadio.position(0, 0);\n  myRadio.size(50);\n\n  // Add a few color options.\n  // Color values are labeled with\n  // emotions they evoke.\n  myRadio.option('red', 'love');\n  myRadio.option('yellow', 'joy');\n  myRadio.option('blue', 'trust');\n\n  // Choose a default option.\n  myRadio.selected('yellow');\n\n  describe('A yellow square with three options listed, \"love\", \"joy\", and \"trust\". The square changes color when the user selects a new option.');\n}\n\nfunction draw() {\n  // Set the background color using the radio button.\n  let c = myRadio.value();\n  background(c);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet myRadio;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Create a radio button element and place it\n  // in the top-left corner.\n  myRadio = createRadio();\n  myRadio.position(0, 0);\n  myRadio.class('p5-radio');\n  myRadio.size(50);\n\n  // Add a few color options.\n  myRadio.option('red');\n  myRadio.option('yellow');\n  myRadio.option('blue');\n\n  // Choose a default option.\n  myRadio.selected('yellow');\n\n  // Create a button and place it beneath the canvas.\n  let btn = createButton('disable');\n  btn.position(0, 100);\n\n  // Call disableRadio() when btn is pressed.\n  btn.mousePressed(disableRadio);\n\n  describe('A yellow square with three options listed, \"red\", \"yellow\", and \"blue\". The square changes color when the user selects a new option. A \"disable\" button beneath the canvas disables the color options when pressed.');\n}\n\nfunction draw() {\n  // Set the background color using the radio button.\n  let c = myRadio.value();\n  background(c);\n}\n\n// Disable myRadio.\nfunction disableRadio() {\n  myRadio.disable(true);\n}\n</code>\n</div>"
       ],
       "class": "p5",
       "module": "DOM",
@@ -11412,7 +11442,7 @@
           }
         },
         {
-          "line": 1574,
+          "line": 1588,
           "params": [
             {
               "name": "name",
@@ -11427,7 +11457,7 @@
           }
         },
         {
-          "line": 1579,
+          "line": 1593,
           "params": [],
           "return": {
             "description": "new <a href=\"#/p5.Element\">p5.Element</a> object.",
@@ -11438,7 +11468,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 1745,
+      "line": 1759,
       "description": "<p>Creates a color picker element.</p>\n<p>The parameter, <code>value</code>, is optional. If a color string or\n<a href=\"#/p5.Color\">p5.Color</a> object is passed, it will set the default\ncolor.</p>\n<p>Color pickers extend the <a href=\"#/p5.Element\">p5.Element</a> class with a\ncouple of helpful methods for managing colors:</p>\n<ul>\n<li><code>myPicker.value()</code> returns the current color as a hex string in the format <code>'#rrggbb'</code>.</li>\n<li><code>myPicker.color()</code> returns the current color as a <a href=\"#/p5.Color\">p5.Color</a> object.</li>\n</ul>\n",
       "itemtype": "method",
       "name": "createColorPicker",
@@ -11463,7 +11493,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 1845,
+      "line": 1859,
       "description": "<p>Creates a text <code>&lt;input&gt;&lt;/input&gt;</code> element.</p>\n<p>Call <code>myInput.size()</code> to set the length of the text box.</p>\n<p>The first parameter, <code>value</code>, is optional. It's a string that sets the\ninput's default value. The input is blank by default.</p>\n<p>The second parameter, <code>type</code>, is also optional. It's a string that\nspecifies the type of text being input. See MDN for a full\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input\" target=\"_blank\">list of options</a>.\nThe default is <code>'text'</code>.</p>\n",
       "itemtype": "method",
       "name": "createInput",
@@ -11479,7 +11509,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 1845,
+          "line": 1859,
           "params": [
             {
               "name": "value",
@@ -11500,7 +11530,7 @@
           }
         },
         {
-          "line": 1915,
+          "line": 1929,
           "params": [
             {
               "name": "value",
@@ -11518,7 +11548,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 1928,
+      "line": 1942,
       "description": "<p>Creates an <code>&lt;input&gt;&lt;/input&gt;</code> element of type <code>'file'</code>.</p>\n<p><code>createFileInput()</code> allows users to select local files for use in a sketch.\nIt returns a <a href=\"#/p5.File\">p5.File</a> object.</p>\n<p>The first parameter, <code>callback</code>, is a function that's called when the file\nloads. The callback function should have one parameter, <code>file</code>, that's a\n<a href=\"#/p5.File\">p5.File</a> object.</p>\n<p>The second parameter, <code>multiple</code>, is optional. It's a boolean value that\nallows loading multiple files if set to <code>true</code>. If <code>true</code>, <code>callback</code>\nwill be called once per file.</p>\n",
       "itemtype": "method",
       "name": "createFileInput",
@@ -11548,14 +11578,14 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2054,
+      "line": 2068,
       "class": "p5",
       "module": "DOM",
       "submodule": "DOM"
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2101,
+      "line": 2115,
       "description": "<p>Creates a <code>&lt;video&gt;</code> element for simple audio/video playback.</p>\n<p><code>createVideo()</code> returns a new\n<a href=\"#/p5.MediaElement\">p5.MediaElement</a> object. Videos are shown by\ndefault. They can be hidden by calling <code>video.hide()</code> and drawn to the\ncanvas using <a href=\"#/p5/image\">image()</a>.</p>\n<p>The first parameter, <code>src</code>, is the path the video. If a single string is\npassed, as in <code>'assets/topsecret.mp4'</code>, a single video is loaded. An array\nof strings can be used to load the same video in different formats. For\nexample, <code>['assets/topsecret.mp4', 'assets/topsecret.ogv', 'assets/topsecret.webm']</code>.\nThis is useful for ensuring that the video can play across different browsers with\ndifferent capabilities. See\n<a href='https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats'>MDN</a>\nfor more information about supported formats.</p>\n<p>The second parameter, <code>callback</code>, is optional. It's a function to call once\nthe video is ready to play.</p>\n",
       "itemtype": "method",
       "name": "createVideo",
@@ -11585,14 +11615,14 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2197,
+      "line": 2211,
       "class": "p5",
       "module": "DOM",
       "submodule": "DOM"
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2199,
+      "line": 2213,
       "description": "<p>Creates a hidden <code>&lt;audio&gt;</code> element for simple audio playback.</p>\n<p><code>createAudio()</code> returns a new\n<a href=\"#/p5.MediaElement\">p5.MediaElement</a> object.</p>\n<p>The first parameter, <code>src</code>, is the path the video. If a single string is\npassed, as in <code>'assets/video.mp4'</code>, a single video is loaded. An array\nof strings can be used to load the same video in different formats. For\nexample, <code>['assets/video.mp4', 'assets/video.ogv', 'assets/video.webm']</code>.\nThis is useful for ensuring that the video can play across different\nbrowsers with different capabilities. See\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats\" target=\"_blank\">MDN</a>\nfor more information about supported formats.</p>\n<p>The second parameter, <code>callback</code>, is optional. It's a function to call once\nthe audio is ready to play.</p>\n",
       "itemtype": "method",
       "name": "createAudio",
@@ -11623,14 +11653,14 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2245,
+      "line": 2259,
       "class": "p5",
       "module": "DOM",
       "submodule": "DOM"
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2281,
+      "line": 2295,
       "description": "<p>Creates a <code>&lt;video&gt;</code> element that \"captures\" the audio/video stream from\nthe webcam and microphone.</p>\n<p><code>createCapture()</code> returns a new\n<a href=\"#/p5.MediaElement\">p5.MediaElement</a> object. Videos are shown by\ndefault. They can be hidden by calling <code>capture.hide()</code> and drawn to the\ncanvas using <a href=\"#/p5/image\">image()</a>.</p>\n<p>The first parameter, <code>type</code>, is optional. It sets the type of capture to\nuse. By default, <code>createCapture()</code> captures both audio and video. If <code>VIDEO</code>\nis passed, as in <code>createCapture(VIDEO)</code>, only video will be captured.\nIf <code>AUDIO</code> is passed, as in <code>createCapture(AUDIO)</code>, only audio will be\ncaptured. A constraints object can also be passed to customize the stream.\nSee the <a href=\"http://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints\" target=\"_blank\">\nW3C documentation</a> for possible properties. Different browsers support different\nproperties.</p>\n<p>The 'flipped' property is an optional property which can be set to <code>{flipped:true}</code>\nto mirror the video output.If it is true then it means that video will be mirrored\nor flipped and if nothing is mentioned then by default it will be <code>false</code>.</p>\n<p>The second parameter,<code>callback</code>, is optional. It's a function to call once\nthe capture is ready for use. The callback function should have one\nparameter, <code>stream</code>, that's a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MediaStream\" target=\"_blank\">MediaStream</a> object.</p>\n<p>Note: <code>createCapture()</code> only works when running a sketch locally or using HTTPS. Learn more\n<a href=\"http://stackoverflow.com/questions/34197653/getusermedia-in-chrome-47-without-using-https\" target=\"_blank\">here</a>\nand <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia\" target=\"_blank\">here</a>.</p>\n",
       "itemtype": "method",
       "name": "createCapture",
@@ -11667,7 +11697,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2479,
+      "line": 2493,
       "description": "<p>Creates a new <a href=\"#/p5.Element\">p5.Element</a> object.</p>\n<p>The first parameter, <code>tag</code>, is a string an HTML tag such as <code>'h5'</code>.</p>\n<p>The second parameter, <code>content</code>, is optional. It's a string that sets the\nHTML content to insert into the new element. New elements have no content\nby default.</p>\n",
       "itemtype": "method",
       "name": "createElement",
@@ -11697,7 +11727,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2540,
+      "line": 2554,
       "description": "<p>Adds a class to the element.</p>\n",
       "itemtype": "method",
       "name": "addClass",
@@ -11718,7 +11748,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2579,
+      "line": 2593,
       "description": "<p>Removes a class from the element.</p>\n",
       "itemtype": "method",
       "name": "removeClass",
@@ -11739,7 +11769,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2622,
+      "line": 2636,
       "description": "<p>Checks if a class is already applied to element.</p>\n",
       "itemtype": "method",
       "name": "hasClass",
@@ -11763,7 +11793,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2663,
+      "line": 2677,
       "description": "<p>Toggles whether a class is applied to the element.</p>\n",
       "itemtype": "method",
       "name": "toggleClass",
@@ -11784,7 +11814,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2708,
+      "line": 2722,
       "description": "<p>Attaches the element as a child of another element.</p>\n<p><code>myElement.child()</code> accepts either a string ID, DOM node, or\n<a href=\"#/p5.Element\">p5.Element</a>. For example,\n<code>myElement.child(otherElement)</code>. If no argument is provided, an array of\nchildren DOM nodes is returned.</p>\n",
       "itemtype": "method",
       "name": "child",
@@ -11800,7 +11830,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 2708,
+          "line": 2722,
           "params": [],
           "return": {
             "description": "an array of child nodes.",
@@ -11808,7 +11838,7 @@
           }
         },
         {
-          "line": 2788,
+          "line": 2802,
           "params": [
             {
               "name": "child",
@@ -11823,7 +11853,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2813,
+      "line": 2827,
       "description": "<p>Centers the element either vertically, horizontally, or both.</p>\n<p><code>center()</code> will center the element relative to its parent or according to\nthe page's body if the element has no parent.</p>\n<p>If no argument is passed, as in <code>myElement.center()</code> the element is aligned\nboth vertically and horizontally.</p>\n",
       "itemtype": "method",
       "name": "center",
@@ -11845,7 +11875,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2879,
+      "line": 2893,
       "description": "<p>Sets the inner HTML of the element, replacing any existing HTML.</p>\n<p>The second parameter, <code>append</code>, is optional. If <code>true</code> is passed, as in\n<code>myElement.html('hi', true)</code>, the HTML is appended instead of replacing\nexisting HTML.</p>\n<p>If no arguments are passed, as in <code>myElement.html()</code>, the element's inner\nHTML is returned.</p>\n",
       "itemtype": "method",
       "name": "html",
@@ -11861,7 +11891,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 2879,
+          "line": 2893,
           "params": [],
           "return": {
             "description": "the inner HTML of the element",
@@ -11869,7 +11899,7 @@
           }
         },
         {
-          "line": 2948,
+          "line": 2962,
           "params": [
             {
               "name": "html",
@@ -11890,7 +11920,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 2966,
+      "line": 2980,
       "description": "<p>Sets the element's position.</p>\n<p>The first two parameters, <code>x</code> and <code>y</code>, set the element's position relative\nto the top-left corner of the web page.</p>\n<p>The third parameter, <code>positionType</code>, is optional. It sets the element's\n<a target=\"_blank\"\nhref=\"https://developer.mozilla.org/en-US/docs/Web/CSS/position\">positioning scheme</a>.\n<code>positionType</code> is a string that can be either <code>'static'</code>, <code>'fixed'</code>,\n<code>'relative'</code>, <code>'sticky'</code>, <code>'initial'</code>, or <code>'inherit'</code>.</p>\n<p>If no arguments passed, as in <code>myElement.position()</code>, the method returns\nthe element's position in an object, as in <code>{ x: 0, y: 0 }</code>.</p>\n",
       "itemtype": "method",
       "name": "position",
@@ -11906,7 +11936,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 2966,
+          "line": 2980,
           "params": [],
           "return": {
             "description": "object of form `{ x: 0, y: 0 }` containing the element's position.",
@@ -11914,7 +11944,7 @@
           }
         },
         {
-          "line": 3017,
+          "line": 3031,
           "params": [
             {
               "name": "x",
@@ -11941,7 +11971,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3104,
+      "line": 3118,
       "description": "<p>Applies a style to the element by adding a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Syntax\" target=\"_blank\">CSS declaration</a>.</p>\n<p>The first parameter, <code>property</code>, is a string. If the name of a style\nproperty is passed, as in <code>myElement.style('color')</code>, the method returns\nthe current value as a string or <code>null</code> if it hasn't been set. If a\n<code>property:style</code> string is passed, as in\n<code>myElement.style('color:deeppink')</code>, the method sets the style <code>property</code>\nto <code>value</code>.</p>\n<p>The second parameter, <code>value</code>, is optional. It sets the property's value.\n<code>value</code> can be a string, as in\n<code>myElement.style('color', 'deeppink')</code>, or a\n<a href=\"#/p5.Color\">p5.Color</a> object, as in\n<code>myElement.style('color', myColor)</code>.</p>\n",
       "itemtype": "method",
       "name": "style",
@@ -11957,7 +11987,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 3104,
+          "line": 3118,
           "params": [
             {
               "name": "property",
@@ -11971,7 +12001,7 @@
           }
         },
         {
-          "line": 3204,
+          "line": 3218,
           "params": [
             {
               "name": "property",
@@ -11994,7 +12024,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3261,
+      "line": 3275,
       "description": "<p>Adds an\n<a href=\"https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started#attributes\" target=\"_blank\">attribute</a>\nto the element.</p>\n<p>This method is useful for advanced tasks. Most commonly-used attributes,\nsuch as <code>id</code>, can be set with their dedicated methods. For example,\n<code>nextButton.id('next')</code> sets an element's <code>id</code> attribute. Calling\n<code>nextButton.attribute('id', 'next')</code> has the same effect.</p>\n<p>The first parameter, <code>attr</code>, is the attribute's name as a string. Calling\n<code>myElement.attribute('align')</code> returns the attribute's current value as a\nstring or <code>null</code> if it hasn't been set.</p>\n<p>The second parameter, <code>value</code>, is optional. It's a string used to set the\nattribute's value. For example, calling\n<code>myElement.attribute('align', 'center')</code> sets the element's horizontal\nalignment to <code>center</code>.</p>\n",
       "itemtype": "method",
       "name": "attribute",
@@ -12010,7 +12040,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 3261,
+          "line": 3275,
           "params": [],
           "return": {
             "description": "value of the attribute.",
@@ -12018,7 +12048,7 @@
           }
         },
         {
-          "line": 3316,
+          "line": 3330,
           "params": [
             {
               "name": "attr",
@@ -12037,7 +12067,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3345,
+      "line": 3359,
       "description": "<p>Removes an attribute from the element.</p>\n<p>The parameter <code>attr</code> is the attribute's name as a string. For example,\ncalling <code>myElement.removeAttribute('align')</code> removes its <code>align</code>\nattribute if it's been set.</p>\n",
       "itemtype": "method",
       "name": "removeAttribute",
@@ -12058,7 +12088,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3396,
+      "line": 3410,
       "description": "<p>Returns or sets the element's value.</p>\n<p>Calling <code>myElement.value()</code> returns the element's current value.</p>\n<p>The parameter, <code>value</code>, is an optional number or string. If provided,\nas in <code>myElement.value(123)</code>, it's used to set the element's value.</p>\n",
       "itemtype": "method",
       "name": "value",
@@ -12074,7 +12104,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 3396,
+          "line": 3410,
           "params": [],
           "return": {
             "description": "value of the element.",
@@ -12082,7 +12112,7 @@
           }
         },
         {
-          "line": 3463,
+          "line": 3477,
           "params": [
             {
               "name": "value",
@@ -12096,7 +12126,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3479,
+      "line": 3493,
       "description": "<p>Shows the current element.</p>\n",
       "itemtype": "method",
       "name": "show",
@@ -12110,7 +12140,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3515,
+      "line": 3529,
       "description": "<p>Hides the current element.</p>\n",
       "itemtype": "method",
       "name": "hide",
@@ -12124,7 +12154,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3548,
+      "line": 3562,
       "description": "<p>Sets the element's width and height.</p>\n<p>Calling <code>myElement.size()</code> without an argument returns the element's size\nas an object with the properties <code>width</code> and <code>height</code>. For example,\n <code>{ width: 20, height: 10 }</code>.</p>\n<p>The first parameter, <code>width</code>, is optional. It's a number used to set the\nelement's width. Calling <code>myElement.size(10)</code></p>\n<p>The second parameter, 'height<code>, is also optional. It's a number used to set the element's height. For example, calling </code>myElement.size(20, 10)` sets the element's width to 20 pixels and height\nto 10 pixels.</p>\n<p>The constant <code>AUTO</code> can be used to adjust one dimension at a time while\nmaintaining the aspect ratio, which is <code>width / height</code>. For example,\nconsider an element that's 200 pixels wide and 100 pixels tall. Calling\n<code>myElement.size(20, AUTO)</code> sets the width to 20 pixels and height to 10\npixels.</p>\n<p>Note: In the case of elements that need to load data, such as images, wait\nto call <code>myElement.size()</code> until after the data loads.</p>\n",
       "itemtype": "method",
       "name": "size",
@@ -12140,7 +12170,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 3548,
+          "line": 3562,
           "params": [],
           "return": {
             "description": "width and height of the element in an object.",
@@ -12148,7 +12178,7 @@
           }
         },
         {
-          "line": 3662,
+          "line": 3676,
           "params": [
             {
               "name": "w",
@@ -12169,7 +12199,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3717,
+      "line": 3731,
       "description": "<p>Removes the element, stops all audio/video streams, and removes all\ncallback functions.</p>\n",
       "itemtype": "method",
       "name": "remove",
@@ -12182,7 +12212,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3776,
+      "line": 3790,
       "description": "<p>Calls a function when the user drops a file on the element.</p>\n<p>The first parameter, <code>callback</code>, is a function to call once the file loads.\nThe callback function should have one parameter, <code>file</code>, that's a\n<a href=\"#/p5.File\">p5.File</a> object. If the user drops multiple files on\nthe element, <code>callback</code>, is called once for each file.</p>\n<p>The second parameter, <code>fxn</code>, is a function to call when the browser detects\none or more dropped files. The callback function should have one\nparameter, <code>event</code>, that's a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/DragEvent\">DragEvent</a>.</p>\n",
       "itemtype": "method",
       "name": "drop",
@@ -12209,7 +12239,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 3931,
+      "line": 3945,
       "description": "<p>Makes the element draggable.</p>\n<p>The parameter, <code>elmnt</code>, is optional. If another\n<a href=\"#/p5.Element\">p5.Element</a> object is passed, as in\n<code>myElement.draggable(otherElement)</code>, the other element will become draggable.</p>\n",
       "itemtype": "method",
       "name": "draggable",
@@ -12231,14 +12261,14 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4067,
+      "line": 4081,
       "class": "p5.Element",
       "module": "DOM",
       "submodule": "DOM"
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4144,
+      "line": 4158,
       "description": "<p>Path to the media element's source as a string.</p>\n",
       "itemtype": "property",
       "name": "src",
@@ -12255,7 +12285,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4201,
+      "line": 4215,
       "description": "<p>Plays audio or video from a media element.</p>\n",
       "itemtype": "method",
       "name": "play",
@@ -12269,7 +12299,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4267,
+      "line": 4281,
       "description": "<p>Stops a media element and sets its current time to 0.</p>\n<p>Calling <code>media.play()</code> will restart playing audio/video from the beginning.</p>\n",
       "itemtype": "method",
       "name": "stop",
@@ -12283,7 +12313,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4326,
+      "line": 4340,
       "description": "<p>Pauses a media element.</p>\n<p>Calling <code>media.play()</code> will resume playing audio/video from the moment it paused.</p>\n",
       "itemtype": "method",
       "name": "pause",
@@ -12297,7 +12327,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4386,
+      "line": 4400,
       "description": "<p>Plays the audio/video repeatedly in a loop.</p>\n",
       "itemtype": "method",
       "name": "loop",
@@ -12311,7 +12341,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4444,
+      "line": 4458,
       "description": "<p>Stops the audio/video from playing in a loop.</p>\n<p>The media will stop when it finishes playing.</p>\n",
       "itemtype": "method",
       "name": "noLoop",
@@ -12325,7 +12355,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4524,
+      "line": 4538,
       "description": "<p>Sets the audio/video to play once it's loaded.</p>\n<p>The parameter, <code>shouldAutoplay</code>, is optional. Calling\n<code>media.autoplay()</code> without an argument causes the media to play\nautomatically. If <code>true</code> is passed, as in <code>media.autoplay(true)</code>, the\nmedia will automatically play. If <code>false</code> is passed, as in\n<code>media.autoPlay(false)</code>, it won't play automatically.</p>\n",
       "itemtype": "method",
       "name": "autoplay",
@@ -12347,7 +12377,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4609,
+      "line": 4623,
       "description": "<p>Sets the audio/video volume.</p>\n<p>Calling <code>media.volume()</code> without an argument returns the current volume\nas a number in the range 0 (off) to 1 (maximum).</p>\n<p>The parameter, <code>val</code>, is optional. It's a number that sets the volume\nfrom 0 (off) to 1 (maximum). For example, calling <code>media.volume(0.5)</code>\nsets the volume to half of its maximum.</p>\n",
       "itemtype": "method",
       "name": "volume",
@@ -12363,7 +12393,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 4609,
+          "line": 4623,
           "params": [],
           "return": {
             "description": "current volume.",
@@ -12371,7 +12401,7 @@
           }
         },
         {
-          "line": 4664,
+          "line": 4678,
           "params": [
             {
               "name": "val",
@@ -12385,7 +12415,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4677,
+      "line": 4691,
       "description": "<p>Sets the audio/video playback speed.</p>\n<p>The parameter, <code>val</code>, is optional. It's a number that sets the playback\nspeed. 1 plays the media at normal speed, 0.5 plays it at half speed, 2\nplays it at double speed, and so on. -1 plays the media at normal speed\nin reverse.</p>\n<p>Calling <code>media.speed()</code> returns the current speed as a number.</p>\n<p>Note: Not all browsers support backward playback. Even if they do,\nplayback might not be smooth.</p>\n",
       "itemtype": "method",
       "name": "speed",
@@ -12401,7 +12431,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 4677,
+          "line": 4691,
           "params": [],
           "return": {
             "description": "current playback speed.",
@@ -12409,7 +12439,7 @@
           }
         },
         {
-          "line": 4735,
+          "line": 4749,
           "params": [
             {
               "name": "speed",
@@ -12423,7 +12453,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4752,
+      "line": 4766,
       "description": "<p>Sets the media element's playback time.</p>\n<p>The parameter, <code>time</code>, is optional. It's a number that specifies the\ntime, in seconds, to jump to when playback begins.</p>\n<p>Calling <code>media.time()</code> without an argument returns the number of seconds\nthe audio/video has played.</p>\n<p>Note: Time resets to 0 when looping media restarts.</p>\n",
       "itemtype": "method",
       "name": "time",
@@ -12439,7 +12469,7 @@
       "submodule": "DOM",
       "overloads": [
         {
-          "line": 4752,
+          "line": 4766,
           "params": [],
           "return": {
             "description": "current time (in seconds).",
@@ -12447,7 +12477,7 @@
           }
         },
         {
-          "line": 4840,
+          "line": 4854,
           "params": [
             {
               "name": "time",
@@ -12461,7 +12491,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 4854,
+      "line": 4868,
       "description": "<p>Returns the audio/video's duration in seconds.</p>\n",
       "itemtype": "method",
       "name": "duration",
@@ -12478,7 +12508,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5010,
+      "line": 5024,
       "description": "<p>Calls a function when the audio/video reaches the end of its playback.</p>\n<p>The element is passed as an argument to the callback function.</p>\n<p>Note: The function won't be called if the media is looping.</p>\n",
       "itemtype": "method",
       "name": "onended",
@@ -12499,14 +12529,14 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5079,
+      "line": 5093,
       "class": "p5.MediaElement",
       "module": "DOM",
       "submodule": "DOM"
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5081,
+      "line": 5095,
       "description": "<p>Sends the element's audio to an output.</p>\n<p>The parameter, <code>audioNode</code>, can be an <code>AudioNode</code> or an object from the\n<code>p5.sound</code> library.</p>\n<p>If no element is provided, as in <code>myElement.connect()</code>, the element\nconnects to the main output. All connections are removed by the\n<code>.disconnect()</code> method.</p>\n<p>Note: This method is meant to be used with the p5.sound.js addon library.</p>\n",
       "itemtype": "method",
       "name": "connect",
@@ -12523,7 +12553,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5134,
+      "line": 5148,
       "description": "<p>Disconnect all Web Audio routing, including to the main output.</p>\n<p>This is useful if you want to re-route the output through audio effects,\nfor example.</p>\n",
       "itemtype": "method",
       "name": "disconnect",
@@ -12533,14 +12563,14 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5150,
+      "line": 5164,
       "class": "p5.MediaElement",
       "module": "DOM",
       "submodule": "DOM"
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5152,
+      "line": 5166,
       "description": "<p>Show the default\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement\" target=\"_blank\">HTMLMediaElement</a>\ncontrols.</p>\n<p>Note: The controls vary between web browsers.</p>\n",
       "itemtype": "method",
       "name": "showControls",
@@ -12553,7 +12583,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5193,
+      "line": 5207,
       "description": "<p>Hide the default\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement\" target=\"_blank\">HTMLMediaElement</a>\ncontrols.</p>\n",
       "itemtype": "method",
       "name": "hideControls",
@@ -12566,7 +12596,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5249,
+      "line": 5263,
       "description": "<p>Schedules a function to call when the audio/video reaches a specific time\nduring its playback.</p>\n<p>The first parameter, <code>time</code>, is the time, in seconds, when the function\nshould run. This value is passed to <code>callback</code> as its first argument.</p>\n<p>The second parameter, <code>callback</code>, is the function to call at the specified\ncue time.</p>\n<p>The third parameter, <code>value</code>, is optional and can be any type of value.\n<code>value</code> is passed to <code>callback</code>.</p>\n<p>Calling <code>media.addCue()</code> returns an ID as a string. This is useful for\nremoving the cue later.</p>\n",
       "itemtype": "method",
       "name": "addCue",
@@ -12601,7 +12631,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5314,
+      "line": 5328,
       "description": "<p>Removes a callback based on its ID.</p>\n",
       "itemtype": "method",
       "name": "removeCue",
@@ -12621,7 +12651,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5385,
+      "line": 5399,
       "description": "<p>Removes all functions scheduled with <code>media.addCue()</code>.</p>\n",
       "itemtype": "method",
       "name": "clearCues",
@@ -12634,7 +12664,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5559,
+      "line": 5573,
       "description": "<p>Underlying\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/File\" target=\"_blank\">File</a>\nobject. All <code>File</code> properties and methods are accessible.</p>\n",
       "itemtype": "property",
       "name": "file",
@@ -12647,7 +12677,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5608,
+      "line": 5622,
       "description": "<p>The file\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types\" target=\"_blank\">MIME type</a>\nas a string.</p>\n<p>For example, <code>'image'</code> and <code>'text'</code> are both MIME types.</p>\n",
       "itemtype": "property",
       "name": "type",
@@ -12660,7 +12690,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5646,
+      "line": 5660,
       "description": "<p>The file subtype as a string.</p>\n<p>For example, a file with an <code>'image'</code>\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types\" target=\"_blank\">MIME type</a>\nmay have a subtype such as <code>png</code> or <code>jpeg</code>.</p>\n",
       "itemtype": "property",
       "name": "subtype",
@@ -12673,7 +12703,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5685,
+      "line": 5699,
       "description": "<p>The file name as a string.</p>\n",
       "itemtype": "property",
       "name": "name",
@@ -12686,7 +12716,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5720,
+      "line": 5734,
       "description": "<p>The number of bytes in the file.</p>\n",
       "itemtype": "property",
       "name": "size",
@@ -12699,7 +12729,7 @@
     },
     {
       "file": "src/dom/dom.js",
-      "line": 5755,
+      "line": 5769,
       "description": "<p>A string containing the file's data.</p>\n<p>Data can be either image data, text contents, or a parsed object in the\ncase of JSON and <a href=\"#/p5.XML\">p5.XML</a> objects.</p>\n",
       "itemtype": "property",
       "name": "data",
@@ -25360,7 +25390,7 @@
     {
       "file": "src/webgl/p5.Framebuffer.js",
       "line": 1754,
-      "description": "<p>An object that stores the framebuffer's dpeth data.</p>\n<p>Each framebuffer uses a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/WebGLTexture\" target=\"_blank\">WebGLTexture</a>\nobject internally to store its depth data. The <code>myBuffer.depth</code> property\nmakes it possible to pass this data directly to other functions. For\nexample, calling <code>texture(myBuffer.depth)</code> or\n<code>myShader.setUniform('depthTexture', myBuffer.depth)</code>  may be helpful for\nadvanced use cases.</p>\n<p>Note: By default, a framebuffer's y-coordinates are flipped compared to\nimages and videos. It's easy to flip a framebuffer's y-coordinates as\nneeded when applying it as a texture. For example, calling\n<code>plane(myBuffer.width, -myBuffer.height)</code> will flip the framebuffer.</p>\n",
+      "description": "<p>An object that stores the framebuffer's depth data.</p>\n<p>Each framebuffer uses a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/WebGLTexture\" target=\"_blank\">WebGLTexture</a>\nobject internally to store its depth data. The <code>myBuffer.depth</code> property\nmakes it possible to pass this data directly to other functions. For\nexample, calling <code>texture(myBuffer.depth)</code> or\n<code>myShader.setUniform('depthTexture', myBuffer.depth)</code>  may be helpful for\nadvanced use cases.</p>\n<p>Note: By default, a framebuffer's y-coordinates are flipped compared to\nimages and videos. It's easy to flip a framebuffer's y-coordinates as\nneeded when applying it as a texture. For example, calling\n<code>plane(myBuffer.width, -myBuffer.height)</code> will flip the framebuffer.</p>\n",
       "itemtype": "property",
       "name": "depth",
       "type": "p5.FramebufferTexture",
@@ -30501,7 +30531,7 @@
     },
     {
       "file": "src/AudioIn.js",
-      "line": 57,
+      "line": 56,
       "description": "Start the audio input.",
       "itemtype": "method",
       "name": "start",
@@ -30511,7 +30541,7 @@
     },
     {
       "file": "src/AudioIn.js",
-      "line": 73,
+      "line": 72,
       "description": "Stop the audio input.",
       "itemtype": "method",
       "name": "stop",
@@ -30521,7 +30551,7 @@
     },
     {
       "file": "src/AudioIn.js",
-      "line": 82,
+      "line": 81,
       "description": "Set amplitude (volume) of a mic input between 0 and 1.0.",
       "itemtype": "method",
       "name": "amp",
@@ -30856,7 +30886,7 @@
     },
     {
       "file": "src/Noise.js",
-      "line": 56,
+      "line": 57,
       "itemtype": "method",
       "name": "type",
       "params": [
@@ -30872,7 +30902,7 @@
     },
     {
       "file": "src/Noise.js",
-      "line": 65,
+      "line": 66,
       "description": "Adjust the amplitude of the noise source.",
       "itemtype": "method",
       "name": "amp",
@@ -30889,7 +30919,7 @@
     },
     {
       "file": "src/Noise.js",
-      "line": 80,
+      "line": 81,
       "description": "Starts the noise source.",
       "itemtype": "method",
       "name": "start",
@@ -30899,7 +30929,7 @@
     },
     {
       "file": "src/Noise.js",
-      "line": 89,
+      "line": 90,
       "description": "Stops the noise source.",
       "itemtype": "method",
       "name": "stop",
@@ -30918,6 +30948,12 @@
           "name": "frequency",
           "description": "frequency of the oscillator in Hz (cycles per second).",
           "type": "Number"
+        },
+        {
+          "name": "rampTime",
+          "description": "the time in seconds it takes to ramp to the new frequency (defaults to 0).",
+          "type": "Number",
+          "optional": true
         }
       ],
       "class": "p5.Oscillator",
@@ -30926,7 +30962,7 @@
     },
     {
       "file": "src/Oscillator.js",
-      "line": 94,
+      "line": 95,
       "description": "Adjusts the phase of the oscillator.",
       "itemtype": "method",
       "name": "phase",
@@ -30943,7 +30979,7 @@
     },
     {
       "file": "src/Oscillator.js",
-      "line": 104,
+      "line": 105,
       "description": "Sets the type of the oscillator.",
       "itemtype": "method",
       "name": "setType",
@@ -30960,7 +30996,7 @@
     },
     {
       "file": "src/Oscillator.js",
-      "line": 116,
+      "line": 117,
       "description": "Adjust the amplitude of the Oscillator.",
       "itemtype": "method",
       "name": "amp",
@@ -30980,7 +31016,7 @@
     },
     {
       "file": "src/Oscillator.js",
-      "line": 167,
+      "line": 168,
       "description": "Starts the oscillator. Usually from user gesture.",
       "itemtype": "method",
       "name": "start",
@@ -30993,7 +31029,7 @@
     },
     {
       "file": "src/Oscillator.js",
-      "line": 192,
+      "line": 193,
       "description": "Stops the oscillator.",
       "itemtype": "method",
       "name": "stop",
@@ -31170,7 +31206,7 @@
       "submodule": "p5.sound"
     },
     {
-      "file": "src/PitshShifter.js",
+      "file": "src/PitchShifter.js",
       "line": 55,
       "description": "Shift the pitch of the source audio.",
       "itemtype": "method",
@@ -31196,6 +31232,23 @@
         {
           "name": "time",
           "description": "Decay time of the reverb in seconds.",
+          "type": "Number"
+        }
+      ],
+      "class": "p5.Reverb",
+      "module": "p5.sound",
+      "submodule": "p5.sound"
+    },
+    {
+      "file": "src/Reverb.js",
+      "line": 66,
+      "description": "Adjust the dry/wet value.",
+      "itemtype": "method",
+      "name": "drywet",
+      "params": [
+        {
+          "name": "mix",
+          "description": "The desired mix between the original and the affected signal. A number between 0 and 1. 0 is all dry, 1 is completely affected.",
           "type": "Number"
         }
       ],
@@ -31535,7 +31588,7 @@
     },
     {
       "file": "src/Utils.js",
-      "line": 24,
+      "line": 26,
       "description": "Sets the AudioContext to a specified context to enable cross library compatibility.",
       "itemtype": "method",
       "name": "setAudioContext",
@@ -31552,7 +31605,7 @@
     },
     {
       "file": "src/Utils.js",
-      "line": 33,
+      "line": 35,
       "description": "userStartAudio() starts the AudioContext on a user gesture. It can be placed in a specific interaction function, such as mousePressed().",
       "itemtype": "method",
       "name": "userStartAudio",
@@ -31562,7 +31615,7 @@
     },
     {
       "file": "src/Utils.js",
-      "line": 41,
+      "line": 43,
       "description": "userStopAudio() stops the AudioContext on a user gesture.",
       "itemtype": "method",
       "name": "userStopAudio",
