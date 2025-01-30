@@ -90,7 +90,7 @@ Writing    ${writingBar} ${Math.floor(writingProgress * 100)}% (${total - writin
 
 						try{
 							const data = await minify(text, {
-								collapseWhitespaces: "all",
+								collapseWhitespaces: "smart",
 								removeComments: true,
 								sortAttributes: true
 							});
