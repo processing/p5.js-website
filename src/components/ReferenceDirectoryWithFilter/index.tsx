@@ -38,13 +38,21 @@ type ReferenceDirectoryWithFilterProps = {
  * @returns One-line description
  */
 const getOneLineDescription = (description: string): string => {
-  // Matches until the first ., ?, !, ।, or 。 followed by a space
-  const fullStopRegex = /.*?(?:\.\s|\?\s|!\s|।\s|。\s)/;
-  const cleanedDescription = description
-    .replace(/<[^>]*>?/gm, "")
-    .replace(/\n/g, " ");
-  const [oneLineDescription] = cleanedDescription.match(fullStopRegex) ?? [];
-  return `${oneLineDescription?.trim() ?? cleanedDescription}`;
+  // Matches first paragraph tag, remove HTML tags, then trim to first fullstop
+  const firstParagraphRegex = /^<p>(.*?)<\/p>/;
+  let [oneLineDescription] = description.replace(/\n/g, " ").trim()
+    .match(firstParagraphRegex) ?? [];
+
+  if(oneLineDescription){
+    oneLineDescription = oneLineDescription
+      .replace(/^<p>|<\/p>$/g, "")
+      .replace(/<\/?code>/g, "")
+      .replace(/<var>(\d+?)<sup>(\d+?)<\/sup><\/var>/g, "$1^$2")
+      .replace(/<a href=".*?">|<\/a>/g, "")
+      .split(/\.\s|\?\s|!\s|।\s|。/)[0];
+  }
+
+  return oneLineDescription ?? "";
 };
 
 export const ReferenceDirectoryWithFilter = ({
