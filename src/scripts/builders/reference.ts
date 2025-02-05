@@ -80,7 +80,7 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
     docClass = doc.class;
   } else {
     if (!doc.module) console.log(doc)
-    docClass = doc.module.startsWith("p5.") ? doc.module : "p5";
+    docClass = doc.module?.startsWith("p5.") ? doc.module : "p5";
   }
 
   return path.join(prefix, docClass, sortedModule);
