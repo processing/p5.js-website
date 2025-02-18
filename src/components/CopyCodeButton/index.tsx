@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'preact/hooks';
 import CircleButton from "../CircleButton";
 
 interface CopyCodeButtonProps {
@@ -11,32 +11,6 @@ export const CopyCodeButton = ({ textToCopy }: CopyCodeButtonProps) => {
   const copyTextToClipboard = async () => {
     console.log('Copy button clicked');
     console.log('Text to copy:', textToCopy);
-
-    if (!navigator.clipboard) {
-      console.log('Clipboard API not available, using fallback');
-      // Fallback for older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = textToCopy;
-      textArea.style.position = "fixed";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-
-      try {
-        const result = document.execCommand('copy');
-        console.log('Fallback copy result:', result);
-        setIsCopied(true);
-        setTimeout(() => {
-          setIsCopied(false);
-          console.log('Copy state reset');
-        }, 2000);
-      } catch (err) {
-        console.error('Fallback copy failed:', err);
-      }
-
-      document.body.removeChild(textArea);
-      return;
-    }
 
     try {
       console.log('Using Clipboard API');
