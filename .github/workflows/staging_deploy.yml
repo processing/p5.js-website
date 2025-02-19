@@ -15,24 +15,18 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
+    
       - name: Checkout your repository using git
         uses: actions/checkout@v4
+        
       - name: Install, build, and upload your site output
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
         uses: withastro/action@v2
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-    
+        
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
