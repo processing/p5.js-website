@@ -6,7 +6,7 @@ There are a few ways you can write CSS in this project:
 
 ### 1. Use [Tailwind](https://tailwindcss.com/) css classes directly within layouts and components
 
-This is often the fastest way to add custom styles if you are familair with [Tailwind](https://tailwindcss.com/). See a good example in `/src/p5/p5.js-website/src/components/Footer/index.astro`.
+This is often the fastest way to add custom styles if you are familiar with [Tailwind](https://tailwindcss.com/). See a good example in `/src/p5/p5.js-website/src/components/Footer/index.astro`.
 
 ### 2. Write styles in the [SCSS](https://sass-lang.com/) files in `/styles` and use those classes in layouts and components
 
