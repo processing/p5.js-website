@@ -1,6 +1,6 @@
 # Localization Architecture
 
-An important feature of the p5.js website is support multiple languages (four and counting!). This requires the website to build and serve every page in each of the supported languages.
+An important feature of the p5.js website is its support for multiple languages (four and counting!). This requires the website to build and serve every page in each of the supported languages.
 
 Our website framework Astro has localization support, but it doesn't cover our full set of needs so the localization tooling in this repo is largely [hand rolled](https://www.quora.com/Computer-Science-Where-did-the-phrase-Roll-your-own-come-from-and-why-is-it-used-in-CS).
 
@@ -29,7 +29,7 @@ Taking the tutorials page as an example:
 
 Both of these routes use the [TutorialsLayout](/src/layouts/TutorialsLayout.astro) to render the page by passing in the content in the correct language.
 
-The main difference between these two routing files is how they retrieve the correct translation. The English version retreives the English version of the content. The other translations retrieve their version of the content and then fill in any gaps with English versions. See `getCollectionInLocaleWithFallbacks()` for how this works.
+The main difference between these two routing files is how they retrieve the correct translation. The English version retrieves the English version of the content. The other translations retrieve their version of the content and then fill in any gaps with English versions. See `getCollectionInLocaleWithFallbacks()` for how this works.
 
 Because of this subtle duplication, we try to keep the files in `src/pages/` as short as possible and move rendering logic into the [layout files](/src/layouts/).
 
@@ -89,7 +89,7 @@ const uiTranslations = await getUiTranslationWithFallback(currentLocale);
 
 ```
 
-And then in the HelloButton Preact component, we acess the translations using object keys:
+And then in the HelloButton Preact component, we access the translations using object keys:
 
 ```jsx
 export const HelloButton = (props) => {
@@ -98,7 +98,7 @@ export const HelloButton = (props) => {
 };
 ```
 
-Essentially, the arguments you would pass to `t` in the first example for astro files are the same you would pass as keys to the `uiTranslations` object. If its a nested key, that looks like:
+Essentially, the arguments you would pass to `t` in the first example for astro files are the same you would pass as keys to the `uiTranslations` object. If it's a nested key, that looks like:
 
 ```jsx
 uiTranslations["sectionTitles"]["main"];
