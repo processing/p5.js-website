@@ -29,7 +29,7 @@ Taking the tutorials page as an example:
 
 Both of these routes use the [TutorialsLayout](/src/layouts/TutorialsLayout.astro) to render the page by passing in the content in the correct language.
 
-The main difference between these two routing files is how they retrieve the correct translation. The English version retreives the English version of the content. The other translations retrieve their version of the content and then fill in any gaps with English versions. See `getCollectionInLocaleWithFallbacks()` for how this works.
+The main difference between these two routing files is how they retrieve the correct translation. The English version retrieves the English version of the content. The other translations retrieve their version of the content and then fill in any gaps with English versions. See `getCollectionInLocaleWithFallbacks()` for how this works.
 
 Because of this subtle duplication, we try to keep the files in `src/pages/` as short as possible and move rendering logic into the [layout files](/src/layouts/).
 
