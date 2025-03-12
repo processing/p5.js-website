@@ -255,6 +255,7 @@ const convertToMDX = async (
     file: doc.file.replace(/.*p5\.js\/(.*)/, "$1"),
     description: doc.description ?? "",
     line: doc.line,
+    deprecated: doc.deprecated,
   } as Record<string, unknown>;
 
   // Add specific frontmatter based on the type of doc

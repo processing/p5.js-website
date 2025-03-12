@@ -64,6 +64,7 @@ export const referenceSchema = z.object({
   submodule: z.string().optional(),
   file: z.string(),
   description: z.string().optional(),
+  deprecated: z.string().optional(),
   line: z.number().or(z.string().transform((v) => parseInt(v, 10))),
   params: z.array(paramSchema).optional(),
   overloads: z.array(z.object({ params: z.array(paramSchema) })).optional(),

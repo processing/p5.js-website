@@ -49,7 +49,7 @@ export type ReferenceOverload = {
 export type ReferenceOverloads = ReferenceOverload[];
 
 /* Represents the definition of a class within the project, including its properties, methods, and inheritance information. */
-export interface ReferenceClassDefinition extends Chainable {
+export interface ReferenceClassDefinition extends Chainable, Deprecatable, MaybeBeta {
   name: string; // The name of the class.
   shortname: string; // A shorter or abbreviated name for the class.
   classitems: ReferenceParam[]; // Parameters or properties of the class.
@@ -92,6 +92,10 @@ interface Chainable {
   chainable: number;
 }
 
+interface Deprecatable {
+  deprecated?: string; // If this item is deprecated, a description of why.
+}
+
 /* Represents the return value of a method or constructor */
 interface Return {
   description: string;
@@ -103,7 +107,7 @@ interface MaybeBeta {
 }
 
 /* Represents a method within a class */
-export interface ReferenceClassItemMethod extends BaseClassItem, Chainable, MaybeBeta {
+export interface ReferenceClassItemMethod extends BaseClassItem, Chainable, MaybeBeta, Deprecatable {
   params?: ReferenceParam[];
   return?: Return;
   example?: string[];
@@ -119,7 +123,7 @@ interface MethodOverload {
 }
 
 /* Represents a property within a class */
-export interface ReferenceClassItemProperty extends BaseClassItem {
+export interface ReferenceClassItemProperty extends BaseClassItem, Deprecatable {
   type: string;
 }
 
