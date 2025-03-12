@@ -20,6 +20,7 @@ import type {
 import { setJumpToState } from "../globals/state";
 import { p5Version } from "../globals/p5-version";
 import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
+import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -104,6 +105,18 @@ const descriptionParts = description.split(
             {t('experimentalApi', 'title')}
           </h5>
           <p>{t('experimentalApi', 'description')}</p>
+        </div>
+      )}
+      {entry.data.deprecated && (
+        <div class="deprecated">
+          <h5>
+            <div
+              class="inline-block mr-2 w-[20px] h-[20px] mb-[-2px]"
+              set:html={warning}
+            />
+            {t('calloutTitles', 'Warning')}
+          </h5>
+          <p set:html={entry.data.deprecated} />
         </div>
       )}
       {descriptionParts.map((part) => {
