@@ -63,6 +63,9 @@ export default defineConfig({
     },
   },
   vite: {
+    optimizeDeps: {
+      exclude: ["@swc/html"]
+    },
     rollupOptions: {
       external: ["/src/scripts/*"],
     },
