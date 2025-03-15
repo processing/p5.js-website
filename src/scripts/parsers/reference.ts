@@ -128,8 +128,7 @@ export const saveYuidocOutput = async (
     const inPath = path.join(__dirname, "in", inDirName);
     console.log(inPath)
     await new Promise((resolve, reject) => {
-      exec(`yuidoc -p --outdir ${outputFilePath} ${flags} ${inputPath}`, { cwd: inPath }, (error, stdout) => {
-        if (error) {
+exec(`yuidoc -p --outdir "${outputFilePath.replace(/"/g, '\\"')}" ${flags} ${inputPath}`, { cwd: inPath }, (error, stdout) => {        if (error) {
           console.error(`Error running YUIDoc command: ${error}`);
           reject(error);
         } else {
