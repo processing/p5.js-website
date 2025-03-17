@@ -18,7 +18,7 @@ This can be useful for situations where the styling you need for a particular ar
 
 #### 4. Write css in a style tag within an `.astro` file
 
-This can be a good approach when you need a few custom styles for a single a layout or component but adding an extra SCSS feels like overkill. See an example in `/src/layouts/AboutLayout.astro`
+This can be a good approach when you need a few custom styles for a single layout or component but adding an extra SCSS feels like overkill. See an example in `/src/layouts/AboutLayout.astro`
 
 ## Useful Global Styles
 

@@ -1,6 +1,6 @@
 # Localization Architecture
 
-An important feature of the p5.js website is support multiple languages (four and counting!). This requires the website to build and serve every page in each of the supported languages.
+An important feature of the p5.js website is its support for multiple languages (four and counting!). This requires the website to build and serve every page in each of the supported languages.
 
 Our website framework Astro has localization support, but it doesn't cover our full set of needs so the localization tooling in this repo is largely [hand rolled](https://www.quora.com/Computer-Science-Where-did-the-phrase-Roll-your-own-come-from-and-why-is-it-used-in-CS).
 
@@ -89,7 +89,7 @@ const uiTranslations = await getUiTranslationWithFallback(currentLocale);
 
 ```
 
-And then in the HelloButton Preact component, we acess the translations using object keys:
+And then in the HelloButton Preact component, we access the translations using object keys:
 
 ```jsx
 export const HelloButton = (props) => {
@@ -98,7 +98,7 @@ export const HelloButton = (props) => {
 };
 ```
 
-Essentially, the arguments you would pass to `t` in the first example for astro files are the same you would pass as keys to the `uiTranslations` object. If its a nested key, that looks like:
+Essentially, the arguments you would pass to `t` in the first example for astro files are the same you would pass as keys to the `uiTranslations` object. If it's a nested key, that looks like:
 
 ```jsx
 uiTranslations["sectionTitles"]["main"];
