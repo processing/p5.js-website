@@ -1,0 +1,42 @@
+name: Deploy beta to Netlify
+
+on:
+  # Trigger the workflow every time you push to the `main` branch
+  # Using a different branch name? Replace `main` with your branch’s name
+  push:
+    branches: ["2.0"]
+  # Allows you to run this workflow manually from the Actions tab on GitHub.
+  workflow_dispatch:
+
+# Allow this job to clone the repo and create a page deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+        
+      - name: Install, build, and upload your site output
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        uses: withastro/action@v2
+        
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: './dist'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
