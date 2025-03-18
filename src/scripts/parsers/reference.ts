@@ -1,4 +1,4 @@
-import { cloneLibraryRepo, p5RepoUrl, readFile } from "../utils";
+import { cloneLibraryRepo,cleanUpDirectory, p5RepoUrl, readFile } from "../utils";
 import fs from "fs/promises";
 import { exec, execSync } from "child_process";
 import path from "path";
@@ -12,6 +12,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const localPath = path.join(__dirname, "in", "p5.js");
 const localSoundPath = path.join(__dirname, "in", "p5.sound.js");
 const yuidocOutputPath = path.join(__dirname, "out")
+
+//Directory to clean after cloning the libraries
+const parsersInPath = path.join(__dirname, "in");
+const parsersOutPath = path.join(__dirname, "out");
 
 /**
  * Main function to clone the p5.js library and save the YUIDoc output to a file
@@ -77,6 +81,10 @@ export const parseLibraryReference =
     );
 
     await serveYuidocOutput('data');
+
+    //delete the cloned directories
+    await cleanUpDirectory(parsersInPath );
+    await cleanUpDirectory(parsersOutPath );
     return combined;
   };
 
