@@ -19,6 +19,6 @@ p5.js welcomes libraries contributed by others! <a href="https://github.com/proc
 4. Add a **high-res colored image of 1500x1000px** of your library into `src/content/libraries/images`
 5. Submit a pull request and we'll review your submission
 
-We add libraries that are open-source, includes some documentation and examples, and <a href="https://github.com/processing/p5.js/blob/main/CODE_OF_CONDUCT.md">follow our code of conduct.</a> This directory targets beginner users, so we aim to ensure users have a smooth experience getting started with any library linked to.
+We add libraries that are open-source, include some documentation and examples, and <a href="https://github.com/processing/p5.js/blob/main/CODE_OF_CONDUCT.md">follow our code of conduct.</a> This directory targets beginner users, so we aim to ensure users have a smooth experience getting started with any library linked to.
 
 If you have any questions, feel free to open an issue or create a work-in-progress PR and ask us anything!

@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "preact/hooks";
 import { type JSX } from "preact";
 import { Icon } from "../Icon";
 import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
+import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -42,6 +43,10 @@ const getOneLineDescription = (description: string): string => {
   const firstParagraphRegex = /^<p>(.*?)<\/p>/;
   let [oneLineDescription] = description.replace(/\n/g, " ").trim()
     .match(firstParagraphRegex) ?? [];
+
+  if (!oneLineDescription && description) {
+    oneLineDescription = description;
+  }
 
   if(oneLineDescription){
     oneLineDescription = oneLineDescription
@@ -106,6 +111,12 @@ export const ReferenceDirectoryWithFilter = ({
                   <div
                     className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
                     dangerouslySetInnerHTML={{ __html: flask }}
+                  />
+                )}
+                {entry.data.deprecated && (
+                  <div
+                    className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
+                    dangerouslySetInnerHTML={{ __html: warning }}
                   />
                 )}
                 <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />
