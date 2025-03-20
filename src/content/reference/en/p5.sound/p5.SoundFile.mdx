@@ -1,58 +1,88 @@
 ---
 title: p5.SoundFile
 module: p5.sound
-submodule: SoundFile
-file: src/SoundFile.js
-description: Load and play sound files.
-line: 60
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |-
+  <p>SoundFile object with a path to a file.</p>
+
+  <p>The p5.SoundFile may not be available immediately because
+  it loads the file information asynchronously.</p>
+
+  <p>To do something with the sound as soon as it loads
+  pass the name of a function as the second parameter.</p>
+
+  <p>Only one file path is required. However, audio file formats
+  (i.e. mp3, ogg, wav and m4a/aac) are not supported by all
+  web browsers. If you want to ensure compatability, instead of a single
+  file path, you may include an Array of filepaths, and the browser will
+  choose a format that works.</p>
+line: 1405
 isConstructor: true
+params:
+  - name: path
+    description: |
+      <p>path to a sound file (String). Optionally,
+                                   you may include multiple file formats in
+                                   an array. Alternately, accepts an object
+                                   from the HTML5 File API, or a p5.File.</p>
+    type: String|Array
+  - name: successCallback
+    description: |
+      <p>Name of a function to call once file loads</p>
+    type: Function
+    optional: true
+  - name: errorCallback
+    description: |
+      <p>Name of a function to call if file fails to
+                                          load. This function will receive an error or
+                                         XMLHttpRequest object with information
+                                         about what went wrong.</p>
+    type: Function
+    optional: true
+  - name: whileLoadingCallback
+    description: |
+      <p>Name of a function to call while file
+                                                 is loading. That function will
+                                                 receive progress of the request to
+                                                 load the sound file
+                                                 (between 0 and 1) as its first
+                                                 parameter. This progress
+                                                 does not account for the additional
+                                                 time needed to decode the audio data.</p>
+    type: Function
+    optional: true
 example:
   - |-
 
-    <div>
-    <code>
-    let sound, amp, delay, cnv;
-
+    <div><code>
+    let mySound;
     function preload() {
-      //replace this sound with something local with rights to distribute
-      //need to fix local asset loading first though :) 
-      sound = loadSound('//assets/doorbell.mp3');
+      soundFormats('mp3', 'ogg');
+      mySound = loadSound('/assets/doorbell');
     }
 
     function setup() {
-      cnv = createCanvas(100, 100);
-      textAlign(CENTER);
-      cnv.mousePressed(playSound);
-      amp = new p5.Amplitude();
-      delay = new p5.Delay();
-      sound.disconnect();
-      sound.connect(delay);
-      delay.connect(amp);
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(canvasPressed);
+      background(220);
+      text('tap here to play', 10, 20);
     }
 
-    function playSound() {
-      sound.play();
+    function canvasPressed() {
+      // playing a sound file on a user gesture
+      // is equivalent to `userStartAudio()`
+      mySound.play();
     }
-
-    function draw() {
-      let dtime = map(mouseX, 0, width, 0, 1);
-      delay.delayTime(dtime);
-      let f = map(mouseY, 0, height, 0, .75);
-      delay.feedback(f);
-      let level = map(amp.getLevel(), 0, 0.5, 0, 255);
-      background(level, 0, 0);
-      fill(255);
-      text('click to play', width/2, 20);
-     }
-    </code>
-    </div>
+     </code></div>
 methods:
   isLoaded:
     description: |
       <p>Returns true if the sound file finished loading successfully.</p>
     path: p5.SoundFile/isLoaded
   play:
-    description: Start the soundfile.
+    description: |
+      <p>Play the p5.SoundFile</p>
     path: p5.SoundFile/play
   playMode:
     description: |
@@ -65,21 +95,34 @@ methods:
       not already playing. Sustain is the default mode.</p>
     path: p5.SoundFile/playMode
   pause:
-    description: Pause the soundfile.
+    description: |
+      <p>Pauses a file that is currently playing. If the file is not
+      playing, then nothing will happen.</p>
+      <p>After pausing, .play() will resume from the paused
+      position.
+      If p5.SoundFile had been set to loop before it was paused,
+      it will continue to loop after it is unpaused with .play().</p>
     path: p5.SoundFile/pause
   loop:
-    description: Loop the soundfile.
+    description: |
+      <p>Loop the p5.SoundFile. Accepts optional parameters to set the
+      playback rate, playback volume, loopStart, loopEnd.</p>
     path: p5.SoundFile/loop
   setLoop:
-    description: >-
-      Set a loop region, and optionally a playback rate, and amplitude for the
-      soundfile.
+    description: |
+      <p>Set a p5.SoundFile's looping flag to true or false. If the sound
+      is currently playing, this change will take effect when it
+      reaches the end of the current playback.</p>
     path: p5.SoundFile/setLoop
   isLooping:
-    description: Return the playback state of the soundfile.
+    description: >
+      <p>Returns 'true' if a p5.SoundFile is currently looping and playing,
+      'false' if not.</p>
     path: p5.SoundFile/isLooping
   isPlaying:
-    description: Return the playback state of the soundfile.
+    description: |
+      <p>Returns true if a p5.SoundFile is playing, false if not (i.e.
+      paused or stopped).</p>
     path: p5.SoundFile/isPlaying
   isPaused:
     description: |
@@ -87,7 +130,8 @@ methods:
       playing or stopped).</p>
     path: p5.SoundFile/isPaused
   stop:
-    description: Stop the soundfile.
+    description: |
+      <p>Stop soundfile playback.</p>
     path: p5.SoundFile/stop
   pan:
     description: |
@@ -100,7 +144,11 @@ methods:
       <p>Returns the current stereo pan position (-1.0 to 1.0)</p>
     path: p5.SoundFile/getPan
   rate:
-    description: Set the playback rate of the soundfile.
+    description: >
+      <p>Set the playback rate of a sound file. Will change the speed and the
+      pitch.
+
+      Values less than zero will reverse the audio buffer.</p>
     path: p5.SoundFile/rate
   setVolume:
     description: |
@@ -114,7 +162,8 @@ methods:
       oscillator to modulate the amplitude with an audio signal.</p>
     path: p5.SoundFile/setVolume
   duration:
-    description: Returns the duration of a sound file in seconds.
+    description: |
+      <p>Returns the duration of a sound file in seconds.</p>
     path: p5.SoundFile/duration
   currentTime:
     description: >
@@ -126,18 +175,31 @@ methods:
       has been called, currentTime will count backwards.</p>
     path: p5.SoundFile/currentTime
   jump:
-    description: >-
-      Move the playhead of a soundfile that is currently playing to a new
-      position.
+    description: >
+      <p>Move the playhead of a soundfile that is currently playing to a
+
+      new position and a new duration, in seconds.
+
+      If none are given, will reset the file to play entire duration
+
+      from start to finish. To set the position of a soundfile that is
+
+      not currently playing, use the <code>play</code> or <code>loop</code>
+      methods.</p>
     path: p5.SoundFile/jump
   channels:
-    description: Gets the number of channels in the sound file.
+    description: |
+      <p>Return the number of channels in a sound file.
+      For example, Mono = 1, Stereo = 2.</p>
     path: p5.SoundFile/channels
   sampleRate:
-    description: Gets the number of channels in the sound file.
+    description: |
+      <p>Return the sample rate of the sound file.</p>
     path: p5.SoundFile/sampleRate
   frames:
-    description: Return the number of samples in a sound file.
+    description: |
+      <p>Return the number of samples in a sound file.
+      Equal to sampleRate * duration.</p>
     path: p5.SoundFile/frames
   getPeaks:
     description: |
@@ -154,7 +216,12 @@ methods:
       Playback must be handled separately (see example).</p>
     path: p5.SoundFile/reverseBuffer
   onended:
-    description: Define a function to call when the soundfile is done playing.
+    description: |
+      <p>Schedule an event to be called when the soundfile
+      reaches the end of a buffer. If the soundfile is
+      playing through once, this will be called when it
+      ends. If it is looping, it will be called when
+      stop is called.</p>
     path: p5.SoundFile/onended
   connect:
     description: |
@@ -169,7 +236,9 @@ methods:
       <p>Disconnects the output of this p5sound object.</p>
     path: p5.SoundFile/disconnect
   setPath:
-    description: Change the path for the soundfile.
+    description: |
+      <p>Reset the source for this SoundFile to a
+      new path (URL).</p>
     path: p5.SoundFile/setPath
   setBuffer:
     description: |
@@ -223,12 +292,6 @@ methods:
       and attach the blob as one of the form values using
       <code>FormData</code>.</p>
     path: p5.SoundFile/getBlob
-  start:
-    description: Start the soundfile.
-    path: p5.SoundFile/start
-  amp:
-    description: Adjust the amplitude of the soundfile.
-    path: p5.SoundFile/amp
 chainable: false
 ---
 

@@ -64,7 +64,9 @@ export const referenceSchema = z.object({
   submodule: z.string().optional(),
   file: z.string(),
   description: z.string().optional(),
-  deprecated: z.string().optional(),
+  deprecated: z.string().or(
+    z.boolean().transform(() => 'This will be removed in a future version of p5.js.')
+  ).optional(),
   line: z.number().or(z.string().transform((v) => parseInt(v, 10))),
   params: z.array(paramSchema).optional(),
   overloads: z.array(z.object({ params: z.array(paramSchema) })).optional(),
