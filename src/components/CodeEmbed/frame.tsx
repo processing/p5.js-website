@@ -36,6 +36,7 @@ const wrapInMarkup = (code: CodeBundle) =>
 html, body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 canvas {
   display: block;
@@ -151,7 +152,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
   return (
     <div
       ref={containerRef}
-      style={{ width: props.width, height: props.height }}
+      style={{ width: props.width, height: props.height, background: "red" }}
     >
       <iframe
         ref={iframeRef}
@@ -168,6 +169,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
         height={props.height}
         width={props.width}
         loading={props.lazyLoad ? "lazy" : "eager"}
+        className="bg-blue-400" 
       />
     </div>
   );
