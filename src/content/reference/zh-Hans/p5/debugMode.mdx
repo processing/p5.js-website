@@ -1,0 +1,262 @@
+---
+title: debugMode
+module: 3D
+submodule: 交互
+file: src/webgl/interaction.js
+description: >
+  <p>添加网格和轴标志以帮助明确 3D 绘图中的方向。</p>
+
+  <p><code>debugMode()</code> 函数添加一个网格， 显示绘图中“地面”的位置。默认情况下，网格将通过绘图的原点 <code>(0, 0, 0)</code> 沿着　XZ 平面运行。 <code>debugMode()</code> 还添加了一个沿着正 x、y 和 z 轴指向的坐标轴图标。调用 <code>debugMode()</code> 会显示网格和坐标轴图标， 以及它们的默认大小和位置。</p>
+
+  <p>>有四种调用 <code>debugMode()</code> 的方式，可选参数用于自定义调试环境。</p>
+
+  <p>第一种调用 <code>debugMode()</code> 的方式有一个参数，<code>mode</code>。 如果传递了系统常量 <code>GRID</code>， 例如<code>debugMode(GRID)</code>, 那么将显示网格并隐藏坐标轴图标。 如果传递了常量<code>AXES</code>，例如 <code>debugMode(AXES)</code>， 则会显示坐标轴图标并隐藏网格。</p>
+
+  <p>第二种调用 <code>debugMode()</code> 的方式有六个参数。第一个参数　<code>mode</code>,  选择要显示的 <code>GRID</code> 或　<code>AXES</code>。 接下来的五个参数, <code>gridSize</code>, <code>gridDivisions</code>,　<code>xOff</code>, <code>yOff</code>, 和　<code>zOff</code> 是可选的。 它们是用于设置网格外观　(<code>gridSize</code> 和 <code>gridDivisions</code>) 以及放置坐标轴图标 (<code>xOff</code>, <code>yOff</code>, 和 <code>zOff</code>) 的数字。 例如，调用<code>debugMode(20, 5, 10, 10, 10)</code> 将 <code>gridSize</code> 设置为 20 个像素, 并将 <code>gridDivisions</code> 设置为 5, 并且沿着 x、y 和 z 轴偏移坐标轴图标 1 0像素。</p>
+
+  <p>第三种调用 <code>debugMode()</code> 的方式有五个参数。 第一个参数 <code>mode</code> 选择要显示的 <code>GRID</code> 或 <code>AXES</code>。接下来的四个参数, <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, 和 <code>zOff</code> 是可选的。它们是用于设置坐标轴图标大小 （ <code>axesSize</code>） 以及其放置位置 （ <code>xOff</code>、 <code>yOff</code> 和 <code>zOff</code>）的数字。</p>
+
+  <p>第四种调用 <code>debugMode()</code> 的方式有九个可选参数。前五个参数 <code>gridSize</code>、 <code>gridDivisions</code>、 <code>gridXOff</code>、 <code>gridYOff</code> 和 <code>gridZOff</code> 是用于设置网格外观的数字。例如，调用 <code>debugMode(100, 5, 0, 0, 0)</code> 将 <code>gridSize</code> 设置为 100，将 <code>gridDivisions</code> 设置为 5，并将所有偏移量设置为 0，以便网格居中于原点。接下来的四个参数 <code>axesSize</code>、 <code>xOff</code>、 <code>yOff</code> 和 <code>zOff</code> 是用于设置坐标轴图标大小的数字（ <code>axesSize</code>）以及其放置位置（ <code>axesXOff</code>、 <code>axesYOff</code> 和 <code>axesZOff</code>）。例如，调用 <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code> 将 <code>gridSize</code> 设置为 100，将 <code>gridDivisions</code> 设置为 5，并将所有偏移量设置为 0，以便网格居中于原点。然后将 <code>axesSize</code> 设置为 50，并将图标沿每个轴偏移 10 像素。</p>
+line: 471
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // 启用调试模式。
+      debugMode();
+
+      describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 设定盒子样式。
+      normalMaterial();
+
+      // 绘制盒子。
+      box(20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // 启用调试模式。
+      // 只显示坐标轴图标。
+      debugMode(AXES);
+
+      describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 设定盒子样式。
+      normalMaterial();
+
+      // 绘制盒子。
+      box(20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // 启用调试模式。
+      // 只显示网格并进行自定义设置：
+      // - size: 50
+      // - divisions: 10
+      // - offsets: 0, 20, 0
+      debugMode(GRID, 50, 10, 0, 20, 0);
+
+      describe('A multicolor box on a gray background. A grid is displayed below the box.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 设定盒子样式。
+      normalMaterial();
+
+      // 绘制盒子。
+      box(20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // 启用调试模式。
+      // 显示网格和坐标轴图标，并进行自定义设置：
+      // Grid
+      // ----
+      // - size: 50
+      // - divisions: 10
+      // - offsets: 0, 20, 0
+      // Axes
+      // ----
+      // - size: 50
+      // - offsets: 0, 0, 0
+      debugMode(50, 10, 0, 20, 0, 50, 0, 0, 0);
+
+      describe('A multicolor box on a gray background. A grid is displayed below the box. An axes icon is displayed at the center of the box.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 设定盒子样式。
+      normalMaterial();
+
+      // 绘制盒子。
+      box(20, 40);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 471
+    params: []
+  - line: 650
+    params:
+      - name: mode
+        description: |
+          <p>GRID 或 AXES</p>
+        type: 常数
+  - line: 655
+    params:
+      - name: mode
+        description: ''
+        type: 常数
+      - name: gridSize
+        description: |
+          <p>网格的边长。</p>
+        type: 数字
+        optional: true
+      - name: gridDivisions
+        description: |
+          <p>网格的分割数。</p>
+        type: 数字
+        optional: true
+      - name: xOff
+        description: |
+          <p>沿 x 轴的偏移量。</p>
+        type: 数字
+        optional: true
+      - name: yOff
+        description: |
+          <p>沿 y 轴的偏移量。</p>
+        type: 数字
+        optional: true
+      - name: zOff
+        description: |
+          <p>沿 z 轴的偏移量。</p>
+        type: 数字
+        optional: true
+  - line: 665
+    params:
+      - name: mode
+        description: ''
+        type: 常数
+      - name: axesSize
+        description: |
+          <p>坐标轴图标标记的长度。</p>
+        type: 数字
+        optional: true
+      - name: xOff
+        description: ''
+        type: 数字
+        optional: true
+      - name: yOff
+        description: ''
+        type: 数字
+        optional: true
+      - name: zOff
+        description: ''
+        type: 数字
+        optional: true
+  - line: 674
+    params:
+      - name: gridSize
+        description: ''
+        type: 数字
+        optional: true
+      - name: gridDivisions
+        description: ''
+        type: 数字
+        optional: true
+      - name: gridXOff
+        description: |
+          <p>沿x轴偏移的网格。</p>
+        type: 数字
+        optional: true
+      - name: gridYOff
+        description: |
+          <p>沿y轴偏移的网格。</p>
+        type: 数字
+        optional: true
+      - name: gridZOff
+        description: |
+          <p>沿z轴偏移的网格。</p>
+        type: 数字
+        optional: true
+      - name: axesSize
+        description: ''
+        type: 数字
+        optional: true
+      - name: axesXOff
+        description: |
+          <p>沿x轴偏移的坐标轴图标。</p>
+        type: 数字
+        optional: true
+      - name: axesYOff
+        description: |
+          <p>沿y轴偏移的坐标轴图标。</p>
+        type: 数字
+        optional: true
+      - name: axesZOff
+        description: |
+          <p>沿z轴偏移的坐标轴图标。</p>
+        type: 数字
+        optional: true
+chainable: false
+---
+
+
+# debugMode

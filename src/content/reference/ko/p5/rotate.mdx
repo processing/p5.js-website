@@ -1,0 +1,201 @@
+---
+title: rotate
+module: 변환
+submodule: 변환
+file: src/core/transform.js
+description: >
+  <p>좌표계를 회전시킵니다.</p>
+  
+  <p>기본적으로 x축의 양의 방향은 오른쪽이고, y축의 양의 방향은 아래쪽입니다.
+  
+  <code>rotate()</code> 함수는 좌표계를 원점을 중심으로 회전하여 방향을 변경합니다.
+  
+  <code>rotate()</code>를 호출한 이후에 그려지는 모든 것은 회전한 것처럼 보입니다.</p>
+  
+  <p>첫 번째 매개변수인 <code>angle</code>은 회전량입니다.
+  
+  예를 들어, <code>rotate(1)</code>을 호출하면 시계 방향으로 1 라디안(radian), 즉 약 57˚ 만큼 좌표계가 회전합니다.
+  
+  <code>rotate()</code>는 각도 값을 현재의 <a href="/reference/p5/angleMode">angleMode()</a>를 기준으로 해석합니다.</p>
+  
+  <p>두 번째 매개변수인 <code>axis</code>는 선택적입니다.
+  
+  WebGL 모드에서 3D 회전을 지정하는 데 사용됩니다.
+  
+  <code>rotate(QUARTER_PI, myVector)</code>와 같이 <a href="/reference/p5/p5.Vector">p5.Vector</a>를 전달하면,
+  
+  좌표계는 <code>myVector</code>를 중심으로 <code>QUARTER_PI</code> 라디안만큼 회전합니다.
+  
+  <code>rotate(QUARTER_PI, [1, 0, 0])</code>와 같이 벡터 구성 요소의 배열을 전달하면,
+  
+  좌표계는 구성 요소가 <code>[1, 0, 0]</code>인 벡터를 기준으로 <code>QUARTER_PI</code> 라디안만큼 회전합니다.</p>
+  
+  <p>기본적으로 변환은 누적됩니다.
+  
+  예를 들어, <code>rotate(1)</code>을 두 번 호출하는 것은 <code>rotate(2)</code>를 한 번 호출하는 것과 같은 효과가 있습니다.
+  
+  <a href="/reference/p5/push">push()</a>와 <a href="/reference/p5/pop">pop()</a> 함수를 사용하여 서로 다른 그룹 내에서 변환을 분리할 수 있습니다.</p>
+  
+  <p>참고: 변환은 draw 루프의 시작 시점에서 재설정됩니다.
+  
+  <a href="/reference/p5/draw">draw()</a> 함수 내에서 <code>rotate(1)</code>을 호출해도 도형이 계속해서 회전하지 않습니다.</p>
+line: 289
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      rotate(QUARTER_PI);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/16 turn.
+      rotate(QUARTER_PI / 2);
+
+      // Rotate the coordinate system another 1/16 turn.
+      rotate(QUARTER_PI / 2);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      rotate(45);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A white rectangle on a gray background. The rectangle rotates slowly about the top-left corner. It disappears and reappears periodically.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      rotate(angle);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe("A cube on a gray background. The cube's front face points to the top-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn about
+      // the axis [1, 1, 0].
+      let axis = createVector(1, 1, 0);
+      rotate(QUARTER_PI, axis);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe("A cube on a gray background. The cube's front face points to the top-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn about
+      // the axis [1, 1, 0].
+      let axis = [1, 1, 0];
+      rotate(QUARTER_PI, axis);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: angle
+    description: |
+      <p>현재 각도 단위에 따라 라디안 또는 도 단위로 지정된 회전 각도.</p>
+    type: Number
+  - name: axis
+    description: |
+      <p>(3D에서) 회전축.</p>
+    type: 'p5.Vector|Number[]'
+    optional: true
+chainable: true
+---
+
+
+# rotate

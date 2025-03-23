@@ -1,0 +1,201 @@
+---
+title: shader
+module: 3D
+submodule: द्रव्यमान
+file: src/webgl/material.js
+description: >
+  <p> चित्रण के दौरान लागू करने के लिए <a href="/reference/p5/p5.Shader">p5.Shader</a> ऑब्जेक्ट को सेट करता है। </p> 
+  
+  <p> शेडर ग्राफिक्स प्रोसेसिंग यूनिट (GPU) पर चलने वाले कार्यक्रम हैं। वे एक साथ कई पिक्सेल या रिक्तियों को प्रोसेस कर सकते हैं, जिससे कई ग्राफिक्स कार्यों के लिए वे तेज होते हैं। उन्हें <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a> नामक भाषा में लिखा जाता है और वे स्केच में शेष कोड के साथ चलते हैं। <a href="/reference/p5/p5.Shader">p5.Shader</a> ऑब्जेक्ट को <a href="/reference/p5/createShader">createShader()</a> और <a href="/reference/p5/loadShader">loadShader()</a> फ़ंक्शन का उपयोग करके बनाया जा सकता है। </p> 
+  
+  <p> पैरामीटर <code>s</code> लागू करने के लिए <a href="/reference/p5/p5.Shader">p5.Shader</a> ऑब्जेक्ट है। उदाहरण के लिए, <code>shader(myShader)</code> कॉल कैनवास पर प्रत्येक पिक्सेल को प्रोसेस करने के लिए <code>myShader</code> को लागू करता है। शेडर का उपयोग किया जाएगा: </p> 
+  
+  <ul> 
+    <li>तब जब कोई पाठ्यवस्तु सक्षम है और यदि इसमें <code>sampler2D</code> यूनिफॉर्म शामिल है, तो भरण के लिए।</li> 
+    
+    <li>तब जब प्रकाश सक्षम हैं और यदि इसमें <code>aNormal</code> विशेषता शामिल है, या यदि इसमें निम्नलिखित में से कोई भी यूनिफॉर्म शामिल हैं: 
+
+    <code>uUseLighting</code>, 
+    <code>uAmbientLightCount</code>, 
+    <code>uDirectionalLightCount</code>, 
+    <code>uPointLightCount</code>, 
+    <code>uAmbientColor</code>, 
+    <code>uDirectionalDiffuseColors</code>, 
+    <code>uDirectionalSpecularColors</code>, 
+    <code>uPointLightLocation</code>, 
+    <code>uPointLightDiffuseColors</code>, 
+    <code>uPointLightSpecularColors</code>, 
+    <code>uLightingDirection</code>, या <code>uSpecular</code>।</li>
+    
+    <li>जब कोई प्रकाश या पाठ्यवस्तु नहीं होते हैं तो भरण के लिए।</li>
+    <li>यदि इसमें <code>uStrokeWeight</code> यूनिफॉर्म शामिल है, तो स्ट्रोक के लिए।</li> 
+  </ul> 
+  
+  <p> <a href="/reference/p5/p5.Shader">p5.Shader</a> ऑब्जेक्ट के फ्रैग्मेंट और वर्टेक्स शेडर का स्रोत कोड पहली बार <code>shader()</code> को पास किए जाने पर कंपाइल किया जाएगा। शेडर कंपाइलिंग के बारे में अधिक जानकारी के लिए <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/compileShader" target="_blank">MDN</a> देखें। </p> <p> <a href="/reference/p5/resetShader">resetShader()</a> कॉल करके किसी स्केच के डिफ़ॉल्ट शेडर को पुनर्स्थापित किया जा सकता है। </p> 
+  
+  <p> ध्यान दें: शेडर केवल WebGL मोड में ही उपयोग किए जा सकते हैं। </p>
+line: 571
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+
+    void main() {
+      // Set each pixel's RGBA value to yellow.
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let shaderProgram = createShader(vertSrc, fragSrc);
+
+      // Apply the p5.Shader object.
+      shader(shaderProgram);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A yellow square.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let mandelbrot;
+
+    // Load the shader and create a p5.Shader object.
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Use the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
+    }
+
+    function draw() {
+      // Set the shader uniform r to a value that oscillates between 0 and 2.
+      mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);
+
+      // Add a quad as a display surface for the shader.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    let redGreen;
+    let orangeBlue;
+    let showRedGreen = false;
+
+    // Load the shader and create two separate p5.Shader objects.
+    function preload() {
+      redGreen = loadShader('/assets/shader.vert', '/assets/shader-gradient.frag');
+      orangeBlue = loadShader('/assets/shader.vert', '/assets/shader-gradient.frag');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Initialize the redGreen shader.
+      shader(redGreen);
+
+      // Set the redGreen shader's center and background color.
+      redGreen.setUniform('colorCenter', [1.0, 0.0, 0.0]);
+      redGreen.setUniform('colorBackground', [0.0, 1.0, 0.0]);
+
+      // Initialize the orangeBlue shader.
+      shader(orangeBlue);
+
+      // Set the orangeBlue shader's center and background color.
+      orangeBlue.setUniform('colorCenter', [1.0, 0.5, 0.0]);
+      orangeBlue.setUniform('colorBackground', [0.226, 0.0, 0.615]);
+
+      describe(
+        'The scene toggles between two circular gradients when the user double-clicks. An orange and blue gradient vertically, and red and green gradient moves horizontally.'
+      );
+    }
+
+    function draw() {
+      // Update the offset values for each shader.
+      // Move orangeBlue vertically.
+      // Move redGreen horizontally.
+      orangeBlue.setUniform('offset', [0, sin(frameCount * 0.01) + 1]);
+      redGreen.setUniform('offset', [sin(frameCount * 0.01), 1]);
+
+      if (showRedGreen === true) {
+        shader(redGreen);
+      } else {
+        shader(orangeBlue);
+      }
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a quad as a drawing surface.
+      quad(-1, -1, 1, -1, 1, 1, -1, 1);
+    }
+
+    // Toggle between shaders when the user double-clicks.
+    function doubleClicked() {
+      showRedGreen = !showRedGreen;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: s
+    description: |
+      <p><a href='#/p5.Shader'>p5.Shader</a> लागू करने योग्य वस्तु।</p>
+    type: p5.Shader
+chainable: true
+---
+
+
+# shader

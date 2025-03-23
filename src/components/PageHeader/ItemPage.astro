@@ -1,0 +1,35 @@
+---
+import { Icon } from "../Icon";
+
+interface Props {
+  title: string;
+  titleAuthor?: string
+  subtitle?: string;
+  topic: {
+    name: string;
+    url: string;
+  };
+}
+
+const { title, topic, subtitle, titleAuthor } = Astro.props;
+let fullTitle = title;
+if (titleAuthor) {
+  fullTitle += '\n';
+  fullTitle += titleAuthor;
+}
+---
+
+<div class="px-5 md:px-lg pt-5xl lg:pt-3xl pb-sm">
+  <div class="pb-xs flex flex-nowrap gap-2.5">
+    <a href={topic.url}>{topic.name}</a>
+    <span class="grid place-items-center"
+      ><Icon
+        className="w-3 h-3 relative top-[1px]"
+        kind="chevron-right"
+      /></span
+    >
+    <span>{title}</span>
+  </div>
+  <h1 class="whitespace-pre-line my-sm">{fullTitle}</h1>
+  {subtitle && <p class="text-h3">{subtitle}</p>}
+</div>

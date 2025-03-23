@@ -1,0 +1,178 @@
+---
+title: ortho
+module: 3D
+submodule: कैमरा
+file: src/webgl/p5.Camera.js
+description: >
+  <p>कैमरे के लिए एक ऑर्थोग्राफिक प्रोजेक्शन सेट करता है।</p> 
+  
+  <p>ऑर्थोग्राफिक प्रोजेक्शन में, समान आकार की आकृतियाँ हमेशा समान आकार दिखाई देती हैं, चाहे वे कैमरे के पास हों या दूर।</p> 
+  
+  <p><code>myCamera.ortho()</code> कैमरे के दृश्य फ्रस्टम को एक काटे हुए पिरामिड से एक आयताकार प्रिज्म में बदलकर कैमरे की परिप्रेक्ष्य को बदलता है। फ्रस्टम वह खाली स्थान है जो कैमरे के लिए दृश्यमान है। कैमरा फ्रस्टम के सामने रखा जाता है और फ्रस्टम के भीतर की सब कुछ देखता है। <code>myCamera.ortho()</code> के छह वैकल्पिक पैरामीटर हैं जो दृश्य फ्रस्टम को परिभाषित करते हैं।</p> 
+  
+  <p>पहले चार पैरामीटर, <code>left</code>, <code>right</code>, <code>bottom</code>, और <code>top</code>, फ्रस्टम के पक्षों, तल और शीर्ष के समन्वयों को सेट करते हैं। उदाहरण के लिए, <code>myCamera.ortho(-100, 100, 200, -200)</code> कॉल करने से 200 पिक्सेल चौड़ा और 400 पिक्सेल ऊंचा एक फ्रस्टम बनता है। डिफ़ॉल्ट रूप से, ये आयाम स्केच की चौड़ाई और ऊंचाई के आधार पर सेट किए जाते हैं, जैसे <code>myCamera.ortho(-width / 2, width / 2, -height / 2, height / 2)</code>।</p> 
+  
+  <p>अंतिम दो पैरामीटर, <code>near</code> और <code>far</code>, फ्रस्टम की नजदीकी और दूरी की प्लेन को कैमरे से दूरी पर सेट करते हैं। उदाहरण के लिए, <code>myCamera.ortho(-100, 100, 200, -200, 50, 1000)</code> कॉल करने से 200 पिक्सेल चौड़ा, 400 पिक्सेल ऊंचा और कैमरे से 50 पिक्सेल दूर से शुरू होकर 1000 पिक्सेल दूर तक जाने वाला एक फ्रस्टम बनता है। डिफ़ॉल्ट रूप से, <code>near</code> को 0 और <code>far</code> को <code>max(width, height) + 800</code> पर सेट किया जाता है।</p>
+line: 2085
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Apply an orthographic projection.
+      cam2.ortho();
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A row of white cubes against a gray background. The camera toggles between a perspective and an orthographic projection when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Apply an orthographic projection.
+      cam2.ortho();
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A row of white cubes slither like a snake against a gray background. The camera toggles between a perspective and an orthographic projection when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        push();
+        // Calculate the box's coordinates.
+        let x = 10 * sin(frameCount * 0.02 + i * 0.6);
+        let z = -40 * i;
+        // Translate the origin.
+        translate(x, 0, z);
+        // Draw the box.
+        box(10);
+        pop();
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: left
+    description: >
+      <p> छिन्नक के बाएँ तल का x-निर्देशांक। डिफ़ॉल्ट <code>-width / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p> छिन्नक के दाहिने तल का x-निर्देशांक। डिफ़ॉल्ट <code>width / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>y- छिन्नक के निचले तल का समन्वय। डिफ़ॉल्ट <code>height / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p> छिन्नक के शीर्ष तल का y-निर्देशांक। डिफ़ॉल्ट <code>-height / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>z- छिन्नक के निकट तल का समन्वय। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p> छिन्नक के सुदूर तल का z-निर्देशांक। डिफ़ॉल्ट <code>max(width, height) + 800</code>।</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# ortho

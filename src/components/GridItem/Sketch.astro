@@ -1,0 +1,46 @@
+---
+import Image from "@components/Image/index.astro";
+import {
+  getSketchThumbnailSource,
+  thumbnailDimensions,
+  type OpenProcessingCurationResponse,
+} from "@/src/api/OpenProcessing";
+
+interface Props {
+  item: OpenProcessingCurationResponse[number];
+  scale?: number;
+  lazyLoad?: boolean;
+}
+
+const { item, lazyLoad, scale = 1 } = Astro.props;
+const imgSrc = await getSketchThumbnailSource(item.visualID)
+const width = Math.min(thumbnailDimensions * scale, 1500);
+const height = Math.min(
+  (typeof imgSrc === 'string' ? 1 : (imgSrc as any).height / (imgSrc as any).width) * thumbnailDimensions * scale,
+  1000,
+);
+---
+
+<a
+  class="group w-full h-full block hover:no-underline"
+  href={`/sketches/${item.visualID}/`}
+>
+  {
+    // This isn't alt text ideal but we have no way of knowing what
+    // the thumbnail looks like, and the OpenProcessing API
+    // doesn't include that information
+  }
+  <Image
+    src={imgSrc as any}
+    alt="Screenshot of sketch"
+    width={width}
+    height={height}
+    loading={lazyLoad ? "lazy" : "eager"}
+  />
+  <p
+    class="text-body mt-xs text-wrap break-words break-keep group-hover:underline"
+  >
+    {item.title}
+  </p>
+  <p class="text-body-caption mt-xxs">{item.fullname}</p>
+</a>

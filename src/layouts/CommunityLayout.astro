@@ -1,0 +1,120 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "./BaseLayout.astro";
+import LinkButton from "@components/LinkButton/index.astro";
+import GridItemSketch from "@components/GridItem/Sketch.astro";
+import GridItemLibrary from "@components/GridItem/Library.astro";
+import GridItemEvent from "@components/GridItem/Event.astro";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import { setJumpToState } from "../globals/state";
+import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
+
+interface Props {
+  sketches: OpenProcessingCurationResponse;
+  libraries: CollectionEntry<"libraries">[];
+  pastEvents: CollectionEntry<"events">[];
+}
+
+// Max number of sketches we will show on this page
+const sketchesLimit = 8;
+// Max number of libraries we will show on this page
+const librariesLimit = 8;
+// Max number of libraries we will show on this page
+const eventsLimit = 9;
+
+const sketches = Astro.props.sketches.slice(0, sketchesLimit),
+  libraries = Astro.props.libraries
+    .filter((lib) => lib.data.featured)
+    .slice(0, librariesLimit)
+    .sort(() => (Math.random() < 0.5 ? -1 : 1)),
+  events = Astro.props.pastEvents.slice(0, eventsLimit);
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+setJumpToState({
+  links: [
+    { label: t("Sketches") as string, url: "#sketches" },
+    { label: t("Libraries") as string, url: "#libraries" },
+    { label: t("Events") as string, url: "#events" },
+  ],
+});
+---
+
+<Head title={"Community"} locale={currentLocale} />
+
+<BaseLayout title="Community">
+  <section>
+    <h2>{t("Sketches")}<a id="sketches"></a></h2>
+    <ul class="content-grid-simple">
+      {
+        sketches.map((sk, i) => (
+          <li
+            class={(() => {
+              if (i === 0)
+                return "col-span-2 row-span-2 lg:col-span-3 lg:row-span-3";
+              if (i === 1) return "lg:row-span-3";
+              if (i === 2) return "col-span-2 row-span-2";
+              if (i === librariesLimit - 1) return "row-span-2 col-span-2";
+              else return "lg:row-span-2";
+            })()}
+          >
+            <GridItemSketch item={sk} lazyLoad={i >= 5} scale={
+              i === 0 || i === 2 || i === librariesLimit - 1 ? 3 : 1
+            } />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="content-grid-simple">
+      <LinkButton url="/sketches/" variant="link" class="mt-lg col-span-1 w-full"
+        >{t("All Sketches")}</LinkButton
+      >
+    </div>
+  </section>
+
+  <section>
+    <h2>{t("Libraries")}<a id="libraries"></a></h2>
+    <ul class="content-grid-simple">
+      {
+        libraries.map((lib) => (
+          <li>
+            <GridItemLibrary item={lib} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="content-grid-simple">
+      <LinkButton
+        url="/libraries/"
+        variant="link"
+        class="mt-lg col-span-1 w-full">{t("All Libraries")}</LinkButton
+      >
+    </div>
+  </section>
+
+  <section>
+    <h2>{t("Events")}<a id="events"></a></h2>
+    <ul class="content-grid-simple">
+      {
+        events.map((event, i) => (
+          <li
+            class={(() => {
+              if (i === 0 || i === 5) return "col-span-2 row-span-2";
+              if (i > 0 && i < 5) return "lg:row-span-2";
+              if (i === 8)
+                return "col-span-2 row-span-2 lg:row-span-1 lg:col-span-1";
+            })()}
+          >
+            <GridItemEvent item={event} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="content-grid-simple">
+      <LinkButton url="/events/" variant="link" class="mt-lg col-span-1 w-full"
+        >{t("All Events")}</LinkButton
+      >
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,354 @@
+---
+title: spotLight
+module: 3D
+submodule: Lights
+file: src/webgl/light.js
+description: >
+  <p>Crea una luz que brilla desde un punto en una dirección.</p>
+
+  <p>Las luces de foco son como linternas que brillan en una dirección creando un cono de luz. La forma del cono se puede controlar utilizando los parámetros de ángulo y concentración. Se pueden activar como máximo 5 luces de foco a la vez.</p>
+
+  <p>Hay ocho formas de llamar a <code>spotLight()</code> con parámetros para establecer el color, la posición y la dirección de la luz. Por ejemplo, <code>spotLight(255, 0, 0, 0, 0, 0, 1, 0, 0)</code> crea una luz roja <code>(255, 0, 0)</code> en el origen <code>(0, 0, 0)</code> que apunta hacia la derecha <code>(1, 0, 0)</code>.</p>
+
+  <p>El parámetro <code>angle</code> es opcional. Establece el radio del cono de luz. Por ejemplo, <code>spotLight(255, 0, 0, 0, 0, 0, 1, 0, 0, PI / 16)</code> crea una luz roja <code>(255, 0, 0)</code> en el origen <code>(0, 0, 0)</code> que apunta hacia la derecha <code>(1, 0, 0)</code> con un ángulo de <code>PI / 16</code> radianes. Por defecto, <code>angle</code> es <code>PI / 3</code> radianes.</p>
+
+  <p>El parámetro <code>concentration</code> también es opcional. Enfoca la luz hacia el centro del cono de luz. Por ejemplo, <code>spotLight(255, 0, 0, 0, 0, 0, 1, 0, 0, PI / 16, 50)</code> crea una luz roja <code>(255, 0, 0)</code> en el origen <code>(0, 0, 0)</code> que apunta hacia la derecha <code>(1, 0, 0)</code> con un ángulo de <code>PI / 16</code> radianes y una concentración de 50. Por defecto, <code>concentration</code> es 100.</p>
+line: 1271
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to adjust the spotlight.
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white sphere drawn on a gray background. A red spotlight starts shining when the user double-clicks.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Control the spotlight.
+      if (isLit === true) {
+        // Add a red spot light that shines into the screen.
+        // Set its angle to PI / 32 radians.
+        spotLight(255, 0, 0, 0, 0, 100, 0, 0, -1, PI / 32);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the spotlight when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to adjust the spotlight.
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white sphere drawn on a gray background. A red spotlight starts shining when the user double-clicks.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Control the spotlight.
+      if (isLit === true) {
+        // Add a red spot light that shines into the screen.
+        // Set its angle to PI / 3 radians (default).
+        // Set its concentration to 1000.
+        let c = color(255, 0, 0);
+        let position = createVector(0, 0, 100);
+        let direction = createVector(0, 0, -1);
+        spotLight(c, position, direction, PI / 3, 1000);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the spotlight when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 1271
+    params:
+      - name: v1
+        description: |
+          <p>valor rojo o de matiz en el
+                                               <a href="#/p5/colorMode">colorMode()</a> actual.</p>
+        type: Number
+      - name: v2
+        description: |
+          <p>valor verde o de saturación en el
+                                               <a href="#/p5/colorMode">colorMode()</a> actual.</p>
+        type: Number
+      - name: v3
+        description: |
+          <p>valor azul, de brillo o de luminosidad en el
+                                               <a href="#/p5/colorMode">colorMode()</a> actual.</p>
+        type: Number
+      - name: x
+        description: |
+          <p>coordenada x de la luz.</p>
+        type: Number
+      - name: 'y'
+        description: |
+          <p>coordenada y de la luz.</p>
+        type: Number
+      - name: z
+        description: |
+          <p>coordenada z de la luz.</p>
+        type: Number
+      - name: rx
+        description: |
+          <p>componente x de la dirección de la luz entre -1 y 1.</p>
+        type: Number
+      - name: ry
+        description: |
+          <p>componente y de la dirección de la luz entre -1 y 1.</p>
+        type: Number
+      - name: rz
+        description: |
+          <p>componente z de la dirección de la luz entre -1 y 1.</p>
+        type: Number
+      - name: angle
+        description: |
+          <p>ángulo del cono de luz. Por defecto es <code>PI / 3</code>.</p>
+        type: Number
+        optional: true
+      - name: concentration
+        description: |
+          <p>concentración de la luz. Por defecto es 100.</p>
+        type: Number
+        optional: true
+    chainable: 1
+  - line: 1398
+    params:
+      - name: color
+        description: |
+          <p>color como un objeto <a href="#/p5.Color">p5.Color</a>,
+                                                       un arreglo de valores de color o una cadena CSS.</p>
+        type: 'p5.Color|Number[]|String'
+      - name: position
+        description: >
+          <p>posición de la luz como un objeto <a href="#/p5.Vector">p5.Vector</a>.</p>
+        type: p5.Vector
+      - name: direction
+        description: >
+          <p>dirección de la luz como un objeto <a href="#/p5.Vector">p5.Vector</a>.</p>
+        type: p5.Vector
+      - name: angle
+        description: ''
+        type: Number
+        optional: true
+      - name: concentration
+        description: ''
+        type: Number
+        optional: true
+  - line: 1407
+    params:
+      - name: v1
+        description: ''
+        type: Number
+      - name: v2
+        description: ''
+        type: Number
+      - name: v3
+        description: ''
+        type: Number
+      - name: position
+        description: ''
+        type: p5.Vector
+      - name: direction
+        description: ''
+        type: p5.Vector
+      - name: angle
+        description: ''
+        type: Number
+        optional: true
+      - name: concentration
+        description: ''
+        type: Number
+        optional: true
+  - line: 1417
+    params:
+      - name: color
+        description: ''
+        type: 'p5.Color|Number[]|String'
+      - name: x
+        description: ''
+        type: Number
+      - name: 'y'
+        description: ''
+        type: Number
+      - name: z
+        description: ''
+        type: Number
+      - name: direction
+        description: ''
+        type: p5.Vector
+      - name: angle
+        description: ''
+        type: Number
+        optional: true
+      - name: concentration
+        description: ''
+        type: Number
+        optional: true
+  - line: 1427
+    params:
+      - name: color
+        description: ''
+        type: 'p5.Color|Number[]|String'
+      - name: position
+        description: ''
+        type: p5.Vector
+      - name: rx
+        description: ''
+        type: Number
+      - name: ry
+        description: ''
+        type: Number
+      - name: rz
+        description: ''
+        type: Number
+      - name: angle
+        description: ''
+        type: Number
+        optional: true
+      - name: concentration
+        description: ''
+        type: Number
+        optional: true
+  - line: 1437
+    params:
+      - name: v1
+        description: ''
+        type: Number
+      - name: v2
+        description: ''
+        type: Number
+      - name: v3
+        description: ''
+        type: Number
+      - name: x
+        description: ''
+        type: Number
+      - name: 'y'
+        description: ''
+        type: Number
+      - name: z
+        description: ''
+        type: Number
+      - name: direction
+        description: ''
+        type: p5.Vector
+      - name: angle
+        description: ''
+        type: Number
+        optional: true
+      - name: concentration
+        description: ''
+        type: Number
+        optional: true
+  - line: 1449
+    params:
+      - name: v1
+        description: ''
+        type: Number
+      - name: v2
+        description: ''
+        type: Number
+      - name: v3
+        description: ''
+        type: Number
+      - name: position
+        description: ''
+        type: p5.Vector
+      - name: rx
+        description: ''
+        type: Number
+      - name: ry
+        description: ''
+        type: Number
+      - name: rz
+        description: ''
+        type: Number
+      - name: angle
+        description: ''
+        type: Number
+        optional: true
+      - name: concentration
+        description: ''
+        type: Number
+        optional: true
+  - line: 1461
+    params:
+      - name: color
+        description: ''
+        type: 'p5.Color|Number[]|String'
+      - name: x
+        description: ''
+        type: Number
+      - name: 'y'
+        description: ''
+        type: Number
+      - name: z
+        description: ''
+        type: Number
+      - name: rx
+        description: ''
+        type: Number
+      - name: ry
+        description: ''
+        type: Number
+      - name: rz
+        description: ''
+        type: Number
+      - name: angle
+        description: ''
+        type: Number
+        optional: true
+      - name: concentration
+        description: ''
+        type: Number
+        optional: true
+chainable: true
+---
+
+
+# spotLight

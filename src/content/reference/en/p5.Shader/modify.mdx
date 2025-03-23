@@ -1,0 +1,139 @@
+---
+title: modify
+module: 3D
+submodule: Material
+file: src/webgl/p5.Shader.js
+description: >
+  <p>Returns a new shader, based on the original, but with custom snippets
+
+  of shader code replacing default behaviour.</p>
+
+  <p>Each shader may let you override bits of its behavior. Each bit is called
+
+  a <em>hook.</em> A hook is either for the <em>vertex</em> shader, if it
+  affects the
+
+  position of vertices, or in the <em>fragment</em> shader, if it affects the
+  pixel
+
+  color. You can inspect the different hooks available by calling
+
+  <a
+  href="/reference/p5.Shader/inspectHooks/"><code>yourShader.inspectHooks()</code></a>.
+  You can
+
+  also read the reference for the default material, normal material, color,
+  line, and point shaders to
+
+  see what hooks they have available.</p>
+
+  <p><code>modify()</code> takes one parameter, <code>hooks</code>, an object
+  with the hooks you want
+
+  to override. Each key of the <code>hooks</code> object is the name
+
+  of a hook, and the value is a string with the GLSL code for your hook.</p>
+
+  <p>If you supply functions that aren't existing hooks, they will get added at
+  the start of
+
+  the shader as helper functions so that you can use them in your hooks.</p>
+
+  <p>To add new <a href="/reference/p5.Shader/setUniform/">uniforms</a> to your
+  shader, you can pass in a <code>uniforms</code> object containing
+
+  the type and name of the uniform as the key, and a default value or function
+  returning
+
+  a default value as its value. These will be automatically set when the shader
+  is set
+
+  with <code>shader(yourShader)</code>.</p>
+
+  <p>You can also add a <code>declarations</code> key, where the value is a GLSL
+  string declaring
+
+  custom uniform variables, globals, and functions shared
+
+  between hooks. To add declarations just in a vertex or fragment shader, add
+
+  <code>vertexDeclarations</code> and <code>fragmentDeclarations</code>
+  keys.</p>
+line: 343
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseMaterialShader().modify({
+        uniforms: {
+          'float time': () => millis()
+        },
+        'vec3 getWorldPosition': `(vec3 pos) {
+          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+          return pos;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      lights();
+      noStroke();
+      fill('red');
+      sphere(50);
+    }
+    </code>
+    </div>
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseMaterialShader().modify({
+        // Manually specifying a uniform
+        declarations: 'uniform float time;',
+        'vec3 getWorldPosition': `(vec3 pos) {
+          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+          return pos;
+        }`
+      });
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      myShader.setUniform('time', millis());
+      lights();
+      noStroke();
+      fill('red');
+      sphere(50);
+    }
+    </code>
+    </div>
+class: p5.Shader
+params:
+  - name: hooks
+    description: |
+      <p>The hooks in the shader to replace.</p>
+    type: Object
+    optional: true
+return:
+  description: ''
+  type: p5.Shader
+chainable: false
+beta: true
+---
+
+
+# modify

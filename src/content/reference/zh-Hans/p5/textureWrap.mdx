@@ -1,0 +1,298 @@
+---
+title: textureWrap
+module: 3D
+submodule: 材质
+file: src/webgl/material.js
+description: >
+  <p>当形状的 uv 坐标超出纹理时，改变纹理的行为方式。</p>
+
+  <p>为了使 <a href="/reference/p5/texture">texture()</a> 正常工作，一个形状需要一种将其表面上的点映射到图像中的像素的方法。内置的形状，如 <a href="/reference/p5/rect">rect()</a> 和 <a href="/reference/p5/box">box()</a>，已经根据它们的顶点具有了这些纹理映射。使用 <a href="/reference/p5/vertex">vertex()</a> 创建的自定义形状需要将纹理映射传递为 uv 坐标。</p>
+
+  <p>每次调用 <a href="/reference/p5/vertex">vertex()</a> 都必须包括 5 个参数，如 <code>vertex(x, y, z, u, v)</code>，以将坐标 <code>(x, y, z)</code> 处的顶点映射到图像中坐标 <code>(u, v)</code> 的像素。例如，矩形图像的角落默认映射到矩形的角落：</p>
+
+  <code>
+
+  // 应用图像作为纹理。
+
+  texture(img);
+
+
+  <p>// 绘制矩形。
+
+  rect(0, 0, 30, 50);
+
+  </p></code>
+
+  <p>如果上面代码片段中的图像尺寸为 300 x 500 像素，则可以通过以下方式获得相同的结果：</p>
+
+  <code>
+
+  // 应用图像作为纹理。
+
+  texture(img);
+
+
+  <p>// 绘制矩形。
+
+  beginShape();</p>
+
+  <p>// 左上角。
+
+  // u: 0, v: 0
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// 右上角。
+
+  // u: 300, v: 0
+
+  vertex(30, 0, 0, 300, 0);</p>
+
+  <p>// 右下角。
+
+  // u: 300, v: 500
+
+  vertex(30, 50, 0, 300, 500);</p>
+
+  <p>// 左下角。
+
+  // u: 0, v: 500
+
+  vertex(0, 50, 0, 0, 500);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p><code>textureWrap()</code> 控制纹理在其 uv 坐标超出纹理时的行为。这样做可以产生有趣的视觉效果，如平铺。例如，上面的自定义形状可能具有超出图像宽度的 u 坐标：</p>
+
+  <code>
+
+  // 应用图像作为纹理。
+
+  texture(img);
+
+
+  <p>// 绘制矩形。
+
+  beginShape();
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// 右上角。
+
+  // u: 600
+
+  vertex(30, 0, 0, 600, 0);</p>
+
+  <p>// 右下角。
+
+  // u: 600
+
+  vertex(30, 50, 0, 600, 500);</p>
+
+  <p>vertex(0, 50, 0, 0, 500);
+
+  endShape();
+
+  </p></code>
+
+  <p>600 的 u 坐标大于 300 的纹理图像宽度，这就带来了一些有趣的可能性。</p>
+
+  <p>第一个参数 <code>wrapX</code> 接受三种可能的常量。如果传递 <code>CLAMP</code>，如 <code>textureWrap(CLAMP)</code> 中所示，则纹理边缘的像素将延伸到形状的边缘。如果传递 <code>REPEAT</code>，如 <code>textureWrap(REPEAT)</code> 中所示，则纹理将重复平铺直到达到形状的边缘。如果传递 <code>MIRROR</code>，如 <code>textureWrap(MIRROR)</code> 中所示，则纹理将重复平铺直到达到形状的边缘，同时在平铺之间翻转其方向。默认情况下，纹理使用 <code>CLAMP</code> 模式。</p>
+
+  <p>第二个参数 <code>wrapY</code> 是可选的。它接受相同的三个常量：<code>CLAMP</code>、<code>REPEAT</code> 和 <code>MIRROR</code>。如果传递了其中一个常量，如 <code>textureWRAP(MIRROR, REPEAT)</code>，那么纹理将在水平方向上 <code>MIRROR</code>，在垂直方向上 <code>REPEAT</code>。默认情况下，<code>wrapY</code> 将被设置为与 <code>wrapX</code> 相同的值。</p>
+
+  <p>注意：<code>textureWrap()</code> 只能在 WebGL 模式下使用。</p>
+line: 1227
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'An image of a landscape occupies the top-left corner of a square. Its edge colors smear to cover the other thre quarters of the square.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // 设置纹理模式。
+      textureMode(NORMAL);
+
+      // 设置纹理包裹方式。
+      // 注意：CLAMP 是默认模式。
+      textureWrap(CLAMP);
+
+      // 应用图像作为纹理。
+      texture(img);
+
+      // 设定形状样式。
+      noStroke();
+
+      // 绘制形状。
+      // 使用大于 1 的 uv 坐标。
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('Four identical images of a landscape arranged in a grid.');
+    }
+
+    function draw() {
+      background(0);
+
+      // 设置纹理模式。
+      textureMode(NORMAL);
+
+      // 设置纹理包裹方式。
+      textureWrap(REPEAT);
+
+      // 应用图像作为纹理。
+      texture(img);
+
+      // 设定形状样式。
+      noStroke();
+
+      // 绘制形状。
+      // 使用大于 1 的 uv 坐标。
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'Four identical images of a landscape arranged in a grid. The images are reflected horizontally and vertically, creating a kaleidoscope effect.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // 设置纹理模式。
+      textureMode(NORMAL);
+
+      // 设置纹理包裹方式。
+      textureWrap(MIRROR);
+
+      // 应用图像作为纹理。
+      texture(img);
+
+      // 设定形状样式。
+      noStroke();
+
+      // 绘制形状。
+      // 使用大于 1 的 uv 坐标。
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'Four identical images of a landscape arranged in a grid. The top row and bottom row are reflections of each other.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // 设置纹理模式。
+      textureMode(NORMAL);
+
+      // 设置纹理包裹方式。
+      textureWrap(REPEAT, MIRROR);
+
+      // 应用图像作为纹理。
+      texture(img);
+
+      // 设定形状样式。
+      noStroke();
+
+      // 绘制形状。
+      // 使用大于 1 的 uv 坐标。
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: wrapX
+    description: |
+      <p>可以是 CLAMP、REPEAT 或 MIRROR</p>
+    type: 常数
+  - name: wrapY
+    description: |
+      <p>可以是 CLAMP、REPEAT 或 MIRROR</p>
+    type: 常数
+    optional: true
+chainable: false
+---
+
+
+# textureWrap

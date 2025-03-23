@@ -1,0 +1,264 @@
+---
+title: createShader
+module: 3D
+submodule: 재질
+file: src/webgl/material.js
+description: >
+  <p>새로운 <a href="/reference/p5/p5.Shader">p5.Shader</a> 객체를 생성합니다.</p>
+
+  <p>셰이더는 그래픽 처리 장치(GPU)에서 실행되는 프로그램입니다. 동시에 많은 픽셀을 처리할 수 있어, 빠른 그래픽 작업에 유용합니다. 셰이더는 <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders" target="_blank">GLSL</a>이라는 언어로 작성되고 스케치의 나머지 코드와 함께 실행됩니다.</p>
+
+  <p><a href="/reference/p5/p5.Shader">p5.Shader</a> 객체가 생성되면 
+  <a href="/reference/p5/shader">shader()</a> 함수와 함께 사용될 수 있습니다. 
+  
+  예를 들어, <code>shader(myShader)</code>처럼 사용됩니다. 셰이더 프로그램은 정점(vertex) 셰이더와 프래그먼트(fragment) 셰이더 두 부분으로 구성됩니다. 정점 셰이더는 3D 기하학이 화면에 그려지는 위치에 영향을 주고, 프래그먼트 셰이더는 색상에 영향을 줍니다. 
+  
+  첫 번째 매개변수인 <code>vertSrc</code>는 정점 셰이더를 설정합니다. 이는 GLSL로 작성된 정점 셰이더 프로그램을 포함하는 문자열입니다.
+  
+  두 번째 매개변수인 <code>fragSrc</code>는 프래그먼트 셰이더를 설정합니다. 이는 GLSL로 작성된 프래그먼트 세이더 프로그램을 포함하는 문자열입니다. </p>
+
+  <p>참고: 2D 모드에서는 필터 셰이더만 사용할 수 있습니다. 모든 셰이더는 WebGL 모드에서 사용할 수 있습니다.</p>
+line: 173
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+
+    void main() {
+      // Set each pixel's RGBA value to yellow.
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let shaderProgram = createShader(vertSrc, fragSrc);
+
+      // Compile and apply the p5.Shader object.
+      shader(shaderProgram);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A yellow square.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+    uniform vec2 p;
+    uniform float r;
+    const int numIterations = 500;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vec2 c = p + gl_FragCoord.xy * r;
+      vec2 z = c;
+      float n = 0.0;
+
+      for (int i = numIterations; i > 0; i--) {
+        if (z.x * z.x + z.y * z.y > 4.0) {
+          n = float(i) / float(numIterations);
+          break;
+        }
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+      }
+
+      gl_FragColor = vec4(
+        0.5 - cos(n * 17.0) / 2.0,
+        0.5 - cos(n * 13.0) / 2.0,
+        0.5 - cos(n * 23.0) / 2.0,
+        1.0
+      );
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let mandelbrot = createShader(vertSrc, fragSrc);
+
+      // Compile and apply the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      // p is the center point of the Mandelbrot image.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      // Set the shader uniform r to 0.005.
+      // r is the size of the image in Mandelbrot-space.
+      mandelbrot.setUniform('r', 0.005);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A black fractal image on a magenta background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+    uniform vec2 p;
+    uniform float r;
+    const int numIterations = 500;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vec2 c = p + gl_FragCoord.xy * r;
+      vec2 z = c;
+      float n = 0.0;
+
+      for (int i = numIterations; i > 0; i--) {
+        if (z.x * z.x + z.y * z.y > 4.0) {
+          n = float(i) / float(numIterations);
+          break;
+        }
+
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+      }
+
+      gl_FragColor = vec4(
+        0.5 - cos(n * 17.0) / 2.0,
+        0.5 - cos(n * 13.0) / 2.0,
+        0.5 - cos(n * 23.0) / 2.0,
+        1.0
+      );
+    }
+    `;
+
+    let mandelbrot;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      mandelbrot = createShader(vertSrc, fragSrc);
+
+      // Apply the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      // p is the center point of the Mandelbrot image.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
+    }
+
+    function draw() {
+      // Set the shader uniform r to a value that oscillates
+      // between 0 and 0.005.
+      // r is the size of the image in Mandelbrot-space.
+      let radius = 0.005 * (sin(frameCount * 0.01) + 1);
+      mandelbrot.setUniform('r', radius);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: vertSrc
+    description: |
+      <p>정점 셰이더의 소스 코드</p>
+    type: String
+  - name: fragSrc
+    description: |
+      <p>프래그먼트 셰이더의 소스 코드</p>
+    type: String
+return:
+  description: |-
+    정점 셰이더와 프래그먼트 셰이더로부터 생성된 새로운 셰이더 객체
+  type: p5.Shader
+chainable: false
+---
+
+
+# createShader

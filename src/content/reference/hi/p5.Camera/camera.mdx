@@ -1,0 +1,193 @@
+---
+title: camera
+module: 3D
+submodule: कैमरा
+file: src/webgl/p5.Camera.js
+description: >
+  <p>कैमरे की स्थिति और अभिविन्यास को सेट करता है।</p> 
+  
+  <p><code>myCamera.camera()</code> वस्तुओं को विभिन्न कोणों से देखने की अनुमति देता है। इसके नौ पैरामीटर हैं जो सभी वैकल्पिक हैं। पहले तीन पैरामीटर, <code>x</code>, <code>y</code>, और <code>z</code>, कैमरे की स्थिति के निर्देशांक "विश्व" स्थान में हैं। उदाहरण के लिए, <code>myCamera.camera(0, 0, 0)</code> को बुलाना कैमरे को उत्पत्ति <code>(0, 0, 0)</code> पर रखता है। डिफ़ॉल्ट रूप से, कैमरा <code>(0, 0, 800)</code> पर रखा जाता है। अगले तीन पैरामीटर, <code>centerX</code>, <code>centerY</code>, और <code>centerZ</code> "विश्व" स्थान में उस बिंदु के निर्देशांक हैं जहां कैमरा सामना करता है। उदाहरण के लिए, <code>myCamera.camera(0, 0, 0, 10, 20, 30)</code> को बुलाना कैमरे को उत्पत्ति <code>(0, 0, 0)</code> पर रखता है और इसे <code>(10, 20, 30)</code> की ओर इशारा करता है। डिफ़ॉल्ट रूप से, कैमरा उत्पत्ति <code>(0, 0, 0)</code> की ओर इशारा करता है। अंतिम तीन पैरामीटर, <code>upX</code>, <code>upY</code>, और <code>upZ</code> "स्थानीय" स्थान में "ऊपर" वेक्टर के घटक हैं। "ऊपर" वेक्टर कैमरे के y-अक्ष को अभिविन्यासित करता है। उदाहरण के लिए, <code>myCamera.camera(0, 0, 0, 10, 20, 30, 0, -1, 0)</code> को बुलाना कैमरे को उत्पत्ति <code>(0, 0, 0)</code> पर रखता है, इसे <code>(10, 20, 30)</code> की ओर इशारा करता है, और "ऊपर" वेक्टर को <code>(0, -1, 0)</code> सेट करता है जैसे कि इसे उल्टा पकड़ा गया हो। डिफ़ॉल्ट रूप से, "ऊपर" वेक्टर <code>(0, 1, 0)</code> है।</p>
+line: 2695
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right: (1200, -600, 100)
+      // Point it at the row of boxes: (-10, -10, 400)
+      // Set its "up" vector to the default: (0, 1, 0)
+      cam2.camera(1200, -600, 100, -10, -10, 400, 0, 1, 0);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe(
+        'A row of white cubes against a gray background. The camera toggles between a frontal and an aerial view when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -30);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the right: (1200, 0, 100)
+      // Point it at the row of boxes: (-10, -10, 400)
+      // Set its "up" vector to the default: (0, 1, 0)
+      cam2.camera(1200, 0, 100, -10, -10, 400, 0, 1, 0);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe(
+        'A row of white cubes against a gray background. The camera toggles between a static frontal view and an orbiting view when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Update cam2's position.
+      let x = 1200 * cos(frameCount * 0.01);
+      let y = -600 * sin(frameCount * 0.01);
+      cam2.camera(x, y, 100, -10, -10, 400, 0, 1, 0);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -30);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: x
+    description: |
+      <p>कैमरे का x-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: 'y'
+    description: |
+      <p>कैमरे का y-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: z
+    description: |
+      <p>कैमरे का z-निर्देशांक। डिफ़ॉल्ट 800.</p>
+    type: Number
+    optional: true
+  - name: centerX
+    description: |
+      <p>कैमरे के सम्मुख बिंदु का x-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: centerY
+    description: |
+      <p>कैमरे के सम्मुख बिंदु का y-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: centerZ
+    description: |
+      <p>कैमरे के सम्मुख बिंदु का z-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: upX
+    description: |
+      <p>कैमरे के "अप" वेक्टर का x-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: upY
+    description: |
+      <p>कैमरे के "अप" वेक्टर का y-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: upZ
+    description: |
+     <p>कैमरे के "अप" वेक्टर का z-निर्देशांक। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# camera

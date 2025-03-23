@@ -1,0 +1,137 @@
+---
+import Footer from "@components/Footer/index.astro";
+import Nav from "@components/Nav/index.astro";
+import Settings from "@components/Settings/index.astro";
+import RootPageHeader from "@/src/components/PageHeader/RootPage.astro";
+import ItemPageHeader from "@/src/components/PageHeader/ItemPage.astro";
+import HomePageHeader from "@/src/components/PageHeader/HomePage.astro";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
+import "@styles/base.scss";
+import type { CollectionEntry } from "astro:content";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
+
+interface Props {
+  title: string;
+  titleAuthor?: string;
+  titleClass?: string;
+  subtitle?: string | null;
+  className?: string;
+  variant?: "root" | "item" | "search" | "homepage";
+  topic?: PageTopic;
+  mainContentParentClass?: string;
+  /* Only needed for the homepage */
+  homepageConfig?: CollectionEntry<"homepage">;
+}
+
+const {
+  title,
+  titleAuthor,
+  titleClass = title,
+  subtitle,
+  className = "",
+  variant = "root",
+  mainContentParentClass = "mx-5 md:mx-lg mt-md",
+  homepageConfig,
+} = Astro.props;
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const slug = title.toLowerCase().split(/\s+|\./).join('-');
+const pages = await getCollectionInLocaleWithFallbacks("pages", currentLocale);
+const headerPage = pages.find((page) => removeLocalePrefix(page.slug).slice(1) === slug);
+let HeaderContent: any = undefined;
+if (headerPage) {
+  const { Content } = await headerPage.render();
+  HeaderContent = Content;
+}
+
+const t = await getUiTranslator(currentLocale);
+const localizedTitle = t(title);
+const localizedSubtitle = subtitle
+  ? t(subtitle)
+  : subtitle === undefined
+    ? t("briefPageDescriptions", title)
+    : undefined;
+const topic = getTopicInfo(Astro.props.topic);
+const splitPathname = Astro.url.pathname.split("/");
+const fallbackTopic = splitPathname[splitPathname.length - 2];
+const headerTopic = topic
+  ? { name: t(topic.name) as string, url: topic.url }
+  : { name: t(capitalize(fallbackTopic)) as string, url: `/${fallbackTopic}` };
+---
+
+<html
+  class={`${titleClass.toLowerCase()} ${className} scroll-smooth`}
+  lang={currentLocale}
+>
+  <head>
+    <script is:inline>
+      // Get any theme settings and apply before load
+      const settings = [
+        "dark-theme",
+        "monochrome-theme",
+        "show-alt-text",
+        "reduced-motion",
+      ];
+      const storedSettings = settings.filter(
+        (setting) => localStorage.getItem(setting) === "true"
+      );
+      if (storedSettings.length === 0) {
+        storedSettings.push("light-theme");
+      }
+      const htmlElement = document.documentElement;
+      htmlElement.className = `${storedSettings.join(" ")} ${htmlElement.className}`;
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://foundation-donate-banner.netlify.app/static/css/main.css"
+    />
+    <script src="https://foundation-donate-banner.netlify.app/static/js/main.js"
+    ></script>
+  </head>
+  <body>
+    <div class="top-layout-grid">
+      <Nav />
+      <Settings hideSearch={variant === "search"} />
+      <header class={homepageConfig && "h-[100vh] md:min-h-[calc(378px+50vh)]"}>
+        {
+          variant === "root" ? (
+            <RootPageHeader
+              title={localizedTitle}
+              subtitle={localizedSubtitle}
+            />
+          ) : variant === "item" ? (
+            <ItemPageHeader
+              title={localizedTitle as string}
+              titleAuthor={titleAuthor}
+              subtitle={localizedSubtitle as string}
+              topic={headerTopic}
+            />
+          ) : (
+            variant === "homepage" && (
+              <HomePageHeader config={homepageConfig!} />
+            )
+          )
+        }
+      </header>
+      <main id="main-content" class="relative">
+        <div id="processing-banner" style="margin-left: var(--nav-offset-x);">
+        </div>
+        {
+          HeaderContent && (
+            <div class="px-5 md:px-lg pt-sm pb-lg">
+              <div class="rendered-markdown">
+                <HeaderContent />
+              </div>
+            </div>
+        )}
+        <div class={mainContentParentClass}>
+          <slot />
+        </div>
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

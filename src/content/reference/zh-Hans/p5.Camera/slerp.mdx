@@ -1,0 +1,87 @@
+---
+title: slerp
+module: 3D
+submodule: 相机
+file: src/webgl/p5.Camera.js
+description: >
+  <p>将相机的位置和方向设置为两个其他相机之间的中间值。</p>
+
+  <p><code>myCamera.slerp()</code> 使用球形线性插值来计算介于两个其他相机之间的位置和方向。这对于平滑地过渡两个视角很有帮助。</p>
+
+  <p>前两个参数 <code>cam0</code> 和 <code>cam1</code> 是应该用于设置当前相机的 <code>p5.Camera</code> 对象。</p>
+
+  <p>第三个参数 <code>amt</code> 是在 <code>cam0</code> 和 <code>cam1</code> 之间进行插值的数量。0.0 保持相机的位置和方向等于 <code>cam0</code>，0.5 将它们设置为 <code>cam0</code> 和 <code>cam1</code> 之间的中间值，1.0 将位置和方向设置为等于 <code>cam1</code>。</p>
+
+  <p>例如，调用 <code>myCamera.slerp(cam0, cam1, 0.1)</code> 将 cam 的位置和方向设置得非常接近于 <code>cam0</code>。调用 <code>myCamera.slerp(cam0, cam1, 0.9)</code> 将 cam 的位置和方向设置得非常接近于 <code>cam1</code>。</p>
+  
+  <p>注意：所有相机必须使用相同的投影模式。</p>
+line: 3252
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let cam;
+    let cam0;
+    let cam1;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the main camera.
+      // Keep its default settings.
+      cam = createCamera();
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam0 = createCamera();
+
+      // Create the second camera.
+      cam1 = createCamera();
+
+      // Place it at the top-right.
+      cam1.setPosition(400, -400, 800);
+
+      // Point it at the origin.
+      cam1.lookAt(0, 0, 0);
+
+      // Set the current camera to cam.
+      setCamera(cam);
+
+      describe('A white cube drawn against a gray background. The camera slowly oscillates between a frontal view and an aerial view.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the amount to interpolate between cam0 and cam1.
+      let amt = 0.5 * sin(frameCount * 0.01) + 0.5;
+
+      // Update the main camera's position and orientation.
+      cam.slerp(cam0, cam1, amt);
+
+      box();
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: cam0
+    description: |
+      <p>第一个相机.</p>
+    type: p5.Camera
+  - name: cam1
+    description: |
+      <p>第二个相机</p>
+    type: p5.Camera
+  - name: amt
+    description: >
+      <p>介于 0.0（<code>cam0</code>）和 1.0（<code>cam1</code>）之间的插值量。</p>
+    type: 数字
+chainable: false
+---
+
+
+# slerp

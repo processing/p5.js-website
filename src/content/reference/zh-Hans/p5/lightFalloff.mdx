@@ -1,0 +1,81 @@
+---
+title: lightFalloff
+module: 3D
+submodule: 光源
+file: src/webgl/light.js
+description: >
+  <p>设置 <a href="/reference/p5/pointLight">pointLight()</a> 和 <a href="/reference/p5/spotLight">spotLight()</a> 的衰减率。</p>
+
+  <p>光的衰减描述了其在距离上的光束强度。例如，一个灯笼具有缓慢的衰减，手电筒具有中等的衰减，激光笔具有迅速的衰减。</p>
+
+  <p><code>lightFalloff()</code> 有三个参数， <code>constant</code>， <code>linear</code> 和 <code>quadratic</code>。它们是用于计算距离 <code>d<code> 的衰减的数字，如下所示：</p>
+
+  <p><code>falloff = 1 / (constant + d * linear + (d * d) * quadratic)</code></p>
+
+  <p>注意： <code>constant</code>, <code>linear</code> 和 <code>quadratic</code> 应始终设置为大于 0 的值。</p>
+
+line: 1160
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // 单击并拖动鼠标以从不同角度查看场景。
+    // 双击以更改衰减率。
+
+    let useFalloff = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn against a gray background. The intensity of the light changes when the user double-clicks.');
+    }
+
+    function draw() {
+      background(50);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 设置光的衰减。
+      if (useFalloff === true) {
+        lightFalloff(2, 0, 0);
+      }
+
+      // 从正面添加一个白色点光源。
+      pointLight(255, 255, 255, 0, 0, 100);
+
+      // 设置球体样式。
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+
+    // 当用户双击时更改衰减值。
+    function doubleClicked() {
+      useFalloff = true;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: constant
+    description: |
+      <p>用于计算衰减的常数值。</p>
+    type: 数字
+  - name: linear
+    description: |
+      <p>用于计算衰减的线性值。</p>
+    type: 数字
+  - name: quadratic
+    description: |
+      <p>用于计算衰减的二次值。</p>
+    type: 数字
+chainable: true
+---
+
+
+# lightFalloff

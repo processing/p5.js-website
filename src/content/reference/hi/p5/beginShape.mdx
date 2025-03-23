@@ -1,0 +1,409 @@
+---
+title: beginShape
+module: आकार
+submodule: शीर्ष
+file: src/core/shape/vertex.js
+description: >
+  <p>कस्टम आकार में शीर्ष जोड़ना प्रारंभ करता है।</p>
+
+  <p><code>beginShape()</code> और <a href="/reference/p5/endShape">endShape()</a> फ़ंक्शन 2D या 3D में कस्टम आकार बनाने की अनुमति देते हैं।
+
+  <code>beginShape()</code> एक कस्टम आकार में शीर्ष जोड़ना शुरू करता है और <a href="/reference/p5/endShape">endShape()</a> उन्हें जोड़ना बंद कर देता है।</p>
+
+  <p>पैरामीटर, <code>kind</code>, बनाने के लिए आकार का प्रकार निर्धारित करता है।
+
+  डिफ़ॉल्ट रूप से, कोई भी अनियमित बहुभुज बनाया जा सकता है।
+
+  प्रकार के लिए उपलब्ध मोड हैं:</p>
+
+  <ul>
+
+  <li><code>POINTS</code> बिंदुओं की एक श्रृंखला बनाने के लिए।</li>
+
+  <li><code>LINES</code> असंबद्ध रेखा खंडों की एक श्रृंखला बनाने के लिए।</li>
+
+  <li><code>TRIANGLES</code> अलग-अलग त्रिभुजों की एक श्रृंखला बनाने के लिए।</li>
+
+  <li><code>TRIANGLE_FAN</code> पंखे की तरह पहले शीर्ष को साझा करने वाले जुड़े हुए त्रिकोणों की एक श्रृंखला बनाने के लिए।</li>
+
+  <li><code>TRIANGLE_STRIP</code> स्ट्रिप फैशन में जुड़े हुए त्रिकोणों की एक श्रृंखला बनाने के लिए।</li>
+
+  <li><code>QUADS</code> अलग-अलग चतुर्भुजों की एक श्रृंखला बनाने के लिए।</li>
+
+  <li><code>QUAD_STRIP</code> अगला क्वाड बनाने के लिए आसन्न किनारों का उपयोग करके क्वाड स्ट्रिप बनाने के लिए।</li>
+
+  <li><code>TESS</code> स्पष्ट टेसेलेशन (केवल WebGL) द्वारा एक भरने वाला वक्र बनाने के लिए।</li>
+
+  </ul>
+
+  <p><code>beginShape()</code> को कॉल करने के बाद, <a href='/reference/p5/vertex'>vertex()</a>, <a href='/reference/p5/bezierVertex">bezierVertex()</a>, <a href="/reference/p5/quadraticVertex">quadraticVertex()</a>, और/या <a href="/reference/p5/curveVertex" >curveVertex()</a> को कॉल करके आकृतियाँ बनाई जा सकती हैं।
+
+  <a href="/reference/p5/endShape">endShape()</a> को कॉल करने से आकृति में शीर्ष जोड़ना बंद हो जाएगा।
+
+  प्रत्येक आकृति को वर्तमान स्ट्रोक रंग के साथ रेखांकित किया जाएगा और वर्तमान भरण रंग से भरा जाएगा।</p>
+
+  <p>रूपांतरण जैसे <a href='/reference/p5/translate'>translate()</a>, <a href='/reference/p5/rotate'>rotate()</a>, और <a href='/reference/p5/scale'>scale()</a> <code>beginShape()</code> और <a href='/reference/p5/endShape'>endShape()</a> के बीच काम नहीं करता है।
+
+  अन्य आकृतियों का उपयोग <code>beginShape()</code> और <a href="/reference/p5/endShape">endShape()</a> के बीच करना भी संभव नहीं है, जैसे <a href='/reference/p5/ellipse'>ellipse()</a> या <a href='/reference/p5/rect'>rect()</a>।</p>
+line: 129
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add vertices.
+      vertex(30, 20);
+      vertex(85, 20);
+      vertex(85, 75);
+      vertex(30, 75);
+
+      // Stop drawing the shape.
+      endShape(CLOSE);
+
+      describe('A white square on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Only draw the vertices (points).
+      beginShape(POINTS);
+
+      // Add vertices.
+      vertex(30, 20);
+      vertex(85, 20);
+      vertex(85, 75);
+      vertex(30, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Four black dots that form a square are drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Only draw lines between alternating pairs of vertices.
+      beginShape(LINES);
+
+      // Add vertices.
+      vertex(30, 20);
+      vertex(85, 20);
+      vertex(85, 75);
+      vertex(30, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Two horizontal black lines on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shape.
+      noFill();
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add vertices.
+      vertex(30, 20);
+      vertex(85, 20);
+      vertex(85, 75);
+      vertex(30, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Three black lines form a sideways U shape on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shape.
+      noFill();
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add vertices.
+      vertex(30, 20);
+      vertex(85, 20);
+      vertex(85, 75);
+      vertex(30, 75);
+
+      // Stop drawing the shape.
+      // Connect the first and last vertices.
+      endShape(CLOSE);
+
+      describe('A black outline of a square drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Draw a series of triangles.
+      beginShape(TRIANGLES);
+
+      // Left triangle.
+      vertex(30, 75);
+      vertex(40, 20);
+      vertex(50, 75);
+
+      // Right triangle.
+      vertex(60, 20);
+      vertex(70, 75);
+      vertex(80, 20);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Two white triangles drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Draw a series of triangles.
+      beginShape(TRIANGLE_STRIP);
+
+      // Add vertices.
+      vertex(30, 75);
+      vertex(40, 20);
+      vertex(50, 75);
+      vertex(60, 20);
+      vertex(70, 75);
+      vertex(80, 20);
+      vertex(90, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Five white triangles that are interleaved drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Draw a series of triangles that share their first vertex.
+      beginShape(TRIANGLE_FAN);
+
+      // Add vertices.
+      vertex(57.5, 50);
+      vertex(57.5, 15);
+      vertex(92, 50);
+      vertex(57.5, 85);
+      vertex(22, 50);
+      vertex(57.5, 15);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Four white triangles form a square are drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Draw a series of quadrilaterals.
+      beginShape(QUADS);
+
+      // Left rectangle.
+      vertex(30, 20);
+      vertex(30, 75);
+      vertex(50, 75);
+      vertex(50, 20);
+
+      // Right rectangle.
+      vertex(65, 20);
+      vertex(65, 75);
+      vertex(85, 75);
+      vertex(85, 20);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Two white rectangles drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Draw a series of quadrilaterals.
+      beginShape(QUAD_STRIP);
+
+      // Add vertices.
+      vertex(30, 20);
+      vertex(30, 75);
+      vertex(50, 20);
+      vertex(50, 75);
+      vertex(65, 20);
+      vertex(65, 75);
+      vertex(85, 20);
+      vertex(85, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('Three white rectangles that share edges are drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Start drawing the shape.
+      // Draw a series of quadrilaterals.
+      beginShape(TESS);
+
+      // Add the vertices.
+      vertex(-30, -30, 0);
+      vertex(30, -30, 0);
+      vertex(30, -10, 0);
+      vertex(-10, -10, 0);
+      vertex(-10, 10, 0);
+      vertex(30, 10, 0);
+      vertex(30, 30, 0);
+      vertex(-30, 30, 0);
+
+      // Stop drawing the shape.
+      // Connect the first and last vertices.
+      endShape(CLOSE);
+
+      describe('A blocky C shape drawn in white on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag with the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A blocky C shape drawn in red, blue, and green on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Start drawing the shape.
+      // Draw a series of quadrilaterals.
+      beginShape(TESS);
+
+      // Add the vertices.
+      fill('red');
+      stroke('red');
+      vertex(-30, -30, 0);
+      vertex(30, -30, 0);
+      vertex(30, -10, 0);
+      fill('green');
+      stroke('green');
+      vertex(-10, -10, 0);
+      vertex(-10, 10, 0);
+      vertex(30, 10, 0);
+      fill('blue');
+      stroke('blue');
+      vertex(30, 30, 0);
+      vertex(-30, 30, 0);
+
+      // Stop drawing the shape.
+      // Connect the first and last vertices.
+      endShape(CLOSE);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: kind
+    description: |
+      <p>या तो POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, QUAD_STRIP या TESS</p>
+    type: कांस्टेंट
+    optional: true
+chainable: true
+---
+
+# beginShape

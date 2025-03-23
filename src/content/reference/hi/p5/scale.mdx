@@ -1,0 +1,180 @@
+---
+title: scale
+module: Transform
+submodule: Transform
+file: src/core/transform.js
+description: >
+  <p>निर्देशांक प्रणाली को मापता है।</p>
+
+  <p>डिफ़ॉल्ट रूप से, आकृतियाँ उनके मूल पैमाने पर खींची जाती हैं। 50 पिक्सेल चौड़ा एक आयत 100 पिक्सेल चौड़े कैनवास की आधी चौड़ाई घेरता हुआ प्रतीत होता है। <code>scale()</code> फ़ंक्शन निर्देशांक प्रणाली को छोटा या फैला सकता है ताकि आकृतियाँ विभिन्न आकारों में दिखाई दें। <code>scale()</code> को पैरामीटर के साथ कॉल करने के दो तरीके हैं जो स्केल फैक्टर सेट करते हैं।</p>
+
+   <p>कॉल करने का पहला तरीका <code>scale()</code> स्केलिंग की मात्रा निर्धारित करने के लिए संख्याओं का उपयोग करता है। पहला पैरामीटर, <code>s</code>, प्रत्येक अक्ष को स्केल करने के लिए मात्रा निर्धारित करता है। उदाहरण के लिए, <code>scale(2)</code> को कॉल करने से x-, y- और z-अक्ष 2 के कारक तक फैल जाते हैं। अगले दो पैरामीटर, <code>y</code> और <code> z</code>, वैकल्पिक हैं। वे y- और z-अक्ष को स्केल करने के लिए राशि निर्धारित करते हैं। उदाहरण के लिए, <code>scale(2, 0.5, 1)</code> को कॉल करने से x-अक्ष 2 के कारक से फैल जाता है, y-अक्ष 0.5 के कारक से सिकुड़ जाता है, और z-अक्ष अपरिवर्तित रह जाता है।</p>
+
+   <p><code>scale()</code> को कॉल करने का दूसरा तरीका <a का उपयोग करता है
+   स्केल कारकों को सेट करने के लिए href='/reference/p5/p5.Vector'>p5.Vector</a> ऑब्जेक्ट। उदाहरण के लिए, <code>scale(myVector)</code> को कॉल करने पर राशि निर्धारित करने के लिए <code>myVector</code> के x-, y- और z-घटकों का उपयोग किया जाता है।
+   x-, y- और z-अक्ष के साथ स्केलिंग का। ऐसा करना कॉल करने जैसा ही है
+   <code>स्केल(myVector.x, myVector.y, myVector.z)</code>.</p>
+
+   <p>डिफ़ॉल्ट रूप से, परिवर्तन एकत्रित होते हैं। उदाहरण के लिए, कॉल करना
+   <code>scale(1)</code> को दो बार कॉल करने का वही प्रभाव होता है जो <code>scale(2)</code> को एक बार कॉल करने पर होता है। <a href='/reference/p5/push'>push()</a> और <a href='/reference/p5/pop'>pop()</a> फ़ंक्शंस का उपयोग भीतर परिवर्तनों को अलग करने के लिए किया जा सकता है विशिष्ट ड्राइंग समूह।</p>
+
+   <p>ध्यान दें: ट्रांसफ़ॉर्मेशन ड्रॉ लूप की शुरुआत में रीसेट किए जाते हैं। <a href="/reference/p5/draw">draw()</a> फ़ंक्शन के अंदर <code>scale(2)</code> को कॉल करने से आकृतियाँ लगातार नहीं बढ़ेंगी।</p>
+line: 879
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'Two white squares on a gray background. The larger square appears at the top-center. The smaller square appears at the top-left.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by a factor of 0.5.
+      scale(0.5);
+
+      // Draw a square at (30, 20).
+      // It appears at (15, 10) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A rectangle and a square drawn in white on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis.
+      scale(0.5, 1.3);
+
+      // Draw a square at (30, 20).
+      // It appears as a rectangle at (15, 26) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A rectangle and a square drawn in white on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Create a p5.Vector object.
+      let v = createVector(0.5, 1.3);
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis.
+      scale(v);
+
+      // Draw a square at (30, 20).
+      // It appears as a rectangle at (15, 26) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A red box and a blue box drawn on a gray background. The red box appears embedded in the blue box.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the spheres.
+      noStroke();
+
+      // Draw the red sphere.
+      fill('red');
+      box();
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis and
+      // 2 along the z-axis.
+      scale(0.5, 1.3, 2);
+
+      // Draw the blue sphere.
+      fill('blue');
+      box();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 879
+    params:
+      - name: s
+        description: |
+          <p>धनात्मक x-अक्ष के अनुदिश पैमाने की राशि।</p>
+        type: 'संख्या|पी5.वेक्टर|संख्या[]'
+      - name: 'y'
+        description: >
+          <p>धनात्मक y-अक्ष के अनुदिश पैमाने की राशि। के लिए डिफ़ॉल्ट
+           <code>एस</code>.</पी>
+        type: संख्या
+        optional: true
+      - name: z
+        description: >
+          <p>धनात्मक z-अक्ष के साथ पैमाने की राशि। डिफ़ॉल्ट <code>y</code>.</p>
+        type: संख्या
+        optional: true
+    chainable: 1
+  - line: 1040
+    params:
+      - name: scales
+        description: |
+          <p>वेक्टर जिसके घटकों का उपयोग स्केल करने के लिए किया जाना चाहिए।</p>
+        type: 'पी5.वेक्टर|संख्या[]'
+    chainable: 1
+chainable: true
+---
+
+
+# scale

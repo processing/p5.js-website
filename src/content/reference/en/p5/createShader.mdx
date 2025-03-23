@@ -1,0 +1,435 @@
+---
+title: createShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Creates a new <a href="/reference/p5/p5.Shader">p5.Shader</a> object.</p>
+
+  <p>Shaders are programs that run on the graphics processing unit (GPU). They
+
+  can process many pixels at the same time, making them fast for many
+
+  graphics tasks. They’re written in a language called
+
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders/"
+  target="_blank">GLSL</a>
+
+  and run along with the rest of the code in a sketch.</p>
+
+  <p>Once the <a href="/reference/p5/p5.Shader">p5.Shader</a> object is created,
+  it can be
+
+  used with the <a href="/reference/p5/shader/">shader()</a> function, as in
+
+  <code>shader(myShader)</code>. A shader program consists of two parts, a
+  vertex shader
+
+  and a fragment shader. The vertex shader affects where 3D geometry is drawn
+
+  on the screen and the fragment shader affects color.</p>
+
+  <p>The first parameter, <code>vertSrc</code>, sets the vertex shader. It’s a
+  string that
+
+  contains the vertex shader program written in GLSL.</p>
+
+  <p>The second parameter, <code>fragSrc</code>, sets the fragment shader. It’s
+  a string
+
+  that contains the fragment shader program written in GLSL.</p>
+
+  <p>A shader can optionally describe <em>hooks,</em> which are functions in
+  GLSL that
+
+  users may choose to provide to customize the behavior of the shader using the
+
+  <a href="/reference/p5.Shader/modify/"><code>modify()</code></a> method of
+  <code>p5.Shader</code>. These are added by
+
+  describing the hooks in a third parameter, <code>options</code>, and
+  referencing the hooks in
+
+  your <code>vertSrc</code> or <code>fragSrc</code>. Hooks for the vertex or
+  fragment shader are described under
+
+  the <code>vertex</code> and <code>fragment</code> keys of
+  <code>options</code>. Each one is an object. where each key is
+
+  the type and name of a hook function, and each value is a string with the
+
+  parameter list and default implementation of the hook. For example, to let
+  users
+
+  optionally run code at the start of the vertex shader, the options object
+  could
+
+  include:</p>
+
+  <pre><code class="language-js">{
+    vertex: {
+      'void beforeVertex': '() {}'
+    }
+  }
+
+  </code></pre>
+
+  <p>Then, in your vertex shader source, you can run a hook by calling a
+  function
+
+  with the same name prefixed by <code>HOOK_</code>. If you want to check if the
+  default
+
+  hook has been replaced, maybe to avoid extra overhead, you can check if the
+
+  same name prefixed by <code>AUGMENTED_HOOK_</code> has been defined:</p>
+
+  <pre><code class="language-glsl">void main() {
+    // In most cases, just calling the hook is fine:
+    HOOK_beforeVertex();
+
+    // Alternatively, for more efficiency:
+    #ifdef AUGMENTED_HOOK_beforeVertex
+    HOOK_beforeVertex();
+    #endif
+
+    // Add the rest of your shader code here!
+  }
+
+  </code></pre>
+
+  <p>Note: Only filter shaders can be used in 2D mode. All shaders can be used
+
+  in WebGL mode.</p>
+line: 173
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div modernizr='webgl'>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+
+    void main() {
+      // Set each pixel's RGBA value to yellow.
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let shaderProgram = createShader(vertSrc, fragSrc);
+
+      // Compile and apply the p5.Shader object.
+      shader(shaderProgram);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A yellow square.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+    uniform vec2 p;
+    uniform float r;
+    const int numIterations = 500;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vec2 c = p + gl_FragCoord.xy * r;
+      vec2 z = c;
+      float n = 0.0;
+
+      for (int i = numIterations; i > 0; i--) {
+        if (z.x * z.x + z.y * z.y > 4.0) {
+          n = float(i) / float(numIterations);
+          break;
+        }
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+      }
+
+      gl_FragColor = vec4(
+        0.5 - cos(n * 17.0) / 2.0,
+        0.5 - cos(n * 13.0) / 2.0,
+        0.5 - cos(n * 23.0) / 2.0,
+        1.0
+      );
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let mandelbrot = createShader(vertSrc, fragSrc);
+
+      // Compile and apply the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      // p is the center point of the Mandelbrot image.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      // Set the shader uniform r to 0.005.
+      // r is the size of the image in Mandelbrot-space.
+      mandelbrot.setUniform('r', 0.005);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+
+      describe('A black fractal image on a magenta background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision highp float;
+    uniform vec2 p;
+    uniform float r;
+    const int numIterations = 500;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vec2 c = p + gl_FragCoord.xy * r;
+      vec2 z = c;
+      float n = 0.0;
+
+      for (int i = numIterations; i > 0; i--) {
+        if (z.x * z.x + z.y * z.y > 4.0) {
+          n = float(i) / float(numIterations);
+          break;
+        }
+
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+      }
+
+      gl_FragColor = vec4(
+        0.5 - cos(n * 17.0) / 2.0,
+        0.5 - cos(n * 13.0) / 2.0,
+        0.5 - cos(n * 23.0) / 2.0,
+        1.0
+      );
+    }
+    `;
+
+    let mandelbrot;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      mandelbrot = createShader(vertSrc, fragSrc);
+
+      // Apply the p5.Shader object.
+      shader(mandelbrot);
+
+      // Set the shader uniform p to an array.
+      // p is the center point of the Mandelbrot image.
+      mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);
+
+      describe('A fractal image zooms in and out of focus.');
+    }
+
+    function draw() {
+      // Set the shader uniform r to a value that oscillates
+      // between 0 and 0.005.
+      // r is the size of the image in Mandelbrot-space.
+      let radius = 0.005 * (sin(frameCount * 0.01) + 1);
+      mandelbrot.setUniform('r', radius);
+
+      // Style the drawing surface.
+      noStroke();
+
+      // Add a plane as a drawing surface.
+      plane(100, 100);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // A shader with hooks.
+    let myShader;
+
+    // A shader with modified hooks.
+    let modifiedShader;
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+
+    void main() {
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a fragment shader that uses a hook.
+    let fragSrc = `
+    precision highp float;
+    void main() {
+      // Let users override the color
+      gl_FragColor = HOOK_getColor(vec4(1., 0., 0., 1.));
+    }
+    `;
+
+    function setup() {
+      createCanvas(50, 50, WEBGL);
+
+      // Create a shader with hooks
+      myShader = createShader(vertSrc, fragSrc, {
+        fragment: {
+          'vec4 getColor': '(vec4 color) { return color; }'
+        }
+      });
+
+      // Make a version of the shader with a hook overridden
+      modifiedShader = myShader.modify({
+        'vec4 getColor': `(vec4 color) {
+          return vec4(0., 0., 1., 1.);
+        }`
+      });
+    }
+
+    function draw() {
+      noStroke();
+
+      push();
+      shader(myShader);
+      translate(-width/3, 0);
+      sphere(10);
+      pop();
+
+      push();
+      shader(modifiedShader);
+      translate(width/3, 0);
+      sphere(10);
+      pop();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: vertSrc
+    description: |
+      <p>source code for the vertex shader.</p>
+    type: String
+  - name: fragSrc
+    description: |
+      <p>source code for the fragment shader.</p>
+    type: String
+  - name: options
+    description: >
+      <p>An optional object describing how this shader can
+
+      be augmented with hooks. It can include:</p>
+
+      <ul>
+
+      <li><code>vertex</code>: An object describing the available vertex shader
+      hooks.</li>
+
+      <li><code>fragment</code>: An object describing the available frament
+      shader hooks.</li>
+
+      </ul>
+    type: Object
+    optional: true
+return:
+  description: |-
+    new shader object created from the
+    vertex and fragment shaders.
+  type: p5.Shader
+chainable: false
+---
+
+
+# createShader

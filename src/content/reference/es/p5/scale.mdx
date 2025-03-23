@@ -1,0 +1,228 @@
+---
+title: scale
+module: Transform
+submodule: Transform
+file: src/core/transform.js
+description: >
+  <p>Escala el sistema de coordenadas.</p>
+
+  <p>De forma predeterminada, las formas se dibujan en su escala original. Un rectángulo que tiene 50
+
+  píxeles de ancho parece ocupar la mitad del ancho de un lienzo de 100 píxeles de ancho.
+
+  La función <code>scale()</code> puede reducir o ampliar el sistema de coordenadas 
+  para que
+
+  las formas aparezcan a diferentes tamaños. Hay dos formas de llamar a 
+  <code>scale()</code> con
+
+  parámetros que establecen el factor de escala(s).</p>
+
+  <p>La primera forma de llamar a <code>scale()</code> utiliza números para establecer la cantidad
+  de escalado.
+
+  El primer parámetro, <code>s</code>, establece la cantidad para escalar cada eje. Por 
+  ejemplo,
+
+  llamar a <code>scale(2)</code> estira los ejes x-, y-, y z- por un factor de
+  2. Los
+
+  siguientes dos parámetros, <code>y</code> y <code>z</code>, son opcionales. Establecen la 
+  cantidad para
+
+  escalar el eje y- y eje z-. Por ejemplo, llamar a <code>scale(2, 0.5, 1)</code>
+  estira
+
+  el eje x por un factor de 2, encoge el eje y- por un factor de 0.5 y
+
+  deja sin cambios el eje z-.</p>
+
+  <p>La segunda forma de llamar a <code>scale()</code> utiliza un <a
+  href="/reference/p5/p5.Vector">objeto p5.Vector</a>
+
+  para establecer los factores de escala. Por ejemplo, llamar a
+  <code>scale(myVector)</code>
+
+  utiliza los componentes x-, y-, y z- de <code>myVector</code> para establecer la cantidad 
+  de
+
+  escalado a lo largo de los ejes x-, y- y z-. Hacerlo es lo mismo que llamar
+
+  a <code>scale(myVector.x, myVector.y, myVector.z)</code>.</p>
+
+  <p>De forma predeterminada, las transformaciones se acumulan. Por ejemplo, llamar
+  a <code>scale(1)</code>
+
+  dos veces tiene el mismo efecto que llamar a <code>scale(2)</code> una vez. Los
+
+  <a href="/reference/p5/push">push()</a> y <a
+  href="/reference/p5/pop">pop()</a> funciones
+
+  se pueden utilizar para aislar transformaciones dentro de grupos de dibujo distintos.</p>
+
+  <p>Nota: Las transformaciones se restablecen al principio del bucle de dibujo. Llamar
+
+  a <code>scale(2)</code> dentro de la función <a href="/reference/p5/draw">draw()</a>
+  no hará que
+
+  las formas crezcan continuamente.</p>
+line: 879
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'Two white squares on a gray background. The larger square appears at the top-center. The smaller square appears at the top-left.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by a factor of 0.5.
+      scale(0.5);
+
+      // Draw a square at (30, 20).
+      // It appears at (15, 10) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A rectangle and a square drawn in white on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis.
+      scale(0.5, 1.3);
+
+      // Draw a square at (30, 20).
+      // It appears as a rectangle at (15, 26) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A rectangle and a square drawn in white on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Create a p5.Vector object.
+      let v = createVector(0.5, 1.3);
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis.
+      scale(v);
+
+      // Draw a square at (30, 20).
+      // It appears as a rectangle at (15, 26) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A red box and a blue box drawn on a gray background. The red box appears embedded in the blue box.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the spheres.
+      noStroke();
+
+      // Draw the red sphere.
+      fill('red');
+      box();
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis and
+      // 2 along the z-axis.
+      scale(0.5, 1.3, 2);
+
+      // Draw the blue sphere.
+      fill('blue');
+      box();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 879
+    params:
+      - name: s
+        description: |
+          <p>cantidad para escalar a lo largo del eje x- positivo.</p>
+        type: 'Number|p5.Vector|Number[]'
+      - name: 'y'
+        description: >
+          <p>cantidad para escalar a lo largo del eje y- positivo. Por defecto,
+          <code>s</code>.</p>
+        type: Number
+        optional: true
+      - name: z
+        description: >
+          <p>cantidad para escalar a lo largo del eje z positivo. Por defecto,
+          <code>y</code>.</p>
+        type: Number
+        optional: true
+    chainable: 1
+  - line: 1040
+    params:
+      - name: scales
+        description: |
+          <p>vector cuyos componentes deben usarse para escalar.</p>
+        type: 'p5.Vector|Number[]'
+    chainable: 1
+chainable: true
+---
+
+
+# scale

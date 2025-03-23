@@ -1,0 +1,110 @@
+---
+title: clearDepth
+module: Rendering
+submodule: Rendering
+file: src/core/rendering.js
+description: >
+  <p>Clears the depth buffer in WebGL mode.</p>
+
+  <p><code>clearDepth()</code> clears information about how far objects are from
+  the camera
+
+  in 3D space. This information is stored in an object called the
+
+  <em>depth buffer</em>. Clearing the depth buffer ensures new objects aren't
+  drawn
+
+  behind old ones. Doing so can be useful for feedback effects in which the
+
+  previous frame serves as the background for the current frame.</p>
+
+  <p>The parameter, <code>depth</code>, is optional. If a number is passed, as
+  in
+
+  <code>clearDepth(0.5)</code>, it determines the range of objects to clear from
+  the
+
+  depth buffer. 0 doesn't clear any depth information, 0.5 clears depth
+
+  information halfway between the near and far clipping planes, and 1 clears
+
+  depth information all the way to the far clipping plane. By default,
+
+  <code>depth</code> is 1.</p>
+
+  <p>Note: <code>clearDepth()</code> can only be used in WebGL mode.</p>
+line: 635
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let previous;
+    let current;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the p5.Framebuffer objects.
+      previous = createFramebuffer({ format: FLOAT });
+      current = createFramebuffer({ format: FLOAT });
+
+      describe(
+        'A multicolor box drifts from side to side on a white background. It leaves a trail that fades over time.'
+      );
+    }
+
+    function draw() {
+      // Swap the previous p5.Framebuffer and the
+      // current one so it can be used as a texture.
+      [previous, current] = [current, previous];
+
+      // Start drawing to the current p5.Framebuffer.
+      current.begin();
+
+      // Paint the background.
+      background(255);
+
+      // Draw the previous p5.Framebuffer.
+      // Clear the depth buffer so the previous
+      // frame doesn't block the current one.
+      push();
+      tint(255, 250);
+      image(previous, -50, -50);
+      clearDepth();
+      pop();
+
+      // Draw the box on top of the previous frame.
+      push();
+      let x = 25 * sin(frameCount * 0.01);
+      let y = 25 * sin(frameCount * 0.02);
+      translate(x, y, 0);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      normalMaterial();
+      box(12);
+      pop();
+
+      // Stop drawing to the current p5.Framebuffer.
+      current.end();
+
+      // Display the current p5.Framebuffer.
+      image(current, -50, -50);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: depth
+    description: |
+      <p>amount of the depth buffer to clear between 0
+                              (none) and 1 (far clipping plane). Defaults to 1.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# clearDepth

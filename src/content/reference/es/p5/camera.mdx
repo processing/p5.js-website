@@ -1,0 +1,174 @@
+---
+title: camera
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p><code>camera()</code> establece la posición y orientación de la cámara actual en un dibujo 3D.</p>
+
+  <p><code>camera()</code> permite ver objetos desde diferentes ángulos. Tiene nueve
+  parámetros, todos opcionales.</p>
+
+  <p>Los tres primeros parámetros, <code>x</code>, <code>y</code> y <code>z</code> son las
+  coordenadas de la posición de la cámara. Por ejemplo, llamar a <code>camera(0, 0, 0)</code>
+  coloca la cámara en el origen <code>(0, 0, 0)</code>. De forma predeterminada, la cámara se
+  encuentra en <code>(0, 0, 800)</code>.</p>
+
+  <p>Los siguientes tres parámetros, <code>centerX</code>, <code>centerY</code> y
+  <code>centerZ</code> son las coordenadas del punto hacia donde se dirige la cámara. Por
+  ejemplo, llamar a <code>camera(0, 0, 0, 10, 20, 30)</code> coloca la cámara en el
+  origen <code>(0, 0, 0)</code> y la hace apuntar a <code>(10, 20, 30)</code>. De forma
+  predeterminada, la cámara se dirige al origen <code>(0, 0, 0)</code>.</p>
+
+  <p>Los tres últimos parámetros, <code>upX</code>, <code>upY</code> y <code>upZ</code> son los
+  componentes del vector "arriba". El vector "arriba" orienta el eje y de la cámara. Por
+  ejemplo, llamar a <code>camera(0, 0, 0, 10, 20, 30, 0, -1, 0)</code> coloca la cámara en
+  el origen <code>(0, 0, 0)</code>, la hace apuntar a <code>(10, 20, 30)</code> y establece el
+  vector "arriba" en <code>(0, -1, 0)</code> lo que es como si la cámara estuviera volada
+  hacia arriba. De forma predeterminada, el vector "arriba" es <code>(0, 1, 0)</code>.</p>
+
+  <p>Nota: <code>camera()</code> solo puede ser usado en el modo WebGL.</p>
+line: 13
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Move the camera to the top-right.
+      camera(200, -400, 800);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube apperas to sway left and right on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the camera's x-coordinate.
+      let x = 400 * cos(frameCount * 0.01);
+
+      // Orbit the camera around the box.
+      camera(x, -400, 800);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Adjust the range sliders to change the camera's position.
+
+    let xSlider;
+    let ySlider;
+    let zSlider;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create slider objects to set the camera's coordinates.
+      xSlider = createSlider(-400, 400, 400);
+      xSlider.position(0, 100);
+      xSlider.size(100);
+      ySlider = createSlider(-400, 400, -200);
+      ySlider.position(0, 120);
+      ySlider.size(100);
+      zSlider = createSlider(0, 1600, 800);
+      zSlider.position(0, 140);
+      zSlider.size(100);
+
+      describe(
+        'A white cube drawn against a gray background. Three range sliders appear beneath the image. The camera position changes when the user moves the sliders.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Get the camera's coordinates from the sliders.
+      let x = xSlider.value();
+      let y = ySlider.value();
+      let z = zSlider.value();
+
+      // Move the camera.
+      camera(x, y, z);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: x
+    description: |
+      <p>Coordenada x de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: 'y'
+    description: |
+      <p>Coordenada y de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: z
+    description: |
+      <p>Coordenada z de la cámara. Por defecto, 800.</p>
+    type: Number
+    optional: true
+  - name: centerX
+    description: |
+      <p>Coordenada x del punto al que se dirige la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: centerY
+    description: |
+      <p>Coordenada y del punto al que se dirige la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: centerZ
+    description: |
+      <p>Coordenada z del punto al que se dirige la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: upX
+    description: |
+      <p>Componente x del vector "arriba" de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+  - name: upY
+    description: |
+      <p>Componente y del vector "arriba" de la cámara. Por defecto, 1.</p>
+    type: Number
+    optional: true
+  - name: upZ
+    description: |
+      <p>Componente z del vector "arriba" de la cámara. Por defecto, 0.</p>
+    type: Number
+    optional: true
+chainable: true
+---
+
+
+# camera

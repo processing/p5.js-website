@@ -1,0 +1,121 @@
+---
+title: linePerspective
+module: 3D
+submodule: कैमरा
+file: src/webgl/p5.Camera.js
+description: >
+  <p> 3D स्केच में लाइनों के लिए पर्स्पेक्टिव को सक्षम या अक्षम करता है। </p> 
+  
+  <p> WebGL मोड में, जब लाइनें कैमरा से दूर होती हैं तो उन्हें पतली स्ट्रोक से खींचा जा सकता है। ऐसा करने से उन्हें अधिक यथार्थवादी दिखाई देता है। </p> 
+  
+  <p> डिफ़ॉल्ट रूप से, लाइनें उपयोग किए जा रहे पर्स्पेक्टिव के प्रकार के आधार पर अलग-अलग तरह से खींची जाती हैं:</p> 
+  
+  <ul> <li><code>perspective()</code> और <code>frustum()</code> यथार्थवादी पर्स्पेक्टिव को दिखते करते हैं। इन मोड में, स्ट्रोक वजन लाइन के कैमरा से दूरी से प्रभावित होता है। ऐसा करने से एक अधिक प्राकृतिक दिखावा होता है। <code>perspective()</code> 3D स्केच के लिए डिफ़ॉल्ट मोड है।</li> <li><code>ortho()</code> यथार्थवादी पर्स्पेक्टिव का अनुकरण नहीं करता है। इस मोड में, स्ट्रोक वजन लाइन की कैमरा से दूरी से बेखबर होते हैं। ऐसा करने से एक अधिक यथार्थ और सुसंगत दिखावा होता है।</li> </ul> 
+  
+  <p> <code>linePerspective()</code> डिफ़ॉल्ट लाइन रेंडरिंग मोड को ओवरराइड कर सकता है। </p> 
+  
+  <p> पैरामीटर <code>enable</code> वैकल्पिक है। यह लाइनों को कैसे खींचा जाए, इसका एक <code>Boolean</code> मान है। यदि <code>true</code> पास किया जाता है, जैसे <code>linePerspective(true)</code>, तो लाइनें कैमरा से दूर होने पर पतली दिखेंगी। यदि <code>false</code> पास किया जाता है, जैसे <code>linePerspective(false)</code>, तो लाइनों का स्ट्रोक वजन उनकी कैमरा से दूरी से बेखबर होगा। डिफ़ॉल्ट रूप से, <code>linePerspective()</code> सक्षम होता है। </p> 
+  
+  <p> कोई पैरामीटर लिए बिना <code>linePerspective()</code> कॉल करने पर यह <code>true</code> लौटेगा यदि यह सक्षम है और <code>false</code> यदि नहीं। </p> 
+  
+  <p> नोट: <code>linePerspective()</code> केवल WebGL मोड में ही उपयोग किया जा सकता है। </p>
+line: 280
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click the canvas to toggle the line perspective.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A white cube with black edges on a gray background. Its edges toggle between thick and thin when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the line perspective when the user double-clicks.
+    function doubleClicked() {
+      let isEnabled = linePerspective();
+      linePerspective(!isEnabled);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click the canvas to toggle the line perspective.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A row of cubes with black edges on a gray background. Their edges toggle between thick and thin when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Use an orthographic projection.
+      ortho();
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the line perspective when the user double-clicks.
+    function doubleClicked() {
+      let isEnabled = linePerspective();
+      linePerspective(!isEnabled);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 280
+    params:
+      - name: enable
+        description: |
+          <p>लाइन परिप्रेक्ष्य को सक्षम करना है या नहीं।</p>
+        type: Boolean
+  - line: 392
+    params: []
+    return:
+      description: क्या लाइन परिप्रेक्ष्य सक्षम है.
+      type: Boolean
+chainable: false
+---
+
+
+# linePerspective

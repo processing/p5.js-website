@@ -1,0 +1,193 @@
+---
+title: mousePressed
+module: Events
+submodule: Mouse
+file: src/events/mouse.js
+description: >
+  <p>Una función que se llama una vez cuando se presiona un botón del mouse.</p>
+
+  <p>Declarar la función <code>mousePressed()</code> establece un bloque de código
+  para ejecutarse
+
+  automáticamente cuando el usuario presiona un botón del mouse:</p>
+
+  <code>
+
+  function mousePressed() {
+    // Code to run.
+  }
+
+  </code>
+
+
+  <p>Las variables del sistema del mouse, como <a
+  href="/reference/p5/mouseX">mouseX</a> y
+
+  <a href="/reference/p5/mouseY">mouseY</a>, se actualizarán con su valor más
+  reciente
+
+  cuando <code>mousePressed()</code> sea llamado por p5.js:</p>
+
+  <code>
+
+  function mousePressed() {
+    if (mouseX < 50) {
+      // Code to run if the mouse is on the left.
+    }
+
+  <p>  if (mouseY > 50) {
+      // Code to run if the mouse is near the bottom.
+    }
+  }
+
+  </p></code>
+
+  <p>El parámetro <code>event</code> es opcional. <code>mousePressed()</code> siempre
+  se le pasa un
+
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent"
+  target="_blank">MouseEvent</a>
+
+  objeto con propiedades que describen el evento de presión del mouse:</p>
+
+  <code>
+
+  function mousePressed(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+
+  <p>En dispositivos táctiles, <code>mousePressed()</code> se ejecutará cuando el
+  usuario
+
+  toca la pantalla si <a href="/reference/p5/touchStarted">touchStarted()</a> no
+  está declarado. Si
+
+  <a href="/reference/p5/touchStarted">touchStarted()</a> está declarado, entonces
+
+  <a href="/reference/p5/touchStarted">touchStarted()</a> se ejecutará cuando el
+  usuario toca la pantalla y <code>mousePressed()</code> no se ejecutará.</p>
+
+  <p>Los navegadores pueden tener comportamientos predeterminados asociados a
+  eventos de mouse. Por ejemplo, algunos navegadores resaltan texto cuando el
+  usuario mueve el mouse mientras mantiene presionado un botón del mouse. Para
+  evitar cualquier comportamiento predeterminado para este evento, añada
+  <code>return false;</code> al final de la función.</p>
+
+  <p>Nota: <code>mousePressed()</code>, <a
+  href="/reference/p5/mouseReleased">mouseReleased()</a>,
+
+  y <a href="/reference/p5/mouseClicked">mouseClicked()</a> estan todos relacionados.
+
+  <code>mousePressed()</code> se ejecuta inmediatamente cuando el usuario presiona
+  el mouse.
+
+  <a href="/reference/p5/mouseReleased">mouseReleased()</a> se ejecuta inmediatamente
+  después de que el usuario suelte el mouse. <a
+  href="/reference/p5/mouseClicked">mouseClicked()</a> se ejecuta inmediatamente
+  después de <a
+  href="/reference/p5/mouseReleased">mouseReleased()</a>.</p>
+line: 1084
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square becomes lighter when the user presses a mouse button.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    function mousePressed() {
+      // Update the grayscale value.
+      value += 5;
+
+      // Reset the grayscale value.
+      if (value > 255) {
+        value = 0;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Style the circle.
+      fill('orange');
+      stroke('royalblue');
+      strokeWeight(10);
+
+      describe(
+        'An orange circle with a thick, blue border drawn on a gray background. When the user presses and holds the mouse, the border becomes thin and pink. When the user releases the mouse, the border becomes thicker and changes color to blue.'
+      );
+    }
+
+    function draw() {
+      background(220);
+
+      // Draw the circle.
+      circle(50, 50, 20);
+    }
+
+    // Set the stroke color and weight as soon as the user clicks.
+    function mousePressed() {
+      stroke('deeppink');
+      strokeWeight(3);
+    }
+
+    // Set the stroke and fill colors as soon as the user releases
+    // the mouse.
+    function mouseReleased() {
+      stroke('royalblue');
+
+      // This is never visible because fill() is called
+      // in mouseClicked() which runs immediately after
+      // mouseReleased();
+      fill('limegreen');
+    }
+
+    // Set the fill color and stroke weight after
+    // mousePressed() and mouseReleased() are called.
+    function mouseClicked() {
+      fill('orange');
+      strokeWeight(10);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>Argumento opcional <code>MouseEvent</code>.</p>
+    type: MouseEvent
+    optional: true
+chainable: false
+---
+
+
+# mousePressed

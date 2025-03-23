@@ -1,0 +1,297 @@
+---
+title: textureWrap
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Cambia la forma en que las texturas se comportan cuando las coordenadas uv de una forma van más allá de la textura.</p>
+
+  <p>Para que <a href="/reference/p5/texture">texture()</a> funcione, una forma necesita una forma de mapear los puntos de su superficie a los píxeles de una imagen. Las formas incorporadas como <a href="/reference/p5/rect">rect()</a> y <a href="/reference/p5/box">box()</a> ya tienen estos mapeos de textura basados en sus vértices. Las formas personalizadas creadas con <a href="/reference/p5/vertex">vertex()</a> requieren que se pasen los mapeos de textura como coordenadas uv.</p>
+
+  <p>Cada llamada a <a href="/reference/p5/vertex">vertex()</a> debe incluir 5 argumentos, como en <code>vertex(x, y, z, u, v)</code>, para mapear el vértice en las coordenadas <code>(x, y, z)</code> al píxel en las coordenadas <code>(u, v)</code> dentro de una imagen. Por ejemplo, las esquinas de una imagen rectangular se mapean a las esquinas de un rectángulo por defecto:</p>
+  <code>
+
+  // Apply the image as a texture.
+
+  texture(img);
+
+
+  <p>// Draw the rectangle.
+
+  rect(0, 0, 30, 50);
+
+  </p></code>
+
+  <p>Si la imagen en el fragmento de código anterior tiene dimensiones de 300 x 500 píxeles, el mismo resultado se podría lograr de la siguiente manera:</p>
+
+  <code>
+
+  // Apply the image as a texture.
+
+  texture(img);
+
+
+  <p>// Draw the rectangle.
+
+  beginShape();</p>
+
+  <p>// Top-left.
+
+  // u: 0, v: 0
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// Top-right.
+
+  // u: 300, v: 0
+
+  vertex(30, 0, 0, 300, 0);</p>
+
+  <p>// Bottom-right.
+
+  // u: 300, v: 500
+
+  vertex(30, 50, 0, 300, 500);</p>
+
+  <p>// Bottom-left.
+
+  // u: 0, v: 500
+
+  vertex(0, 50, 0, 0, 500);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p><code>textureWrap()</code> controla cómo se comportan las texturas cuando sus coordenadas uv van más allá de la textura. Hacerlo puede producir efectos visuales interesantes como el mosaico. Por ejemplo, la forma personalizada anterior podría tener coordenadas u mayores que el ancho de la imagen:</p>
+
+  <code>
+
+  // Apply the image as a texture.
+
+  texture(img);
+
+
+  <p>// Draw the rectangle.
+
+  beginShape();
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// Top-right.
+
+  // u: 600
+
+  vertex(30, 0, 0, 600, 0);</p>
+
+  <p>// Bottom-right.
+
+  // u: 600
+
+  vertex(30, 50, 0, 600, 500);</p>
+
+  <p>vertex(0, 50, 0, 0, 500);
+
+  endShape();
+
+  </p></code>
+
+  <p>Las coordenadas u de 600 son mayores que el ancho de la imagen de textura de 300. Esto crea posibilidades interesantes.</p>
+
+  <p>El primer parámetro, <code>wrapX</code>, acepta tres constantes posibles. Si se pasa <code>CLAMP</code>, como en <code>textureWrap(CLAMP)</code>, los píxeles en el borde de la textura se extenderán hasta los bordes de la forma. Si se pasa <code>REPEAT</code>, como en <code>textureWrap(REPEAT)</code>, la textura se repetirá en mosaico hasta alcanzar los bordes de la forma. Si se pasa <code>MIRROR</code>, como en <code>textureWrap(MIRROR)</code>, la textura se repetirá en mosaico hasta alcanzar los bordes de la forma, volteando su orientación entre los mosaicos. Por defecto, las texturas se ajustan a <code>CLAMP</code>.</p>
+
+  <p>El segundo parámetro, <code>wrapY</code>, es opcional. Acepta las mismas tres constantes: <code>CLAMP</code>, <code>REPEAT</code> y <code>MIRROR</code>. Si se pasa una de estas constantes, como en <code>textureWRAP(MIRROR, REPEAT)</code>, entonces la textura se <code>MIRROR</code> horizontalmente y se <code>REPEAT</code> verticalmente. Por defecto, <code>wrapY</code> se establecerá en el mismo valor que <code>wrapX</code>.</p>
+
+  <p>Nota: <code>textureWrap()</code> solo se puede usar en el modo WebGL.</p>
+line: 1227
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'An image of a landscape occupies the top-left corner of a square. Its edge colors smear to cover the other thre quarters of the square.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // Set the texture mode.
+      textureMode(NORMAL);
+
+      // Set the texture wrapping.
+      // Note: CLAMP is the default mode.
+      textureWrap(CLAMP);
+
+      // Apply the image as a texture.
+      texture(img);
+
+      // Style the shape.
+      noStroke();
+
+      // Draw the shape.
+      // Use uv coordinates > 1.
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('Four identical images of a landscape arranged in a grid.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Set the texture mode.
+      textureMode(NORMAL);
+
+      // Set the texture wrapping.
+      textureWrap(REPEAT);
+
+      // Apply the image as a texture.
+      texture(img);
+
+      // Style the shape.
+      noStroke();
+
+      // Draw the shape.
+      // Use uv coordinates > 1.
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'Four identical images of a landscape arranged in a grid. The images are reflected horizontally and vertically, creating a kaleidoscope effect.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // Set the texture mode.
+      textureMode(NORMAL);
+
+      // Set the texture wrapping.
+      textureWrap(MIRROR);
+
+      // Apply the image as a texture.
+      texture(img);
+
+      // Style the shape.
+      noStroke();
+
+      // Draw the shape.
+      // Use uv coordinates > 1.
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    function preload() {
+      img = loadImage('/assets/rockies128.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'Four identical images of a landscape arranged in a grid. The top row and bottom row are reflections of each other.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // Set the texture mode.
+      textureMode(NORMAL);
+
+      // Set the texture wrapping.
+      textureWrap(REPEAT, MIRROR);
+
+      // Apply the image as a texture.
+      texture(img);
+
+      // Style the shape.
+      noStroke();
+
+      // Draw the shape.
+      // Use uv coordinates > 1.
+      beginShape();
+      vertex(-30, -30, 0, 0, 0);
+      vertex(30, -30, 0, 2, 0);
+      vertex(30, 30, 0, 2, 2);
+      vertex(-30, 30, 0, 0, 2);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: wrapX
+    description: |
+      <p>ya sea CLAMP, REPEAT o MIRROR</p>
+    type: Constant
+  - name: wrapY
+    description: |
+      <p>ya sea CLAMP, REPEAT o MIRROR</p>
+    type: Constant
+    optional: true
+chainable: false
+---
+
+
+# textureWrap

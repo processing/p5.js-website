@@ -1,0 +1,270 @@
+---
+title: quadraticVertex
+module: आकार
+submodule: शीर्ष
+file: src/core/shape/vertex.js
+description: >
+  <p>एक कस्टम आकार में एक द्विघात बेज़ियर वक्र खंड जोड़ता है।</p>
+
+  <p><code>quadraticVertex()</code> कस्टम आकृतियों में एक घुमावदार खंड जोड़ता है। इसके द्वारा बनाए गए बेज़ियर वक्र खंड <a href="/reference/p5/bezierVertex">bezierVertex()</a> फ़ंक्शन द्वारा बनाए गए समान हैं।
+
+  <code>quadraticVertex()</code> को <a href="/reference/p5/beginShape">beginShape()</a> और <a href="/reference/p5/endShape">endShape()</a>कार्य के बीच बुलाया जाना चाहिए। घुमावदार खंड पिछले शीर्ष को पहले एंकर बिंदु के रूप में उपयोग करता है, इसलिए <code>quadraticVertex()</code> का उपयोग करने से पहले <a href="/reference/p5/vertex">vertex()</a> पर कम से कम एक कॉल होनी चाहिए </p>
+
+  <p>पहले दो पैरामीटर, <code>cx</code> और <code>cy</code>, वक्र का नियंत्रण बिंदु निर्धारित करते हैं।
+
+  नियंत्रण बिंदु वक्र को अपनी ओर "खींचता" है।</p>
+
+  <p>अंतिम दो पैरामीटर, <code>x3</code>, और <code>y3</code>, अंतिम एंकर बिंदु सेट करते हैं। अंतिम लंगर बिंदु वह है जहां वक्र समाप्त होता है।</p>
+
+  <p>बेज़ियर कर्व्स को WebGL मोड का उपयोग करके 3D में भी खींचा जा सकता है। <code>bezierVertex()</code> के 3D संस्करण में आठ तर्क हैं क्योंकि प्रत्येक बिंदु में x-, y-, और z-निर्देशांक है।</p>
+
+  <p>ध्यान दें: <code>quadraticVertex()</code> तब काम नहीं करेगा जब कोई तर्क <a href="/reference/p5/beginShape">beginShape()</a> को पास किया जाता है।</p>
+line: 1569
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the curve.
+      noFill();
+
+      // Draw the curve.
+      beginShape();
+      vertex(20, 20);
+      quadraticVertex(80, 20, 50, 50);
+      endShape();
+
+      describe('A black curve drawn on a gray square. The curve starts at the top-left corner and ends at the center.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw the curve.
+      noFill();
+      beginShape();
+      vertex(20, 20);
+      quadraticVertex(80, 20, 50, 50);
+      endShape();
+
+      // Draw red lines from the anchor points to the control point.
+      stroke(255, 0, 0);
+      line(20, 20, 80, 20);
+      line(50, 50, 80, 20);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(20, 20);
+      point(50, 50);
+
+      // Draw the control point in red.
+      stroke(255, 0, 0);
+      point(80, 20);
+
+      describe('A black curve that starts at the top-left corner and ends at the center. Its anchor and control points are marked with dots. Red lines connect both anchor points to the control point.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the mouse near the red dot in the top-right corner
+    // and drag to change the curve's shape.
+
+    let x2 = 80;
+    let y2 = 20;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A black curve that starts at the top-left corner and ends at the center. Its anchor and control points are marked with dots. Red lines connect both anchor points to the control point.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+
+      // Draw the curve.
+      beginShape();
+      vertex(20, 20);
+      quadraticVertex(x2, y2, 50, 50);
+      endShape();
+
+      // Draw red lines from the anchor points to the control point.
+      stroke(255, 0, 0);
+      line(20, 20, x2, y2);
+      line(50, 50, x2, y2);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(20, 20);
+      point(50, 50);
+
+      // Draw the control point in red.
+      stroke(255, 0, 0);
+      point(x2, y2);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x2, y2) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x2 = mouseX;
+        y2 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the curved segments.
+      vertex(20, 20);
+      quadraticVertex(80, 20, 50, 50);
+      quadraticVertex(20, 80, 80, 80);
+
+      // Add the straight segments.
+      vertex(80, 10);
+      vertex(20, 10);
+      vertex(20, 20);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('A white puzzle piece drawn on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the and drag the mouse to view the scene from a different angle.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white puzzle piece on a dark gray background. When the user clicks and drags the scene, the outline of a second puzzle piece is revealed.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the first puzzle piece.
+      noStroke();
+      fill(255);
+
+      // Draw the first puzzle piece.
+      beginShape();
+      vertex(-30, -30, 0);
+      quadraticVertex(30, -30, 0, 0, 0, 0);
+      quadraticVertex(-30, 30, 0, 30, 30, 0);
+      vertex(30, -40, 0);
+      vertex(-30, -40, 0);
+      vertex(-30, -30, 0);
+      endShape();
+
+      // Style the second puzzle piece.
+      stroke(255);
+      noFill();
+
+      // Draw the second puzzle piece.
+      beginShape();
+      vertex(-30, -30, -20);
+      quadraticVertex(30, -30, -20, 0, 0, -20);
+      quadraticVertex(-30, 30, -20, 30, 30, -20);
+      vertex(30, -40, -20);
+      vertex(-30, -40, -20);
+      vertex(-30, -30, -20);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 1569
+    params:
+      - name: cx
+        description: |
+          <p>नियंत्रण बिंदु का x-निर्देशांक</p>
+        type: संख्या
+      - name: cy
+        description: |
+          <p>नियंत्रण बिंदु का y-निर्देशांक</p>
+        type: संख्या
+      - name: x3
+        description: |
+          <p>एंकर बिंदु का x-निर्देशांक</p>
+        type: संख्या
+      - name: y3
+        description: |
+          <p>एंकर बिंदु का y-निर्देशांक</p>
+        type: संख्या
+    chainable: 1
+  - line: 1801
+    params:
+      - name: cx
+        description: ""
+        type: संख्या
+      - name: cy
+        description: ""
+        type: संख्या
+      - name: cz
+        description: |
+          <p>नियंत्रण बिंदु का z-निर्देशांक</p>
+        type: संख्या
+      - name: x3
+        description: ""
+        type: संख्या
+      - name: y3
+        description: ""
+        type: संख्या
+      - name: z3
+        description: |
+          <p>एंकर बिंदु का z-निर्देशांक</p>
+        type: संख्या
+chainable: true
+---
+
+# quadraticVertex

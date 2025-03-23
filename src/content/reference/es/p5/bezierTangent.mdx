@@ -1,0 +1,126 @@
+---
+title: bezierTangent
+module: Shape
+submodule: Curves
+file: src/core/shape/curves.js
+description: >
+  <p>Calcula coordenadas a lo largo de una línea tangente a una curva de Bézier.</p>
+
+  <p>Las líneas tangentes rozan la superficie de una curva. La pendiente de una línea tangente es igual a la pendiente de la curva en el punto donde se intersectan.</p>
+
+  <p><code>bezierTangent()</code> calcula coordenadas a lo largo de una línea tangente utilizando los puntos de anclaje y control de la curva de Bézier. Espera puntos en el mismo orden que la función <a href="/reference/p5/bezier">bezier()</a>. <code>bezierTangent()</code> trabaja un eje a la vez. Pasar las coordenadas x de los puntos de anclaje y control calculará la coordenada x de un punto en la línea tangente. Pasar las coordenadas y de los puntos de anclaje y control calculará la coordenada y de un punto en la línea tangente.</p>
+
+  <p>El primer parámetro, <code>a</code>, es la coordenada del primer punto de anclaje.</p>
+
+  <p>El segundo y tercer parámetros, <code>b</code> y <code>c</code>, son las coordenadas de los puntos de control.</p>
+
+  <p>El cuarto parámetro, <code>d</code>, es la coordenada del último punto de anclaje.</p>
+
+  <p>El quinto parámetro, <code>t</code>, es la cantidad a interpolar a lo largo de la curva. 0 es el primer punto de anclaje, 1 es el segundo punto de anclaje, y 0.5 está a mitad de camino entre ellos.</p> 
+line: 450
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 85;
+      let x2 = 10;
+      let x3 = 90;
+      let x4 = 15;
+      let y1 = 20;
+      let y2 = 10;
+      let y3 = 90;
+      let y4 = 80;
+
+      // Style the curve.
+      noFill();
+
+      // Draw the curve.
+      bezier(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Draw tangents along the curve's path.
+      fill(255);
+
+      // Top-right circle.
+      stroke(0);
+      let x = bezierPoint(x1, x2, x3, x4, 0);
+      let y = bezierPoint(y1, y2, y3, y4, 0);
+      circle(x, y, 5);
+
+      // Top-right tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      let tx = 0.1 * bezierTangent(x1, x2, x3, x4, 0);
+      let ty = 0.1 * bezierTangent(y1, y2, y3, y4, 0);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Center circle.
+      stroke(0);
+      x = bezierPoint(x1, x2, x3, x4, 0.5);
+      y = bezierPoint(y1, y2, y3, y4, 0.5);
+      circle(x, y, 5);
+
+      // Center tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.1 * bezierTangent(x1, x2, x3, x4, 0.5);
+      ty = 0.1 * bezierTangent(y1, y2, y3, y4, 0.5);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Bottom-left circle.
+      stroke(0);
+      x = bezierPoint(x1, x2, x3, x4, 1);
+      y = bezierPoint(y1, y2, y3, y4, 1);
+      circle(x, y, 5);
+
+      // Bottom-left tangent.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.1 * bezierTangent(x1, x2, x3, x4, 1);
+      ty = 0.1 * bezierTangent(y1, y2, y3, y4, 1);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      describe(
+        'A black s-curve on a gray square. The endpoints and center of the curve are marked with white circles. Red tangent lines extend from the white circles.'
+      );
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p>coordenada del primer punto de anclaje.</p>
+    type: Number
+  - name: b
+    description: |
+      <p>coordenada del primer punto de control.</p>
+    type: Number
+  - name: c
+    description: |
+      <p>coordenada del segundo punto de control.</p>
+    type: Number
+  - name: d
+    description: |
+      <p>coordenada del segundo punto de anclaje.</p>
+    type: Number
+  - name: t
+    description: |
+      <p>cantidad a interpolar entre 0 y 1.</p>
+    type: Number
+return:
+  description: coordenada de un punto en la línea tangente.
+  type: Number
+chainable: false
+---
+
+
+# bezierTangent

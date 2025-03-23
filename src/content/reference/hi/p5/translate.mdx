@@ -1,0 +1,183 @@
+---
+title: translate
+module: Transform
+submodule: Transform
+file: src/core/transform.js
+description: >
+  <p>निर्देशांक प्रणाली का अनुवाद करता है।</p>
+
+   <p>डिफ़ॉल्ट रूप से, मूल <code>(0, 0)</code> स्केच के शीर्ष-बाएँ पर है
+   2डी मोड में कोना और वेबजीएल मोड में केंद्र। <code>translate()</code> फ़ंक्शन मूल को एक अलग स्थिति में स्थानांतरित कर देता है। <code>translate()</code> को कॉल करने के बाद खींची गई सभी चीज़ें स्थानांतरित होती दिखाई देंगी। <code>translate()</code> को कॉल करने के दो तरीके हैं
+   उन मापदंडों के साथ जो मूल की स्थिति निर्धारित करते हैं।</p>
+
+   <p>कॉल करने का पहला तरीका <code>translate()</code> अनुवाद की मात्रा निर्धारित करने के लिए संख्याओं का उपयोग करता है। पहले दो पैरामीटर, <code>x</code> और <code>y</code>, सकारात्मक x- और y-अक्ष के साथ अनुवाद करने के लिए मात्रा निर्धारित करते हैं। उदाहरण के लिए, <code>translate(20, 30)</code> को कॉल करने से मूल 20 पिक्सेल x-अक्ष पर और 30 पिक्सेल y-अक्ष पर अनुवादित हो जाता है। तीसरा पैरामीटर, <code>z</code>, वैकल्पिक है। यह सकारात्मक z-अक्ष के साथ अनुवाद करने के लिए मात्रा निर्धारित करता है। उदाहरण के लिए, <code>translate(20, 30, 40)</code> को कॉल करने से x-अक्ष पर मूल 20 पिक्सेल, y-अक्ष पर 30 पिक्सेल और z-अक्ष पर 40 पिक्सेल का अनुवाद होता है।</p>
+
+   <p>कॉल करने का दूसरा तरीका <code>translate()</code> अनुवाद की मात्रा निर्धारित करने के लिए <a href="/reference/p5/p5.Vector">p5.Vector</a> ऑब्जेक्ट का उपयोग करता है। उदाहरण के लिए, <code>translate(myVector)</code> को कॉल करने पर x-, y- के साथ अनुवाद करने की मात्रा निर्धारित करने के लिए <code>myVector</code> के x-, y- और z-घटकों का उपयोग किया जाता है। और z-अक्ष। ऐसा करना <code>translate(myVector.x, myVector.y, myVector.z)</code> को कॉल करने के समान है।</p> <p>डिफ़ॉल्ट रूप से, परिवर्तन जमा होते हैं। उदाहरण के लिए, <code>translate(10, 0)</code> को दो बार कॉल करने का प्रभाव <code>translate(20, 0)</code> को एक बार कॉल करने जैसा ही होता है। <a
+   href='/reference/p5/push'>push()</a> और <a href='/reference/p5/pop'>pop()</a> फ़ंक्शंस का उपयोग अलग-अलग ड्राइंग समूहों के भीतर परिवर्तनों को अलग करने के लिए किया जा सकता है। .</p>
+
+   <p>ध्यान दें: ट्रांसफ़ॉर्मेशन ड्रॉ लूप की शुरुआत में रीसेट किए जाते हैं। <a के अंदर <code>translate(10, 0)</code> को कॉल करना
+   href='/reference/p5/draw'>draw()</a> फ़ंक्शन के कारण आकृतियाँ लगातार हिलती नहीं रहेंगी।</p>
+line: 1224
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw a circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'Two circles drawn on a gray background. The blue circle on the right overlaps the red circle at the center.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin to the center.
+      translate(50, 50);
+
+      // Draw the red circle.
+      fill('red');
+      circle(0, 0, 40);
+
+      // Translate the origin to the right.
+      translate(25, 0);
+
+      // Draw the blue circle.
+      fill('blue');
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle moves slowly from left to right on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the x-coordinate.
+      let x = frameCount * 0.2;
+
+      // Translate the origin.
+      translate(x, 50);
+
+      // Draw a circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Create a p5.Vector object.
+      let v = createVector(50, 50);
+
+      // Translate the origin by the vector.
+      translate(v);
+
+      // Draw a circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'Two spheres sitting side-by-side on gray background. The sphere at the center is red. The sphere on the right is blue.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Turn on the lights.
+      lights();
+
+      // Style the spheres.
+      noStroke();
+
+      // Draw the red sphere.
+      fill('red');
+      sphere(10);
+
+      // Translate the origin to the right.
+      translate(30, 0, 0);
+
+      // Draw the blue sphere.
+      fill('blue');
+      sphere(10);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 1224
+    params:
+      - name: x
+        description: |
+          <p>amount to translate along the positive x-axis.</p>
+        type: Number
+      - name: 'y'
+        description: |
+          <p>amount to translate along the positive y-axis.</p>
+        type: Number
+      - name: z
+        description: |
+          <p>amount to translate along the positive z-axis.</p>
+        type: Number
+        optional: true
+    chainable: 1
+  - line: 1395
+    params:
+      - name: vector
+        description: |
+          <p>vector by which to translate.</p>
+        type: p5.Vector
+    chainable: 1
+chainable: true
+---
+
+
+# translate

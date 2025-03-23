@@ -1,0 +1,41 @@
+---
+import {
+  exampleContentSlugToLegacyWebsiteSlug,
+  getCollectionInDefaultLocale,
+  getExampleCategory,
+} from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
+import { getExampleCode } from "@pages/_utils-node";
+import ExampleLayout from "@/src/layouts/ExampleLayout.astro";
+
+export async function getStaticPaths() {
+  const examples = await getCollectionInDefaultLocale("examples");
+  const paths = await Promise.all(
+    examples.map(async (example) => {
+      const unPrefixSlug = removeLocalePrefix(example.slug);
+      const code = await getExampleCode(example.id);
+      const category = getExampleCategory(example.id);
+      return {
+        params: { slug: exampleContentSlugToLegacyWebsiteSlug(unPrefixSlug) },
+        props: {
+          example,
+          code,
+          relatedExamples: examples.filter(
+            (e) => getExampleCategory(e.id) === category
+          ),
+        },
+      };
+    })
+  );
+
+  return paths;
+}
+
+const { example, code, relatedExamples } = Astro.props;
+---
+
+<ExampleLayout
+  example={example}
+  code={code}
+  relatedExamples={relatedExamples}
+/>

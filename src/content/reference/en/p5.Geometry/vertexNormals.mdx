@@ -1,0 +1,146 @@
+---
+title: vertexNormals
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>An array with the vectors that are normal to the geometry's vertices.</p>
+
+  <p>A face's orientation is defined by its <em>normal vector</em> which points
+  out
+
+  of the face and is normal (perpendicular) to the surface. Calling
+
+  <code>myGeometry.computeNormals()</code> first calculates each face's normal
+
+  vector. Then it calculates the normal vector for each vertex by
+
+  averaging the normal vectors of the faces surrounding the vertex. The
+
+  vertex normals are stored as <a href="/reference/p5/p5.Vector">p5.Vector</a>
+
+  objects in the <code>myGeometry.vertexNormals</code> array.</p>
+line: 375
+isConstructor: false
+itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      beginGeometry();
+      torus(30, 15, 10, 8);
+      myGeometry = endGeometry();
+
+      // Compute the vertex normals.
+      myGeometry.computeNormals();
+
+      describe(
+        'A white torus rotates against a dark gray background. Red lines extend outward from its vertices.'
+      );
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
+      rotateY(frameCount * 0.01);
+
+      // Style the p5.Geometry object.
+      stroke(0);
+
+      // Display the p5.Geometry object.
+      model(myGeometry);
+
+      // Style the normal vectors.
+      stroke(255, 0, 0);
+
+      // Iterate over the vertices and vertexNormals arrays.
+      for (let i = 0; i < myGeometry.vertices.length; i += 1) {
+
+        // Get the vertex p5.Vector object.
+        let v = myGeometry.vertices[i];
+
+        // Get the vertex normal p5.Vector object.
+        let n = myGeometry.vertexNormals[i];
+
+        // Calculate a point along the vertex normal.
+        let p = p5.Vector.mult(n, 8);
+
+        // Draw the vertex normal as a red line.
+        push();
+        translate(v);
+        line(0, 0, 0, p.x, p.y, p.z);
+        pop();
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      myGeometry = new p5.Geometry();
+
+      // Create p5.Vector objects to position the vertices.
+      let v0 = createVector(-40, 0, 0);
+      let v1 = createVector(0, -40, 0);
+      let v2 = createVector(0, 40, 0);
+      let v3 = createVector(40, 0, 0);
+
+      // Add the vertices to the p5.Geometry object's vertices array.
+      myGeometry.vertices.push(v0, v1, v2, v3);
+
+      // Compute the faces array.
+      myGeometry.computeFaces();
+
+      // Compute the surface normals.
+      myGeometry.computeNormals();
+
+      describe('A red square drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a white point light.
+      pointLight(255, 255, 255, 0, 0, 10);
+
+      // Style the p5.Geometry object.
+      noStroke();
+      fill(255, 0, 0);
+
+      // Display the p5.Geometry object.
+      model(myGeometry);
+    }
+    </code>
+    </div>
+class: p5.Geometry
+---
+
+
+# vertexNormals

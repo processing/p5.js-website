@@ -1,0 +1,292 @@
+---
+title: applyMatrix
+module: परिवर्तन
+submodule: परिवर्तन
+file: src/core/transform.js
+description: >
+   <p>निर्देशांक प्रणाली में एक परिवर्तन मैट्रिक्स लागू करता है।</p>
+
+   <p>रूपांतरण जैसे <a href='/reference/p5/translate'>translate()</a>, <a href='/reference/p5/rotate'>rotate()</a>, और <a href='/reference/p5/scale'>scale()</a> पर्दे के पीछे मैट्रिक्स-वेक्टर गुणन का उपयोग करें। संख्याओं की एक तालिका, जिसे मैट्रिक्स कहा जाता है, प्रत्येक परिवर्तन को एन्कोड करती है। फिर मैट्रिक्स में मान कैनवास पर प्रत्येक बिंदु को गुणा करते हैं, जिसे एक वेक्टर द्वारा दर्शाया जाता है।</p>
+
+   <p><code>applyMatrix()</code> एक साथ कई परिवर्तनों को लागू करने की अनुमति देता है। देखें <a href='https://en.wikipedia.org/wiki/Transformation_matrix'
+   target='_blank'>विकिपीडिया</a> और <a
+   href='https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web'
+   target='_blank'>MDN</a>
+
+   परिवर्तनों के बारे में अधिक जानकारी के लिए।</p> <p>दो और तीन आयामों में <code>applyMatrix()</code> को कॉल करने के दो तरीके हैं।</p>
+
+   <p>2डी मोड में, पैरामीटर <code>ए</code>, <code>बी</code>, <code>सी</code>, <code>डी</code>, <code>ई< /code>, और <code>एफ</code>, निम्नलिखित परिवर्तन मैट्रिक्स में तत्वों के अनुरूप हैं:</p>
+
+   <blockquote> 
+   
+   <p><img style="max-width: 150px" src="/assets/transformation-matrix.png" alt='applyMatrix को 2D में कॉल करते समय उपयोग किया जाने वाला ट्रांसफ़ॉर्मेशन मैट्रिक्स मोड।'/></p>
+
+   </blockquote>
+
+   <p>संख्याओं को अलग-अलग पारित किया जा सकता है, जैसे कि
+
+   <code>मैट्रिक्स लागू करें(2, 0, 0, 0, 2, 0)</code>। उन्हें एक सरणी में भी पारित किया जा सकता है, जैसे <code>applyMatrix([2, 0, 0, 0, 2, 0])</code></p>
+
+   <p>3डी मोड में, पैरामीटर <code>ए</code>, <code>बी</code>, <code>सी</code>, <code>डी</code>, <code>ई< /code>, <code>एफ</code>, <code>जी</code>, <code>एच</code>, <code>आई</code>,
+
+   <code>जे</code>, <code>के</code>, <code>एल</code>, <code>एम</code>,
+   <code>n</code>, <code>o</code>, और <code>p</code> निम्नलिखित परिवर्तन मैट्रिक्स में तत्वों के अनुरूप हैं:</p>
+
+   <p><img style='max-width: 300px' src='/assets/transformation-matrix-4-4.png' alt=='जब applyMatrix को 3D मोड में कॉल किया जाता है तो परिवर्तन मैट्रिक्स का उपयोग किया जाता है।'/></p>
+
+   <p>संख्याओं को अलग-अलग पास किया जा सकता है, जैसे <code>applyMatrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1)< /code>. वे
+   किसी ऐरे में भी पारित किया जा सकता है, जैसे कि <code>applyMatrix([2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1])< /code>.</p>
+
+   <p>डिफ़ॉल्ट रूप से, परिवर्तन एकत्रित होते हैं। <a href='/reference/p5/push'>push()</a> और <a href='/reference/p5/pop'>pop()</a> फ़ंक्शंस का उपयोग भीतर परिवर्तनों को अलग करने के लिए किया जा सकता है विशिष्ट ड्राइंग समूह।</p>
+
+   <p> ध्यान दें: ट्रांसफ़ॉर्मेशन ड्रॉ लूप की शुरुआत में रीसेट किए जाते हैं। <a ref="/reference/p5/draw">draw()</a> फ़ंक्शन के अंदर <code>applyMatrix()</code> को कॉल करने से आकृतियों में लगातार परिवर्तन नहीं होगा।</p>
+line: 11
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin to the center.
+      applyMatrix(1, 0, 0, 1, 50, 50);
+
+      // Draw the circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin to the center.
+      let m = [1, 0, 0, 1, 50, 50];
+      applyMatrix(m);
+
+      // Draw the circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe("A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      let angle = QUARTER_PI;
+      let ca = cos(angle);
+      let sa = sin(angle);
+      applyMatrix(ca, sa, -sa, ca, 0, 0);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'Two white squares on a gray background. The larger square appears at the top-center. The smaller square appears at the top-left.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by a factor of 0.5.
+      applyMatrix(0.5, 0, 0, 0.5, 0, 0);
+
+      // Draw a square at (30, 20).
+      // It appears at (15, 10) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white quadrilateral on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the shear factor.
+      let angle = QUARTER_PI;
+      let shearFactor = 1 / tan(HALF_PI - angle);
+
+      // Shear the coordinate system along the x-axis.
+      applyMatrix(1, 0, shearFactor, 1, 0, 0);
+
+      // Draw the square.
+      square(0, 0, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube rotates slowly against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      let ca = cos(angle);
+      let sa = sin(angle);
+      applyMatrix(ca, 0, sa, 0, 0, 1, 0, 0, -sa, 0, ca, 0, 0, 0, 0, 1);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 11
+    params:
+      - name: arr
+        description: >
+          <p>an array containing the elements of the transformation matrix. Its
+          length should be either 6 (2D) or 16 (3D).</p>
+        type: Array
+    chainable: 1
+  - line: 206
+    params:
+      - name: a
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: b
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: c
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: d
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: e
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: f
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+    chainable: 1
+  - line: 216
+    params:
+      - name: a
+        description: ''
+        type: Number
+      - name: b
+        description: ''
+        type: Number
+      - name: c
+        description: ''
+        type: Number
+      - name: d
+        description: ''
+        type: Number
+      - name: e
+        description: ''
+        type: Number
+      - name: f
+        description: ''
+        type: Number
+      - name: g
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: h
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: i
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: j
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: k
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: l
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: m
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: 'n'
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: o
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+      - name: p
+        description: |
+          <p>an element of the transformation matrix.</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# applyMatrix

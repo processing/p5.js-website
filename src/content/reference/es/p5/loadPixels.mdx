@@ -1,0 +1,57 @@
+---
+title: loadPixels
+module: Imagen
+submodule: Píxeles
+file: src/image/pixels.js
+description: |
+  <p>Carga el valor actual de cada píxel en el lienzo en el arreglo de
+  <a href="/reference/p5/pixels">píxeles</a>.</p>
+  <p><code>loadPixels()</code> debe ser llamado antes de leer o escribir en
+  <a href="/reference/p5/pixels">píxeles</a>.</p>
+line: 946
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/rockies.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Display the image.
+      image(img, 0, 0, 100, 100);
+
+      // Get the pixel density.
+      let d = pixelDensity();
+
+      // Calculate the halfway index in the pixels array.
+      let halfImage = 4 * (d * width) * (d * height / 2);
+
+      // Load the pixels array.
+      loadPixels();
+
+      // Copy the top half of the canvas to the bottom.
+      for (let i = 0; i < halfImage; i += 1) {
+        pixels[i + halfImage] = pixels[i];
+      }
+
+      // Update the canvas.
+      updatePixels();
+
+      describe('Two identical images of mountain landscapes, one on top of the other.');
+    }
+    </code>
+    </div>
+class: p5
+chainable: false
+---
+
+# loadPixels

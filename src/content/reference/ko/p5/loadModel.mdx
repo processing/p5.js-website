@@ -1,0 +1,451 @@
+---
+title: loadModel
+module: 도형
+submodule: 3D 모델
+file: src/webgl/loading.js
+description: >
+  <p>3D 모델을 불러와
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체를 만듭니다.</p>
+
+  <p><code>loadModel()</code> 은 OBJ 및 STL 파일로부터 3D 모델을 불러올 수 있습니다. 
+  모델을 불러오면, 
+
+  <a href="/reference/p5/model">model()</a> 함수를 사용하여,
+
+  예를 들어
+  <code>model(shape)</code> 와 같이 모델을 표시할 수 있습니다.</p>
+
+  <p><code>loadModel()</code> 호출하는 방법은 총 세 가지로, 
+  이는 모델을 처리하는 데 도움이 되는 선택적 매개변수 
+
+  세 가지를 활용합니다.</p>
+
+  <p>첫 번째 매개변수 <code>path</code> 는 항상 <code>String</code>이며, 파일의 경로를 나타냅니다.
+
+  로컬 파일의 경로는 <code>loadModel('/assets/model.obj')와 같이 상대적으로 지정되어야 합니다. 
+
+  </code>'<a
+  href="https://example.com/model.obj'%60">https://example.com/model.obj'`</a>
+  와 같은 URL은 브라우저 보안으로 인해 차단될 수 있습니다.</p>
+
+  <p><code>loadModel()</code> 을 호출하는 첫 번째 방법은 파일 경로 뒤에 세 가지 선택적 매개변수를 갖습니다.
+  첫 번째 선택적 매개변수인 
+
+  <code>successCallback</code> 는 
+  모델을 최초로 불러온 뒤 호출할 함수입니다. 
+
+  예를 들어, 
+
+  <code>loadModel('/assets/model.obj', handleModel)</code> 는 모델이 로드되면 
+  <code>handleModel()</code> 함수를 호출합니다. 
+
+  두 번째 선택적 매개변수
+
+  <code>failureCallback</code> 는 모델이 로드되지 않으면 호출할 함수입니다.
+  예를 들어,
+
+  <code>loadModel('/assets/model.obj', handleModel,
+  handleFailure)</code> 는 로드 중 오류가 발생하면 
+
+  <code>handleFailure()</code> 함수를
+  호출합니다. 
+
+  세 번째 선택적 매개변수, <code>fileType</code> 는
+  모델의 파일 확장자를 나타내는 문자열입니다.
+
+  예를 들어
+
+  <code>loadModel('/assets/model', handleModel, handleFailure, '.obj')</code>
+  는 파일 모델을 
+
+  <code>.obj</code> 파일로 불러오려고 시도합니다.</p>
+
+  <p><code>loadModel()</code> 을 호출하는 두 번째 방법은 
+  파일 경로 뒤에 네 가지 선택적 매개변수를 갖습니다. 
+
+  첫 번째 선택적 매개변수는 <code>Boolean</code> 값입니다. 예를 들어, 
+  <code>true</code> 를
+
+  <code>loadModel('/assets/model.obj', true)</code> 에 전달하면, 
+  모델의 크기가 캔버스 크기에 맞도록 재조정됩니다.
+
+  그 다음 세 가지 매개변수는 위에서 설명한 
+
+  <code>successCallback</code>, <code>failureCallback</code> 그리고
+  <code>fileType</code> 입니다.</p>
+
+  <p><code>loadModel()</code> 을 호출하는 세 번째 방법은 파일 경로 뒤에 하나의 선택적 매개변수를 갖습니다. 
+  선택적 매개변수
+
+  <code>options</code> 는 <code>loadModel('/assets/model.obj', options)</code>와 같이
+  옵션을 가진 
+
+  <code>Object</code> 입니다.
+  <code>options</code> 객체는
+
+  다음의 속성을 가질 수 있습니다:</p>
+
+  <code>
+
+  let options = {
+    // Enables standardized size scaling during loading if set to true.
+    normalize: true,
+
+  <p>  // Function to call once the model loads.
+    successCallback: handleModel,</p>
+  <p>  // Function to call if an error occurs while loading.
+    failureCallback: handleError,</p>
+  <p>  // Model's file extension.
+    fileType: '.stl',</p>
+  <p>  // Flips the U texture coordinates of the model.
+    flipU: false,</p>
+  <p>  // Flips the V texture coordinates of the model.
+    flipV: false
+  };</p>
+
+  <p>// Pass the options object to loadModel().
+
+  loadModel('/assets/model.obj', options);
+
+  </p></code>
+
+  <p>Models can take time to load. Calling <code>loadModel()</code> in
+
+  <a href="/reference/p5/preload">preload()</a> ensures models load before
+  they're
+
+  used in <a href="/reference/p5/setup">setup()</a> or <a
+  href="/reference/p5/draw">draw()</a>.</p>
+
+  <p>Note: There’s no support for colored STL files. STL files with color will
+
+  be rendered without color.</p>
+line: 12
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    // Load the file and create a p5.Geometry object.
+    function preload() {
+      shape = loadModel('/assets/teapot.obj');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white teapot drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the shape.
+      model(shape);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    // Load the file and create a p5.Geometry object.
+    // Normalize the geometry's size to fit the canvas.
+    function preload() {
+      shape = loadModel('/assets/teapot.obj', true);
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white teapot drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the shape.
+      model(shape);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    // Load the file and create a p5.Geometry object.
+    function preload() {
+      loadModel('/assets/teapot.obj', true, handleModel);
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white teapot drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the shape.
+      model(shape);
+    }
+
+    // Set the shape variable and log the geometry's
+    // ID to the console.
+    function handleModel(data) {
+      shape = data;
+      console.log(shape.gid);
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    // Load the file and create a p5.Geometry object.
+    function preload() {
+      loadModel('/assets/wrong.obj', true, handleModel, handleError);
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white teapot drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the shape.
+      model(shape);
+    }
+
+    // Set the shape variable and print the geometry's
+    // ID to the console.
+    function handleModel(data) {
+      shape = data;
+      console.log(shape.gid);
+    }
+
+    // Print an error message if the file doesn't load.
+    function handleError(error) {
+      console.error('Oops!', error);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    // Load the file and create a p5.Geometry object.
+    function preload() {
+      loadModel('/assets/teapot.obj', true, handleModel, handleError, '.obj');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white teapot drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the shape.
+      model(shape);
+    }
+
+    // Set the shape variable and print the geometry's
+    // ID to the console.
+    function handleModel(data) {
+      shape = data;
+      console.log(shape.gid);
+    }
+
+    // Print an error message if the file doesn't load.
+    function handleError(error) {
+      console.error('Oops!', error);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+    let options = {
+      normalize: true,
+      successCallback: handleModel,
+      failureCallback: handleError,
+      fileType: '.obj'
+    };
+
+    // Load the file and create a p5.Geometry object.
+    function preload() {
+      loadModel('/assets/teapot.obj', options);
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white teapot drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the shape.
+      model(shape);
+    }
+
+    // Set the shape variable and print the geometry's
+    // ID to the console.
+    function handleModel(data) {
+      shape = data;
+      console.log(shape.gid);
+    }
+
+    // Print an error message if the file doesn't load.
+    function handleError(error) {
+      console.error('Oops!', error);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+  type: p5.Geometry
+overloads:
+  - line: 12
+    params:
+      - name: path
+        description: |
+          <p>불러올 모델의 경로.</p>
+        type: String
+      - name: normalize
+        description: |
+          <p><code>true</code>인 경우 캔버스에 맞게 모델 사이즈를 맞춥니다.</p>
+        type: Boolean
+      - name: successCallback
+        description: |
+          <p>모델을 불러오면 호출할 함수입니다.
+                                                           매개변수로 <a href="#/p5.Geometry">p5.Geometry</a> 객체를 받습니다.</p>
+        type: function(p5.Geometry)
+        optional: true
+      - name: failureCallback
+        description: >
+          <p>모델을 불러오는 중 오류가 발생하면 호출할 함수입니다. 
+          <code>Error</code> 이벤트 객체를 받습니다.</p>
+        type: Function(Event)
+        optional: true
+      - name: fileType
+        description: >
+          <p>모델의 파일 확장자. <code>'.obj'</code> 또는 
+          <code>'.stl'</code>.</p>
+        type: String
+        optional: true
+    return:
+      description: <a href="#/p5.Geometry">p5.Geometry</a> 객체.
+      type: p5.Geometry
+  - line: 318
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: successCallback
+        description: ''
+        type: function(p5.Geometry)
+        optional: true
+      - name: failureCallback
+        description: ''
+        type: Function(Event)
+        optional: true
+      - name: fileType
+        description: ''
+        type: String
+        optional: true
+    return:
+      description: 새로운 <a href="#/p5.Geometry">p5.Geometry</a> 객체.
+      type: p5.Geometry
+  - line: 326
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: options
+        description: |
+          <p>모델 불러오기 옵션.</p>
+        type: Object
+        optional: true
+        props:
+          - name: successCallback
+            description: ''
+            type: function(p5.Geometry)
+            optional: true
+          - name: failureCallback
+            description: ''
+            type: Function(Event)
+            optional: true
+          - name: fileType
+            description: ''
+            type: String
+            optional: true
+          - name: normalize
+            description: ''
+            type: Boolean
+            optional: true
+          - name: flipU
+            description: ''
+            type: Boolean
+            optional: true
+          - name: flipV
+            description: ''
+            type: Boolean
+            optional: true
+    return:
+      description: 새로운 <a href="#/p5.Geometry">p5.Geometry</a> 객체.
+      type: p5.Geometry
+chainable: false
+---
+
+
+# loadModel

@@ -1,0 +1,269 @@
+---
+title: curve
+module: 도형
+submodule: 곡선
+file: src/core/shape/curves.js
+description: >
+  <p>캣멀롬 스플라인(Catmull-Rom spline) 사용하여 곡선을 그립니다.</p>
+
+  <p>스플라인 곡선은 부드럽게 기울어지는 모양과 곡선을 만들 수 있습니다. 이는
+
+  케이블이 여러 포인트에 연결된 것과 유사합니다. 
+
+  스플라인은 두 앵커 포인트(anchor point)와 두 컨트롤 포인트(control point)로 정의됩니다.</p>
+
+  <p>첫 번째 두 매개변수인 <code>x1</code> 와 <code>y1</code>, 
+  은 첫 번째 컨트롤 포인트를 설정합니다.
+
+  이 점은 그려지지 않으며, 곡선의 시작점으로 생각할 수 있습니다.</p>
+
+  <p>다음 네 매개 변수인 <code>x2</code>, <code>y2</code>,
+  <code>x3</code>, <code>y3</code>, 는 두 앵커 포인트를 설정합니다. 
+
+  앵커 포인트는 
+
+  곡선의 가시적인 부분의 시작점과 끝점을 나타냅니다.</p>
+
+  <p>일곱 번째와 여덟 번째 매개변수인 <code>x4</code> 와 <code>y4</code>, 
+  는 마지막 컨트롤 포인트를 설정합니다.
+
+  이 점은 그려지지 않으며 
+
+  곡선의 끝점으로 생각할 수 있습니다.</p>
+
+  <p>스플라인 곡선은 WebGL 모드를 사용하여 3D로도 그릴 수 있습니다.
+
+  <code>curve()</code> 함수의 3D 버전은 각 점이 x, y, z좌표를 가지기 때문에 12개의
+
+  인수를 가집니다.</p>
+line: 570
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(5, 26, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(5, 26, 5, 26, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(5, 26);
+      point(15, 65);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let x1 = 5;
+    let y1 = 26;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(x1, y1, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(x1, y1, x1, y1, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x1, y1);
+      point(15, 65);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x1, y1) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x1 = mouseX;
+        y1 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background('skyblue');
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-150, 275, 50, 60, 50, 60, 250, 275);
+
+      // Draw the balloon string.
+      line(50, 60, 50, 80);
+
+      describe('A red balloon in a blue sky.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red balloon in a blue sky.');
+    }
+
+    function draw() {
+      background('skyblue');
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-200, 225, 0, 0, 10, 0, 0, 10, 0, 200, 225, 0);
+
+      // Draw the balloon string.
+      line(0, 10, 0, 0, 30, 0);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 570
+    params:
+      - name: x1
+        description: |
+          <p>첫 번째 컨트롤 포인트의 x 좌표입니다.</p>
+        type: Number
+      - name: y1
+        description: |
+          <p>첫 번째 컨트롤 포인트의 y 좌표입니다.</p>
+        type: Number
+      - name: x2
+        description: |
+          <p>첫 번째 앵커 포인트의 x 좌표입니다.</p>
+        type: Number
+      - name: y2
+        description: |
+          <p>첫 번째 앵커 포인트의 y 좌표입니다.</p>
+        type: Number
+      - name: x3
+        description: |
+          <p>두 번째 앵커 포인트의 x 좌표입니다.</p>
+        type: Number
+      - name: y3
+        description: |
+          <p>두 번째 앵커 포인트의 y 좌표입니다.</p>
+        type: Number
+      - name: x4
+        description: |
+          <p>두 번째 컨트롤 포인트의 x 좌표입니다.</p>
+        type: Number
+      - name: y4
+        description: |
+          <p>두 번째 컨트롤 포인트의 y 좌표입니다.</p>
+        type: Number
+    chainable: 1
+  - line: 746
+    params:
+      - name: x1
+        description: ''
+        type: Number
+      - name: y1
+        description: ''
+        type: Number
+      - name: z1
+        description: |
+          <p>첫 번째 컨트롤 포인트의 z 좌표.</p>
+        type: Number
+      - name: x2
+        description: ''
+        type: Number
+      - name: y2
+        description: ''
+        type: Number
+      - name: z2
+        description: |
+          <p>첫 번째 앵커 포인트의 z 좌표.</p>
+        type: Number
+      - name: x3
+        description: ''
+        type: Number
+      - name: y3
+        description: ''
+        type: Number
+      - name: z3
+        description: |
+          <p>두 번째 앵커 포인트의 z 좌표.</p>
+        type: Number
+      - name: x4
+        description: ''
+        type: Number
+      - name: y4
+        description: ''
+        type: Number
+      - name: z4
+        description: |
+          <p>두 번째 컨트롤 포인트의 z 좌표.</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# curve

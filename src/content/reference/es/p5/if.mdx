@@ -1,0 +1,192 @@
+---
+title: if
+module: Foundation
+submodule: Foundation
+file: src/core/reference.js
+description: >
+ <p>Una forma de elegir si ejecutar un bloque de código.</p>
+
+  <p>Las declaraciones <code>if</code> son útiles para ejecutar un bloque de código basado en una condición. Por ejemplo, una declaración <code>if</code> facilita expresar la idea "Dibuja un círculo si el mouse está presionado.":</p>
+
+  <code>
+    if (mouseIsPressed === true) {
+        circle(mouseX, mouseY, 20);
+    }
+  </code>
+
+  <p>El encabezado de la declaración comienza con la palabra clave <code>if</code>. La expresión entre paréntesis <code>mouseIsPressed === true</code> es una expresión booleana que es <code>true</code> o <code>false</code>. El código entre llaves <code>{}</code> es el cuerpo de la declaración <code>if</code>. El cuerpo solo se ejecuta si la expresión booleana es <code>true</code>.</p>
+
+  <p>La variable de sistema <a href="/reference/p5/mouseIsPressed">mouseIsPressed</a> siempre es <code>true</code> o <code>false</code>, por lo que el fragmento de código anterior también se podría escribir de la siguiente manera:</p>
+
+  <code>
+    if (mouseIsPressed) {
+        circle(mouseX, mouseY, 20);
+    }
+  </code>
+
+  <p>Una declaración <code>if</code>-<code>else</code> agrega un bloque de código que se ejecuta si la expresión booleana es <code>false</code>. Por ejemplo, aquí hay una declaración <code>if</code>-<code>else</code> que expresa la idea "Dibuja un círculo si el mouse está presionado. De lo contrario, muestra un mensaje.":</p>
+
+  <code>
+    if (mouseIsPressed === true) {
+        // When true.
+        circle(mouseX, mouseY, 20);
+    } else {
+        // When false.
+        text('Haz clic en mí!', 50, 50);
+    }
+  </code>
+
+  <p>Hay dos posibles caminos, o ramas, en este fragmento de código. El programa debe seguir una rama u otra.</p>
+
+  <p>Una declaración <code>else</code>-<code>if</code> hace posible agregar más ramas. Las declaraciones <code>else</code>-<code>if</code> ejecutan diferentes bloques de código bajo diferentes condiciones. Por ejemplo, una declaración <code>else</code>-<code>if</code> facilita expresar la idea "Si el mouse está a la izquierda, pinta el lienzo de blanco. Si el mouse está en el medio, pinta el lienzo de gris. De lo contrario, pinta el lienzo de negro.":</p>
+
+  <code>
+    if (mouseX < 33) {
+        background(255);
+    } else if (mouseX < 67) {
+        background(200);
+    } else {
+        background(0);
+    }
+  </code>
+
+  <p>Las declaraciones <code>if</code> pueden agregar tantas declaraciones <code>else</code>-<code>if</code> como sea necesario. Sin embargo, solo puede haber una declaración <code>else</code> y debe estar al final.</p>
+
+  <p>Las declaraciones <code>if</code> también pueden verificar múltiples condiciones a la vez. Por ejemplo, el operador booleano <code>&&</code> (AND) verifica si dos expresiones son ambas <code>true</code>:</p>
+
+  <code>
+    if (keyIsPressed === true && key === 'p') {
+        text('¡Presionaste la tecla "p"!', 50, 50);
+    }
+  </code>
+
+  <p>Si el usuario está presionando una tecla y esa tecla es <code>'p'</code>, entonces se mostrará un mensaje.</p>
+
+  <p>El operador booleano <code>||</code> (OR) verifica si al menos una de dos expresiones es <code>true</code>:</p>
+
+  <code>
+    if (keyIsPressed === true || mouseIsPressed === true) {
+        text('¡Hiciste algo!', 50, 50);
+    }
+  </code>
+
+  <p>Si el usuario presiona una tecla, o presiona un botón del mouse, o ambos, entonces se mostrará un mensaje.</p>
+
+  <p>El cuerpo de una declaración <code>if</code> puede contener otra declaración <code>if</code>. Esto se llama una "declaración <code>if</code> anidada". Por ejemplo, las declaraciones <code>if</code> anidadas facilitan expresar la idea "Si se presiona una tecla, entonces verifica si la tecla es 'r'. Si la tecla presionada es ‘r’, entonces establece el color de relleno como rojo.":</p>
+
+  <code>
+    if (keyIsPressed === true) {
+        if (key === 'r') {
+            fill('red');
+        }
+    }
+  </code>
+
+  <p>Consulta <a href="/reference/p5/Boolean">Boolean</a> y <a href="/reference/p5/Number">Number</a> para aprender más sobre estos tipos de datos y las operaciones que admiten.</p>
+
+line: 110
+isConstructor: false
+itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click the mouse to show the circle.
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A white circle on a gray background. The circle follows the mouse user clicks on the canvas.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      if (mouseIsPressed === true) {
+        circle(mouseX, mouseY, 20);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the mouse to show different shapes.
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A white ellipse on a gray background. The ellipse becomes a circle when the user presses the mouse.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      if (mouseIsPressed === true) {
+        circle(50, 50, 20);
+      } else {
+        ellipse(50, 50, 20, 50);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Move the mouse to change the background color.
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A square changes color from white to black as the user moves the mouse from left to right.'
+      );
+    }
+
+    function draw() {
+      if (mouseX < 33) {
+        background(255);
+      } else if (mouseX < 67) {
+        background(200);
+      } else {
+        background(0);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A white circle drawn on a gray background. The circle changes color to red when the user presses the "r" key.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      if (keyIsPressed === true) {
+        if (key === 'r') {
+          fill('red');
+        }
+      }
+
+      circle(50, 50, 40);
+    }
+    </code>
+    </div>
+class: p5
+---
+
+
+# if

@@ -1,0 +1,117 @@
+---
+title: frustum
+module: 3D
+submodule: 카메라
+file: src/webgl/p5.Camera.js
+description: >
+  <p>3D 스케치에서 현재 카메라의 절두체(frustum)를 설정합니다.</p>
+  <p>절두체 투영에서, 카메라로부터 멀리 떨어진 도형은 카메라 근처에 있는 도형보다 더 작게 나타납니다. 단축법(foreshortening)이라고 불리는 이 기술은 사실적인 3D 장면을 만듭니다.</p>
+  <p><code>frustum()</code>은 뷰 절두체(viewing frustum)를 변경함으로써 카메라의 원근법을 변경합니다. 절두체는 카메라가 볼 수 있는 공간의 크기입니다. 이것의 모양은 꼭대기가 잘린 피라미드입니다. 카메라는 피라미드의 꼭대기가 있어야 하는 곳에 위치하고 피라미드의 바닥을 향합니다. 그것은 절두체 내의 모든 것을 담습니다.</p>
+  <p>처음 네 개의 매개 변수인 <code>left</code>, <code>right</code>, <code>bottom</code>, <code>top</code>은 절두체의 측면, 아래, 위의 좌표를 설정합니다. 예를 들어, <code>frustum(-100, 100, 200, -200)</code>를 호출하면 너비 200 픽셀, 높이 400 픽셀의 절두체가 생성됩니다. 기본적으로 <code>frustum(-width / 2, width / 2, -height / 2, height / 2)</code>에서와 같이 스케치의 너비와 높이를 기반으로 설정됩니다.</p>
+  <p>마지막 두 개의 매개 변수인 <code>near</code>, <code>far</code>는 카메라로부터 절두체의 가까운, 그리고 먼 평면의 거리를 설정합니다. 예를 들어, <code>frustum(-100, 100, 200, 200, 50, 1000)</code>는 너비 200 픽셀, 높이 400 픽셀이고 카메라로부터 50 픽셀만큼 떨어진 곳에서 시작해 1,000 픽셀만큼 떨어진 곳에서 끝나는 절두체가 생성됩니다. 기본적으로 <code>near</code>는 카메라와 원점 사이의 기본 거리의 1/10인 <code>0.1 * 800</code>로 설정됩니다. <code>far</code>는 카메라와 원점 사이의 기본 거리의 10배인 <code>10 * 800</code>로 설정됩니다.</p>
+  <p>참고: <code>frustum()</code>은 WebGL 모드에서만 사용할 수 있습니다.</p>
+line: 522
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A row of white cubes on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Apply the default frustum projection.
+      frustum();
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Adjust the frustum.
+      // Center it.
+      // Set its width and height to 20 pixels.
+      // Place its near plane 300 pixels from the camera.
+      // Place its far plane 350 pixels from the camera.
+      frustum(-10, 10, -10, 10, 300, 350);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: left
+    description: >
+      <p>절두체의 왼쪽 평면의 x 좌표. 기본값 <code>-width / 2</code></p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p>절두체의 오른쪽 평면의 x 좌표. 기본값 <code>width / 2</code></p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>절두체의 아래 평면의 y 좌표. 기본값 <code>height / 2</code></p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p>절두체의 위 평면의 y 좌표. 기본값 <code>-height / 2</code></p>
+    type: Number
+    optional: true
+  - name: near
+    description: >
+      <p>절두체의 가까운 평면의 z 좌표. 기본값 <code>0.1 * 800</code></p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p>절두체의 먼 평면의 z 좌표. 기본값 <code>10 * 800</code></p>
+    type: Number
+    optional: true
+chainable: true
+---
+
+
+# frustum

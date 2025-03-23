@@ -1,0 +1,329 @@
+---
+title: bezierVertex
+module: Shape
+submodule: Vertex
+file: src/core/shape/vertex.js
+description: >
+  <p>Agrega un segmento de curva Bézier a una forma personalizada.</p>
+
+  <p><code>bezierVertex()</code> agrega un segmento curvo a formas personalizadas. Las
+  curvas Bézier
+
+  que crea están definidas como las creadas por la
+
+  función <a href="/reference/p5/bezier">bezier()</a>.
+  <code>bezierVertex()</code> debe ser
+
+  llamada entre las funciones
+
+  <a href="/reference/p5/beginShape">beginShape()</a> y
+
+  <a href="/reference/p5/endShape">endShape()</a>. El segmento curvo utiliza
+
+  el vértice anterior como el primer punto de anclaje, por lo que debe haber al menos
+
+  una llamada a <a href="/reference/p5/vertex">vertex()</a> antes de que
+  se pueda usar <code>bezierVertex()</code>.</p>
+
+  <p>Los primeros cuatro parámetros, <code>x2</code>, <code>y2</code>,
+  <code>x3</code> y <code>y3</code>, establecen los dos puntos de control de la curva.
+  Los puntos de control "tiran" de la curva hacia ellos.</p>
+
+  <p>Los quinto y sexto parámetros, <code>x4</code> y <code>y4</code>, establecen
+  el último punto de anclaje.
+
+  El último punto de anclaje es donde termina la curva.</p>
+
+  <p>Las curvas Bézier también se pueden dibujar en 3D utilizando el modo WebGL. La versión 3D de
+
+  <code>bezierVertex()</code> tiene ocho argumentos porque cada punto tiene coordenadas x, y y
+
+  z.</p>
+
+  <p>Nota: <code>bezierVertex()</code> no funcionará cuando se pase un argumento a
+
+  <a href="/reference/p5/beginShape">beginShape()</a>.</p>
+line: 543
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shape.
+      noFill();
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first anchor point.
+      vertex(30, 20);
+
+      // Add the Bézier vertex.
+      bezierVertex(80, 0, 80, 75, 30, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('A black C curve on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(30, 20);
+      point(30, 75);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(80, 0);
+      point(80, 75);
+
+      // Style the shape.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first anchor point.
+      vertex(30, 20);
+
+      // Add the Bézier vertex.
+      bezierVertex(80, 0, 80, 75, 30, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(30, 20, 80, 0);
+      line(30, 75, 80, 75);
+
+      describe(
+        'A gray square with three curves. A black curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the mouse near the red dot in the top-right corner
+    // and drag to change the curve's shape.
+
+    let x2 = 80;
+    let y2 = 0;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with three curves. A black curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      strokeWeight(5);
+      point(30, 20);
+      point(30, 75);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x2, y2);
+      point(80, 75);
+
+      // Style the shape.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first anchor point.
+      vertex(30, 20);
+
+      // Add the Bézier vertex.
+      bezierVertex(x2, y2, 80, 75, 30, 75);
+
+      // Stop drawing the shape.
+      endShape();
+
+      // Draw red lines from the anchor points to the control points.
+      stroke(255, 0, 0);
+      line(30, 20, x2, y2);
+      line(30, 75, 80, 75);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x2, y2) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x2 = mouseX;
+        y2 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first anchor point.
+      vertex(30, 20);
+
+      // Add the Bézier vertices.
+      bezierVertex(80, 0, 80, 75, 30, 75);
+      bezierVertex(50, 80, 60, 25, 30, 20);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('A crescent moon shape drawn in white on a gray background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A crescent moon shape drawn in white on a blue background. When the user drags the mouse, the scene rotates and a second moon is revealed.');
+    }
+
+    function draw() {
+      background('midnightblue');
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the moons.
+      noStroke();
+      fill('lemonchiffon');
+
+      // Draw the first moon.
+      beginShape();
+      vertex(-20, -30, 0);
+      bezierVertex(30, -50, 0, 30, 25, 0, -20, 25, 0);
+      bezierVertex(0, 30, 0, 10, -25, 0, -20, -30, 0);
+      endShape();
+
+      // Draw the second moon.
+      beginShape();
+      vertex(-20, -30, -20);
+      bezierVertex(30, -50, -20, 30, 25, -20, -20, 25, -20);
+      bezierVertex(0, 30, -20, 10, -25, -20, -20, -30, -20);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 543
+    params:
+      - name: x2
+        description: |
+          <p>Coordenada x del primer punto de control.</p>
+        type: Number
+      - name: y2
+        description: |
+          <p>Coordenada y del primer punto de control.</p>
+        type: Number
+      - name: x3
+        description: |
+          <p>Coordenada x del segundo punto de control.</p>
+        type: Number
+      - name: y3
+        description: |
+          <p>Coordenada y del segundo punto de control.</p>
+        type: Number
+      - name: x4
+        description: |
+          <p>Coordenada x del punto de anclaje.</p>
+        type: Number
+      - name: y4
+        description: |
+          <p>Coordenada y del punto de anclaje.</p>
+        type: Number
+    chainable: 1
+  - line: 792
+    params:
+      - name: x2
+        description: ''
+        type: Number
+      - name: y2
+        description: ''
+        type: Number
+      - name: z2
+        description: |
+          <p>Coordenada z del primer punto de control.</p>
+        type: Number
+      - name: x3
+        description: ''
+        type: Number
+      - name: y3
+        description: ''
+        type: Number
+      - name: z3
+        description: |
+          <p>Coordenada z del segundo punto de control.</p>
+        type: Number
+      - name: x4
+        description: ''
+        type: Number
+      - name: y4
+        description: ''
+        type: Number
+      - name: z4
+        description: |
+          <p>z-coordinate of the anchor point.</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# bezierVertex

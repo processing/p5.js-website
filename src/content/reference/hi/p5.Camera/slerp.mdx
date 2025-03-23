@@ -1,0 +1,87 @@
+---
+title: slerp
+module: 3D
+submodule: कैमरा
+file: src/webgl/p5.Camera.js
+description: >
+  <p>कैमरे की स्थिति और दिशा को दो अन्य कैमरों के बीच के मान पर सेट करता है।</p> 
+  
+  <p><code>myCamera.slerp()</code> गोलाकार अपराक्रमण का उपयोग करके दो अन्य कैमरों के बीच की स्थिति और दिशा की गणना करता है। ऐसा करना दो दृश्यों के बीच सुचारू रूप से संक्रमण करने में मदद करता है।</p> 
+  
+  <p>पहले दो पैरामीटर, <code>cam0</code> और <code>cam1</code>, वह <code>p5.Camera</code> ऑब्जेक्ट हैं जिनका उपयोग वर्तमान कैमरा को सेट करने के लिए किया जाना चाहिए।</p> 
+  
+  <p>तीसरा पैरामीटर, <code>amt</code>, <code>cam0</code> और <code>cam1</code> के बीच इंटरपोलेट करने की मात्रा है। 0.0 कैमरे की स्थिति और दिशा को <code>cam0</code> के बराबर रखता है, 0.5 उन्हें <code>cam0</code> और <code>cam1</code> के बीच सेट करता है, और 1.0 स्थिति और दिशा को <code>cam1</code> के बराबर सेट करता है।</p> 
+  
+  <p>उदाहरण के लिए, <code>myCamera.slerp(cam0, cam1, 0.1)</code> कॉल करने से कैम की स्थिति और दिशा <code>cam0</code> के बहुत करीब हो जाती है। <code>myCamera.slerp(cam0, cam1, 0.9)</code> कॉल करने से कैम की स्थिति और दिशा <code>cam1</code> के बहुत करीब हो जाती है।</p> 
+  
+  <p>नोट: सभी कैमरों को एक ही प्रोजेक्शन का उपयोग करना चाहिए।</p>
+line: 3252
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let cam;
+    let cam0;
+    let cam1;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the main camera.
+      // Keep its default settings.
+      cam = createCamera();
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam0 = createCamera();
+
+      // Create the second camera.
+      cam1 = createCamera();
+
+      // Place it at the top-right.
+      cam1.setPosition(400, -400, 800);
+
+      // Point it at the origin.
+      cam1.lookAt(0, 0, 0);
+
+      // Set the current camera to cam.
+      setCamera(cam);
+
+      describe('A white cube drawn against a gray background. The camera slowly oscillates between a frontal view and an aerial view.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the amount to interpolate between cam0 and cam1.
+      let amt = 0.5 * sin(frameCount * 0.01) + 0.5;
+
+      // Update the main camera's position and orientation.
+      cam.slerp(cam0, cam1, amt);
+
+      box();
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: cam0
+    description: |
+      <p>पहला कैमरा.</p>
+    type: p5.Camera
+  - name: cam1
+    description: |
+      <p>दूसरा कैमरा.</p>
+    type: p5.Camera
+  - name: amt
+    description: >
+      <p>0.0 (<code>cam0</code>) और 1.0 (<code>cam1</code>) के बीच प्रक्षेप की मात्रा।</p>
+    type: Number
+chainable: false
+---
+
+
+# slerp

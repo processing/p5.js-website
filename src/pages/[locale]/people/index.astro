@@ -1,0 +1,22 @@
+---
+import PeopleLayout from "@layouts/PeopleLayout.astro";
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+
+export const getStaticPaths = async () => {
+  return await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const entries = await getCollectionInLocaleWithFallbacks(
+        "people",
+        locale
+      );
+
+      return { params: { locale }, props: { entries } };
+    })
+  );
+};
+
+const { entries } = Astro.props;
+---
+
+<PeopleLayout title="People" entries={entries} />

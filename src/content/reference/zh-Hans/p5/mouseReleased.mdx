@@ -1,0 +1,151 @@
+---
+title: mouseReleased
+module: 事件
+submodule: 鼠标
+file: src/events/mouse.js
+description: >
+  <p>当鼠标按钮释放时调用一次的函数。</p>
+
+  <p>声明函数 <code>mouseReleased()</code> 将设置一个代码块，当用户在按下鼠标按钮后释放时自动运行：</p>
+
+  <code>
+
+  function mouseReleased() {
+    // Code to run.
+  }
+
+  </code>
+
+  <p>鼠标系统变量，如 <a href="/reference/p5/mouseX">mouseX</a> 和 <a href="/reference/p5/mouseY">mouseY</a>，将在 p5.js 调用 <code>mouseReleased()</code> 时更新为最新的值：</p>
+
+  <code>
+
+  function mouseReleased() {
+    if (mouseX < 50) {
+      // Code to run if the mouse is on the left.
+    }
+
+  <p>  if (mouseY > 50) {
+      // Code to run if the mouse is near the bottom.
+    }
+  }
+
+  </p></code>
+
+  <p>参数 <code>event</code> 是可选的。 <code>mouseReleased()</code> 总是传递一个 <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent" target="_blank">MouseEvent</a> 对象，其属性描述了鼠标释放事件：</p>
+
+  <code>
+
+  function mouseReleased(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+  <p>在触摸屏设备上，如果没有声明 <a href="/reference/p5/touchEnded">touchEnded()</a>，当用户的触摸结束时，<code>mouseReleased()</code> 会运行。如果声明了 <a href="/reference/p5/touchEnded">touchEnded()</a>，那么当用户的触摸结束时，<a href="/reference/p5/touchEnded">touchEnded()</a> 会运行，而 <code>mouseReleased()</code> 不会。</p>
+
+  <p>浏览器可能会将默认行为附加到各种鼠标事件上。例如，一些浏览器在用户按下鼠标按钮移动鼠标时会高亮显示文本。要防止此事件的任何默认行为，在函数的末尾添加 <code>return false;</code>。</p>
+
+  <p>注意：<a href="/reference/p5/mousePressed">mousePressed()</a>、<code>mouseReleased()</code> 和 <a href="/reference/p5/mouseClicked">mouseClicked()</a> 都是相关的。<a href="/reference/p5/mousePressed">mousePressed()</a> 在用户点击鼠标时运行。<code>mouseReleased()</code> 在用户释放鼠标点击时运行。<a href="/reference/p5/mouseClicked">mouseClicked()</a> 在 <code>mouseReleased()</code> 之后立即运行。</p>
+line: 1256
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square becomes lighter when the user presses and releases a mouse button.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    function mouseReleased() {
+      // Update the grayscale value.
+      value += 5;
+
+      // Reset the grayscale value.
+      if (value > 255) {
+        value = 0;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Style the circle.
+      fill('orange');
+      stroke('royalblue');
+      strokeWeight(10);
+
+      describe(
+        'An orange circle with a thick, blue border drawn on a gray background. When the user presses and holds the mouse, the border becomes thin and pink. When the user releases the mouse, the border becomes thicker and changes color to blue.'
+      );
+    }
+
+    function draw() {
+      background(220);
+
+      // Draw the circle.
+      circle(50, 50, 20);
+    }
+
+    // Set the stroke color and weight as soon as the user clicks.
+    function mousePressed() {
+      stroke('deeppink');
+      strokeWeight(3);
+    }
+
+    // Set the stroke and fill colors as soon as the user releases
+    // the mouse.
+    function mouseReleased() {
+      stroke('royalblue');
+
+      // This is never visible because fill() is called
+      // in mouseClicked() which runs immediately after
+      // mouseReleased();
+      fill('limegreen');
+    }
+
+    // Set the fill color and stroke weight after
+    // mousePressed() and mouseReleased() are called.
+    function mouseClicked() {
+      fill('orange');
+      strokeWeight(10);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>optional <code>MouseEvent</code> argument.</p>
+    type: MouseEvent
+    optional: true
+chainable: false
+---
+
+
+# mouseReleased

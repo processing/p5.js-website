@@ -1,0 +1,223 @@
+---
+title: rotate
+module: Transform
+submodule: Transform
+file: src/core/transform.js
+description: >
+  <p>Rota el sistema de coordenadas.</p>
+
+  <p>De forma predeterminada, el eje x positivo apunta hacia la derecha y el eje y positivo
+
+  apunta hacia abajo. La función <code>rotate()</code> cambia esta 
+  orientación
+
+  rotando el sistema de coordenadas alrededor del origen. Todo lo dibujado después
+
+  de llamar a <code>rotate()</code> aparecerá rotado.</p>
+
+  <p>El primer parámetro, <code>angle</code>, es la cantidad a rotar. Por
+  ejemplo, llamar a
+
+  <code>rotate(1)</code> rota el sistema de coordenadas en sentido horario 1 radián que 
+  es
+
+  casi 57˚. <code>rotate()</code> interpreta los valores de ángulo usando el
+
+  <a href="/reference/p5/angleMode">angleMode()</a> actual.</p>
+
+  <p>El segundo parámetro, <code>axis</code>, es opcional. Se utiliza para orientar
+  rotaciones en 3D
+
+  en modo WebGL. Si se pasa un <a href="/reference/p5/p5.Vector">p5.Vector</a>, 
+  como en
+
+  <code>rotate(QUARTER_PI, miVector)</code>, entonces el sistema de coordenadas se
+  rotará
+
+  <code>QUARTER_PI</code> radianes alrededor de <code>myVector</code>. Si se pasa un arreglo 
+  de componentes 
+  
+  de vector, como en <code>rotate(QUARTER_PI, [1, 0, 0])</code>, entonces el sistema 
+  de coordenadas
+  
+  se rotará <code>QUARTER_PI</code> radianes alrededor de un vector con los componentes
+
+  <code>[1, 0, 0]</code>.</p>
+
+  <p>De forma predeterminada, las transformaciones se acumulan. Por ejemplo, llamar
+  a <code>rotate(1)</code>
+
+  dos veces tiene el mismo efecto que llamar a <code>rotate(2)</code> una vez. Las
+
+  funciones <a href="/reference/p5/push">push()</a> y <a
+  href="/reference/p5/pop">pop()</a>
+
+  se pueden usar para aislar transformaciones dentro de grupos de dibujo distintos.</p>
+
+  <p>Nota: Las transformaciones se restablecen al principio del bucle de dibujo. Llamar
+
+  a <code>rotate(1)</code> dentro de la función <a href="/reference/p5/draw">draw()</a>
+  no hará que
+
+  las formas giren.</p>
+line: 289
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      rotate(QUARTER_PI);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/16 turn.
+      rotate(QUARTER_PI / 2);
+
+      // Rotate the coordinate system another 1/16 turn.
+      rotate(QUARTER_PI / 2);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      describe(
+        "A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right."
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      rotate(45);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A white rectangle on a gray background. The rectangle rotates slowly about the top-left corner. It disappears and reappears periodically.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      rotate(angle);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe("A cube on a gray background. The cube's front face points to the top-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn about
+      // the axis [1, 1, 0].
+      let axis = createVector(1, 1, 0);
+      rotate(QUARTER_PI, axis);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe("A cube on a gray background. The cube's front face points to the top-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn about
+      // the axis [1, 1, 0].
+      let axis = [1, 1, 0];
+      rotate(QUARTER_PI, axis);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: angle
+    description: |
+      <p>el ángulo de rotación, especificado en radianes
+                             o grados, dependiendo del ángulo angleMode</p>
+    type: Number
+  - name: axis
+    description: |
+      <p>(en 3D) el eje alrededor del cual rotar</p>
+    type: 'p5.Vector|Number[]'
+    optional: true
+chainable: true
+---
+
+
+# rotate

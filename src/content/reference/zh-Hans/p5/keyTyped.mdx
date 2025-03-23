@@ -1,0 +1,142 @@
+---
+title: keyTyped
+module: 事件
+submodule: 键盘
+file: src/events/keyboard.js
+description: >
+  <p>当按下具有可打印字符的键时调用一次的函数。</p>
+
+  <p>声明函数 <code>keyTyped()</code> 将设置一个代码块，当用户按下任何具有可打印字符的键时自动运行一次，如 <code>a</code> 或 1。修饰键如 <code>SHIFT</code>、<code>CONTROL</code> 和箭头键将被忽略：</p>
+
+  <code>
+
+  function keyTyped() {
+    // Code to run.
+  }
+
+  </code>
+
+  <p>当 <code>keyTyped()</code> 由 p5.js 调用时，变量 <a href="/reference/p5/key">key</a> 和 <a href="/reference/p5/keyCode">keyCode</a> 将更新为最近释放的值：</p>
+
+  <code>
+
+  function keyTyped() {
+    // Check for the "c" character using key.
+    if (key === 'c') {
+      // Code to run.
+    }
+
+  <p>  // Check for "c" using keyCode.
+    if (keyCode === 67) {
+      // Code to run.
+    }
+  }
+
+  </p></code>
+
+  <p>参数 <code>event</code> 是可选的。<code>keyTyped()</code> 总是传递一个带有描述按键事件属性的 <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent" target="_blank">KeyboardEvent</a> 对象：</p>
+
+  <code>
+
+  function keyReleased(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+  <p>注意：使用 <a href="/reference/p5/keyPressed">keyPressed()</a> 函数和 <a href="/reference/p5/keyCode">keyCode</a> 系统变量来响应 <code>ALT</code> 等修饰键。</p>
+
+  <p>浏览器可能会将默认行为附加到各种键事件上。为了防止此事件的任何默认行为，在函数的结尾添加 <code>return false;</code>。</p>
+line: 639
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+    // Note: Pressing special keys such as SPACE have no effect.
+
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a white square at its center. The inner square changes color when the user presses a key.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Toggle the square's color when the user types a printable key.
+    function keyTyped() {
+      if (value === 0) {
+        value = 255;
+      } else {
+        value = 0;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click on the canvas to begin detecting key presses.
+
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a white square at its center. The inner square turns black when the user types the "b" key. It turns white when the user types the "a" key.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    // Reassign value when the user types the 'a' or 'b' key.
+    function keyTyped() {
+      if (key === 'a') {
+        value = 255;
+      } else if (key === 'b') {
+        value = 0;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>optional <code>KeyboardEvent</code> callback argument.</p>
+    type: KeyboardEvent
+    optional: true
+chainable: false
+---
+
+
+# keyTyped

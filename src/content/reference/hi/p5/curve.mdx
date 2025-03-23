@@ -1,0 +1,249 @@
+---
+title: curve
+module: आकार
+submodule: वक्र
+file: src/core/shape/curves.js
+description: >
+  <p>कैटमुल-रोम स्पलाइन का उपयोग करके एक वक्र बनाता है।</p>
+
+  <p>स्पलाइन वक्र ऐसे आकार और वक्र बना सकते हैं जो धीरे-धीरे ढलान करते हैं। वे उन केबलों की तरह हैं जो बिंदुओं के एक समूह से जुड़े होते हैं।
+
+  स्प्लिंस को दो एंकर बिंदुओं और दो नियंत्रण बिंदुओं द्वारा परिभाषित किया गया है।</p>
+
+  <p>पहले दो पैरामीटर, <code>x1</code> और <code>y1</code>, पहला नियंत्रण बिंदु सेट करते हैं। यह बिंदु खींचा नहीं गया है और इसे वक्र का प्रारंभिक बिंदु माना जा सकता है।</p>
+
+  <p>अगले चार पैरामीटर, <code>x2</code>, <code>y2</code>, <code>x3</code>, और <code>y3</code>, दो एंकर पॉइंट सेट करते हैं . एंकर बिंदु वक्र के दृश्यमान खंड के आरंभ और अंत बिंदु हैं।</p>
+
+  <p>सातवें और आठवें पैरामीटर, <code>x4</code> और <code>y4</code>, अंतिम नियंत्रण बिंदु निर्धारित करते हैं। यह बिंदु खींचा नहीं गया है और इसे वक्र का अंतिम बिंदु माना जा सकता है।</p>
+
+  <p>वेबजीएल मोड का उपयोग करके स्पलाइन कर्व्स को 3डी में भी खींचा जा सकता है। <code>वक्र()</code> के 3डी संस्करण में बारह तर्क हैं क्योंकि प्रत्येक बिंदु पर x-, y- और z-निर्देशांक हैं।</p>
+line: 570
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(5, 26, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(5, 26, 5, 26, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(5, 26);
+      point(15, 65);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let x1 = 5;
+    let y1 = 26;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(x1, y1, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(x1, y1, x1, y1, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x1, y1);
+      point(15, 65);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x1, y1) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x1 = mouseX;
+        y1 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background('skyblue');
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-150, 275, 50, 60, 50, 60, 250, 275);
+
+      // Draw the balloon string.
+      line(50, 60, 50, 80);
+
+      describe('A red balloon in a blue sky.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red balloon in a blue sky.');
+    }
+
+    function draw() {
+      background('skyblue');
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-200, 225, 0, 0, 10, 0, 0, 10, 0, 200, 225, 0);
+
+      // Draw the balloon string.
+      line(0, 10, 0, 0, 30, 0);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 570
+    params:
+      - name: x1
+        description: |
+          <p>पहले नियंत्रण बिंदु का x-निर्देशांक।</p>
+        type: संख्या
+      - name: y1
+        description: |
+          <p>पहले नियंत्रण बिंदु का y-निर्देशांक।</p>
+        type: संख्या
+      - name: x2
+        description: |
+          <p>पहला एंकर बिंदु का x-निर्देशांक।</p>
+        type: संख्या
+      - name: y2
+        description: |
+          <p>पहला एंकर बिंदु का y-निर्देशांक।</p>
+        type: संख्या
+      - name: x3
+        description: |
+          <p>दूसरा एंकर बिंदु का x-निर्देशांक।</p>
+        type: संख्या
+      - name: y3
+        description: |
+          <p>दूसरा एंकर बिंदु का y-निर्देशांक।</p>
+        type: संख्या
+      - name: x4
+        description: |
+          <p>दूसरा नियंत्रण बिंदु का x-निर्देशांक।</p>
+        type: संख्या
+      - name: y4
+        description: |
+          <p>दूसरा नियंत्रण बिंदु का y-निर्देशांक।</p>
+        type: संख्या
+    chainable: 1
+  - line: 746
+    params:
+      - name: x1
+        description: ""
+        type: संख्या
+      - name: y1
+        description: ""
+        type: संख्या
+      - name: z1
+        description: |
+          <p>पहले नियंत्रण बिंदु का z-निर्देशांक।</p>
+        type: संख्या
+      - name: x2
+        description: ""
+        type: संख्या
+      - name: y2
+        description: ""
+        type: संख्या
+      - name: z2
+        description: |
+          <p>पहले एंकर बिंदु का z-निर्देशांक।</p>
+        type: संख्या
+      - name: x3
+        description: ""
+        type: संख्या
+      - name: y3
+        description: ""
+        type: संख्या
+      - name: z3
+        description: |
+          <p>दूसरा एंकर बिंदु का z-निर्देशांक।</p>
+        type: संख्या
+      - name: x4
+        description: ""
+        type: संख्या
+      - name: y4
+        description: ""
+        type: संख्या
+      - name: z4
+        description: |
+          <p>दूसरा नियंत्रण बिंदु का z-निर्देशांक।</p>
+        type: संख्या
+    chainable: 1
+chainable: true
+---
+
+# curve

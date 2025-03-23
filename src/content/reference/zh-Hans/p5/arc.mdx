@@ -1,0 +1,243 @@
+---
+title: arc
+module: 形状
+submodule: 2D 基础形状
+file: src/core/shape/2d_primitives.js
+description: "\n<p>绘制一个圆弧。</p>\n\n\n<p>圆弧是一个由参数 <code>x</code>、<code>y</code>、<code>w</code> 和<code>h</code> 定义的椭圆的一部分。 \n\n<code>x</code> 和 <code>y</code> 设置圆弧的中心。 <code>w</code> 和\n\n\n<code>h</code> 设置圆弧的宽度和高度。\n\n移步 <a href=\"/reference/p5/ellipse\">ellipse()</a> 和 <a href=\"/reference/p5/ellipseMode\">ellipseMode()</a> 了解更多详细信息。</p>\n\n\n<p>第五和第六个参数，<code>start</code> 和 <code>stop</code> 用于设置圆弧的起止点所对应的角度。圆弧始终以顺时针方向从 <code>start</code> 到 <code>stop</code> 绘制。</p>\n\n\n<p>第七个参数，<code>mode</code>，是可选的。它决定了圆弧的填充样式。填充样式可以是开放式半圆(<code>OPEN</code>)、封闭式\n半圆(<code>CHORD</code>)，或闭合饼图(<code>PIE</code>)。</p>\n\n\n<p>第八个参数，<code>detail</code>，也是可选的。它决定了会有多少顶点用于在WebGL 模式下绘制圆弧。默认值为 25。</p>"
+line: '102'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      arc(50, 50, 80, 80, 0, PI + HALF_PI);
+
+      describe('A white circle on a gray canvas. The top-right quarter of the circle is missing.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      arc(50, 50, 80, 40, 0, PI + HALF_PI);
+
+      describe('A white ellipse on a gray canvas. The top-right quarter of the ellipse is missing.');
+    }
+    </code>
+    </div>
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Bottom-right.
+      arc(50, 55, 50, 50, 0, HALF_PI);
+
+      noFill();
+
+      // Bottom-left.
+      arc(50, 55, 60, 60, HALF_PI, PI);
+
+      // Top-left.
+      arc(50, 55, 70, 70, PI, PI + QUARTER_PI);
+
+      // Top-right.
+      arc(50, 55, 80, 80, PI + QUARTER_PI, TWO_PI);
+
+      describe(
+        'A shattered outline of an circle with a quarter of a white circle at the bottom-right.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Default fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI);
+
+      describe('A white circle with the top-right third missing. The bottom is outlined in black.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // OPEN fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, OPEN);
+
+      describe(
+        'A white circle missing a section from the top-right. The bottom is outlined in black.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // CHORD fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, CHORD);
+
+      describe('A white circle with a black outline missing a section from the top-right.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // PIE fill mode.
+      arc(50, 50, 80, 80, 0, PI + QUARTER_PI, PIE);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // PIE fill mode.
+      arc(0, 0, 80, 80, 0, PI + QUARTER_PI, PIE);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // PIE fill mode with 5 vertices.
+      arc(0, 0, 80, 80, 0, PI + QUARTER_PI, PIE, 5);
+
+      describe('A white circle with a black outline. The top-right third is missing.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A yellow circle on a black background. The circle opens and closes its mouth.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Style the arc.
+      noStroke();
+      fill(255, 255, 0);
+
+      // Update start and stop angles.
+      let biteSize = PI / 16;
+      let startAngle = biteSize * sin(frameCount * 0.1) + biteSize;
+      let endAngle = TWO_PI - startAngle;
+
+      // Draw the arc.
+      arc(50, 50, 80, 80, startAngle, endAngle, PIE);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: X
+    description: |2
+  
+      <p>圆弧椭圆的 x 坐标。</p>
+    type: 数字
+  - name: y
+    description: |2
+  
+      <p>圆弧椭圆的 y 坐标。</p>
+    type: 数字
+  - name: w
+    description: |2
+  
+      <p>默认圆弧椭圆的宽度。</p>
+    type: 数字
+  - name: h
+    description: |2
+  
+      <p>默认圆弧椭圆的高度。</p>
+    type: 数字
+  - name: start
+    description: |2
+  
+      <p>弧线的起始角度，以弧度指定。</p>
+    type: 数字
+  - name: stop
+    description: |2
+  
+      <p>停止圆弧的角度，以弧度指定。</p>
+    type: 数字
+  - name: mode
+    description: |2
+  
+      <p>可选参数，确定绘制方式
+  
+                              弧线。 CHORD、PIE 或 OPEN。</p>
+    type: 常量
+    optional: true
+  - name: detail
+    description: |2
+  
+      <p>仅适用于 WebGL 模式的可选参数。这是为了
+  
+                              指定组成顶点的数量
+  
+                              圆弧的周长。默认值为 25。不会
+  
+                              对于超过 50 个的细节进行描边。</p>
+    type: 整数
+    optional: true
+chainable: true
+---
+
+# arc

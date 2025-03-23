@@ -1,0 +1,73 @@
+---
+title: noiseDetail
+module: 数学
+submodule: 噪声
+file: src/math/noise.js
+description: >
+  <p>调整由 <a href="/reference/p5/noise">noise()</a> 函数产生的噪声的特性。</p>
+
+  <p>Perlin 噪声值是通过叠加多层噪声生成的。这些噪声层被称为倍频，类似于音乐中的和声。较低的倍频对输出信号的贡献更大，它们定义了噪声的整体强度。而较高的倍频则创造出更细腻的细节。</p>
+
+  <p>默认情况下，噪声值是通过组合四个倍频创建的。每个更高的倍频贡献的量是其前一个的一半（少了50%）。<code>noiseDetail()</code> 可以改变倍频的数量和衰减量。例如，调用 <code>noiseDetail(6, 0.25)</code> 会确保 <a href="/reference/p5/noise">noise()</a> 使用六个倍频。每个更高的倍频将贡献的量为其前一个的25%（少了75%）。衰减值在 0 到 1 之间是有效的。然而，衰减值大于 0.5 可能会导致噪声值大于 1。</p>
+line: 331
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Set the noise level and scale.
+      let noiseLevel = 255;
+      let noiseScale = 0.02;
+
+      // Iterate from top to bottom.
+      for (let y = 0; y < 100; y += 1) {
+        // Iterate from left to right.
+        for (let x = 0; x < 50; x += 1) {
+          // Scale the input coordinates.
+          let nx = noiseScale * x;
+          let ny = noiseScale * y;
+
+          // Compute the noise value with six octaves
+          // and a low falloff factor.
+          noiseDetail(6, 0.25);
+          let c = noiseLevel * noise(nx, ny);
+
+          // Draw the left side.
+          stroke(c);
+          point(x, y);
+
+          // Compute the noise value with four octaves
+          // and a high falloff factor.
+          noiseDetail(4, 0.5);
+          c = noiseLevel * noise(nx, ny);
+
+          // Draw the right side.
+          stroke(c);
+          point(x + 50, y);
+        }
+      }
+
+      describe('Two gray cloudy patterns. The pattern on the right is cloudier than the pattern on the left.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: lod
+    description: |
+      <p>噪声使用的倍频数量。</p>
+    type: 数字
+  - name: falloff
+    description: |
+      <p>每个倍频的衰减因子。</p>
+    type: 数字
+chainable: false
+---
+
+
+# noiseDetail

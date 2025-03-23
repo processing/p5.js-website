@@ -1,0 +1,131 @@
+---
+title: createFileInput
+module: 文档对象模型
+submodule: 文档对象模型
+file: src/dom/dom.js
+description: >
+  <p>创建一个类型为 <code>'file'</code> 的 <code>&lt;input&gt;&lt;/input&gt;</code> 元素。</p>
+
+  <p><code>createFileInput()</code> 允许用户选择本地文件用于草图中。
+
+  它返回一个 <a href="#/p5.File">p5.File</a> 对象。</p>
+
+  <p>第一个参数，<code>callback</code>，是一个文件
+
+  加载时调用的函数。回调函数应该有一个参数，<code>file</code>，
+  是一个
+
+  <a href="#/p5.File">p5.File</a> 对象。</p>
+
+  <p>第二个参数，<code>multiple</code>，是可选的。它是一个布尔值，
+
+  如果设置为 <code>true</code>，允许加载多个文件。如果
+  <code>true</code>，<code>callback</code>
+
+  将被每个文件调用一次。</p>
+line: 1923
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Use the file input to select an image to
+    // load and display.
+    let input;
+    let img;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a file input and place it beneath
+      // the canvas.
+      input = createFileInput(handleImage);
+      input.position(0, 100);
+
+      describe('A gray square with a file input beneath it. If the user selects an image file to load, it is displayed on the square.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the image if loaded.
+      if (img) {
+        image(img, 0, 0, width, height);
+      }
+    }
+
+    // Create an image if the file is an image.
+    function handleImage(file) {
+      if (file.type === 'image') {
+        img = createImg(file.data, '');
+        img.hide();
+      } else {
+        img = null;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Use the file input to select multiple images
+    // to load and display.
+    let input;
+    let images = [];
+
+    function setup() {
+      // Create a file input and place it beneath
+      // the canvas. Allow it to load multiple files.
+      input = createFileInput(handleImage, true);
+      input.position(0, 100);
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the images if loaded. Each image
+      // is drawn 20 pixels lower than the
+      // previous image.
+      for (let i = 0; i < images.length; i += 1) {
+        // Calculate the y-coordinate.
+        let y = i * 20;
+
+        // Draw the image.
+        image(img, 0, y, 100, 100);
+      }
+
+      describe('A gray square with a file input beneath it. If the user selects multiple image files to load, they are displayed on the square.');
+    }
+
+    // Create an image if the file is an image,
+    // then add it to the images array.
+    function handleImage(file) {
+      if (file.type === 'image') {
+        let img = createImg(file.data, '');
+        img.hide();
+        images.push(img);
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: callback
+    description: |
+      <p>文件加载后调用的函数。</p>
+    type: 函数
+  - name: multiple
+    description: |
+      <p>允许选择多个文件。</p>
+    type: 布尔
+    optional: true
+return:
+  description: 新的 <a href="#/p5.File">p5.File</a> 对象。
+  type: p5.File
+chainable: false
+---
+
+
+# createFileInput

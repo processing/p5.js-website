@@ -1,0 +1,142 @@
+---
+title: frustum
+module: 3D
+submodule: 카메라
+file: src/webgl/p5.Camera.js
+description: >
+  <p>카메라의 절두체를 설정합니다.</p>
+  
+  <p>절두체 투영에서는 카메라에서 멀리 있는 형상은 가까이 있는 형상보다 작게 보입니다.
+  
+  단축법(foreshortening)이라 불리는 이 기법을 통해 사실적인 3D 장면이 만들어집니다.</p>
+  
+  <p><code>myCamera.frustum()</code>은 시야 절두체를 변경함으로써 카메라의 시점을 변경합니다.
+  
+  절두체는 카메라로 볼 수 있는 공간의 부피입니다.
+  
+  절두체는 윗부분이 잘린 피라미드 형태입니다.
+  
+  카메라는 피라미드의 꼭대기에 위치하고 피라미드의 밑면을 향합니다.
+  
+  카메라는 절두체 안에 있는 모든 것을 볼 수 있습니다.</p>
+  
+  <p>처음 네 개의 매개변수인 <code>left</code>, <code>right</code>, <code>bottom</code>, <code>top</code>은 절두체의 측면, 하단, 상단의 좌표를 설정합니다.
+  
+  예를 들어, <code>myCamera.frustum(-100, 100, 200, -200)</code>을 호출하면 너비가 200픽셀, 높이가 400픽셀인 절두체가 생성됩니다.
+  
+  기본적으로 <code>myCamera.frustum(-width / 20, width / 20, height / 20, -height / 20)</code>와 같이 스케치의 너비와 높이를 기준으로 크기가 설정됩니다.
+  
+  <p>마지막 두 개의 매개변수, <code>near</code>와 <code>far</code>는 절두체의 가까운 평면과 먼 평면의 거리를 설정합니다.
+  
+  예를 들어, <code>myCamera.frustum(-100, 100, 200, -200, 50, 1000)</code>을 호출하면
+  
+  카메라로부터 50픽셀 떨어진 위치에서 시작하여 1,000픽셀 떨어진 위치에서 끝나고, 너비가 200픽셀, 높이가 400픽셀인 절두체가 생성됩니다.
+  
+  기본적으로 <code>near</code>은 카메라와 원점 간 기본 거리의 1/10인 <code>0.1 * 800</code>으로 설정됩니다.
+  
+  <code>far</code>는 카메라와 원점 간 기본 거리의 10배인 <code>10 * 800</code>으로 설정됩니다.</p>
+line: 2282
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Adjust the frustum.
+      // Center it.
+      // Set its width and height to 20 pixels.
+      // Place its near plane 300 pixels from the camera.
+      // Place its far plane 350 pixels from the camera.
+      cam2.frustum(-10, 10, -10, 10, 300, 350);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe(
+        'A row of white cubes against a gray background. The camera zooms in on one cube when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: left
+    description: >
+      <p>절두체의 왼쪽 평면의 x 좌표. 기본값은 <code>-width / 20</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p>절두체의 오른쪽 평면의 x 좌표. 기본값은 <code>width / 20</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>절두체의 아래 평면의 y 좌표. 기본값은 <code>height / 20</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p>절두체의 위 평면의 y 좌표. 기본값은 <code>-height / 20</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: >
+      <p>절두체와 가까운 평면의 z 좌표. 기본값은 <code>0.1 * 800</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p>절두체와 먼 평면의 z 좌표. 기본값은 <code>10 * 800</code> 입니다.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# frustum

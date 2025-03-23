@@ -1,0 +1,197 @@
+---
+title: ambientLight
+module: 3D
+submodule: प्रकाश
+file: src/webgl/light.js
+description: >
+  <p>एक ऐसी रोशनी बनाता है जो सभी दिशाओं से चमकती है।</p>
+  
+  <p>परिवेशीय प्रकाश एक दिशा से नहीं आता है। इसके बजाय, 3डी आकृतियाँ सभी तरफ से समान रूप से प्रकाशित होती हैं। परिवेशीय रोशनी का उपयोग अन्य प्रकार की रोशनी के साथ संयोजन के लिए लगभग हमेशा किया जाता है।</p>
+
+  <p>वैकल्पिक के साथ <code>ambientLight()</code> को कॉल करने के तीन तरीके हैं
+  प्रकाश का रंग सेट करने के लिए पैरामीटर।</p>
+
+  <p>कॉल करने का पहला तरीका <code>ambientLight()</code> के दो पैरामीटर हैं, <code>gray</code> और <code>alpha</code>। <code>alpha</code>> वैकल्पिक है. परिवेशी प्रकाश का रंग सेट करने के लिए 0 और 255 के बीच ग्रेस्केल और अल्फा मानों को पारित किया जा सकता है, जैसे <code>ambientLight(50)</code> या <code>ambientLight(50, 30)</code>.</p>
+
+  <p>कॉल करने का दूसरा तरीका <code>ambientLight()</code> में एक पैरामीटर है, रंग। एक <a href="/reference/p5/p5.Color">p5.Color</a> ऑब्जेक्ट, रंग मानों की एक सरणी, या एक CSS रंग स्ट्रिंग, जैसा कि <code>ambientLight('magenta')</ में है। कोड>, परिवेशीय प्रकाश का रंग सेट करने के लिए पारित किया जा सकता है।</p>
+
+  <p>कॉल करने का तीसरा तरीका <code>ambientLight()</code> में चार पैरामीटर हैं, <code>v1</code>, <code>v2</code>, <code>v3</code> और <code>alpha</code>। <code>alpha</code> वैकल्पिक है. परिवेशी प्रकाश के रंग सेट करने के लिए RGBA, HSBA, या HSLA मानों को पारित किया जा सकता है, जैसे <code>ambientLight(255, 0, 0)</code> या <code>ambientLight(255, 0, 0, 30)</ कोड>. रंग मानों की व्याख्या वर्तमान <a href="/reference/p5/colorMode">colorMode()</a> का उपयोग करके की जाएगी।</p>
+line: 10
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click the canvas to turn on the light.
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn against a gray background. The sphere appears to change color when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Control the light.
+      if (isLit === true) {
+        // Use a grayscale value of 80.
+        ambientLight(80);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the ambient light when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A faded magenta sphere drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      // Use a p5.Color object.
+      let c = color('orchid');
+      ambientLight(c);
+
+      // Draw the sphere.
+      sphere();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A faded magenta sphere drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      // Use a CSS color string.
+      ambientLight('#DA70D6');
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A faded magenta sphere drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      // Use RGB values
+      ambientLight(218, 112, 214);
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 10
+    params:
+      - name: v1
+        description: |
+          <p>वर्तमान <a href="#/p5/colorMode">colorMode()</a> में लाल या रंग का मान।</p>
+        type: Number
+      - name: v2
+        description: |
+          <p>वर्तमान <a href="#/p5/colorMode">colorMode()</a> में हरा या संतृप्ति मान।</p>
+        type: Number
+      - name: v3
+        description: |
+          <p>वर्तमान <a href="#/p5/colorMode">colorMode()</a> में नीला, चमक, या हल्कापन मान।</p>
+        type: Number
+      - name: alpha
+        description: |
+          <p>वर्तमान <a href="#/p5/colorMode">colorMode()</a> में अल्फा (पारदर्शिता) मान।</p>
+        type: Number
+        optional: true
+    chainable: 1
+  - line: 164
+    params:
+      - name: gray
+        description: |
+          <p>0 और 255 के बीच ग्रेस्केल मान।</p>
+        type: Number
+      - name: alpha
+        description: ''
+        type: Number
+        optional: true
+    chainable: 1
+  - line: 171
+    params:
+      - name: value
+        description: |
+          <p>सीएसएस स्ट्रिंग के रूप में रंग।</p>
+        type: String
+    chainable: 1
+  - line: 177
+    params:
+      - name: values
+        description: |
+          <p>आरजीबीए, एचएसबीए, या एचएसएलए मानों की एक सरणी के रूप में रंग।</p>
+        type: 'Number[]'
+    chainable: 1
+  - line: 184
+    params:
+      - name: color
+        description: |
+          <p>एक <a href="#/p5.Color">p5.Color</a> ऑब्जेक्ट के रूप में रंग दें।</p>
+        type: p5.Color
+    chainable: 1
+chainable: true
+---
+
+
+# ambientLight

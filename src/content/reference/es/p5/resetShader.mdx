@@ -1,0 +1,92 @@
+---
+title: resetShader
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: |
+  <p>Restaura los shaders por defecto.</p>
+  <p><code>resetShader()</code> desactiva cualquier shader aplicado previamente por
+  <a href="/reference/p5/shader">shader()</a>.</p>
+  <p>Nota: Los shaders solo pueden ser utilizados en modo WebGL.</p>
+line: 773
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    uniform mat4 uProjectionMatrix;
+    uniform mat4 uModelViewMatrix;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 position = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * position;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision mediump float;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vec2 uv = vTexCoord;
+      vec3 color = vec3(uv.x, uv.y, min(uv.x + uv.y, 1.0));
+      gl_FragColor = vec4(color, 1.0);
+    }
+    `;
+
+    let myShader;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      myShader = createShader(vertSrc, fragSrc);
+
+      describe(
+        'Two rotating cubes on a gray background. The left one has a blue-purple gradient on each face. The right one is red.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a box using the p5.Shader.
+      // shader() sets the active shader to myShader.
+      shader(myShader);
+      push();
+      translate(-25, 0, 0);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      box(width / 4);
+      pop();
+
+      // Draw a box using the default fill shader.
+      // resetShader() restores the default fill shader.
+      resetShader();
+      fill(255, 0, 0);
+      push();
+      translate(25, 0, 0);
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      box(width / 4);
+      pop();
+    }
+    </code>
+    </div>
+class: p5
+chainable: true
+---
+
+
+# resetShader

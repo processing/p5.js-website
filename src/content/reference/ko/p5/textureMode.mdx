@@ -1,0 +1,221 @@
+---
+title: textureMode
+module: 3D
+submodule: 재질
+file: src/webgl/material.js
+description: >
+  <p>사용자 지정 도형에 적용되는 텍스처의 좌표계를 변경합니다.</p>
+
+  <p> <a href="/reference/p5/texture">texture()</a>가 작동하려면 해당 도형은
+
+  표면의 점을 이미지의 픽셀에 매핑해야 합니다. 
+  
+  <a href="/reference/p5/rect">rect()</a>와 <a href="/reference/p5/box">box()</a>와 같은 내장된 도형은 이미 그들의 꼭짓점에 기반한 텍스처 매핑을 가지고 있습니다.
+
+  <a href="/reference/p5/vertex">vertex()</a>로 생성된 사용자 지정 도형은 uv 좌표로 전달되어야 합니다.</p>
+
+  <p>각 <a href="/reference/p5/vertex">vertex()</a> 호출은 5개의 인수를 포함해야 합니다.
+
+  예를 들어 <code>vertex(x, y, z, u, v)</code>는 좌표 <code>(x, y, z)</code>에 있는 꼭짓점을
+
+  이미지의 좌표 <code>(u, v)</code>에 매핑합니다. 예를 들어, 기본적으로 직사각형의 모서리는 다음과 같이 매핑됩니다:</p>
+
+  <code>
+
+  // Apply the image as a texture.
+
+  texture(img);
+
+
+  <p>// Draw the rectangle.
+
+  rect(0, 0, 30, 50);
+
+  </p></code>
+
+  <p>위의 코드 스니펫의 이미지가 300 x 500 픽셀의 크기를 가진다면,
+
+  동일한 결과는 다음과 같이 얻을 수 있습니다:</p>
+
+  <code>
+
+  // Apply the image as a texture.
+
+  texture(img);
+
+
+  <p>// Draw the rectangle.
+
+  beginShape();</p>
+
+  <p>// Top-left.
+
+  // u: 0, v: 0
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// Top-right.
+
+  // u: 300, v: 0
+
+  vertex(30, 0, 0, 300, 0);</p>
+
+  <p>// Bottom-right.
+
+  // u: 300, v: 500
+
+  vertex(30, 50, 0, 300, 500);</p>
+
+  <p>// Bottom-left.
+
+  // u: 0, v: 500
+
+  vertex(0, 50, 0, 0, 500);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p><code>textureMode()</code>는 uv 좌표계를 변경합니다.</p>
+
+  <p>매개변수인 <code>mode</code>는 두 가지 상수를 받습니다. <code>NORMAL</code>이 전달되면
+
+  <code>textureMode(NORMAL)</code>처럼, 텍스처의 uv 좌표는 이미지의 크기 대신 0에서 1의 범위로 제공될 수 있습니다.
+
+  이는 다른 크기의 여러 이미지에 대해 동일한 코드를 사용하는 데 도움이 될 수 있습니다.
+
+  예를 들어, 위의 코드 스니펫은 다음과 같이 다시 작성할 수 있습니다:</p>
+
+  <code>
+
+  // Set the texture mode to use normalized coordinates.
+
+  textureMode(NORMAL);
+
+
+  <p>// Apply the image as a texture.
+
+  texture(img);</p>
+
+  <p>// Draw the rectangle.
+
+  beginShape();</p>
+
+  <p>// Top-left.
+
+  // u: 0, v: 0
+
+  vertex(0, 0, 0, 0, 0);</p>
+
+  <p>// Top-right.
+
+  // u: 1, v: 0
+
+  vertex(30, 0, 0, 1, 0);</p>
+
+  <p>// Bottom-right.
+
+  // u: 1, v: 1
+
+  vertex(30, 50, 0, 1, 1);</p>
+
+  <p>// Bottom-left.
+
+  // u: 0, v: 1
+
+  vertex(0, 50, 0, 0, 1);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p>기본적으로 <code>mode</code>는 <code>IMAGE</code>이며, uv 좌표를 이미지의 크기로 조정합니다.
+
+  <code>textureMode(IMAGE)</code>를 호출하면 기본값이 적용됩니다.</p>
+
+  <p>참고: <code>textureMode()</code>는 WebGL 모드에서만 사용할 수 있습니다.</p>
+line: 1048
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let img;
+
+    // Load an image and create a p5.Image object.
+    function preload() {
+      img = loadImage('/assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('An image of a ceiling against a black background.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Apply the image as a texture.
+      texture(img);
+
+      // Draw the custom shape.
+      // Use the image's width and height as uv coordinates.
+      beginShape();
+      vertex(-30, -30, 0, 0);
+      vertex(30, -30, img.width, 0);
+      vertex(30, 30, img.width, img.height);
+      vertex(-30, 30, 0, img.height);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let img;
+
+    // Load an image and create a p5.Image object.
+    function preload() {
+      img = loadImage('/assets/laDefense.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('An image of a ceiling against a black background.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Set the texture mode.
+      textureMode(NORMAL);
+
+      // Apply the image as a texture.
+      texture(img);
+
+      // Draw the custom shape.
+      // Use normalized uv coordinates.
+      beginShape();
+      vertex(-30, -30, 0, 0);
+      vertex(30, -30, 1, 0);
+      vertex(30, 30, 1, 1);
+      vertex(-30, 30, 0, 1);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: mode
+    description: |
+      <p> IMAGE 혹은 NORMAL 중 하나.</p>
+    type: Constant
+chainable: false
+---
+
+
+# textureMode

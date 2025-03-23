@@ -1,0 +1,46 @@
+---
+import {
+  isCurationResponse,
+  type OpenProcessingCurationResponse,
+} from "@/src/api/OpenProcessing";
+import type { CollectionEntry } from "astro:content";
+import GridItemReference from "@components/GridItem/Reference.astro";
+import GridItemExample from "@components/GridItem/Example.astro";
+import GridItemEvent from "@components/GridItem/Event.astro";
+import GridItemSketch from "@components/GridItem/Sketch.astro";
+
+interface Props {
+  title: string;
+  items: Array<
+    | CollectionEntry<"reference" | "examples" | "events">
+    | OpenProcessingCurationResponse[number]
+  >;
+  class?: string;
+}
+
+const { title, items, class: className } = Astro.props;
+---
+
+<div>
+  <hr />
+  <section class={className}>
+    <h2>{title}</h2>
+    <ul class="content-grid-simple">
+      {
+        items.map((i) => {
+          if (isCurationResponse(i)) {
+            return <GridItemSketch item={i} />;
+          }
+          switch (i.collection) {
+            case "reference":
+              return <GridItemReference item={i} />;
+            case "examples":
+              return <GridItemExample item={i} />;
+            case "events":
+              return <GridItemEvent item={i} />;
+          }
+        })
+      }
+    </ul>
+  </section>
+</div>

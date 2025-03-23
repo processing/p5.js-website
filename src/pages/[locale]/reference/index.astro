@@ -1,0 +1,22 @@
+---
+import ReferenceLayout from "@layouts/ReferenceLayout.astro";
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+
+export async function getStaticPaths() {
+  const paths = nonDefaultSupportedLocales.map(async (locale) => ({
+    params: {
+      locale,
+    },
+    props: {
+      entries: await getCollectionInLocaleWithFallbacks("reference", locale),
+    },
+  }));
+
+  return await Promise.all(paths);
+}
+
+const { entries } = Astro.props;
+---
+
+<ReferenceLayout title="Reference" entries={entries} />

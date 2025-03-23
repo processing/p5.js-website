@@ -1,0 +1,175 @@
+---
+title: createRadio
+module: डोम
+submodule: डोम
+file: src/dom/dom.js
+description: >
+  <p>एक रेडियो बटन तत्व बनाता है।</p>
+
+  <p>पैरामीटर वैकल्पिक है| यदि एक स्ट्रिंग पास की जाती है, जैसे <code>let myRadio = createSelect('food')</code>, तो प्रत्येक रेडियो विकल्प के <code>name</code> पैरामीटरके रूप में <code>"food"</code> होगा: <code><input name='food'></input></code>| यदि कोई मौजूदा <code><div></div></code> या <code><span></span></code> तत्व पारित किया गया है, जैसे कि <code>let myRadio = createSelect(container)</ code>, यह रेडियो बटन का मूल तत्व बन जाएगा।</p>
+
+  <p>रेडियो बटन विकल्पों को प्रबंधित करने के लिए कुछ उपयोगी तरीकों के साथ <a href="/reference/p5/p5.Element">p5.Element</a> वर्ग का विस्तार करते हैं:</p>
+
+  <ul>
+
+  <li><code>myRadio.option(value, [label])</code> मेनू में एक विकल्प जोड़ता है। पहला पैरामीटर, <code>value</code>, एक स्ट्रिंग है जो विकल्प का मान और लेबल सेट करता है। दूसरा पैरामीटर, <code>label</code>, वैकल्पिक है। यदि प्रदान किया गया है, तो यह <code>value</code> के लिए प्रदर्शित लेबल सेट करता है। यदि <code>value</code> वाला कोई विकल्प पहले से मौजूद है, तो उसका लेबल बदल दिया जाता है और उसका मान लौटा दिया जाता है।</li>
+
+  <li><code>myRadio.value()</code> वर्तमान में चयनित विकल्प का मान लौटाता है।</li>
+
+  <li><code>myRadio.selected()</code> वर्तमान में चयनित विकल्प लौटाता है।</li>
+
+  <li><code>myRadio.selected(value)</code> दिए गए विकल्प का चयन करता है और इसे <a href='https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement' target='_blank'><code>HTMLInputElement</code></a> के रूप में लौटाता है|</li>
+
+  <li><code>myRadio.disable(shouldDisable)</code> यदि <code>true</code> पास हो जाता है तो संपूर्ण रेडियो बटन को सक्षम कर देता है और यदि <code>false</code> पास हो जाता है तो इसे अक्षम कर देता है।</li >
+
+  </ul>
+line: 1439
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    let myRadio;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a radio button element and place it
+      // in the top-left corner.
+      myRadio = createRadio();
+      myRadio.position(0, 0);
+      myRadio.size(60);
+
+      // Add a few color options.
+      myRadio.option('red');
+      myRadio.option('yellow');
+      myRadio.option('blue');
+
+      // Choose a default option.
+      myRadio.selected('yellow');
+
+      describe('A yellow square with three color options listed, "red", "yellow", and "blue". The square changes color when the user selects a new option.');
+    }
+
+    function draw() {
+      // Set the background color using the radio button.
+      let g = myRadio.value();
+      background(g);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myRadio;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a radio button element and place it
+      // in the top-left corner.
+      myRadio = createRadio();
+      myRadio.position(0, 0);
+      myRadio.size(50);
+
+      // Add a few color options.
+      // Color values are labeled with
+      // emotions they evoke.
+      myRadio.option('red', 'love');
+      myRadio.option('yellow', 'joy');
+      myRadio.option('blue', 'trust');
+
+      // Choose a default option.
+      myRadio.selected('yellow');
+
+      describe('A yellow square with three options listed, "love", "joy", and "trust". The square changes color when the user selects a new option.');
+    }
+
+    function draw() {
+      // Set the background color using the radio button.
+      let c = myRadio.value();
+      background(c);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let myRadio;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create a radio button element and place it
+      // in the top-left corner.
+      myRadio = createRadio();
+      myRadio.position(0, 0);
+      myRadio.size(50);
+
+      // Add a few color options.
+      myRadio.option('red');
+      myRadio.option('yellow');
+      myRadio.option('blue');
+
+      // Choose a default option.
+      myRadio.selected('yellow');
+
+      // Create a button and place it beneath the canvas.
+      let btn = createButton('disable');
+      btn.position(0, 100);
+
+      // Call disableRadio() when btn is pressed.
+      btn.mousePressed(disableRadio);
+
+      describe('A yellow square with three options listed, "red", "yellow", and "blue". The square changes color when the user selects a new option. A "disable" button beneath the canvas disables the color options when pressed.');
+    }
+
+    function draw() {
+      // Set the background color using the radio button.
+      let c = myRadio.value();
+      background(c);
+    }
+
+    // Disable myRadio.
+    function disableRadio() {
+      myRadio.disable(true);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: नया <a href='#/p5.Element'>p5.Element</a> ऑब्जेक्ट।
+  type: p5.Element
+overloads:
+  - line: 1439
+    params:
+      - name: containerElement
+        description: >
+          <p>कंटेनर HTML तत्व, या तो <code><div></div></code> या <code><span></span></code>|</p>
+        type: ऑब्जेक्ट
+        optional: true
+    return:
+      description: नया <a href='#/p5.Element'>p5.Element</a> ऑब्जेक्ट।
+      type: p5.Element
+  - line: 1573
+    params:
+      - name: name
+        description: >
+          <p>प्रत्येक विकल्प के <code><input></input></code> तत्व के लिए नाम पैरामीटर।</p>
+        type: स्ट्रिंग
+        optional: true
+    return:
+      description: नया <a href='#/p5.Element'>p5.Element</a> ऑब्जेक्ट।
+      type: p5.Element
+  - line: 1578
+    params: []
+    return:
+      description: नया <a href='#/p5.Element'>p5.Element</a> ऑब्जेक्ट।
+      type: p5.Element
+chainable: false
+---
+
+
+# createRadio

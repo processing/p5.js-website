@@ -1,0 +1,105 @@
+---
+import { type CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
+import Image from "@components/Image/index.astro";
+import ContributeImage from "@content/ui/images/contribute.png";
+import BaseLayout from "./BaseLayout.astro";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import GridItemContributorDoc from "@components/GridItem/ContributorDoc.astro";
+import { setJumpToState, type JumpToLink } from "../globals/state";
+
+interface Props {
+  entries: CollectionEntry<"contributor-docs">[];
+}
+
+const { entries } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+const donateSectionItems = [
+  {
+    title: t("Donate to Processing Foundation"),
+    url: "/donate",
+    description: t("contributePage", "DonateDescription"),
+  },
+  
+  // {
+  //   title: t("Frequently Asked Questions"),
+  //   url: "",
+  //   description: t("contributePage", "FaqDescription"),
+  // },
+];
+
+const jumpToLinks = [
+  {
+    label: t("Contributor Docs"),
+    url: "#docs",
+  },
+  {
+    label: t("Donate"),
+    url: "#donate",
+  },
+];
+
+setJumpToState({
+  links: jumpToLinks as JumpToLink[],
+});
+---
+
+<Head
+  title={"Contribute"}
+  locale={currentLocale}
+  featuredImageSrc={ContributeImage.src}
+/>
+
+<BaseLayout title="Contribute">
+  <section>
+    <h2 id="docs">{t("Contributor Docs")}</h2>
+    <div
+      class="mb-md grid grid-cols-1 gap-x-gutter-sm md:gap-x-gutter-md lg:grid-cols-2"
+    >
+      <div>
+        <Image
+          src={ContributeImage}
+          alt={t("contributePage", "ImageAltText") as string}
+        />
+        <p class="mt-xs lg:mt-sm text-sm">
+          {t("contributePage", "ImageCaption")}
+        </p>
+      </div>
+      <p class="mt-0 text-base lg:text-xl">
+        {t("contributePage", "Statement")}
+      </p>
+    </div>
+    <ul class="content-grid-simple">
+      {
+        entries.map((entry) => (
+          <li>
+            <GridItemContributorDoc item={entry} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <section>
+    <h2 id="donate">{t("Donate")}</h2>
+    <ul class="content-grid-simple">
+      {
+        // This is the same markup as in ContributorDocItem
+        donateSectionItems.map((it) => (
+          <li>
+            <a href={it.url}>
+              <div class="grid place-content-center bg-accent-color text-accent-type-color aspect-photo p-4">
+                <span class="text-lg text-center align-middle line-clamp-3 text-pretty">
+                  {it.title}
+                </span>
+              </div>
+              <div class="text-sm text-ellipsis line-clamp-3 text-pretty">
+                {it.description}
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

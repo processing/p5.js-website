@@ -1,0 +1,126 @@
+---
+title: curveTangent
+module: 形状
+submodule: 曲线
+file: src/core/shape/curves.js
+description: >
+
+  <p>计算沿着与样条曲线相切的直线的坐标。</p>
+
+  <p>切线与曲线表面相切。切线的斜率等于它与曲线相交点处的曲线斜率。</p>
+
+  <p><code>curveTangent()</code> 使用样条曲线的锚点和控制点计算切线上的坐标。它期望的点的顺序与 <a href="/reference/p5/curve">curve()</a> 函数相同。
+  <code>curveTangent()</code> 每次只在一个轴上工作。锚点和控制点的 x 坐标可以用于计算切线点的 x 坐标。锚点和控制点的 y 坐标可以用于计算切线点的 y 坐标。</p>
+
+  <p>第一个参数 <code>a</code> 是第一个控制点的坐标。</p>
+
+  <p>第二个和第三个参数 <code>b</code> 和 <code>c</code> 是锚点的坐标。</p>
+
+  <p>第四个参数 <code>d</code> 是最后一个控制点的坐标。</p>
+
+  <p>第五个参数 <code>t</code> 是沿着曲线进行插值的量。0 是第一个锚点，1 是第二个锚点，0.5 是它们之间的中间点。</p>
+line: 1054
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 5;
+      let y1 = 26;
+      let x2 = 73;
+      let y2 = 24;
+      let x3 = 73;
+      let y3 = 61;
+      let x4 = 15;
+      let y4 = 65;
+
+      // Draw the curve.
+      noFill();
+      curve(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Draw tangents along the curve's path.
+      fill(255);
+
+      // Top circle.
+      stroke(0);
+      let x = curvePoint(x1, x2, x3, x4, 0);
+      let y = curvePoint(y1, y2, y3, y4, 0);
+      circle(x, y, 5);
+
+      // Top tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      let tx = 0.2 * curveTangent(x1, x2, x3, x4, 0);
+      let ty = 0.2 * curveTangent(y1, y2, y3, y4, 0);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Center circle.
+      stroke(0);
+      x = curvePoint(x1, x2, x3, x4, 0.5);
+      y = curvePoint(y1, y2, y3, y4, 0.5);
+      circle(x, y, 5);
+
+      // Center tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.2 * curveTangent(x1, x2, x3, x4, 0.5);
+      ty = 0.2 * curveTangent(y1, y2, y3, y4, 0.5);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Bottom circle.
+      stroke(0);
+      x = curvePoint(x1, x2, x3, x4, 1);
+      y = curvePoint(y1, y2, y3, y4, 1);
+      circle(x, y, 5);
+
+      // Bottom tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.2 * curveTangent(x1, x2, x3, x4, 1);
+      ty = 0.2 * curveTangent(y1, y2, y3, y4, 1);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      describe(
+        'A black curve on a gray square. A white circle moves back and forth along the curve.'
+      );
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p>coordinate of first control point.</p>
+    type: Number
+  - name: b
+    description: |
+      <p>coordinate of first anchor point.</p>
+    type: Number
+  - name: c
+    description: |
+      <p>coordinate of second anchor point.</p>
+    type: Number
+  - name: d
+    description: |
+      <p>coordinate of second control point.</p>
+    type: Number
+  - name: t
+    description: |
+      <p>amount to interpolate between 0 and 1.</p>
+    type: Number
+return:
+  description: coordinate of a point on the tangent line.
+  type: Number
+chainable: false
+---
+
+
+# curveTangent

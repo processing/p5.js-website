@@ -1,0 +1,140 @@
+---
+title: loadFont
+module: 字体
+submodule: 加载 & 显示
+file: src/typography/loading_displaying.js
+description: |2-
+
+  <p>加载字体并创建 <a href="/reference/p5/p5.Font">p5.Font</a> 对象。
+
+
+  <code>loadFont()</code> 可以加载 .otf 或 .ttf 格式的字体。已加载字体可以用于画布和 HTML 元素中的文本样式。</p>
+
+
+  <p>第一个参数 <code>path</code> 是字体文件的路径。
+  "本地文件的路径应该是相对的。例如，<code>'/assets/inconsolata.otf'</code>。下列的示例中使用的 Inconsolata 字体可以在<a href="https"://www.fontsquirrel.com/fonts/inconsolata"
+  target="_blank">此处</a>免费下载。
+
+
+  远程文件的路径应该是 URL。例如，
+
+
+  "<code>'https":"//example.com/inconsolata.otf'</code>。 URL 可能会因为浏览器安全被阻止。</p>"
+
+
+  <p>第二个参数<code>successCallback</code>是可选的。如果通过一个函数，如果字体加载就会调用。
+
+
+  如果需要，回调函数可以使用新的 <a href="/reference/p5/p5.Font">p5.Font</a> 对象。</p>
+
+
+  <p>第三个参数，<code>failureCallback</code>，也是可选的。如果通过一个函数，如果字体加载失败就会调用。如果需要，回调函数可能会使用错误 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event"
+  target="_blank">Event</a> 对象。</p>
+
+
+  <p>加载字体可能需要一些时间。字体用于 <a href="/reference/p5/setup">setup()</a> 或 <a href="/reference/p5/draw">draw()</a> 之前，在 <a href="/reference/p5/preload">preload()</a> 调用 <code>loadFont()</code>，以确保字体先加载。</p>
+line: '16'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |-
+
+
+    <div>
+    <code>
+    let font;
+
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('/assets/inconsolata.otf', font => {
+        fill('deeppink');
+        textFont(font);
+        textSize(36);
+        text('p5*js', 10, 50);
+
+        describe('The text "p5*js" written in pink on a white background.');
+      });
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      loadFont('/assets/inconsolata.otf', success, failure);
+    }
+
+    function success(font) {
+      fill('deeppink');
+      textFont(font);
+      textSize(36);
+      text('p5*js', 10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+
+    function failure(event) {
+      console.error('Oops!', event);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function preload() {
+      loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
+      let p = createP('p5*js');
+      p.style('color', 'deeppink');
+      p.style('font-family', 'Inconsolata');
+      p.style('font-size', '36px');
+      p.position(10, 50);
+
+      describe('The text "p5*js" written in pink on a white background.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: path
+    description: |2-
+  
+      <p>要加载的字体路径。</p>
+    type: 字符串
+  - name: successCallback
+    description: |2-
+  
+      <p>在加载成功后，可传入<a href="#/p5.Font">p5.Font</a> 对象来调用此函数。</p>
+    type: 函数
+    optional: true
+  - name: failureCallback
+    description: |2-
+  
+      <p>如果字体加载失败，可传入错误 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event" target="_blank">Event</a> 对象来调用此函数。</p>
+    type: 函数
+    optional: true
+return:
+  description: <a href="#/p5.Font">p5.Font</a> 对象。
+  type: p5.Font
+chainable: false
+---
+
+# loadFont

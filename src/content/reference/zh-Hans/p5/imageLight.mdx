@@ -1,0 +1,68 @@
+---
+title: imageLight
+module: 3D
+submodule: 光源
+file: src/webgl/light.js
+description: >
+  <p>从图像创建一个环境光。</p>
+
+  <p><code>imageLight()</code> 模拟了从所有方向照射的光。效果就像将绘图放置在一个以图像为纹理的巨大球体的中心。图像的漫反射光会受到 <a href="/reference/p5/fill">fill()</a> 的影响，而镜面反射则受到 <a href="/reference/p5/specularMaterial">specularMaterial()</a> 和 <a href="/reference/p5/shininess">shininess()</a> 的影响。</p>
+
+  <p>参数 <code>img</code> 是要用作光源的 <a href="/reference/p5/p5.Image">p5.Image</a> 的对象。</p>
+line: 955
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class="notest">
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    let img;
+
+    // 加载图像并创建一个 p5.Image 对象。
+    function preload() {
+      img = loadImage('/assets/outdoor_spheremap.jpg');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere floating above a landscape. The surface of the sphere reflects the landscape.');
+    }
+
+    function draw() {
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 将图像绘制为全景图像（360˚ 背景）。
+      panorama(img);
+
+      // 添加一个柔和的环境光。
+      ambientLight(50);
+
+      // 添加来自图像的光源。
+      imageLight(img);
+
+      // 设定球体样式。
+      specularMaterial(20);
+      shininess(100);
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: img
+    description: |
+      <p>使用作为光源的图像。</p>
+    type: p5.image
+chainable: false
+---
+
+
+# imageLight

@@ -1,0 +1,31 @@
+---
+import { getEntry } from "astro:content";
+import AboutLayout from "@layouts/AboutLayout.astro";
+import { defaultLocale } from "../../i18n/const";
+import { setJumpToState } from "../../globals/state";
+import { nonDefaultSupportedLocales } from "@/src/i18n/const";
+
+export const getStaticPaths = async () => {
+  const defaultAboutEntry = await getEntry(
+    "text-detail",
+    `${defaultLocale}/about`
+  )!;
+  const pages = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const aboutEntry = await getEntry("text-detail", `${locale}/about`);
+      return {
+        params: { locale },
+        props: {
+          entry: aboutEntry ?? defaultAboutEntry,
+        },
+      };
+    })
+  );
+  return pages;
+};
+
+const { entry } = Astro.props;
+setJumpToState(null);
+---
+
+<AboutLayout entry={entry} />

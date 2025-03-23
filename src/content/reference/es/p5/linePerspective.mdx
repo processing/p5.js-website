@@ -1,0 +1,153 @@
+---
+title: linePerspective
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Habilita o deshabilita la perspectiva de las líneas en bocetos 3D.</p>
+
+  <p>En el modo WebGL, las líneas pueden ser dibujadas con un grosor más delgado cuando están
+
+  más lejanas de la cámara. Esto da una apariencia más realista.</p>
+
+  <p>De forma predeterminada, las líneas son dibujadas de formas diferentes dependiendo del tipo de
+
+  perspectiva que se está utilizando:</p>
+
+  <ul>
+
+  <li><code>perspective()</code> y <code>frustum()</code> simulan una perspectiva realista. En
+
+  estos modos, el grosor de las líneas se ve afectado por su distancia a la
+
+  cámara. Esto da una apariencia más natural. <code>perspective()</code> es
+
+  el modo predeterminado para los bocetos 3D.</li>
+
+  <li><code>ortho()</code> no simula una perspectiva realista. En este modo, el grosor de las
+  líneas es consistente independientemente de su distancia a la
+
+  cámara. Esto da una apariencia más predecible y consistente.</li>
+
+  </ul>
+
+  <p><code>linePerspective()</code> puede sobreescribir el modo por defecto de dibujado de líneas.</p>
+
+  <p>El parámetro <code>enable</code> es opcional. Es un valor <code>Boolean</code> que establece
+  el
+
+  modo en que se dibujan las líneas. Si se pasa <code>true</code> como en <code>linePerspective(true)</code>,
+
+  las líneas aparecerán más delgadas cuando estén más lejanas de la cámara. Si
+
+  se pasa <code>false</code> como en <code>linePerspective(false)</code>, las líneas
+  tendrán
+
+  un grosor de trazo constante independientemente de su distancia a la cámara.
+  De forma predeterminada, <code>linePerspective()</code> está habilitado.</p>
+
+  <p>Al llamar a <code>linePerspective()</code> sin pasar un argumento devuelve <code>true</code> si
+
+  está habilitado y <code>false</code> si no lo está.</p>
+
+  <p>Nota: <code>linePerspective()</code> solo puede ser utilizado en el modo WebGL.</p>
+line: 280
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click the canvas to toggle the line perspective.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A white cube with black edges on a gray background. Its edges toggle between thick and thin when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the line perspective when the user double-clicks.
+    function doubleClicked() {
+      let isEnabled = linePerspective();
+      linePerspective(!isEnabled);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click the canvas to toggle the line perspective.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A row of cubes with black edges on a gray background. Their edges toggle between thick and thin when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Use an orthographic projection.
+      ortho();
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the line perspective when the user double-clicks.
+    function doubleClicked() {
+      let isEnabled = linePerspective();
+      linePerspective(!isEnabled);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 280
+    params:
+      - name: enable
+        description: |
+          <p>Si se debe habilitar la perspectiva de líneas.</p>
+        type: Booleano
+  - line: 392
+    params: []
+    return:
+      description: Si la perspectiva de líneas está habilitada.
+      type: Boolean
+chainable: false
+---
+
+
+# linePerspective

@@ -1,0 +1,178 @@
+---
+title: copyToContext
+module: 3D
+submodule: 재질
+file: src/webgl/p5.Shader.js
+description: >
+  <p>셰이더를 하나의 드로잉 콘텍스트에서 다른 드로잉 콘텍스트로 복사합니다.</p>
+  <p>각 <code>p5.Shader</code> 객체는 실행하기 전에 <a href="/reference/p5/shader">shader()</a>를 호출하여 컴파일해야 합니다. 컴파일은 보통 <a href="/reference/p5/p5.Graphics">p5.Graphics</a>의 메인 캔버스 또는 인스턴스인 드로잉 콘텍스트에서 일어납니다. 셰이더는 컴파일된 콘텍스트에서만 사용될 수 있습니다. <code>copyToContext()</code> 메서드는 셰이더를 다시 컴파일하고 재사용할 수 있는 다른 드로잉 콘텍스트로 복사합니다.</p>
+  <p>매개 변수 <code>context</code>는 셰이더를 사용할 드로잉 콘텍스트입니다. 셰이더는 <code>myShader.copyToContext(pg)</code>에서와 같이 <a href="/reference/p5/p5.Graphics">p5.Graphics</a>의 인스턴스로 복사할 수 있습니다. 셰이더는 <code>myShader.copyToContext(window)</code>에서와 같이 <code>window</code> 변수를 사용하여 <a href="/reference/p5/p5.Graphics">p5.Graphics</a> 객체에서 메인 캔버스로 복사할 수도 있습니다.</p>
+  <p>참고: <a href="/reference/p5/createShader">createShader()</a>, <a href="/reference/p5/createFilterShader">createFilterShader()</a>, 또는 <a href="/reference/p5/loadShader">loadShader()</a>로 생성된 <a href="/reference/p5/p5.Shader">p5.Shader</a> 객체는 <a href="/reference/p5/createFramebuffer">createFramebuffer()</a>로 생성한 <a 
+  href="/reference/p5/p5.Framebuffer">p5.Framebuffer</a>와 함께 직접 사용될 수 있습니다. 두 객체 모두 메인 캔버스와 동일한 콘텍스트를 가집니다.</p>
+line: 211
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision mediump float;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vec2 uv = vTexCoord;
+      vec3 color = vec3(uv.x, uv.y, min(uv.x + uv.y, 1.0));
+      gl_FragColor = vec4(color, 1.0);\
+    }
+    `;
+
+    let pg;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Create a p5.Shader object.
+      let original = createShader(vertSrc, fragSrc);
+
+      // Compile the p5.Shader object.
+      shader(original);
+
+      // Create a p5.Graphics object.
+      pg = createGraphics(50, 50, WEBGL);
+
+      // Copy the original shader to the p5.Graphics object.
+      let copied = original.copyToContext(pg);
+
+      // Apply the copied shader to the p5.Graphics object.
+      pg.shader(copied);
+
+      // Style the display surface.
+      pg.noStroke();
+
+      // Add a display surface for the shader.
+      pg.plane(50, 50);
+
+      describe('A square with purple-blue gradient on its surface drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the p5.Graphics object to the main canvas.
+      image(pg, -25, -25);
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `
+    precision highp float;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
+    varying vec2 vTexCoord;
+
+    void main() {
+      vTexCoord = aTexCoord;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+      gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `
+    precision mediump float;
+
+    varying vec2 vTexCoord;
+
+    void main() {
+      vec2 uv = vTexCoord;
+      vec3 color = vec3(uv.x, uv.y, min(uv.x + uv.y, 1.0));
+      gl_FragColor = vec4(color, 1.0);
+    }
+    `;
+
+    let copied;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Graphics object.
+      let pg = createGraphics(25, 25, WEBGL);
+
+      // Create a p5.Shader object.
+      let original = pg.createShader(vertSrc, fragSrc);
+
+      // Compile the p5.Shader object.
+      pg.shader(original);
+
+      // Copy the original shader to the main canvas.
+      copied = original.copyToContext(window);
+
+      // Apply the copied shader to the main canvas.
+      shader(copied);
+
+      describe('A rotating cube with a purple-blue gradient on its surface drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate around the x-, y-, and z-axes.
+      rotateX(frameCount * 0.01);
+      rotateY(frameCount * 0.01);
+      rotateZ(frameCount * 0.01);
+
+      // Draw the box.
+      box(50);
+    }
+    </code>
+    </div>
+class: p5.Shader
+params:
+  - name: context
+    description: |
+      <p>복사된 셰이더를 위한 WebGL 콘텍스트</p>
+    type: p5|p5.Graphics
+return:
+  description: 목표 콘텍스트를 위해 컴파일된 새로운 셰이더
+  type: p5.Shader
+chainable: false
+---
+
+
+# copyToContext

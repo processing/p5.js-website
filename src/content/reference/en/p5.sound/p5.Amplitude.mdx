@@ -1,0 +1,75 @@
+---
+title: p5.Amplitude
+module: p5.sound
+submodule: p5.sound
+file: src/Amplitude.js
+description: Get the current volume of a sound.
+line: 10
+isConstructor: true
+params:
+  - name: smoothing
+    description: >-
+      Smooth the amplitude analysis by averaging with the last analysis frame.
+      0.0 is no time averaging with the last analysis frame.
+    type: Number
+    optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    let sound, amp, cnv;
+      
+    function preload() {
+      //replace this sound with something local with rights to distribute
+      sound = loadSound('//assets/Damscray_DancingTiger.mp3');
+    }
+
+    function setup() {
+      cnv = createCanvas(100, 100);
+      cnv.mousePressed(playSound);
+      textAlign(CENTER);
+      fill(255);
+      amp = new p5.Amplitude();
+      sound.connect(amp);
+    }
+
+    function playSound() {
+      sound.play();
+    }
+
+    function draw() {
+      let level = amp.getLevel();
+      level = map(level, 0, 0.2, 0, 255);
+      background(level, 0, 0);
+      text('tap to play', width/2, 20);
+      describe('The color of the background changes based on the amplitude of the sound.');
+    }
+    </code>
+    </div>
+methods:
+  setInput:
+    description: Connect an audio source to the amplitude object.
+    path: p5.Amplitude/setInput
+  getLevel:
+    description: Get the current amplitude value of a sound.
+    path: p5.Amplitude/getLevel
+  toggleNormalize:
+    description: |
+      <p>Determines whether the results of Amplitude.process() will be
+      Normalized. To normalize, Amplitude finds the difference the
+      loudest reading it has processed and the maximum amplitude of
+      1.0. Amplitude adds this difference to all values to produce
+      results that will reliably map between 0.0 and 1.0. However,
+      if a louder moment occurs, the amount that Normalize adds to
+      all the values will change. Accepts an optional boolean parameter
+      (true or false). Normalizing is off by default.</p>
+    path: p5.Amplitude/toggleNormalize
+  smooth:
+    description: Get the current amplitude value of a sound.
+    path: p5.Amplitude/smooth
+chainable: false
+---
+
+
+# p5.Amplitude

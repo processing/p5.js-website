@@ -1,0 +1,42 @@
+---
+import { getCurrentLocale, getUiTranslator } from "@/src/i18n/utils";
+import { jumpToState } from "@/src/globals/state";
+import styles from "./styles.module.scss";
+import { NavPanels } from "./NavPanels";
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+// We force the logo to the accent color only on the homepage
+const pathMinusLocale = Astro.url.pathname.replace(`/${currentLocale}`, "");
+const isHomepage = pathMinusLocale === "/";
+const t = await getUiTranslator(currentLocale);
+
+const mainLinks = [
+  { url: "/reference/", label: t("Reference") },
+  { url: "/tutorials/", label: t("Tutorials") },
+  { url: "/examples/", label: t("Examples") },
+  { url: "/contribute/", label: t("Contribute") },
+  { url: "/community/", label: t("Community") },
+  { url: "/about/", label: t("About") },
+] as { url: string; label: string }[];
+
+const editorButtonLabel = t("Start Coding");
+const donateButtonLabel = t("Donate");
+const mobileMenuLabel = t("Menu");
+const jumpToLabel = t("Jump To");
+---
+
+<nav class={styles.container}>
+  <a href="#main-content" class="skip-to-main">
+    {t("Skip to main content")}
+  </a>
+  <NavPanels
+    mainLinks={mainLinks}
+    isHomepage={isHomepage}
+    editorButtonLabel={editorButtonLabel as string}
+    donateButtonLabel={donateButtonLabel as string}
+    mobileMenuLabel={mobileMenuLabel as string}
+    jumpToLabel={jumpToLabel as string}
+    jumpToState={jumpToState}
+    client:load
+  />
+</nav>

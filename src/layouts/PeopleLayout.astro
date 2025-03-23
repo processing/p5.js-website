@@ -1,0 +1,120 @@
+---
+import Image from "@components/Image/index.astro";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "./BaseLayout.astro";
+import type { CollectionEntry } from "astro:content";
+import { setJumpToState } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import lodash from "lodash";
+import { removeLocaleAndExtension } from "../pages/_utils";
+
+interface Props {
+  entries: CollectionEntry<"people">[];
+  title: string;
+}
+
+const { entries, title } = Astro.props;
+
+interface DisplayedEntries {
+  alumni: CollectionEntry<"people">[];
+  contributor: CollectionEntry<"people">[];
+  lead: CollectionEntry<"people">[];
+  mentor: CollectionEntry<"people">[];
+}
+
+// Sort entries first, handling possibly undefined 'order'
+const sortedEntries = entries.sort((a, b) => {
+  const orderA =
+    a.data.order !== undefined ? a.data.order : Number.MAX_SAFE_INTEGER;
+  const orderB =
+    b.data.order !== undefined ? b.data.order : Number.MAX_SAFE_INTEGER;
+  return orderA - orderB;
+});
+const filteredEntries = sortedEntries.reduce<DisplayedEntries>(
+  (acc, item) => {
+    const key = item.data.category as keyof DisplayedEntries;
+    acc[key].push(item); //  Safe to do because we assert that key is one of the keys of DisplayedEntrie
+    return acc;
+  },
+  { alumni: [], lead: [], mentor: [], contributor: [] } // Initializing with empty arrays for both keys
+);
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+const featuredEntries = [
+  { label: t("peopleCategories", "lead"), members: filteredEntries.lead },
+  { label: t("peopleCategories", "mentor"), members: filteredEntries.mentor },
+  { label: t("peopleCategories", "alumni"), members: filteredEntries.alumni },
+];
+const contributorEntries = {
+  label: t("peopleCategories", "contributor"),
+  members: filteredEntries.contributor,
+};
+
+setJumpToState(null);
+---
+
+<Head title={"People"} locale={currentLocale} />
+
+<BaseLayout title={title} variant="item" topic="about" className="about">
+  <h3 class="mb-xl max-w-[770px]">
+    {t("peoplePage", "PageDescription")}
+  </h3>
+  {
+    featuredEntries.map((category, i) => (
+      <section>
+        <h2>{category.label}</h2>
+        <ul class="content-grid">
+          {category.members.map((person) => (
+            <li
+              id={removeLocaleAndExtension(person.id)}
+              class="col-span-6 md:col-span-9 lg:col-span-12 content-grid"
+            >
+              <div class="col-span-4 md:col-span-9 lg:col-span-4">
+                <Image
+                  src={person.data.image!}
+                  alt={person.data.imageAlt!}
+                  width="400"
+                  aspectRatio="square"
+                  loading={i === 0 ? "eager" : "lazy"}
+                  class="grayscale"
+                />
+                <div class="mt-xs">
+                  <a
+                    href={person.data.url}
+                    aria-label={`Link to ${person.data.name}'s personal website'`}
+                  >
+                    {person.data.name}
+                  </a>
+                </div>
+                <p class="text-body-caption mt-0">{person.data.role}</p>
+              </div>
+              <p class="col-span-6 md:col-span-9 lg:col-span-8 p-0 m-0">
+                {person.data.blurb}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  <section>
+    <h2>{contributorEntries.label}</h2>
+    <ul class="content-grid-simple !gap-y-0">
+      {
+        lodash.shuffle(contributorEntries.members).map((person) => (
+          <li class="col-span-1" id={removeLocaleAndExtension(person.id)}>
+            <a
+              href={person.data.url}
+              aria-label={`Link to ${person.data.name}'s personal website'`}
+            >
+              {person.data.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

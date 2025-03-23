@@ -1,0 +1,133 @@
+---
+title: freeGeometry
+module: 形状
+submodule: 3D 基础形状
+file: src/webgl/3d_primitives.js
+description: >
+  <p>从图形处理单元（GPU）内存中清除 <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象。</p>
+
+  <p><a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象可以包含大量关于其顶点、表面法线、颜色等的数据。
+  
+  复杂的 3D 形状可能会使用大量内存，而在许多 GPU 中内存是有限的资源。
+
+  调用 <code>freeGeometry()</code> 可以从 GPU 内存中释放
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象的资源，从而提升性能。
+
+  <code>freeGeometry()</code> 适用于通过 <a href="/reference/p5/beginGeometry">beginGeometry()</a> 和
+
+  <a href="/reference/p5/endGeometry">endGeometry()</a>，
+
+  <a href="/reference/p5/buildGeometry">buildGeometry()</a> 和
+
+  <a href="/reference/p5/loadModel">loadModel()</a>  创建的 <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象。</p>
+
+  <p>参数 <code>geometry</code> 是要释放的 <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象</p>
+
+  <p>注意：A <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象的资源清除后仍然可以绘制。第一次重新绘制可能需要更长的时间。
+
+  </p>
+
+  <p>注意：<code>freeGeometry()</code> 只能在 WebGL 模式下使用。</p>
+line: 748
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Create a p5.Geometry object.
+      beginGeometry();
+      cone();
+      let shape = endGeometry();
+
+      // Draw the shape.
+      model(shape);
+
+      // Free the shape's resources.
+      freeGeometry(shape);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let button;
+    let particles;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a button to reset the particle system.
+      button = createButton('Reset');
+
+      // Call resetModel() when the user presses the button.
+      button.mousePressed(resetModel);
+
+      // Add the original set of particles.
+      resetModel();
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the particles.
+      noStroke();
+
+      // Draw the particles.
+      model(particles);
+    }
+
+    function resetModel() {
+      // If the p5.Geometry object has already been created,
+      // free those resources.
+      if (particles) {
+        freeGeometry(particles);
+      }
+
+      // Create a new p5.Geometry object with random spheres.
+      particles = buildGeometry(createParticles);
+    }
+
+    function createParticles() {
+      for (let i = 0; i < 60; i += 1) {
+        // Calculate random coordinates.
+        let x = randomGaussian(0, 20);
+        let y = randomGaussian(0, 20);
+        let z = randomGaussian(0, 20);
+
+        push();
+        // Translate to the particle's coordinates.
+        translate(x, y, z);
+        // Draw the particle.
+        sphere(5);
+        pop();
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: geometry
+    description: |
+      <p>3D shape whose resources should be freed.</p>
+    type: p5.Geometry
+chainable: false
+---
+
+
+# freeGeometry

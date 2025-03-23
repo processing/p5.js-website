@@ -1,0 +1,247 @@
+---
+title: specularColor
+module: 3D
+submodule: Lights
+file: src/webgl/light.js
+description: >
+  <p>Establece el color especular para las luces.</p>
+
+  <p><code>specularColor()</code> afecta a las luces que rebotan en una superficie en una dirección preferida. Estas luces incluyen <a href="/reference/p5/directionalLight">directionalLight()</a>, <a href="/reference/p5/pointLight">pointLight()</a> y <a href="/reference/p5/spotLight">spotLight()</a>. La función ayuda a crear reflejos en objetos <a href="/reference/p5/p5.Geometry">p5.Geometry</a> que están estilizados con <a href="/reference/p5/specularMaterial">specularMaterial()</a>. Si una geometría no utiliza <a href="/reference/p5/specularMaterial">specularMaterial()</a>, entonces <code>specularColor()</code> no tendrá efecto.</p>
+
+  <p>Nota: <code>specularColor()</code> no afecta a las luces que rebotan en todas las direcciones, incluyendo <a href="/reference/p5/ambientLight">ambientLight()</a> e <a href="/reference/p5/imageLight">imageLight()</a>.</p>
+
+  <p>Hay tres formas de llamar a <code>specularColor()</code> con parámetros opcionales para establecer el color del reflejo especular.</p>
+
+  <p>La primera forma de llamar a <code>specularColor()</code> tiene dos parámetros opcionales, <code>gray</code> y <code>alpha</code>. Se pueden pasar valores de escala de grises y alfa entre 0 y 255, como en <code>specularColor(50)</code> o <code>specularColor(50, 80)</code>, para establecer el color del reflejo especular.</p>
+
+  <p>La segunda forma de llamar a <code>specularColor()</code> tiene un parámetro opcional, <code>color</code>. Se puede pasar un objeto <a href="/reference/p5/p5.Color">p5.Color</a>, un arreglo de valores de color o una cadena de color CSS para establecer el color del reflejo especular.</p>
+
+  <p>La tercera forma de llamar a <code>specularColor()</code> tiene cuatro parámetros opcionales, <code>v1</code>, <code>v2</code>, <code>v3</code> y <code>alpha</code>. Se pueden pasar valores RGBA, HSBA o HSLA, como en <code>specularColor(255, 0, 0, 80)</code>, para establecer el color del reflejo especular. Los valores de color se interpretarán utilizando el <a href="/reference/p5/colorMode">colorMode()</a> actual.</p>
+line: 205
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white sphere drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // No specular color.
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click the canvas to add a point light.
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. A spotlight starts shining when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the sphere.
+      noStroke();
+      specularColor(100);
+      specularMaterial(255, 255, 255);
+
+      // Control the light.
+      if (isLit === true) {
+        // Add a white point light from the top-right.
+        pointLight(255, 255, 255, 30, -20, 40);
+      }
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Turn on the point light when the user double-clicks.
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a specular highlight.
+      // Use a p5.Color object.
+      let c = color('dodgerblue');
+      specularColor(c);
+
+      // Add a white point light from the top-right.
+      pointLight(255, 255, 255, 30, -20, 40);
+
+      // Style the sphere.
+      noStroke();
+
+      // Add a white specular material.
+      specularMaterial(255, 255, 255);
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a specular highlight.
+      // Use a CSS color string.
+      specularColor('#1E90FF');
+
+      // Add a white point light from the top-right.
+      pointLight(255, 255, 255, 30, -20, 40);
+
+      // Style the sphere.
+      noStroke();
+
+      // Add a white specular material.
+      specularMaterial(255, 255, 255);
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A black sphere drawn on a gray background. An area on the surface of the sphere is highlighted in blue.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Add a specular highlight.
+      // Use RGB values.
+      specularColor(30, 144, 255);
+
+      // Add a white point light from the top-right.
+      pointLight(255, 255, 255, 30, -20, 40);
+
+      // Style the sphere.
+      noStroke();
+
+      // Add a white specular material.
+      specularMaterial(255, 255, 255);
+
+      // Draw the sphere.
+      sphere(30);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 205
+    params:
+      - name: v1
+        description: |
+          <p>valor rojo o de matiz en el actual
+                        <a href="#/p5/colorMode">colorMode()</a>.</p>
+        type: Number
+      - name: v2
+        description: |
+          <p>valor verde o de saturación en el actual
+                        <a href="#/p5/colorMode">colorMode()</a>.</p>
+        type: Number
+      - name: v3
+        description: |
+            <p>valor azul, de brillo o de luminosidad en el actual
+                        <a href="#/p5/colorMode">colorMode()</a>.</p>
+        type: Number
+    chainable: 1
+  - line: 423
+    params:
+      - name: gray
+        description: |
+          <p>valor de escala de grises entre 0 y 255.</p>
+        type: Number
+    chainable: 1
+  - line: 429
+    params:
+      - name: value
+        description: |
+          <p>color como una cadena CSS.</p>
+        type: String
+    chainable: 1
+  - line: 435
+    params:
+      - name: values
+        description: |
+          <p>color como un arreglo de valores RGBA, HSBA o HSLA.</p>
+        type: 'Number[]'
+    chainable: 1
+  - line: 442
+    params:
+      - name: color
+        description: |
+          <p>color como un objeto <a href="#/p5.Color">p5.Color</a>.</p>
+        type: p5.Color
+    chainable: 1
+chainable: true
+---
+
+
+# specularColor

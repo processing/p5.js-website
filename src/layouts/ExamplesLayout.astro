@@ -1,0 +1,74 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Head from "@components/Head/index.astro";
+import GridItemExample from "@components/GridItem/Example.astro";
+import { getExampleCategory } from "../pages/_utils";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { setJumpToState } from "../globals/state";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  exampleEntries: CollectionEntry<"examples">[];
+}
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+const { exampleEntries } = Astro.props;
+const exampleCategories = new Set<string>();
+exampleEntries.forEach((exampleEntry) => {
+  exampleCategories.add(getExampleCategory(exampleEntry.id));
+});
+
+const examplesByCategory = Array.from(exampleCategories).map((category) => {
+  return {
+    name: t("exampleCategories", category) as string,
+    examples: exampleEntries.filter((exampleEntry) => {
+      return getExampleCategory(exampleEntry.id) === category;
+    }),
+  };
+});
+
+// If there are any featured examples, add a Featured category at the top
+const featuredEntries = exampleEntries.filter(
+  (exampleEntry) => exampleEntry.data.featured
+);
+if (featuredEntries.length > 0) {
+  examplesByCategory.unshift({
+    name: t("exampleCategories", "Featured") as string,
+    examples: featuredEntries,
+  });
+}
+
+const jumpToLinks = Array.from(examplesByCategory).map(({ name }) => ({
+  label: name as string,
+  url: `/examples/#${name.toLowerCase()}`,
+}));
+
+const jumpToState = {
+  links: jumpToLinks,
+};
+
+setJumpToState(jumpToState);
+---
+
+<Head title={"Examples"} locale={currentLocale} />
+
+<BaseLayout title="Examples">
+  {
+    examplesByCategory.map((category, i) => (
+      <section class="grid">
+        <h2 class="col-span-full">
+          {category.name} <a id={category.name.toLowerCase()} />
+        </h2>
+        <ul class="col-span-full content-grid-simple">
+          {category.examples.map((exampleEntry, i) => (
+            <li class="col-span-1">
+              {<GridItemExample item={exampleEntry} lazyLoad={i <= 4} />}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</BaseLayout>

@@ -1,0 +1,142 @@
+---
+title: normalize
+module: Math
+submodule: Vector
+file: src/math/p5.Vector.js
+description: >
+  <p>Scales the components of a <a href="/reference/p5/p5.Vector">p5.Vector</a>
+  object so
+
+  that its magnitude is 1.</p>
+
+  <p>The static version of <code>normalize()</code>,  as in
+  <code>p5.Vector.normalize(v)</code>,
+
+  returns a new <a href="/reference/p5/p5.Vector">p5.Vector</a> object and
+  doesn't change
+
+  the original.</p>
+line: 1726
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class="norender">
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Vector.
+      let v = createVector(10, 20, 2);
+
+      // Normalize.
+      v.normalize();
+
+      // Prints "p5.Vector Object : [0.445..., 0.890..., 0.089...]" to the console.
+      print(v.toString());
+    }
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Vector.
+      let v0 = createVector(10, 20, 2);
+
+      // Create a normalized copy.
+      let v1 = p5.Vector.normalize(v0);
+
+      // Prints "p5.Vector Object : [10, 20, 2]" to the console.
+      print(v0.toString());
+      // Prints "p5.Vector Object : [0.445..., 0.890..., 0.089...]" to the console.
+      print(v1.toString());
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe("A red and blue arrow extend from the center of a circle. Both arrows follow the mouse, but the blue arrow's length is fixed to the circle's radius.");
+    }
+
+    function draw() {
+      background(240);
+
+      // Vector to the center.
+      let v0 = createVector(50, 50);
+
+      // Vector from the center to the mouse.
+      let v1 = createVector(mouseX - 50, mouseY - 50);
+
+      // Circle's radius.
+      let r = 25;
+
+      // Draw the red arrow.
+      drawArrow(v0, v1, 'red');
+
+      // Draw the blue arrow.
+      v1.normalize();
+      drawArrow(v0, v1.mult(r), 'blue');
+
+      // Draw the circle.
+      noFill();
+      circle(50, 50, r * 2);
+    }
+
+    // Draws an arrow between two vectors.
+    function drawArrow(base, vec, myColor) {
+      push();
+      stroke(myColor);
+      strokeWeight(3);
+      fill(myColor);
+      translate(base.x, base.y);
+      line(0, 0, vec.x, vec.y);
+      rotate(vec.heading());
+      let arrowSize = 7;
+      translate(vec.mag() - arrowSize, 0);
+      triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+      pop();
+    }
+    </code>
+    </div>
+class: p5.Vector
+return:
+  description: normalized <a href="#/p5.Vector">p5.Vector</a>.
+  type: p5.Vector
+overloads:
+  - line: 1726
+    params: []
+    return:
+      description: normalized <a href="#/p5.Vector">p5.Vector</a>.
+      type: p5.Vector
+  - line: 3711
+    params:
+      - name: v
+        description: |
+          <p>The vector to normalize</p>
+        type: p5.Vector
+      - name: target
+        description: |
+          <p>The vector to receive the result</p>
+        type: p5.Vector
+        optional: true
+    static: 1
+    return:
+      description: 'The vector v, normalized to a length of 1'
+      type: p5.Vector
+chainable: false
+---
+
+
+# normalize

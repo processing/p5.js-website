@@ -1,0 +1,121 @@
+---
+title: ortho
+module: 3D
+submodule: कैमरा
+file: src/webgl/p5.Camera.js
+description: >
+  <p> 3D स्केच में वर्तमान कैमरा के लिए एक ऑर्थोग्राफ़िक प्रोजेक्शन सेट करता है। </p> 
+  
+  <p> ऑर्थोग्राफ़िक प्रोजेक्शन में, समान आकार के आकार हमेशा समान आकार दिखाई देते हैं, भले ही वे कैमरा से करीब या दूर हों। </p> <p> <code>ortho()</code> कैमरे की परस्पेक्टिव को बदलता है क्योंकि यह इसके दृश्य फ्रस्टम को एक काटे हुए पिरामिड से एक आयताकार प्रिज्म में बदल देता है। कैमरा फ्रस्टम के सामने रखा जाता है और फ्रस्टम की नज़दीकी और दूरी के प्लेन के बीच का सब कुछ देखता है। <code>ortho()</code> के छह वैकल्पिक पैरामीटर हैं जो फ्रस्टम को परिभाषित करते हैं। </p> 
+  
+  <p> पहले चार पैरामीटर, <code>left</code>, <code>right</code>, <code>bottom</code>, और <code>top</code>, फ्रस्टम के दाएं, बाएं, नीचे और ऊपर के निर्देशांक सेट करते हैं। उदाहरण के लिए, <code>ortho(-100, 100, 200, -200)</code> कॉल करना एक ऐसा फ्रस्टम बनाता है जो 200 पिक्सल चौड़ा और 400 पिक्सल ऊंचा है। डिफ़ॉल्ट रूप से, ये निर्देशांक स्केच की चौड़ाई और ऊंचाई के आधार पर सेट हैं, जैसे <code>ortho(-width / 2, width / 2, -height / 2, height / 2)</code>। </p> 
+  
+  <p> आखिरी दो पैरामीटर, <code>near</code> और <code>far</code>, फ्रस्टम के नज़दीकी और दूर प्लेन की दूरी को कैमरे से सेट करते हैं। उदाहरण के लिए, <code>ortho(-100, 100, 200, 200, 50, 1000)</code> कॉल करना एक ऐसा फ्रस्टम बनाता है जो 200 पिक्सल चौड़ा, 400 पिक्सल ऊंचा है, कैमरे से 50 पिक्सल दूर शुरू होता है और 1,000 पिक्सल दूर समाप्त होता है। डिफ़ॉल्ट रूप से, <code>near</code> और <code>far</code> को क्रमशः 0 और <code>max(width, height) + 800</code> पर सेट किया जाता है। </p> 
+  
+  <p> नोट: <code>ortho()</code> केवल WebGL मोड में उपयोग किया जा सकता है। </p>
+line: 412
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A row of tiny, white cubes on a gray background. All the cubes appear the same size.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Apply an orthographic projection.
+      ortho();
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Apply an orthographic projection.
+      // Center the frustum.
+      // Set its width and height to 20.
+      // Place its near plane 300 pixels from the camera.
+      // Place its far plane 350 pixels from the camera.
+      ortho(-10, 10, -10, 10, 300, 350);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: left
+    description: >
+      <p> छिन्नक के बाएँ तल का x-निर्देशांक। डिफ़ॉल्ट <code>-width / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p> छिन्नक के दाहिने तल का x-निर्देशांक। डिफ़ॉल्ट <code>width / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>y- छिन्नक के निचले तल का समन्वय। डिफ़ॉल्ट <code>height / 2</code>।</p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p> छिन्नक के शीर्ष तल का y-निर्देशांक। डिफ़ॉल्ट <code>-height / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>z- छिन्नक के निकट तल का समन्वय। डिफ़ॉल्ट 0.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p> छिन्नक के सुदूर तल का z-निर्देशांक। डिफ़ॉल्ट <code>maximum(width, height) + 800</code>।</p>
+    type: Number
+    optional: true
+chainable: true
+---
+
+
+# ortho

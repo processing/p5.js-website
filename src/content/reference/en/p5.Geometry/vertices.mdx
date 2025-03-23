@@ -1,0 +1,118 @@
+---
+title: vertices
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>An array with the geometry's vertices.</p>
+
+  <p>The geometry's vertices are stored as
+
+  <a href="/reference/p5/p5.Vector">p5.Vector</a> objects in the
+  <code>myGeometry.vertices</code>
+
+  array. The geometry's first vertex is the
+
+  <a href="/reference/p5/p5.Vector">p5.Vector</a> object at
+  <code>myGeometry.vertices[0]</code>,
+
+  its second vertex is <code>myGeometry.vertices[1]</code>, its third vertex is
+
+  <code>myGeometry.vertices[2]</code>, and so on.</p>
+line: 252
+isConstructor: false
+itemtype: property
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      myGeometry = new p5.Geometry();
+
+      // Create p5.Vector objects to position the vertices.
+      let v0 = createVector(-40, 0, 0);
+      let v1 = createVector(0, -40, 0);
+      let v2 = createVector(40, 0, 0);
+
+      // Add the vertices to the p5.Geometry object's vertices array.
+      myGeometry.vertices.push(v0, v1, v2);
+
+      describe('A white triangle drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the p5.Geometry object.
+      model(myGeometry);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let myGeometry;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Geometry object.
+      beginGeometry();
+      torus(30, 15, 10, 8);
+      myGeometry = endGeometry();
+
+      describe('A white torus rotates slowly against a dark gray background. Red spheres mark its vertices.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Rotate the coordinate system.
+      rotateY(frameCount * 0.01);
+
+      // Style the p5.Geometry object.
+      fill(255);
+      stroke(0);
+
+      // Display the p5.Geometry object.
+      model(myGeometry);
+
+      // Style the vertices.
+      fill(255, 0, 0);
+      noStroke();
+
+      // Iterate over the vertices array.
+      for (let v of myGeometry.vertices) {
+        // Draw a sphere to mark the vertex.
+        push();
+        translate(v);
+        sphere(2.5);
+        pop();
+      }
+    }
+    </code>
+    </div>
+class: p5.Geometry
+---
+
+
+# vertices

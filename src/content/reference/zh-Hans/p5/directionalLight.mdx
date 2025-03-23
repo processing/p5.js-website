@@ -1,0 +1,195 @@
+---
+title: directionalLight
+module: 3D
+submodule: 光源
+file: src/webgl/light.js
+description: >
+  <p>创建一个朝单一方向照射的光。</p>
+
+  <p>方向光不是从特定点发出的。它们就像一轮太阳，从屏幕外的某个地方照射进来。光的方向由三个介于 -1 和 1 之间的 <code>(x, y, z)<code> 值设置。例如，将光的方向设置为 <code>(1, 0, 0)<code> 将从左侧照亮 <ahref="/reference/p5/p5.Geometry">p5.Geometry</a> 对象，因为光线直接指向右侧。</p>
+
+  <p>有四种调用 <code>directionalLight()<code> 的方法，用于设置光源的颜色和方向。</p>
+
+  <p>调用 <code>directionalLight()</code> 的第一种方式有六个参数。前三个参数 <code>v1</code>、 <code>v2</code> 和 <code>v3</code> 使用当前的 <a href="/reference/p5/colorMode">colorMode()</a> 来设置光的颜色。最后三个参数 <code>x</code>、 <code>y</code> 和 <code>z</code> 设置光的方向。例如， <code>directionalLight(255, 0, 0, 1, 0, 0)</code> 创建一个红色 <code>(255, 0, 0)</code> 的光，朝向右边 <code>(1, 0, 0)</code>。</p>
+
+  <p>调用 <code>directionalLight()</code> 的第二种方式有四个参数。前三个参数 <code>v1</code>、 <code>v2</code> 和 <code>v3</code> 使用当前的 <a href="/reference/p5/colorMode">colorMode()</a> 来设置光的颜色。最后一个参数 <code>direction</code> 使用一个 <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 对象来设置光的方向。例如， <code>directionalLight(255, 0, 0, lightDir)</code> 创建一个红色 <code>(255, 0, 0)</code> 的光，其方向是 <code>lightDir</code> 向量所指的方向。</p>
+
+  <p>调用 <code>directionalLight()</code> 的第三种方式有四个参数。第一个参数 <code>color</code> 使用一个 <ahref="/reference/p5/p5.Color">p5.Color</a> 对象或颜色值数组来设置光的颜色。最后三个参数 <code>x</code>、 <code>y</code> 和 <code>z</code> 设置光的方向。例如， <code>directionalLight(myColor, 1, 0, 0)</code> 创建一个颜色为 <code>myColor</code> 的光，朝向右边 <code>(1, 0, 0)</code>。</p>
+
+  <p>调用 <code>directionalLight()</code> 的第四种方式有两个参数。第一个参数 <code>color</code> 使用一个 <ahref="/reference/p5/p5.Color">p5.Color</a> 对象或颜色值数组来设置光的颜色。第二个参数 <code>direction</code> 使用一个 <ahref="/reference/p5/p5.Color">p5.Color</a> 对象来设置光的方向。例如， <code>directionalLight(myColor, lightDir)</code> 创建一个颜色为 <code>myColor</code> 的光，其方向是 <code>lightDir</code> 向量所指的方向。</p>
+line: 461
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+    // 双击以打开定向光。
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. A red light starts shining from above when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 控制光线。
+      if (isLit === true) {
+        // 从上方添加红色定向光。
+        // 使用 RGB 值和 XYZ 方向。
+        directionalLight(255, 0, 0, 0, 1, 0);
+      }
+
+      // 设定球体样式。
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 从上方添加红色定向光。
+      // 使用一个 p5.Color 对象和 XYZ 方向。
+      let c = color(255, 0, 0);
+      directionalLight(c, 0, 1, 0);
+
+      // 设定球体样式。
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 从上方添加红色定向光。
+      // 使用一个 p5.Color 对象和一个 p5.Vector 对象。
+      let c = color(255, 0, 0);
+      let lightDir = createVector(0, 1, 0);
+      directionalLight(c, lightDir);
+
+      // 设定球体样式。
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 461
+    params:
+      - name: v1
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的红色或色相值。</p>
+        type: 数字
+      - name: v2
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的绿色或饱和度值。</p>
+        type: 数字
+      - name: v3
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的蓝色、亮度或明度值。</p>
+        type: 数字
+      - name: x
+        description: |
+          <p>光的方向的 x 分量，范围在 -1 到 1 之间。</p>
+        type: 数字
+      - name: 'y'
+        description: |
+          <p>光的方向的 y 分量，范围在 -1 到 1 之间。</p>
+        type: 数字
+      - name: z
+        description: |
+          <p>光的方向的 z 分量，范围在 -1 到 1 之间。</p>
+        type: 数字
+    chainable: 1
+  - line: 613
+    params:
+      - name: v1
+        description: ''
+        type: 数字
+      - name: v2
+        description: ''
+        type: 数字
+      - name: v3
+        description: ''
+        type: 数字
+      - name: direction
+        description: |
+          <p>光的方向作为一个 <ahref="#/p5.Vector">p5.Vector</a> 的对象。</p>
+        type: p5.Vector
+    chainable: 1
+  - line: 623
+    params:
+      - name: color
+        description: |
+          <p>颜色作为一个 <a href="#/p5.Color">p5.Color</a> 的对象，一个颜色值数组，或者一个 CSS 字符串。</p>
+        type: 'p5.Color|数字[]|字符串'
+      - name: x
+        description: ''
+        type: 数字
+      - name: 'y'
+        description: ''
+        type: 数字
+      - name: z
+        description: ''
+        type: 数字
+    chainable: 1
+  - line: 633
+    params:
+      - name: color
+        description: ''
+        type: 'p5.Color|数字[]|字符串'
+      - name: direction
+        description: ''
+        type: p5.Vector
+    chainable: 1
+chainable: true
+---
+
+
+# directionalLight

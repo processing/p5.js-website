@@ -1,0 +1,89 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Head from "@components/Head/index.astro";
+import { setJumpToState } from "../globals/state";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import {
+  generateJumpToState,
+  getRelatedEntriesinCollection,
+} from "../pages/_utils";
+import BaseLayout from "./BaseLayout.astro";
+import EditableSketch from "@components/EditableSketch/index.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
+
+interface Props {
+  example: CollectionEntry<"examples">;
+  code: string;
+  relatedExamples: CollectionEntry<"examples">[];
+}
+
+const { example, code, relatedExamples } = Astro.props;
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const t = await getUiTranslator(currentLocale);
+
+const jumpToState = await generateJumpToState(
+  "examples",
+  example.slug,
+  "Examples",
+  t,
+  currentLocale
+);
+
+setJumpToState(jumpToState);
+
+const relatedReferences =
+  example.data.relatedReference !== undefined
+    ? await getRelatedEntriesinCollection(
+        "reference",
+        currentLocale,
+        example.data.relatedReference.map((r: any) => r.slug)
+      )
+    : [];
+
+const { Content } = await example.render();
+---
+
+<Head
+  title={example.data.title}
+  locale={currentLocale}
+  featuredImageSrc={example.data.featuredImage.src}
+  description={example.data.oneLineDescription}
+/>
+
+<BaseLayout
+  title={example.data.title}
+  titleClass=""
+  subtitle={null}
+  variant="item"
+  topic="examples"
+  className="example"
+>
+  <div class="mt-xl mb-4xl lg:mb-3xl max-w-[770px]">
+    <div class="rendered-markdown">
+      <Content />
+    </div>
+    <EditableSketch code={code} />
+    <p>{example.data.arialabel}</p>
+    <div class="rendered-markdown">
+      <p>
+        <a href={Astro.url.pathname}>{example.data.title}</a> by <a href="https://p5js.org/people">p5.js Contributors</a> and the <a href="https://processingfoundation.org/people">Processing Foundation</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>.
+      </p>
+      <img src="/images/by-nc-sa.svg" />
+    </div>
+  </div>
+  <div class="grid gap-y-4xl lg:gap-y-mb-3xl mt-2xl">
+    {
+      relatedReferences.length > 0 ? (
+        <RelatedItems
+          title={t("Related References") as string}
+          items={relatedReferences}
+        />
+      ) : null
+    }
+    <RelatedItems
+      title={t("Related Examples") as string}
+      items={relatedExamples}
+    />
+  </div>
+</BaseLayout>

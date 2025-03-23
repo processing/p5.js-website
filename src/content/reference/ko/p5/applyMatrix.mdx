@@ -1,0 +1,310 @@
+---
+title: applyMatrix
+module: 변환
+submodule: 변환
+file: src/core/transform.js
+description: >
+  <p>좌표계에 변환 행렬을 적용합니다.</p>
+  
+  <p><a href="/reference/p5/translate">translate()</a>, <a href="/reference/p5/rotate">rotate()</a>,
+
+  <a href="/reference/p5/scale">scale()</a>와 같은 변환은 행렬-벡터 곱셈을 내부적으로 사용합니다.
+  
+  행렬은 각 변환을 인코딩하는 숫자 표입니다.
+  
+  행렬의 값은 벡터로 표시되는 캔버스의 각 지점에 곱해집니다.</p>
+  
+  <p><code>applyMatrix()</code>를 사용하면 여러 변환을 한 번에 적용할 수 있습니다.
+  
+  변환에 대한 자세한 내용은 <a href="https://en.wikipedia.org/wiki/Transformation_matrix" target="_blank">위키백과</a>와
+  
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web" target="_blank">MDN</a>을 참조하세요.</p>
+  
+  <p><code>applyMatrix()</code>를 2차원과 3차원에서 호출하는 두 가지 방법이 있습니다.</p>
+  
+  <p>2D 모드에서, 매개변수 <code>a</code>, <code>b</code>, <code>c</code>, <code>d</code>, <code>e</code>, <code>f</code>는
+  
+  다음과 같은 변환 행렬의 요소에 해당합니다:</p>
+
+  <blockquote>
+
+  <p><img style="max-width: 150px" src="/assets/transformation-matrix.png" alt="The transformation matrix used when applyMatrix is called in 2D mode."/></p>
+
+  </blockquote>
+
+  <p>숫자들은 <code>applyMatrix(2, 0, 0, 0, 2, 0)</code>와 같이 개별적으로 전달할 수 있습니다.
+  
+  또한 <code>applyMatrix([2, 0, 0, 0, 2, 0])</code>와 같이 배열로 전달할 수도 있습니다.</p>
+  
+  <p>3D 모드에서, 매개변수 <code>a</code>, <code>b</code>, <code>c</code>, <code>d</code>,
+  
+  <code>e</code>, <code>f</code>, <code>g</code>, <code>h</code>,
+  
+  <code>i</code>, <code>j</code>, <code>k</code>, <code>l</code>,
+  
+  <code>m</code>, <code>n</code>, <code>o</code>, <code>p</code>는
+  
+  다음과 같은 변환 행렬의 요소에 해당합니다:</p>
+
+  <p><img style="max-width: 300px" src="/assets/transformation-matrix-4-4.png" alt="The transformation matrix used when applyMatrix is called in 3D mode."/></p>
+
+  <p>숫자들은 <code>applyMatrix(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1)</code>와 같이 개별적으로 전달할 수 있습니다.
+  
+  또한 <code>applyMatrix([2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1])</code>와 같이 배열로 전달할 수도 있습니다.</p>
+  
+  <p>기본적으로 변환은 누적됩니다.
+  
+  <a href="/reference/p5/push">push()</a>와 <a href="/reference/p5/pop">pop()</a> 함수를 사용하여 서로 다른 그룹 내에서 변환을 분리할 수 있습니다.</p>
+  
+  <p>참고: 변환은 draw 루프의 시작 지점에서 재설정됩니다.
+  
+  <a href="/reference/p5/draw">draw()</a> 함수 내에서 <code>applyMatrix()</code>를 호출해도 도형이 계속해서 변환되지 않습니다.</p>
+line: 11
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin to the center.
+      applyMatrix(1, 0, 0, 1, 50, 50);
+
+      // Draw the circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white circle on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin to the center.
+      let m = [1, 0, 0, 1, 50, 50];
+      applyMatrix(m);
+
+      // Draw the circle at coordinates (0, 0).
+      circle(0, 0, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe("A white rectangle on a gray background. The rectangle's long axis runs from top-left to bottom-right.");
+    }
+
+    function draw() {
+      background(200);
+
+      // Rotate the coordinate system 1/8 turn.
+      let angle = QUARTER_PI;
+      let ca = cos(angle);
+      let sa = sin(angle);
+      applyMatrix(ca, sa, -sa, ca, 0, 0);
+
+      // Draw a rectangle at coordinates (50, 0).
+      rect(50, 0, 40, 20);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'Two white squares on a gray background. The larger square appears at the top-center. The smaller square appears at the top-left.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by a factor of 0.5.
+      applyMatrix(0.5, 0, 0, 0.5, 0, 0);
+
+      // Draw a square at (30, 20).
+      // It appears at (15, 10) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A white quadrilateral on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the shear factor.
+      let angle = QUARTER_PI;
+      let shearFactor = 1 / tan(HALF_PI - angle);
+
+      // Shear the coordinate system along the x-axis.
+      applyMatrix(1, 0, shearFactor, 1, 0, 0);
+
+      // Draw the square.
+      square(0, 0, 50);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube rotates slowly against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rotate the coordinate system a little more each frame.
+      let angle = frameCount * 0.01;
+      let ca = cos(angle);
+      let sa = sin(angle);
+      applyMatrix(ca, 0, sa, 0, 0, 1, 0, 0, -sa, 0, ca, 0, 0, 0, 0, 1);
+
+      // Draw a box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 11
+    params:
+      - name: arr
+        description: >
+          <p>변환 행렬의 요소를 포함하는 배열. 그 길이는 6(2D) 또는 16(3D)이어야 합니다.<p>
+        type: Array
+    chainable: 1
+  - line: 206
+    params:
+      - name: a
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: b
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: c
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: d
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: e
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: f
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+    chainable: 1
+  - line: 216
+    params:
+      - name: a
+        description: ''
+        type: Number
+      - name: b
+        description: ''
+        type: Number
+      - name: c
+        description: ''
+        type: Number
+      - name: d
+        description: ''
+        type: Number
+      - name: e
+        description: ''
+        type: Number
+      - name: f
+        description: ''
+        type: Number
+      - name: g
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: h
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: i
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: j
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: k
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: l
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: m
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: 'n'
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: o
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+      - name: p
+        description: |
+          <p>변환 행렬의 요소.</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# applyMatrix

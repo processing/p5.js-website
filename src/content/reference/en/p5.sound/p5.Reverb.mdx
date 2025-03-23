@@ -1,0 +1,77 @@
+---
+title: p5.Reverb
+module: p5.sound
+submodule: p5.sound
+file: src/Reverb.js
+description: Add reverb to a sound.
+line: 10
+isConstructor: true
+params:
+  - name: decayTime
+    description: Set the decay time of the reverb
+    type: Number
+    optional: true
+example:
+  - |-
+
+    <div>
+    <code>
+    let noise, osc, env, reverb;
+    let randomTime = 0;
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playSound);
+      noise = new p5.Noise();
+      env = new p5.Envelope();
+      reverb = new p5.Reverb();
+      noise.disconnect();
+      noise.connect(env);
+      env.disconnect();
+      env.connect(reverb);
+      noise.start();
+      textAlign(CENTER);
+    }
+
+    function playSound() {
+     randomTime = random(0.1, 3);
+     reverb.set(randomTime); 
+     env.play();
+    }
+
+    function draw() {
+      background(220);
+      text('click to play', width/2, 20);
+      text('decay ' + round(randomTime, 2), width/2, 40);
+      describe('Click to play a sound with a random decay time.');
+    }
+    </code>
+    </div>
+methods:
+  process:
+    description: |
+      <p>Connect a source to the reverb, and assign reverb parameters.</p>
+    path: p5.Reverb/process
+  set:
+    description: Set the decay time of the reverb.
+    path: p5.Reverb/set
+  amp:
+    description: |
+      <p>Set the output level of the reverb effect.</p>
+    path: p5.Reverb/amp
+  connect:
+    description: |
+      <p>Send output to a p5.sound or web audio object</p>
+    path: p5.Reverb/connect
+  disconnect:
+    description: |
+      <p>Disconnect all output.</p>
+    path: p5.Reverb/disconnect
+  drywet:
+    description: Adjust the dry/wet value.
+    path: p5.Reverb/drywet
+chainable: false
+---
+
+
+# p5.Reverb

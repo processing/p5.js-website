@@ -1,0 +1,157 @@
+---
+title: curvePoint
+module: 도형
+submodule: 곡선
+file: src/core/shape/curves.js
+description: >
+  <p>보간법을 사용하여 스플라인 곡선을 따라 좌표를 계산합니다.</p>
+
+  <p><code>curvePoint()</code> 는 
+  앵커 포인트(anchor point)와 컨트롤 포인트(control point)를 사용하여 스플라인 곡선을 따라 좌표를 계산합니다. 
+
+  이 함수는
+
+  <a href="/reference/p5/curve">curve()</a> 함수와 동일한 순서의 포인트를 예상합니다. 
+  <code>curvePoint()</code>는 한 축씩 작동합니다. 
+
+  앵커 포인트와 컨트롤 포인트의 x좌표를 전달하면 곡선의 x좌표를 계산합니다. 
+
+  x좌표를 전달하면 곡선의 x좌표를 계산합니다.
+
+  앵커 포인트와 컨트롤 포인트의 
+
+  y좌표를 전달하면 곡선의 y좌표를 계산합니다.</p>
+
+  <p>첫 번째 매개변수 <code>a</code> 는
+  는 첫 번째 컨트롤 포인트의 좌표입니다.</p>
+
+  <p>두 번째 및 세 번째 매개변수 <code>b</code> 와 <code>c</code>
+  는
+
+  앵커 포인트의 좌표입니다.</p>
+
+  <p>네 번째 매개변수 <code>d</code>는
+  마지막 컨트롤 포인트의 좌표입니다.</p>
+
+  <p>다섯 번째 매개변수 <code>t</code>는 곡선 사이를 0에서 1 사이로 보간할 양입니다.
+  0은 첫 번째 앵커 포인트이며
+
+  1은 두 번째 앵커 포인트이고
+
+  0.5는 그 중간 지점입니다.</p>
+line: 930
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 5;
+      let y1 = 26;
+      let x2 = 73;
+      let y2 = 24;
+      let x3 = 73;
+      let y3 = 61;
+      let x4 = 15;
+      let y4 = 65;
+
+      // Draw the curve.
+      noFill();
+      curve(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Draw circles along the curve's path.
+      fill(255);
+
+      // Top.
+      let x = curvePoint(x1, x2, x3, x4, 0);
+      let y = curvePoint(y1, y2, y3, y4, 0);
+      circle(x, y, 5);
+
+      // Center.
+      x = curvePoint(x1, x2, x3, x4, 0.5);
+      y = curvePoint(y1, y2, y3, y4, 0.5);
+      circle(x, y, 5);
+
+      // Bottom.
+      x = curvePoint(x1, x2, x3, x4, 1);
+      y = curvePoint(y1, y2, y3, y4, 1);
+      circle(x, y, 5);
+
+      describe('A black curve on a gray square. The endpoints and center of the curve are marked with white circles.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A black curve on a gray square. A white circle moves back and forth along the curve.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 5;
+      let y1 = 26;
+      let x2 = 73;
+      let y2 = 24;
+      let x3 = 73;
+      let y3 = 61;
+      let x4 = 15;
+      let y4 = 65;
+
+      // Draw the curve.
+      noFill();
+      curve(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Calculate the circle's coordinates.
+      let t = 0.5 * sin(frameCount * 0.01) + 0.5;
+      let x = curvePoint(x1, x2, x3, x4, t);
+      let y = curvePoint(y1, y2, y3, y4, t);
+
+      // Draw the circle.
+      fill(255);
+      circle(x, y, 5);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p>첫 번째 앵커 포인트의 좌표입니다.</p>
+    type: Number
+  - name: b
+    description: |
+      <p>첫 번째 컨트롤 포인트의 좌표입니다.</p>
+    type: Number
+  - name: c
+    description: |
+      <p>두 번째 컨트롤 포인트의 좌표입니다.</p>
+    type: Number
+  - name: d
+    description: |
+      <p>두 번째 앵커 포인트의 좌표입니다.</p>
+    type: Number
+  - name: t
+    description: |
+      <p>0과 1 사이를 보간할 양입니다.</p>
+    type: Number
+return:
+  description: 곡선 위의 한 점의 좌표입니다.
+  type: Number
+chainable: false
+---
+
+
+# curvePoint

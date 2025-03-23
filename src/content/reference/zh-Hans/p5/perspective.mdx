@@ -1,0 +1,113 @@
+---
+title: perspective
+module: 3D
+submodule: 相机
+file: src/webgl/p5.Camera.js
+description: >
+  <p>在三维场景中为当前相机设置透视投影。</p>
+  <p>在透视投影中，距离相机更远的形状比距离相机更近的形状看起来更小。这种技术称为透视缩放，可以创建出逼真的三维场景。在 WebGL 模式下，默认情况下会应用这种技术。</p>
+  <p><code>perspective()</code> 通过改变相机的视锥来改变相机的透视效果。视锥是相机可见的空间体积。它的形状是一个顶部被截掉的金字塔。相机放置在金字塔的顶部应该在的位置，并查看视锥的顶部（近）平面和底部（远）平面之间的所有内容。</p>
+  <p>第一个参数 <code>fovy</code> 是相机的垂直视野。它是一个角度，描述相机的视野有多高或多窄。例如，调用 <code>perspective(0.5)</code> 将相机的垂直视野设置为 0.5 弧度。默认情况下，<code>fovy</code> 是根据绘图的高度和相机的默认 z 坐标（800）计算的。默认 <code>fovy</code> 的公式是 <code>2 * atan(height / 2 / 800)</code>。</p>
+  <p>第二个参数 <code>aspect</code> 是相机的宽高比。它是一个数字，描述了顶部平面的宽度与其高度的比率。例如，调用 <code>perspective(0.5, 1.5)</code> 将相机的视野设置为 0.5 弧度，宽高比设置为 1.5，这会使形状在正方形画布上看起来更窄。默认情况下，宽高比被设置为 <code>width / height</code>。</p>
+  <p>第三个参数 <code>near</code> 是相机到近平面的距离。例如，调用 <code>perspective(0.5, 1.5, 100)</code> 将相机的视野设置为 0.5 弧度，宽高比设置为 1.5，并将近平面放置在相机的 100 像素处。任何距离相机少于 100 像素的形状都不会可见。默认情况下，near 被设置为 <code>0.1 * 800</code>，这是相机与原点之间默认距离的十分之一。</p>
+  <p>第四个参数 <code>far</code> 是相机到远平面的距离。例如，调用 <code>perspective(0.5, 1.5, 100, 10000)</code> 将相机的视野设置为 0.5 弧度，宽高比设置为 1.5，将近平面放置在相机的 100 像素处，并将远平面放置在相机的 10,000 像素处。任何距离相机超过 10,000 像素的形状都不会可见。默认情况下，far 被设置为 <code>10 * 800</code>，这是相机与原点之间的默认距离的十倍。</p>
+  <p>注意：<code>perspective()</code>只能在 WebGL 模式下使用。</p>
+line: 148
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to squeeze the box.
+
+    let isSqueezed = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white rectangular prism on a gray background. The box appears to become thinner when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Place the camera at the top-right.
+      camera(400, -400, 800);
+
+      if (isSqueezed === true) {
+        // Set fovy to 0.2.
+        // Set aspect to 1.5.
+        perspective(0.2, 1.5);
+      }
+
+      // Draw the box.
+      box();
+    }
+
+    // Change the camera's perspective when the user double-clicks.
+    function doubleClicked() {
+      isSqueezed = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white rectangular prism on a gray background. The prism moves away from the camera until it disappears.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Place the camera at the top-right.
+      camera(400, -400, 800);
+
+      // Set fovy to 0.2.
+      // Set aspect to 1.5.
+      // Set near to 600.
+      // Set far to 1200.
+      perspective(0.2, 1.5, 600, 1200);
+
+      // Move the origin away from the camera.
+      let x = -frameCount;
+      let y = frameCount;
+      let z = -2 * frameCount;
+      translate(x, y, z);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: fovy
+    description: |
+      <p>相机视锥体的垂直视场角。默认为 <code>2 * atan(height / 2 / 800)</code>。</p>
+    type: 数字
+    optional: true
+  - name: aspect
+    description: |
+      <p>相机的宽高比。默认为 <code>width / height</code>。</p>
+    type: 数字
+    optional: true
+  - name: near
+    description: |
+      <p>相机到近裁剪平面的距离。默认为 <code>0.1 * 800</code>。</p>
+    type: 数字
+    optional: true
+  - name: far
+    description: |
+      <p>相机到远裁剪平的距离。默认为 <code>10 * 800</code>。</p>
+    type: 数字
+    optional: true
+chainable: true
+---
+
+
+# perspective

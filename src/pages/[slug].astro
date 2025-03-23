@@ -1,0 +1,31 @@
+---
+import TextDetailLayout from "@layouts/TextDetailLayout.astro";
+import { getCollectionInDefaultLocale } from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
+
+export const getStaticPaths = async () => {
+  const pages = await getCollectionInDefaultLocale("text-detail");
+  return pages
+    .map((page) => {
+      const slug = removeLocalePrefix(page.slug);
+
+      // if slug has / at the beginning (and will if we only remove
+      // the locale prefix) then chop it off
+      // this is necessary because this file is [slug].astro and
+      // not [...slug].astro, so sub routes are not allowed
+      if (slug.startsWith("/")) {
+        return {
+          params: { slug: slug.slice(1) },
+          props: { page },
+        };
+      }
+
+      return { params: { slug }, props: { page } };
+    })
+    .filter((p) => p !== null);
+};
+
+const { page } = Astro.props;
+---
+
+<TextDetailLayout page={page} />

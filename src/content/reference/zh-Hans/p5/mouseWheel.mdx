@@ -1,0 +1,132 @@
+---
+title: mouseWheel
+module: 事件
+submodule: 鼠标
+file: src/events/mouse.js
+description: >
+  <p>当鼠标滚轮移动时调用一次的函数。</p>
+
+  <p>声明函数 <code>mouseWheel()</code> 将设置一个代码块，当用户使用鼠标滚轮滚动时自动运行：</p>
+
+  <code>
+
+  function mouseWheel() {
+    // Code to run.
+  }
+
+  </code>
+
+  <p>鼠标系统变量，如 <a href="/reference/p5/mouseX">mouseX</a> 和 <a href="/reference/p5/mouseY">mouseY</a>，将在调用 <code>mouseWheel()</code> 时更新为最新的值：</p>
+
+  <code>
+
+  function mouseWheel() {
+    if (mouseX < 50) {
+      // Code to run if the mouse is on the left.
+    }
+
+  <p>  if (mouseY > 50) {
+      // Code to run if the mouse is near the bottom.
+    }
+  }
+
+  </p></code>
+
+  <p>参数 <code>event</code> 是可选的。<code>mouseWheel()</code> 总是传递一个 <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent" target="_blank">MouseEvent</a> 对象，该对象带有描述鼠标滚轮事件的属性：</p>
+
+  <code>
+
+  function mouseWheel(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+  <p><code>event</code> 对象有许多属性，包括 <code>delta</code>，一个 <code>Number</code>，包含用户滚动的距离。例如，当用户向上滚动时，<code>event.delta</code> 可能有值 5。<code>event.delta</code> 如果用户向上滚动则为正，向下滚动则为负。在 macOS 上启用“自然”滚动时，符号相反。</p>
+
+  <p>浏览器可能对各种鼠标事件附加默认行为。例如，一些浏览器在用户按下鼠标按钮时移动鼠标会突出显示文本。为了防止此事件的任何默认行为，添加 <code>return false;</code> 到函数的末尾。</p>
+
+  <p>注意：在 Safari 上，<code>mouseWheel()</code> 可能只有在函数末尾添加 <code>return false;</code> 时才能按预期工作。</p>
+line: 1732
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let circleSize = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. A white circle at its center grows up when the user scrolls the mouse wheel.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the circle
+      circle(circleSize, 50, 50);
+    }
+
+    // Increment circleSize when the user scrolls the mouse wheel.
+    function mouseWheel() {
+      circleSize += 1;
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let direction = '';
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. An arrow at its center points up when the user scrolls up. The arrow points down when the user scrolls down.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Draw an arrow that points where
+      // the mouse last scrolled.
+      text(direction, 50, 50);
+    }
+
+    // Change direction when the user scrolls the mouse wheel.
+    function mouseWheel(event) {
+      if (event.delta > 0) {
+        direction = '▲';
+      } else {
+        direction = '▼';
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>optional <code>WheelEvent</code> argument.</p>
+    type: WheelEvent
+    optional: true
+chainable: false
+---
+
+
+# mouseWheel

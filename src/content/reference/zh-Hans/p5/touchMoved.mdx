@@ -1,0 +1,167 @@
+---
+title: touchMoved
+module: 事件
+submodule: 触摸
+file: src/events/touch.js
+description: >
+  <p>当用户触摸屏幕并移动时调用的函数。</p>
+  
+
+  <p>声明函数 <code>touchMoved()</code> 会设置一个代码块，当用户触摸屏幕并移动时调用的函数。</p>
+
+  <code>
+
+  function touchMoved() {
+    // Code to run.
+  }
+
+  </code>
+
+
+  <p>当 p5.js 调用 <code>touchMoved()</code> 时，<a href="/reference/p5/touches">touches</a> 数组将被更新为最新的触摸点：</p>
+
+  <code>
+
+  function touchMoved() {
+    // Paint over the background.
+    background(200);
+
+  <p>  // Mark each touch point while the user moves.
+    for (let touch of touches) {
+      circle(touch.x, touch.y, 40);
+    }
+  }
+
+  </p></code>
+
+  <p>参数 event 是可选的。<code>touchStarted()</code> 会被传递为一个描述触摸事件属性的 <a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent" target="_blank">TouchEvent</a> 对象：</p>
+
+  <code>
+
+  function touchMoved(event) {
+    // Code to run that uses the event.
+    console.log(event);
+  }
+
+  </code>
+
+  <p>在屏幕设备上，如果未声明 <code>touchMoved()</code>，当用户的触摸点移动时，<a href="/reference/p5/mouseDragged">mouseDragged()</a> 将运行。如果声明了 <code>touchMoved()</code>，那么当用户的触摸点移动时，将运行 <code>touchMoved()</code>，而 <a href="/reference/p5/mouseDragged">mouseDragged()</a> 不会运行。</p>
+
+  <p>注意：<a href="/reference/p5/touchStarted">touchStarted()</a>、<a href="/reference/p5/touchEnded">touchEnded()</a> 和 <code>touchMoved()</code> 是相关的。当用户触摸触屏设备时，<a href="/reference/p5/touchStarted">touchStarted()</a> 会立即运行。当用户结束触摸时，<a href="/reference/p5/touchEnded">touchEnded()</a> 会立即运行。当用户移动任何触摸点时，<code>touchMoved()</code> 会重复运行。</p>
+line: 295
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // On a touchscreen device, touch the canvas using one or more fingers
+    // at the same time.
+
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square becomes lighter when the user touches the screen and moves.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    function touchMoved() {
+      // Update the grayscale value.
+      value += 5;
+
+      // Reset the grayscale value.
+      if (value > 255) {
+        value = 0;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // On a touchscreen device, touch the canvas using one or more fingers
+    // at the same time.
+
+    let bgColor = 50;
+    let fillColor = 255;
+    let borderWidth = 0.5;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with the number 0 at the top-center. The number tracks the number of places the user is touching the screen. Circles appear at each touch point and change style in response to events.'
+      );
+    }
+
+    function draw() {
+      background(bgColor);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+      fill(0);
+      noStroke();
+
+      // Display the number of touch points.
+      text(touches.length, 50, 20);
+
+      // Style the touch points.
+      fill(fillColor);
+      stroke(0);
+      strokeWeight(borderWidth);
+
+      // Display the touch points as circles.
+      for (let touch of touches) {
+        circle(touch.x, touch.y, 40);
+      }
+    }
+
+    // Set the background color to a random grayscale value.
+    function touchStarted() {
+      bgColor = random(80, 255);
+    }
+
+    // Set the fill color to a random grayscale value.
+    function touchEnded() {
+      fillColor = random(0, 255);
+    }
+
+    // Set the stroke weight.
+    function touchMoved() {
+      // Increment the border width.
+      borderWidth += 0.1;
+
+      // Reset the border width once it's too thick.
+      if (borderWidth > 20) {
+        borderWidth = 0.5;
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>可选的 TouchEvent 回调参数。</p>
+    type: TouchEvent
+    optional: true
+chainable: false
+---
+
+
+# touchMoved

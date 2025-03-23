@@ -1,0 +1,249 @@
+---
+title: specularMaterial
+module: 3D
+submodule: 材质
+file: src/webgl/material.js
+description: >
+  <p>设置形状表面材质的高光颜色。</p>
+
+  <p><code>specularMaterial()</code> 颜色设置形状的光泽涂层将反射的光颜色的组件。例如，调用 <code>specularMaterial(255, 255, 0)</code> 将使形状反射红色和绿色光，但不反射蓝色光。</p>
+
+  <p>与 <a href="/reference/p5/ambientMaterial">ambientMaterial()</a> 不同，<code>specularMaterial()</code> 将反射包括 <a href="/reference/p5/directionalLight">directionalLight()</a>、<a href="/reference/p5/pointLight">pointLight()</a> 和 <a href="/reference/p5/spotLight">spotLight()</a> 在内的光源的全彩光。这就是它赋予形状“闪亮”外观的原因。材质的光泽度可以通过 <a href="/reference/p5/shininess">shininess()</a> 函数控制。</p>
+
+  <p><code>specularMaterial()</code> 可以通过不同的参数以三种方式调用来设置材质的颜色。</p>
+
+  <p>调用 <code>specularMaterial()</code> 的第一种方式有一个参数 <code>gray</code>。可以传递介于 0 和 255 之间的灰度值，如 <code>specularMaterial(50)</code>，来设置材质的颜色。较高的灰度值会使形状看起来更亮。</p>
+
+  <p>调用 <code>specularMaterial()</code> 的第二种方式有一个参数 <code>color</code>。可以传递一个 <a href="/reference/p5/p5.Color">p5.Color</a> 对象、一个颜色值数组或一个 CSS 颜色字符串，如 <code>specularMaterial('magenta')</code>，来设置材质的颜色。</a></p>
+
+  <p>调用 <code>specularMaterial()</code> 的第三种方式有四个参数 <code>v1</code>、<code>v2</code>、<code>v3</code> 和 <code>alpha</code>。 <code>alpha</code> 是可选的。RGBA、HSBA 或 HSLA 值可以传递来设置材质的颜色，例如 <code>specularMaterial(255, 0, 0)</code> 或 <code>specularMaterial(255, 0, 0, 30)</code>。颜色值将根据当前的 <a href="/reference/p5/colorMode">colorMode()</a> 进行解释。</p>
+line: 1888
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // 单击并拖动鼠标以从不同角度查看场景。
+    // 双击画布以应用高光材质。
+
+    let isGlossy = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red torus drawn on a gray background. It becomes glossy when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 在右上方打开一个白色点光源。
+      pointLight(255, 255, 255, 30, -40, 30);
+
+      // 如果用户双击，则添加一个有光泽的涂层。
+      if (isGlossy === true) {
+        specularMaterial(255);
+        shininess(50);
+      }
+
+      // 设定圆环的样式。
+      noStroke();
+      fill(255, 0, 0);
+
+      // 绘制圆环。
+      torus(30);
+    }
+
+    // 当用户双击时，使圆环有光泽。
+    function doubleClicked() {
+      isGlossy = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 单击并拖动鼠标以从不同角度查看场景。
+    // 双击画布以应用高光材质。
+
+    let isGlossy = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A red torus drawn on a gray background. It becomes glossy and reflects green light when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 在右上方打开一个白色点光源。
+      pointLight(255, 255, 255, 30, -40, 30);
+
+      // 如果用户双击，则添加一个有光泽的绿色涂层。
+      if (isGlossy === true) {
+        specularMaterial(0, 255, 0);
+        shininess(50);
+      }
+
+      // 设定圆环的样式。
+      noStroke();
+      fill(255, 0, 0);
+
+      // 绘制圆环。
+      torus(30);
+    }
+
+    // 当用户双击时，使圆环有光泽。
+    function doubleClicked() {
+      isGlossy = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 单击并拖动鼠标以从不同角度查看场景。
+    // 双击画布以应用高光材质。
+
+    let isGlossy = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A red torus drawn on a gray background. It becomes glossy and reflects green light when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 在右上方打开一个白色点光源。
+      pointLight(255, 255, 255, 30, -40, 30);
+
+      // 如果用户双击，则添加一个有光泽的绿色涂层。
+      if (isGlossy === true) {
+        //  创建一个 p5.Color 对象。
+        let c = color('green');
+        specularMaterial(c);
+        shininess(50);
+      }
+
+      // 设定圆环样式。
+      noStroke();
+      fill(255, 0, 0);
+
+      // 绘制圆环。
+      torus(30);
+    }
+
+    // 当用户双击时，使圆环有光泽。
+    function doubleClicked() {
+      isGlossy = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 单击并拖动鼠标以从不同角度查看场景。
+    // 双击画布以应用高光材质。
+
+    let isGlossy = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A red torus drawn on a gray background. It becomes glossy and reflects green light when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // 使用鼠标进行轨道控制。
+      orbitControl();
+
+      // 在右上方打开一个白色点光源。
+      pointLight(255, 255, 255, 30, -40, 30);
+
+      // 如果用户双击，则添加一个有光泽的绿色涂层。
+      if (isGlossy === true) {
+        specularMaterial('#00FF00');
+        shininess(50);
+      }
+
+      // 设定圆环样式。
+      noStroke();
+      fill(255, 0, 0);
+
+      // 绘制圆环。
+      torus(30);
+    }
+
+    // 当用户双击时，使圆环有光泽。
+    function doubleClicked() {
+      isGlossy = true;
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 1888
+    params:
+      - name: gray
+        description: |
+          <p>介于 0 （黑色）和 255 （白色）之间的灰度值。</p>
+        type: 数字
+      - name: alpha
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的 alpha 值。</p>
+        type: 数字
+        optional: true
+    chainable: 1
+  - line: 2111
+    params:
+      - name: v1
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的红色或色调值。</p>
+        type: 数字
+      - name: v2
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的绿色或饱和度值。</p>
+        type: 数字
+      - name: v3
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的蓝色、亮度或明度值。</p>
+        type: 数字
+      - name: alpha
+        description: ''
+        type: 数字
+        optional: true
+    chainable: 1
+  - line: 2123
+    params:
+      - name: color
+        description: |
+          <p>作为 <a href="#/p5.Color">p5.Color</a> 对象、颜色值数组或 CSS 字符串的颜色。</p>
+        type: 'p5.Color|数字[]|字符串'
+    chainable: 1
+chainable: true
+---
+
+
+# specularMaterial

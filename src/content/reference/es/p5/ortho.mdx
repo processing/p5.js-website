@@ -1,0 +1,154 @@
+---
+title: ortho
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p><code>ortho()</code> establece una proyección ortográfica para la cámara actual en un
+
+  boceto 3D. En una proyección ortográfica, las formas con el mismo tamaño siempre
+
+  aparecen con el mismo tamaño, independientemente de si están cerca o lejanas
+
+  respecto a la cámara.</p>
+
+  <p><code>ortho()</code> cambia la perspectiva de la cámara al cambiar su
+  frustum de vision
+
+  de un pirámide truncada a un prisma rectangular. La cámara se coloca delante del
+
+  frustum y muestra todo lo que hay entre el plano cercano del frustum y su plano
+
+  lejano. <code>ortho()</code> tiene seis parámetros opcionales para definir el
+
+  frustum.</p>
+
+  <p>Los primeros cuatro parámetros, <code>left</code>, <code>right</code>,
+  <code>bottom</code> y <code>top</code>, establecen las coordenadas de
+
+  los lados del frustum como son la parte superior e inferior. Por ejemplo, llamar a <code>ortho(-100, 100, 200, -200)</code>
+  crea un frustum que mide 200 pixeles de ancho y
+
+  400 pixeles de alto. Por defecto, estos parámetros están establecidos
+
+  basados en el ancho y el alto del boceto, como en
+
+  <code>ortho(-width / 2, width / 2, -height / 2, height / 2)</code>.</p>
+
+  <p>Los últimos dos parámetros, <code>near</code> y <code>far</code>, establecen la
+  distancia del plano cercano del frustum y del plano lejano respectivamente. Por
+
+  ejemplo, llamar a <code>ortho(-100, 100, 200, 200, 50, 1000)</code> crea un
+  frustum que mide 200 pixeles de ancho, 400 pixeles de alto, comienza 50 pixeles
+  desde la cámara y termina 1,000 pixeles desde la cámara. Por defecto, <code>near</code>
+  y <code>far</code> están establecidos en 0 y
+
+  <code>max(width, height) + 800</code>, respectivamente.</p>
+
+  <p>Nota: <code>ortho()</code> solo puede ser utilizado en modo WebGL.</p>
+line: 412
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A row of tiny, white cubes on a gray background. All the cubes appear the same size.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Apply an orthographic projection.
+      ortho();
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Apply an orthographic projection.
+      // Center the frustum.
+      // Set its width and height to 20.
+      // Place its near plane 300 pixels from the camera.
+      // Place its far plane 350 pixels from the camera.
+      ortho(-10, 10, -10, 10, 300, 350);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: left
+    description:
+      <p>Coordenada x del plano izquierdo del frustum. Por defecto es <code>-width / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: right
+    description:
+      <p>Coordenada x del plano derecho del frustum. Por defecto es <code>width / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description:
+      <p>Coordenada y del plano inferior del frustum. Por defecto es <code>height / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: top
+    description:
+      <p>Coordenada y del plano superior del frustum. Por defecto es <code>-height / 2</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description:
+      <p>Coordenada z del plano cercano del frustum. Por defecto es 0.</p>
+    type: Number
+    optional: true
+  - name: far
+    description:
+      <p>Coordenada z del plano lejano del frustum. Por defecto es <code>max(width, height) + 800</code>.</p>
+    type: Number
+    optional: true
+chainable: true
+---
+
+
+# ortho

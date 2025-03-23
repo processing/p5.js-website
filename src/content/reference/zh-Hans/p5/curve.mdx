@@ -1,0 +1,250 @@
+---
+title: curve
+module: 形状
+submodule: 曲线
+file: src/core/shape/curves.js
+description: >
+
+  <p>绘制使用 Catmull-Rom 样条的曲线。</p>
+
+  <p>样条曲线可以形成轻微倾斜的形状和曲线。它们就像连接到一组点的电缆。样条曲线由两个锚点和两个控制点定义。</p>
+
+  <p>前两个参数 <code>x1</code> 和 <code>y1</code> 设置第一个控制点。这个点不会被绘制，可以被认为是曲线的起点。</p>
+
+  <p>接下来的四个参数 <code>x2</code>， <code>y2</code>，
+  <code>x3</code>，和 <code>y3</code>，设置两个锚点。锚点是曲线可见部分的起点和终点。</p>
+
+  <p>第七个和第八个参数 ，<code>x4</code> 和 <code>y4</code> 设置最后一个控制点。这个点不会被绘制，可以被认为是曲线的终点。</p>
+
+  <p>样条曲线也可以在 3D 中使用 WebGL 模式绘制。<code>curve()</code> 的 3D 版本有十二个参数，因为每个点都有 x、y 和 z 坐标。</p>
+line: 570
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(5, 26, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(5, 26, 5, 26, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(5, 26);
+      point(15, 65);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let x1 = 5;
+    let y1 = 26;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a black spline curve.
+      noFill();
+      strokeWeight(1);
+      stroke(0);
+      curve(x1, y1, 73, 24, 73, 61, 15, 65);
+
+      // Draw red spline curves from the anchor points to the control points.
+      stroke(255, 0, 0);
+      curve(x1, y1, x1, y1, 73, 24, 73, 61);
+      curve(73, 24, 73, 61, 15, 65, 15, 65);
+
+      // Draw the anchor points in black.
+      strokeWeight(5);
+      stroke(0);
+      point(73, 24);
+      point(73, 61);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x1, y1);
+      point(15, 65);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x1, y1) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x1 = mouseX;
+        y1 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background('skyblue');
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-150, 275, 50, 60, 50, 60, 250, 275);
+
+      // Draw the balloon string.
+      line(50, 60, 50, 80);
+
+      describe('A red balloon in a blue sky.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A red balloon in a blue sky.');
+    }
+
+    function draw() {
+      background('skyblue');
+
+      // Rotate around the y-axis.
+      rotateY(frameCount * 0.01);
+
+      // Draw the red balloon.
+      fill('red');
+      curve(-200, 225, 0, 0, 10, 0, 0, 10, 0, 200, 225, 0);
+
+      // Draw the balloon string.
+      line(0, 10, 0, 0, 30, 0);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 570
+    params:
+      - name: x1
+        description: |
+          <p>x-coordinate of the first control point.</p>
+        type: Number
+      - name: y1
+        description: |
+          <p>y-coordinate of the first control point.</p>
+        type: Number
+      - name: x2
+        description: |
+          <p>x-coordinate of the first anchor point.</p>
+        type: Number
+      - name: y2
+        description: |
+          <p>y-coordinate of the first anchor point.</p>
+        type: Number
+      - name: x3
+        description: |
+          <p>x-coordinate of the second anchor point.</p>
+        type: Number
+      - name: y3
+        description: |
+          <p>y-coordinate of the second anchor point.</p>
+        type: Number
+      - name: x4
+        description: |
+          <p>x-coordinate of the second control point.</p>
+        type: Number
+      - name: y4
+        description: |
+          <p>y-coordinate of the second control point.</p>
+        type: Number
+    chainable: 1
+  - line: 746
+    params:
+      - name: x1
+        description: ''
+        type: Number
+      - name: y1
+        description: ''
+        type: Number
+      - name: z1
+        description: |
+          <p>z-coordinate of the first control point.</p>
+        type: Number
+      - name: x2
+        description: ''
+        type: Number
+      - name: y2
+        description: ''
+        type: Number
+      - name: z2
+        description: |
+          <p>z-coordinate of the first anchor point.</p>
+        type: Number
+      - name: x3
+        description: ''
+        type: Number
+      - name: y3
+        description: ''
+        type: Number
+      - name: z3
+        description: |
+          <p>z-coordinate of the second anchor point.</p>
+        type: Number
+      - name: x4
+        description: ''
+        type: Number
+      - name: y4
+        description: ''
+        type: Number
+      - name: z4
+        description: |
+          <p>z-coordinate of the second control point.</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# curve

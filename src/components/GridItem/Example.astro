@@ -1,0 +1,35 @@
+---
+import { exampleContentSlugToLegacyWebsiteSlug } from "@/src/pages/_utils";
+import Image from "@components/Image/index.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  item: CollectionEntry<"examples">;
+  lazyLoad?: boolean;
+}
+
+const { item, lazyLoad } = Astro.props;
+---
+
+<a
+  class="group hover:no-underline"
+  href={`/examples/${exampleContentSlugToLegacyWebsiteSlug(item.slug)}/`}
+>
+  <Image
+    src={item.data.featuredImage}
+    alt={item.data.featuredImageAlt}
+    widths={[325, 400]}
+    sizes={`325px, (min-width: 768px) 400px`}
+    loading={lazyLoad ? "lazy" : "eager"}
+    class="w-3/5"
+    visibleAltTextClass="max-w-[calc(60%-30px)]"
+  />
+  <!--  visible alt text class keeps the alt text within
+    the narrower image width given in class prop -->
+  <p class="text-body mt-xs break-words break-keep group-hover:underline">
+    {item.data.title}
+  </p>
+  <p class="text-body-caption mt-xxs">
+    {item.data.oneLineDescription}
+  </p>
+</a>

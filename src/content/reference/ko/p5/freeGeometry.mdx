@@ -1,0 +1,149 @@
+---
+title: freeGeometry
+module: 도형
+submodule: 3D 기초 도형
+file: src/webgl/3d_primitives.js
+description: >
+  <p><a href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체를 
+  그래픽 처리 장치(GPU) 
+
+  메모리에서 제거합니다.</p>
+
+  <p><a href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체에는
+  꼭짓점, 표면의 법선, 색상 등에 대한 많은 데이터가 포함될 수 있습니다. 
+
+  복잡한 3D 도형은 많은 메모리를 사용할 수 있는데,
+
+  이는 대개의 GPU에서 제한된 리소스이기도 합니다.
+
+  <code>freeGeometry()</code> 를 호출하여, 
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체의 자원을
+   GPU 메모리에서 해제함으로써 성능을 향상시킬 수 있습니다.
+
+  <code>freeGeometry()</code> 는 <a
+  href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체로 작동하는데,
+
+  p5.Geometry는 <a href="/reference/p5/beginGeometry">beginGeometry()</a> 와
+
+  <a href="/reference/p5/endGeometry">endGeometry()</a>,
+
+  <a href="/reference/p5/buildGeometry">buildGeometry()</a>, 그리고
+
+  <a href="/reference/p5/loadModel">loadModel()</a> 로 생성됩니다.</p>
+
+  <p>매개변수 <code>geometry</code> 는 해제할 <a
+  href="/reference/p5/p5.Geometry">p5.Geometry</a>
+
+  객체입니다.</p>
+
+  <p>참고: <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체는 
+  GPU 메모리에서 자원을 제거한 후에도
+
+  여전히 그려질 수 있습니다.
+
+  단, 최초의 다시 그리기는 조금 더 시간이 소요될 수 있습니다.</p>
+
+  <p>참고: <code>freeGeometry()</code> 는 WebGL 모드에서만 사용할 수 있습니다.</p>
+line: 748
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      background(200);
+
+      // Create a p5.Geometry object.
+      beginGeometry();
+      cone();
+      let shape = endGeometry();
+
+      // Draw the shape.
+      model(shape);
+
+      // Free the shape's resources.
+      freeGeometry(shape);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let button;
+    let particles;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a button to reset the particle system.
+      button = createButton('Reset');
+
+      // Call resetModel() when the user presses the button.
+      button.mousePressed(resetModel);
+
+      // Add the original set of particles.
+      resetModel();
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the particles.
+      noStroke();
+
+      // Draw the particles.
+      model(particles);
+    }
+
+    function resetModel() {
+      // If the p5.Geometry object has already been created,
+      // free those resources.
+      if (particles) {
+        freeGeometry(particles);
+      }
+
+      // Create a new p5.Geometry object with random spheres.
+      particles = buildGeometry(createParticles);
+    }
+
+    function createParticles() {
+      for (let i = 0; i < 60; i += 1) {
+        // Calculate random coordinates.
+        let x = randomGaussian(0, 20);
+        let y = randomGaussian(0, 20);
+        let z = randomGaussian(0, 20);
+
+        push();
+        // Translate to the particle's coordinates.
+        translate(x, y, z);
+        // Draw the particle.
+        sphere(5);
+        pop();
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: geometry
+    description: |
+      <p>해제해야할 3D 도형 리소스.</p>
+    type: p5.Geometry
+chainable: false
+---
+
+
+# freeGeometry

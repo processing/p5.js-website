@@ -1,0 +1,23 @@
+---
+import SketchLayout from "@/src/layouts/SketchLayout.astro";
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import { getCurationSketches } from "@/src/api/OpenProcessing";
+
+export async function getStaticPaths() {
+  const sketches = await getCurationSketches();
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      return sketches.map((sketch) => ({
+        params: { locale, slug: sketch.visualID },
+        props: { authorName: sketch.fullname },
+      }));
+    })
+  );
+
+  return entries.flat();
+}
+const { slug } = Astro.params;
+const { authorName } = Astro.props;
+---
+
+<SketchLayout sketchId={slug} authorName={authorName} />

@@ -1,0 +1,221 @@
+---
+title: normal
+module: 形状
+submodule: 顶点
+file: src/core/shape/vertex.js
+description: >
+  <p>设置自定义 3D 形状中顶点的法线向量。</p>
+
+  <p>使用 <a href="/reference/p5/beginShape">beginShape()</a> 和
+
+  <a href="/reference/p5/endShape">endShape()</a> 创建的 3D 形状是通过连接称为顶点的点集创建的。
+
+  使用 <a href="/reference/p5/vertex">vertex()</a> 添加的每个顶点都有一个法线向量，该向量指向远离它的方向。法线向量控制着光线如何反射形状。</p>
+
+  <p><code>normal()</code> 可以通过不同的参数以两种方式调用来定义法线向量的分量。</p>
+
+  <p>调用 <code>normal()</code> 的第一种方式有三个参数 <code>x</code>，<code>y</code>，和 <code>z</code>。
+
+  如果传递了 <code>Number</code>，如 <code>normal(1, 2, 3)</code>, 它们将设置法线向量的x、y和z分量。</p>
+
+  <p>调用 <code>normal()</code> 的第二种方式有一个参数，即 <code>vector</code>。如果传递了
+
+  <a href="/reference/p5/p5.Vector">p5.Vector</a> 对象，如
+
+  <code>normal(myVector)</code> 则其分量将用于设置法线向量。</p>
+
+  <p><code>normal()</code> 通过 <a href="/reference/p5/vertex">vertex()</a> 更改添加到自定义形状中的顶点的法线向量。<code>normal()</code> 必须在
+  
+  <a href="/reference/p5/beginShape">beginShape()</a> 和
+
+  <a href="/reference/p5/endShape">endShape()</a> 函数之间调用。就像
+
+  <a href="/reference/p5/vertex">vertex()</a> 一样。通过调用
+
+  <code>normal()</code> 设置的法线向量会影响直到再次调用
+  <code>normal()</code> 之前的所有后续顶点：</p>
+
+  <code>
+
+  beginShape();
+
+
+  <p>// Set the vertex normal.
+
+  normal(-0.4, -0.4, 0.8);</p>
+
+  <p>// Add a vertex.
+
+  vertex(-30, -30, 0);</p>
+
+  <p>// Set the vertex normal.
+
+  normal(0, 0, 1);</p>
+
+  <p>// Add vertices.
+
+  vertex(30, -30, 0);
+
+  vertex(30, 30, 0);</p>
+
+  <p>// Set the vertex normal.
+
+  normal(0.4, -0.4, 0.8);</p>
+
+  <p>// Add a vertex.
+
+  vertex(-30, 30, 0);</p>
+
+  <p>endShape();
+
+  </p></code>
+line: 2066
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click the and drag the mouse to view the scene from a different angle.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A colorful square on a black background. The square changes color and rotates when the user drags the mouse. Parts of its surface reflect light in different directions.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the shape.
+      normalMaterial();
+      noStroke();
+
+      // Draw the shape.
+      beginShape();
+      vertex(-30, -30, 0);
+      vertex(30, -30, 0);
+      vertex(30, 30, 0);
+      vertex(-30, 30, 0);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the and drag the mouse to view the scene from a different angle.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A colorful square on a black background. The square changes color and rotates when the user drags the mouse. Parts of its surface reflect light in different directions.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the shape.
+      normalMaterial();
+      noStroke();
+
+      // Draw the shape.
+      // Use normal() to set vertex normals.
+      beginShape();
+      normal(-0.4, -0.4, 0.8);
+      vertex(-30, -30, 0);
+
+      normal(0, 0, 1);
+      vertex(30, -30, 0);
+      vertex(30, 30, 0);
+
+      normal(0.4, -0.4, 0.8);
+      vertex(-30, 30, 0);
+      endShape();
+    }
+    </code>
+    </div>
+
+    <div class='notest'>
+    <code>
+    // Click the and drag the mouse to view the scene from a different angle.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A colorful square on a black background. The square changes color and rotates when the user drags the mouse. Parts of its surface reflect light in different directions.'
+      );
+    }
+
+    function draw() {
+      background(0);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the shape.
+      normalMaterial();
+      noStroke();
+
+      // Create p5.Vector objects.
+      let n1 = createVector(-0.4, -0.4, 0.8);
+      let n2 = createVector(0, 0, 1);
+      let n3 = createVector(0.4, -0.4, 0.8);
+
+      // Draw the shape.
+      // Use normal() to set vertex normals.
+      beginShape();
+      normal(n1);
+      vertex(-30, -30, 0);
+
+      normal(n2);
+      vertex(30, -30, 0);
+      vertex(30, 30, 0);
+
+      normal(n3);
+      vertex(-30, 30, 0);
+      endShape();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 2066
+    params:
+      - name: vector
+        description: |
+          <p>vertex normal as a <a href="#/p5.Vector">p5.Vector</a> object.</p>
+        type: p5.Vector
+    chainable: 1
+  - line: 2241
+    params:
+      - name: x
+        description: |
+          <p>x-component of the vertex normal.</p>
+        type: Number
+      - name: 'y'
+        description: |
+          <p>y-component of the vertex normal.</p>
+        type: Number
+      - name: z
+        description: |
+          <p>z-component of the vertex normal.</p>
+        type: Number
+    chainable: 1
+chainable: true
+---
+
+
+# normal

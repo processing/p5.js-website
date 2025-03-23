@@ -1,0 +1,28 @@
+---
+import { eventsPerPage } from "@/src/globals/globals";
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import EventsLayout from "@layouts/EventsLayout.astro";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+
+export async function getStaticPaths() {
+  const pages = nonDefaultSupportedLocales.map(async (locale) => ({
+    params: {
+      locale,
+    },
+    props: {
+      allEvents: await getCollectionInLocaleWithFallbacks("events", locale),
+    },
+  }));
+
+  return await Promise.all(pages);
+}
+
+const { allEvents } = Astro.props;
+const events = allEvents.slice(0, eventsPerPage);
+---
+
+<EventsLayout
+  entries={events}
+  totalNumEvents={allEvents.length}
+  currentPage={1}
+/>

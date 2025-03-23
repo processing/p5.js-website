@@ -1,0 +1,114 @@
+---
+title: slerp
+module: 3D
+submodule: Camera
+file: src/webgl/p5.Camera.js
+description: >
+  <p>Establece la posición y orientación de la cámara en valores que se encuentran
+
+  entre las de otras dos cámaras.</p>
+
+  <p><code>myCamera.slerp()</code> utiliza la interpolación lineal esférica para
+  calcular una
+
+  posición y orientación que está entre dos otras cámaras. Esto es útil para
+
+  hacer una transición suave entre dos perspectivas.</p>
+
+  <p>Los dos primeros parámetros, <code>cam0</code> y <code>cam1</code>, son los
+  objetos
+
+  <code>p5.Camera</code> que deben utilizarse para establecer la cámara actual.</p>
+
+  <p>El tercer parámetro, <code>amt</code>, es la cantidad a interpolar entre
+  <code>cam0</code> y
+
+  <code>cam1</code>. 0.0 mantiene la posición y orientación de la cámara igual a
+  la de <code>cam0</code>,
+
+  0.5 la establece a la mitad entre <code>cam0</code> y <code>cam1</code> , y
+  1.0 establece la posición y orientación igual a <code>cam1</code>.</p>
+
+  <p>Por ejemplo, llamar a <code>myCamera.slerp(cam0, cam1, 0.1)</code> establece
+  la posición y
+
+  orientación de la cámara muy cercanas a las de <code>cam0</code>. Llamar a
+
+  <code>myCamera.slerp(cam0, cam1, 0.9)</code> establece la posición y
+  orientación muy
+
+  cercanas a las de <code>cam1</code>.</p>
+
+  <p>Nota: Todas las cámaras deben utilizar la misma proyección.</p>
+line: 3252
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let cam;
+    let cam0;
+    let cam1;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the main camera.
+      // Keep its default settings.
+      cam = createCamera();
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam0 = createCamera();
+
+      // Create the second camera.
+      cam1 = createCamera();
+
+      // Place it at the top-right.
+      cam1.setPosition(400, -400, 800);
+
+      // Point it at the origin.
+      cam1.lookAt(0, 0, 0);
+
+      // Set the current camera to cam.
+      setCamera(cam);
+
+      describe('A white cube drawn against a gray background. The camera slowly oscillates between a frontal view and an aerial view.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the amount to interpolate between cam0 and cam1.
+      let amt = 0.5 * sin(frameCount * 0.01) + 0.5;
+
+      // Update the main camera's position and orientation.
+      cam.slerp(cam0, cam1, amt);
+
+      box();
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: cam0
+    description: |
+      <p>primera cámara.</p>
+    type: p5.Camera
+  - name: cam1
+    description: |
+      <p>segunda cámara.</p>
+    type: p5.Camera
+  - name: amt
+    description: >
+      <p>cantidad de interpolación entre 0.0 (<code>cam0</code>) y 1.0
+      (<code>cam1</code>).</p>
+
+    type: Number
+chainable: false
+---
+
+
+# slerp

@@ -1,0 +1,161 @@
+---
+title: camera
+module: 3D
+submodule: 相机
+file: src/webgl/p5.Camera.js
+description: >
+  <p>设置 3D 场景中当前相机的位置和方向。</p>
+
+  <p><code>camera()</code> 允许从不同角度查看对象。它有九个可选参数。</p>
+
+  <p>前三个参数 <code>x</code>、<code>y</code> 和 <code>z</code> 是相机位置的坐标。例如，调用 <code>camera(0, 0, 0)</code> 将相机放置在原点 <code>(0, 0, 0)</code>。默认情况下，相机放置在 <code>(0, 0, 800)</code>。</p>
+
+  <p>接下来的三个参数 <code>centerX</code>、<code>centerY</code> 和 <code>centerZ</code> 是相机面向的点的坐标。例如，调用 <code>camera(0, 0, 0, 10, 20, 30)</code> 将相机放置在原点 <code>(0, 0, 0)</code> 并将其指向 <code>(10, 20, 30)</code>。默认情况下，相机指向原点 <code>(0, 0, 0)</code>。</p>
+
+  <p>最后三个参数 <code>upX</code>、<code>upY</code> 和 <code>upZ</code> 是“上”向量的分量。"上" 向量定位相机的 y 轴。例如，调用 <code>camera(0, 0, 0, 10, 20, 30, 0, -1, 0)</code> 将相机放置在原点 <code>(0, 0, 0)</code>，指向 <code>(10, 20, 30)</code>，并将 "上" 向量设置为 <code>(0, -1, 0)</code>，就像倒置相机一样。默认情况下，"上" 向量是 <code>(0, 1, 0)</code>。</p>
+
+  <p>注意：<code>camera()</code> 只能在 WebGL 模式下使用。</p>
+line: 13
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Move the camera to the top-right.
+      camera(200, -400, 800);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white cube apperas to sway left and right on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Calculate the camera's x-coordinate.
+      let x = 400 * cos(frameCount * 0.01);
+
+      // Orbit the camera around the box.
+      camera(x, -400, 800);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Adjust the range sliders to change the camera's position.
+
+    let xSlider;
+    let ySlider;
+    let zSlider;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create slider objects to set the camera's coordinates.
+      xSlider = createSlider(-400, 400, 400);
+      xSlider.position(0, 100);
+      xSlider.size(100);
+      ySlider = createSlider(-400, 400, -200);
+      ySlider.position(0, 120);
+      ySlider.size(100);
+      zSlider = createSlider(0, 1600, 800);
+      zSlider.position(0, 140);
+      zSlider.size(100);
+
+      describe(
+        'A white cube drawn against a gray background. Three range sliders appear beneath the image. The camera position changes when the user moves the sliders.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Get the camera's coordinates from the sliders.
+      let x = xSlider.value();
+      let y = ySlider.value();
+      let z = zSlider.value();
+
+      // Move the camera.
+      camera(x, y, z);
+
+      // Draw the box.
+      box();
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: x
+    description: |
+      <p>相机的 x 坐标。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: 'y'
+    description: |
+      <p>相机的 y 坐标。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: z
+    description: |
+      <p>相机的z坐标。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: centerX
+    description: |
+      <p>相机面向点的x坐标。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: centerY
+    description: |
+      <p>相机面向点的y坐标。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: centerZ
+    description: |
+      <p>相机面向点的z坐标。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: upX
+    description: |
+      <p>摄像机 "向上 "矢量的 x 分量。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: upY
+    description: |
+      <p>摄像机 "向上 "矢量的 y 分量。默认为 0。</p>
+    type: 数字
+    optional: true
+  - name: upZ
+    description: |
+      <p>摄像机 "向上 "矢量的 z 分量。默认为 0。</p>
+    type: 数字
+    optional: true
+chainable: true
+---
+
+
+# camera

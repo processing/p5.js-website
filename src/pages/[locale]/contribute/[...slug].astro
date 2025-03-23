@@ -1,0 +1,34 @@
+---
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import ContributorDocLayout from "@layouts/ContributorDocLayout.astro";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
+
+export async function getStaticPaths() {
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const localeEntries = await getCollectionInLocaleWithFallbacks(
+        "contributor-docs",
+        locale
+      );
+
+      return localeEntries.map((entry) => {
+        const slug = removeLocalePrefix(entry.slug);
+        return {
+          params: {
+            locale,
+            slug,
+          },
+          props: { entry },
+        };
+      });
+    })
+  );
+
+  return entries.flat();
+}
+
+const { entry } = Astro.props;
+---
+
+<ContributorDocLayout entry={entry} />

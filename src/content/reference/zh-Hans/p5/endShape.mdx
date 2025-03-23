@@ -1,0 +1,193 @@
+---
+title: endShape
+module: 形状
+submodule: 顶点
+file: src/core/shape/vertex.js
+description: >
+  <p>开始向自定义形状添加顶点。</p>
+
+  <p><a href="/reference/p5/beginShape">beginShape()</a> 和
+  <code>endShape()</code> 函数允许在 2D 或 3D 中创建自定义形状。
+
+  <a href="/reference/p5/beginShape">beginShape()</a> 开始添加顶点到一个自定义形状，而
+  <code>endShape()</code> 则停止添加。</p>
+
+  <p>第一个参数 <code>mode</code> 是可选的。默认情况下，形状的第一个和最后一个顶点不相连。如果传递常量 <code>CLOSE</code>，
+  如 <code>endShape(CLOSE)</code> 那么第一个和最后一个顶点将会连接起来。</p>
+
+  <p>第二个参数 <code>count</code> 也是可选的。 在 WebGL 模式下，如果要绘制许多相同形状的副本，更高效的方法是使用 <a
+  href="https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html"
+  target="_blank">instancing</a> 的技术。
+
+  <code>count</code> 参数告诉 WebGL 模式要绘制多少个副本。例如，在绘制自定义形状后调用 <code>endShape(CLOSE, 400)</code> 会使绘制 400 个副本变得高效。
+
+  此功能需要 <a href="https://p5js.org/learn/getting-started-in-webgl-shaders.html"
+  target="_blank">writing a custom shader</a>。</p>
+
+  <p>调用 <a href="/reference/p5/beginShape">beginShape()</a> 后，可以通过调用 <a href="/reference/p5/vertex">vertex()</a>，
+
+  <a href="/reference/p5/bezierVertex">bezierVertex()</a>，
+
+  <a href="/reference/p5/quadraticVertex">quadraticVertex()</a>，和/或
+
+  <a href="/reference/p5/curveVertex">curveVertex()</a> 来构建形状。调用
+
+  <code>endShape()</code> 将停止向形状添加顶点。每个形状都将用当前的描边颜色勾勒出轮廓，并填充当前的填充颜色。</p>
+
+  <p>一些变换图形的函数，如 <a href="/reference/p5/translate">translate()</a>，
+
+  <a href="/reference/p5/rotate">rotate()</a>，和
+
+  <a href="/reference/p5/scale">scale()</a> 在
+
+  <a href="/reference/p5/beginShape">beginShape()</a> 和
+
+  <code>endShape()</code> 之间不起作用。在 <a href="/reference/p5/beginShape">beginShape()</a> 和
+
+  <code>endShape()</code> 之间也不能使用其他形状，比如 <a href="/reference/p5/ellipse">ellipse()</a> 或
+
+  <a href="/reference/p5/rect">rect()</a>。
+
+  </p>
+line: 1344
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shapes.
+      noFill();
+
+      // Left triangle.
+      beginShape();
+      vertex(20, 20);
+      vertex(45, 20);
+      vertex(45, 80);
+      endShape(CLOSE);
+
+      // Right triangle.
+      beginShape();
+      vertex(50, 20);
+      vertex(75, 20);
+      vertex(75, 80);
+      endShape();
+
+      describe(
+        'Two sets of black lines drawn on a gray background. The three lines on the left form a right triangle. The two lines on the right form a right angle.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `#version 300 es
+
+    precision mediump float;
+
+    in vec3 aPosition;
+    flat out int instanceID;
+
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    void main() {
+
+      // Copy the instance ID to the fragment shader.
+      instanceID = gl_InstanceID;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+
+      // gl_InstanceID represents a numeric value for each instance.
+      // Using gl_InstanceID allows us to move each instance separately.
+      // Here we move each instance horizontally by ID * 23.
+      float xOffset = float(gl_InstanceID) * 23.0;
+
+      // Apply the offset to the final position.
+      gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -
+        vec4(xOffset, 0.0, 0.0, 0.0));
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `#version 300 es
+
+    precision mediump float;
+
+    out vec4 outColor;
+    flat in int instanceID;
+    uniform float numInstances;
+
+    void main() {
+      vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+      vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+
+      // Normalize the instance ID.
+      float normId = float(instanceID) / numInstances;
+
+      // Mix between two colors using the normalized instance ID.
+      outColor = mix(red, blue, normId);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let myShader = createShader(vertSrc, fragSrc);
+
+      background(220);
+
+      // Compile and apply the p5.Shader.
+      shader(myShader);
+
+      // Set the numInstances uniform.
+      myShader.setUniform('numInstances', 4);
+
+      // Translate the origin to help align the drawing.
+      translate(25, -10);
+
+      // Style the shapes.
+      noStroke();
+
+      // Draw the shapes.
+      beginShape();
+      vertex(0, 0);
+      vertex(0, 20);
+      vertex(20, 20);
+      vertex(20, 0);
+      vertex(0, 0);
+      endShape(CLOSE, 4);
+
+      describe('A row of four squares. Their colors transition from purple on the left to red on the right');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: mode
+    description: |
+      <p>use CLOSE to close the shape</p>
+    type: Constant
+    optional: true
+  - name: count
+    description: >
+      <p>number of times you want to draw/instance the shape (for WebGL
+      mode).</p>
+    type: Integer
+    optional: true
+chainable: true
+---
+
+# endShape

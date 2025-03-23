@@ -1,0 +1,80 @@
+---
+title: lightFalloff
+module: 3D
+submodule: प्रकाश
+file: src/webgl/light.js
+description: >
+  <p><a href="/reference/p5/pointLight">pointLight()</a> और <a href="/reference/p5/spotLight">spotLight()</a> के लिए फ़ॉलऑफ़ रेट सेट करता है।</p> 
+  
+  <p>एक प्रकाश का फ़ॉलऑफ़ एक निश्चित दूरी पर उसकी किरण की तीव्रता का वर्णन करता है। उदाहरण के लिए, एक लालटेन में धीमा फ़ॉलऑफ़ होता है, एक फ्लैशलाइट में मध्यम फ़ॉलऑफ़ होता है, और एक लेज़र पॉइंटर में तेज़ फ़ॉलऑफ़ होता है।</p> 
+  
+  <p><code>lightFalloff()</code> में तीन पैरामीटर हैं, <code>constant</code>, <code>linear</code>, और <code>quadratic</code>। ये संख्याएं हैं जो एक दूरी <code>d</code> पर फ़ॉलऑफ़ की गणना करने के लिए उपयोग की जाती हैं, जैसा कि निम्नलिखित में दिखाया गया है:</p> 
+  
+  <p><code>falloff = 1 / (constant + d * linear + (d * d) * quadratic)</code></p> 
+  
+  <p>नोट: <code>constant</code>, <code>linear</code>, और <code>quadratic</code> हमेशा 0 से अधिक मानों पर सेट किए जाने चाहिए।</p>
+line: 1160
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to change the falloff rate.
+
+    let useFalloff = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn against a gray background. The intensity of the light changes when the user double-clicks.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Set the light falloff.
+      if (useFalloff === true) {
+        lightFalloff(2, 0, 0);
+      }
+
+      // Add a white point light from the front.
+      pointLight(255, 255, 255, 0, 0, 100);
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Change the falloff value when the user double-clicks.
+    function doubleClicked() {
+      useFalloff = true;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: constant
+    description: |
+      <p>फ़ॉलऑफ़ की गणना के लिए स्थिर मान।</p>
+    type: Number
+  - name: linear
+    description: |
+      <p>फ़ॉलऑफ़ की गणना के लिए रैखिक मान।</p>
+    type: Number
+  - name: quadratic
+    description: |
+      <p>फ़ॉलऑफ़ की गणना के लिए द्विघात मान।</p>
+    type: Number
+chainable: true
+---
+
+
+# lightFalloff

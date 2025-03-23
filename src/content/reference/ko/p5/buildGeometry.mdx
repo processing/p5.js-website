@@ -1,0 +1,260 @@
+---
+title: buildGeometry
+module: 도형
+submodule: 3D 기초 도형
+file: src/webgl/3d_primitives.js
+description: >
+  <p>더 간단한 3D 도형으로부터 사용자 지정 <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 
+  객체를
+
+  만듭니다.</p>
+
+  <p><code>buildGeometry()</code> 는 <a href="/reference/p5/sphere">sphere()</a>
+  와 같은 간단한 도형으로부터 복잡한 3D 도형을 만드는 데 도움을 제공합니다.
+
+  이것은 스케치를 더욱 효율적으로 다루는 데
+  도움을 줍니다. 
+
+  예를 들어, 복잡한 3D 도형이 스케치 실행 중에 변경되지 않는 경우, 
+
+  <code>buildGeometry()</code> 로 
+  그려질 수 있습니다.
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체를 한 번 생성후 
+  그리는 것은 
+
+  조각을 하나씩 반복적으로 그리는 것보다 실행 속도가 빨라집니다.</p>
+
+  <p>매개변수인 <code>callback</code> 은
+  새로운
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> 객체에 대한 그리기 지침을 가진 함수입니다. 
+  3D 도형을 만들기 위해,
+
+  한 번 호출됩니다.</p>
+
+  <p><a href="/reference/p5/beginGeometry">beginGeometry()</a> 와
+
+  <a href="/reference/p5/endGeometry">endGeometry()</a> 를 통해
+  3D 도형을 만드는
+
+  또 다른 방법을 참조하세요.</p>
+
+  <p>참고: <code>buildGeometry()</code>는 WebGL 모드에서만 사용할 수 있습니다.</p>
+line: 520
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the p5.Geometry object.
+      shape = buildGeometry(createShape);
+
+      describe('A white cone drawn on a gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the p5.Geometry object.
+      noStroke();
+
+      // Draw the p5.Geometry object.
+      model(shape);
+    }
+
+    // Create p5.Geometry object from a single cone.
+    function createShape() {
+      cone();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the arrow.
+      shape = buildGeometry(createArrow);
+
+      describe('A white arrow drawn on a gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the arrow.
+      noStroke();
+
+      // Draw the arrow.
+      model(shape);
+    }
+
+    function createArrow() {
+      // Add shapes to the p5.Geometry object.
+      push();
+      rotateX(PI);
+      cone(10);
+      translate(0, -10, 0);
+      cylinder(3, 20);
+      pop();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the p5.Geometry object.
+      shape = buildGeometry(createArrow);
+
+      describe('Two white arrows drawn on a gray background. The arrow on the right rotates slowly.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the arrows.
+      noStroke();
+
+      // Draw the p5.Geometry object.
+      model(shape);
+
+      // Translate and rotate the coordinate system.
+      translate(30, 0, 0);
+      rotateZ(frameCount * 0.01);
+
+      // Draw the p5.Geometry object again.
+      model(shape);
+    }
+
+    function createArrow() {
+      // Add shapes to the p5.Geometry object.
+      push();
+      rotateX(PI);
+      cone(10);
+      translate(0, -10, 0);
+      cylinder(3, 20);
+      pop();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let button;
+    let particles;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a button to reset the particle system.
+      button = createButton('Reset');
+
+      // Call resetModel() when the user presses the button.
+      button.mousePressed(resetModel);
+
+      // Add the original set of particles.
+      resetModel();
+
+      describe('A set of white spheres on a gray background. The spheres are positioned randomly. Their positions reset when the user presses the Reset button.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the particles.
+      noStroke();
+
+      // Draw the particles.
+      model(particles);
+    }
+
+    function resetModel() {
+      // If the p5.Geometry object has already been created,
+      // free those resources.
+      if (particles) {
+        freeGeometry(particles);
+      }
+
+      // Create a new p5.Geometry object with random spheres.
+      particles = buildGeometry(createParticles);
+    }
+
+    function createParticles() {
+      for (let i = 0; i < 60; i += 1) {
+        // Calculate random coordinates.
+        let x = randomGaussian(0, 20);
+        let y = randomGaussian(0, 20);
+        let z = randomGaussian(0, 20);
+
+        push();
+        // Translate to the particle's coordinates.
+        translate(x, y, z);
+        // Draw the particle.
+        sphere(5);
+        pop();
+      }
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: callback
+    description: |
+      <p>도형을 그리는 기능.</p>
+    type: Function
+return:
+  description: 3D 도형.
+  type: p5.Geometry
+chainable: false
+---
+
+
+# buildGeometry

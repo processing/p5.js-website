@@ -1,0 +1,165 @@
+---
+title: mousePressed
+module: 이벤트
+submodule: 마우스
+file: src/events/mouse.js
+description: >
+  <p>마우스 버튼이 눌렸을 때 한 번 호출되는 함수입니다.</p>
+  
+  <p><code>mousePressed()</code> 함수를 선언하면 사용자가 마우스 버튼을 누를 때 자동으로 실행되는 코드 블록을 설정합니다:</p>
+
+  <code>
+
+  function mousePressed() {
+    // 실행할 코드.
+  }
+
+  </code>
+
+  <p><a href="/reference/p5/mouseX">mouseX</a>나 <a href="/reference/p5/mouseY">mouseY</a>와 같은 마우스 시스템 변수는
+  p5.js에 의해 <code>mousePressed()</code>가 호출될 때 가장 최근 값으로 업데이트됩니다:</p>
+
+  <code>
+
+  function mousePressed() {
+    if (mouseX < 50) {
+      // 마우스가 왼쪽에 있을 때 실행할 코드.
+    }
+
+  <p>  if (mouseY > 50) {
+      // 마우스가 아래쪽에 있을 때 실행할 코드.
+    }
+  }
+
+  </p></code>
+
+  <p><code>event</code>는 선택적(optional) 매개변수입니다.
+  <code>mousePressed()</code>는 항상
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent" target="_blank">MouseEvent</a> 객체를 전달받으며,
+  이 객체는 마우스 버튼 누름 이벤트를 설명하는 속성들을 가지고 있습니다:</p>
+
+  <code>
+
+  function mousePressed(event) {
+    // 이벤트를 사용하여 실행할 코드.
+    console.log(event);
+  }
+
+  </code>
+
+  <p>터치스크린 장치에서는 <a href="/reference/p5/touchStarted">touchStarted()</a>가 선언되지 않은 경우에만
+  사용자가 터치를 시작할 때 <code>mousePressed()</code>가 실행됩니다.
+  만약 <a href="/reference/p5/touchStarted">touchStarted()</a>가 선언되어 있다면,
+  사용자가 터치를 시작할 때 <a href="/reference/p5/touchStarted">touchStarted()</a>가 실행되고
+  <code>mousePressed()</code>는 실행되지 않습니다.</p>
+  
+  <p>브라우저는 다양한 마우스 이벤트에 대해 기본적으로 설정된 동작을 가지고 있을 수 있습니다.
+  예를 들어, 일부 브라우저는 마우스 버튼을 누르고 마우스를 움직일 때 텍스트를 강조합니다.
+  이 이벤트에 대한 기본 동작을 방지하려면, 함수 끝에 <code>return false;</code>를 추가하세요.</p>
+
+  <p>참고: <code>mousePressed()</code>, <a href="/reference/p5/mouseReleased">mouseReleased()</a>,
+  그리고 <a href="/reference/p5/mouseClicked">mouseClicked()</a>는 모두 관련이 있습니다.
+  <code>mousePressed()</code>는 사용자가 마우스를 클릭했을 때 바로 실행됩니다.
+  <a href="/reference/p5/mouseReleased">mouseReleased()</a>는 사용자가 마우스 클릭을 해제했을 때 바로 실행됩니다.
+  <a href="/reference/p5/mouseClicked">mouseClicked()</a>는 <a href="/reference/p5/mouseReleased">mouseReleased()</a>가 실행된 직후에 바로 실행됩니다.</p>
+line: 1084
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let value = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square with a black square at its center. The inner square becomes lighter when the user presses a mouse button.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the square.
+      fill(value);
+
+      // Draw the square.
+      square(25, 25, 50);
+    }
+
+    function mousePressed() {
+      // Update the grayscale value.
+      value += 5;
+
+      // Reset the grayscale value.
+      if (value > 255) {
+        value = 0;
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      // Style the circle.
+      fill('orange');
+      stroke('royalblue');
+      strokeWeight(10);
+
+      describe(
+        'An orange circle with a thick, blue border drawn on a gray background. When the user presses and holds the mouse, the border becomes thin and pink. When the user releases the mouse, the border becomes thicker and changes color to blue.'
+      );
+    }
+
+    function draw() {
+      background(220);
+
+      // Draw the circle.
+      circle(50, 50, 20);
+    }
+
+    // Set the stroke color and weight as soon as the user clicks.
+    function mousePressed() {
+      stroke('deeppink');
+      strokeWeight(3);
+    }
+
+    // Set the stroke and fill colors as soon as the user releases
+    // the mouse.
+    function mouseReleased() {
+      stroke('royalblue');
+
+      // This is never visible because fill() is called
+      // in mouseClicked() which runs immediately after
+      // mouseReleased();
+      fill('limegreen');
+    }
+
+    // Set the fill color and stroke weight after
+    // mousePressed() and mouseReleased() are called.
+    function mouseClicked() {
+      fill('orange');
+      strokeWeight(10);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>선택적 <code>MouseEvent</code> 인자.</p>
+    type: MouseEvent
+    optional: true
+chainable: false
+---
+
+
+# mousePressed

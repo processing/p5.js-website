@@ -1,0 +1,109 @@
+---
+import { codeToHtml } from 'shiki';
+import { JSDOM } from 'jsdom';
+const { props } = Astro;
+
+const begin = (name: string) => `__SLOT_BEGIN_${name}`;
+const end = (name: string) => `__SLOT_END_${name}`;
+
+const rawCode = props.code({ begin, end });
+
+// Split raw lines into blocks separated by begin/end (and regions between)
+const rawLines = rawCode.split(/\n/g);
+let currentLine = 0;
+const rows = [];
+let currentRow: { code: string; slot?: string; startLine?: number; endLine?: number } | null = null;
+for (const line of rawLines) {
+  const startMatch = /__SLOT_BEGIN_(\w+)/.exec(line);
+  if (startMatch) {
+    if (currentRow) {
+      rows.push(currentRow);
+    }
+    currentRow = { code: '', slot: startMatch[1] };
+    continue;
+  }
+
+  const endMatch = /__SLOT_END_(\w+)/.exec(line);
+  if (endMatch) {
+    if (currentRow) {
+      rows.push(currentRow);
+      currentRow = null;
+    }
+    continue;
+  }
+
+  if (!currentRow) {
+    currentRow = { code: '' };
+  }
+  if (currentRow.startLine === undefined) {
+    currentRow.startLine = currentLine;
+  }
+  currentRow.code += line + '\n';
+  currentLine++;
+  currentRow.endLine = currentLine;
+}
+if (currentRow) {
+  rows.push(currentRow);
+}
+
+// Get the code without section markers
+const code = rows.map((row) => row.code).join('');
+
+// Convert it to HTML with style tags
+const html = await codeToHtml(code, {
+  lang: props.lang || 'javascript',
+  theme: props.theme || 'github-light',
+})
+
+// Turn it into a DOM tree we can query
+const parsed = new JSDOM(html)
+const dom = parsed.window.document
+const preTag = dom.querySelector('pre')!
+const codeTag = dom.querySelector('code')!
+
+// Extract code lines
+const lines = [...dom.querySelectorAll('span.line')]
+
+// Extract the style attributes on the code/pre tags (we'll manually add these back)
+const preAttrs: Record<string, string> = {};
+for (const attr of preTag.attributes) {
+  if (attr.name === 'style') continue
+  preAttrs[attr.name] = attr.value;
+}
+preAttrs.class = (preAttrs.class || '') + ' code-box mr-md';
+const preStyle = preTag.getAttribute('style');
+const getPreStyle = (i: number) => {
+  let style = preStyle + ';';
+  if (i > 0) {
+    style += 'border-top-left-radius:0;border-top-right-radius:0;'
+  }
+  if (i < rows.length-1) {
+    style += 'border-bottom-left-radius:0;border-bottom-right-radius:0;'
+  }
+  style += 'margin:0;'
+  return style;
+}
+const codeAttrs: Record<string, string> = {};
+for (const attr of codeTag.attributes) {
+  codeAttrs[attr.name] = attr.value;
+}
+---
+  <table class="h-1 my-md full-width">
+    <tbody>
+      {rows.map((row, i) => {
+        const lineNodes = lines.slice(row.startLine, row.endLine);
+        return (
+          <tr class="[&>*]:align-top [&>*]:m-0 [&>*:not(:first-child)]:py-2 [&>*:not(:first-child)]:pl-6 [&>*:not(:first-child)]:max-w-xl">
+            <td class="align-top p-0" style="height:100%; margin:0">
+            <pre {...preAttrs} style={`${getPreStyle(i)};overflow:visible;white-space:pre-wrap;word-wrap:break-word;height:100%;`}><code {...codeAttrs} set:html={lineNodes.map((n) => n.outerHTML).join('\n')} /></pre>
+            </td>
+            {props.columns ? (
+              <Fragment set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+            ) : (
+              <td set:html={row.slot ? Astro.slots.render(row.slot) : undefined} />
+            )}
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>

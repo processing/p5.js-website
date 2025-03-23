@@ -1,0 +1,83 @@
+---
+title: lightFalloff
+module: 3D
+submodule: Lights
+file: src/webgl/light.js
+description: >
+  <p>Establece la tasa de atenuación para <a
+  href="/reference/p5/pointLight">pointLight()</a>
+
+  y <a href="/reference/p5/spotLight">spotLight()</a>.</p>
+
+  <p>La atenuación de una luz describe la intensidad de su haz a una distancia. Por ejemplo, una linterna tiene una atenuación lenta, una linterna tiene una atenuación media y un puntero láser tiene una atenuación aguda.</p>
+
+  <p><code>lightFalloff()</code> tiene tres parámetros, <code>constant</code>, <code>linear</code> y <code>quadratic</code>. Son números utilizados para calcular la atenuación a una distancia <code>d</code>, de la siguiente manera:</p>
+
+  <p><code>falloff = 1 / (constant + d * linear + (d * d) * quadratic)</code></p>
+
+  <p>Nota: <code>constant</code>, <code>linear</code> y <code>quadratic</code> siempre deben tener valores mayores a 0.</p>
+line: 1160
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+    // Double-click to change the falloff rate.
+
+    let useFalloff = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn against a gray background. The intensity of the light changes when the user double-clicks.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Set the light falloff.
+      if (useFalloff === true) {
+        lightFalloff(2, 0, 0);
+      }
+
+      // Add a white point light from the front.
+      pointLight(255, 255, 255, 0, 0, 100);
+
+      // Style the sphere.
+      noStroke();
+
+      // Draw the sphere.
+      sphere(30);
+    }
+
+    // Change the falloff value when the user double-clicks.
+    function doubleClicked() {
+      useFalloff = true;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: constant
+    description: |
+      <p>valor constante para calcular la atenuación.</p>
+    type: Number
+  - name: linear
+    description: |
+      <p>valor lineal para calcular la atenuación.</p>
+    type: Number
+  - name: quadratic
+    description: |
+      <p>valor cuadrático para calcular la atenuación.</p>
+    type: Number
+chainable: true
+---
+
+
+# lightFalloff

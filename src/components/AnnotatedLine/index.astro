@@ -1,0 +1,84 @@
+---
+interface Props {
+  code: (options: {
+    top: (slot: string, code: string) => string
+    bottom: (slot: string, code: string) => string
+  }) => string
+}
+const { props } = Astro;
+
+const contents = props.code({
+  top: (slot, code) => `/*__SLOT_TOP_${slot}*/${code}/*__SLOT_END*/`,
+  bottom: (slot, code) => `/*__SLOT_BOTTOM_${slot}*/${code}/*__SLOT_END*/`,
+}).trim();
+const lineColors = [
+  ['#e8fcbb', '#bbfbfc', '#e0c0fc'], // even lines
+  ['#fcfac0', '#fcddc0', '#fcbab6'], // odd lines
+];
+const lines = contents.split('\n').map((line, lineIdx) => {
+  const colors = lineColors[lineIdx % 2];
+  const parts = line.split(/(\/\*__SLOT_(?:TOP|BOTTOM|END)(?:_\w+)?\*\/)/g);
+
+  let slot;
+  let colorIdx = 0;
+
+  const chunks = [];
+  for (const part of parts) {
+    const match = /\/\*__SLOT_(TOP|BOTTOM|END)_?(\w+)?\*\//.exec(part);
+    if (match) {
+      if (match[1] === 'END') {
+        continue
+      }
+      slot = {
+        side: match[1],
+        slot: match[2],
+      };
+    } else {
+      chunks.push({
+        code: part,
+        top: (slot && slot.side === 'TOP') ? slot.slot : undefined,
+        bottom: (slot && slot.side === 'BOTTOM') ? slot.slot : undefined,
+        color: slot ? colors[colorIdx] : undefined,
+      });
+      if (slot) {
+        colorIdx = (colorIdx + 1) % colors.length
+      }
+      slot = undefined;
+    }
+  }
+
+  return chunks;
+});
+---
+
+<div class="code-box my-8 [&_td]:p-0">
+  {lines.map((line, i) => (
+    <table style={i < lines.length - 1 ? 'margin-bottom: 0.2em' : undefined}>
+      {line.some((chunk) => chunk.top) && (
+        <tr>
+          {line.map(({ top, color }) => (
+            <td class="text-[0.8em] text-center align-bottom max-w-0" style={top && color ? `background: ${color}` : undefined}>
+              <Fragment set:html={top ? Astro.slots.render(top) : undefined} />
+            </td>
+          ))}
+        </tr>
+      )}
+      <tr>
+        {line.map(({ code, color }) => (
+          <td class="text-center" style={color ? `background: ${color}` : undefined}>
+            <pre style="padding: 0, height: 100%"><code>{code}</code></pre>
+          </td>
+        ))}
+      </tr>
+      {line.some((chunk) => chunk.bottom) && (
+        <tr>
+          {line.map(({ bottom, color }) => (
+            <td class="text-[0.8em] text-center align-top max-w-0" style={bottom && color ? `background: ${color}` : undefined}>
+              <Fragment set:html={bottom ? Astro.slots.render(bottom) : undefined} />
+            </td>
+          ))}
+        </tr>
+      )}
+    </table>
+  ))}
+</div>

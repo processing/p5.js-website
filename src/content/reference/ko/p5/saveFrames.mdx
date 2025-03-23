@@ -1,0 +1,157 @@
+---
+title: saveFrames
+module: 이미지
+submodule: 이미지
+file: src/image/image.js
+description: >
+  <p>캔버스에서 이미지로 저장할 수 있는 프레임 시퀀스(sequence)를 캡처합니다.</p>
+
+  <p><code>saveFrames()</code> 함수는 프레임 객체의 배열을 생성합니다.
+  
+  각 프레임은 파일 형식, 파일 이름, 이미지 데이터를 문자열로 포함하는 객체로 저장됩니다.
+  
+  예를 들어, 처음으로 저장된 프레임은 다음과 같은 속성을 가집니다:</p>
+  
+  <p><code>{ ext: 'png', filenmame: 'frame0', imageData: 'data:image/octet-stream;base64, abc123' }</code>.</p>
+  
+  <p>첫 번째 매개변수인 <code>filename</code>은 파일 이름의 앞 부분(prefix)을 설정합니다.
+  
+  예를 들어, 앞 부분을 <code>'frame'</code>으로 설정하면
+  
+  이미지 파일 code>frame0.png</code>, <code>frame1.png</code> 등이 생성됩니다.</p>
+  
+  <p>두 번째 매개변수인 <code>extension</code>은 파일 형식을 <code>'png'</code> 또는 <code>'jpg'</code>로 설정합니다.</p>
+  
+  <p>세 번째 매개변수인 <code>duration</code>은 초 단위로 녹화할 지속 시간을 설정합니다.
+  
+  최대 지속 시간은 15초입니다.</p>
+  
+  <p>네 번째 매개변수인 <code>framerate</code>은 초당 프레임 수(frame per second)를 설정합니다.
+  
+  최대 초당 프레임 수(frame rate) 값은 22입니다.
+  
+  메모리 사용량을 줄이기 위해 <code>duration</code>과 <code>framerate</code>에 제한이 있습니다.
+  
+  큰 크기의 캔버스를 녹화하면 스케치가 쉽게 충돌하거나 심지어 웹 브라우저가 충돌할 수 있습니다.</p>
+  
+  <p>다섯 번째 매개변수인 <code>callback</code>은 선택 사항입니다.
+  
+  함수가 전달되면 이미지 파일은 기본적으로 저장되지 않습니다.
+  
+  콜백(callback) 함수는 캡처된 각 프레임의 데이터를 포함하는 배열을 처리하는 데 사용될 수 있습니다.
+  
+  이미지 데이터 배열에는 각 프레임에 대해 세 가지 속성을 가진 객체 시퀀스가 포함됩니다:
+  
+  <code>imageData</code>, <code>filename</code>, <code>extension</code>.</p>
+  
+  <p>참고: 기본적으로 프레임은 개별 이미지 파일로 다운로드됩니다.</p>
+line: 558
+isConstructor: false
+itemtype: method
+example:
+  - >-
+
+    <div>
+
+    <code>
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A square repeatedly changes color from blue to pink.');
+    }
+
+
+    function draw() {
+      let r = frameCount % 255;
+      let g = 50;
+      let b = 100;
+      background(r, g, b);
+    }
+
+
+    // Save the frames when the user presses the 's' key.
+
+    function keyPressed() {
+      if (key === 's') {
+        saveFrames('frame', 'png', 1, 5);
+      }
+    }
+
+    </code>
+
+    </div>
+
+
+    <div>
+
+    <code>
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A square repeatedly changes color from blue to pink.');
+    }
+
+
+    function draw() {
+      let r = frameCount % 255;
+      let g = 50;
+      let b = 100;
+      background(r, g, b);
+    }
+
+
+    // Print 5 frames when the user presses the mouse.
+
+    function mousePressed() {
+      saveFrames('frame', 'png', 1, 5, printFrames);
+    }
+
+
+    // Prints an array of objects containing raw image data, filenames, and
+    extensions.
+
+    function printFrames(frames) {
+      for (let frame of frames) {
+        print(frame);
+      }
+    }
+
+    </code>
+
+    </div>
+class: p5
+params:
+  - name: filename
+    description: |
+      <p>파일명의 앞 부분.</p>
+    type: String
+  - name: extension
+    description: |
+      <p>파일 확장자, 'jpg' 또는 'png'.</p>
+    type: String
+  - name: duration
+    description: >
+      <p>기록할 지속 시간(초)입니다. 이 매개변수는 15 이하로 제한됩니다.</p>
+    type: Number
+  - name: framerate
+    description: >
+      <p>초당 저장할 프레임 수입니다. 이 매개변수는 22 이하로 제한됩니다.</p>
+    type: Number
+  - name: callback
+    description: |
+      <p>이미지 데이터를 처리하기 위해 실행될 콜백 함수입니다.
+
+      이 함수는 배열을 매개변수로 받아야 합니다.
+      
+      배열에는 지정된 개수만큼 프레임 객체가 포함됩니다. 각 객체는 세 개의 속성을 가지고 있습니다:
+      
+      <code>imageData</code>, <code>filename</code>, <code>extension</code>.</p>
+    type: Function(Array)
+    optional: true
+chainable: false
+---
+
+
+# saveFrames

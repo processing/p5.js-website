@@ -1,0 +1,167 @@
+---
+title: mouseWheel
+module: आयोजन
+submodule: माउस
+file: src/events/mouse.js
+description: >
+  <p>एक फ़ंक्शन जिसे माउस व्हील के हिलने पर एक बार कॉल किया जाता है।</p>
+
+  <p>फ़ंक्शन घोषित करना <code>mouseWheel()</code> चलाने के लिए एक कोड ब्लॉक सेट करता है
+
+  जब उपयोगकर्ता माउस व्हील से स्क्रॉल करता है तो स्वचालित रूप से:</p>
+
+  <code>
+
+  फ़ंक्शन माउसव्हील() {
+    // चलाने के लिए कोड।
+  }
+
+  </code>
+
+
+  <p>माउस सिस्टम वैरिएबल, जैसे <a
+  href='/reference/p5/mouseX'>mouseX</a> और
+
+  <a href="/reference/p5/mouseY">mouseY</a>, को उनके अधिकांश के साथ अपडेट किया जाएगा
+  हाल ही का
+
+  मान जब <code>mouseWheel()</code> को p5.js द्वारा कॉल किया जाता है:</p>
+
+  <code>
+
+  फ़ंक्शन माउसव्हील() {
+    यदि (माउसएक्स <50) {
+      // यदि माउस बाईं ओर है तो चलाने के लिए कोड।
+    }
+
+  <p> यदि (माउसY > 50) {
+      // यदि माउस नीचे के पास है तो चलाने के लिए कोड।
+    }
+  }
+
+  </p></code>
+
+  <p>पैरामीटर, <code>इवेंट</code>, वैकल्पिक है। <code>माउसव्हील()</code>
+  हमेशा पारित किया जाता है a
+
+  <a href='https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent'
+  target='_blank'>MouseEvent</a>
+
+  गुणों वाली वस्तु जो माउस स्क्रॉल इवेंट का वर्णन करती है:</p>
+
+  <code>
+
+  फ़ंक्शन माउसव्हील(इवेंट) {
+    // चलाने के लिए कोड जो ईवेंट का उपयोग करता है।
+    कंसोल.लॉग(इवेंट);
+  }
+
+  </code>
+
+
+  <p><code>event</code> ऑब्जेक्ट में कई गुण शामिल हैं
+  <code>डेल्टा</code>, एक <code>संख्या</code>
+
+  जिसमें उपयोगकर्ता द्वारा स्क्रॉल की गई दूरी शामिल है। उदाहरण के लिए,
+  <code>इवेंट.डेल्टा</code>
+
+  जब उपयोगकर्ता स्क्रॉल करता है तो उसका मान 5 हो सकता है। <code>event.delta</code> है
+  सकारात्मक
+
+  यदि उपयोगकर्ता ऊपर स्क्रॉल करता है और यदि वे नीचे स्क्रॉल करते हैं तो नकारात्मक। संकेत हैं
+
+  "प्राकृतिक" स्क्रॉलिंग सक्षम के साथ macOS पर विपरीत।</p>
+
+  <p>ब्राउज़र में विभिन्न माउस ईवेंट से जुड़े डिफ़ॉल्ट व्यवहार हो सकते हैं। के लिए
+
+  उदाहरण के लिए, जब उपयोगकर्ता माउस घुमाता है तो कुछ ब्राउज़र टेक्स्ट को हाइलाइट करते हैं
+
+  माउस बटन दबाना. इस ईवेंट के लिए किसी भी डिफ़ॉल्ट व्यवहार को रोकने के लिए,
+
+  फ़ंक्शन के अंत में <code> return false;</code> जोड़ें।</p>
+
+  <p>ध्यान दें: Safari पर, <code>mouseWheel()</code> केवल तभी काम कर सकता है जब अपेक्षित हो
+
+  <code>return false;</code> फ़ंक्शन के अंत में जोड़ा जाता है।</p>
+line: 1732
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let circleSize = 0;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. A white circle at its center grows up when the user scrolls the mouse wheel.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the circle
+      circle(circleSize, 50, 50);
+    }
+
+    // Increment circleSize when the user scrolls the mouse wheel.
+    function mouseWheel() {
+      circleSize += 1;
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let direction = '';
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A gray square. An arrow at its center points up when the user scrolls up. The arrow points down when the user scrolls down.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the text.
+      textAlign(CENTER);
+      textSize(16);
+
+      // Draw an arrow that points where
+      // the mouse last scrolled.
+      text(direction, 50, 50);
+    }
+
+    // Change direction when the user scrolls the mouse wheel.
+    function mouseWheel(event) {
+      if (event.delta > 0) {
+        direction = '▲';
+      } else {
+        direction = '▼';
+      }
+      // Uncomment to prevent any default behavior.
+      // return false;
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: event
+    description: |
+      <p>optional <code>WheelEvent</code> argument.</p>
+    type: WheelEvent
+    optional: true
+chainable: false
+---
+
+
+# mouseWheel

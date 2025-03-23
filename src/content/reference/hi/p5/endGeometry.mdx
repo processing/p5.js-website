@@ -1,0 +1,259 @@
+---
+title: endGeometry
+module: आकार
+submodule: 3D आदिम
+file: src/webgl/3d_primitives.js
+description: >
+  <p>नए <a href="/reference/p5/p5.Geometry">p5.Geometry</a> ऑब्जेक्ट में आकृतियाँ जोड़ना बंद कर देता है और ऑब्जेक्ट वापस कर देता है।</p>
+
+  <p><code>beginGeometry()</code> और <a
+  href='/reference/p5/endGeometry'>endGeometry()</a> फ़ंक्शंस सरल से जटिल 3D आकृतियाँ बनाने में मदद करते हैं, जैसे <a href='/reference/p5/sphere'>sphere()</a>|
+  
+  <code>beginGeometry()</code> एक कस्टम <a href="/reference/p5/p5.Geometry">p5.Geometry</a> ऑब्जेक्ट में आकृतियाँ जोड़ना शुरू करता है और <a href="/reference/p5/EndGeometry">endGeometry()</a> उन्हें जोड़ना बंद कर देता है। </p>
+
+  <p><code>beginGeometry()</code> और <a href="/reference/p5/endGeometry">endGeometry()</a> रेखाचित्रों को और अधिक उपयोगी बनाने में मदद कर सकते हैं।
+
+  उदाहरण के लिए, यदि स्केच चलते समय कोई जटिल 3D आकार नहीं बदलता है, तो इसे <code>beginGeometry()</code> और <a href='/reference/p5/endGeometry'>endGeometry()</a> के साथ बनाया जा सकता है।
+
+  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> ऑब्जेक्ट को एक बार बनाना और फिर उसे खींचना अलग-अलग टुकड़ों को बार-बार खींचने की तुलना में तेज़ चलेगा।</p>
+
+  <p>3D आकृतियाँ बनाने के दूसरे के लिए <a href="/reference/p5/buildGeometry">buildGeometry()</a> देखें।</p>
+
+  <p>ध्यान दें: <code>endGeometry()</code> का उपयोग केवल WebGL मोड में किया जा सकता है।</p>
+line: 266
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Start building the p5.Geometry object.
+      beginGeometry();
+
+      // Add a cone.
+      cone();
+
+      // Stop building the p5.Geometry object.
+      shape = endGeometry();
+
+      describe('A white cone drawn on a gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the p5.Geometry object.
+      noStroke();
+
+      // Draw the p5.Geometry object.
+      model(shape);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the p5.Geometry object.
+      createArrow();
+
+      describe('A white arrow drawn on a gray background.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the p5.Geometry object.
+      noStroke();
+
+      // Draw the p5.Geometry object.
+      model(shape);
+    }
+
+    function createArrow() {
+      // Start building the p5.Geometry object.
+      beginGeometry();
+
+      // Add shapes.
+      push();
+      rotateX(PI);
+      cone(10);
+      translate(0, -10, 0);
+      cylinder(3, 20);
+      pop();
+
+      // Stop building the p5.Geometry object.
+      shape = endGeometry();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let blueArrow;
+    let redArrow;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the arrows.
+      redArrow = createArrow('red');
+      blueArrow = createArrow('blue');
+
+      describe('A red arrow and a blue arrow drawn on a gray background. The blue arrow rotates slowly.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the arrows.
+      noStroke();
+
+      // Draw the red arrow.
+      model(redArrow);
+
+      // Translate and rotate the coordinate system.
+      translate(30, 0, 0);
+      rotateZ(frameCount * 0.01);
+
+      // Draw the blue arrow.
+      model(blueArrow);
+    }
+
+    function createArrow(fillColor) {
+      // Start building the p5.Geometry object.
+      beginGeometry();
+
+      fill(fillColor);
+
+      // Add shapes to the p5.Geometry object.
+      push();
+      rotateX(PI);
+      cone(10);
+      translate(0, -10, 0);
+      cylinder(3, 20);
+      pop();
+
+      // Stop building the p5.Geometry object.
+      let shape = endGeometry();
+
+      return shape;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let button;
+    let particles;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a button to reset the particle system.
+      button = createButton('Reset');
+
+      // Call resetModel() when the user presses the button.
+      button.mousePressed(resetModel);
+
+      // Add the original set of particles.
+      resetModel();
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the particles.
+      noStroke();
+
+      // Draw the particles.
+      model(particles);
+    }
+
+    function resetModel() {
+      // If the p5.Geometry object has already been created,
+      // free those resources.
+      if (particles) {
+        freeGeometry(particles);
+      }
+
+      // Create a new p5.Geometry object with random spheres.
+      particles = createParticles();
+    }
+
+    function createParticles() {
+      // Start building the p5.Geometry object.
+      beginGeometry();
+
+      // Add shapes.
+      for (let i = 0; i < 60; i += 1) {
+        // Calculate random coordinates.
+        let x = randomGaussian(0, 20);
+        let y = randomGaussian(0, 20);
+        let z = randomGaussian(0, 20);
+
+        push();
+        // Translate to the particle's coordinates.
+        translate(x, y, z);
+        // Draw the particle.
+        sphere(5);
+        pop();
+      }
+
+      // Stop building the p5.Geometry object.
+      let shape = endGeometry();
+
+      return shape;
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: नया 3D आकार
+  type: p5.Geometry
+chainable: false
+---
+
+# endGeometry

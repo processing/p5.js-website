@@ -1,0 +1,17 @@
+---
+import SketchLayout from "@/src/layouts/SketchLayout.astro";
+import { getCurationSketches } from "@src/api/OpenProcessing";
+
+export async function getStaticPaths() {
+  const sketches = await getCurationSketches();
+  return sketches.map((sketch) => ({
+    params: { slug: sketch.visualID },
+    props: { authorName: sketch.fullname },
+  }));
+}
+
+const { slug } = Astro.params;
+const { authorName } = Astro.props;
+---
+
+<SketchLayout sketchId={slug} authorName={authorName} />

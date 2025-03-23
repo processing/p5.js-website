@@ -1,0 +1,181 @@
+---
+title: angleBetween
+module: Math
+submodule: Vector
+file: src/math/p5.Vector.js
+description: >
+  <p>Calculates the angle between two vectors.</p>
+
+  <p>The angles returned are signed, which means that
+
+  <code>v1.angleBetween(v2) === -v2.angleBetween(v1)</code>.</p>
+
+  <p>If the vector was created with
+
+  <a href="/reference/p5/createVector/">createVector()</a>,
+  <code>angleBetween()</code> returns
+
+  angles in the units of the current
+
+  <a href="/reference/p5/angleMode/">angleMode()</a>.</p>
+line: 2384
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div class="norender">
+    <code>
+    function setup() {
+      // Create p5.Vector objects.
+      let v0 = createVector(1, 0);
+      let v1 = createVector(0, 1);
+
+      // Prints "1.570..." to the console.
+      print(v0.angleBetween(v1));
+
+      // Prints "-1.570..." to the console.
+      print(v1.angleBetween(v0));
+    }
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    function setup() {
+      // Use degrees.
+      angleMode(DEGREES);
+      // Create p5.Vector objects.
+      let v0 = createVector(1, 0);
+      let v1 = createVector(0, 1);
+
+      // Prints "90" to the console.
+      print(v0.angleBetween(v1));
+
+      // Prints "-90" to the console.
+      print(v1.angleBetween(v0));
+    }
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    function setup() {
+      // Create p5.Vector objects.
+      let v0 = createVector(1, 0);
+      let v1 = createVector(0, 1);
+
+      // Prints "1.570..." to the console.
+      print(p5.Vector.angleBetween(v0, v1));
+
+      // Prints "-1.570..." to the console.
+      print(p5.Vector.angleBetween(v1, v0));
+    }
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    function setup() {
+      // Use degrees.
+      angleMode(DEGREES);
+
+      // Create p5.Vector objects.
+      let v0 = createVector(1, 0);
+      let v1 = createVector(0, 1);
+
+      // Prints "90" to the console.
+      print(p5.Vector.angleBetween(v0, v1));
+
+      // Prints "-90" to the console.
+      print(p5.Vector.angleBetween(v1, v0));
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('Two arrows extend from the center of a gray square. A red arrow points to the right and a blue arrow points down. The text "Radians: 1.57" and "Degrees: 90" is written above the arrows.');
+    }
+    function draw() {
+      background(200);
+
+      // Create p5.Vector objects.
+      let v0 = createVector(50, 50);
+      let v1 = createVector(30, 0);
+      let v2 = createVector(0, 30);
+
+      // Draw the red arrow.
+      drawArrow(v0, v1, 'red');
+
+      // Draw the blue arrow.
+      drawArrow(v0, v2, 'blue');
+
+      // Use radians.
+      angleMode(RADIANS);
+
+      // Display the angle in radians.
+      let angle = round(v1.angleBetween(v2), 2);
+      text(`Radians: ${angle}`, 20, 20);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      // Display the angle in degrees.
+      angle = round(v1.angleBetween(v2), 2);
+      text(`Degrees: ${angle}`, 20, 35);
+    }
+
+    // Draws an arrow between two vectors.
+    function drawArrow(base, vec, myColor) {
+      push();
+      stroke(myColor);
+      strokeWeight(3);
+      fill(myColor);
+      translate(base.x, base.y);
+      line(0, 0, vec.x, vec.y);
+      rotate(vec.heading());
+      let arrowSize = 7;
+      translate(vec.mag() - arrowSize, 0);
+      triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+      pop();
+    }
+    </code>
+    </div>
+class: p5.Vector
+return:
+  description: angle between the vectors.
+  type: Number
+overloads:
+  - line: 2384
+    params:
+      - name: value
+        description: >
+          <p>x, y, and z components of a <a
+          href="#/p5.Vector">p5.Vector</a>.</p>
+        type: p5.Vector
+    return:
+      description: angle between the vectors.
+      type: Number
+  - line: 3811
+    params:
+      - name: v1
+        description: |
+          <p>the first vector.</p>
+        type: p5.Vector
+      - name: v2
+        description: |
+          <p>the second vector.</p>
+        type: p5.Vector
+    static: 1
+    return:
+      description: angle between the two vectors.
+      type: Number
+chainable: false
+---
+
+
+# angleBetween

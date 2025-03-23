@@ -1,0 +1,140 @@
+---
+title: createImage
+module: 图像
+submodule: 图像
+file: src/image/image.js
+description: "  <p>创建一个新的 <a href=\"/reference/p5/p5.Image\">p5.Image</a> 对象。</p>\n\n  <p><code>createImage()</code> 使用 <code>width</code> 和 <code>height</code> 参数来设置新的 \n\n  <a href=\"/reference/p5/p5.Image\">p5.Image</a> 对象的像素尺寸。新的 \n\n  <a href=\"/reference/p5/p5.Image\">p5.Image</a> 可以通过更新 \n\n  <a href=\"/reference/p5.Image/pixels\">pixels</a> 数组或调用 \n\n  <a href=\"/reference/p5.Image/get\">get()</a> 和 \n\n  <a href=\"/reference/p5.Image/set\">set()</a> 方法来修改。在读取或修改像素值之前，必须调用 \n\n  <a href=\"/reference/p5.Image/loadPixels\">loadPixels()</a> 方法。必须调用 \n\n  <a href=\"/reference/p5.Image/updatePixels\">updatePixels()</a> 方法，使更新生效。</p>\n\n  <p>注意：默认状况下，新的 <a href=\"/reference/p5/p5.Image\">p5.Image</a> 对象是透明的。</p>"
+line: '15'
+isConstructor: 'false'
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Image object.
+      let img = createImage(66, 66);
+
+      // Load the image's pixels into memory.
+      img.loadPixels();
+
+      // Set all the image's pixels to black.
+      for (let x = 0; x < img.width; x += 1) {
+        for (let y = 0; y < img.height; y += 1) {
+          img.set(x, y, 0);
+        }
+      }
+
+      // Update the image's pixel values.
+      img.updatePixels();
+
+      // Draw the image.
+      image(img, 17, 17);
+
+      describe('A black square drawn in the middle of a gray square.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Image object.
+      let img = createImage(66, 66);
+
+      // Load the image's pixels into memory.
+      img.loadPixels();
+
+      // Create a color gradient.
+      for (let x = 0; x < img.width; x += 1) {
+        for (let y = 0; y < img.height; y += 1) {
+          // Calculate the transparency.
+          let a = map(x, 0, img.width, 0, 255);
+
+          // Create a p5.Color object.
+          let c = color(0, a);
+
+          // Set the pixel's color.
+          img.set(x, y, c);
+        }
+      }
+
+      // Update the image's pixels.
+      img.updatePixels();
+
+      // Display the image.
+      image(img, 17, 17);
+
+      describe('A square with a horizontal color gradient that transitions from gray to black.');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Image object.
+      let img = createImage(66, 66);
+
+      // Load the pixels into memory.
+      img.loadPixels();
+      // Get the current pixel density.
+      let d = pixelDensity();
+
+      // Calculate the pixel that is halfway through the image's pixel array.
+      let halfImage = 4 * (d * img.width) * (d * img.height / 2);
+
+      // Set half of the image's pixels to black.
+      for (let i = 0; i < halfImage; i += 4) {
+        // Red.
+        img.pixels[i] = 0;
+        // Green.
+        img.pixels[i + 1] = 0;
+        // Blue.
+        img.pixels[i + 2] = 0;
+        // Alpha.
+        img.pixels[i + 3] = 255;
+      }
+
+      // Update the image's pixels.
+      img.updatePixels();
+
+      // Display the image.
+      image(img, 17, 17);
+
+      describe('A black square drawn in the middle of a gray square.');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: width
+    description: |2-
+  
+      <p>宽度以像素为单位。</p>
+    type: 整数
+  - name: height
+    description: |2-
+  
+      <p>高度以像素为单位。</p>
+    type: 整数
+return:
+  description: 新的 <a href="#/p5.Image">p5.Image</a> 对象。
+  type: p5.Image
+chainable: false
+---
+
+# createImage

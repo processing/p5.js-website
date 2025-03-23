@@ -1,0 +1,161 @@
+---
+title: perspective
+module: 3D
+submodule: कैमरा
+file: src/webgl/p5.Camera.js
+description: >
+  <p>कैमरे के लिए एक परिप्रेक्ष्य प्रोजेक्शन सेट करता है।</p> 
+  
+  <p>परिप्रेक्ष्य प्रोजेक्शन में, कैमरे से दूर की चीजें कैमरे के पास की चीजों की तुलना में छोटी दिखाई देती हैं। इस तकनीक को "अग्रपरिक्षेपण" कहा जाता है, जो वास्तविक 3D दृश्य बनाता है। यह नए <code>p5.Camera</code> ऑब्जेक्ट्स में डिफ़ॉल्ट रूप से लागू किया जाता है।</p> 
+  
+  <p><code>myCamera.perspective()</code> कैमरे के दृश्य फ्रस्टम को बदलकर कैमरे की परिप्रेक्ष्य को बदलता है। फ्रस्टम वह खाली स्थान है जो कैमरे के लिए दृश्यमान है। फ्रस्टम की आकृति एक पिरामिड होती है जिसका शीर्ष काट दिया गया है। कैमरा पिरामिड के शीर्ष पर स्थित होता है और पिरामिड के आधार की ओर देखता है। यह फ्रस्टम के भीतर की सब कुछ देखता है।</p> 
+  
+  <p>पहला पैरामीटर, <code>fovy</code>, कैमरे का लंबाई-क्षैतिज क्षेत्र दृश्य है। यह एक कोण है जो यह बताता है कि कैमरे का दृश्य कितना ऊंचा या संकीर्ण है। उदाहरण के लिए, <code>myCamera.perspective(0.5)</code> कॉल करने से कैमरे का लंबाई-क्षैतिज क्षेत्र दृश्य 0.5 रेडियन हो जाता है। डिफ़ॉल्ट रूप से, <code>fovy</code> को स्केच की ऊंचाई और कैमरे की डिफ़ॉल्ट z-निर्देशांक, जो 800 है, के आधार पर गणना किया जाता है। डिफ़ॉल्ट <code>fovy</code> की सूत्र <code>2 * atan(height / 2 / 800)</code> है।</p> 
+  
+  <p>दूसरा पैरामीटर, <code>aspect</code>, कैमरे का आस्पेक्ट अनुपात है। यह एक संख्या है जो शीर्ष प्लेन की चौड़ाई का उसकी ऊंचाई से अनुपात बताती है। उदाहरण के लिए, <code>myCamera.perspective(0.5, 1.5)</code> कॉल करने से कैमरे का क्षेत्र दृश्य 0.5 रेडियन और आस्पेक्ट अनुपात 1.5 हो जाता है, जिससे आकृतियां वर्गाकार कैनवास पर पतली दिखाई देंगी। डिफ़ॉल्ट रूप से, <code>aspect</code> को <code>width / height</code> पर सेट किया जाता है।</p> 
+  
+  <p>तीसरा पैरामीटर, <code>near</code>, कैमरे से नजदीकी प्लेन की दूरी है। उदाहरण के लिए, <code>myCamera.perspective(0.5, 1.5, 100)</code> कॉल करने से कैमरे का क्षेत्र दृश्य 0.5 रेडियन, उसका आस्पेक्ट अनुपात 1.5 और नजदीकी प्लेन कैमरे से 100 पिक्सेल दूर होती है। कैमरे से 100 पिक्सेल से कम दूर खींची गई कोई भी आकृतियां दृश्य में नहीं होंगी। डिफ़ॉल्ट रूप से, <code>near</code> को <code>0.1 * 800</code> पर सेट किया जाता है, जो मूल से कैमरे की दूरी का 1/10वां भाग है।</p> 
+  
+  <p>चौथा पैरामीटर, <code>far</code>, कैमरे से दूरी प्लेन की दूरी है। उदाहरण के लिए, <code>myCamera.perspective(0.5, 1.5, 100, 10000)</code> कॉल करने से कैमरे का क्षेत्र दृश्य 0.5 रेडियन, उसका आस्पेक्ट अनुपात 1.5, नजदीकी प्लेन कैमरे से 100 पिक्सेल और दूरी प्लेन कैमरे से 10,000 पिक्सेल दूर होती है। कैमरे से 10,000 पिक्सेल से अधिक दूर खींची गई कोई भी आकृतियां दृश्य में नहीं होंगी। डिफ़ॉल्ट रूप से, <code>far</code> को <code>10 * 800</code> पर सेट किया जाता है, जो मूल से कैमरे की दूरी का 10 गुना है।</p>
+line: 1862
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right.
+      cam2.camera(400, -400, 800);
+
+      // Set its fovy to 0.2.
+      // Set its aspect to 1.5.
+      // Set its near to 600.
+      // Set its far to 1200.
+      cam2.perspective(0.2, 1.5, 600, 1200);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A white cube on a gray background. The camera toggles between a frontal view and a skewed aerial view when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw the box.
+      box();
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Place it at the top-right.
+      cam2.camera(400, -400, 800);
+
+      // Set its fovy to 0.2.
+      // Set its aspect to 1.5.
+      // Set its near to 600.
+      // Set its far to 1200.
+      cam2.perspective(0.2, 1.5, 600, 1200);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A white cube moves left and right on a gray background. The camera toggles between a frontal and a skewed aerial view when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin left and right.
+      let x = 100 * sin(frameCount * 0.01);
+      translate(x, 0, 0);
+
+      // Draw the box.
+      box();
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: fovy
+    description: |
+      <p>कैमरा फ्रुम ऊर्ध्वाधर दृश्य क्षेत्र। डिफ़ॉल्ट <code>2 * atan(height / 2 / 800)</code>.</p>
+    type: Number
+    optional: true
+  - name: aspect
+    description: |
+      <p>कैमरा फ्रस्टम पहलू अनुपात। डिफ़ॉल्ट <code>width / height</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>कैमरे से निकटतम क्लिपिंग तल तक की दूरी। डिफ़ॉल्ट <code>0.1 * 800</code>.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: |
+      <p>कैमरे से सुदूर क्लिपिंग तल तक की दूरी। डिफ़ॉल्ट <code>10 * 800</code>.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# perspective

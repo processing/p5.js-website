@@ -1,0 +1,379 @@
+---
+title: curveVertex
+module: 形状
+submodule: 顶点
+file: src/core/shape/vertex.js
+description: >
+  <p>向自定义形状添加样条曲线片段。</p>
+
+  <p><code>curveVertex()</code> 向自定义形状添加曲线片段。它创建的样条曲线与
+
+  <a href="/reference/p5/curve">curve()</a> 函数创建的相似。 
+  
+  <code>curveVertex()</code> 必须在 <a href="/reference/p5/beginShape">beginShape()</a> 和
+
+  <a href="/reference/p5/endShape">endShape()</a> 函数之间调用。</p>
+
+  <p>样条曲线可以形成缓和的形状和曲线。它们就像连接到一组点的电缆。样条由两个
+
+  锚点和两个控制点定义。为了绘制曲线，必须至少在 <a href="/reference/p5/beginShape">beginShape()</a> 和
+
+  <a href="/reference/p5/endShape">endShape()</a> 之间调用四次 <code>curveVertex()</code>：</p>
+
+  <code>
+
+  beginShape();
+
+
+  <p>// Add the first control point.
+
+  curveVertex(84, 91);</p>
+
+  <p>// Add the anchor points to draw between.
+
+  curveVertex(68, 19);
+
+  curveVertex(21, 17);</p>
+
+  <p>// Add the second control point.
+
+  curveVertex(32, 91);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p>上面的代码片段仅在锚点之间绘制曲线，类似于 <a href="/reference/p5/curve">curve()</a> 函数。
+  
+  在控制点和锚点之间的片段可以通过使用控制点的坐标调用 <code>curveVertex()</code> 来绘制：</p>
+
+  <code>
+
+  beginShape();
+
+
+  <p>// Add the first control point and draw a segment to it.
+
+  curveVertex(84, 91);
+
+  curveVertex(84, 91);</p>
+
+  <p>// Add the anchor points to draw between.
+
+  curveVertex(68, 19);
+
+  curveVertex(21, 17);</p>
+
+  <p>// Add the second control point.
+
+  curveVertex(32, 91);</p>
+
+  <p>// Uncomment the next line to draw the segment to the second control point.
+
+  // curveVertex(32, 91);</p>
+
+  <p>endShape();
+
+  </p></code>
+
+  <p>前两个参数 <code>x</code> 和 <code>y</code> 设置顶点的位置。
+  
+  例如，调用 <code>curveVertex(10, 10)</code> 在 <code>(10, 10)</code> 处向曲线添加一个点。</p>
+
+  <p>样条曲线也可以在WebGL模式下绘制3D。
+
+  <code>curveVertex()</code> 的3D版本有三个参数，因为每个点都有 x、y 和 z 坐标。
+
+  默认情况下，顶点的z坐标设置为0。</p>
+
+  <p>注意：当向 <a href="/reference/p5/beginShape">beginShape()</a> 传递参数时，<code>curveVertex()</code> 不起作用。</p>
+line: 832
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shape.
+      noFill();
+      strokeWeight(1);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first control point.
+      curveVertex(32, 91);
+
+      // Add the anchor points.
+      curveVertex(21, 17);
+      curveVertex(68, 19);
+
+      // Add the second control point.
+      curveVertex(84, 91);
+
+      // Stop drawing the shape.
+      endShape();
+
+      // Style the anchor and control points.
+      strokeWeight(5);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      point(21, 17);
+      point(68, 19);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(32, 91);
+      point(84, 91);
+
+      describe(
+        'A black curve drawn on a gray background. The curve has black dots at its ends. Two red dots appear near the bottom of the canvas.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shape.
+      noFill();
+      strokeWeight(1);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first control point and draw a segment to it.
+      curveVertex(32, 91);
+      curveVertex(32, 91);
+
+      // Add the anchor points.
+      curveVertex(21, 17);
+      curveVertex(68, 19);
+
+      // Add the second control point.
+      curveVertex(84, 91);
+
+      // Stop drawing the shape.
+      endShape();
+
+      // Style the anchor and control points.
+      strokeWeight(5);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      point(21, 17);
+      point(68, 19);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(32, 91);
+      point(84, 91);
+
+      describe(
+        'A black curve drawn on a gray background. The curve passes through one red dot and two black dots. Another red dot appears near the bottom of the canvas.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shape.
+      noFill();
+      strokeWeight(1);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first control point and draw a segment to it.
+      curveVertex(32, 91);
+      curveVertex(32, 91);
+
+      // Add the anchor points.
+      curveVertex(21, 17);
+      curveVertex(68, 19);
+
+      // Add the second control point and draw a segment to it.
+      curveVertex(84, 91);
+      curveVertex(84, 91);
+
+      // Stop drawing the shape.
+      endShape();
+
+      // Style the anchor and control points.
+      strokeWeight(5);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      point(21, 17);
+      point(68, 19);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(32, 91);
+      point(84, 91);
+
+      describe(
+        'A black U curve drawn upside down on a gray background. The curve passes from one red dot through two black dots and ends at another red dot.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click the mouse near the red dot in the bottom-left corner
+    // and drag to change the curve's shape.
+
+    let x1 = 32;
+    let y1 = 91;
+    let isChanging = false;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'A black U curve drawn upside down on a gray background. The curve passes from one red dot through two black dots and ends at another red dot.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Style the shape.
+      noFill();
+      stroke(0);
+      strokeWeight(1);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first control point and draw a segment to it.
+      curveVertex(x1, y1);
+      curveVertex(x1, y1);
+
+      // Add the anchor points.
+      curveVertex(21, 17);
+      curveVertex(68, 19);
+
+      // Add the second control point and draw a segment to it.
+      curveVertex(84, 91);
+      curveVertex(84, 91);
+
+      // Stop drawing the shape.
+      endShape();
+
+      // Style the anchor and control points.
+      strokeWeight(5);
+
+      // Draw the anchor points in black.
+      stroke(0);
+      point(21, 17);
+      point(68, 19);
+
+      // Draw the control points in red.
+      stroke(255, 0, 0);
+      point(x1, y1);
+      point(84, 91);
+    }
+
+    // Start changing the first control point if the user clicks near it.
+    function mousePressed() {
+      if (dist(mouseX, mouseY, x1, y1) < 20) {
+        isChanging = true;
+      }
+    }
+
+    // Stop changing the first control point when the user releases the mouse.
+    function mouseReleased() {
+      isChanging = false;
+    }
+
+    // Update the first control point while the user drags the mouse.
+    function mouseDragged() {
+      if (isChanging === true) {
+        x1 = mouseX;
+        y1 = mouseY;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Start drawing the shape.
+      beginShape();
+
+      // Add the first control point and draw a segment to it.
+      curveVertex(32, 91);
+      curveVertex(32, 91);
+
+      // Add the anchor points.
+      curveVertex(21, 17);
+      curveVertex(68, 19);
+
+      // Add the second control point.
+      curveVertex(84, 91);
+      curveVertex(84, 91);
+
+      // Stop drawing the shape.
+      endShape();
+
+      describe('A ghost shape drawn in white on a gray background.');
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 832
+    params:
+      - name: x
+        description: |
+          <p>x-coordinate of the vertex</p>
+        type: Number
+      - name: 'y'
+        description: |
+          <p>y-coordinate of the vertex</p>
+        type: Number
+    chainable: 1
+  - line: 1160
+    params:
+      - name: x
+        description: ''
+        type: Number
+      - name: 'y'
+        description: ''
+        type: Number
+      - name: z
+        description: |
+          <p>z-coordinate of the vertex.</p>
+        type: Number
+        optional: true
+    chainable: 1
+chainable: true
+---
+
+
+# curveVertex

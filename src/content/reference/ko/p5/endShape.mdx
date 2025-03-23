@@ -1,0 +1,222 @@
+---
+title: endShape
+module: 도형 
+submodule: 꼭짓점
+file: src/core/shape/vertex.js
+description: >
+  <p>사용자 정의 도형에 꼭짓점을 추가하기 시작합니다.</p>
+
+  <p><a href="/reference/p5/beginShape">beginShape()</a> 와
+  <code>endShape()</code> 함수는
+
+  2D 또는 3D에서 사용자 정의 도형을 만드는 것을 가능하게 합니다. 
+
+  <a href="/reference/p5/beginShape">beginShape()</a> 는 사용자 정의 도형에 
+  꼭짓점을 추가하기 시작하며 
+
+  <code>endShape()</code> 는 점 추가를 멈춥니다.</p>
+
+  <p>첫 번째 매개변수, <code>mode</code> 는 선택사항입니다. 
+  기본적으로 도형의 첫 번째와 마지막 꼭짓점은 연결되지 않습니다. 
+
+  <code>endShape(CLOSE)</code>
+  와 같이
+
+  <code>CLOSE</code> 상수를 전달하면
+  첫 번째와 마지막 꼭짓점이 연결됩니다.</p>
+
+  <p>두 번째 매개변수, <code>count</code> 역시 선택사항입니다.
+  WebGL 모드에서 이 매개변수는
+
+  동일한 도형의 많은 복사본을 효율적으로 그리기 위해 사용되는,
+
+  <a
+  href="https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html"
+  target="_blank">인스턴싱(instancing)</a>.
+
+  기법을 활용할 수 있습니다.
+
+  예를 들어,  사용자 정의 도형을 그린 후에 <code>endShape(CLOSE, 400)</code> 
+  을 호출하면,
+
+  400개의 복사본을 효율적으로 그릴 수 있습니다. 
+
+  이 기능은<a href="https://p5js.org/learn/getting-started-in-webgl-shaders.html"
+  target="_blank">writing a custom shader</a>을 요구합니다.</p>
+
+  <p><a href="/reference/p5/beginShape">beginShape()</a> 를 
+  호출한 후에는,
+
+  <a href="/reference/p5/vertex">vertex()</a>,
+
+  <a href="/reference/p5/bezierVertex">bezierVertex()</a>,
+
+  <a href="/reference/p5/quadraticVertex">quadraticVertex()</a>,
+
+  <a href="/reference/p5/curveVertex">curveVertex()</a> 등을 호출하여 도형을 만들 수 있습니다. 
+
+  <code>endShape()</code> 를 호출하면 도형에 꼭짓점을 추가하는 것이 중단됩니다.
+
+  각 도형은 현재의 색상으로 
+
+  윤곽선과 도형 안의 색상이 채워집니다.</p>
+
+  <p>변형기능인 <a href="/reference/p5/translate">translate()</a>,
+
+  <a href="/reference/p5/rotate">rotate()</a>,
+
+  <a href="/reference/p5/scale">scale()</a> 은
+
+  <a href="/reference/p5/beginShape">beginShape()</a> 와
+  <code>endShape()</code> 사이에서는 작동하지 않습니다. 
+
+  또한 <a
+  href="/reference/p5/ellipse">ellipse()</a> 와
+
+  <a href="/reference/p5/rect">rect()</a>와 같은 도형은 
+
+  <a href="/reference/p5/beginShape">beginShape()</a> 와
+  <code>endShape()</code>사이에서는 사용할 수 없습니다.</p>
+line: 1344
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the shapes.
+      noFill();
+
+      // Left triangle.
+      beginShape();
+      vertex(20, 20);
+      vertex(45, 20);
+      vertex(45, 80);
+      endShape(CLOSE);
+
+      // Right triangle.
+      beginShape();
+      vertex(50, 20);
+      vertex(75, 20);
+      vertex(75, 80);
+      endShape();
+
+      describe(
+        'Two sets of black lines drawn on a gray background. The three lines on the left form a right triangle. The two lines on the right form a right angle.'
+      );
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Note: A "uniform" is a global variable within a shader program.
+
+    // Create a string with the vertex shader program.
+    // The vertex shader is called for each vertex.
+    let vertSrc = `#version 300 es
+
+    precision mediump float;
+
+    in vec3 aPosition;
+    flat out int instanceID;
+
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    void main() {
+
+      // Copy the instance ID to the fragment shader.
+      instanceID = gl_InstanceID;
+      vec4 positionVec4 = vec4(aPosition, 1.0);
+
+      // gl_InstanceID represents a numeric value for each instance.
+      // Using gl_InstanceID allows us to move each instance separately.
+      // Here we move each instance horizontally by ID * 23.
+      float xOffset = float(gl_InstanceID) * 23.0;
+
+      // Apply the offset to the final position.
+      gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -
+        vec4(xOffset, 0.0, 0.0, 0.0));
+    }
+    `;
+
+    // Create a string with the fragment shader program.
+    // The fragment shader is called for each pixel.
+    let fragSrc = `#version 300 es
+
+    precision mediump float;
+
+    out vec4 outColor;
+    flat in int instanceID;
+    uniform float numInstances;
+
+    void main() {
+      vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+      vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+
+      // Normalize the instance ID.
+      float normId = float(instanceID) / numInstances;
+
+      // Mix between two colors using the normalized instance ID.
+      outColor = mix(red, blue, normId);
+    }
+    `;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create a p5.Shader object.
+      let myShader = createShader(vertSrc, fragSrc);
+
+      background(220);
+
+      // Compile and apply the p5.Shader.
+      shader(myShader);
+
+      // Set the numInstances uniform.
+      myShader.setUniform('numInstances', 4);
+
+      // Translate the origin to help align the drawing.
+      translate(25, -10);
+
+      // Style the shapes.
+      noStroke();
+
+      // Draw the shapes.
+      beginShape();
+      vertex(0, 0);
+      vertex(0, 20);
+      vertex(20, 20);
+      vertex(20, 0);
+      vertex(0, 0);
+      endShape(CLOSE, 4);
+
+      describe('A row of four squares. Their colors transition from purple on the left to red on the right');
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: mode
+    description: |
+      <p>CLOSE를 사용하여 모양을 닫습니다.</p>
+    type: Constant
+    optional: true
+  - name: count
+    description: >
+      <p> (WebGL
+      모드에서) 여러 복사본을 그리는 데 유용합니다.</p>
+    type: Integer
+    optional: true
+chainable: true
+---
+
+
+# endShape

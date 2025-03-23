@@ -1,0 +1,303 @@
+---
+import CodeEmbed from "@components/CodeEmbed";
+import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
+import Head from "@components/Head/index.astro";
+import {
+  getRefEntryTitleConcatWithParen,
+  escapeCodeTagsContent,
+  parseReferenceExamplesAndMetadata,
+  normalizeReferenceRoute,
+  getRelatedEntriesinCollection,
+  generateJumpToState,
+} from "@pages/_utils";
+import BaseLayout from "./BaseLayout.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
+import MethodSignature from "@components/MethodSignature/index.astro";
+import type {
+  ReferenceOverload,
+  ReferenceParam,
+} from "@/types/parsers.interface";
+import { setJumpToState } from "../globals/state";
+import { p5Version } from "../globals/p5-version";
+import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
+import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
+
+const { entry, relatedEntries } = Astro.props;
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+
+const examples = parseReferenceExamplesAndMetadata(entry.data.example)
+  // Remove empty lines at the beginning and end of the examples
+  ?.map((example) => ({ ...example, src: example.src.trim() }));
+const description = escapeCodeTagsContent(entry.data.description);
+const t = await getUiTranslator(currentLocale);
+const title = getRefEntryTitleConcatWithParen(entry);
+
+const jumpToState = await generateJumpToState(
+  "reference",
+  entry.id,
+  "Reference",
+  t,
+  currentLocale
+);
+
+// make related entry links
+const relatedEntriesLinks = relatedEntries.map((relatedEntry: any) => {
+  return {
+    label: getRefEntryTitleConcatWithParen(relatedEntry),
+    url: `/reference/${normalizeReferenceRoute(relatedEntry.id)}`,
+    size: "small",
+    current: relatedEntry.id === entry.id,
+  };
+});
+// Add link for submodule itself
+relatedEntriesLinks.unshift({
+  label: entry.data.submodule,
+  url: `/reference/#${entry.data.submodule}`,
+});
+// Put related links at top of the list
+jumpToState.links?.unshift(...relatedEntriesLinks);
+
+setJumpToState(jumpToState);
+
+// get whatever related entries might be specified in the collection entry data
+const relatedReferencesFromEntryData =
+  entry.data.relatedContent?.references !== undefined
+    ? await getRelatedEntriesinCollection(
+        "reference",
+        currentLocale,
+        entry.data.relatedContent.references.map((r: any) => r.slug)
+      )
+    : [];
+
+// then make a list of four, backfilled with entries from the jumpTo links
+const relatedReferences = [
+  ...relatedReferencesFromEntryData,
+  ...relatedEntries,
+].slice(0, 4);
+
+const seenParams: Record<string, true> = {};
+
+const descriptionParts = description.split(
+  /(<pre><code class="language-js example">[\s\S]+?<\/code><\/pre>)/gm
+);
+
+---
+
+<Head title={entry.data.title} locale={currentLocale} />
+
+<BaseLayout
+  title={title}
+  titleClass={`reference_${title.toLowerCase()}`}
+  subtitle={null}
+  variant="item"
+  topic="reference"
+  className="reference-item"
+>
+  <div class="content-grid mt-0 max-w-[770px]">
+    <div class="col-span-9 xl:min-w-[1000px]">
+      {entry.data.beta && (
+        <div class="experimental">
+          <h5>
+            <div
+              class="inline-block mr-2 w-[20px] h-[20px] mb-[-2px]"
+              set:html={flask}
+            />
+            {t('experimentalApi', 'title')}
+          </h5>
+          <p>{t('experimentalApi', 'description')}</p>
+        </div>
+      )}
+      {entry.data.deprecated && (
+        <div class="deprecated">
+          <h5>
+            <div
+              class="inline-block mr-2 w-[20px] h-[20px] mb-[-2px]"
+              set:html={warning}
+            />
+            {t('calloutTitles', 'Warning')}
+          </h5>
+          <p set:html={entry.data.deprecated} />
+        </div>
+      )}
+      {descriptionParts.map((part) => {
+        if (part.startsWith('<pre')) {
+          const exampleCode = part
+            .replace(/<pre><code class="language-js example">/, '')
+            .replace(/<\/code><\/pre>/, '');
+
+          return (
+            <CodeEmbed
+              client:load
+              initialValue={exampleCode}
+              previewable
+              editable
+              lazyLoad={false}
+              allowSideBySide={true}
+              includeSound={entry.data.module === 'p5.sound'}
+            />
+          )
+        } else {
+          return (
+            <div
+              set:html={part}
+              class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
+            />
+          );
+        }
+      })}
+      {
+        examples && (
+          <div class="mb-xl">
+            <h2 class="text-h3">{t("Examples")}</h2>
+            {examples.map(({ src: exampleCode, classes }, i: number) => {
+              return (
+                <CodeEmbed
+                  client:load
+                  initialValue={exampleCode}
+                  previewable={!classes.norender}
+                  editable
+                  lazyLoad={false}
+                  allowSideBySide={true}
+                  includeSound={entry.data.module === 'p5.sound'}
+                />
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        (entry.data.params || entry.data.overloads) && (
+          <>
+            <div class="mb-xl">
+              <h2 class="text-h3">{t("Syntax")}</h2>
+              <MethodSignature
+                params={entry.data.params}
+                overloads={entry.data.overloads}
+                name={entry.data.title}
+              />
+            </div>
+            <div class="mb-xl">
+              <h2 class="mb-md text-h3">{t("Parameters")}</h2>
+              {entry.data.params &&
+                entry.data.params.map((param: ReferenceParam) => (
+                  <div class="grid grid-cols-6 gap-gutter-md text-body">
+                    <span class="col-span-1 text-body whitespace-normal break-words overflow-wrap-break-word">{param.name}</span>
+                    <div
+                          class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                    >
+                      {param.type && <span>{param.type}: </span>}
+                      <span set:html={param.description} />
+                    </div>
+                  </div>
+                ))}
+              {entry.data.overloads &&
+                entry.data.overloads.map((overload: ReferenceOverload) =>
+                  overload.params.map((param: ReferenceParam) => {
+                    if (seenParams[param.name]) return <></>;
+                    seenParams[param.name] = true;
+                    return (
+                      <div class="grid grid-cols-6 gap-gutter-md text-body">
+                        <span class="col-span-1">{param.name}</span>
+                        <div
+                          class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                        >
+                          {param.type && <span>{param.type}: </span>}
+                          <span set:html={param.description} />
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
+            </div>
+          </>
+        )
+      }
+      {
+        (entry.data.return) && (
+          <>
+            <div class="mb-xl">
+              <h2 class="mb-md text-h3">{t("Returns")}</h2>
+              <div class="grid grid-cols-6 gap-gutter-md text-body">
+                <div
+                      class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                >
+                  {entry.data.return.type && <span>{entry.data.return.type}: </span>}
+                  <span set:html={entry.data.return.description} />
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      }
+      {
+        entry.data.properties && (
+          <div class="mb-xl">
+            <h2 class="mb-md text-h3">{t("Fields")}</h2>
+            {Object.entries(entry.data.properties).map(([key, value]) => {
+              const propertyValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={`/reference/${propertyValue.path}`}
+                    class="text-body-large underline"
+                  >
+                    {key}
+                  </a>
+                  <div class="mt-xxs [&_p]:mb-1 [&_p]:mt-0" set:html={propertyValue.description} />
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        entry.data.methods && (
+          <div class="my-xl">
+            <h2 class="text-h3">{t("Methods")}</h2>
+            {Object.entries(entry.data.methods).map(([key, value]) => {
+              const methodValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={`/reference/${methodValue.path}`}
+                    class="text-body-large"
+                  >
+                    {key}
+                  </a>
+                  <div class="mt-xxs [&_p]:mb-1 [&_p]:mt-0" set:html={methodValue.description} />
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        entry.data.file && entry.data.line &&(
+          <div class="my-xl">
+           <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
+            Notice any errors or typos? <a href ="https://github.com/processing/p5.js/issues">Please let us know</a>. Please feel free to edit 
+            <a
+                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
+                  >
+                  {entry.data.file}
+                  </a>
+                and open a pull request!
+           </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+  <RelatedItems
+    title={t("Related References") as string}
+    items={relatedReferences}
+  />
+</BaseLayout>

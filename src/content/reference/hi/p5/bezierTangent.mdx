@@ -1,0 +1,127 @@
+---
+title: bezierTangent
+module: आकार
+submodule: वक्र
+file: src/core/shape/curves.js
+description: >
+  <p>बेज़ियर वक्र की स्पर्शरेखा वाली रेखा के निर्देशांक की गणना करता है।</p>
+
+  <p>स्पर्शरेखा रेखाएं वक्र की सतह को छूती हैं। एक स्पर्शरेखा रेखा का ढलान उस बिंदु पर वक्र के ढलान के बराबर होता है जहां वह प्रतिच्छेद करती है।</p>
+
+  <p><code>bezierTangent()</code> बेज़ियर वक्र के एंकर और नियंत्रण बिंदुओं का उपयोग करके स्पर्शरेखा रेखा के साथ निर्देशांक की गणना करता है। यह <a href="/reference/p5/bezier">bezier()</a> फ़ंक्शन के समान क्रम में बिंदुओं की अपेक्षा करता है।
+
+  <code>bezierTangent()</code> एक समय में एक अक्ष पर काम करता है। एंकर और नियंत्रण बिंदुओं के x-निर्देशांक को पार करने से स्पर्शरेखा रेखा पर एक बिंदु के x-निर्देशांक की गणना की जाएगी। एंकर और नियंत्रण बिंदुओं के y-निर्देशांक को पार करने से स्पर्शरेखा रेखा पर एक बिंदु के y-निर्देशांक की गणना की जाएगी।</p>
+
+  <p>पहला पैरामीटर, <code>a</code>, पहले एंकर बिंदु का निर्देशांक है।</p>
+
+  <p>दूसरा और तीसरा पैरामीटर, <code>b</code> और <code>c</code>, नियंत्रण बिंदुओं के निर्देशांक हैं।</p>
+
+  <p>चौथा पैरामीटर, <code>d</code>, अंतिम एंकर बिंदु का निर्देशांक है।</p>
+
+  <p>पांचवां पैरामीटर, <code>t</code>, वक्र के साथ प्रक्षेपित होने वाली मात्रा है। 0 पहला एंकर पॉइंट है, 1 दूसरा एंकर पॉइंट है, और 0.5 उनके बीच का आधा रास्ता है।</p>
+line: 450
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 85;
+      let x2 = 10;
+      let x3 = 90;
+      let x4 = 15;
+      let y1 = 20;
+      let y2 = 10;
+      let y3 = 90;
+      let y4 = 80;
+
+      // Style the curve.
+      noFill();
+
+      // Draw the curve.
+      bezier(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Draw tangents along the curve's path.
+      fill(255);
+
+      // Top-right circle.
+      stroke(0);
+      let x = bezierPoint(x1, x2, x3, x4, 0);
+      let y = bezierPoint(y1, y2, y3, y4, 0);
+      circle(x, y, 5);
+
+      // Top-right tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      let tx = 0.1 * bezierTangent(x1, x2, x3, x4, 0);
+      let ty = 0.1 * bezierTangent(y1, y2, y3, y4, 0);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Center circle.
+      stroke(0);
+      x = bezierPoint(x1, x2, x3, x4, 0.5);
+      y = bezierPoint(y1, y2, y3, y4, 0.5);
+      circle(x, y, 5);
+
+      // Center tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.1 * bezierTangent(x1, x2, x3, x4, 0.5);
+      ty = 0.1 * bezierTangent(y1, y2, y3, y4, 0.5);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Bottom-left circle.
+      stroke(0);
+      x = bezierPoint(x1, x2, x3, x4, 1);
+      y = bezierPoint(y1, y2, y3, y4, 1);
+      circle(x, y, 5);
+
+      // Bottom-left tangent.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.1 * bezierTangent(x1, x2, x3, x4, 1);
+      ty = 0.1 * bezierTangent(y1, y2, y3, y4, 1);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      describe(
+        'A black s-curve on a gray square. The endpoints and center of the curve are marked with white circles. Red tangent lines extend from the white circles.'
+      );
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p>वक्र पर पहले बिंदु के निर्देशांक</p>
+    type: संख्या
+  - name: b
+    description: |
+      <p>वक्र पर पहले नियंत्रण बिंदु के निर्देशांक</p>
+    type: संख्या
+  - name: c
+    description: |
+      <p>वक्र पर दूसरे नियंत्रण बिंदु के निर्देशांक</p>
+    type: संख्या
+  - name: d
+    description: |
+      <p>वक्र पर दूसरे बिंदु के निर्देशांक</p>
+    type: संख्या
+  - name: t
+    description: |
+      <p>0 और 1 के बीच अंतर्वेशित होने वाली राशि</p>
+    type: संख्या
+return:
+  description: स्पर्शरेखा रेखा पर बिंदु के निर्देशांक
+  type: संख्या
+chainable: false
+---
+
+# bezierTangent

@@ -1,0 +1,32 @@
+---
+import { getCurationSketches } from "@/src/api/OpenProcessing";
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import CommunityLayout from "@layouts/CommunityLayout.astro";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+
+export const getStaticPaths = async () => {
+  const sketches = await getCurationSketches(10);
+  return await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const libraries = await getCollectionInLocaleWithFallbacks(
+        "libraries",
+        locale
+      );
+      const pastEvents = await getCollectionInLocaleWithFallbacks(
+        "events",
+        locale
+      );
+
+      return { params: { locale }, props: { libraries, sketches, pastEvents } };
+    })
+  );
+};
+
+const { libraries, sketches, pastEvents } = Astro.props;
+---
+
+<CommunityLayout
+  sketches={sketches}
+  libraries={libraries}
+  pastEvents={pastEvents}
+/>

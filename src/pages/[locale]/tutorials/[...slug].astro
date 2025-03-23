@@ -1,0 +1,35 @@
+---
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import TutorialLayout from "@layouts/TutorialLayout.astro";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+import { removeLocalePrefix } from "@i18n/utils";
+
+export async function getStaticPaths() {
+  const entries = await Promise.all(
+    nonDefaultSupportedLocales.map(async (locale) => {
+      const localeEntries = await getCollectionInLocaleWithFallbacks(
+        "tutorials",
+        locale
+      );
+      return localeEntries.map((entry) => {
+        const slug = removeLocalePrefix(entry.slug);
+        return {
+          params: { locale, slug },
+          props: {
+            entry,
+            relatedEntries: localeEntries.filter(
+              (e) => e.data.category === entry.data.category
+            ),
+          },
+        };
+      });
+    })
+  );
+
+  return entries.flat();
+}
+
+const { entry, relatedEntries } = Astro.props;
+---
+
+<TutorialLayout entry={entry} relatedEntries={relatedEntries} />

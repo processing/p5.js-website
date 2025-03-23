@@ -1,0 +1,152 @@
+---
+title: bezierTangent
+module: 도형
+submodule: 곡선
+file: src/core/shape/curves.js
+description: >
+  <p>베지어 곡선에 접선을 따라 좌표를 계산합니다.</p>
+
+  <p>접선은 곡선의 표면을 따라가며 
+
+  접선의 기울기는 교차하는 지점의 곡선 기울기입니다.</p>
+
+  <p><code>bezierTangent()</code>는 
+  접선을 따라 좌표를 계산합니다.
+
+  베지어 곡선의 기준점과 컨트롤 포인트가 동일하게 예상됩니다.
+
+  <a href="/reference/p5/bezier">bezier()</a> 함수를 사용해보세요.
+  <code>bezierTangent()</code> 는
+
+  한 번에 한 축씩 작동합니다. 
+
+  앵커와 제어 포인트의 x좌표를 전달하면 접선의 x좌표를 계산합니다.
+
+  앵커 포인트와 컨트롤 포인트를
+
+  y좌표를 전달하면 접선의 y좌표를 계산합니다.</p>
+
+  <p>첫 번째 매개변수, <code>a</code> 는 
+  첫 번째 앵커 포인트의 좌표입니다.</p>
+
+  <p>두 번째와 세 번째 매개변수,  <code>b</code> 와 <code>c</code>, 
+  는 
+
+  컨트롤 포인트의 좌표입니다.</p>
+
+  <p>네 번째 매개변수, 
+  <code>d</code>는 마지막 앵커 포인트의 좌표입니다.</p>
+
+  <p>다섯 번째 매개 변수, <code>t</code> 는
+  곡선 사이를 보간할 양입니다.
+
+  0은 첫 번째 앵커 포인트이고, 1은 두 번째 앵커 포인트이며, 
+
+   0.5는 그 사이의 중간 지점입니다.</p>
+line: 450
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Set the coordinates for the curve's anchor and control points.
+      let x1 = 85;
+      let x2 = 10;
+      let x3 = 90;
+      let x4 = 15;
+      let y1 = 20;
+      let y2 = 10;
+      let y3 = 90;
+      let y4 = 80;
+
+      // Style the curve.
+      noFill();
+
+      // Draw the curve.
+      bezier(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      // Draw tangents along the curve's path.
+      fill(255);
+
+      // Top-right circle.
+      stroke(0);
+      let x = bezierPoint(x1, x2, x3, x4, 0);
+      let y = bezierPoint(y1, y2, y3, y4, 0);
+      circle(x, y, 5);
+
+      // Top-right tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      let tx = 0.1 * bezierTangent(x1, x2, x3, x4, 0);
+      let ty = 0.1 * bezierTangent(y1, y2, y3, y4, 0);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Center circle.
+      stroke(0);
+      x = bezierPoint(x1, x2, x3, x4, 0.5);
+      y = bezierPoint(y1, y2, y3, y4, 0.5);
+      circle(x, y, 5);
+
+      // Center tangent line.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.1 * bezierTangent(x1, x2, x3, x4, 0.5);
+      ty = 0.1 * bezierTangent(y1, y2, y3, y4, 0.5);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      // Bottom-left circle.
+      stroke(0);
+      x = bezierPoint(x1, x2, x3, x4, 1);
+      y = bezierPoint(y1, y2, y3, y4, 1);
+      circle(x, y, 5);
+
+      // Bottom-left tangent.
+      // Scale the tangent point to draw a shorter line.
+      stroke(255, 0, 0);
+      tx = 0.1 * bezierTangent(x1, x2, x3, x4, 1);
+      ty = 0.1 * bezierTangent(y1, y2, y3, y4, 1);
+      line(x + tx, y + ty, x - tx, y - ty);
+
+      describe(
+        'A black s-curve on a gray square. The endpoints and center of the curve are marked with white circles. Red tangent lines extend from the white circles.'
+      );
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: a
+    description: |
+      <p> 첫 번째 앵커 포인트의 좌표.</p>
+    type: Number
+  - name: b
+    description: |
+      <p>첫 번째 컨트롤 포인트의 좌표.</p>
+    type: Number
+  - name: c
+    description: |
+      <p>두 번째 컨트롤 포인트의 좌표.</p>
+    type: Number
+  - name: d
+    description: |
+      <p>두 번째 앵커 포인트의 좌표.</p>
+    type: Number
+  - name: t
+    description: |
+      <p>곡선 사이를 0부터 1 사이로 보간할 양.</p>
+    type: Number
+return:
+  description: 반환 값은 접선 선상의 한 점의 좌표를 나타냅니다
+  type: Number
+chainable: false
+---
+
+
+# bezierTangent

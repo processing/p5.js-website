@@ -1,0 +1,440 @@
+---
+title: p5.Framebuffer
+module: Rendering
+file: src/webgl/p5.Framebuffer.js
+description: >
+  <p>A class to describe a high-performance drawing surface for textures.</p>
+
+  <p>Each <code>p5.Framebuffer</code> object provides a dedicated drawing
+  surface called
+
+  a <em>framebuffer</em>. They're similar to
+
+  <a href="/reference/p5/p5.Graphics">p5.Graphics</a> objects but can run much
+  faster.
+
+  Performance is improved because the framebuffer shares the same WebGL
+
+  context as the canvas used to create it.</p>
+
+  <p><code>p5.Framebuffer</code> objects have all the drawing features of the
+  main
+
+  canvas. Drawing instructions meant for the framebuffer must be placed
+
+  between calls to
+
+  <a href="/reference/p5.Framebuffer/begin/">myBuffer.begin()</a> and
+
+  <a href="/reference/p5.Framebuffer/end/">myBuffer.end()</a>. The resulting
+  image
+
+  can be applied as a texture by passing the <code>p5.Framebuffer</code> object
+  to the
+
+  <a href="/reference/p5/texture/">texture()</a> function, as in
+  <code>texture(myBuffer)</code>.
+
+  It can also be displayed on the main canvas by passing it to the
+
+  <a href="/reference/p5/image/">image()</a> function, as in
+  <code>image(myBuffer, 0, 0)</code>.</p>
+
+  <p>Note: <a href="/reference/p5/createFramebuffer/">createFramebuffer()</a> is
+  the
+
+  recommended way to create an instance of this class.</p>
+line: 76
+isConstructor: true
+params:
+  - name: target
+    description: |
+      <p>sketch instance or
+                                     <a href="#/p5.Graphics">p5.Graphics</a>
+                                     object.</p>
+    type: p5.Graphics|p5
+  - name: settings
+    description: |
+      <p>configuration options.</p>
+    type: Object
+    optional: true
+methods:
+  resize:
+    description: >
+      <p>Resizes the framebuffer to a given width and height.</p>
+
+      <p>The parameters, <code>width</code> and <code>height</code>, set the
+      dimensions of the
+
+      framebuffer. For example, calling <code>myBuffer.resize(300, 500)</code>
+      resizes
+
+      the framebuffer to 300×500 pixels, then sets <code>myBuffer.width</code>
+      to 300
+
+      and <code>myBuffer.height</code> 500.</p>
+    path: p5.Framebuffer/resize
+  pixelDensity:
+    description: >
+      <p>Sets the framebuffer's pixel density or returns its current
+      density.</p>
+
+      <p>Computer displays are grids of little lights called pixels. A display's
+
+      pixel density describes how many pixels it packs into an area. Displays
+
+      with smaller pixels have a higher pixel density and create sharper
+
+      images.</p>
+
+      <p>The parameter, <code>density</code>, is optional. If a number is
+      passed, as in
+
+      <code>myBuffer.pixelDensity(1)</code>, it sets the framebuffer's pixel
+      density. By
+
+      default, the framebuffer's pixel density will match that of the canvas
+
+      where it was created. All canvases default to match the display's pixel
+
+      density.</p>
+
+      <p>Calling <code>myBuffer.pixelDensity()</code> without an argument
+      returns its current
+
+      pixel density.</p>
+    path: p5.Framebuffer/pixelDensity
+  autoSized:
+    description: >
+      <p>Toggles the framebuffer's autosizing mode or returns the current
+      mode.</p>
+
+      <p>By default, the framebuffer automatically resizes to match the canvas
+
+      that created it. Calling <code>myBuffer.autoSized(false)</code> disables
+      this
+
+      behavior and calling <code>myBuffer.autoSized(true)</code> re-enables
+      it.</p>
+
+      <p>Calling <code>myBuffer.autoSized()</code> without an argument returns
+      <code>true</code> if
+
+      the framebuffer automatically resizes and <code>false</code> if not.</p>
+    path: p5.Framebuffer/autoSized
+  createCamera:
+    description: >
+      <p>Creates a new
+
+      <a href="/reference/p5/p5.Camera">p5.Camera</a> object to use with the
+      framebuffer.</p>
+
+      <p>The new camera is initialized with a default position <code>(0, 0,
+      800)</code> and a
+
+      default perspective projection. Its properties can be controlled with
+
+      <a href="/reference/p5/p5.Camera">p5.Camera</a> methods such as
+      <code>myCamera.lookAt(0, 0, 0)</code>.</p>
+
+      <p>Framebuffer cameras should be created between calls to
+
+      <a href="/reference/p5.Framebuffer/begin/">myBuffer.begin()</a> and
+
+      <a href="/reference/p5.Framebuffer/end/">myBuffer.end()</a> like so:</p>
+
+      <pre><code class="language-js">let myCamera;
+
+
+      myBuffer.begin();
+
+
+      // Create the camera for the framebuffer.
+
+      myCamera = myBuffer.createCamera();
+
+
+      myBuffer.end();
+
+      </code></pre>
+
+      <p>Calling <a href="/reference/p5/setCamera/">setCamera()</a> updates the
+
+      framebuffer's projection using the camera.
+
+      <a href="/reference/p5/resetMatrix/">resetMatrix()</a> must also be called
+      for the
+
+      view to change properly:</p>
+
+      <pre><code class="language-js">myBuffer.begin();
+
+
+      // Set the camera for the framebuffer.
+
+      setCamera(myCamera);
+
+
+      // Reset all transformations.
+
+      resetMatrix();
+
+
+      // Draw stuff...
+
+
+      myBuffer.end();
+
+      </code></pre>
+    path: p5.Framebuffer/createCamera
+  remove:
+    description: >
+      <p>Deletes the framebuffer from GPU memory.</p>
+
+      <p>Calling <code>myBuffer.remove()</code> frees the GPU memory used by the
+      framebuffer.
+
+      The framebuffer also uses a bit of memory on the CPU which can be freed
+
+      like so:</p>
+
+      <pre><code class="language-js">// Delete the framebuffer from GPU memory.
+
+      myBuffer.remove();
+
+
+      // Delete the framebuffer from CPU memory.
+
+      myBuffer = undefined;
+
+      </code></pre>
+
+      <p>Note: All variables that reference the framebuffer must be assigned
+
+      the value <code>undefined</code> to delete the framebuffer from CPU
+      memory. If any
+
+      variable still refers to the framebuffer, then it won't be garbage
+
+      collected.</p>
+    path: p5.Framebuffer/remove
+  begin:
+    description: >
+      <p>Begins drawing shapes to the framebuffer.</p>
+
+      <p><code>myBuffer.begin()</code> and <a
+      href="/reference/p5.Framebuffer/end/">myBuffer.end()</a>
+
+      allow shapes to be drawn to the framebuffer. <code>myBuffer.begin()</code>
+      begins
+
+      drawing to the framebuffer and
+
+      <a href="/reference/p5.Framebuffer/end/">myBuffer.end()</a> stops drawing
+      to the
+
+      framebuffer. Changes won't be visible until the framebuffer is displayed
+
+      as an image or texture.</p>
+    path: p5.Framebuffer/begin
+  end:
+    description: >
+      <p>Stops drawing shapes to the framebuffer.</p>
+
+      <p><a href="/reference/p5.Framebuffer/begin/">myBuffer.begin()</a> and
+      <code>myBuffer.end()</code>
+
+      allow shapes to be drawn to the framebuffer.
+
+      <a href="/reference/p5.Framebuffer/begin/">myBuffer.begin()</a> begins
+      drawing to
+
+      the framebuffer and <code>myBuffer.end()</code> stops drawing to the
+      framebuffer.
+
+      Changes won't be visible until the framebuffer is displayed as an image
+
+      or texture.</p>
+    path: p5.Framebuffer/end
+  draw:
+    description: >
+      <p>Draws to the framebuffer by calling a function that contains drawing
+
+      instructions.</p>
+
+      <p>The parameter, <code>callback</code>, is a function with the drawing
+      instructions
+
+      for the framebuffer. For example, calling
+      <code>myBuffer.draw(myFunction)</code>
+
+      will call a function named <code>myFunction()</code> to draw to the
+      framebuffer.
+
+      Doing so has the same effect as the following:</p>
+
+      <pre><code class="language-js">myBuffer.begin();
+
+      myFunction();
+
+      myBuffer.end();
+
+      </code></pre>
+    path: p5.Framebuffer/draw
+  loadPixels:
+    description: >
+      <p>Loads the current value of each pixel in the framebuffer into its
+
+      <a href="/reference/p5.Framebuffer/pixels/">pixels</a> array.</p>
+
+      <p><code>myBuffer.loadPixels()</code> must be called before reading from
+      or writing to
+
+      <a href="/reference/p5.Framebuffer/pixels/">myBuffer.pixels</a>.</p>
+    path: p5.Framebuffer/loadPixels
+  get:
+    description: >
+      <p>Gets a pixel or a region of pixels from the framebuffer.</p>
+
+      <p><code>myBuffer.get()</code> is easy to use but it's not as fast as
+
+      <a href="/reference/p5.Framebuffer/pixels/">myBuffer.pixels</a>. Use
+
+      <a href="/reference/p5.Framebuffer/pixels/">myBuffer.pixels</a> to read
+      many pixel
+
+      values.</p>
+
+      <p>The version of <code>myBuffer.get()</code> with no parameters returns
+      the entire
+
+      framebuffer as a a <a href="/reference/p5/p5.Image">p5.Image</a>
+      object.</p>
+
+      <p>The version of <code>myBuffer.get()</code> with two parameters
+      interprets them as
+
+      coordinates. It returns an array with the <code>[R, G, B, A]</code> values
+      of the
+
+      pixel at the given point.</p>
+
+      <p>The version of <code>myBuffer.get()</code> with four parameters
+      interprets them as
+
+      coordinates and dimensions. It returns a subsection of the framebuffer as
+
+      a <a href="/reference/p5/p5.Image">p5.Image</a> object. The first two
+      parameters are
+
+      the coordinates for the upper-left corner of the subsection. The last two
+
+      parameters are the width and height of the subsection.</p>
+    path: p5.Framebuffer/get
+  updatePixels:
+    description: >
+      <p>Updates the framebuffer with the RGBA values in the
+
+      <a href="/reference/p5.Framebuffer/pixels/">pixels</a> array.</p>
+
+      <p><code>myBuffer.updatePixels()</code> only needs to be called after
+      changing values
+
+      in the <a href="/reference/p5.Framebuffer/pixels/">myBuffer.pixels</a>
+      array. Such
+
+      changes can be made directly after calling
+
+      <a
+      href="/reference/p5.Framebuffer/loadPixels/">myBuffer.loadPixels()</a>.</p>
+    path: p5.Framebuffer/updatePixels
+properties:
+  pixels:
+    description: >
+      <p>An array containing the color of each pixel in the framebuffer.</p>
+
+      <p><a
+      href="/reference/p5.Framebuffer/loadPixels/">myBuffer.loadPixels()</a>
+      must be
+
+      called before accessing the <code>myBuffer.pixels</code> array.
+
+      <a
+      href="/reference/p5.Framebuffer/updatePixels/">myBuffer.updatePixels()</a>
+
+      must be called after any changes are made.</p>
+
+      <p>Note: Updating pixels via this property is slower than drawing to the
+
+      framebuffer directly. Consider using a
+
+      <a href="/reference/p5/p5.Shader">p5.Shader</a> object instead of looping
+      over
+
+      <code>myBuffer.pixels</code>.</p>
+    path: p5.Framebuffer/pixels
+  color:
+    description: >
+      <p>An object that stores the framebuffer's color data.</p>
+
+      <p>Each framebuffer uses a
+
+      <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLTexture/"
+      target="_blank">WebGLTexture</a>
+
+      object internally to store its color data. The <code>myBuffer.color</code>
+      property
+
+      makes it possible to pass this data directly to other functions. For
+
+      example, calling <code>texture(myBuffer.color)</code> or
+
+      <code>myShader.setUniform('colorTexture', myBuffer.color)</code>  may be
+      helpful for
+
+      advanced use cases.</p>
+
+      <p>Note: By default, a framebuffer's y-coordinates are flipped compared to
+
+      images and videos. It's easy to flip a framebuffer's y-coordinates as
+
+      needed when applying it as a texture. For example, calling
+
+      <code>plane(myBuffer.width, -myBuffer.height)</code> will flip the
+      framebuffer.</p>
+    path: p5.Framebuffer/color
+  depth:
+    description: >
+      <p>An object that stores the framebuffer's depth data.</p>
+
+      <p>Each framebuffer uses a
+
+      <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLTexture/"
+      target="_blank">WebGLTexture</a>
+
+      object internally to store its depth data. The <code>myBuffer.depth</code>
+      property
+
+      makes it possible to pass this data directly to other functions. For
+
+      example, calling <code>texture(myBuffer.depth)</code> or
+
+      <code>myShader.setUniform('depthTexture', myBuffer.depth)</code>  may be
+      helpful for
+
+      advanced use cases.</p>
+
+      <p>Note: By default, a framebuffer's y-coordinates are flipped compared to
+
+      images and videos. It's easy to flip a framebuffer's y-coordinates as
+
+      needed when applying it as a texture. For example, calling
+
+      <code>plane(myBuffer.width, -myBuffer.height)</code> will flip the
+      framebuffer.</p>
+    path: p5.Framebuffer/depth
+chainable: false
+---
+
+
+# p5.Framebuffer

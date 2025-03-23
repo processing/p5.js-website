@@ -1,0 +1,126 @@
+---
+title: frustum
+module: 3D
+submodule: कैमरा
+file: src/webgl/p5.Camera.js
+description: >
+  <p>कैमरे के फ्रस्टम को सेट करता है।</p> 
+  
+  <p>फ्रस्टम प्रोजेक्शन में, कैमरे से दूर की चीजें कैमरे के पास की चीजों की तुलना में छोटी दिखाई देती हैं। इस तकनीक को "अग्रपरिक्षेपण" कहा जाता है, जो वास्तविक 3D दृश्य बनाता है।</p> 
+  
+  <p><code>myCamera.frustum()</code> कैमरे के दृश्य फ्रस्टम को बदलकर कैमरे की परिप्रेक्ष्य को बदलता है। फ्रस्टम वह खाली स्थान है जो कैमरे के लिए दृश्यमान है। फ्रस्टम की आकृति एक पिरामिड होती है जिसका शीर्ष काट दिया गया है। कैमरा पिरामिड के शीर्ष पर स्थित होता है और पिरामिड के आधार की ओर देखता है। यह फ्रस्टम के भीतर की सब कुछ देखता है।</p> 
+  
+  <p>पहले चार पैरामीटर, <code>left</code>, <code>right</code>, <code>bottom</code>, और <code>top</code>, फ्रस्टम के पक्षों, तल और शीर्ष के समन्वयों को सेट करते हैं। उदाहरण के लिए, <code>myCamera.frustum(-100, 100, 200, -200)</code> कॉल करने से 200 पिक्सेल चौड़ा और 400 पिक्सेल ऊंचा एक फ्रस्टम बनता है। डिफ़ॉल्ट रूप से, ये समन्वय स्केच की चौड़ाई और ऊंचाई के आधार पर सेट किए जाते हैं, जैसे <code>myCamera.frustum(-width / 20, width / 20, height / 20, -height / 20)</code>।</p> 
+  
+  <p>अंतिम दो पैरामीटर, <code>near</code> और <code>far</code>, फ्रस्टम की नजदीकी और दूरी की प्लेन को कैमरे से दूरी पर सेट करते हैं। उदाहरण के लिए, <code>myCamera.frustum(-100, 100, 200, -200, 50, 1000)</code> कॉल करने से 200 पिक्सेल चौड़ा, 400 पिक्सेल ऊंचा और कैमरे से 50 पिक्सेल दूर से शुरू होकर 1000 पिक्सेल दूर तक जाने वाला एक फ्रस्टम बनता है। डिफ़ॉल्ट रूप से, <code>near</code> को <code>0.1 * 800</code> पर सेट किया जाता है, जो मूल से कैमरे की दूरी का 1/10वां भाग है। <code>far</code> को <code>10 * 800</code> पर सेट किया जाता है, जो मूल से कैमरे की दूरी का 10 गुना है।</p>
+line: 2282
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Adjust the frustum.
+      // Center it.
+      // Set its width and height to 20 pixels.
+      // Place its near plane 300 pixels from the camera.
+      // Place its far plane 350 pixels from the camera.
+      cam2.frustum(-10, 10, -10, 10, 300, 350);
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe(
+        'A row of white cubes against a gray background. The camera zooms in on one cube when the user double-clicks.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 600);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: left
+    description: >
+      <p>x-coordinate of the frustum’s left plane. Defaults to <code>-width /
+      20</code>.</p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p>x-coordinate of the frustum’s right plane. Defaults to <code>width /
+      20</code>.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>y-coordinate of the frustum’s bottom plane. Defaults to <code>height /
+      20</code>.</p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p>y-coordinate of the frustum’s top plane. Defaults to <code>-height /
+      20</code>.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: >
+      <p>z-coordinate of the frustum’s near plane. Defaults to <code>0.1 *
+      800</code>.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p>z-coordinate of the frustum’s far plane. Defaults to <code>10 *
+      800</code>.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# frustum

@@ -1,0 +1,196 @@
+---
+title: ortho
+module: 3D
+submodule: 카메라
+file: src/webgl/p5.Camera.js
+description: >
+  <p>카메라에 대한 정사영(orthographic projection)을 설정합니다.</p>
+  
+  <p>정사영에서는 같은 크기의 모양은 카메라로부터 가까이 있는지 멀리 있는지에 관계없이 항상 같은 크기로 보입니다.</p>
+  
+  <p><code>myCamera.ortho()</code>는 시야 절두체(viewing frustum)를
+  
+  끝이 잘린 피라미드 형태에서 직사각형 프리즘 형태로 변경함으로써 카메라의 시점을 변경합니다.
+  
+  절두체는 카메라에서 볼 수 있는 공간의 부피를 나타냅니다.
+  
+  카메라는 절두체 앞에 배치되어 절두체 내의 모든 것을 볼 수 있습니다.
+  
+  <code>myCamera.ortho()</code>에는 시야 절두체를 정의하는 데 사용되는 여섯 개의 선택적 매개변수가 있습니다.</p>
+  
+  <p>처음 네 개의 매개변수인 <code>left</code>, <code>right</code>, <code>bottom</code>, <code>top</code>은 절두체의 측면, 하단, 상단의 좌표를 설정합니다.
+  
+  예를 들어, <code>myCamera.ortho(-100, 100, 200, -200)</code>을 호출하면 너비가 200픽셀, 높이가 400픽셀인 절두체가 생성됩니다.
+  
+  기본적으로 <code>myCamera.ortho(-width / 2, width / 2, -height / 2, height / 2)</code>와 같이 스케치의 너비와 높이를 기준으로 크기가 설정됩니다.
+  
+  <p>마지막 두 매개변수인 <code>near</code>와 <code>far</code>는 절두체의 가까운 평면과 먼 평면의 거리를 설정합니다.
+  
+  예를 들어, <code>myCamera.ortho(-100, 100, 200, -200, 50, 1000)</code>을 호출하면
+  
+  너비가 200픽셀, 높이가 400픽셀이며 카메라로부터 50픽셀 떨어진 위치에서 시작하여 1,000픽셀 떨어진 위치에서 끝나는 절두체가 생성됩니다.
+  
+  기본적으로 <code>near</code>와 <code>far</code>는 각각 0과 <code>max(width, height) + 800</code>으로 설정됩니다.</p>
+line: 2085
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Apply an orthographic projection.
+      cam2.ortho();
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A row of white cubes against a gray background. The camera toggles between a perspective and an orthographic projection when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        translate(0, 0, -40);
+        box(10);
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Double-click to toggle between cameras.
+
+    let cam1;
+    let cam2;
+    let isDefaultCamera = true;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the first camera.
+      // Keep its default settings.
+      cam1 = createCamera();
+
+      // Create the second camera.
+      cam2 = createCamera();
+
+      // Apply an orthographic projection.
+      cam2.ortho();
+
+      // Set the current camera to cam1.
+      setCamera(cam1);
+
+      describe('A row of white cubes slither like a snake against a gray background. The camera toggles between a perspective and an orthographic projection when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Translate the origin toward the camera.
+      translate(-10, 10, 500);
+
+      // Rotate the coordinate system.
+      rotateY(-0.1);
+      rotateX(-0.1);
+
+      // Draw the row of boxes.
+      for (let i = 0; i < 6; i += 1) {
+        push();
+        // Calculate the box's coordinates.
+        let x = 10 * sin(frameCount * 0.02 + i * 0.6);
+        let z = -40 * i;
+        // Translate the origin.
+        translate(x, 0, z);
+        // Draw the box.
+        box(10);
+        pop();
+      }
+    }
+
+    // Toggle the current camera when the user double-clicks.
+    function doubleClicked() {
+      if (isDefaultCamera === true) {
+        setCamera(cam2);
+        isDefaultCamera = false;
+      } else {
+        setCamera(cam1);
+        isDefaultCamera = true;
+      }
+    }
+    </code>
+    </div>
+class: p5.Camera
+params:
+  - name: left
+    description: >
+      <p>절두체의 왼쪽 면의 x 좌표. 기본값은 <code>-width / 2</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: right
+    description: >
+      <p>절두체의 오른쪽 면의 x 좌표. 기본값은 <code>width / 2</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: bottom
+    description: >
+      <p>절두체의 하단 면의 y 좌표. 기본값은 <code>height / 2</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: top
+    description: >
+      <p>절두체의 상단 면의 y 좌표. 기본값은 <code>-height / 2</code> 입니다.</p>
+    type: Number
+    optional: true
+  - name: near
+    description: |
+      <p>절두체의 가까운 쪽 면의 z 좌표. 기본값은 0입니다.</p>
+    type: Number
+    optional: true
+  - name: far
+    description: >
+      <p>절두체의 먼 쪽 면의 z 좌표. 기본값은 <code>max(width, height) + 800</code> 입니다.</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# ortho

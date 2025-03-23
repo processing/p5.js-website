@@ -1,0 +1,307 @@
+---
+title: debugMode
+module: 3D
+submodule: 인터랙션
+file: src/webgl/interaction.js
+description: >
+  <p>3D 스케치에서 방향성을 명확히 하기 위해 그리드와 축 아이콘을 추가합니다.</p>
+
+  <p><code>debugMode()</code>는 스케치에서 "바닥"이 어디인지 보여주는 그리드를 추가합니다.
+
+  기본적으로, 이 그리드는 스케치의 원점 <code>(0, 0, 0)</code>을 통과하며 XZ 평면을 따라 설정됩니다.
+
+  <code>debugMode()</code>는 또한 x, y, z의 양의 방향을 가리키는 축 아이콘을 추가합니다. 
+
+  <code>debugMode()</code>를 호출하면 기본 크기와 위치를 갖는 그리드와 축 아이콘이 표시됩니다.</p>
+
+  <p>디버깅 환경을 사용자 정의할 수 있는 선택적 매개변수를 사용하여,
+  
+  <code>debugMode()</code>를 호출하는 네 가지 방법이 있습니다.</p>
+
+  <p>첫 번째 방법으로 <code>debugMode()</code>를 호출할 때, <code>mode</code>라는 매개변수를 사용하는 방법이 있습니다. 
+  
+  <code>debugMode(GRID)</code>와 같이 시스템 상수 <code>GRID</code>를 전달하면, 그리드가 표시되고 축 아이콘이 숨겨집니다.
+  
+  <code>debugMode(AXES)</code>와 같이 시스템 상수 <code>AXES</code>를 전달하면, 축 아이콘이 표시되고 그리드가 숨겨집니다.</p>
+
+  <p><code>debugMode()</code>를 호출하는 두 번째 방법은 여섯 개의 매개변수를 사용합니다. 첫 번째 매개변수인 <code>mode</code>는 <code>GRID</code> 또는 <code>AXES</code>를 선택합니다.
+
+  다음 다섯 개의 매개변수인 <code>gridSize</code>, <code>gridDivisions</code>, <code>xOff</code>, <code>yOff</code>, <code>zOff</code>는 선택 사항입니다.
+
+  이들은 그리드의 모양(<code>gridSize</code>와 <code>gridDivisions</code>)과 축 아이콘의 위치(<code>xOff</code>, 
+  
+  <code>yOff</code>, <code>zOff</code>)를 설정하는 숫자입니다.
+  
+  예를 들어, <code>debugMode(20, 5, 10, 10, 10)</code>를 호출하면 <code>gridSize</code>를 20 픽셀로 설정하고,
+  
+  <code>gridDivisions</code>의 수를 5로 설정하며, 축 아이콘을 x, y, z축을 따라 각각 10 픽셀씩 위치를 조정합니다.</p>
+
+  <p><code>debugMode()</code>를 호출하는 세 번째 방법은 다섯 개의 매개변수를 사용합니다. 첫 번째 매개변수인 <code>mode</code>는 <code>GRID</code> 또는 <code>AXES</code>를 선택합니다.
+
+  다음 네 개의 매개변수인 <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, <code>zOff</code>는 선택 사항입니다.
+
+  이들은 축 아이콘의 크기(<code>axesSize</code>)와 위치(<code>xOff</code>, <code>yOff</code>, <code>zOff</code>)를 설정하는 숫자입니다.</p>
+
+  <p><code>debugMode()</code>를 호출하는 네 번째 방법은 아홉 개의 선택적 매개변수를 사용합니다. 
+  
+  첫 다섯 개의 매개변수인 <code>gridSize</code>, <code>gridDivisions</code>, <code>gridXOff</code>, 
+  
+  <code>gridYOff</code>, <code>gridZOff</code>는 그리드의 모양을 설정하는 숫자입니다.
+
+  예를 들어, <code>debugMode(100, 5, 0, 0, 0)</code>를 호출하면 <code>gridSize</code>를 100 픽셀로 설정하고,
+
+  <code>gridDivisions</code>의 수를 5로 설정하며, 모든 위치를 0으로 설정하여 그리드가 원점에 중앙에 위치하도록 합니다.
+
+  다음 네 개의 매개변수인 <code>axesSize</code>, <code>xOff</code>, <code>yOff</code>, <code>zOff</code>는 
+  
+  축 아이콘의 모양(<code>axesSize</code>)과 위치(<code>axesXOff</code>, <code>axesYOff</code>, <code>axesZOff</code>)를 설정하는 숫자입니다.
+
+  예를 들어, <code>debugMode(100, 5, 0, 0, 0, 50, 10, 10, 10)</code>를 호출하면 <code>gridSize</code>를 100으로 설정하고,
+
+  <code>gridDivisions</code>의 수를 5로 설정하며, 모든 위치를 0으로 설정하여 그리드가 원점에 중앙에 위치하도록 합니다.
+
+  그리고 <code>axesSize</code>를 50으로 설정하고, 축 아이콘을 x, y, z축을 따라 각각 10 픽셀씩 위치를 조정합니다.</p>
+line: 471
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Enable debug mode.
+      debugMode();
+
+      describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
+    }
+    
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Enable debug mode.
+      // Only display the axes icon.
+      debugMode(AXES);
+
+      describe('A multicolor box on a gray background. A grid and axes icon are displayed near the box.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Enable debug mode.
+      // Only display the grid and customize it:
+      // - size: 50
+      // - divisions: 10
+      // - offsets: 0, 20, 0
+      debugMode(GRID, 50, 10, 0, 20, 0);
+
+      describe('A multicolor box on a gray background. A grid is displayed below the box.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Enable debug mode.
+      // Display the grid and axes icon and customize them:
+      // Grid
+      // ----
+      // - size: 50
+      // - divisions: 10
+      // - offsets: 0, 20, 0
+      // Axes
+      // ----
+      // - size: 50
+      // - offsets: 0, 0, 0
+      debugMode(50, 10, 0, 20, 0, 50, 0, 0, 0);
+
+      describe('A multicolor box on a gray background. A grid is displayed below the box. An axes icon is displayed at the center of the box.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Style the box.
+      normalMaterial();
+
+      // Draw the box.
+      box(20, 40);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 471
+    params: []
+  - line: 650
+    params:
+      - name: mode
+        description: |
+          <p>GRID 혹은 AXES 중 하나를 선택</p>
+        type: Constant
+  - line: 655
+    params:
+      - name: mode
+        description: ''
+        type: Constant
+      - name: gridSize
+        description: |
+          <p>그리드의 한 변의 길이</p>
+        type: Number
+        optional: true
+      - name: gridDivisions
+        description: |
+          <p>그리드의 분할 수</p>
+        type: Number
+        optional: true
+      - name: xOff
+        description: |
+          <p>원점으로부터 x축에 따른 위치</p>
+        type: Number
+        optional: true
+      - name: yOff
+        description: |
+          <p>원점으로부터 y축에 따른 위치</p>
+        type: Number
+        optional: true
+      - name: zOff
+        description: |
+          <p>원점으로부터 z축에 따른 위치</p>
+        type: Number
+        optional: true
+  - line: 665
+    params:
+      - name: mode
+        description: ''
+        type: Constant
+      - name: axesSize
+        description: |
+          <p>축 아이콘의 크기</p>
+        type: Number
+        optional: true
+      - name: xOff
+        description: ''
+        type: Number
+        optional: true
+      - name: yOff
+        description: ''
+        type: Number
+        optional: true
+      - name: zOff
+        description: ''
+        type: Number
+        optional: true
+  - line: 674
+    params:
+      - name: gridSize
+        description: ''
+        type: Number
+        optional: true
+      - name: gridDivisions
+        description: ''
+        type: Number
+        optional: true
+      - name: gridXOff
+        description: |
+          <p>원점으로부터 x축에 따른 위치</p>
+        type: Number
+        optional: true
+      - name: gridYOff
+        description: |
+          <p>원점으로부터 y축에 따른 위치</p>
+        type: Number
+        optional: true
+      - name: gridZOff
+        description: |
+          <p>원점으로부터 z축에 따른 위치</p>
+        type: Number
+        optional: true
+      - name: axesSize
+        description: ''
+        type: Number
+        optional: true
+      - name: axesXOff
+        description: |
+          <p>원점으로부터 x축에 따른 위치</p>
+        type: Number
+        optional: true
+      - name: axesYOff
+        description: |
+          <p>원점으로부터 y축에 따른 위치</p>
+        type: Number
+        optional: true
+      - name: axesZOff
+        description: |
+          <p>원점으로부터 z축에 따른 위치</p>
+        type: Number
+        optional: true
+chainable: false
+---
+
+
+# debugMode

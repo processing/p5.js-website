@@ -1,0 +1,141 @@
+---
+title: model
+module: आकार
+submodule: 3D मॉडल
+file: src/webgl/loading.js
+description: >
+  <p>कैनवास पर एक <a href="/reference/p5/p5.Geometry">p5.Geometry</a> ऑब्जेक्ट बनाता है।</p>
+
+  <p>पैरामीटर, <code>model</code>, खींचने के लिए <a href="/reference/p5/p5.Geometry">p5.Geometry</a> ऑब्जेक्ट है।
+
+  <a href='/reference/p5/p5.Geometry'>p5.Geometry</a> ऑब्जेक्ट को <a href='/reference/p5/buildGeometry'>buildGeometry()</a> के साथ बनाया जा सकता है, या <a href='/reference/p5/beginGeometry'>beginGeometry()</a> और <a href='/reference/p5/endGeometry'>endGeometry()</a>।
+
+  इन्हें <a href="/reference/p5/loadGeometry">loadGeometry()</a> वाली फ़ाइल से भी लोड किया जा सकता है।</p>
+
+  <p>ध्यान दें: <code>model()</code> का उपयोग केवल WebGL मोड में किया जा सकता है।</p>
+line: 986
+isConstructor: false
+itemtype: तरीका
+example:
+  - |-
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the p5.Geometry object.
+      shape = buildGeometry(createShape);
+
+      describe('A white cone drawn on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the p5.Geometry object.
+      model(shape);
+    }
+
+    // Create p5.Geometry object from a single cone.
+    function createShape() {
+      cone();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Create the p5.Geometry object.
+      shape = buildGeometry(createArrow);
+
+      describe('Two white arrows drawn on a gray background. The arrow on the right rotates slowly.');
+    }
+
+    function draw() {
+      background(50);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the arrows.
+      noStroke();
+
+      // Draw the p5.Geometry object.
+      model(shape);
+
+      // Translate and rotate the coordinate system.
+      translate(30, 0, 0);
+      rotateZ(frameCount * 0.01);
+
+      // Draw the p5.Geometry object again.
+      model(shape);
+    }
+
+    function createArrow() {
+      // Add shapes to the p5.Geometry object.
+      push();
+      rotateX(PI);
+      cone(10);
+      translate(0, -10, 0);
+      cylinder(3, 20);
+      pop();
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shape;
+
+    // Load the file and create a p5.Geometry object.
+    function preload() {
+      shape = loadModel('/assets/octahedron.obj');
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A white octahedron drawn against a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Draw the shape.
+      model(shape);
+    }
+    </code>
+    </div>
+class: p5
+params:
+  - name: model
+    description: |
+      <p>प्रस्तुत किया जाने वाला लोडेड 3D मॉडल</p>
+    type: p5.Geometry
+chainable: false
+---
+
+# model

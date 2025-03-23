@@ -1,0 +1,94 @@
+---
+title: saveStl
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>The <code>saveStl()</code> function exports <code>p5.Geometry</code>
+  objects as
+
+  3D models in the STL stereolithography file format.
+
+  This way, you can use the 3D shapes you create in p5.js in other software
+
+  for rendering, animation, 3D printing, or more.</p>
+
+  <p>The exported .stl file will include the faces, vertices, and normals of the
+  <code>p5.Geometry</code>.</p>
+
+  <p>By default, this method saves a text-based .stl file. Alternatively, you
+  can save a more compact
+
+  but less human-readable binary .stl file by passing <code>{ binary: true
+  }</code> as a second parameter.</p>
+line: 1028
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let myModel;
+    let saveBtn1;
+    let saveBtn2;
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myModel = buildGeometry(() => {
+        for (let i = 0; i < 5; i++) {
+          push();
+          translate(
+            random(-75, 75),
+            random(-75, 75),
+            random(-75, 75)
+          );
+          sphere(random(5, 50));
+          pop();
+        }
+      });
+
+      saveBtn1 = createButton('Save .stl');
+      saveBtn1.mousePressed(function() {
+        myModel.saveStl();
+      });
+      saveBtn2 = createButton('Save binary .stl');
+      saveBtn2.mousePressed(function() {
+        myModel.saveStl('model.stl', { binary: true });
+      });
+
+      describe('A few spheres rotating in space');
+    }
+
+    function draw() {
+      background(0);
+      noStroke();
+      lights();
+      rotateX(millis() * 0.001);
+      rotateY(millis() * 0.002);
+      model(myModel);
+    }
+    </code>
+    </div>
+class: p5.Geometry
+params:
+  - name: fileName
+    description: |
+      <p>The name of the file to save the model as.
+                                             If not specified, the default file name will be 'model.stl'.</p>
+    type: String
+    optional: true
+    optdefault: '''model.stl'''
+  - name: options
+    description: >
+      <p>Optional settings. Options can include a boolean <code>binary</code>
+      property, which
+
+      controls whether or not a binary .stl file is saved. It defaults to
+      false.</p>
+    type: Object
+    optional: true
+chainable: false
+---
+
+
+# saveStl

@@ -1,0 +1,253 @@
+---
+title: pointLight
+module: 3D
+submodule: 光源
+file: src/webgl/light.js
+description: >
+  <p>创建一个从一个点朝所有方向发光的光源。</p>
+
+  <p>点光源就像发光的灯泡，它们向所有方向发光。 它们可以放置在不同的位置以实现不同的光照效果。最多可以同时激活 5 个点光源。</p>
+
+  <p>有四种方法可以调用 <code>pointLight()</code> 来设置光的颜色和位置。</p>
+
+  <p>调用 <code>pointLight()</code> 的第一种方式有六个参数。前三个参数 <code>v1</code>、 <code>v2</code> 和 <code>v3</code> 使用当前的 <a href="/reference/p5/colorMode">colorMode()</a> 来设置光的颜色。最后三个参数 <code>x</code>、 <code>y</code> 和<code>z</code> 设置光的位置。例如， <code>pointLight(255, 0, 0, 50, 0, 0)</code> 创建一个红色 <code>(255, 0, 0)</code> 的光，从坐标 <code>(50, 0, 0)</code> 发光。</p>
+
+  <p>调用 <code>pointLight()</code> 的第二种方式有四个参数。前三个参数 <code>v1</code>、 <code>v2</code> 和 <code>v3</code> 使用当前的 <a href="/reference/p5/colorMode">colorMode()</a> 来设置光的颜色。最后一个参数 position 使用一个 <a href="/reference/p5/p5.Vector">p5.Vector</a> 对象来设置光的位置。例如， <code>pointLight(255, 0, 0, lightPos)</code> 创建一个红色 <code>(255, 0, 0)</code> 的光，从由 <code>lightPos</code> 向量设置的位置发出。</p>
+
+  <p>调用 <code>pointLight()</code> 的第三种方式有四个参数。第一个参数 <code>color</code> 使用一个 <a href="/reference/p5/p5.Color">p5.Color</a> 对象或颜色值数组来设置光的颜色。最后三个参数 <code>x</code>、 <code>y</code> 和 <code>z</code> 设置光的位置。例如， <code>pointLight(myColor, 50, 0, 0)</code> 创建一个颜色为 <code>myColor</code> 的光，从坐标 <code>(50, 0, 0)</code> 发光。</p>
+
+  <p>调用 <code>pointLight()</code> 的第四种方式有两个参数。第一个参数 <code>color</code> 使用一个 <a href="/reference/p5/p5.Color">p5.Color</a> 对象或颜色值数组来设置光的颜色。第二个参数 <code>position</code> 使用一个 <a href="/reference/p5/p5.Vector">p5.Vector</a> 对象来设置光的位置。例如， <code>pointLight(myColor, lightPos)</code> 创建一个从由 <code>lightPos</code> 向量设置的位置发光，其颜色为 <code>myColor</code>。</p>
+line: 682
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+    // 双击以打开点光源。
+
+    let isLit = false;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. A red light starts shining from above when the user double-clicks.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 控制光线。
+      if (isLit === true) {
+        // 添加一个上方的红色点光源。
+        // 使用 RGB 值和 XYZ 坐标。
+        pointLight(255, 0, 0, 0, -150, 0);
+      }
+
+      // 设定球体样式。
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+
+    // 当用户双击时打开点光源。
+    function doubleClicked() {
+      isLit = true;
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 从上方添加红色点光源。
+      // 使用 p5.Color 对象和 XYZ 方向。
+      let c = color(255, 0, 0);
+      pointLight(c, 0, -150, 0);
+
+      // 设定球体样式。
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('A sphere drawn on a gray background. The top of the sphere appears bright red. The color gets darker toward the bottom.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 从上方添加红色点光源。
+      // 使用 p5.Color 对象和一个 p5.Vector 对象。
+      let c = color(255, 0, 0);
+      let lightPos = createVector(0, -150, 0);
+      pointLight(c, lightPos);
+
+      // 设定球体样式。
+      noStroke();
+
+      // 绘制球体。
+      sphere(30);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // 点击并拖动鼠标以从不同角度查看场景。
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe('Four spheres arranged in a square and drawn on a gray background. The spheres appear bright red toward the center of the square. The color gets darker toward the corners of the square.');
+    }
+
+    function draw() {
+      background(200);
+
+      // 启用鼠标轨道控制。
+      orbitControl();
+
+      // 添加一个指向场景中心的红色点光源。
+      // 使用 p5.Color 对象和一个 p5.Vector 对象。
+      let c = color(255, 0, 0);
+      let lightPos = createVector(0, 0, 65);
+      pointLight(c, lightPos);
+
+      // 设定球体样式。
+      noStroke();
+
+      // 向上和向左绘制一个球体。
+      push();
+      translate(-25, -25, 25);
+      sphere(10);
+      pop();
+
+      // 向上和向右绘制一个盒子。
+      push();
+      translate(25, -25, 25);
+      sphere(10);
+      pop();
+
+      // 向下和向左绘制一个球体。
+      push();
+      translate(-25, 25, 25);
+      sphere(10);
+      pop();
+
+      // 向下和向右绘制一个盒子。
+      push();
+      translate(25, 25, 25);
+      sphere(10);
+      pop();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 682
+    params:
+      - name: v1
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的红色或色相值。</p>
+        type: 数字
+      - name: v2
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的绿色或饱和度值。</p>
+        type: 数字
+      - name: v3
+        description: |
+          <p>当前 <a href="#/p5/colorMode">colorMode()</a> 中的蓝色、亮度或明度值。</p>
+        type: 数字
+      - name: x
+        description: |
+          <p>光的 x 坐标。</p>
+        type: 数字
+      - name: 'y'
+        description: |
+          <p>光的 y 坐标。</p>
+        type: 数字
+      - name: z
+        description: |
+          <p>光的 z 坐标。</p>
+        type: 数字
+    chainable: 1
+  - line: 889
+    params:
+      - name: v1
+        description: ''
+        type: 数字
+      - name: v2
+        description: ''
+        type: 数字
+      - name: v3
+        description: ''
+        type: 数字
+      - name: position
+        description: |
+          <p>光的位置作为一个 <a href="#/p5.Vector">p5.Vector</a> 对象。</p>
+        type: p5.Vector
+    chainable: 1
+  - line: 899
+    params:
+      - name: color
+        description: |
+          <p>颜色作为一个 <a href="#/p5.Color">p5.Color</a> 对象，一个颜色值数组，或者一个 CSS 字符串。</p>
+        type: 'p5.Color|数字[]|字符串'
+      - name: x
+        description: ''
+        type: 数字
+      - name: 'y'
+        description: ''
+        type: 数字
+      - name: z
+        description: ''
+        type: 数字
+    chainable: 1
+  - line: 909
+    params:
+      - name: color
+        description: ''
+        type: 'p5.Color|数字[]|字符串'
+      - name: position
+        description: ''
+        type: p5.Vector
+    chainable: 1
+chainable: true
+---
+
+
+# pointLight

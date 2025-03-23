@@ -1,0 +1,15 @@
+---
+import EventsLayout from "@layouts/EventsLayout.astro";
+import { getCollectionInDefaultLocale } from "../_utils";
+import { eventsPerPage } from "@/src/globals/globals";
+
+// This route is a fallback for the first page on paginated route so we slice the first page
+const allPastEvents = await getCollectionInDefaultLocale("events");
+const pastEvents = allPastEvents.slice(0, eventsPerPage);
+---
+
+<EventsLayout
+  entries={pastEvents}
+  totalNumEvents={allPastEvents.length}
+  currentPage={1}
+/>

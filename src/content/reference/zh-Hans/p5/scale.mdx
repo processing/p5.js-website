@@ -1,0 +1,175 @@
+---
+title: scale
+module: 变形
+submodule: 变形
+file: src/core/transform.js
+description: >
+  <p>缩放坐标系。</p>
+
+  <p>默认情况下，形状以其原始比例绘制。一个宽度为 50 像素的矩形在 100 像素宽的画布上看起来占据了一半的宽度。 <code>scale()</code> 函数可以缩小或拉伸坐标系，使形状以不同的大小呈现。有两种方式可以使用参数来调用 <code>scale()</code>，以设置缩放因子。</p>
+
+  <p>第一种调用 <code>scale()</code> 的方式使用数字来设置缩放量。第一个参数 <code>s</code> 设置每个轴的缩放量。例如，调用 <code>scale(2)</code> 将 x 轴、y 轴和 z 轴拉伸 2 倍。接下来的两个参数 <code>y</code> 和 <code>z</code> 是可选的。它们设置 y 轴和 z 轴的缩放量。例如，调用 <code>scale(2, 0.5, 1)</code> 将 x 轴拉伸 2 倍，y 轴缩小 0.5 倍，z 轴保持不变。</p>
+
+  <p>第二种调用 <code>scale()</code> 的方式使用一个 <a href="/reference/p5/p5.Vector">p5.Vector</a> 对象来设置缩放因子。例如，调用 <code>scale(myVector)</code> 使用 <code>myVector</code> 的 x、y 和 z 分量来设置沿 x、y 和 z 轴的缩放量。这样做与调用 <code>scale(myVector.x, myVector.y, myVector.z)</code> 是一样的。</p>
+
+  <p>默认情况下，转换会累积。例如，连续两次调用 <code>scale(1)</code> 与调用一次 <code>scale(2)</code> 效果相同。可以使用 <a href="/reference/p5/push">push()</a> 和 <a href="/reference/p5/pop">pop()</a> 函数将转换隔离到不同的绘图组中。</p>
+
+  <p>注意：转换会在绘制循环的开始处重置。在 <a href="/reference/p5/draw">draw()</a> 函数中调用 <code>scale(2)</code> 不会导致形状持续增长。</p>
+line: 879
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe(
+        'Two white squares on a gray background. The larger square appears at the top-center. The smaller square appears at the top-left.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by a factor of 0.5.
+      scale(0.5);
+
+      // Draw a square at (30, 20).
+      // It appears at (15, 10) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A rectangle and a square drawn in white on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis.
+      scale(0.5, 1.3);
+
+      // Draw a square at (30, 20).
+      // It appears as a rectangle at (15, 26) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A rectangle and a square drawn in white on a gray background.');
+    }
+
+    function draw() {
+      background(200);
+
+      // Draw a square at (30, 20).
+      square(30, 20, 40);
+
+      // Create a p5.Vector object.
+      let v = createVector(0.5, 1.3);
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis.
+      scale(v);
+
+      // Draw a square at (30, 20).
+      // It appears as a rectangle at (15, 26) after scaling.
+      square(30, 20, 40);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    // Click and drag the mouse to view the scene from different angles.
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      describe(
+        'A red box and a blue box drawn on a gray background. The red box appears embedded in the blue box.'
+      );
+    }
+
+    function draw() {
+      background(200);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Turn on the lights.
+      lights();
+
+      // Style the spheres.
+      noStroke();
+
+      // Draw the red sphere.
+      fill('red');
+      box();
+
+      // Scale the coordinate system by factors of
+      // 0.5 along the x-axis and
+      // 1.3 along the y-axis and
+      // 2 along the z-axis.
+      scale(0.5, 1.3, 2);
+
+      // Draw the blue sphere.
+      fill('blue');
+      box();
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - line: 879
+    params:
+      - name: s
+        description: |
+          <p>沿着正 x 轴缩放的量。</p>
+        type: '数字|p5.Vector|数字[]'
+      - name: 'y'
+        description: >
+          <p>沿着正 y 轴缩放的量。默认为 <code>s</code>。</p>
+        type: 数字
+        optional: true
+      - name: z
+        description: >
+          沿着正 z 轴缩放的量。默认为 <code>y</code>。</p>
+        type: 数字
+        optional: true
+    chainable: 1
+  - line: 1040
+    params:
+      - name: scales
+        description: |
+          <p>应使用其分量来进行缩放的向量。</p>
+        type: 'p5.Vector|数字[]'
+    chainable: 1
+chainable: true
+---
+
+
+# scale
