@@ -15,6 +15,8 @@ export const CodeEmbed = (props) => {
   const [codeString, setCodeString] = useState(
     initialCode.replace(/\u00A0/g, " "),
   );
+  
+  
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
   let { previewWidth, previewHeight } = props;
