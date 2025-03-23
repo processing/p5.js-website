@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "preact/hooks";
+import { useState, useEffect, useRef, useCallback } from "preact/hooks";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
@@ -7,33 +7,15 @@ import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
 import CircleButton from "../CircleButton";
 import { Icon } from "../Icon";
-/*
- * A more featured code embed component that uses CodeMirror
- *
- * Props: {
- *   initialValue?: string;
- *   editable: boolean;
- *   previewable: boolean;
- *   previewHeight?: number;
- *   previewWidth?: number;
- *   base?: string;
- *   lazyLoad?: boolean;
- *   TODO: refactor this prop behavior
- *   allowSideBySide?: boolean
- *   fullWidth?: boolean
- *   includeSound?: boolean
- * }
- */
+
 export const CodeEmbed = (props) => {
   const [rendered, setRendered] = useState(false);
   const initialCode = props.initialValue ?? "";
-  // Source code from Google Docs sometimes uses a unicode non-breaking space
-  // instead of a normal one, but these break the code frame, so we replace them here.
-  // We also replace them in CodeFrame, but replacing here too ensures people don't
-  // accidentally copy-and-paste them out of the embedded editor.
+  
   const [codeString, setCodeString] = useState(
     initialCode.replace(/\u00A0/g, " "),
   );
+  const [previewCodeString, setPreviewCodeString] = useState(codeString);
 
   let { previewWidth, previewHeight } = props;
   const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
@@ -44,36 +26,51 @@ export const CodeEmbed = (props) => {
 
   const largeSketch = previewWidth && previewWidth > 770 - 60;
 
-  // Quick hack to make room for DOM that gets added below the canvas by default
   const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(initialCode);
   if (domMatch && previewHeight) {
     previewHeight += 100;
   }
 
   const codeFrameRef = useRef(null);
+  const p5ScriptRef = useRef(null);
 
-  const updateOrReRun = () => {
-    if (codeString === previewCodeString) {
-      setPreviewCodeString("");
-      requestAnimationFrame(() => setPreviewCodeString(codeString));
-    } else {
-      setPreviewCodeString(codeString);
+  const [isRunning, setIsRunning] = useState(true);
+  
+  const updateOrReRun = useCallback(() => {
+    try {
+      setIsRunning(true);
+      
+      if (codeString === previewCodeString) {
+        setPreviewCodeString("");
+        setTimeout(() => {
+          setPreviewCodeString(codeString);
+        }, 50);
+      } else {
+        setPreviewCodeString(codeString);
+      }
+    } catch (error) {
+      console.error("Error running sketch:", error);
+      setIsRunning(false);
     }
-  };
-
-  const [previewCodeString, setPreviewCodeString] = useState(codeString);
+  }, [codeString, previewCodeString]);
 
   useEffect(() => {
     setRendered(true);
 
-    // Includes p5.min.js script to be used by `CodeFrame` iframe(s)
     const p5ScriptElement = document.createElement("script");
     p5ScriptElement.id = "p5ScriptTag";
     p5ScriptElement.src = cdnLibraryUrl;
     document.head.appendChild(p5ScriptElement);
+    p5ScriptRef.current = p5ScriptElement;
+
+    return () => {
+      if (p5ScriptRef.current && document.head.contains(p5ScriptRef.current)) {
+        document.head.removeChild(p5ScriptRef.current);
+      }
+    };
   }, []);
 
-  if (!rendered) return <div className="code-placeholder" />;
+  if (!rendered) return <div className="code-placeholder" aria-label="Loading code editor" />;
 
   return (
     <div
@@ -99,15 +96,18 @@ export const CodeEmbed = (props) => {
               className="bg-bg-gray-40"
               onClick={updateOrReRun}
               ariaLabel="Run sketch"
+              disabled={!codeString.trim()}
             >
-              <Icon kind="play" />
+              <Icon kind={isRunning && codeString === previewCodeString ? "refresh" : "play"} />
             </CircleButton>
             <CircleButton
               className="bg-bg-gray-40"
               onClick={() => {
                 setPreviewCodeString("");
+                setIsRunning(false);
               }}
               ariaLabel="Stop sketch"
+              disabled={!previewCodeString}
             >
               <Icon kind="stop" />
             </CircleButton>

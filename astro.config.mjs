@@ -5,6 +5,8 @@ import tailwind from "@astrojs/tailwind";
 import serviceWorker from "astrojs-service-worker";
 import fast from "./src/scripts/fast-compress";
 
+import solidJs from "@astrojs/solid-js";
+
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
 const shouldSkipCompress = Boolean(
@@ -19,35 +21,29 @@ if (shouldSkipCompress) {
 export default defineConfig({
   site: 'https://p5js.org',
   compressHTML: false,
-  integrations: [
-    preact({
-      compat: true,
-    }),
-    mdx(),
-    tailwind(),
-    fast(),
-    serviceWorker({
-      workbox: {
-        globPatterns: [
-          "**/*.{css,js,jpg,json,png,svg,ico,woff,woff2}", // Cache all assets accept HTML
-        ],
-        clientsClaim: true,
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.pathname.endsWith(".html"), // Caches HTML pages
-            handler: "CacheFirst", // Tries the cache first, then falls back to network if offline
-            options: {
-              cacheName: "html-pages-cache",
-              expiration: {
-                maxEntries: 50, // Limits the number of HTML pages cached
-                maxAgeSeconds: 24 * 60 * 60 * 7, // Cache for 1 week
-              },
+  integrations: [preact({
+    compat: true,
+  }), mdx(), tailwind(), fast(), serviceWorker({
+    workbox: {
+      globPatterns: [
+        "**/*.{css,js,jpg,json,png,svg,ico,woff,woff2}", // Cache all assets accept HTML
+      ],
+      clientsClaim: true,
+      runtimeCaching: [
+        {
+          urlPattern: ({ url }) => url.pathname.endsWith(".html"), // Caches HTML pages
+          handler: "CacheFirst", // Tries the cache first, then falls back to network if offline
+          options: {
+            cacheName: "html-pages-cache",
+            expiration: {
+              maxEntries: 50, // Limits the number of HTML pages cached
+              maxAgeSeconds: 24 * 60 * 60 * 7, // Cache for 1 week
             },
           },
-        ],
-      },
-    }),
-  ],
+        },
+      ],
+    },
+  }), solidJs()],
   prefetch: {
     defaultStrategy: "viewport",
     prefetchAll: true,
