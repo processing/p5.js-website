@@ -5,7 +5,7 @@ import tailwind from "@astrojs/tailwind";
 import serviceWorker from "astrojs-service-worker";
 import fast from "./src/scripts/fast-compress";
 
-import solidJs from "@astrojs/solid-js";
+
 
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
@@ -43,7 +43,7 @@ export default defineConfig({
         },
       ],
     },
-  }), solidJs()],
+  })],
   prefetch: {
     defaultStrategy: "viewport",
     prefetchAll: true,
