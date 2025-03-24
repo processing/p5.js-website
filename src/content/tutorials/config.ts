@@ -9,6 +9,7 @@ export const categories = [
   "criticalAI",
   "webgl",
   "advanced",
+  "shaders",
 ] as const;
 
 /**
