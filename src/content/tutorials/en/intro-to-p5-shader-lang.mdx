@@ -20,40 +20,67 @@ authors:
 
 
 import EditableSketch from "../../../components/EditableSketch/index.astro";
+import SketchEmbed from "../../../components/SketchEmbed/index.astro";
+import fs from "node:fs/promises";
 import Callout from "../../../components/Callout/index.astro";
 import AnnotatedCode from "../../../components/AnnotatedCode/index.astro";
 import { Image } from "astro:assets";
 
 ## Introduction
 
-In this tutorial, we will be exploring the p5.js shading language. This language is a simplified version of GLSL (OpenGL Shading Language), which is used in WebGL. Shaders are programs that run on the GPU (Graphics Processing Unit, sometimes known as a 'graphcs card') and are used to render graphics. They are used to create effects that are difficult to achieve with the traditional rendering pipeline. 
+In this tutorial, we will be exploring the p5.js shading language. This language is a simplified version of GLSL (OpenGL Shading Language), which is used in WebGL. Shaders are programs that run on the GPU (Graphics Processing Unit, sometimes known as a 'graphics card') and are used to render graphics. They are used to create effects that are difficult to achieve with the traditional rendering pipeline. 
 
-Practically, most of the effects that you can create with shaders can be achieved with the p5.js, but shaders can be more efficient and can be used to create more complex effects. Additionally, any effect you make with shaders can be used for different objects: for example, one shader which creates a wavy effect can be used on multiple objects, and the effect will be consistent across all of them.
+Practically, most of the effects that you can create with shaders can be achieved with the p5.js 2D renderer, but shaders can be more efficient and can be used to create more complex effects. Additionally, any effect you make with shaders can be used for different objects: for example, one shader which creates a wavy effect can be used on multiple objects, and the effect will be consistent across all of them. Learning shaders can be an enriching experience for those who are interested in graphics programming.
 
 ## What is a Shader?
 
-A shader is a program that runs on the GPU. There are two types of shaders: vertex shaders and fragment shaders. Vertex shaders are used to transform the vertices of a shape, while fragment shaders are used to determine the color of each pixel in a shape. Both are required to render anything in WebGL mode. Fortunately, p5.js provides some default shaders that you can use, so you don't have to write your own shaders if you don't want to. Take the following sketch...
+A shader is a program that runs on the GPU. Generally, they are written in a 'shading language' built specifically for the graphics card. In the case of WebGL, the shading language is GLSL (OpenGL Shading Language). WebGL lets us write two kinds of shaders: vertex shaders and fragment shaders. Vertex shaders are used to transform the vertices of a shape, while fragment shaders are used to determine the color of each pixel in a shape. In other words, vertex shaders define where to draw something, and fragment shaders define how to draw it.
+
+A vertex and a fragment shader are both required to render anything in WebGL mode. Fortunately, p5.js provides some default shaders that you can use, so you don't have to write your own shaders if you don't want to. Take a look at the following sketch, for example.
 
 <EditableSketch code={`
 let myShader;
+
+function lightingSetup() {
+  ambientLight(80, 80, 140);
+  const pointX = cos(millis() / 750) * 100;
+  const pointZ = sin(millis() / 750) * 100;
+  pointLight(80, 80, 255, pointX, -60, pointZ);
+}
 
 function setup() {
   createCanvas(200, 200, WEBGL);
 }
 
 function draw() {
+  background(100);
   // shader(baseMaterialShader());
-  lights();
-  background(220);
-  orbitControl();
-  fill('blue');
+  lightingSetup();
   sphere(80);
 }
 `} />
 
-A shader is caculating the lighting and shading of the blue fill, and another shader is drawing the stroke. Notice how if you uncomment the first line in the `draw()` function and click the play button, the sketch will look the same. That's because under the hood, p5.js has automatically applied the `baseMaterialShader()`. Alternatively, we can write `shader(baseColorShader());` on that line instead and the fill is now a solid color, not affected by lighting.
+A shader is caculating the lighting and shading of the fill, and another shader is drawing the stroke. Even though we haven't set the fill to blue, the blue tint in the lighting has made the sphere appear blue. Notice how if you uncomment the second line in the `draw()` function and click the play button, the sketch will look the same. That's because under the hood, p5.js has automatically applied the `baseMaterialShader()`.
 
-Previously, if you wanted to write your own shaders, you would have to use the `createShader()` and `loadShader()` functions. Recently, however, we have introduced a new way to write shaders in p5.js. This new way is called the p5.js shading language. This language is a simplified version of GLSL (OpenGL Shading Language), which is used in WebGL. The p5.js shading language is easier to use than GLSL, and it is designed to be used with p5.js.
+<Callout title="Tip">
+Try changing the 2nd line in `draw` to use `baseColorShader()` instead. How does the sphere's appearance change?
+</Callout>
+
+Alternatively, we can use the `baseColorShader` instead and the fill is now a solid white color, not affected by lighting. The filters available when you call `filter()` are also shaders which p5.js provides for you.
+
+Part of the fun of WebGL is that you can write your own shaders, and it unlocks a lot of possibilities for creating which would be difficult to create with the p2D renderer. They can also run a lot faster. In the next section, we will start the main part of the tutorial and learn how to use the new p5.js shading language.
+
+## Writing Your Own Shaders
+
+Previously, if you wanted to write your own shaders in p5.js, you would need to learn GLSL, and the quirks of the both vertex and fragment shaders. WebGL contains some setup code that you need to write to get a shader running, which varies based on the version of GLSL. These obstacles get in the way of the creative process, and of starting to learn the important concepts of shaders.
+
+With the release of p5.js 2.0 we have introduced a new way to write shaders which speeds up the time it takes to see something on the screen. By providing 'hooks' into key moments into the shader pipeline, you can write a shader that modifies the output of the p5.js renderer without needing to know the details of the WebGL setup code. This means you can focus on the creative part of writing shaders, and not the technical part.
+
+<SketchEmbed
+  code={await fs.readFile("src/content/tutorials/sketches/intro-to-p5-shader-lang/preview/sketch.js")}
+  cssCode={await fs.readFile("src/content/tutorials/sketches/intro-to-p5-shader-lang/style.css")}
+  bodyCode={await fs.readFile("src/content/tutorials/sketches/intro-to-p5-shader-lang/preview/index.html")}
+/>
 
 <EditableSketch code={`
 let myFilter;
