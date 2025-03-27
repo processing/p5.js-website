@@ -166,7 +166,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
         aria-label="Code Preview"
         title="Code Preview"
         loading={props.lazyLoad ? "lazy" : "eager"}
-        style={{ width: "100%", height: "100%" }}
+        style={{width: "100%", height: "100%"}}
       />
     </div>
   );
