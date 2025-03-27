@@ -1,0 +1,184 @@
+## title: "Getting Started with Instance Mode in p5.js" description: "Learn how to use p5.js in instance mode for modular and framework-friendly coding." category: "drawing"
+
+# Getting Started with Instance Mode in p5.js
+
+## Introduction
+
+By default, p5.js uses **global mode**, which means functions like `setup()` and `draw()` are automatically recognized. However, **instance mode** allows us to create multiple independent p5.js sketches and avoid polluting the global namespace.
+
+In instance mode, we encapsulate our p5.js code inside a function and pass a `p5` instance as an argument. This approach is useful when working with multiple sketches on the same page or integrating p5.js with other frameworks.
+
+## Setting Up Instance Mode
+
+### 1. Include p5.js
+
+First, ensure you have p5.js included in your project. You can add this in your HTML file:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>p5.js Instance Mode</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+    <script src="sketch.js"></script>
+</body>
+</html>
+```
+
+### 2. Writing an Instance Mode Sketch
+
+Create a `sketch.js` file and define your p5 instance like this:
+
+```javascript
+const mySketch = (p) => {
+    p.setup = function() {
+        p.createCanvas(400, 400);
+        p.background(200);
+    };
+
+    p.draw = function() {
+        p.fill(255, 0, 0);
+        p.ellipse(p.mouseX, p.mouseY, 50, 50);
+    };
+};
+
+let myP5 = new p5(mySketch);
+```
+
+### 3. Explanation
+
+- The function `mySketch` takes `p` as an argument, which represents the p5 instance.
+- All p5 functions (like `setup()`, `draw()`, `createCanvas()`, etc.) are accessed through `p`.
+- Finally, we create a new p5 instance using `new p5(mySketch);`.
+
+## Creating Multiple Sketches
+
+You can define multiple instance mode sketches independently:
+
+```javascript
+const sketch1 = (p) => {
+    p.setup = function() {
+        p.createCanvas(200, 200);
+        p.background(100);
+    };
+};
+
+const sketch2 = (p) => {
+    p.setup = function() {
+        p.createCanvas(200, 200);
+        p.background(50);
+    };
+};
+
+let p5_1 = new p5(sketch1, 'container1');
+let p5_2 = new p5(sketch2, 'container2');
+```
+
+Then, modify your JSX to add containers for the sketches:
+
+```jsx
+<React.Fragment>
+    <div id="container1"></div>
+    <div id="container2"></div>
+</React.Fragment>
+```
+
+## Global Mode vs. Instance Mode
+
+| Feature                 | Global Mode   | Instance Mode |
+|-------------------------|--------------|--------------|
+| Function Scope          | Global       | Encapsulated |
+| Multiple Sketches       | Not supported | Supported |
+| Namespace Pollution     | Yes          | No |
+| Framework Compatibility | Limited      | High |
+
+## Handling Events in Instance Mode
+
+In instance mode, event functions like `mousePressed()` need to be accessed through `p`:
+
+```javascript
+const sketch = (p) => {
+    p.setup = function() {
+        p.createCanvas(200, 200);
+    };
+
+    p.mousePressed = function() {
+        console.log("Mouse pressed inside instance mode");
+    };
+};
+
+let myP5 = new p5(sketch);
+```
+
+For global event handling, you may need to use `document.addEventListener`:
+
+```javascript
+document.addEventListener("keydown", function(event) {
+    console.log("Key pressed: ", event.key);
+});
+```
+
+## Performance Optimization Tips
+
+- Use `p.remove()` to clean up unused instances.
+- Use `noLoop()` to stop unnecessary redraws.
+- Limit the number of instances when possible.
+
+## Using p5.js with React
+
+Instance mode makes it easier to use p5.js with frameworks like React. Example:
+
+```javascript
+const P5Component = () => {
+    useEffect(() => {
+        const sketch = (p) => {
+            p.setup = function() {
+                p.createCanvas(400, 400).parent('p5-container');
+            };
+        };
+        let myP5 = new p5(sketch);
+
+        return () => myP5.remove();
+    }, []);
+
+    return <div id="p5-container"></div>;
+};
+
+export default P5Component;
+```
+
+## Advantages of Instance Mode
+
+- **Avoids Global Namespace Pollution**: Helps prevent conflicts when using p5.js with other libraries.
+- **Multiple Sketches**: Allows running multiple independent sketches on a single page.
+- **Better Encapsulation**: Makes code modular and maintainable.
+- **Compatibility with Other Frameworks**: Makes it easier to integrate p5.js with React, Vue, or other JavaScript frameworks.
+
+## Limitations of Instance Mode
+
+- **Increased Complexity**: Requires a different syntax (`p.functionName()`) compared to global mode, which can be harder for beginners.
+- **Potential Performance Overhead**: Managing multiple instances can lead to performance issues if not handled efficiently.
+- **Event Handling Differences**: Some event listeners may behave differently in instance mode.
+
+## When to Use Instance Mode
+
+Use instance mode when:
+
+- You need to run multiple independent p5.js sketches on the same page.
+- You want to integrate p5.js with other JavaScript frameworks.
+- You need to prevent variable conflicts in complex applications.
+
+Use global mode when:
+
+- You're working on simple sketches that don't require encapsulation.
+- You prefer a more traditional, easier-to-read p5.js syntax.
+
+## Conclusion
+
+Instance mode is a powerful way to structure p5.js sketches, especially for complex projects. By wrapping our sketch inside a function and passing a p5 instance, we gain flexibility and prevent conflicts with other code. While it comes with some added complexity, it offers better modularity, reusability, and compatibility with frameworks.
+
+Happy coding with p5.js instance mode!
