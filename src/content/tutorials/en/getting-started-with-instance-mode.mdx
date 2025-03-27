@@ -4,79 +4,35 @@ description: Learn how to set up and use p5.js in instance mode for better modul
 category: drawing
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+# Getting Started with Instance Mode
 
-## Getting Started with p5.js Instance Mode
+## What is Instance Mode?
 
-p5.js supports two modes: **Global Mode** and **Instance Mode**. Instance Mode is recommended for better modularity and compatibility with other JavaScript libraries.
+Instance mode allows you to create multiple independent instances of the library, rather than relying on a single global instance. This approach provides better encapsulation, flexibility, and avoids conflicts in complex applications.
 
-### Installation
+## Why Use Instance Mode?
 
-You can use p5.js via a CDN or install it using npm.
+Instance mode is preferred in scenarios where multiple independent configurations are needed within the same application. Unlike global mode, which shares state across all components, instance mode ensures better isolation and control.
 
-<Tabs>
-  <TabItem value="cdn" label="CDN" default>
+## Advantages of Instance Mode
 
-  Add the following script to your HTML file:
+- **Encapsulation**: Each instance maintains its own state, avoiding unintended side effects.
+- **Flexibility**: Different configurations can be applied to different instances.
+- **Scalability**: Easier to manage in large applications with multiple independent modules.
+- **Avoids Conflicts**: Prevents state pollution from shared global variables.
+- **Better Testability**: Each instance can be tested independently.
 
-  ```html
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
-  ```
-  </TabItem>
-  
-  <TabItem value="npm" label="npm">
+## Limitations of Instance Mode
 
-  Install p5.js using npm:
+- **Increased Memory Usage**: Multiple instances consume more resources compared to a single global instance.
+- **More Setup Required**: Requires explicit initialization for each instance.
+- **Potential Redundancy**: If all instances share the same configuration, a global instance might be more efficient.
 
-  ```sh
-  npm install p5
-  ```
-  </TabItem>
-</Tabs>
+## When to Choose Instance Mode Over Global Mode?
 
-### Basic Setup in Instance Mode
+- **When working with multiple independent modules** that require different configurations.
+- **When developing modular applications**, ensuring isolated behavior.
+- **When avoiding global state conflicts** is necessary.
+- **When testing individual components**, making unit testing easier.
 
-Instead of relying on global functions like `setup()` and `draw()`, instance mode requires you to create a `p5` instance and pass your functions as parameters.
-
-```js
-const sketch = (p) => {
-  p.setup = () => {
-    p.createCanvas(400, 400);
-    p.background(220);
-  };
-
-  p.draw = () => {
-    p.ellipse(p.width / 2, p.height / 2, 50, 50);
-  };
-};
-
-new p5(sketch);
-```
-
-### Using Multiple Sketches
-
-Instance mode allows multiple p5.js sketches to run independently:
-
-```js
-const sketch1 = (p) => {
-  p.setup = () => p.createCanvas(200, 200);
-  p.draw = () => p.background(255, 0, 0);
-};
-
-const sketch2 = (p) => {
-  p.setup = () => p.createCanvas(200, 200);
-  p.draw = () => p.background(0, 0, 255);
-};
-
-new p5(sketch1, 'container1');
-new p5(sketch2, 'container2');
-```
-
-### Why Use Instance Mode?
-
-- **Avoids global namespace conflicts**
-- **Works well with module-based JavaScript**
-- **Allows multiple independent sketches**
-
-Now you're ready to build interactive projects using p5.js in a structured way! 🚀
+By choosing instance mode in the right scenarios, you can achieve better modularity and maintainability in your project.
