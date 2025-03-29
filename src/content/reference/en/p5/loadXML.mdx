@@ -26,7 +26,12 @@ description: >
   <code>loadXML('/assets/data.xml')</code>. URLs such as
   <code>'https://example.com/data.xml'</code>
 
-  may be blocked due to browser security.</p>
+  may be blocked due to browser security. The <code>path</code> parameter can
+  also be defined
+
+  as a <code>Request</code>
+
+  object for more advanced usage.</p>
 
   <p>The second parameter, <code>successCallback</code>, is optional. If a
   function is
@@ -38,7 +43,11 @@ description: >
   <a href="/reference/p5/p5.XML">p5.XML</a> object created from the data will be
   passed
 
-  to <code>handleData()</code> as its only argument.</p>
+  to <code>handleData()</code> as its only argument. The return value of the
+  <code>handleData()</code>
+
+  function will be used as the final return value of
+  <code>loadXML('/assets/data.xml', handleData)</code>.</p>
 
   <p>The third parameter, <code>failureCallback</code>, is also optional. If a
   function is
@@ -52,31 +61,29 @@ description: >
   loading. The <code>Error</code> object will be passed to
   <code>handleFailure()</code> as its only
 
-  argument.</p>
+  argument. The return value of the <code>handleFailure()</code> function will
+  be used as the
 
-  <p>Note: Data can take time to load. Calling <code>loadXML()</code> within
+  final return value of <code>loadXML('/assets/data.xml', handleData,
+  handleFailure)</code>.</p>
 
-  <a href="/reference/p5/preload/">preload()</a> ensures data loads before it's
-  used in
+  <p>This function returns a <code>Promise</code> and should be used in an
+  <code>async</code> setup with
 
-  <a href="/reference/p5/setup/">setup()</a> or <a
-  href="/reference/p5/draw/">draw()</a>.</p>
-line: 780
+  <code>await</code>. See the examples for the usage syntax.</p>
+line: 725
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div>
     <code>
     let myXML;
 
     // Load the XML and create a p5.XML object.
-    function preload() {
-      myXML = loadXML('/assets/animals.xml');
-    }
+    async function setup() {
+      myXML = await loadXML('/assets/animals.xml');
 
-    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -114,11 +121,9 @@ example:
     let lastMammal;
 
     // Load the XML and create a p5.XML object.
-    function preload() {
-      loadXML('/assets/animals.xml', handleData);
-    }
+    async function setup() {
+      await loadXML('/assets/animals.xml', handleData);
 
-    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -150,11 +155,9 @@ example:
     let lastMammal;
 
     // Load the XML and preprocess it.
-    function preload() {
-      loadXML('/assets/animals.xml', handleData, handleError);
-    }
+    async function setup() {
+      await loadXML('/assets/animals.xml', handleData, handleError);
 
-    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -186,30 +189,35 @@ example:
     </code>
     </div>
 class: p5
-params:
-  - name: path
-    description: |
-      <p>path of the XML file to be loaded.</p>
-    type: String
-  - name: successCallback
-    description: |
-      <p>function to call once the data is
-                                           loaded. Will be passed the
-                                           <a href="#/p5.XML">p5.XML</a> object.</p>
-    type: Function
-    optional: true
-  - name: errorCallback
-    description: |
-      <p>function to call if the data fails to
-                                         load. Will be passed an <code>Error</code> event
-                                         object.</p>
-    type: Function
-    optional: true
 return:
   description: |-
     XML data loaded into a <a href="#/p5.XML">p5.XML</a>
-                     object.
-  type: p5.XML
+    object.
+  type: Promise<p5.XML>
+overloads:
+  - params:
+      - name: path
+        description: path of the XML file to be loaded.
+        type: String|Request
+      - name: successCallback
+        description: |-
+          function to call once the data is
+          loaded. Will be passed the
+          <a href="#/p5.XML">p5.XML</a> object.
+        optional: 1
+        type: Function
+      - name: errorCallback
+        description: |-
+          function to call if the data fails to
+          load. Will be passed an <code>Error</code> event
+          object.
+        optional: 1
+        type: Function
+    return:
+      description: |-
+        XML data loaded into a <a href="#/p5.XML">p5.XML</a>
+        object.
+      type: Promise<p5.XML>
 chainable: false
 ---
 

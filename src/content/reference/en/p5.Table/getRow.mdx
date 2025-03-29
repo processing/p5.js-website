@@ -3,17 +3,19 @@ title: getRow
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: >
-  <p>Returns a reference to the specified <a
+description: >-
+  Returns a reference to the specified <a
   href="/reference/p5/p5.TableRow">p5.TableRow</a>. The reference
 
-  can then be used to get and set values of the selected row.</p>
-line: 198
+  can then be used to get and set values of the selected row.
+line: 169
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div class="norender">
     <code>
     // Given the CSV file "mammals.csv"
@@ -26,13 +28,11 @@ example:
 
     let table;
 
-    function preload() {
-      //my table is comma separated value "csv"
-      //and has a header specifying the columns labels
-      table = loadTable('/assets/mammals.csv', 'csv', 'header');
-    }
+    async function setup() {
+      // The table is comma separated value "csv"
+      // and has a header specifying the columns labels.
+      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
 
-    function setup() {
       let row = table.getRow(1);
       //print it column by column
       //note: a row is an object, not an array
@@ -45,14 +45,17 @@ example:
     </code>
     </div>
 class: p5.Table
-params:
-  - name: rowID
-    description: |
-      <p>ID number of the row to get</p>
-    type: Integer
 return:
   description: <a href="#/p5.TableRow">p5.TableRow</a> object
   type: p5.TableRow
+overloads:
+  - params:
+      - name: rowID
+        description: ID number of the row to get
+        type: Integer
+    return:
+      description: <a href="#/p5.TableRow">p5.TableRow</a> object
+      type: p5.TableRow
 chainable: false
 ---
 

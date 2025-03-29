@@ -3,54 +3,55 @@ title: setNum
 module: IO
 submodule: Table
 file: src/io/p5.TableRow.js
-description: |
-  <p>Stores a Float value in the TableRow's specified column.
-  The column may be specified by either its ID or title.</p>
-line: 97
+description: |-
+  Stores a Float value in the TableRow's specified column.
+  The column may be specified by either its ID or title.
+line: 111
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
+    <div class="norender"><code>
+    // Given the CSV file "mammals.csv" in the project's "assets" folder:
+    //
+    // id,species,name
+    // 0,Capra hircus,Goat
+    // 1,Panthera pardus,Leopard
+    // 2,Equus zebra,Zebra
 
-     <div class="norender"><code>
-     // Given the CSV file "mammals.csv" in the project's "assets" folder:
-     //
-     // id,species,name
-     // 0,Capra hircus,Goat
-     // 1,Panthera pardus,Leopard
-     // 2,Equus zebra,Zebra
+    let table;
 
-     let table;
+    async function setup() {
+      // The table is comma separated value "csv"
+      // and has a header specifying the columns labels.
+      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
 
-     function preload() {
-     //my table is comma separated value "csv"
-     //and has a header specifying the columns labels
-     table = loadTable('/assets/mammals.csv', 'csv', 'header');
-     }
+      let rows = table.getRows();
+      for (let r = 0; r < rows.length; r++) {
+        rows[r].setNum('id', r + 10);
+      }
 
-     function setup() {
-     let rows = table.getRows();
-     for (let r = 0; r < rows.length; r++) {
-       rows[r].setNum('id', r + 10);
-     }
+      print(table.getArray());
 
-     print(table.getArray());
-
-     describe('no image displayed');
-     }
-     </code></div>
+      describe('no image displayed');
+    }
+    </code></div>
 class: p5.TableRow
-params:
-  - name: column
-    description: |
-      <p>Column ID (Number)
-                                    or Title (String)</p>
-    type: String|Integer
-  - name: value
-    description: |
-      <p>The value to be stored
-                                    as a Float</p>
-    type: Number|String
+overloads:
+  - params:
+      - name: column
+        description: |-
+          Column ID (Number)
+          or Title (String)
+        type: String|Integer
+      - name: value
+        description: |-
+          The value to be stored
+          as a Float
+        type: Number|String
 chainable: false
 ---
 

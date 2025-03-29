@@ -1,35 +1,35 @@
 ---
 title: mouseButton
 module: Events
-submodule: Mouse
-file: src/events/mouse.js
+submodule: Pointer
+file: src/events/pointer.js
 description: >
-  <p>A String system variable that contains the value of the last mouse button
+  <p>An object that tracks the current state of mouse buttons, showing which
 
-  pressed.</p>
+  buttons are pressed at any given moment.</p>
 
-  <p>The <code>mouseButton</code> variable is either <code>LEFT</code>,
-  <code>RIGHT</code>, or <code>CENTER</code>,
+  <p>The <code>mouseButton</code> object has three properties:</p>
 
-  depending on which button was pressed last.</p>
-
-  <p>Note: Different browsers may track <code>mouseButton</code> differently.
-  See
+  <ul><li><code>left</code>: A boolean indicating whether the left mouse button
+  is pressed.</li><li><code>right</code>: A boolean indicating whether the right
+  mouse button is pressed.</li><li><code>center</code>: A boolean indicating
+  whether the middle mouse button (scroll wheel button) is
+  pressed.</li></ul><p>Note: Different browsers may track
+  <code>mouseButton</code> differently. See
 
   <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons/"
   target="_blank">MDN</a>
 
   for more information.</p>
-line: 693
+line: 762
 isConstructor: false
 itemtype: property
 example:
   - |-
-
     <div>
     <code>
     function setup() {
-      createCanvas(100, 100);
+      createCanvas(200, 200);
 
       describe(
         'A gray square with black text at its center. The text changes from 0 to either "left" or "right" when the user clicks a mouse button.'
@@ -40,11 +40,13 @@ example:
       background(200);
 
       // Style the text.
-      textAlign(CENTER);
+      textAlign(CENTER, CENTER);
       textSize(16);
 
       // Display the mouse button.
-      text(mouseButton, 50, 50);
+      text(`Left: ${mouseButton.left}`, width / 2, height / 2 - 20);
+      text(`Right: ${mouseButton.right}`, width / 2, height / 2);
+      text(`Center: ${mouseButton.center}`, width / 2, height / 2 + 20);
     }
     </code>
     </div>
@@ -63,13 +65,13 @@ example:
       background(200);
 
       if (mouseIsPressed === true) {
-        if (mouseButton === LEFT) {
+        if (mouseButton.left) {
           circle(50, 50, 50);
         }
-        if (mouseButton === RIGHT) {
+        if (mouseButton.right) {
           square(25, 25, 50);
         }
-        if (mouseButton === CENTER) {
+        if (mouseButton.center) {
           triangle(23, 75, 50, 20, 78, 75);
         }
       }
@@ -77,7 +79,7 @@ example:
     </code>
     </div>
 class: p5
-type: Constant
+type: Object
 ---
 
 

@@ -6,22 +6,22 @@ file: src/io/files.js
 description: >
   <p>Method for executing an HTTP request. If data type is not specified,
 
-  p5 will try to guess based on the URL, defaulting to text.<br><br>
+  it will default to <code>'text'</code>.</p>
 
-  For more advanced use, you may also pass in the path as the first argument
+  <p>This function is meant for more advanced usage of HTTP requests in p5.js.
+  It is
 
-  and a object as the second argument, the signature follows the one specified
+  best used when a <code>Request</code>
 
-  in the Fetch API specification.
+  object is passed to the <code>path</code> parameter.</p>
 
-  This method is suitable for fetching files up to size of 64MB when "GET" is
-  used.</br></br></p>
-line: 1208
+  <p>This method is suitable for fetching files up to size of 64MB when "GET" is
+  used.</p>
+line: 1087
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div>
     <code>
     // Examples use USGS Earthquake API:
@@ -31,7 +31,7 @@ example:
     let earthquakes;
     let eqFeatureIndex = 0;
 
-    function preload() {
+    function setup() {
       let url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson';
       httpDo(
         url,
@@ -71,72 +71,57 @@ class: p5
 return:
   description: |-
     A promise that resolves with the data when the operation
-                      completes successfully or rejects with the error after
-                      one occurs.
+    completes successfully or rejects with the error after
+    one occurs.
   type: Promise
 overloads:
-  - line: 1208
-    params:
+  - params:
       - name: path
-        description: |
-          <p>name of the file or url to load</p>
-        type: String
+        description: name of the file or url to load
+        type: String|Request
       - name: method
-        description: |
-          <p>either "GET", "POST", or "PUT",
-                                             defaults to "GET"</p>
+        description: |-
+          either "GET", "POST", "PUT", "DELETE",
+          or other HTTP request methods
+        optional: 1
         type: String
-        optional: true
       - name: datatype
-        description: |
-          <p>"json", "jsonp", "xml", or "text"</p>
+        description: '"json", "jsonp", "xml", or "text"'
+        optional: 1
         type: String
-        optional: true
       - name: data
-        description: |
-          <p>param data passed sent with request</p>
+        description: param data passed sent with request
+        optional: 1
         type: Object
-        optional: true
       - name: callback
-        description: |
-          <p>function to be executed after
-                                             <a href="#/p5/httpGet">httpGet()</a> completes, data is passed in
-                                             as first argument</p>
+        description: |-
+          function to be executed after
+          <a href="#/p5/httpGet">httpGet()</a> completes, data is passed in
+          as first argument
+        optional: 1
         type: Function
-        optional: true
       - name: errorCallback
-        description: |
-          <p>function to be executed if
-                                             there is an error, response is passed
-                                             in as first argument</p>
+        description: |-
+          function to be executed if
+          there is an error, response is passed
+          in as first argument
+        optional: 1
         type: Function
-        optional: true
     return:
       description: |-
         A promise that resolves with the data when the operation
-                          completes successfully or rejects with the error after
-                          one occurs.
+        completes successfully or rejects with the error after
+        one occurs.
       type: Promise
-  - line: 1279
-    params:
+  - params:
       - name: path
-        description: ''
-        type: String
-      - name: options
-        description: >
-          <p>Request object options as documented in the
-                                             "fetch" API
-          <a
-          href="https://developer.mozilla.org/en/docs/Web/API/Fetch_API">reference</a></p>
-        type: Object
+        type: String|Request
       - name: callback
-        description: ''
+        optional: 1
         type: Function
-        optional: true
       - name: errorCallback
-        description: ''
+        optional: 1
         type: Function
-        optional: true
     return:
       description: ''
       type: Promise
