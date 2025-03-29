@@ -6,7 +6,6 @@ featuredImage: ../images/featured/FontsA.png
 featuredImageAlt: "Bold typography in contrasting white and black against a deep blue background. It features the words 'FONTSTYLE' in black at the top. 'TYPEFACE' is in white in the middle. 'abc' is in white at the bottom. Each is in a different font size. This creates a bold and striking display of font styles and typefaces."
 relatedContent:
   references:
-    - en/p5/preload
     - en/p5/loadfont
     - en/p5/textfont
     - en/p5/text
@@ -137,19 +136,18 @@ In your web editor, click on the + icon on the top right corner of your screen a
 ![A dynamic GIF illustrating how to create a folder on the p5.js web editor. You open the files window on the top left by clicking the “&gt;” icon, click the plus icon and select the “Create Folder" option.](../images/web-design/create-folder.gif)
 
 
-### Step 5 – Preload your font
+### Step 5 – Load your font
 
-p5.js’ [`preload()`](/reference/p5/preload)  function loads external assets before the rest of your sketch is executed. The `preload()` function is called directly before `setup()`. It is used to handle asynchronous loading of external files in a blocking way. If the `preload()` function is defined, `setup()` will wait until any load calls within have finished.
+p5.js’ [`setup()`](/reference/p5/preload) function can load external assets. If you add the `async` keyword before `function setup`, you can `await` the loading of an asset.
 
 For example: 
 
 <EditableSketch code={`
 let myFont;
-function preload() {
+async function setup() {
   // Load a custom font before the sketch starts
-  myFont = loadFont('Bold.ttf');
-}
-function setup() {
+  myFont = await loadFont('Bold.ttf');
+
   createCanvas(400, 200);
   background(255);
   // Apply the loaded font
@@ -161,18 +159,19 @@ function setup() {
 }
 `} />
 
-Inside the `preload()` function, you can use p5.js's various asset-loading functions such as `loadImage()`, `loadSound()`, and `loadFont()` to load external files. These functions take the path to the asset file as an argument.
+Inside the `async function setup()`, you can use p5.js's various asset-loading functions such as `loadImage()`, `loadSound()`, and `loadFont()` to load external files. These functions take the path to the asset file as an argument.
 
-At the start of your `sketch.js` file, write the following code:
+At the start of your `sketch.js` file, modify your `setup` function to be the following code:
 
 ```js
 let myFont;
-function preload(){
-  myFont = loadFont("assets/PressStart2P-Regular.ttf");
-}
+async function setup() {
+  myFont = await loadFont("assets/PressStart2P-Regular.ttf");
+
+  // ...the rest of setup goes below
 ```
 
-You declare a variable myFont to store your font. The `preload()` function loads your font with the `loadFont()` function, passing your file path as the argument. 
+You declare a variable myFont to store your font. The `setup()` function waits for your font to load with the `loadFont()` function, passing your file path as the argument. 
 
 
 ### Step 6 – Use your fonts in your display messages
