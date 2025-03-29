@@ -2,7 +2,7 @@
 title: beginShape
 module: Shape
 submodule: Vertex
-file: src/core/shape/vertex.js
+file: src/shape/vertex.js
 description: >
   <p>Begins adding vertices to a custom shape.</p>
 
@@ -17,45 +17,28 @@ description: >
 
   adding them.</p>
 
-  <p>The parameter, <code>kind</code>, sets the kind of shape to make. By
-  default, any
+  <p>The parameter, <code>kind</code>, sets the kind of shape to make. The
+  available kinds are:</p>
 
-  irregular polygon can be drawn. The available modes for kind are:</p>
-
-  <ul>
-
-  <li><code>POINTS</code> to draw a series of points.</li>
-
-  <li><code>LINES</code> to draw a series of unconnected line segments.</li>
-
-  <li><code>TRIANGLES</code> to draw a series of separate triangles.</li>
-
-  <li><code>TRIANGLE_FAN</code> to draw a series of connected triangles sharing
-  the first vertex in a fan-like fashion.</li>
-
-  <li><code>TRIANGLE_STRIP</code> to draw a series of connected triangles in
-  strip fashion.</li>
-
-  <li><code>QUADS</code> to draw a series of separate quadrilaterals
-  (quads).</li>
-
-  <li><code>QUAD_STRIP</code> to draw quad strip using adjacent edges to form
-  the next quad.</li>
-
-  <li><code>TESS</code> to create a filling curve by explicit tessellation
-  (WebGL only).</li>
-
-  </ul>
-
-  <p>After calling <code>beginShape()</code>, shapes can be built by calling
+  <ul><li><code>PATH</code> (the default) to draw shapes by tracing out the path
+  along their edges.</li><li><code>POINTS</code> to draw a series of
+  points.</li><li><code>LINES</code> to draw a series of unconnected line
+  segments.</li><li><code>TRIANGLES</code> to draw a series of separate
+  triangles.</li><li><code>TRIANGLE_FAN</code> to draw a series of connected
+  triangles sharing the first vertex in a fan-like
+  fashion.</li><li><code>TRIANGLE_STRIP</code> to draw a series of connected
+  triangles in strip fashion.</li><li><code>QUADS</code> to draw a series of
+  separate quadrilaterals (quads).</li><li><code>QUAD_STRIP</code> to draw quad
+  strip using adjacent edges to form the next quad.</li></ul><p>After calling
+  <code>beginShape()</code>, shapes can be built by calling
 
   <a href="/reference/p5/vertex/">vertex()</a>,
 
   <a href="/reference/p5/bezierVertex/">bezierVertex()</a>,
 
-  <a href="/reference/p5/quadraticVertex/">quadraticVertex()</a>, and/or
+  <a href="/reference/p5/bezierVertex/">bezierVertex()</a>, and/or
 
-  <a href="/reference/p5/curveVertex/">curveVertex()</a>. Calling
+  <a href="/reference/p5/splineVertex/">splineVertex()</a>. Calling
 
   <a href="/reference/p5/endShape/">endShape()</a> will stop adding vertices to
   the
@@ -80,12 +63,11 @@ description: >
   and
 
   <a href="/reference/p5/endShape/">endShape()</a>.</p>
-line: 129
+line: 400
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div>
     <code>
     function setup() {
@@ -368,7 +350,7 @@ example:
 
       // Start drawing the shape.
       // Draw a series of quadrilaterals.
-      beginShape(TESS);
+      beginShape(PATH);
 
       // Add the vertices.
       vertex(-30, -30, 0);
@@ -407,7 +389,7 @@ example:
 
       // Start drawing the shape.
       // Draw a series of quadrilaterals.
-      beginShape(TESS);
+      beginShape(PATH);
 
       // Add the vertices.
       fill('red');
@@ -432,13 +414,15 @@ example:
     </code>
     </div>
 class: p5
-params:
-  - name: kind
-    description: |
-      <p>either POINTS, LINES, TRIANGLES, TRIANGLE_FAN
-                                     TRIANGLE_STRIP, QUADS, QUAD_STRIP or TESS.</p>
-    type: Constant
-    optional: true
+overloads:
+  - params:
+      - name: kind
+        description: |-
+          either POINTS, LINES, TRIANGLES, TRIANGLE_FAN
+          TRIANGLE_STRIP, QUADS, QUAD_STRIP or PATH. Defaults to PATH.
+        optional: 1
+        type: >-
+          POINTS|LINES|TRIANGLES|TRIANGLE_FAN|TRIANGLE_STRIP|QUADS|QUAD_STRIP|PATH
 chainable: true
 ---
 

@@ -10,11 +10,9 @@ description: >
 
   <p>Each shader may let you override bits of its behavior. Each bit is called
 
-  a <em>hook.</em> A hook is either for the <em>vertex</em> shader, if it
-  affects the
+  a hook. A hook is either for the vertex shader, if it affects the
 
-  position of vertices, or in the <em>fragment</em> shader, if it affects the
-  pixel
+  position of vertices, or in the fragment shader, if it affects the pixel
 
   color. You can inspect the different hooks available by calling
 
@@ -59,12 +57,11 @@ description: >
 
   <code>vertexDeclarations</code> and <code>fragmentDeclarations</code>
   keys.</p>
-line: 343
+line: 370
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div modernizr='webgl'>
     <code>
     let myShader;
@@ -73,27 +70,27 @@ example:
       createCanvas(200, 200, WEBGL);
       myShader = baseMaterialShader().modify({
         uniforms: {
-          'float time': () => millis()
+          'float time': () => millis() // Uniform for time
         },
-        'vec3 getWorldPosition': `(vec3 pos) {
-          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
-          return pos;
+        'Vertex getWorldInputs': `(Vertex inputs) {
+          inputs.position.y +=
+            20. * sin(time * 0.001 + inputs.position.x * 0.05);
+          return inputs;
         }`
       });
     }
 
     function draw() {
       background(255);
-      shader(myShader);
-      lights();
-      noStroke();
-      fill('red');
-      sphere(50);
+      shader(myShader); // Apply the custom shader
+      lights();         // Enable lighting
+      noStroke();       // Disable stroke
+      fill('red');      // Set fill color to red
+      sphere(50);       // Draw a sphere with the shader applied
     }
     </code>
     </div>
   - |-
-
     <div modernizr='webgl'>
     <code>
     let myShader;
@@ -103,9 +100,10 @@ example:
       myShader = baseMaterialShader().modify({
         // Manually specifying a uniform
         declarations: 'uniform float time;',
-        'vec3 getWorldPosition': `(vec3 pos) {
-          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
-          return pos;
+        'Vertex getWorldInputs': `(Vertex inputs) {
+          inputs.position.y +=
+            20. * sin(time * 0.001 + inputs.position.x * 0.05);
+          return inputs;
         }`
       });
     }
@@ -122,17 +120,19 @@ example:
     </code>
     </div>
 class: p5.Shader
-params:
-  - name: hooks
-    description: |
-      <p>The hooks in the shader to replace.</p>
-    type: Object
-    optional: true
 return:
   description: ''
   type: p5.Shader
+overloads:
+  - params:
+      - name: hooks
+        description: The hooks in the shader to replace.
+        optional: 1
+        type: Object
+    return:
+      description: ''
+      type: p5.Shader
 chainable: false
-beta: true
 ---
 
 

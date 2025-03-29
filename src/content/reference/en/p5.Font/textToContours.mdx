@@ -1,0 +1,119 @@
+---
+title: textToContours
+module: Typography
+submodule: ''
+file: src/type/p5.Font.js
+description: >
+  <p>Returns an array of arrays of points outlining a string of text written
+  using the
+
+  font. Each array represents a contour, so the letter O will have two outer
+  arrays:
+
+  one for the outer edge of the shape, and one for the inner edge of the
+  hole.</p>
+
+  <p>Each point object in a contour array has three properties that describe the
+
+  point's location and orientation, called its path angle. For example,
+
+  <code>{ x: 10, y: 20, alpha: 450 }</code>.</p>
+
+  <p>The first parameter, <code>str</code>, is a string of text. The second and
+  third
+
+  parameters, <code>x</code> and <code>y</code>, are the text's position. By
+  default, they set the
+
+  coordinates of the bounding box's bottom-left corner. See
+
+  <a href="/reference/p5/textAlign/">textAlign()</a> for more ways to align
+  text.</p>
+
+  <p>The fourth parameter, <code>options</code>, is also optional.
+  <code>font.textToPoints()</code>
+
+  expects an object with the following properties:</p>
+
+  <p><code>sampleFactor</code> is the ratio of the text's path length to the
+  number of
+
+  samples. It defaults to 0.1. Higher values produce more points along the
+
+  path and are more precise.</p>
+
+  <p><code>simplifyThreshold</code> removes collinear points if it's set to a
+  number other
+
+  than 0. The value represents the threshold angle to use when determining
+
+  whether two edges are collinear.</p>
+line: 238
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div>
+    <code>
+    let font;
+
+    async function setup() {
+      createCanvas(100, 100);
+      font = await loadFont('//assets/inconsolata.otf');
+    }
+
+    function draw() {
+      background(200);
+      textAlign(CENTER, CENTER);
+      textSize(30);
+
+      // Get the point array.
+      let contours = font.textToContours('p5*js', width/2, height/2, { sampleFactor: 0.5 });
+
+      beginShape();
+      for (const pts of contours) {
+        beginContour();
+        for (const pt of pts) {
+          vertex(pt.x + 5*sin(pt.y*0.1 + millis()*0.01), pt.y);
+        }
+        endContour(CLOSE);
+      }
+      endShape();
+
+      describe('The text p5*js wobbling over time');
+    }
+    </code>
+    </div>
+class: p5.Font
+return:
+  description: >-
+    array of point objects, each with <code>x</code>, <code>y</code>, and
+    <code>alpha</code> (path angle) properties.
+  type: 'Object[][]'
+overloads:
+  - params:
+      - name: str
+        description: string of text.
+        type: String
+      - name: x
+        description: x-coordinate of the text.
+        type: Number
+      - name: 'y'
+        description: y-coordinate of the text.
+        type: Number
+      - name: options
+        description: |-
+          object with sampleFactor and simplifyThreshold
+          properties.
+        optional: 1
+        type: Object
+    return:
+      description: >-
+        array of point objects, each with <code>x</code>, <code>y</code>, and
+        <code>alpha</code> (path angle) properties.
+      type: 'Object[][]'
+chainable: false
+---
+
+
+# textToContours

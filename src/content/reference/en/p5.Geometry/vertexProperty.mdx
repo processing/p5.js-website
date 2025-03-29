@@ -1,0 +1,148 @@
+---
+title: vertexProperty
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/p5.Geometry.js
+description: >
+  <p>Sets the shader's vertex property or attribute variables.</p>
+
+  <p>An vertex property or vertex attribute is a variable belonging to a vertex
+  in a shader. p5.js provides some
+
+  default properties, such as <code>aPosition</code>, <code>aNormal</code>,
+  <code>aVertexColor</code>, etc. These are
+
+  set using <a href="/reference/p5/vertex/">vertex()</a>, <a
+  href="/reference/p5/normal/">normal()</a>
+
+  and <a href="/reference/p5/fill/">fill()</a> respectively. Custom properties
+  can also
+
+  be defined within <a href="/reference/p5/beginShape/">beginShape()</a> and
+
+  <a href="/reference/p5/endShape/">endShape()</a>.</p>
+
+  <p>The first parameter, <code>propertyName</code>, is a string with the
+  property's name.
+
+  This is the same variable name which should be declared in the shader, as in
+
+  <code>in vec3 aProperty</code>, similar to .<code>setUniform()</code>.</p>
+
+  <p>The second parameter, <code>data</code>, is the value assigned to the
+  shader variable. This value
+
+  will be pushed directly onto the Geometry object. There should be the same
+  number
+
+  of custom property values as vertices, this method should be invoked once for
+  each
+
+  vertex.</p>
+
+  <p>The <code>data</code> can be a Number or an array of numbers. Tn the shader
+  program the type
+
+  can be declared according to the WebGL specification. Common types include
+  <code>float</code>,
+
+  <code>vec2</code>, <code>vec3</code>, <code>vec4</code> or matrices.</p>
+
+  <p>See also the global <a
+  href="/reference/p5/vertexProperty/">vertexProperty()</a> function.</p>
+line: 1842
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div>
+    <code>
+    let geo;
+
+    function cartesianToSpherical(x, y, z) {
+      let r = sqrt(pow(x, x) + pow(y, y) + pow(z, z));
+      let theta = acos(z / r);
+      let phi = atan2(y, x);
+      return { theta, phi };
+    }
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Modify the material shader to display roughness.
+      const myShader = baseMaterialShader().modify({
+        vertexDeclarations:`in float aRoughness;
+                            out float vRoughness;`,
+        fragmentDeclarations: 'in float vRoughness;',
+        'void afterVertex': `() {
+            vRoughness = aRoughness;
+        }`,
+        'vec4 combineColors': `(ColorComponents components) {
+                vec4 color = vec4(0.);
+                color.rgb += components.diffuse * components.baseColor * (1.0-vRoughness);
+                color.rgb += components.ambient * components.ambientColor;
+                color.rgb += components.specular * components.specularColor * (1.0-vRoughness);
+                color.a = components.opacity;
+                return color;
+        }`
+      });
+
+      // Create the Geometry object.
+      geo = buildGeometry(function() {
+        fill('hotpink');
+        sphere(45, 50, 50);
+      });
+
+      // Set the roughness value for every vertex.
+      for (let v of geo.vertices){
+
+        // convert coordinates to spherical coordinates
+        let spherical = cartesianToSpherical(v.x, v.y, v.z);
+
+        // Set the custom roughness vertex property.
+        let roughness = noise(spherical.theta*5, spherical.phi*5);
+        geo.vertexProperty('aRoughness', roughness);
+      }
+
+      // Use the custom shader.
+      shader(myShader);
+
+      describe('A rough pink sphere rotating on a blue background.');
+    }
+
+    function draw() {
+      // Set some styles and lighting
+      background('lightblue');
+      noStroke();
+
+      specularMaterial(255,125,100);
+      shininess(2);
+
+      directionalLight('white', -1, 1, -1);
+      ambientLight(320);
+
+      rotateY(millis()*0.001);
+
+      // Draw the geometry
+      model(geo);
+    }
+    </code>
+    </div>
+class: p5.Geometry
+overloads:
+  - params:
+      - name: propertyName
+        description: the name of the vertex property.
+        type: String
+      - name: data
+        description: the data tied to the vertex property.
+        type: 'Number|Number[]'
+      - name: size
+        description: optional size of each unit of data.
+        optional: 1
+        type: Number
+chainable: false
+---
+
+
+# vertexProperty

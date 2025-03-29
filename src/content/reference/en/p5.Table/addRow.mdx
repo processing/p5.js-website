@@ -4,8 +4,8 @@ module: IO
 submodule: Table
 file: src/io/p5.Table.js
 description: >
-  <p>Use <a href="/reference/p5.Table/addRow/">addRow()</a> to add a new row of data
-  to a <a href="/reference/p5/p5.Table">p5.Table</a> object. By default,
+  <p>Use <a href="/reference/p5.Table/addRow/">addRow()</a> to add a new row of
+  data to a <a href="/reference/p5/p5.Table">p5.Table</a> object. By default,
 
   an empty row is created. Typically, you would store a reference to
 
@@ -18,56 +18,59 @@ description: >
   as a parameter, then that row is
 
   duplicated and added to the table.</p>
-line: 90
+line: 74
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
+    <div class="norender">
+    <code>
+    // Given the CSV file "mammals.csv"
+    // in the project's "assets" folder:
+    //
+    // id,species,name
+    // 0,Capra hircus,Goat
+    // 1,Panthera pardus,Leopard
+    // 2,Equus zebra,Zebra
 
-     <div class="norender">
-     <code>
-     // Given the CSV file "mammals.csv"
-     // in the project's "assets" folder:
-     //
-     // id,species,name
-     // 0,Capra hircus,Goat
-     // 1,Panthera pardus,Leopard
-     // 2,Equus zebra,Zebra
+    let table;
 
-     let table;
+    async function setup() {
+      // The table is comma separated value "csv"
+      // and has a header specifying the columns labels.
+      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
 
-     function preload() {
-     //my table is comma separated value "csv"
-     //and has a header specifying the columns labels
-     table = loadTable('/assets/mammals.csv', 'csv', 'header');
-     }
+      //add a row
+      let newRow = table.addRow();
+      newRow.setString('id', table.getRowCount() - 1);
+      newRow.setString('species', 'Canis Lupus');
+      newRow.setString('name', 'Wolf');
 
-     function setup() {
-     //add a row
-     let newRow = table.addRow();
-     newRow.setString('id', table.getRowCount() - 1);
-     newRow.setString('species', 'Canis Lupus');
-     newRow.setString('name', 'Wolf');
+      //print the results
+      for (let r = 0; r < table.getRowCount(); r++)
+        for (let c = 0; c < table.getColumnCount(); c++)
+          print(table.getString(r, c));
 
-     //print the results
-     for (let r = 0; r < table.getRowCount(); r++)
-       for (let c = 0; c < table.getColumnCount(); c++)
-         print(table.getString(r, c));
-
-     describe('no image displayed');
-     }
-     </code>
-     </div>
+      describe('no image displayed');
+    }
+    </code>
+    </div>
 class: p5.Table
-params:
-  - name: row
-    description: |
-      <p>row to be added to the table</p>
-    type: p5.TableRow
-    optional: true
 return:
   description: the row that was added
   type: p5.TableRow
+overloads:
+  - params:
+      - name: row
+        description: row to be added to the table
+        optional: 1
+        type: p5.TableRow
+    return:
+      description: the row that was added
+      type: p5.TableRow
 chainable: false
 ---
 
