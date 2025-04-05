@@ -67,10 +67,12 @@ export const CodeEmbed = (props) => {
     setRendered(true);
 
     // Includes p5.min.js script to be used by `CodeFrame` iframe(s)
-    const p5ScriptElement = document.createElement("script");
-    p5ScriptElement.id = "p5ScriptTag";
-    p5ScriptElement.src = cdnLibraryUrl;
-    document.head.appendChild(p5ScriptElement);
+    if (!document.getElementById("p5ScriptTag")) {
+      const p5ScriptElement = document.createElement("script");
+      p5ScriptElement.id = "p5ScriptTag";
+      p5ScriptElement.src = cdnLibraryUrl;
+      document.head.appendChild(p5ScriptElement);
+    }
   }, []);
 
   if (!rendered) return <div className="code-placeholder" />;
