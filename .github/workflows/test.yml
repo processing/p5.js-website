@@ -34,6 +34,25 @@ jobs:
         run: npm ci
       - name: Typecheck
         run: npm run check
+
+  check-ts-ignore-check:
+    name: Check ts-ignore
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Changed Files
+        id: get_changed_files
+        uses: tj-actions/changed-files@v45
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Run TS Ignore Check
+        run: python3 .github/scripts/detect_ts_ignore.py --files ${{ steps.get_changed_files.outputs.all_changed_files }}
   build:
     runs-on: ubuntu-latest
     steps:
