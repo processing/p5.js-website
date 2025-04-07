@@ -597,17 +597,25 @@ Try 'swizzling' the return value and writing something like
 </ Callout>
 
 ## Review
-We have written 4 shaders and learned to manipulate vertex and fragment shaders in p5.strands. We have tried several techniques, including GPU instancing, post-processing, and per-pixel coloring. The finished code for this project is posted below, with the example sketch.
+We have written 4 shaders and learned to manipulate vertex and fragment shaders in p5.strands.
 
-### What next?
-Many GLSL examples can be ported to p5.strands, as a large amount of the language features are supported. We have functions to construct GLSL types by doing `vec4(1.0)`, so some helper functions can be copied, such as the random function we made earlier, exactly. For more resources on shaders, try:
-- [p5.js](/tutorials/intro-to-shaders) for another p5.js tutorial
-- [shaders in p5.js](https://itp-xstory.github.io/p5js-shaders/#/)
-- [Shadertoy](https://www.shadertoy.com/) for some examples of what shaders can do
-- [The Book of Shaders](http://www.thebookofshaders.com/) for learning more about fragment shaders
+- **Basic Color Shader** - We started with a simple modification of the base color shader, learning how to access and modify the final color of an object.
+- **Instanced Particles** - We tried our hand at GPU instancing and rendered hundreds of particles.
+- **Fresnel Edge Highlighting** - We made a more advanced effect to make a glowing edge on 3D objects.
+- **Post-processing** - We used two filter shaders to tie the scene together.
+
+The finished code for this project is posted below, with the example sketch.
+
+### What's next?
+Many GLSL examples can be ported to p5.strands, as a large amount of the language features are supported. We have functions to construct GLSL types by doing `vec4(1.0)`, so some helper functions can be copied, such as the random function we used earlier. Find some example effects you wish to create, and write the code strand by strand.
+
+For more resources on shaders, try:
+- [p5.js](/tutorials/intro-to-shaders), for a similar p5.js tutorial using GLSL
+- [p5.js shaders](https://itp-xstory.github.io/p5js-shaders/#/), a shader guide by Casey Conchinha and Louise Lessél.
+- [Shadertoy](https://www.shadertoy.com/), a massive online collection of shaders that are written in a browser editor.
+- [The Book of Shaders](http://www.thebookofshaders.com/), a shader guide by Patricio Gonzalez Vivo and Jen Lowe.
 
 ## Final Code
-
 <EditableSketch code={`
 let instancedShader;
 let instancedStrokeShader;
@@ -621,7 +629,6 @@ function fresnelShaderCallback() {
   const fresnelPower = uniformFloat(2);
   const fresnelBias = uniformFloat(-0.1);
   const fresnelScale = uniformFloat(2);
-  const time = uniformFloat(() => millis())
 
   getCameraInputs((inputs) => {
     let n = normalize(inputs.normal);
@@ -632,11 +639,6 @@ function fresnelShaderCallback() {
     inputs.color = [col, 1];
     return inputs;
   });
-
-  getObjectInputs((inputs) => {
-    inputs.position.x += 0.1 * sin(inputs.position.y + time / 1000)
-    return inputs;
-  })
 }
 
 function starShaderCallback() {
