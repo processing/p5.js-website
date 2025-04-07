@@ -1,8 +1,8 @@
 ---
 title: print
-module: Environment
-submodule: Environment
-file: src/core/environment.js
+module: IO
+submodule: Input
+file: src/io/files.js
 description: >
   <p>Displays text in the web browser's console.</p>
 
@@ -15,14 +15,13 @@ description: >
   <code>print()</code> without
 
   an argument opens the browser's dialog for printing documents.</p>
-line: 21
+line: 1427
 isConstructor: false
 itemtype: method
 example:
   - |-
-
-    <div class="norender">
-    <code>
+    <div>
+    <code class="norender">
     function setup() {
       // Prints "hello, world" to the console.
       print('hello, world');
@@ -30,8 +29,8 @@ example:
     </code>
     </div>
 
-    <div class="norender">
-    <code>
+    <div>
+    <code class="norender">
     function setup() {
       let name = 'ada';
       // Prints "hello, ada" to the console.
@@ -39,12 +38,51 @@ example:
     }
     </code>
     </div>
+  - |-
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Style the text.
+      textAlign(LEFT, CENTER);
+      textFont('Courier New');
+      textSize(12);
+
+      // Display instructions.
+      text('Double-click to save', 5, 50, 90);
+
+      describe('The text "Double-click to save" written in black on a gray background.');
+    }
+
+    // Save the file when the user double-clicks.
+    function doubleClicked() {
+      // Create a p5.PrintWriter object.
+      let myWriter = createWriter('numbers.txt');
+
+      // Add some data to the print stream.
+      myWriter.print('1,2,3,');
+      myWriter.print(['4', '5', '6']);
+
+      // Save the file and close the print stream.
+      myWriter.close();
+    }
+    </code>
+    </div>
 class: p5
-params:
-  - name: contents
-    description: |
-      <p>content to print to the console.</p>
-    type: Any
+overloads:
+  - params:
+      - name: contents
+        description: content to print to the console.
+        type: Any
+  - params:
+      - name: data
+        description: |-
+          data to be written as a string, number,
+          or array of strings and numbers.
+        type: String|Number|Array
 chainable: false
 ---
 

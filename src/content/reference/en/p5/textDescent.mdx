@@ -1,27 +1,69 @@
 ---
 title: textDescent
 module: Typography
-submodule: Attributes
-file: src/typography/attributes.js
-description: |
-  <p>Calculates the descent of the current font at its current size.</p>
-  <p>The descent represents the distance, in pixels, of the character with the
-  longest descender below the baseline.</p>
-line: 396
+submodule: ''
+file: src/type/textCore.js
+description: >
+  <p>Returns the descent of the text.</p>
+
+  <p>The <code>textDescent()</code> function calculates the distance from the
+  baseline to the
+
+  lowest point of the current font. This value represents the descent, which,
+  when combined
+
+  with the ascent (from <code>textAscent()</code>), determines the overall
+  vertical span of the text.
+
+  If a text string is provided as an argument, the descent is calculated based
+  on that specific string;
+
+  otherwise, the descent of the current font is returned.</p>
+line: 1401
 isConstructor: false
 itemtype: method
 example:
   - |-
+    <div>
+    <code>
+    function setup() {
+      createCanvas(400, 300);
+      background(220);
 
+      textSize(48);
+      textAlign(LEFT, BASELINE);
+      textFont('Georgia');
+
+      let s = "Hello, p5.js!";
+      let x = 50, y = 150;
+
+      fill(0);
+      text(s, x, y);
+
+      // Get the descent of the current font
+      let desc = textDescent();
+
+      // Draw a red line at the baseline and a blue line at the bottom of the text
+      stroke('red');
+      line(x, y, x + 200, y); // Baseline
+      stroke('blue');
+      line(x, y + desc, x + 200, y + desc); // Descent (bottom of text)
+
+      noStroke();
+      fill(0);
+      textSize(16);
+      text("textDescent: " + desc.toFixed(2) + " pixels", x, y + desc + 20);
+    }
+    </code>
+    </div>
+  - |-
     <div>
     <code>
     let font;
 
-    function preload()  {
-      font = loadFont('/assets/inconsolata.otf');
-    }
+    async function setup()  {
+      font = await loadFont('/assets/inconsolata.otf');
 
-    function setup()  {
       createCanvas(100, 100);
 
       background(200);
@@ -59,8 +101,19 @@ example:
     </div>
 class: p5
 return:
-  description: descent measured in units of pixels.
+  description: The descent value in pixels.
   type: Number
+overloads:
+  - params:
+      - name: txt
+        description: |-
+          (Optional) The text string for which to calculate the descent.
+          If omitted, the function returns the descent for the current font.
+        optional: 1
+        type: String
+    return:
+      description: The descent value in pixels.
+      type: Number
 chainable: false
 ---
 

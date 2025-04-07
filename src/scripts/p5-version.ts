@@ -9,7 +9,7 @@ const outputFile = path.join(repoRootPath, "src", "globals", "p5-version.ts");
 
 const outputString = (version: string) =>
   `export const p5Version = "${version}" as const;
-export const p5SoundVersion = "0.1.0" as const;\n`;
+export const p5SoundVersion = "0.2.0" as const;\n`;
 
 const run = async () => {
   console.log("Reading latest p5 version to update config...");

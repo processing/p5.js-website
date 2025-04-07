@@ -8,47 +8,49 @@ description: |
   <p>If no column is specified, then the values in all columns and
   rows are processed. A specific column may be referenced by
   either its ID or title.</p>
-line: 752
+line: 702
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
+    <div class="norender"><code>
+    function setup() {
+      let table = new p5.Table();
 
-     <div class="norender"><code>
-     function setup() {
-     let table = new p5.Table();
+      table.addColumn('name');
+      table.addColumn('type');
 
-     table.addColumn('name');
-     table.addColumn('type');
+      let newRow = table.addRow();
+      newRow.setString('name', '   $Lion  ,');
+      newRow.setString('type', ',,,Mammal');
 
-     let newRow = table.addRow();
-     newRow.setString('name', '   $Lion  ,');
-     newRow.setString('type', ',,,Mammal');
+      newRow = table.addRow();
+      newRow.setString('name', '$Snake  ');
+      newRow.setString('type', ',,,Reptile');
 
-     newRow = table.addRow();
-     newRow.setString('name', '$Snake  ');
-     newRow.setString('type', ',,,Reptile');
+      table.removeTokens(',$ ');
+      print(table.getArray());
+    }
 
-     table.removeTokens(',$ ');
-     print(table.getArray());
-     }
-
-     // prints:
-     //  0  "Lion"   "Mamal"
-     //  1  "Snake"  "Reptile"
-     </code></div>
+    // prints:
+    //  0  "Lion"   "Mamal"
+    //  1  "Snake"  "Reptile"
+    </code></div>
 class: p5.Table
-params:
-  - name: chars
-    description: |
-      <p>String listing characters to be removed</p>
-    type: String
-  - name: column
-    description: |
-      <p>Column ID (number)
-                                       or name (string)</p>
-    type: String|Integer
-    optional: true
+overloads:
+  - params:
+      - name: chars
+        description: String listing characters to be removed
+        type: String
+      - name: column
+        description: |-
+          Column ID (number)
+          or name (string)
+        optional: 1
+        type: String|Integer
 chainable: false
 ---
 

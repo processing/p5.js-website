@@ -17,29 +17,21 @@ description: >
 
   included.</p>
 
-  <p>This method is asynchronous, meaning it may not finish before the next
+  <p>This function returns a <code>Promise</code> and should be used in an
+  <code>async</code> setup with
 
-  line in your sketch is executed. Calling <a
-  href="/reference/p5/loadTable/">loadTable()</a> inside <a
-  href="/reference/p5/preload/">preload()</a>
-
-  guarantees to complete the operation before <a
-  href="/reference/p5/setup/">setup()</a> and <a
-  href="/reference/p5/draw/">draw()</a> are called.
-
-  Outside of <a href="/reference/p5/preload/">preload()</a>, you may supply a
-  callback function to handle the
-
-  object:</p>
+  <code>await</code>. See the examples for the usage syntax.</p>
 
   <p>All files loaded and saved use UTF-8 encoding. This method is suitable for
   fetching files up to size of 64MB.</p>
-line: 505
+line: 520
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div class='norender'>
     <code>
     // Given the following CSV file called "mammals.csv"
@@ -52,16 +44,9 @@ example:
 
     let table;
 
-    function preload() {
-      //my table is comma separated value "csv"
-      //and has a header specifying the columns labels
-      table = loadTable('/assets/mammals.csv', 'csv', 'header');
-      //the file can be remote
-      //table = loadTable("https://p5js.org/reference//assets/mammals.csv",
-      //                  "csv", "header");
-    }
+    async function setup() {
+      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
 
-    function setup() {
       //count the columns
       print(table.getRowCount() + ' total rows in table');
       print(table.getColumnCount() + ' total columns in table');
@@ -80,40 +65,40 @@ example:
     </code>
     </div>
 class: p5
-params:
-  - name: filename
-    description: |
-      <p>name of the file or URL to load</p>
-    type: String
-  - name: extension
-    description: |
-      <p>parse the table by comma-separated values "csv", semicolon-separated
-                                           values "ssv", or tab-separated values "tsv"</p>
-    type: String
-    optional: true
-  - name: header
-    description: |
-      <p>"header" to indicate table has header row</p>
-    type: String
-    optional: true
-  - name: callback
-    description: |
-      <p>function to be executed after
-                                           <a href="#/p5/loadTable">loadTable()</a> completes. On success, the
-                                           <a href="#/p5.Table">Table</a> object is passed in as the
-                                           first argument.</p>
-    type: Function
-    optional: true
-  - name: errorCallback
-    description: |
-      <p>function to be executed if
-                                           there is an error, response is passed
-                                           in as first argument</p>
-    type: Function
-    optional: true
 return:
   description: <a href="#/p5.Table">Table</a> object containing data
-  type: Object
+  type: Promise<Object>
+overloads:
+  - params:
+      - name: filename
+        description: name of the file or URL to load
+        type: String|Request
+      - name: separator
+        description: 'the separator character used by the file, defaults to <code>'',''</code>'
+        optional: 1
+        type: String
+      - name: header
+        description: '"header" to indicate table has header row'
+        optional: 1
+        type: String
+      - name: callback
+        description: |-
+          function to be executed after
+          <a href="#/p5/loadTable">loadTable()</a> completes. On success, the
+          <a href="#/p5.Table">Table</a> object is passed in as the
+          first argument.
+        optional: 1
+        type: Function
+      - name: errorCallback
+        description: |-
+          function to be executed if
+          there is an error, response is passed
+          in as first argument
+        optional: 1
+        type: Function
+    return:
+      description: <a href="#/p5.Table">Table</a> object containing data
+      type: Promise<Object>
 chainable: false
 ---
 
