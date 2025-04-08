@@ -200,8 +200,8 @@ example:
     let shape;
 
     // Load the file and create a p5.Geometry object.
-    function setup() {
-      loadModel('/assets/teapot.obj', true, handleModel);
+    async function setup() {
+      await loadModel('/assets/teapot.obj', true, handleModel);
 
       createCanvas(100, 100, WEBGL);
 
@@ -234,8 +234,8 @@ example:
     let shape;
 
     // Load the file and create a p5.Geometry object.
-    function setup() {
-      loadModel('/assets/wrong.obj', true, handleModel, handleError);
+    async function setup() {
+      await loadModel('/assets/teapot.obj', true, handleModel, handleError);
 
       createCanvas(100, 100, WEBGL);
 
@@ -273,8 +273,8 @@ example:
     let shape;
 
     // Load the file and create a p5.Geometry object.
-    function setup() {
-      loadModel('/assets/teapot.obj', true, handleModel, handleError, '.obj');
+    async function setup() {
+      await loadModel('/assets/teapot.obj', '.obj', true, handleModel, handleError);
 
       createCanvas(100, 100, WEBGL);
 
@@ -311,15 +311,15 @@ example:
 
     let shape;
     let options = {
+      fileType: '.obj',
       normalize: true,
       successCallback: handleModel,
-      failureCallback: handleError,
-      fileType: '.obj'
+      failureCallback: handleError
     };
 
     // Load the file and create a p5.Geometry object.
-    function setup() {
-      loadModel('/assets/teapot.obj', options);
+    async function setup() {
+      await loadModel('/assets/teapot.obj', options);
 
       createCanvas(100, 100, WEBGL);
 
@@ -358,6 +358,12 @@ overloads:
       - name: path
         description: path of the model to be loaded.
         type: String|Request
+      - name: fileType
+        description: >-
+          model’s file extension. Either <code>'.obj'</code> or
+          <code>'.stl'</code>.
+        optional: 1
+        type: String
       - name: normalize
         description: 'if <code>true</code>, scale the model to fit the canvas.'
         type: Boolean
@@ -373,27 +379,21 @@ overloads:
           <code>Error</code> event object.
         optional: 1
         type: function(Event)
-      - name: fileType
-        description: >-
-          model’s file extension. Either <code>'.obj'</code> or
-          <code>'.stl'</code>.
-        optional: 1
-        type: String
     return:
       description: the <a href="#/p5.Geometry">p5.Geometry</a> object
       type: Promise<p5.Geometry>
   - params:
       - name: path
         type: String|Request
+      - name: fileType
+        optional: 1
+        type: String
       - name: successCallback
         optional: 1
         type: function(p5.Geometry)
       - name: failureCallback
         optional: 1
         type: function(Event)
-      - name: fileType
-        optional: 1
-        type: String
     return:
       description: new <a href="#/p5.Geometry">p5.Geometry</a> object.
       type: Promise<p5.Geometry>
@@ -404,6 +404,10 @@ overloads:
         description: loading options.
         optional: 1
         type: Object
+      - name: options.fileType
+        description: ''
+        optional: 1
+        type: String
       - name: options.successCallback
         description: ''
         optional: 1
@@ -412,10 +416,6 @@ overloads:
         description: ''
         optional: 1
         type: function(Event)
-      - name: options.fileType
-        description: ''
-        optional: 1
-        type: String
       - name: options.normalize
         description: ''
         optional: 1

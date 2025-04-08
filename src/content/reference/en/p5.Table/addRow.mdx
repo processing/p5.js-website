@@ -18,7 +18,7 @@ description: >
   as a parameter, then that row is
 
   duplicated and added to the table.</p>
-line: 74
+line: 85
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -26,7 +26,7 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender">
+    <div>
     <code>
     // Given the CSV file "mammals.csv"
     // in the project's "assets" folder:
@@ -39,20 +39,31 @@ example:
     let table;
 
     async function setup() {
-      // The table is comma separated value "csv"
-      // and has a header specifying the columns labels.
-      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
+      // Create a 300x300 canvas
+      createCanvas(300, 300);
 
-      //add a row
+      // Load the CSV file from the assets folder with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Add a new row for "Wolf"
       let newRow = table.addRow();
       newRow.setString('id', table.getRowCount() - 1);
       newRow.setString('species', 'Canis Lupus');
-      newRow.setString('name', 'Wolf');
+        newRow.setString('name', 'Wolf');
 
-      //print the results
-      for (let r = 0; r < table.getRowCount(); r++)
-        for (let c = 0; c < table.getColumnCount(); c++)
-          print(table.getString(r, c));
+      // Set text properties
+      fill(0);       // Text color: black
+       textSize(12);  // Adjust text size as needed
+
+      // Display the table data on the canvas
+      // Each cell is positioned based on its row and column
+      for (let r = 0; r < table.getRowCount(); r++) {
+        for (let c = 0; c < table.getColumnCount(); c++) {
+          let x = c * 50 + 10;  // Horizontal spacing for each column
+          let y = r * 30 + 20;  // Vertical spacing for each row
+          text(table.getString(r, c), x * c, y);
+        }
+      }
 
       describe('no image displayed');
     }

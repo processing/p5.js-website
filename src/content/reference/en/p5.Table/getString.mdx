@@ -7,7 +7,7 @@ description: |-
   Retrieves a String value from the Table's specified row and column.
   The row is specified by its ID, while the column may be specified by
   either its ID or title.
-line: 1121
+line: 1215
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -15,32 +15,43 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender">
+    <div>
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
     async function setup() {
-      // The table is comma separated value "csv"
-      // and has a header specifying the columns labels.
-      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
+      // Create a 200x200 canvas
+      createCanvas(200, 200);
+      background(255); // Set background to white
 
-      print(table.getString(0, 0)); // 0
-      print(table.getString(0, 1)); // Capra hircus
-      print(table.getString(0, 2)); // Goat
-      print(table.getString(1, 0)); // 1
-      print(table.getString(1, 1)); // Panthera pardus
-      print(table.getString(1, 2)); // Leopard
-      print(table.getString(2, 0)); // 2
-      print(table.getString(2, 1)); // Equus zebra
-      print(table.getString(2, 2)); // Zebra
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Set text properties
+      fill(0);      // Text color: black
+      textSize(12); // Adjust text size as needed
+
+      // Display each table cell value on the canvas one below the other.
+      // We use a variable 'y' to increment the vertical position.
+      let y = 20;
+      text(table.getString(0, 0), 10, y); // 0
+      y += 20;
+      text(table.getString(0, 1), 10, y); // Capra hircus
+      y += 20;
+      text(table.getString(0, 2), 10, y); // Goat
+      y += 20;
+      text(table.getString(1, 0), 10, y); // 1
+      y += 20;
+      text(table.getString(1, 1), 10, y); // Panthera pardus
+      y += 20;
+      text(table.getString(1, 2), 10, y); // Leopard
+      y += 20;
+      text(table.getString(2, 0), 10, y); // 2
+      y += 20;
+      text(table.getString(2, 1), 10, y); // Equus zebra
+      y += 20;
+      text(table.getString(2, 2), 10, y); // Zebra
+
       describe('no image displayed');
     }
     </code>

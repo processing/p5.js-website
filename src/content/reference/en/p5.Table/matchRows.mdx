@@ -8,7 +8,7 @@ description: |-
   and returns references to those rows. Returns an array, so for must be
   used to iterate through all the rows, as shown in the example. The
   column to search may be specified by either its ID or title.
-line: 447
+line: 490
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -16,25 +16,30 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender">
+    <div>
     <code>
     let table;
 
     function setup() {
-      table = new p5.Table();
+      // Create a 200x200 canvas and set a white background
+      createCanvas(200, 200);
+      background(255);
 
+      // Create a new p5.Table and add columns
+      table = new p5.Table();
       table.addColumn('name');
       table.addColumn('type');
 
-      let newRow = table.addRow();
+      // Add rows to the table
+       let newRow = table.addRow();
       newRow.setString('name', 'Lion');
-      newRow.setString('type', 'Mammal');
+       newRow.setString('type', 'Mammal');
 
       newRow = table.addRow();
       newRow.setString('name', 'Snake');
       newRow.setString('type', 'Reptile');
 
-      newRow = table.addRow();
+       newRow = table.addRow();
       newRow.setString('name', 'Mosquito');
       newRow.setString('type', 'Insect');
 
@@ -42,14 +47,21 @@ example:
       newRow.setString('name', 'Lizard');
       newRow.setString('type', 'Reptile');
 
+      // Search for rows where the "type" starts with "R"
       let rows = table.matchRows('R.*', 'type');
+
+      // Set text properties for drawing on the canvas
+      fill(0);       // Text color: black
+      textSize(12);  // Text size
+
+      // Display each matching row on the canvas
+      let y = 20;
       for (let i = 0; i < rows.length; i++) {
-        print(rows[i].getString('name') + ': ' + rows[i].getString('type'));
+        let output = rows[i].getString('name') + ': ' + rows[i].getString('type');
+        text(output, 10, y);
+        y += 20;
       }
     }
-    // Sketch prints:
-    // Snake: Reptile
-    // Lizard: Reptile
     </code>
     </div>
 class: p5.Table

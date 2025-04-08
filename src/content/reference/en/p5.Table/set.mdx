@@ -7,7 +7,7 @@ description: |-
   Stores a value in the Table's specified row and column.
   The row is specified by its ID, while the column may be specified
   by either its ID or title.
-line: 903
+line: 968
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -15,30 +15,37 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender">
+    <div>
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
     async function setup() {
-      // The table is comma separated value "csv"
-      // and has a header specifying the columns labels.
-      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
+      // Create a 200x200 canvas and set a white background
+      createCanvas(200, 200);
+      background(255);
 
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Update the first row: change species to "Canis Lupus" and name to "Wolf"
       table.set(0, 'species', 'Canis Lupus');
       table.set(0, 'name', 'Wolf');
 
-      //print the results
-      for (let r = 0; r < table.getRowCount(); r++)
-        for (let c = 0; c < table.getColumnCount(); c++)
-          print(table.getString(r, c));
+      // Set text properties for drawing on the canvas
+      fill(0);      // Text color: black
+       textSize(12); // Adjust text size as needed
+
+      // Display the table values on the canvas:
+      // Each row's values are concatenated into a single string and displayed on a new line.
+      let y = 20; // Starting vertical position
+      for (let r = 0; r < table.getRowCount(); r++) {
+        let rowText = "";
+        for (let c = 0; c < table.getColumnCount(); c++) {
+          rowText += table.getString(r, c) + " ";
+        }
+        text(rowText, 10, y * 2.5);
+        y += 20;
+      }
 
       describe('no image displayed');
     }

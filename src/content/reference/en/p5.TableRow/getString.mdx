@@ -7,7 +7,7 @@ description: |-
   Retrieves an String value from the TableRow's specified
   column. The column may be specified by either its ID or
   title.
-line: 296
+line: 345
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -15,35 +15,38 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender"><code>
-    // Given the CSV file "mammals.csv" in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
+    <div>
+    <code>
     let table;
 
     async function setup() {
-      // The table is comma separated value "csv"
-      // and has a header specifying the columns labels.
-      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
+      // Create a 200x100 canvas and set a white background
+      createCanvas(200, 100);
+      background(255);
+
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
 
       let rows = table.getRows();
       let longest = '';
       for (let r = 0; r < rows.length; r++) {
-        let species = rows[r].getString('species');
-        if (longest.length < species.length) {
+         let species = rows[r].getString('species');
+         if (longest.length < species.length) {
           longest = species;
         }
       }
 
-      print('longest: ' + longest);
+      let result = 'longest: ' + longest;
+
+      // Set text properties and display the result on the canvas
+      fill(0);      // Set text color to black
+      textSize(12); // Set text size
+      text(result, 30, 50);
 
       describe('no image displayed');
     }
-    </code></div>
+    </code>
+    </div>
 class: p5.TableRow
 return:
   description: String

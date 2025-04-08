@@ -3,7 +3,7 @@ title: colorMode
 module: Color
 submodule: Setting
 file: src/color/setting.js
-description: >
+description: >-
   <p>Changes the way color values are interpreted.</p>
 
   <p>By default, the <code>Number</code> parameters for <a
@@ -28,13 +28,12 @@ description: >
   model.</p>
 
   <p>Calling <code>colorMode(HSB)</code> or <code>colorMode(HSL)</code> changes
-  to HSB or HSL system
+  to HSB or HSL systems instead of RGB.
 
-  instead of RGB. Pure red is <code>color(0, 100, 100)</code> in HSB and
+  Pure red is <code>color(0, 100, 100)</code> in HSB and <code>color(0, 100,
+  50)</code> in HSL.</p>
 
-  <code>color(0, 100, 50)</code> in HSL.
-
-  Some additional color modes that p5.js supports are:</p>
+  <p>Some additional color modes that p5.js supports are:</p>
 
   <p><code>RGBHDR</code> - High Dynamic Range RGB defined within the Display P3
   color space.
@@ -56,9 +55,9 @@ description: >
   Pure red in HWB is represented as <code>color(0, 0, 0)</code> (i.e., hue 0
   with 0% whiteness and 0% blackness).</p>
 
-  <pre><code>    <img src="/assets/hwb.png"/></code></pre><p><code>LAB</code>   
-  - Also known as CIE Lab, this color mode defines colors with Lightness, Alpha,
-  and Beta.
+  <pre><code>     <img
+  src="/assets/hwb.png"/></code></pre><p><code>LAB</code>    - Also known as CIE
+  Lab, this color mode defines colors with Lightness, Alpha, and Beta.
 
   It is widely used in professional color measurement contexts due to its
   perceptual uniformity.</p>
@@ -89,7 +88,45 @@ description: >
   that they were
 
   created in. Changing modes doesn't affect their appearance.</p>
-line: 1109
+
+  <p><code>Single-value (Grayscale) Colors</code>:When a color is specified with
+  only one parameter (e.g., <code>color(g)</code>), p5.js will interpret it
+
+  as a grayscale color. However, how that single parameter translates into a
+  grayscale value
+
+  depends on the color mode:</p>
+
+  <ul><li><code>RGB, HSB, and HSL</code>: In RGB, the single value is
+  interpreted using the “blue” maximum
+
+  (i.e., the single parameter is mapped to the blue channel's max).
+
+  In HSB and HSL, the single value is mapped to Brightness and Lightness max
+  respectively with hue=0 .
+
+  and saturation=0.</li><li><code>LAB, LCH, OKLAB, and OKLCH</code>: The single
+  value is taken to be the <code>lightness (L)</code> component,
+
+  with the specified max range for that channel.</li><li><code>HWB</code>:
+  Grayscale relies on both the <code>whiteness (W)</code> and <code>blackness
+  (B)</code> channels. Since
+
+  a single value cannot directly account for two distinct channels, the library
+  uses an
+
+  average of their max values to interpret the single grayscale parameter. For
+  instance,
+
+  if W has a max of 50 and B has a max of 100, then the single grayscale
+  parameter
+
+  is mapped using (50 + 100) / 2 = 75 as its effective maximum. More complex or
+  negative
+
+  ranges are currently not handled, so results in those cases may be
+  ambiguous.</li></ul>
+line: 1158
 isConstructor: false
 itemtype: method
 example:
@@ -393,6 +430,34 @@ example:
     }
     </code>
     </div>
+  - |-
+    <div>
+    <code>
+    // Example: Single-value (Grayscale) colors in different color modes.
+    // The rectangle is filled with one parameter, but its final color depends
+    // on how that parameter is interpreted by the current color mode.
+
+    function setup() {
+      createCanvas(100, 100);
+      noStroke();
+      noLoop();
+    }
+
+    function draw() {
+      // Set color mode to RGB with range 0-255
+      colorMode(RGB, 255);
+      
+      // Fill with single grayscale value
+      fill(128);
+      rect(0, 0, 100, 100);
+
+      // Add text label
+      fill(0); // Switch to black text for clarity
+      textSize(14);
+      text("RGB (128)", 10, 20);
+    }
+    </code>
+    </div>
 class: p5
 return:
   description: The current color mode.
@@ -401,9 +466,8 @@ overloads:
   - params:
       - name: mode
         description: |-
-          either RGB, HSB
-          or HSL, corresponding to Red/Green/Blue and
-          Hue/Saturation/Brightness (or Lightness).
+          either RGB, HSB, HSL,
+          or one of the extended modes described above.
         type: RGB|HSB|HSL|RGBHDR|HWB|LAB|LCH|OKLAB|OKLCH
       - name: max
         description: range for all values.

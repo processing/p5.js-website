@@ -9,7 +9,7 @@ description: |-
   Even if multiple rows are possible matches, only the first
   matching row is returned. The column to search may be
   specified by either its ID or title.
-line: 381
+line: 412
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -17,27 +17,30 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender">
+    <div>
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
     async function setup() {
-      // The table is comma separated value "csv"
-      // and has a header specifying the columns labels.
-      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
+      // Create a 200x200 canvas
+      createCanvas(200, 200);
+      background(255); // Set background to white
 
-      //Search using specified regex on a given column, return TableRow object
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Search using the specified regex on column index 1 (species)
       let mammal = table.matchRow(new RegExp('ant'), 1);
-      print(mammal.getString(1));
-      //Output "Panthera pardus"
+      let species = mammal.getString(1);  // "Panthera pardus"
+
+      // Set text properties for drawing on the canvas
+      fill(0);       // Text color: black
+      textSize(12);  // Adjust text size as needed
+      
+      // Display the species on the canvas
+      text(species, 10, 30);
+
+      describe('no image displayed');
     }
     </code>
     </div>

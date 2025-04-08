@@ -51,7 +51,7 @@ description: >
   version 300. If you
 
   are using WebGL 1, write your hooks in GLSL ES 100 instead.</p>
-line: 1594
+line: 1577
 isConstructor: false
 itemtype: method
 example:
@@ -64,18 +64,13 @@ example:
     async function setup() {
       img = await loadImage('/assets/bricks.jpg');
       createCanvas(100, 100, WEBGL);
-      myShader = baseFilterShader().modify({
-        uniforms: {
-          'float time': () => millis()
-        },
-        'vec4 getColor': `(
-          FilterInputs inputs,
-          in sampler2D canvasContent
-        ) {
+      myShader = baseFilterShader().modify(() => {
+        let time = uniformFloat(() => millis());
+        getColor((inputs, canvasContent) => {
           inputs.texCoord.y +=
-            0.01 * sin(time * 0.001 + inputs.position.x * 5.0);
-          return getTexture(canvasContent, inputs.texCoord);
-        }`
+            0.02 * sin(time * 0.001 + inputs.texCoord.x * 5);
+          return texture(canvasContent, inputs.texCoord);
+        });
       });
     }
 

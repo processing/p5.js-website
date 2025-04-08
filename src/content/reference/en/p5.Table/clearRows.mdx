@@ -6,7 +6,7 @@ file: src/io/p5.Table.js
 description: |-
   Removes all rows from a Table. While all rows are removed,
   columns and column titles are maintained.
-line: 545
+line: 598
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -14,7 +14,7 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender">
+    <div>
     <code>
     // Given the CSV file "mammals.csv"
     // in the project's "assets" folder:
@@ -27,13 +27,23 @@ example:
     let table;
 
     async function setup() {
-      // The table is comma separated value "csv"
-      // and has a header specifying the columns labels.
-      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
+      // Create a 200x200 canvas
+      createCanvas(200, 200);
 
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Clear all rows from the table
       table.clearRows();
-      print(table.getRowCount() + ' total rows in table');
-      print(table.getColumnCount() + ' total columns in table');
+
+      // Set text properties
+      fill(0);       // Text color: black
+      textSize(12);  // Adjust text size as needed
+
+      // Display the number of rows and columns on the canvas
+      text(table.getRowCount() + ' total rows in table', 10, 30);
+      text(table.getColumnCount() + ' total columns in table', 10, 60);
+
       describe('no image displayed');
     }
     </code>

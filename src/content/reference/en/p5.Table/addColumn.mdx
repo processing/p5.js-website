@@ -12,7 +12,7 @@ description: >-
   may be easily referenced later by name. (If no title is
 
   specified, the new column's title will be null.)
-line: 592
+line: 644
 deprecated: >-
   p5.Table will be removed in a future version of p5.js to make way for a new,
   friendlier version :)
@@ -20,32 +20,31 @@ isConstructor: false
 itemtype: method
 example:
   - |-
-    <div class="norender">
+    <div>
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
     async function setup() {
-      // The table is comma separated value "csv"
-      // and has a header specifying the columns labels.
-      table = await loadTable('/assets/mammals.csv', 'csv', 'header');
+      createCanvas(300, 300);
+      table = await loadTable('//assets/mammals.csv', ',', 'header');
 
       table.addColumn('carnivore');
       table.set(0, 'carnivore', 'no');
       table.set(1, 'carnivore', 'yes');
       table.set(2, 'carnivore', 'no');
 
-      //print the results
-      for (let r = 0; r < table.getRowCount(); r++)
-        for (let c = 0; c < table.getColumnCount(); c++)
-          print(table.getString(r, c));
+      fill(0);      // Set text color to black
+      textSize(11); // Adjust text size as needed
+
+      for (let r = 0; r < table.getRowCount(); r++) {
+        for (let c = 0; c < table.getColumnCount(); c++) {
+          // Keep column spacing consistent (e.g. 80 pixels apart).
+          let x = c * 80 + 10;
+          let y = r * 30 + 20;
+          // Use x directly, rather than multiplying by c again
+          text(table.getString(r, c), x, y);
+        }
+      }
 
       describe('no image displayed');
     }
