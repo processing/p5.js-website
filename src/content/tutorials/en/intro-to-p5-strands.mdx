@@ -24,23 +24,25 @@ import Callout from "../../../components/Callout/index.astro";
 
 ## Introduction
 
-In this tutorial, we'll explore **p5.strands**, a new way of writing shaders using JavaScript in p5.js. Shaders are programs that run on the GPU to create visual effects that would be difficult to achieve with traditional rendering.
+In this tutorial, we'll explore **p5.strands**, a new way of writing shaders using JavaScript in p5.js. While many shader effects *could* be created with the p5.js 2D renderer, shaders are more efficient for complex effects and can be consistently applied across multiple objects. Like any medium, shaders also offer their own creative possibilities to explore.
 
-While many shader effects *could* be created with the p5.js 2D renderer, shaders are more efficient for complex effects and can be consistently applied across multiple objects. Learning shaders is valuable for anyone interested in graphics programming.
+Shaders are programs that run in parallel on the GPU to create visual effects. The GPU is very efficient at running millions of similar operations in parallel, whereas the CPU (which JavaScript uses) is very efficient at running sequential tasks and managing program logic. 
 
-We'll create a 3D sketch using 4 different shaders, each illustrating different concepts. The code will be built incrementally throughout the tutorial, with the complete code available at the end.
+As it turns out, drawing to the screen (rendering) can take advantage of parallel operations. With shaders, we can make visuals which would otherwise be slow or difficult like realistic lighting simulations, post processing effects, and rendering complex geometries. Learning shaders is valuable for anyone interested in graphics programming. This could be for game development, VFX for films, or for any kind of digital arts. It's also a fun and unique way to think using computers.
+
+To learn how p5.strands works, we'll create a 3D sketch using 4 different shaders, each illustrating different concepts. The code will be built incrementally throughout the tutorial, with the complete code available at the end.
 
 ## What is a Shader?
 
 Shaders are GPU programs written in specialized languages like GLSL for WebGL. There are two main types:
 - **Vertex shaders:** Transform the vertices of shapes (defining where to draw something)
-- **Vertex shaders:** Determine the color of each pixel (defining how to draw something)
+- **Fragment shaders:** Determine the color of each pixel (defining how to draw something)
 
 <Callout title="Info">
   A fragment shader is sometimes referred to as a pixel shader.
 </Callout>
 
-A vertex and a fragment shader are both required to render anything in WebGL mode. Fortunately, p5.js provides some default shaders that you can use, so you don't need to write your own shaders. Consider this sketch:
+A vertex shader and a fragment shader are both required to render anything in WebGL mode. Fortunately, p5.js provides some default shaders that you can use, so you don't need to write your own. Consider this sketch:
 
 <EditableSketch code={`
 let myShader;
@@ -58,16 +60,16 @@ function setup() {
 
 function draw() {
   background(100);
+  // shader(baseColorShader());
   lightingSetup();
-  // shader(baseMaterialShader());
   sphere(80);
 }
 `} />
 
-Even without explicitly setting it, a shader calculates the lighting and shading of the fill, and another does the stroke. Uncommenting shader(baseMaterialShader()) produces the same result because p5.js uses this shader by default.
+Even without explicitly setting it, a shader calculates the lighting and shading of the fill, and another does the stroke. Uncommenting `shader(baseColorShader())` produces a different result, where the blue tint of the lighting does not affect the visible color of the sphere.
 
 <Callout title="Tip">
-Try changing the 2nd line in `draw` to use `baseColorShader()` instead. The blue tint of the light in `lightingSetup` is taken into account by the material shader.
+Try uncommenting the 2nd line in `draw` to use `baseColorShader()` instead. The blue tint of the light in `lightingSetup` is taken into account by the material shader.
 </ Callout>
 
 Alternatively, we can use the `baseColorShader` instead and the fill is now a solid white color, not affected by lighting. The filters available when you call `filter()` are also shaders which p5.js provides for you.
@@ -80,18 +82,21 @@ p5.strands takes its name from the way shaders process information in parallel, 
 
 In the rest of p5.js, we're accustomed to writing instructions that run sequentially, one after another. We might call `circle(10, 10)` and tell the canvas, "Draw a white circle at point `(10, 10)`." We then continue giving instructions, layer by layer, drawing each shape on top of the previous ones.
 
-Instead of working sequentially, shaders apply a set of instructions across all pixels simultaneously. Each pixel or vertex independently follows the same rules, but produces a unique result based on its position. Rather than explicitly drawing the circle, we instead ask each pixel individually, "Are you within a circle centered at `(10, 10)`? If so, change your color."
+Instead, shaders apply a set of instructions across all vertices or pixels simultaneously. Each vertex or pixel independently follows the same rules, but produces a unique result based on its position. Rather than explicitly drawing the circle, we instead ask each pixel individually, "Are you within a circle centered at `(10, 10)`? If so, change your color."
 
 The "strands" also refer to access points into the shader pipeline that let you modify specific aspects of rendering without building entire shaders from scratch. These access points allow you to modify specific aspects of the rendering process without needing to construct the entire shader from scratch.
 
+To summarise, p5.strands is a JavaScript-based shading language which sits on top of GLSL. It allows you to write shaders in a regular `.js` file without writing GLSL in string literals. It also removes some setup code in the process, and integrates with the rest of p5.js, to bring learning and using shaders closer to the core of p5.js.
+
 ## Getting started with p5.strands
 ### The setup
-Let's build a minimal shader example to introduce p5.strands' key concepts. P5.strands allows you to modify parts of p5.js shaders (called "strands") using JavaScript.
+Let's build a minimal shader example to introduce p5.strands' key concepts. With p5.strands, you can modify sections (known as "strands") of ready-made shaders using JavaScript.
 
 <EditableSketch code={`
 let firstShader;
 
-// Our callback function using p5.strands, which determines how to modify the baseColorShader()
+// Our callback function using p5.strands, 
+// which determines how to modify the baseColorShader()
 
 function firstShaderCallback() {
 	getFinalColor((color) => {
@@ -113,10 +118,10 @@ function draw() {
 }
 `}/>
 
-Run this sketch now—you should see a yellow sphere.
+In this sketch, you should see a yellow sphere.
 
 ### What's happening here?
-1. Shaders: P5.js already uses shaders behind the scenes in WebGL mode. p5.strands exposes parts of these shaders so you can modify them.
+1. Shaders: p5.js already uses shaders behind the scenes in WebGL mode. p5.strands exposes parts of these shaders so you can modify them.
 2. Strands: A "strand" is a specific part of a shader you can modify. In our example, getFinalColor is a strand that lets you change an object's final color.
 3. Modifying shaders: The pattern works like this:
 - Start with a base shader (`baseColorShader()`)
@@ -193,51 +198,51 @@ let instancingStrokeShader;
 let particleModel;
 
 function instancingCallback() {
-	// a pseudorandom function from:
-	// https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
-	function rand(seed) {
-		return fract(sin(dot(seed, [12.9898, 78.233])) * 43758.5453123);
-	}
+  // a pseudorandom function from:
+  // https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
+  function rand(seed) {
+  return fract(sin(dot(seed, [12.9898, 78.233])) * 43758.5453123);
+}
 
-	function sphere() {
-    let id = instanceID();
-    let theta = rand([id, 0.1234])  * TWO_PI;
-    let phi = rand([id, 3.321]) * PI;
-  
-    let r = 180;
-    let x = r * sin(phi) * cos(theta);
-    let y = r * cos(phi);
-    let z = r * sin(phi) * sin(theta);
-    return [x, y, z];
-	}
-	
-	getWorldInputs((inputs) => {
-		inputs.position += sphere();
-		return inputs;
-	});
+function sphere() {
+  let id = instanceID();
+  let theta = rand([id, 0.1234])  * TWO_PI;
+  let phi = rand([id, 3.321]) * PI;
+
+  let r = 180;
+  let x = r * sin(phi) * cos(theta);
+  let y = r * cos(phi);
+  let z = r * sin(phi) * sin(theta);
+  return [x, y, z];
+}
+
+getWorldInputs((inputs) => {
+  inputs.position += sphere();
+  return inputs;
+  });
 }
 
 async function setup() {
-	createCanvas(400, 400, WEBGL);
+  createCanvas(400, 400, WEBGL);
   particleModel = buildGeometry(() => sphere(10, 4, 2));
-	instancingShader = baseColorShader().modify(instancingCallback);
+  instancingShader = baseColorShader().modify(instancingCallback);
   instancingStrokeShader = baseStrokeShader().modify(instancingCallback);
 }
 
 function draw() {
-	background(0);
-	orbitControl();
-	shader(instancingShader)
+  background(0);
+  orbitControl();
+  shader(instancingShader)
   fill(255, 100, 150)
   strokeShader(instancingStrokeShader)
-	model(particleModel, 1000);
+  model(particleModel, 1000);
 }
 `} />
 
 The `rand()` helper function uses three GLSL functions ported to p5.strands:
 - `fract()`: Takes the fractional part of a number (e.g., `3.42` → `0.42`)
 - `sin()`: Returns the sine of an angle
-- `dot()`: Returns the dot roduct of two vectors, which measures their similarity.
+- `dot()`: Returns the dot product of two vectors, which measures their similarity.
 While these functions have their conventional mathematical meanings, here they're combined to generate pseudorandom values based on the instance ID.
 
 #### Adding movement to the particles
@@ -261,50 +266,50 @@ let instancingStrokeShader;
 let particleModel;
 
 function instancingCallback() {
-	// Add the uniform declaration
+  // Add the uniform declaration
   const time = uniformFloat(() => millis());
 
-	// a pseudorandom function from:
-	// https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
-	function rand(seed) {
-		return fract(sin(dot(seed, [12.9898, 78.233])) * 43758.5453123);
-	}
+  // a pseudorandom function from:
+  // https://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
+  function rand(seed) {
+    return fract(sin(dot(seed, [12.9898, 78.233])) * 43758.5453123);
+  }
 
-	function sphere() {
-    let id = instanceID();
-    let theta = rand([id, 0.1234])  * TWO_PI;
-    // change the particle's position over time:
-    let phi = rand([id, 3.321]) * PI + time / 10000;
-  
-    // Change the radius to create a more interesting shape:
-    let r = 200 * sin(phi);
-    let x = r * sin(phi) * cos(theta);
-    // Stretch the y dimensions a little
-    let y = r * 1.5 * cos(phi);
-    let z = r * sin(phi) * sin(theta);
-    return [x, y, z];
-	}
-	
-	getWorldInputs((inputs) => {
-		inputs.position += sphere();
-		return inputs;
-	});
+function sphere() {
+  let id = instanceID();
+  let theta = rand([id, 0.1234])  * TWO_PI;
+  // change the particle's position over time:
+  let phi = rand([id, 3.321]) * PI + time / 10000;
+
+  // Change the radius to create a more interesting shape:
+  let r = 200 * sin(phi);
+  let x = r * sin(phi) * cos(theta);
+  // Stretch the y dimensions a little
+  let y = r * 1.5 * cos(phi);
+  let z = r * sin(phi) * sin(theta);
+  return [x, y, z];
+}
+
+getWorldInputs((inputs) => {
+  inputs.position += sphere();
+  return inputs;
+});
 }
 
 async function setup() {
-	createCanvas(400, 400, WEBGL);
+  createCanvas(400, 400, WEBGL);
   particleModel = buildGeometry(() => sphere(10, 4, 2));
-	instancingShader = baseColorShader().modify(instancingCallback);
+  instancingShader = baseColorShader().modify(instancingCallback);
   instancingStrokeShader = baseStrokeShader().modify(instancingCallback);
 }
 
 function draw() {
-	background(0);
-	orbitControl();
-	shader(instancingShader)
+  background(0);
+  orbitControl();
+  shader(instancingShader)
   fill(255, 100, 150)
   strokeShader(instancingStrokeShader)
-	model(particleModel, 1000);
+  model(particleModel, 1000);
 }
 `} />
 
@@ -358,7 +363,10 @@ The core of the Fresnel effect is comparing two directions:
 let base = 1 - dot(normalVector, viewVector);
 let fresnel = pow(base, 2);
 ```
-The dot product between these directions measures how 'edge-like' each point on our sphere is. It returns the cosine of the angle between them. The values range from 1 (when they're parallel) to 0 when they're perpendicular, and -1 when they're opposite. 
+The dot product between these directions measures how directly the surface at any point is facing the camera. Technically, it returns the cosine of the angle between them. What this really tells us is that, when the dot product of two vectors is:
+- **Equal to 1**, the vectors point in the same direction
+- **Equal to 0**, the vectors are perpendicular
+- **Equal to -1**, the vectors are pointing in opposite directions.
 
 For points where the surface faces directly at the camera, the normal and view vector will be nearly parallel, giving a dot product close to 1. At grazing angles, for example at the top of a sphere, the dot product would be closer to 0. 
 
@@ -372,9 +380,11 @@ let col = mix([0, 0, 0], [1, 0.5, 0.7], fresnel);
 inputs.color = [col, 1];
 ```
 
-The `mix()` function in GLSL is similar to p5.js's lerp function. The colour should now interpolate between `[0, 0, 0]` (black) when the object faces the camera, and the value of `fresnel` is close to 0, to a pinkish color `[1, 0.5, 0.7]` at its edges when `fresnel` is closer to one.
+The `mix()` function in GLSL is similar to p5.js's lerp function. The color should now interpolate between `[0, 0, 0]` (black) when the object faces the camera, and the value of `fresnel` is close to 0, to a pinkish color `[1, 0.5, 0.7]` at its edges when `fresnel` is closer to one.
 
-Notice the returned value here, `[col, 1]`. This is one of the ways in which vectors are prioritised as the main data type in shader languages, including p5.strands. We are able to construct a 4-component vector (`RGBA`) from a 3-component vector(`RGB`) plus a float (alpha). This is a hallmark of shader languages.
+As a note, `getCameraInputs` is inside of the **vertex shader**, which is usually where we will do calculations which rely on the position of vertices. Therefore, we are setting the **vertex color** at this point. The fragment shader will interpolate between vertices to make sure that the pixels between them look continuous.
+
+Notice the returned value above: `[col, 1]`. This is one of the ways in which vectors are prioritised as the main data type in shader languages, including p5.strands. We are able to construct a 4-component vector (`RGBA`) from a 3-component vector(`RGB`) plus a float (alpha). This is a hallmark of shader languages.
 
 <EditableSketch code={`
 let fresnelShader
@@ -411,7 +421,7 @@ function draw() {
 
 
 <Callout title="Tip">
-Try sending `const mousePos = uniformVector2(() => [mouseX, mouseY])` to this shader, and using those values for an interactive, colour changing effect instead of the hardcoded pink.
+Try sending `const mousePos = uniformVector2(() => [mouseX, mouseY])` to this shader, and using those values for an interactive, color changing effect instead of the hardcoded pink.
 </ Callout>
 
 #### Fine-tuning
@@ -424,7 +434,7 @@ The uniforms in effect give you some control over the end result.
 Uniforms can be changed without reloading the sketch if you use `setUniform()` or set the default value to a function which returns the desired value. For this demo, we'll just hard code some values.
 
 ## Post-processing
-Filter shaders are built in much the same way as any other shader in p5.strands. The only difference is that we are only concerned with the fragment shader in filters, the one which decides the color of what's on the screen. They work by taking a snapshot of the sketch every frame, and sending through a fragment shader to manipulate the colour. There are effects which are only possible through post-processing in this way. 
+Filter shaders are built in much the same way as any other shader in p5.strands. The only difference is that we are only concerned with the fragment shader in filters, the one which decides the color of what's on the screen. They work by taking a snapshot of the sketch every frame, and sending through a fragment shader to manipulate the color. There are effects which are only possible through post-processing in this way. 
 
 For the `baseFilterShader()` there is only one hook available, `getColor(inputs, canvasContent)`. Inputs contains `texCoord`, `canvasSize`, and `texelSize`. The other parameter, `canvasContent` is the snapshot of the sketch mentioned above.
 
@@ -435,10 +445,10 @@ We can achieve a pixelation effect by sampling the color of the scene at fewer p
 let pixelateShader;
 
 function pixelateCallback() {
-	getColor((inputs, canvasContent) => {
-		let coord = inputs.texCoord;
-		return [coord, 0, 1];
-	});
+  getColor((inputs, canvasContent) => {
+    let coord = inputs.texCoord;
+    return [coord, 0, 1];
+  });
 }
 
 async function setup() {
@@ -453,25 +463,25 @@ function draw() {
 
 The top left corner of the screen is now black, as it has a value of `(0, 0)` in texture coordinates. Down in the bottom left, it's green, showing that the texture coordinates are `(0, 1)`, and there is red in the top right with a value of `(1, 0)`.
 
-With that in mind, let's manipulate the number of texture coordinates, so that more pixels will sample their colour from the same place on the original texture. We do this proportionally to `inputs.canvasSize` to get square pixels.
+With that in mind, let's manipulate the number of texture coordinates, so that more pixels will sample their color from the same place on the original texture. We do this proportionally to `inputs.canvasSize` to get square pixels.
 
 <EditableSketch code={`
 let pixelateShader;
 
 function pixelateCallback() {
-	const pixelCountX = uniformFloat(() => 80);
+  const pixelCountX = uniformFloat(() => 80);
 
-	getColor((inputs, canvasContent) => {
-		const aspectRatio = inputs.canvasSize.x / inputs.canvasSize.y;
-		const pixelSize = [pixelCountX, pixelCountX / aspectRatio];
-		
-		// Sample the canvasContent texture with the modified texCoord
-		const coord = inputs.texCoord;
-		const modifiedCoord = floor(coord * pixelSize) / pixelSize;
-	
-		const col = getTexture(canvasContent, modifiedCoord);
-		return col;
-	});
+  getColor((inputs, canvasContent) => {
+    const aspectRatio = inputs.canvasSize.x / inputs.canvasSize.y;
+    const pixelSize = [pixelCountX, pixelCountX / aspectRatio];
+
+    // Sample the canvasContent texture with the modified texCoord
+    const coord = inputs.texCoord;
+    const modifiedCoord = floor(coord * pixelSize) / pixelSize;
+
+    const col = getTexture(canvasContent, modifiedCoord);
+    return col;
+  });
 }
 
 async function setup() {
@@ -499,21 +509,21 @@ We could write the shader to produce the blurred image, but p5.js already has pr
 let originalImage;
 
 async function setup() {
-	// previous code...
-	originalImage = createFramebuffer();
+  // previous code...
+  originalImage = createFramebuffer();
 }
 
 function draw() {
-	// Draw the previous code to a framebuffer, so that we can store it before our blur is applied.
-	originalImage.begin();
-	// previous code...
-	originalImage.end();
+  // Draw the previous code to a framebuffer, so that we can store it before our  blur is applied.
+  originalImage.begin();
+  // previous code...
+  originalImage.end(); 
 
-	imageMode(CENTER);
-	image(originalImage, 0, 0);
-	
-	// changing this value affects the spread of the bloom
-	filter(BLUR, 20);
+  imageMode(CENTER);
+  image(originalImage, 0, 0);
+
+  // changing this value affects the spread of the bloom
+  filter(BLUR, 20);
 }
 ```
 
@@ -521,18 +531,18 @@ function draw() {
 
 ```js
 function bloomCallback() {
-	const ogImage = uniformTexture(() => originalImage)
-	
-	getColor((input, canvasContent) => {
-		// Get our textures converted into vector values.
-		const blurred = getTexture(canvasContent, input.texCoord);
-		const original = getTexture(ogImage, input.texCoord);
+  const ogImage = uniformTexture(() => originalImage)
 
-		const intensity = max(original, 0.3) * 1.5;
-		// Overlay the blurred image
-		const bloom = original + blurred * intensity;
-		return [bloom.rgb, 1]
-	});
+  getColor((input, canvasContent) => {
+    // Get our textures converted into vector values.
+    const blurred = getTexture(canvasContent, input.texCoord);
+    const original = getTexture(ogImage, input.texCoord);
+
+    const intensity = max(original, 0.3) * 1.5;
+    // Overlay the blurred image
+    const bloom = original + blurred * intensity;
+    return [bloom.rgb, 1]
+  });
 }
 ```
 
@@ -556,25 +566,25 @@ function bloomCallback() {
 
 
 async function setup() {
-	createCanvas(200, 200, WEBGL);
-	originalImage = createFramebuffer();
+  createCanvas(200, 200, WEBGL);
+  originalImage = createFramebuffer();
   bloomShader = baseFilterShader().modify(bloomCallback);
 }
 
 function draw() {
-	// Draw the previous code to a framebuffer, so that we can store it before our blur is applied.
-	originalImage.begin();
+  // Draw the previous code to a framebuffer, so that we can store it before our blur is applied.
+  originalImage.begin();
   background(0);
   rotateY(millis()/1000);
   fill(40, 120, 255);
   box(80);
-	originalImage.end();
+  originalImage.end();
 
-	imageMode(CENTER);
-	image(originalImage, 0, 0);
-	
-	// changing this value affects the spread of the bloom
-	filter(BLUR, 20);
+  imageMode(CENTER);
+  image(originalImage, 0, 0);
+
+  // changing this value affects the spread of the bloom
+  filter(BLUR, 20);
   filter(bloomShader);
 }
 `} />
@@ -585,7 +595,7 @@ We only select the `.rgb` components of the bloom, as otherwise our alpha will b
 
 Any combination of `.rgba`, `.xyzw`, or `.stpq` (for texture coordinates) can be accessed, or set like this. Each of these sets are an alias for the others, they ultimately just select value `[0, 1, 2, 3]` in array terms. In other words writing `col.xyzw` is the same as writing `col.rgba`.
 
-Try changing it to `.grg` or any other combination, for some last minute colour changes. This will construct a new vector `[col.g, col.g, col.r, 1]`. For example `[col.yyy, 1]` produces a greyscale output, as the `rgb` values are all the same.
+Try changing it to `.grg` or any other combination, for some last minute color changes. This will construct a new vector `[col.g, col.g, col.r, 1]`. For example `[col.yyy, 1]` produces a greyscale output, as the `rgb` values are all the same.
 
 <Callout title="Hint">
 Try 'swizzling' the return value and writing something like 
@@ -595,10 +605,10 @@ Try 'swizzling' the return value and writing something like
 ## Review
 We have written 4 shaders and learned to manipulate vertex and fragment shaders in p5.strands.
 
-- **Basic Color Shader** - We started with a simple modification of the base color shader, learning how to access and modify the final color of an object.
-- **Instanced Particles** - We tried our hand at GPU instancing and rendered hundreds of particles.
-- **Fresnel Edge Highlighting** - We made a more advanced effect to make a glowing edge on 3D objects.
-- **Post-processing** - We used two filter shaders to tie the scene together.
+- **Basic Color Shader** - We started with a simple modification of the base color shader, learning how to access and modify the final color of an object. This took place in the *fragment shader*.
+- **Instanced Particles** - We tried our hand at GPU instancing and rendered hundreds of particles. We moved objects in world space in the *vertex shader*.
+- **Fresnel Edge Highlighting** - We made a more advanced effect to make a glowing edge on 3D objects. We set the color of each vertex based on its position, so we did this in the *vertex shader*, in *camera space*.
+- **Post-processing** - We used two filter shaders to tie the scene together. These only required us to modify a *fragment shader*.
 
 The finished code for this project is posted below, with the example sketch.
 
