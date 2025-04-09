@@ -2,19 +2,17 @@
 let font;
 let fontsize = 40;
 
-function preload() {
-  // Preload the font's file in the canvas's assets directory.
-  // loadFont() accepts .ttf or .otf files.
-  font = loadFont('/assets/SourceSansPro-Regular.otf');
-}
-
-function setup() {
+async function setup() {
   describe(
     'Three columns of the words “ichi,” “ni,” “san,” and “shi” on a white background. The first column is right aligned, the middle column is center aligned, and the left column is left aligned.'
   );
 
   createCanvas(710, 400);
   background(250);
+
+  // Preload the font's file in the canvas's assets directory.
+  // loadFont() accepts .ttf or .otf files.
+  font = await loadFont('/assets/SourceSansPro-Regular.otf');
 
   // Set the text styling to the predefined font and font size.
   textFont(font);

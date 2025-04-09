@@ -79,7 +79,7 @@ function setup() {
 
       // Copy the RGBA values from the color to the pixel
       for (let i = 0; i < 4; i += 1) {
-        pixels[index + i] = pixelColor.levels[i];
+        pixels[index + i] = pixelColor.array()[i] * 255;
       }
 
       x += dx;

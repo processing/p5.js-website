@@ -1,19 +1,18 @@
 // Define the global variables: bottomImg and topImg.
 let bottomImg, topImg;
 
-function preload() {
-  // Preload the images from the canvas's assets directory.
-  // The bottomImg is the photograph with color,
-  // and the topImg is the black-and-white photograph.
-  bottomImg = loadImage('/assets/parrot-color.png');
-  topImg = loadImage('/assets/parrot-bw.png');
-}
-function setup() {
+async function setup() {
   describe(
     'Black-and-white photograph of a parrot. The cursor, when dragged across the canvas, adds color to the photograph.'
   );
 
   createCanvas(720, 400);
+
+  // Preload the images from the canvas's assets directory.
+  // The bottomImg is the photograph with color,
+  // and the topImg is the black-and-white photograph.
+  bottomImg = await loadImage('/assets/parrot-color.png');
+  topImg = await loadImage('/assets/parrot-bw.png');
 
   // Hide the cursor and replace it with a picture of
   // a paintbrush.

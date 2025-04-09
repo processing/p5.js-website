@@ -11,11 +11,6 @@ let mousePressY = 0;
 // Remember whether bubble is currently being created
 let creatingBubble = false;
 
-// Put any asynchronous data loading in preload to complete before "setup" is run
-function preload() {
-  table = loadTable('/assets/bubbles.csv', 'header', loadData);
-}
-
 // Convert saved Bubble data into Bubble Objects
 function loadData(table) {
   bubbles = [];
@@ -32,8 +27,10 @@ function loadData(table) {
   }
 }
 
-function setup() {
+async function setup() {
   let p5Canvas = createCanvas(640, 360);
+
+  table = await loadTable('/assets/bubbles.csv', ',', 'header', loadData);
 
   // When canvas is clicked, call saveMousePress()
   p5Canvas.mousePressed(saveMousePress);

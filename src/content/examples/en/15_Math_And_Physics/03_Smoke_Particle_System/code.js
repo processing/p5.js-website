@@ -2,13 +2,10 @@
 let particleTexture;
 let particleSystem;
 
-function preload() {
-  particleTexture = loadImage('/assets/particle_texture.png');
-}
-
-function setup() {
+async function setup() {
   // Set the canvas size
   createCanvas(720, 400);
+  particleTexture = await loadImage('/assets/particle_texture.png');
   colorMode(HSB);
 
   // Initialize the particle system
