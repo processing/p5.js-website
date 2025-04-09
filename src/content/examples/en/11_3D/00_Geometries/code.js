@@ -1,12 +1,9 @@
 // Variable to store NASA model
 let astronaut;
 
-function preload() {
-  astronaut = loadModel('/assets/astronaut.obj');
-}
-
-function setup() {
+async function setup() {
   createCanvas(710, 400, WEBGL);
+  astronaut = await loadModel('/assets/astronaut.obj');
 
   angleMode(DEGREES);
 

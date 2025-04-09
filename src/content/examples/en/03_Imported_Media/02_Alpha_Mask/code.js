@@ -1,18 +1,14 @@
-// Preload the image assets from the canvas
-// assets directory.
-function preload() {
-  // Photo by Sergey Shmidt, https://unsplash.com/photos/koy6FlCCy5s
-  img = loadImage('/assets/image.jpg');
-
-  // Photo by Mockup Graphics, https://unsplash.com/photos/_mUVHhvBYZ0
-  imgMask = loadImage('/assets/mask.png');
-}
-
-function setup() {
+async function setup() {
   describe(
     'Two photos, the one on the left labeled with "Masked Image" and the one on the right labeled with "Mask."'
   );
   createCanvas(710, 400);
+
+  // Photo by Sergey Shmidt, https://unsplash.com/photos/koy6FlCCy5s
+  img = await loadImage('/assets/image.jpg');
+
+  // Photo by Mockup Graphics, https://unsplash.com/photos/_mUVHhvBYZ0
+  imgMask = await loadImage('/assets/mask.png');
 
   // Use the mask() method to apply imgMask photo as a
   // mask for img.

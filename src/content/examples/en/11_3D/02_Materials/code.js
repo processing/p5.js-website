@@ -14,14 +14,14 @@ let emissivePicker;
 // Selected colors
 let fillSelection, strokeSelection, ambientSelection, specularSelection;
 
-// Load astronaut model and venus image texture
-function preload() {
-  astronaut = loadModel('/assets/astronaut.obj');
-  venus = loadImage('/assets/venus.jpg');
-}
 
-function setup() {
+async function setup() {
   createCanvas(400, 400, WEBGL);
+
+  // Load astronaut model and venus image texture
+  astronaut = await loadModel('/assets/astronaut.obj');
+  venus = await loadImage('/assets/venus.jpg');
+
   angleMode(DEGREES);
   createSelectionArea();
 
