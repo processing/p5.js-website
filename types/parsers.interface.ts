@@ -94,7 +94,7 @@ interface Chainable {
 
 interface Deprecatable {
   deprecated?: boolean; // If this item is deprecated, a description of why.
-  deprecatedMessage?: string; // If this item is deprecated, a description of why.
+  deprecationMessage?: string; // If this item is deprecated, a description of why.
 }
 
 /* Represents the return value of a method or constructor */
