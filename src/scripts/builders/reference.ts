@@ -415,8 +415,7 @@ const convertDocsToMDX = async (
           doc.example = correctRelativeLinksToExampleAssets(
             doc.example,
           ) as string[];
-          // @ts-ignore
-          doc.deprecated = doc.deprecated ? (doc.deprecationMessage ?? true) : undefined;
+          doc.deprecated = (doc.deprecated ? (doc.deprecationMessage ?? true) : undefined) as any;
           const mdx = await convertToMDX(doc);
 
           return mdx ? { mdx, savePath, name: doc.name } : null;
