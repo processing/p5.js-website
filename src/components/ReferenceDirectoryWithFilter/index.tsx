@@ -72,7 +72,7 @@ export const ReferenceDirectoryWithFilter = ({
 
     return categoryData.reduce((acc: FilteredCategoryData[], category) => {
       const filteredSubcats = category.subcats.reduce(
-        (subAcc :typeof category.subcats, subcat) => {
+        (subAcc: typeof category.subcats, subcat) => {
           const filteredEntries = subcat.entries.filter((entry) =>
             entry.data.title
               .toLowerCase()
