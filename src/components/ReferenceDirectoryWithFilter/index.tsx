@@ -78,12 +78,11 @@ export const ReferenceDirectoryWithFilter = ({
               .toLowerCase()
               .includes(searchKeyword.toLowerCase()),
           );
-          if (subcat.entry &&
-            subcat.entry.data.title
-            .toLowerCase()
-            .includes(searchKeyword.toLowerCase())
-            ) {
-           filteredEntries.push(subcat.entry);
+          if (
+            subcat.entry &&
+            subcat.entry.data.title.toLowerCase().includes(searchKeyword.toLowerCase())
+          ) {
+            filteredEntries.push(subcat.entry);
           }
           
           if (filteredEntries.length > 0) {
