@@ -32,8 +32,7 @@ description: >
 
   function, as in <code>shader(myShader)</code>.</p>
 
-  <p>A shader can optionally describe <em>hooks,</em> which are functions in
-  GLSL that
+  <p>A shader can optionally describe hooks, which are functions in GLSL that
 
   users may choose to provide to customize the behavior of the shader. For the
 
@@ -53,23 +52,16 @@ description: >
     vertex: {
       'void beforeVertex': '() {}'
     }
-  }
-
-  </code></pre>
-
-  <p>Then, in your vertex shader source, you can run a hook by calling a
-  function
+  }</code></pre><p>Then, in your vertex shader source, you can run a hook by
+  calling a function
 
   with the same name prefixed by <code>HOOK_</code>:</p>
 
   <pre><code class="language-glsl">void main() {
     HOOK_beforeVertex();
-    // Add the rest of your shader code here!
-  }
-
-  </code></pre>
-
-  <p>Note: <a href="/reference/p5/createShader/">createShader()</a>,
+    // Add the rest ofy our shader code here!
+  }</code></pre><p>Note: <a
+  href="/reference/p5/createShader/">createShader()</a>,
 
   <a href="/reference/p5/createFilterShader/">createFilterShader()</a>, and
 
@@ -77,41 +69,31 @@ description: >
   to
 
   create an instance of this class.</p>
-line: 11
+line: 1497
 isConstructor: true
 params:
   - name: renderer
-    description: |
-      <p>WebGL context for this shader.</p>
+    description: WebGL context for this shader.
     type: p5.RendererGL
   - name: vertSrc
-    description: |
-      <p>source code for the vertex shader program.</p>
+    description: source code for the vertex shader program.
     type: String
   - name: fragSrc
-    description: |
-      <p>source code for the fragment shader program.</p>
+    description: source code for the fragment shader program.
     type: String
   - name: options
-    description: >
+    description: >-
       <p>An optional object describing how this shader can
 
       be augmented with hooks. It can include:</p>
 
-      <ul>
-
-      <li><code>vertex</code>: An object describing the available vertex shader
-      hooks.</li>
-
-      <li><code>fragment</code>: An object describing the available frament
-      shader hooks.</li>
-
-      </ul>
+      <ul><li><code>vertex</code>: An object describing the available vertex
+      shader hooks.</li><li><code>fragment</code>: An object describing the
+      available frament shader hooks.</li></ul>
+    optional: 1
     type: Object
-    optional: true
 example:
   - |-
-
     <div>
     <code>
     // Note: A "uniform" is a global variable within a shader program.
@@ -171,12 +153,8 @@ example:
 
     let mandelbrot;
 
-    // Load the shader and create a p5.Shader object.
-    function preload() {
-      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
-    }
-
-    function setup() {
+    async function setup() {
+      mandelbrot = await loadShader('/assets/shader.vert', '/assets/shader.frag');
       createCanvas(100, 100, WEBGL);
 
       // Use the p5.Shader object.
@@ -198,19 +176,31 @@ example:
     </code>
     </div>
 methods:
-  inspectHooks:
+  version:
     description: >
+      <p>Shaders are written in <a
+      href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders/">GLSL</a>,
+      but
+
+      there are different versions of GLSL that it might be written in.</p>
+
+      <p>Calling this method on a <code>p5.Shader</code> will return the GLSL
+      version it uses, either <code>100 es</code> or <code>300 es</code>.
+
+      WebGL 1 shaders will only use <code>100 es</code>, and WebGL 2 shaders may
+      use either.</p>
+    path: p5.Shader/version
+  inspectHooks:
+    description: >-
       <p>Logs the hooks available in this shader, and their current
       implementation.</p>
 
       <p>Each shader may let you override bits of its behavior. Each bit is
       called
 
-      a <em>hook.</em> A hook is either for the <em>vertex</em> shader, if it
-      affects the
+      a hook. A hook is either for the vertex shader, if it affects the
 
-      position of vertices, or in the <em>fragment</em> shader, if it affects
-      the pixel
+      position of vertices, or in the fragment shader, if it affects the pixel
 
       color. This method logs those values to the console, letting you know what
 
@@ -228,11 +218,8 @@ methods:
         }`
       });
 
-      myShader.inspectHooks();
-
-      </code></pre>
-
-      <pre><code>==== Vertex shader hooks: ====
+      myShader.inspectHooks();</code></pre><pre><code>==== Vertex shader hooks:
+      ====
 
       void beforeVertex() {}
 
@@ -270,9 +257,7 @@ methods:
                     }
       vec4 getFinalColor(vec4 color) { return color; }
 
-      void afterFragment() {}
-
-      </code></pre>
+      void afterFragment() {}</code></pre>
     path: p5.Shader/inspectHooks
   modify:
     description: >
@@ -283,11 +268,9 @@ methods:
       <p>Each shader may let you override bits of its behavior. Each bit is
       called
 
-      a <em>hook.</em> A hook is either for the <em>vertex</em> shader, if it
-      affects the
+      a hook. A hook is either for the vertex shader, if it affects the
 
-      position of vertices, or in the <em>fragment</em> shader, if it affects
-      the pixel
+      position of vertices, or in the fragment shader, if it affects the pixel
 
       color. You can inspect the different hooks available by calling
 
@@ -368,8 +351,8 @@ methods:
       <a href="/reference/p5/p5.Graphics">p5.Graphics</a> object to the main
       canvas using
 
-      the <code>window</code> variable, as in
-      <code>myShader.copyToContext(window)</code>.</p>
+      the <code>p5.instance</code> variable, as in
+      <code>myShader.copyToContext(p5.instance)</code>.</p>
 
       <p>Note: A <a href="/reference/p5/p5.Shader">p5.Shader</a> object created
       with

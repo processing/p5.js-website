@@ -3,64 +3,69 @@ title: findRows
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: |
-  <p>Finds the rows in the Table that contain the value
+description: |-
+  Finds the rows in the Table that contain the value
   provided, and returns references to those rows. Returns an
   Array, so for must be used to iterate through all the rows,
   as shown in the example above. The column to search may be
-  specified by either its ID or title.</p>
+  specified by either its ID or title.
 line: 351
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
+    <div>
+    <code>
+    let table;
 
-     <div class="norender">
-     <code>
-     // Given the CSV file "mammals.csv"
-     // in the project's "assets" folder:
-     //
-     // id,species,name
-     // 0,Capra hircus,Goat
-     // 1,Panthera pardus,Leopard
-     // 2,Equus zebra,Zebra
+    async function setup() {
+      // Create a 200x200 canvas
+      createCanvas(200, 200);
+      background(255); // Set background to white
 
-     let table;
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
 
-     function preload() {
-     //my table is comma separated value "csv"
-     //and has a header specifying the columns labels
-     table = loadTable('/assets/mammals.csv', 'csv', 'header');
-     }
+      // Add another goat entry
+      let newRow = table.addRow();
+      newRow.setString('id', table.getRowCount() - 1);
+      newRow.setString('species', 'Scape Goat');
+      newRow.setString('name', 'Goat');
 
-     function setup() {
-     //add another goat
-     let newRow = table.addRow();
-     newRow.setString('id', table.getRowCount() - 1);
-     newRow.setString('species', 'Scape Goat');
-     newRow.setString('name', 'Goat');
+      // Find rows where the name is "Goat"
+      let rows = table.findRows('Goat', 'name');
 
-     //find the rows containing animals named Goat
-     let rows = table.findRows('Goat', 'name');
-     print(rows.length + ' Goats found');
-     describe('no image displayed');
-     }
-     </code>
-     </div>
+      // Set text properties
+      fill(0);      // Set text color to black
+      textSize(12); // Adjust text size as needed
+
+      // Display the result on the canvas
+      text(rows.length + ' Goats found', 10, 30);
+
+      describe('no image displayed');
+    }
+    </code>
+    </div>
 class: p5.Table
-params:
-  - name: value
-    description: |
-      <p>The value to match</p>
-    type: String
-  - name: column
-    description: |
-      <p>ID number or title of the
-                                     column to search</p>
-    type: Integer|String
 return:
   description: An Array of TableRow objects
   type: 'p5.TableRow[]'
+overloads:
+  - params:
+      - name: value
+        description: The value to match
+        type: String
+      - name: column
+        description: |-
+          ID number or title of the
+          column to search
+        type: Integer|String
+    return:
+      description: An Array of TableRow objects
+      type: 'p5.TableRow[]'
 chainable: false
 ---
 

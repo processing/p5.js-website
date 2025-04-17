@@ -1,8 +1,8 @@
 ---
 title: bezierVertex
 module: Shape
-submodule: Vertex
-file: src/core/shape/vertex.js
+submodule: Custom Shapes
+file: src/shape/vertex.js
 description: >
   <p>Adds a Bézier curve segment to a custom shape.</p>
 
@@ -18,42 +18,46 @@ description: >
 
   <a href="/reference/p5/beginShape/">beginShape()</a> and
 
-  <a href="/reference/p5/endShape/">endShape()</a> functions. The curved segment
-  uses
+  <a href="/reference/p5/endShape/">endShape()</a> functions.
 
-  the previous vertex as the first anchor point, so there must be at least
+  Bézier need a starting point. Building a shape
 
-  one call to <a href="/reference/p5/vertex/">vertex()</a> before
-  <code>bezierVertex()</code> can
+  only with Bézier curves needs one initial
 
-  be used.</p>
+  call to <a href="/reference/p5/vertex/">bezierVertex()</a>, before
 
-  <p>The first four parameters, <code>x2</code>, <code>y2</code>,
-  <code>x3</code>, and <code>y3</code>, set the curve’s two
+  a number of <code>bezierVertex()</code> calls that is a multiple of the
+  parameter
 
-  control points. The control points "pull" the curve towards them.</p>
+  set by <a href="/reference/p5/bezierOrder/">bezierOrder(...)</a> (default 3).
 
-  <p>The fifth and sixth parameters, <code>x4</code>, and <code>y4</code>, set
-  the last anchor point.
+  But shapes can mix different types of vertices, so if there
 
-  The last anchor point is where the curve ends.</p>
+  are some previous vertices, then the initial anchor is not needed,
 
-  <p>Bézier curves can also be drawn in 3D using WebGL mode. The 3D version of
+  only the multiples of 3 (or the Bézier order) calls to
 
-  <code>bezierVertex()</code> has eight arguments because each point has x-, y-,
-  and
+  <code>bezierVertex</code> for each curve.</p>
 
-  z-coordinates.</p>
+  <p>Each curve of order 3 requires three calls to <code>bezierVertex</code>, so
+
+  2 curves would need 7 calls to <code>bezierVertex()</code>:
+
+  (1 one initial anchor point, two sets of 3 curves describing the curves)
+
+  With <code>bezierOrder(2)</code>, two curves would need 5 calls: 1 + 2 +
+  2.</p>
+
+  <p>Bézier curves can also be drawn in 3D using WebGL mode.</p>
 
   <p>Note: <code>bezierVertex()</code> won’t work when an argument is passed to
 
   <a href="/reference/p5/beginShape/">beginShape()</a>.</p>
-line: 543
+line: 686
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div>
     <code>
     function setup() {
@@ -68,10 +72,12 @@ example:
       beginShape();
 
       // Add the first anchor point.
-      vertex(30, 20);
+      bezierVertex(30, 20);
 
       // Add the Bézier vertex.
-      bezierVertex(80, 0, 80, 75, 30, 75);
+      bezierVertex(80, 0);
+      bezierVertex(80, 75);
+      bezierVertex(30, 75);
 
       // Stop drawing the shape.
       endShape();
@@ -108,10 +114,12 @@ example:
       beginShape();
 
       // Add the first anchor point.
-      vertex(30, 20);
+      bezierVertex(30, 20);
 
       // Add the Bézier vertex.
-      bezierVertex(80, 0, 80, 75, 30, 75);
+      bezierVertex(80, 0);
+      bezierVertex(80, 75);
+      bezierVertex(30, 75);
 
       // Stop drawing the shape.
       endShape();
@@ -168,10 +176,12 @@ example:
       beginShape();
 
       // Add the first anchor point.
-      vertex(30, 20);
+      bezierVertex(30, 20);
 
       // Add the Bézier vertex.
-      bezierVertex(x2, y2, 80, 75, 30, 75);
+      bezierVertex(x2, y2);
+      bezierVertex(80, 75);
+      bezierVertex(30, 75);
 
       // Stop drawing the shape.
       endShape();
@@ -215,11 +225,16 @@ example:
       beginShape();
 
       // Add the first anchor point.
-      vertex(30, 20);
+      bezierVertex(30, 20);
 
       // Add the Bézier vertices.
-      bezierVertex(80, 0, 80, 75, 30, 75);
-      bezierVertex(50, 80, 60, 25, 30, 20);
+      bezierVertex(80, 0);
+      bezierVertex(80, 75);
+      bezierVertex(30, 75);
+
+      bezierVertex(50, 80);
+      bezierVertex(60, 25);
+      bezierVertex(30, 20);
 
       // Stop drawing the shape.
       endShape();
@@ -251,83 +266,63 @@ example:
 
       // Draw the first moon.
       beginShape();
-      vertex(-20, -30, 0);
-      bezierVertex(30, -50, 0, 30, 25, 0, -20, 25, 0);
-      bezierVertex(0, 30, 0, 10, -25, 0, -20, -30, 0);
+      bezierVertex(-20, -30, 0);
+
+      bezierVertex(30, -50, 0);
+      bezierVertex(30, 25, 0);
+      bezierVertex(-20, 25, 0);
+
+      bezierVertex(0, 30, 0);
+      bezierVertex(10, -25, 0);
+      bezierVertex(-20, -30, 0);
       endShape();
 
       // Draw the second moon.
       beginShape();
-      vertex(-20, -30, -20);
-      bezierVertex(30, -50, -20, 30, 25, -20, -20, 25, -20);
-      bezierVertex(0, 30, -20, 10, -25, -20, -20, -30, -20);
+
+      bezierVertex(-20, -30, -20);
+
+      bezierVertex(30, -50, -20);
+      bezierVertex(30, 25, -20);
+      bezierVertex(-20, 25, -20);
+
+      bezierVertex(0, 30, -20);
+      bezierVertex(10, -25, -20);
+      bezierVertex(-20, -30, -20);
+
       endShape();
     }
     </code>
     </div>
 class: p5
 overloads:
-  - line: 543
-    params:
-      - name: x2
-        description: |
-          <p>x-coordinate of the first control point.</p>
+  - params:
+      - name: x
+        description: x-coordinate of the first control point.
         type: Number
-      - name: y2
-        description: |
-          <p>y-coordinate of the first control point.</p>
+      - name: 'y'
+        description: y-coordinate of the first control point.
         type: Number
-      - name: x3
-        description: |
-          <p>x-coordinate of the second control point.</p>
+      - name: u
+        optional: 1
         type: Number
-      - name: y3
-        description: |
-          <p>y-coordinate of the second control point.</p>
+      - name: v
+        optional: 1
         type: Number
-      - name: x4
-        description: |
-          <p>x-coordinate of the anchor point.</p>
+  - params:
+      - name: x
         type: Number
-      - name: y4
-        description: |
-          <p>y-coordinate of the anchor point.</p>
+      - name: 'y'
         type: Number
-    chainable: 1
-  - line: 792
-    params:
-      - name: x2
-        description: ''
+      - name: z
         type: Number
-      - name: y2
-        description: ''
+      - name: u
+        optional: 1
         type: Number
-      - name: z2
-        description: |
-          <p>z-coordinate of the first control point.</p>
+      - name: v
+        optional: 1
         type: Number
-      - name: x3
-        description: ''
-        type: Number
-      - name: y3
-        description: ''
-        type: Number
-      - name: z3
-        description: |
-          <p>z-coordinate of the second control point.</p>
-        type: Number
-      - name: x4
-        description: ''
-        type: Number
-      - name: y4
-        description: ''
-        type: Number
-      - name: z4
-        description: |
-          <p>z-coordinate of the anchor point.</p>
-        type: Number
-    chainable: 1
-chainable: true
+chainable: false
 ---
 
 

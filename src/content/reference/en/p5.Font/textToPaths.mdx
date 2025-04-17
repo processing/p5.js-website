@@ -1,0 +1,154 @@
+---
+title: textToPaths
+module: Typography
+submodule: ''
+file: src/type/p5.Font.js
+description: >
+  <p>Returns a flat array of path commands that describe the outlines of a
+  string of text.</p>
+
+  <p>Each command is represented as an array of the form <code>[type,
+  ...coords]</code>, where:</p>
+
+  <ul><li><code>type</code> is one of <code>'M'</code>, <code>'L'</code>,
+  <code>'Q'</code>, <code>'C'</code>, or
+  <code>'Z'</code>,</li><li><code>coords</code> are the numeric values needed
+  for that command.</li></ul><p><code>'M'</code> indicates a "move to" (starting
+  a new contour),
+
+  <code>'L'</code> a line segment,
+
+  <code>'Q'</code> a quadratic bezier,
+
+  <code>'C'</code> a cubic bezier, and
+
+  <code>'Z'</code> closes the current path.</p>
+
+  <p>The first two parameters, <code>x</code> and <code>y</code>, specify the
+  baseline origin for the text.
+
+  Optionally, you can provide a <code>width</code> and <code>height</code> for
+  text wrapping; if you don't need
+
+  wrapping, you can omit them and directly pass <code>options</code> as the
+  fourth parameter.</p>
+line: 200
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div>
+    <code>
+    let font;
+
+    async function setup() {
+      font = await loadFont('/assets/inconsolata.otf');
+      createCanvas(200, 200);
+      background(220);
+      noLoop();
+    }
+
+    function draw() {
+      background(220);
+      stroke(0);
+      noFill();
+      textSize(60);
+
+      // Get path commands for "Hello" (drawn at baseline x=50, y=100):
+      const pathCommands = font.textToPaths('Hello', 30, 110);
+
+      beginShape();
+      for (let i = 0; i < pathCommands.length; i++) {
+        const cmd = pathCommands[i];
+        const type = cmd[0];
+
+        switch (type) {
+          case 'M': {
+            // Move to (start a new contour)
+            const x = cmd[1];
+            const y = cmd[2];
+            endContour(); // In case we were already drawing
+            beginContour();
+            vertex(x, y);
+            break;
+          }
+          case 'L': {
+            // Line to
+            const x = cmd[1];
+            const y = cmd[2];
+            vertex(x, y);
+            break;
+          }
+          case 'Q': {
+            // Quadratic bezier
+            const cx = cmd[1];
+            const cy = cmd[2];
+            const x = cmd[3];
+            const y = cmd[4];
+            bezierOrder(2);
+            bezierVertex(cx, cy);
+            bezierVertex(x, y);
+            break;
+          }
+          case 'C': {
+            // Cubic bezier
+            const cx1 = cmd[1];
+            const cy1 = cmd[2];
+            const cx2 = cmd[3];
+            const cy2 = cmd[4];
+            const x = cmd[5];
+            const y = cmd[6];
+            bezierOrder(3);
+            bezierVertex(cx1, cy1);
+            bezierVertex(cx2, cy2);
+            bezierVertex(x, y);
+            break;
+          }
+          case 'Z': {
+            // Close path
+            endContour(CLOSE);
+            beginContour();
+            break;
+          }
+        }
+      }
+      endContour();
+      endShape();
+    }
+    </code>
+    </div>
+class: p5.Font
+return:
+  description: A flat array of path commands.
+  type: 'Array[]'
+overloads:
+  - params:
+      - name: str
+        description: The text to convert into path commands.
+        type: String
+      - name: x
+        description: x‐coordinate of the text baseline.
+        type: Number
+      - name: 'y'
+        description: y‐coordinate of the text baseline.
+        type: Number
+      - name: width
+        description: Optional width for text wrapping.
+        optional: 1
+        type: Number
+      - name: height
+        description: Optional height for text wrapping.
+        optional: 1
+        type: Number
+      - name: options
+        description: Configuration object for rendering text.
+        optional: 1
+        type: Object
+    return:
+      description: A flat array of path commands.
+      type: 'Array[]'
+chainable: false
+---
+
+
+# textToPaths

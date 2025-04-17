@@ -1,0 +1,51 @@
+---
+title: p5.Panner
+module: p5.sound
+submodule: p5.sound
+file: src/Panner.js
+description: A panning effect.
+line: 11
+isConstructor: true
+example:
+  - |-
+
+    <div>
+    <code>
+    let panner, lfo, soundfile, cnv;
+
+    function preload() {
+      soundfile = loadSound('//assets/beat.mp3');
+    }
+
+    function setup() {
+      cnv = createCanvas(100, 100);
+      background(220);
+      cnv.mousePressed(startSound);
+      
+      panner = new p5.Panner();
+      lfo = new p5.Oscillator(1);
+      //disconnect lfo from speakers because we don't want to hear it!
+      lfo.disconnect();
+      panner.pan(lfo);
+
+      soundfile.loop();
+      soundfile.disconnect();
+      soundfile.connect(panner);
+      
+    }
+
+    function startSound() {
+      lfo.start();
+      soundfile.start();
+    }
+    </code>
+    </div>
+methods:
+  pan:
+    description: Pan a sound source left or right.
+    path: p5.Panner/pan
+chainable: false
+---
+
+
+# p5.Panner

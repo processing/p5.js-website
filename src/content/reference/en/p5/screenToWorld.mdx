@@ -1,0 +1,68 @@
+---
+title: screenToWorld
+module: Environment
+submodule: Environment
+file: src/core/environment.js
+description: |
+  <p>Converts 2D screen coordinates to 3D world coordinates.</p>
+  <p>This function takes a vector and converts its coordinates from coordinates
+  on the screen to coordinates in the currently drawn object. This can be
+  useful for determining the mouse position relative to a 2D or 3D object.</p>
+  <p>If given, the Z component of the input coordinates is treated as "depth",
+  or distance from the camera.</p>
+line: 1437
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div>
+    <code>
+
+    function setup() {
+      createCanvas(100, 100);
+      describe('A rotating square with a line passing through the mouse drawn across it.');
+    }
+
+    function draw() {
+      background(220);
+
+      // Move to center and rotate
+      translate(width/2, height/2);
+      rotate(millis() / 1000);
+      rect(-30, -30, 60);
+
+      // Compute the location of the mouse in the coordinates of the square
+      let localMouse = screenToWorld(createVector(mouseX, mouseY));
+
+      // Draw a line parallel to the local Y axis, passing through the mouse
+      line(localMouse.x, -30, localMouse.x, 30);
+    }
+
+    </code>
+    </div>
+class: p5
+return:
+  description: A vector containing the 3D world space coordinates.
+  type: p5.Vector
+overloads:
+  - params:
+      - name: x
+        description: >-
+          The x coordinate in screen space. (Or a vector for all three
+          coordinates.)
+        type: Number|p5.Vector
+      - name: 'y'
+        description: The y coordinate in screen space.
+        type: Number
+      - name: z
+        description: The z coordinate in screen space.
+        optional: 1
+        type: Number
+    return:
+      description: A vector containing the 3D world space coordinates.
+      type: p5.Vector
+chainable: false
+---
+
+
+# screenToWorld
