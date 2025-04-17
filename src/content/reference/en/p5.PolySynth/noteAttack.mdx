@@ -1,0 +1,64 @@
+---
+title: noteAttack
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |
+  <p>Trigger the Attack, and Decay portion of a MonoSynth.
+  Similar to holding down a key on a piano, but it will
+  hold the sustain level until you let go.</p>
+line: 11909
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div><code>
+    let polySynth = new p5.PolySynth();
+    let pitches = ['G', 'D', 'G', 'C'];
+    let octaves = [2, 3, 4];
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(playChord);
+      background(220);
+      text('tap to play', 20, 20);
+    }
+
+    function playChord() {
+      userStartAudio();
+
+      // play a chord: multiple notes at the same time
+      for (let i = 0; i < 4; i++) {
+        let note = random(pitches) + random(octaves);
+        polySynth.noteAttack(note, 0.1);
+      }
+    }
+
+    function mouseReleased() {
+      // release all voices
+      polySynth.noteRelease();
+    }
+    </code></div>
+class: p5.PolySynth
+params:
+  - name: note
+    description: |
+      <p>midi note on which attack should be triggered.</p>
+    type: Number
+    optional: true
+  - name: velocity
+    description: |
+      <p>velocity of the note to play (ranging from 0 to 1)/</p>
+    type: Number
+    optional: true
+  - name: secondsFromNow
+    description: |
+      <p>time from now (in seconds)</p>
+    type: Number
+    optional: true
+chainable: false
+---
+
+
+# noteAttack

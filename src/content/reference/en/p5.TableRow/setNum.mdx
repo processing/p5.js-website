@@ -3,68 +3,54 @@ title: setNum
 module: IO
 submodule: Table
 file: src/io/p5.TableRow.js
-description: |-
-  Stores a Float value in the TableRow's specified column.
-  The column may be specified by either its ID or title.
-line: 135
-deprecated: >-
-  p5.Table will be removed in a future version of p5.js to make way for a new,
-  friendlier version :)
+description: |
+  <p>Stores a Float value in the TableRow's specified column.
+  The column may be specified by either its ID or title.</p>
+line: 97
 isConstructor: false
 itemtype: method
 example:
-  - |-
-    <div>
-    <code>
-    let table;
+  - |2-
 
-    async function setup() {
-      // Create a 200x200 canvas and set a white background
-      createCanvas(200, 200);
-      background(255);
+     <div class="norender"><code>
+     // Given the CSV file "mammals.csv" in the project's "assets" folder:
+     //
+     // id,species,name
+     // 0,Capra hircus,Goat
+     // 1,Panthera pardus,Leopard
+     // 2,Equus zebra,Zebra
 
-      // Load the CSV file with a header row
-      table = await loadTable('/assets/mammals.csv', ',', 'header');
+     let table;
 
-      // Update each row's "id" to (row index + 10)
-      let rows = table.getRows();
-      for (let r = 0; r < rows.length; r++) {
-        rows[r].setNum('id', r + 10);
-      }
+     function preload() {
+     //my table is comma separated value "csv"
+     //and has a header specifying the columns labels
+     table = loadTable('/assets/mammals.csv', 'csv', 'header');
+     }
 
-      // Convert the table to a 2D array for display
-      let tableArray = table.getArray();
+     function setup() {
+     let rows = table.getRows();
+     for (let r = 0; r < rows.length; r++) {
+       rows[r].setNum('id', r + 10);
+     }
 
-      // Set text properties
-      fill(0);      // Text color: black
-      textSize(12); // Adjust text size as needed
+     print(table.getArray());
 
-      // Display each row of the table on the canvas
-      let y = 20;   // Starting y position
-      for (let i = 0; i < tableArray.length; i++) {
-        // Join each row's values with a comma separator
-        let rowText = tableArray[i].join(', ');
-        text(rowText, 10, y * 2.5);
-        y += 20;  // Increment y for the next row
-      }
-
-      describe('no image displayed');
-    }
-    </code>
-    </div>
+     describe('no image displayed');
+     }
+     </code></div>
 class: p5.TableRow
-overloads:
-  - params:
-      - name: column
-        description: |-
-          Column ID (Number)
-          or Title (String)
-        type: String|Integer
-      - name: value
-        description: |-
-          The value to be stored
-          as a Float
-        type: Number|String
+params:
+  - name: column
+    description: |
+      <p>Column ID (Number)
+                                    or Title (String)</p>
+    type: String|Integer
+  - name: value
+    description: |
+      <p>The value to be stored
+                                    as a Float</p>
+    type: Number|String
 chainable: false
 ---
 

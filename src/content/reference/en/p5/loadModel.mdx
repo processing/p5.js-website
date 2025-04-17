@@ -21,22 +21,18 @@ description: >
 
   process the model.</p>
 
-  <p>The first parameter, <code>path</code>, is a <code>String</code> with the
-  path to the file. Paths
+  <p>The first parameter, <code>path</code>, is always a <code>String</code>
+  with the path to the
 
-  to local files should be relative, as in
-  <code>loadModel('/assets/model.obj')</code>.
+  file. Paths to local files should be relative, as in
 
-  URLs such as <code>'https://example.com/model.obj'</code> may be blocked due
-  to browser
+  <code>loadModel('/assets/model.obj')</code>. URLs such as
 
-  security. The <code>path</code> parameter can also be defined as a
-  <code>Request</code>
+  <code>'https://example.com/model.obj'</code> may be blocked due to browser
+  security.</p>
 
-  object for more advanced usage.
-
-  Note: When loading a <code>.obj</code> file that references materials stored
-  in
+  <p>Note: When loading a <code>.obj</code> file that references materials
+  stored in
 
   <code>.mtl</code> files, p5.js will attempt to load and apply those materials.
 
@@ -125,19 +121,27 @@ description: >
 
   // Pass the options object to loadModel().
 
-  loadModel('/assets/model.obj', options);</code></pre><p>This function returns
-  a <code>Promise</code> and should be used in an <code>async</code> setup with
+  loadModel('/assets/model.obj', options);
 
-  <code>await</code>. See the examples for the usage syntax.</p>
+  </code></pre>
+
+  <p>Models can take time to load. Calling <code>loadModel()</code> in
+
+  <a href="/reference/p5/preload/">preload()</a> ensures models load before
+  they're
+
+  used in <a href="/reference/p5/setup/">setup()</a> or <a
+  href="/reference/p5/draw/">draw()</a>.</p>
 
   <p>Note: There’s no support for colored STL files. STL files with color will
 
   be rendered without color.</p>
-line: 341
+line: 13
 isConstructor: false
 itemtype: method
 example:
   - |-
+
     <div>
     <code>
     // Click and drag the mouse to view the scene from different angles.
@@ -145,9 +149,11 @@ example:
     let shape;
 
     // Load the file and create a p5.Geometry object.
-    async function setup() {
-      shape = await loadModel('/assets/teapot.obj');
+    function preload() {
+      shape = loadModel('/assets/teapot.obj');
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       describe('A white teapot drawn against a gray background.');
@@ -173,9 +179,11 @@ example:
 
     // Load the file and create a p5.Geometry object.
     // Normalize the geometry's size to fit the canvas.
-    async function setup() {
-      shape = await loadModel('/assets/teapot.obj', true);
+    function preload() {
+      shape = loadModel('/assets/teapot.obj', true);
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       describe('A white teapot drawn against a gray background.');
@@ -200,9 +208,11 @@ example:
     let shape;
 
     // Load the file and create a p5.Geometry object.
-    async function setup() {
-      await loadModel('/assets/teapot.obj', true, handleModel);
+    function preload() {
+      loadModel('/assets/teapot.obj', true, handleModel);
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       describe('A white teapot drawn against a gray background.');
@@ -234,9 +244,11 @@ example:
     let shape;
 
     // Load the file and create a p5.Geometry object.
-    async function setup() {
-      await loadModel('/assets/teapot.obj', true, handleModel, handleError);
+    function preload() {
+      loadModel('/assets/wrong.obj', true, handleModel, handleError);
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       describe('A white teapot drawn against a gray background.');
@@ -273,9 +285,11 @@ example:
     let shape;
 
     // Load the file and create a p5.Geometry object.
-    async function setup() {
-      await loadModel('/assets/teapot.obj', '.obj', true, handleModel, handleError);
+    function preload() {
+      loadModel('/assets/teapot.obj', true, handleModel, handleError, '.obj');
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       describe('A white teapot drawn against a gray background.');
@@ -311,16 +325,18 @@ example:
 
     let shape;
     let options = {
-      fileType: '.obj',
       normalize: true,
       successCallback: handleModel,
-      failureCallback: handleError
+      failureCallback: handleError,
+      fileType: '.obj'
     };
 
     // Load the file and create a p5.Geometry object.
-    async function setup() {
-      await loadModel('/assets/teapot.obj', options);
+    function preload() {
+      loadModel('/assets/teapot.obj', options);
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       describe('A white teapot drawn against a gray background.');
@@ -352,85 +368,97 @@ example:
 class: p5
 return:
   description: the <a href="#/p5.Geometry">p5.Geometry</a> object
-  type: Promise<p5.Geometry>
+  type: p5.Geometry
 overloads:
-  - params:
+  - line: 13
+    params:
       - name: path
-        description: path of the model to be loaded.
-        type: String|Request
-      - name: fileType
-        description: >-
-          model’s file extension. Either <code>'.obj'</code> or
-          <code>'.stl'</code>.
-        optional: 1
+        description: |
+          <p>path of the model to be loaded.</p>
         type: String
       - name: normalize
-        description: 'if <code>true</code>, scale the model to fit the canvas.'
+        description: |
+          <p>if <code>true</code>, scale the model to fit the canvas.</p>
         type: Boolean
       - name: successCallback
-        description: |-
-          function to call once the model is loaded. Will be passed
-          the <a href="#/p5.Geometry">p5.Geometry</a> object.
-        optional: 1
+        description: |
+          <p>function to call once the model is loaded. Will be passed
+                                                            the <a href="#/p5.Geometry">p5.Geometry</a> object.</p>
         type: function(p5.Geometry)
+        optional: true
       - name: failureCallback
-        description: >-
-          function to call if the model fails to load. Will be passed an
-          <code>Error</code> event object.
-        optional: 1
-        type: function(Event)
+        description: >
+          <p>function to call if the model fails to load. Will be passed an
+          <code>Error</code> event object.</p>
+        type: Function(Event)
+        optional: true
+      - name: fileType
+        description: >
+          <p>model’s file extension. Either <code>'.obj'</code> or
+          <code>'.stl'</code>.</p>
+        type: String
+        optional: true
     return:
       description: the <a href="#/p5.Geometry">p5.Geometry</a> object
-      type: Promise<p5.Geometry>
-  - params:
+      type: p5.Geometry
+  - line: 324
+    params:
       - name: path
-        type: String|Request
-      - name: fileType
-        optional: 1
+        description: ''
         type: String
       - name: successCallback
-        optional: 1
+        description: ''
         type: function(p5.Geometry)
+        optional: true
       - name: failureCallback
-        optional: 1
-        type: function(Event)
-    return:
-      description: new <a href="#/p5.Geometry">p5.Geometry</a> object.
-      type: Promise<p5.Geometry>
-  - params:
-      - name: path
-        type: String|Request
-      - name: options
-        description: loading options.
-        optional: 1
-        type: Object
-      - name: options.fileType
         description: ''
-        optional: 1
+        type: Function(Event)
+        optional: true
+      - name: fileType
+        description: ''
         type: String
-      - name: options.successCallback
-        description: ''
-        optional: 1
-        type: function(p5.Geometry)
-      - name: options.failureCallback
-        description: ''
-        optional: 1
-        type: function(Event)
-      - name: options.normalize
-        description: ''
-        optional: 1
-        type: Boolean
-      - name: options.flipU
-        description: ''
-        optional: 1
-        type: Boolean
-      - name: options.flipV
-        description: ''
-        optional: 1
-        type: Boolean
+        optional: true
     return:
       description: new <a href="#/p5.Geometry">p5.Geometry</a> object.
-      type: Promise<p5.Geometry>
+      type: p5.Geometry
+  - line: 332
+    params:
+      - name: path
+        description: ''
+        type: String
+      - name: options
+        description: |
+          <p>loading options.</p>
+        type: Object
+        optional: true
+        props:
+          - name: successCallback
+            description: ''
+            type: function(p5.Geometry)
+            optional: true
+          - name: failureCallback
+            description: ''
+            type: Function(Event)
+            optional: true
+          - name: fileType
+            description: ''
+            type: String
+            optional: true
+          - name: normalize
+            description: ''
+            type: Boolean
+            optional: true
+          - name: flipU
+            description: ''
+            type: Boolean
+            optional: true
+          - name: flipV
+            description: ''
+            type: Boolean
+            optional: true
+    return:
+      description: new <a href="#/p5.Geometry">p5.Geometry</a> object.
+      type: p5.Geometry
 chainable: false
 ---
 

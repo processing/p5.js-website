@@ -50,33 +50,30 @@ description: >
 
   can use the new <a href="/reference/p5/p5.Shader">p5.Shader</a> object as its
 
-  parameter. The return value of the <code>successCallback()</code> function
-  will be used
-
-  as the final return value of <code>loadShader()</code>.</p>
+  parameter.</p>
 
   <p>The fourth parameter, <code>failureCallback</code>, is also optional. If a
   function is
 
   passed, it will be called if the shader fails to load. The callback
 
-  function can use the event error as its parameter. The return value of the
-  <code>
+  function can use the event error as its parameter.</p>
 
-  failureCallback()</code> function will be used as the final return value of
-  <code>loadShader()</code>.</p>
+  <p>Shaders can take time to load. Calling <code>loadShader()</code> in
 
-  <p>This function returns a <code>Promise</code> and should be used in an
-  <code>async</code> setup with
+  <a href="/reference/p5/preload/">preload()</a> ensures shaders load before
+  they're
 
-  <code>await</code>. See the examples for the usage syntax.</p>
+  used in <a href="/reference/p5/setup/">setup()</a> or <a
+  href="/reference/p5/draw/">draw()</a>.</p>
 
   <p>Note: Shaders can only be used in WebGL mode.</p>
-line: 122
+line: 12
 isConstructor: false
 itemtype: method
 example:
   - |-
+
     <div modernizr='webgl'>
     <code>
     // Note: A "uniform" is a global variable within a shader program.
@@ -84,9 +81,11 @@ example:
     let mandelbrot;
 
     // Load the shader and create a p5.Shader object.
-    async function setup() {
-      mandelbrot = await loadShader('/assets/shader.vert', '/assets/shader.frag');
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       // Compile and apply the p5.Shader object.
@@ -113,9 +112,11 @@ example:
     let mandelbrot;
 
     // Load the shader and create a p5.Shader object.
-    async function setup() {
-      mandelbrot = await loadShader('/assets/shader.vert', '/assets/shader.frag');
+    function preload() {
+      mandelbrot = loadShader('/assets/shader.vert', '/assets/shader.frag');
+    }
 
+    function setup() {
       createCanvas(100, 100, WEBGL);
 
       // Use the p5.Shader object.
@@ -137,32 +138,30 @@ example:
     </code>
     </div>
 class: p5
+params:
+  - name: vertFilename
+    description: |
+      <p>path of the vertex shader to be loaded.</p>
+    type: String
+  - name: fragFilename
+    description: |
+      <p>path of the fragment shader to be loaded.</p>
+    type: String
+  - name: successCallback
+    description: |
+      <p>function to call once the shader is loaded. Can be passed the
+                                          <a href="#/p5.Shader">p5.Shader</a> object.</p>
+    type: Function
+    optional: true
+  - name: failureCallback
+    description: |
+      <p>function to call if the shader fails to load. Can be passed an
+                                          <code>Error</code> event object.</p>
+    type: Function
+    optional: true
 return:
   description: new shader created from the vertex and fragment shader files.
-  type: Promise<p5.Shader>
-overloads:
-  - params:
-      - name: vertFilename
-        description: path of the vertex shader to be loaded.
-        type: String|Request
-      - name: fragFilename
-        description: path of the fragment shader to be loaded.
-        type: String|Request
-      - name: successCallback
-        description: |-
-          function to call once the shader is loaded. Can be passed the
-          <a href="#/p5.Shader">p5.Shader</a> object.
-        optional: 1
-        type: Function
-      - name: failureCallback
-        description: |-
-          function to call if the shader fails to load. Can be passed an
-          <code>Error</code> event object.
-        optional: 1
-        type: Function
-    return:
-      description: new shader created from the vertex and fragment shader files.
-      type: Promise<p5.Shader>
+  type: p5.Shader
 chainable: false
 ---
 

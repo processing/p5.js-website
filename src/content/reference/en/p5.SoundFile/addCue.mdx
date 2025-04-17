@@ -1,0 +1,82 @@
+---
+title: addCue
+module: p5.sound
+submodule: p5.sound
+file: lib/addons/p5.sound.js
+description: |
+  <p>Schedule events to trigger every time a MediaElement
+  (audio/video) reaches a playback cue point.</p>
+  <p>Accepts a callback function, a time (in seconds) at which to trigger
+  the callback, and an optional parameter for the callback.</p>
+  <p>Time will be passed as the first parameter to the callback function,
+  and param will be the second parameter.</p>
+line: 2719
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div><code>
+    let mySound;
+    function preload() {
+      mySound = loadSound('/assets/Damscray_DancingTiger.mp3');
+    }
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(canvasPressed);
+      background(220);
+      text('tap to play', 10, 20);
+
+      // schedule calls to changeText
+      mySound.addCue(0, changeText, "hello" );
+      mySound.addCue(0.5, changeText, "hello," );
+      mySound.addCue(1, changeText, "hello, p5!");
+      mySound.addCue(1.5, changeText, "hello, p5!!");
+      mySound.addCue(2, changeText, "hello, p5!!!!!");
+    }
+
+    function changeText(val) {
+      background(220);
+      text(val, 10, 20);
+    }
+
+    function canvasPressed() {
+      mySound.play();
+    }
+    </code></div>
+class: p5.SoundFile
+params:
+  - name: time
+    description: |
+      <p>Time in seconds, relative to this media
+                                 element's playback. For example, to trigger
+                                 an event every time playback reaches two
+                                 seconds, pass in the number 2. This will be
+                                 passed as the first parameter to
+                                 the callback function.</p>
+    type: Number
+  - name: callback
+    description: |
+      <p>Name of a function that will be
+                                 called at the given time. The callback will
+                                 receive time and (optionally) param as its
+                                 two parameters.</p>
+    type: Function
+  - name: value
+    description: |
+      <p>An object to be passed as the
+                                 second parameter to the
+                                 callback function.</p>
+    type: Object
+    optional: true
+return:
+  description: |-
+    id ID of this cue,
+                        useful for removeCue(id)
+  type: Number
+chainable: false
+---
+
+
+# addCue

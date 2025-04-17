@@ -3,68 +3,62 @@ title: set
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: |-
-  Stores a value in the Table's specified row and column.
+description: |
+  <p>Stores a value in the Table's specified row and column.
   The row is specified by its ID, while the column may be specified
-  by either its ID or title.
-line: 968
-deprecated: >-
-  p5.Table will be removed in a future version of p5.js to make way for a new,
-  friendlier version :)
+  by either its ID or title.</p>
+line: 950
 isConstructor: false
 itemtype: method
 example:
   - |-
-    <div>
+
+    <div class="norender">
     <code>
+    // Given the CSV file "mammals.csv"
+    // in the project's "assets" folder:
+    //
+    // id,species,name
+    // 0,Capra hircus,Goat
+    // 1,Panthera pardus,Leopard
+    // 2,Equus zebra,Zebra
+
     let table;
 
-    async function setup() {
-      // Create a 200x200 canvas and set a white background
-      createCanvas(200, 200);
-      background(255);
+    function preload() {
+      //my table is comma separated value "csv"
+      //and has a header specifying the columns labels
+      table = loadTable('/assets/mammals.csv', 'csv', 'header');
+    }
 
-      // Load the CSV file with a header row
-      table = await loadTable('/assets/mammals.csv', ',', 'header');
-
-      // Update the first row: change species to "Canis Lupus" and name to "Wolf"
+    function setup() {
       table.set(0, 'species', 'Canis Lupus');
       table.set(0, 'name', 'Wolf');
 
-      // Set text properties for drawing on the canvas
-      fill(0);      // Text color: black
-       textSize(12); // Adjust text size as needed
-
-      // Display the table values on the canvas:
-      // Each row's values are concatenated into a single string and displayed on a new line.
-      let y = 20; // Starting vertical position
-      for (let r = 0; r < table.getRowCount(); r++) {
-        let rowText = "";
-        for (let c = 0; c < table.getColumnCount(); c++) {
-          rowText += table.getString(r, c) + " ";
-        }
-        text(rowText, 10, y * 2.5);
-        y += 20;
-      }
+      //print the results
+      for (let r = 0; r < table.getRowCount(); r++)
+        for (let c = 0; c < table.getColumnCount(); c++)
+          print(table.getString(r, c));
 
       describe('no image displayed');
     }
     </code>
     </div>
 class: p5.Table
-overloads:
-  - params:
-      - name: row
-        description: row ID
-        type: Integer
-      - name: column
-        description: |-
-          column ID (Number)
-          or title (String)
-        type: String|Integer
-      - name: value
-        description: value to assign
-        type: String|Number
+params:
+  - name: row
+    description: |
+      <p>row ID</p>
+    type: Integer
+  - name: column
+    description: |
+      <p>column ID (Number)
+                                    or title (String)</p>
+    type: String|Integer
+  - name: value
+    description: |
+      <p>value to assign</p>
+    type: String|Number
 chainable: false
 ---
 

@@ -1,8 +1,8 @@
 ---
 title: loadFont
 module: Typography
-submodule: ''
-file: src/type/p5.Font.js
+submodule: Loading & Displaying
+file: src/typography/loading_displaying.js
 description: >
   <p>Loads a font and creates a <a href="/reference/p5/p5.Font">p5.Font</a>
   object.
@@ -31,16 +31,6 @@ description: >
 
   security.</p>
 
-  <p>In 2D mode, <code>path</code> can take on a few other forms. It could be a
-  path to a CSS file,
-
-  such as one from <a href="https://fonts.google.com/">Google Fonts.</a> It
-  could also
-
-  be a string with a <a
-  href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/">CSS
-  <code>@font-face</code> declaration.</a></p>
-
   <p>The second parameter, <code>successCallback</code>, is optional. If a
   function is
 
@@ -61,22 +51,30 @@ description: >
 
   object if needed.</p>
 
-  <p>Fonts can take time to load. <code>await</code> the result of
-  <code>loadFont()</code> in
+  <p>Fonts can take time to load. Calling <code>loadFont()</code> in
 
-  <a href="/reference/p5/setup/">setup()</a> before using the result.</p>
-line: 1317
+  <a href="/reference/p5/preload/">preload()</a> ensures fonts load before
+  they're
+
+  used in <a href="/reference/p5/setup/">setup()</a> or
+
+  <a href="/reference/p5/draw/">draw()</a>.</p>
+line: 16
 isConstructor: false
 itemtype: method
 example:
   - |-
+
+
     <div>
     <code>
     let font;
 
-    async function setup() {
-      createCanvas(100, 100);
-      font = await loadFont('/assets/inconsolata.otf');
+    function preload() {
+      font = loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
       fill('deeppink');
       textFont(font);
       textSize(36);
@@ -86,11 +84,10 @@ example:
     }
     </code>
     </div>
-  - |-
+
     <div>
     <code>
     function setup() {
-      createCanvas(100, 100);
       loadFont('/assets/inconsolata.otf', font => {
         fill('deeppink');
         textFont(font);
@@ -102,11 +99,10 @@ example:
     }
     </code>
     </div>
-  - |-
+
     <div>
     <code>
     function setup() {
-      createCanvas(100, 100);
       loadFont('/assets/inconsolata.otf', success, failure);
     }
 
@@ -124,12 +120,14 @@ example:
     }
     </code>
     </div>
-  - |-
+
     <div>
     <code>
-    async function setup() {
-      createCanvas(100, 100);
-      await loadFont('/assets/inconsolata.otf');
+    function preload() {
+      loadFont('/assets/inconsolata.otf');
+    }
+
+    function setup() {
       let p = createP('p5*js');
       p.style('color', 'deeppink');
       p.style('font-family', 'Inconsolata');
@@ -140,97 +138,29 @@ example:
     }
     </code>
     </div>
-  - >-
-    <div class="norender">
-
-    <code>
-
-    // Some other forms of loading fonts:
-
-    loadFont("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap");
-
-    loadFont(`@font-face { font-family: "Bricolage Grotesque", serif;
-    font-optical-sizing: auto; font-weight: 400; font-style: normal;
-    font-variation-settings: "wdth" 100; }`);
-
-    </code>
-
-    </div>
 class: p5
+params:
+  - name: path
+    description: |
+      <p>path of the font to be loaded.</p>
+    type: String
+  - name: successCallback
+    description: |
+      <p>function called with the
+                                                <a href="#/p5.Font">p5.Font</a> object after it
+                                                loads.</p>
+    type: Function
+    optional: true
+  - name: failureCallback
+    description: |
+      <p>function called with the error
+                                                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event" target="_blank">Event</a>
+                                                object if the font fails to load.</p>
+    type: Function
+    optional: true
 return:
   description: <a href="#/p5.Font">p5.Font</a> object.
-  type: Promise<p5.Font>
-overloads:
-  - params:
-      - name: path
-        description: >-
-          path of the font or CSS file to be loaded, or a CSS
-          <code>@font-face</code> string.
-        type: String
-      - name: name
-        description: >-
-          An alias that can be used for this font in <code>textFont()</code>.
-          Defaults to the name in the font's metadata.
-        optional: 1
-        type: String
-      - name: options
-        description: >-
-          An optional object with extra CSS font face descriptors, or p5.js font
-          settings.
-        optional: 1
-        type: Object
-      - name: options.sets
-        description: >-
-          (Experimental) An optional string of list of strings with Unicode
-          character set names that should be included. When a CSS file is used
-          as the font, it may contain multiple font files. The font best
-          matching the requested character sets will be picked.
-        optional: 1
-        type: 'String|String[]'
-      - name: successCallback
-        description: |-
-          function called with the
-          <a href="#/p5.Font">p5.Font</a> object after it
-          loads.
-        optional: 1
-        type: Function
-      - name: failureCallback
-        description: >-
-          function called with the error
-
-          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event"
-          target="_blank">Event</a>
-
-          object if the font fails to load.
-        optional: 1
-        type: Function
-    return:
-      description: <a href="#/p5.Font">p5.Font</a> object.
-      type: Promise<p5.Font>
-  - params:
-      - name: path
-        description: path of the font to be loaded.
-        type: String
-      - name: successCallback
-        description: |-
-          function called with the
-          <a href="#/p5.Font">p5.Font</a> object after it
-          loads.
-        optional: 1
-        type: Function
-      - name: failureCallback
-        description: >-
-          function called with the error
-
-          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event"
-          target="_blank">Event</a>
-
-          object if the font fails to load.
-        optional: 1
-        type: Function
-    return:
-      description: The font.
-      type: Promise<p5.Font>
+  type: p5.Font
 chainable: false
 ---
 

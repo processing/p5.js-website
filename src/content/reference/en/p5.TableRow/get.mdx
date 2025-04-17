@@ -3,62 +3,53 @@ title: get
 module: IO
 submodule: Table
 file: src/io/p5.TableRow.js
-description: |-
-  Retrieves a value from the TableRow's specified column.
-  The column may be specified by either its ID or title.
-line: 235
-deprecated: >-
-  p5.Table will be removed in a future version of p5.js to make way for a new,
-  friendlier version :)
+description: |
+  <p>Retrieves a value from the TableRow's specified column.
+  The column may be specified by either its ID or title.</p>
+line: 184
 isConstructor: false
 itemtype: method
 example:
-  - |-
-    <div>
-    <code>
-    let table;
+  - |2-
 
-    async function setup() {
-      // Create a 200x100 canvas and set a white background
-      createCanvas(200, 100);
-      background(255);
+     <div class="norender"><code>
+     // Given the CSV file "mammals.csv" in the project's "assets" folder:
+     //
+     // id,species,name
+     // 0,Capra hircus,Goat
+     // 1,Panthera pardus,Leopard
+     // 2,Equus zebra,Zebra
 
-      // Load the CSV file with a header row
-       table = await loadTable('/assets/mammals.csv', ',', 'header');
+     let table;
 
-      // Extract the names from each row and store them in an array
-      let names = [];
-      let rows = table.getRows();
-      for (let r = 0; r < rows.length; r++) {
-        names.push(rows[r].get('name'));
-      }
+     function preload() {
+     //my table is comma separated value "csv"
+     //and has a header specifying the columns labels
+     table = loadTable('/assets/mammals.csv', 'csv', 'header');
+     }
 
-      // Set text properties and display the names on the canvas
-      fill(0);      // Set text color to black
-      textSize(12); // Set text size
+     function setup() {
+     let names = [];
+     let rows = table.getRows();
+     for (let r = 0; r < rows.length; r++) {
+       names.push(rows[r].get('name'));
+     }
 
-      // Join names into a single string separated by commas
-      let namesText = names.join(', ');
-      text(namesText, 35, 50);
+     print(names);
 
-      describe('no image displayed');
-    }
-    </code>
-    </div>
+     describe('no image displayed');
+     }
+     </code></div>
 class: p5.TableRow
+params:
+  - name: column
+    description: |
+      <p>columnName (string) or
+                                       ID (number)</p>
+    type: String|Integer
 return:
   description: ''
   type: String|Number
-overloads:
-  - params:
-      - name: column
-        description: |-
-          columnName (string) or
-          ID (number)
-        type: String|Integer
-    return:
-      description: ''
-      type: String|Number
 chainable: false
 ---
 

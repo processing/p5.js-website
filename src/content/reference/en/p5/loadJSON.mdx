@@ -19,19 +19,15 @@ description: >
 
   Booleans, arrays, <code>null</code>, or other objects.</p>
 
-  <p>The first parameter, <code>path</code>, is a string with the path to the
-  file.
+  <p>The first parameter, <code>path</code>, is always a string with the path to
+  the file.
 
   Paths to local files should be relative, as in
 
   <code>loadJSON('/assets/data.json')</code>. URLs such as
 
   <code>'https://example.com/data.json'</code> may be blocked due to browser
-  security.
-
-  The <code>path</code> parameter can also be defined as a <code>Request</code>
-
-  object for more advanced usage.</p>
+  security.</p>
 
   <p>The second parameter, <code>successCallback</code>, is optional. If a
   function is
@@ -42,12 +38,7 @@ description: >
   object
 
   created from the JSON data will be passed to <code>handleData()</code> as its
-  only argument.
-
-  The return value of the <code>handleData()</code> function will be used as the
-  final return
-
-  value of <code>loadJSON('/assets/data.json', handleData)</code>.</p>
+  only argument.</p>
 
   <p>The third parameter, <code>failureCallback</code>, is also optional. If a
   function is
@@ -61,27 +52,32 @@ description: >
   loading. The <code>Error</code> object will be passed to
   <code>handleFailure()</code> as its only
 
-  argument. The return value of the <code>handleFailure()</code> function will
-  be used as the
+  argument.</p>
 
-  final return value of <code>loadJSON('/assets/data.json', handleData,
-  handleFailure)</code>.</p>
+  <p>Note: Data can take time to load. Calling <code>loadJSON()</code> within
 
-  <p>This function returns a <code>Promise</code> and should be used in an
-  <code>async</code> setup with
+  <a href="/reference/p5/preload/">preload()</a> ensures data loads before it's
+  used in
 
-  <code>await</code>. See the examples for the usage syntax.</p>
-line: 293
+  <a href="/reference/p5/setup/">setup()</a> or <a
+  href="/reference/p5/draw/">draw()</a>.</p>
+line: 17
 isConstructor: false
 itemtype: method
 example:
   - |-
+
+
     <div>
     <code>
     let myData;
 
-    async function setup() {
-      myData = await loadJSON('/assets/data.json');
+    // Load the JSON and create an object.
+    function preload() {
+      myData = loadJSON('/assets/data.json');
+    }
+
+    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -102,8 +98,12 @@ example:
     <code>
     let myData;
 
-    async function setup() {
-      myData = await loadJSON('/assets/data.json');
+    // Load the JSON and create an object.
+    function preload() {
+      myData = loadJSON('/assets/data.json');
+    }
+
+    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -131,8 +131,12 @@ example:
     <code>
     let myData;
 
-    async function setup() {
-      myData = await loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
+    // Load the GeoJSON and create an object.
+    function preload() {
+      myData = loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
+    }
+
+    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -161,12 +165,14 @@ example:
     let bigQuake;
 
     // Load the GeoJSON and preprocess it.
-    async function setup() {
-      await loadJSON(
+    function preload() {
+      loadJSON(
         'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson',
         handleData
       );
+    }
 
+    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -205,13 +211,15 @@ example:
     let bigQuake;
 
     // Load the GeoJSON and preprocess it.
-    async function setup() {
-      await loadJSON(
+    function preload() {
+      loadJSON(
         'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson',
         handleData,
         handleError
       );
+    }
 
+    function setup() {
       createCanvas(100, 100);
 
       background(200);
@@ -250,27 +258,26 @@ example:
     </code>
     </div>
 class: p5
+params:
+  - name: path
+    description: |
+      <p>path of the JSON file to be loaded.</p>
+    type: String
+  - name: successCallback
+    description: >
+      <p>function to call once the data is loaded. Will be passed the
+      object.</p>
+    type: Function
+    optional: true
+  - name: errorCallback
+    description: >
+      <p>function to call if the data fails to load. Will be passed an
+      <code>Error</code> event object.</p>
+    type: Function
+    optional: true
 return:
   description: object containing the loaded data.
-  type: Promise<Object>
-overloads:
-  - params:
-      - name: path
-        description: path of the JSON file to be loaded.
-        type: String|Request
-      - name: successCallback
-        description: function to call once the data is loaded. Will be passed the object.
-        optional: 1
-        type: Function
-      - name: errorCallback
-        description: >-
-          function to call if the data fails to load. Will be passed an
-          <code>Error</code> event object.
-        optional: 1
-        type: Function
-    return:
-      description: object containing the loaded data.
-      type: Promise<Object>
+  type: Object
 chainable: false
 ---
 

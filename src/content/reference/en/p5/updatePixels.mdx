@@ -1,8 +1,8 @@
 ---
 title: updatePixels
-module: Rendering
-submodule: ''
-file: src/webgl/p5.Framebuffer.js
+module: Image
+submodule: Pixels
+file: src/image/pixels.js
 description: >
   <p>Updates the canvas with the RGBA values in the
 
@@ -18,19 +18,22 @@ description: >
   calling
 
   <a href="/reference/p5/set/">set()</a>.</p>
-line: 1515
+line: 1118
 isConstructor: false
 itemtype: method
 example:
   - |-
+
     <div>
     <code>
     let img;
 
-    async function setup() {
-      // Load the image.
-      img = await loadImage('/assets/rockies.jpg');
+    // Load the image.
+    function preload() {
+      img = loadImage('/assets/rockies.jpg');
+    }
 
+    function setup() {
       createCanvas(100, 100);
 
       // Display the image.
@@ -57,66 +60,30 @@ example:
     }
     </code>
     </div>
-  - |-
-    <div>
-    <code>
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      background(200);
-
-      // Create a p5.Framebuffer object.
-      let myBuffer = createFramebuffer();
-
-      // Load the pixels array.
-      myBuffer.loadPixels();
-
-      // Get the number of pixels in the
-      // top half of the framebuffer.
-      let numPixels = myBuffer.pixels.length / 2;
-
-      // Set the framebuffer's top half to pink.
-      for (let i = 0; i < numPixels; i += 4) {
-        myBuffer.pixels[i] = 255;
-        myBuffer.pixels[i + 1] = 102;
-        myBuffer.pixels[i + 2] = 204;
-        myBuffer.pixels[i + 3] = 255;
-      }
-
-      // Update the pixels array.
-      myBuffer.updatePixels();
-
-      // Draw the p5.Framebuffer object to the canvas.
-      image(myBuffer, -50, -50);
-
-      describe('A pink rectangle above a gray rectangle.');
-    }
-    </code>
-    </div>
 class: p5
-overloads:
-  - params:
-      - name: x
-        description: |-
-          x-coordinate of the upper-left corner of region
-          to update.
-        optional: 1
-        type: Number
-      - name: 'y'
-        description: |-
-          y-coordinate of the upper-left corner of region
-          to update.
-        optional: 1
-        type: Number
-      - name: w
-        description: width of region to update.
-        optional: 1
-        type: Number
-      - name: h
-        description: height of region to update.
-        optional: 1
-        type: Number
-  - params: []
+params:
+  - name: x
+    description: |
+      <p>x-coordinate of the upper-left corner of region
+                              to update.</p>
+    type: Number
+    optional: true
+  - name: 'y'
+    description: |
+      <p>y-coordinate of the upper-left corner of region
+                              to update.</p>
+    type: Number
+    optional: true
+  - name: w
+    description: |
+      <p>width of region to update.</p>
+    type: Number
+    optional: true
+  - name: h
+    description: |
+      <p>height of region to update.</p>
+    type: Number
+    optional: true
 chainable: false
 ---
 

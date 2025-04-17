@@ -3,41 +3,37 @@ title: getArray
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: Retrieves all table data and returns it as a multidimensional array.
-line: 1317
-deprecated: >-
-  p5.Table will be removed in a future version of p5.js to make way for a new,
-  friendlier version :)
+description: |
+  <p>Retrieves all table data and returns it as a multidimensional array.</p>
+line: 1285
 isConstructor: false
 itemtype: method
 example:
   - |-
-    <div>
+
+    <div class="norender">
     <code>
+    // Given the CSV file "mammals.csv"
+    // in the project's "assets" folder
+    //
+    // id,species,name
+    // 0,Capra hircus,Goat
+    // 1,Panthera pardus,Leoperd
+    // 2,Equus zebra,Zebra
+
     let table;
 
-    async function setup() {
-      // Create a 200x200 canvas and set a white background
-      createCanvas(200, 200);
-      background(255);
+    function preload() {
+      // table is comma separated value "CSV"
+      // and has specifiying header for column labels
+      table = loadTable('/assets/mammals.csv', 'csv', 'header');
+    }
 
-      // Load the CSV file with a header row
-      table = await loadTable('/assets/mammals.csv', ',', 'header');
-
-      // Get the CSV data as a 2D array
+    function setup() {
       let tableArray = table.getArray();
-
-      // Set text properties
-      fill(0);      // Set text color to black
-      textSize(12); // Adjust text size as needed
-
-      // Display each row of the CSV on the canvas
-      // Each row is displayed on a separate line
       for (let i = 0; i < tableArray.length; i++) {
-        let rowText = tableArray[i].join(", ");
-        text(rowText, 10, 20 + i * 50 + 30);
+        print(tableArray[i]);
       }
-
       describe('no image displayed');
     }
     </code>
@@ -46,11 +42,6 @@ class: p5.Table
 return:
   description: ''
   type: Array
-overloads:
-  - params: []
-    return:
-      description: ''
-      type: Array
 chainable: false
 ---
 

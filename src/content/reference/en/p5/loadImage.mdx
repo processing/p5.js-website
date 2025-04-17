@@ -21,47 +21,43 @@ description: >
 
   security. Raw image data can also be passed as a base64 encoded image in
 
-  the form <code>'data:image/png;base64,arandomsequenceofcharacters'</code>. The
-  <code>path</code>
-
-  parameter can also be defined as a <code>Request</code>
-
-  object for more advanced usage.</p>
+  the form <code>'data:image/png;base64,arandomsequenceofcharacters'</code>.</p>
 
   <p>The second parameter is optional. If a function is passed, it will be
 
   called once the image has loaded. The callback function can optionally use
 
-  the new <a href="/reference/p5/p5.Image">p5.Image</a> object. The return value
-  of the
-
-  function will be used as the final return value of
-  <code>loadImage()</code>.</p>
+  the new <a href="/reference/p5/p5.Image">p5.Image</a> object.</p>
 
   <p>The third parameter is also optional. If a function is passed, it will be
 
   called if the image fails to load. The callback function can optionally use
 
-  the event error. The return value of the function will be used as the final
+  the event error.</p>
 
-  return value of <code>loadImage()</code>.</p>
+  <p>Images can take time to load. Calling <code>loadImage()</code> in
 
-  <p>This function returns a <code>Promise</code> and should be used in an
-  <code>async</code> setup with
+  <a href="/reference/p5/preload/">preload()</a> ensures images load before
+  they're
 
-  <code>await</code>. See the examples for the usage syntax.</p>
-line: 105
+  used in <a href="/reference/p5/setup/">setup()</a> or <a
+  href="/reference/p5/draw/">draw()</a>.</p>
+line: 18
 isConstructor: false
 itemtype: method
 example:
   - |-
+
     <div>
     <code>
     let img;
 
     // Load the image and create a p5.Image object.
-    async function setup() {
-      img = await loadImage('/assets/laDefense.jpg');
+    function preload() {
+      img = loadImage('/assets/laDefense.jpg');
+    }
+
+    function setup() {
       createCanvas(100, 100);
 
       // Draw the image.
@@ -74,9 +70,9 @@ example:
 
     <div>
     <code>
-    async function setup() {
+    function setup() {
       // Call handleImage() once the image loads.
-      await loadImage('/assets/laDefense.jpg', handleImage);
+      loadImage('/assets/laDefense.jpg', handleImage);
 
       describe('Image of the underside of a white umbrella and a gridded ceiling.');
     }
@@ -90,10 +86,10 @@ example:
 
     <div>
     <code>
-    async function setup() {
+    function setup() {
       // Call handleImage() once the image loads or
       // call handleError() if an error occurs.
-      await loadImage('/assets/laDefense.jpg', handleImage, handleError);
+      loadImage('/assets/laDefense.jpg', handleImage, handleError);
     }
 
     // Display the image.
@@ -110,30 +106,27 @@ example:
     </code>
     </div>
 class: p5
+params:
+  - name: path
+    description: |
+      <p>path of the image to be loaded or base64 encoded image.</p>
+    type: String
+  - name: successCallback
+    description: |
+      <p>function called with
+                                    <a href="#/p5.Image">p5.Image</a> once it
+                                    loads.</p>
+    type: function(p5.Image)
+    optional: true
+  - name: failureCallback
+    description: |
+      <p>function called with event
+                                    error if the image fails to load.</p>
+    type: Function(Event)
+    optional: true
 return:
   description: the <a href="#/p5.Image">p5.Image</a> object.
-  type: Promise<p5.Image>
-overloads:
-  - params:
-      - name: path
-        description: path of the image to be loaded or base64 encoded image.
-        type: String|Request
-      - name: successCallback
-        description: |-
-          function called with
-          <a href="#/p5.Image">p5.Image</a> once it
-          loads.
-        optional: 1
-        type: function(p5.Image)
-      - name: failureCallback
-        description: |-
-          function called with event
-          error if the image fails to load.
-        optional: 1
-        type: function(Event)
-    return:
-      description: the <a href="#/p5.Image">p5.Image</a> object.
-      type: Promise<p5.Image>
+  type: p5.Image
 chainable: false
 ---
 

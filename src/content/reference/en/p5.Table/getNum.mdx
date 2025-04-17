@@ -3,59 +3,55 @@ title: getNum
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: |-
-  Retrieves a Float value from the Table's specified row and column.
+description: |
+  <p>Retrieves a Float value from the Table's specified row and column.
   The row is specified by its ID, while the column may be specified by
-  either its ID or title.
-line: 1157
-deprecated: >-
-  p5.Table will be removed in a future version of p5.js to make way for a new,
-  friendlier version :)
+  either its ID or title.</p>
+line: 1131
 isConstructor: false
 itemtype: method
 example:
   - |-
-    <div>
+
+    <div class="norender">
     <code>
+    // Given the CSV file "mammals.csv"
+    // in the project's "assets" folder:
+    //
+    // id,species,name
+    // 0,Capra hircus,Goat
+    // 1,Panthera pardus,Leopard
+    // 2,Equus zebra,Zebra
+
     let table;
 
-    async function setup() {
-      // Create a 100x100 canvas
-      createCanvas(100, 100);
-      background(255); // Set background to white
+    function preload() {
+      //my table is comma separated value "csv"
+      //and has a header specifying the columns labels
+      table = loadTable('/assets/mammals.csv', 'csv', 'header');
+    }
 
-      // Load the CSV file with a header row
-      table = await loadTable('/assets/mammals.csv', ',', 'header');
-
-      // Compute the result: id at row 1, column 0 plus 100 (i.e. 1 + 100 = 101)
-      let result = table.getNum(1, 0) + 100;
-      
-      // Set text properties and display the result on the canvas
-      fill(0);      // Set text color to black
-      textSize(12); // Adjust text size as needed
-      text(result, 10, 30);  // Display the result at position (10, 30)
-
+    function setup() {
+      print(table.getNum(1, 0) + 100);
+      //id 1 + 100 = 101
       describe('no image displayed');
     }
     </code>
     </div>
 class: p5.Table
+params:
+  - name: row
+    description: |
+      <p>row ID</p>
+    type: Integer
+  - name: column
+    description: |
+      <p>columnName (string) or
+                                        ID (number)</p>
+    type: String|Integer
 return:
   description: ''
   type: Number
-overloads:
-  - params:
-      - name: row
-        description: row ID
-        type: Integer
-      - name: column
-        description: |-
-          columnName (string) or
-          ID (number)
-        type: String|Integer
-    return:
-      description: ''
-      type: Number
 chainable: false
 ---
 

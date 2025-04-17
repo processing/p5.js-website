@@ -3,64 +3,59 @@ title: findRow
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: |-
-  Finds the first row in the Table that contains the value
+description: |
+  <p>Finds the first row in the Table that contains the value
   provided, and returns a reference to that row. Even if
   multiple rows are possible matches, only the first matching
   row is returned. The column to search may be specified by
-  either its ID or title.
-line: 284
-deprecated: >-
-  p5.Table will be removed in a future version of p5.js to make way for a new,
-  friendlier version :)
+  either its ID or title.</p>
+line: 289
 isConstructor: false
 itemtype: method
 example:
-  - |-
-    <div>
-    <code>
-    let table;
+  - |2-
 
-    async function setup() {
-      // Create a 100x100 canvas
-      createCanvas(100, 100);
-      background(255); // Set background to white
+     <div class="norender">
+     <code>
+     // Given the CSV file "mammals.csv"
+     // in the project's "assets" folder:
+     //
+     // id,species,name
+     // 0,Capra hircus,Goat
+     // 1,Panthera pardus,Leopard
+     // 2,Equus zebra,Zebra
 
-      // Load the CSV file with a header row
-      table = await loadTable('/assets/mammals.csv', ',', 'header');
+     let table;
 
-       // Find the row with the animal named "Zebra"
-      let row = table.findRow('Zebra', 'name');
+     function preload() {
+     //my table is comma separated value "csv"
+     //and has a header specifying the columns labels
+     table = loadTable('/assets/mammals.csv', 'csv', 'header');
+     }
 
-      // Get the species from the found row
-      let species = row.getString('species');
-
-      // Set text properties and display the species on the canvas
-      fill(0);      // Set text color to black
-      textSize(12); // Adjust text size as needed
-      text(species, 10, 30);
-
-      describe('no image displayed');
-    }
-    </code>
-    </div>
+     function setup() {
+     //find the animal named zebra
+     let row = table.findRow('Zebra', 'name');
+     //find the corresponding species
+     print(row.getString('species'));
+     describe('no image displayed');
+     }
+     </code>
+     </div>
 class: p5.Table
+params:
+  - name: value
+    description: |
+      <p>The value to match</p>
+    type: String
+  - name: column
+    description: |
+      <p>ID number or title of the
+                                     column to search</p>
+    type: Integer|String
 return:
   description: ''
   type: p5.TableRow
-overloads:
-  - params:
-      - name: value
-        description: The value to match
-        type: String
-      - name: column
-        description: |-
-          ID number or title of the
-          column to search
-        type: Integer|String
-    return:
-      description: ''
-      type: p5.TableRow
 chainable: false
 ---
 

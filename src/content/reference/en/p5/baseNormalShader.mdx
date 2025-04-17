@@ -14,73 +14,117 @@ description: >
 
   <table>
 
-  <tr><th>Hook</th><th>Description</th></tr>
+  <thead>
 
-  <tr><td><p><code>void beforeVertex</code></p>
+  <tr>
 
-  </td><td><p>Called at the start of the vertex shader.</p>
+  <th>Hook</th>
 
-  </td></tr>
+  <th>Description</th>
 
-  <tr><td><p><code>Vertex getObjectInputs</code></p>
+  </tr>
 
-  </td><td><p>Update the vertex data of the model being drawn before any
-  positioning has been applied. It takes in a <code>Vertex</code> struct, which
-  includes:</p>
+  </thead>
 
-  <ul><li><code>vec3 position</code>, the position of the
-  vertex</li><li><code>vec3 normal</code>, the direction facing out of the
-  surface</li><li><code>vec2 texCoord</code>, the texture coordinates associeted
-  with the vertex</li><li><code>vec4 color</code>, the per-vertex color
+  <tbody><tr>
 
-  The struct can be modified and returned.</li></ul></td></tr>
+  <td><code>void beforeVertex</code></td>
 
-  <tr><td><p><code>Vertex getWorldInputs</code></p>
+  <td>Called at the start of the vertex shader.</td>
 
-  </td><td><p>Update the vertex data of the model being drawn after
-  transformations such as <code>translate()</code> and <code>scale()</code> have
-  been applied, but before the camera has been applied. It takes in a
-  <code>Vertex</code> struct like, in the <code>getObjectInputs</code> hook
-  above, that can be modified and returned.</p>
+  </tr>
 
-  </td></tr>
+  <tr>
 
-  <tr><td><p><code>Vertex getCameraInputs</code></p>
+  <td><code>vec3 getLocalPosition</code></td>
 
-  </td><td><p>Update the vertex data of the model being drawn as they appear
-  relative to the camera. It takes in a <code>Vertex</code> struct like, in the
-  <code>getObjectInputs</code> hook above, that can be modified and
-  returned.</p>
+  <td>Update the position of vertices before transforms are applied. It takes in
+  <code>vec3 position</code> and must return a modified version.</td>
 
-  </td></tr>
+  </tr>
 
-  <tr><td><p><code>void afterVertex</code></p>
+  <tr>
 
-  </td><td><p>Called at the end of the vertex shader.</p>
+  <td><code>vec3 getWorldPosition</code></td>
 
-  </td></tr>
+  <td>Update the position of vertices after transforms are applied. It takes in
+  <code>vec3 position</code> and pust return a modified version.</td>
 
-  <tr><td><p><code>void beforeFragment</code></p>
+  </tr>
 
-  </td><td><p>Called at the start of the fragment shader.</p>
+  <tr>
 
-  </td></tr>
+  <td><code>vec3 getLocalNormal</code></td>
 
-  <tr><td><p><code>vec4 getFinalColor</code></p>
+  <td>Update the normal before transforms are applied. It takes in <code>vec3
+  normal</code> and must return a modified version.</td>
 
-  </td><td><p>Update the final color after mixing. It takes in a <code>vec4
-  color</code> and must return a modified version.</p>
+  </tr>
 
-  </td></tr>
+  <tr>
 
-  <tr><td><p><code>void afterFragment</code></p>
+  <td><code>vec3 getWorldNormal</code></td>
 
-  </td><td><p>Called at the end of the fragment shader.</p>
+  <td>Update the normal after transforms are applied. It takes in <code>vec3
+  normal</code> and must return a modified version.</td>
 
-  </td></tr>
+  </tr>
 
-  </table><p>Most of the time, you will need to write your hooks in GLSL ES
-  version 300. If you
+  <tr>
+
+  <td><code>vec2 getUV</code></td>
+
+  <td>Update the texture coordinates. It takes in <code>vec2 uv</code> and must
+  return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec4 getVertexColor</code></td>
+
+  <td>Update the color of each vertex. It takes in a <code>vec4 color</code> and
+  must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void afterVertex</code></td>
+
+  <td>Called at the end of the vertex shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void beforeFragment</code></td>
+
+  <td>Called at the start of the fragment shader.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>vec4 getFinalColor</code></td>
+
+  <td>Update the final color after mixing. It takes in a <code>vec4 color</code>
+  and must return a modified version.</td>
+
+  </tr>
+
+  <tr>
+
+  <td><code>void afterFragment</code></td>
+
+  <td>Called at the end of the fragment shader.</td>
+
+  </tr>
+
+  </tbody></table>
+
+  <p>Most of the time, you will need to write your hooks in GLSL ES version 300.
+  If you
 
   are using WebGL 1 instead of 2, write your hooks in GLSL ES 100 instead.</p>
 
@@ -88,11 +132,12 @@ description: >
   hooks and
 
   their default implementations.</p>
-line: 1743
+line: 1197
 isConstructor: false
 itemtype: method
 example:
   - |-
+
     <div modernizr='webgl'>
     <code>
     let myShader;
@@ -103,10 +148,9 @@ example:
         uniforms: {
           'float time': () => millis()
         },
-        'Vertex getWorldInputs': `(Vertex inputs) {
-          inputs.position.y +=
-            20. * sin(time * 0.001 + inputs.position.x * 0.05);
-          return inputs;
+        'vec3 getWorldPosition': `(vec3 pos) {
+          pos.y += 20. * sin(time * 0.001 + pos.x * 0.05);
+          return pos;
         }`
       });
     }
@@ -120,6 +164,7 @@ example:
     </code>
     </div>
   - |-
+
     <div modernizr='webgl'>
     <code>
     let myShader;
@@ -127,10 +172,7 @@ example:
     function setup() {
       createCanvas(200, 200, WEBGL);
       myShader = baseNormalShader().modify({
-        'Vertex getCameraInputs': `(Vertex inputs) {
-          inputs.normal = abs(inputs.normal);
-          return inputs;
-        }`,
+        'vec3 getWorldNormal': '(vec3 normal) { return abs(normal); }',
         'vec4 getFinalColor': `(vec4 color) {
           // Map the r, g, and b values of the old normal to new colors
           // instead of just red, green, and blue:
@@ -156,14 +198,10 @@ example:
     </div>
 class: p5
 return:
-  description: The <code>normalMaterial</code> shader
+  description: The `normalMaterial` shader
   type: p5.Shader
-overloads:
-  - params: []
-    return:
-      description: The <code>normalMaterial</code> shader
-      type: p5.Shader
 chainable: false
+beta: true
 ---
 
 
