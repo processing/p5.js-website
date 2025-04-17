@@ -3,37 +3,27 @@ title: httpGet
 module: IO
 submodule: Input
 file: src/io/files.js
-description: >
-  <p>Method for executing an HTTP GET request. If data type is not specified,
-
-  p5 will try to guess based on the URL, defaulting to text. This is equivalent
-  to
-
+description: |-
+  Method for executing an HTTP GET request. If data type is not specified,
+  it will default to <code>'text'</code>. This is equivalent to
   calling <code>httpDo(path, 'GET')</code>. The 'binary' datatype will return
-
   a Blob object, and the 'arrayBuffer' datatype will return an ArrayBuffer
-
-  which can be used to initialize typed arrays (such as Uint8Array).</p>
-line: 1043
+  which can be used to initialize typed arrays (such as Uint8Array).
+line: 904
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div class='norender'><code>
     // Examples use USGS Earthquake API:
     //   https://earthquake.usgs.gov/fdsnws/event/1/#methods
     let earthquakes;
-    function preload() {
+    async function setup() {
       // Get the most recent earthquake in the database
       let url =
-       'https://earthquake.usgs.gov/fdsnws/event/1/query?' +
+    'https://earthquake.usgs.gov/fdsnws/event/1/query?' +
         'format=geojson&limit=1&orderby=time';
-      httpGet(url, 'jsonp', false, function(response) {
-        // when the HTTP request completes, populate the variable that holds the
-        // earthquake data used in the visualization.
-        earthquakes = response;
-      });
+      earthquakes = await httpGet(url, 'json');
     }
 
     function draw() {
@@ -55,78 +45,48 @@ class: p5
 return:
   description: |-
     A promise that resolves with the data when the operation
-                      completes successfully or rejects with the error after
-                      one occurs.
+    completes successfully or rejects with the error after
+    one occurs.
   type: Promise
 overloads:
-  - line: 1043
-    params:
+  - params:
       - name: path
-        description: |
-          <p>name of the file or url to load</p>
-        type: String
+        description: name of the file or url to load
+        type: String|Request
       - name: datatype
-        description: |
-          <p>"json", "jsonp", "binary", "arrayBuffer",
-                                             "xml", or "text"</p>
+        description: |-
+          "json", "jsonp", "binary", "arrayBuffer",
+          "xml", or "text"
+        optional: 1
         type: String
-        optional: true
-      - name: data
-        description: |
-          <p>param data passed sent with request</p>
-        type: Object|Boolean
-        optional: true
       - name: callback
-        description: |
-          <p>function to be executed after
-                                             <a href="#/p5/httpGet">httpGet()</a> completes, data is passed in
-                                             as first argument</p>
+        description: |-
+          function to be executed after
+          <a href="#/p5/httpGet">httpGet()</a> completes, data is passed in
+          as first argument
+        optional: 1
         type: Function
-        optional: true
       - name: errorCallback
-        description: |
-          <p>function to be executed if
-                                             there is an error, response is passed
-                                             in as first argument</p>
+        description: |-
+          function to be executed if
+          there is an error, response is passed
+          in as first argument
+        optional: 1
         type: Function
-        optional: true
     return:
       description: |-
         A promise that resolves with the data when the operation
-                          completes successfully or rejects with the error after
-                          one occurs.
+        completes successfully or rejects with the error after
+        one occurs.
       type: Promise
-  - line: 1097
-    params:
+  - params:
       - name: path
-        description: ''
-        type: String
-      - name: data
-        description: ''
-        type: Object|Boolean
+        type: String|Request
       - name: callback
-        description: ''
-        type: Function
-        optional: true
-      - name: errorCallback
-        description: ''
-        type: Function
-        optional: true
-    return:
-      description: ''
-      type: Promise
-  - line: 1105
-    params:
-      - name: path
-        description: ''
-        type: String
-      - name: callback
-        description: ''
         type: Function
       - name: errorCallback
-        description: ''
+        optional: 1
         type: Function
-        optional: true
     return:
       description: ''
       type: Promise

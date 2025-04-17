@@ -2,67 +2,53 @@
 title: triggerRelease
 module: p5.sound
 submodule: p5.sound
-file: lib/addons/p5.sound.js
-description: |
-  <p>Trigger the Release of the Envelope. This is similar to releasing
-  the key on a piano and letting the sound fade according to the
-  release level and release time.</p>
-line: 5256
+file: src/Envelope.js
+description: |-
+  Trigger the Release of the envelope. Similar to releasing the key on 
+  a piano and letting the sound fade according to the release level and 
+  release time.
+line: 96
 isConstructor: false
 itemtype: method
 example:
   - |-
 
-    <div><code>
-    let attackTime = 0.001;
-    let decayTime = 0.2;
-    let susPercent = 0.3;
-    let releaseTime = 0.4;
-    let env, triOsc;
+    <div>
+    <code>
+    let osc, env;
 
     function setup() {
       let cnv = createCanvas(100, 100);
       background(220);
+      cnv.mousePressed(playSound);
+      cnv.mouseReleased(stopSound);
       textAlign(CENTER);
       textSize(10);
       text('tap to triggerAttack', width/2, height/2);
 
+      osc = new p5.Oscillator();
+      osc.disconnect();
       env = new p5.Envelope();
-      env.setADSR(attackTime, decayTime, susPercent, releaseTime);
-      env.setRange(1.0, 0.0);
-      triOsc = new p5.Oscillator('triangle');
-      triOsc.freq(220);
-
-      cnv.mousePressed(envAttack);
+      osc.connect(env);
     }
 
-    function envAttack()  {
+    function playSound() {
       background(0, 255, 255);
       text('release to release', width/2, height/2);
-
-      // ensures audio is enabled. See also: `userStartAudio`
-      triOsc.start();
-
-      env.triggerAttack(triOsc);
+      osc.start();
+      env.attackTime(random(0.00, 0.25));
+      env.triggerAttack(0.5);
     }
 
-    function mouseReleased() {
+    function stopSound() {
       background(220);
       text('tap to triggerAttack', width/2, height/2);
-
-      env.triggerRelease(triOsc);
+      env.releaseTime(random(0.1, 0.3));
+      env.triggerRelease();
     }
-    </code></div>
+    </code>
+    </div>
 class: p5.Envelope
-params:
-  - name: unit
-    description: |
-      <p>p5.sound Object or Web Audio Param</p>
-    type: Object
-  - name: secondsFromNow
-    description: |
-      <p>time to trigger the release</p>
-    type: Number
 chainable: false
 ---
 

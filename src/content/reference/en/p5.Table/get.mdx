@@ -3,57 +3,63 @@ title: get
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: |
-  <p>Retrieves a value from the Table's specified row and column.
+description: |-
+  Retrieves a value from the Table's specified row and column.
   The row is specified by its ID, while the column may be specified by
-  either its ID or title.</p>
-line: 1087
+  either its ID or title.
+line: 1112
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
   - |-
-
-    <div class="norender">
+    <div>
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
-    function preload() {
-      //my table is comma separated value "csv"
-      //and has a header specifying the columns labels
-      table = loadTable('/assets/mammals.csv', 'csv', 'header');
-    }
+    async function setup() {
+      // Create a 100x100 canvas
+      createCanvas(100, 100);
+      background(255); // Set background to white
 
-    function setup() {
-      print(table.get(0, 1));
-      //Capra hircus
-      print(table.get(0, 'species'));
-      //Capra hircus
+      // Load the CSV file from the assets folder with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Set text properties for drawing on the canvas
+      fill(0);      // Text color: black
+      textSize(12); // Adjust text size as needed
+
+      // Get the values from the table
+      let value1 = table.get(0, 1);       // Using column index (1) => "Capra hircus"
+      let value2 = table.get(0, 'species'); // Using column name => "Capra hircus"
+
+      // Display the values on the canvas
+      text(value1, 10, 30);
+      text(value2, 10, 60);
+
       describe('no image displayed');
     }
     </code>
     </div>
 class: p5.Table
-params:
-  - name: row
-    description: |
-      <p>row ID</p>
-    type: Integer
-  - name: column
-    description: |
-      <p>columnName (string) or
-                                        ID (number)</p>
-    type: String|Integer
 return:
   description: ''
   type: String|Number
+overloads:
+  - params:
+      - name: row
+        description: row ID
+        type: Integer
+      - name: column
+        description: |-
+          columnName (string) or
+          ID (number)
+        type: String|Integer
+    return:
+      description: ''
+      type: String|Number
 chainable: false
 ---
 

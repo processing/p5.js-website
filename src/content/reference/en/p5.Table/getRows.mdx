@@ -3,54 +3,66 @@ title: getRows
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: >
-  <p>Gets all rows from the table. Returns an array of <a
-  href="/reference/p5/p5.TableRow">p5.TableRow</a>s.</p>
-line: 242
+description: >-
+  Gets all rows from the table. Returns an array of <a
+  href="/reference/p5/p5.TableRow">p5.TableRow</a>s.
+line: 238
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
-  - |2-
+  - |-
+    <div>
+    <code>
+    let table;
 
-     <div class="norender">
-     <code>
-     // Given the CSV file "mammals.csv"
-     // in the project's "assets" folder:
-     //
-     // id,species,name
-     // 0,Capra hircus,Goat
-     // 1,Panthera pardus,Leopard
-     // 2,Equus zebra,Zebra
+    async function setup() {
+      // Create a 200x200 canvas and set a white background
+      createCanvas(200, 200);
+      background(255);
 
-     let table;
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
 
-     function preload() {
-     //my table is comma separated value "csv"
-     //and has a header specifying the columns labels
-     table = loadTable('/assets/mammals.csv', 'csv', 'header');
-     }
+      let rows = table.getRows();
 
-     function setup() {
-     let rows = table.getRows();
+      // Warning: rows is an array of objects.
+      // Set the 'name' of each row to 'Unicorn'
+      for (let r = 0; r < rows.length; r++) {
+        rows[r].set('name', 'Unicorn');
+      }
 
-     //warning: rows is an array of objects
-     for (let r = 0; r < rows.length; r++) {
-       rows[r].set('name', 'Unicorn');
-     }
+      // Set text properties
+      fill(0);      // Set text color to black
+      textSize(12); // Adjust text size as needed
 
-     //print the results
-     for (let r = 0; r < table.getRowCount(); r++)
-       for (let c = 0; c < table.getColumnCount(); c++)
-         print(table.getString(r, c));
+      // Display the modified table values on the canvas
+      // We'll join each row's values with a space and display each row on a new line.
+      let y = 20; // Starting y position
+      for (let r = 0; r < table.getRowCount(); r++) {
+        let rowText = "";
+        for (let c = 0; c < table.getColumnCount(); c++) {
+          rowText += table.getString(r, c) + " ";
+        }
+        text(rowText, 10, y * 2);
+        y += 20; // Move to next line
+      }
 
-     describe('no image displayed');
-     }
-     </code>
-     </div>
+      describe('no image displayed');
+    }
+    </code>
+    </div>
 class: p5.Table
 return:
   description: Array of <a href="#/p5.TableRow">p5.TableRow</a>s
   type: 'p5.TableRow[]'
+overloads:
+  - params: []
+    return:
+      description: Array of <a href="#/p5.TableRow">p5.TableRow</a>s
+      type: 'p5.TableRow[]'
 chainable: false
 ---
 

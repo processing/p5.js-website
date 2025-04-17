@@ -3,59 +3,60 @@ title: setNum
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: |
-  <p>Stores a Float value in the Table's specified row and column.
+description: |-
+  Stores a Float value in the Table's specified row and column.
   The row is specified by its ID, while the column may be specified
-  by either its ID or title.</p>
-line: 998
+  by either its ID or title.
+line: 1013
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
   - |-
-
-    <div class="norender">
+    <div>
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
-    function preload() {
-      //my table is comma separated value "csv"
-      //and has a header specifying the columns labels
-      table = loadTable('/assets/mammals.csv', 'csv', 'header');
-    }
+    async function setup() {
+      // Create a 100x100 canvas and set a white background
+      createCanvas(100, 100);
+      background(255);
 
-    function setup() {
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Set the value in row 1, column "id" to the number 1
       table.setNum(1, 'id', 1);
 
-      print(table.getColumn(0));
-      //["0", 1, "2"]
+      // Get the first column as an array and join its values into a string for display.
+      let col0 = table.getColumn(0);  // Expected output: ["0", 1, "2"]
+      let output = col0.join(", ");
+
+      // Set text properties and display the output on the canvas
+      fill(0);      // Text color: black
+      textSize(12); // Adjust text size as needed
+      text(output, 30, 50);
 
       describe('no image displayed');
     }
     </code>
     </div>
 class: p5.Table
-params:
-  - name: row
-    description: |
-      <p>row ID</p>
-    type: Integer
-  - name: column
-    description: |
-      <p>column ID (Number)
-                                    or title (String)</p>
-    type: String|Integer
-  - name: value
-    description: |
-      <p>value to assign</p>
-    type: Number
+overloads:
+  - params:
+      - name: row
+        description: row ID
+        type: Integer
+      - name: column
+        description: |-
+          column ID (Number)
+          or title (String)
+        type: String|Integer
+      - name: value
+        description: value to assign
+        type: Number
 chainable: false
 ---
 

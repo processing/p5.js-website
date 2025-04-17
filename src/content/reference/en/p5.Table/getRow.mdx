@@ -3,41 +3,41 @@ title: getRow
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: >
-  <p>Returns a reference to the specified <a
+description: >-
+  Returns a reference to the specified <a
   href="/reference/p5/p5.TableRow">p5.TableRow</a>. The reference
 
-  can then be used to get and set values of the selected row.</p>
-line: 198
+  can then be used to get and set values of the selected row.
+line: 186
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: method
 example:
   - |-
-
-    <div class="norender">
+    <div>
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
-    function preload() {
-      //my table is comma separated value "csv"
-      //and has a header specifying the columns labels
-      table = loadTable('/assets/mammals.csv', 'csv', 'header');
-    }
+    async function setup() {
+      // Create a 200x200 canvas
+      createCanvas(200, 200);
+      background(255); // Set background to white
 
-    function setup() {
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Get the row at index 1 (second row)
       let row = table.getRow(1);
-      //print it column by column
-      //note: a row is an object, not an array
+
+      // Set text properties for drawing on the canvas
+      fill(0);      // Set text color to black
+      textSize(12); // Set the text size
+
+      // Loop over each column in the row and display its value on the canvas
       for (let c = 0; c < table.getColumnCount(); c++) {
-        print(row.getString(c));
+        text(row.getString(c), 10, 20 + c * 50 + 20);
       }
 
       describe('no image displayed');
@@ -45,14 +45,17 @@ example:
     </code>
     </div>
 class: p5.Table
-params:
-  - name: rowID
-    description: |
-      <p>ID number of the row to get</p>
-    type: Integer
 return:
   description: <a href="#/p5.TableRow">p5.TableRow</a> object
   type: p5.TableRow
+overloads:
+  - params:
+      - name: rowID
+        description: ID number of the row to get
+        type: Integer
+    return:
+      description: <a href="#/p5.TableRow">p5.TableRow</a> object
+      type: p5.TableRow
 chainable: false
 ---
 
