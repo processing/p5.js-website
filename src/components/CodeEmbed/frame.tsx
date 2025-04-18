@@ -146,7 +146,11 @@ export const CodeFrame = (props: CodeFrameProps) => {
         return;
       }
     })();
+<<<<<<< HEAD
   }, [props.jsCode, mounted,p5ScriptTag]);
+=======
+  }, [props.jsCode, mounted]);
+>>>>>>> 9513801a6 (Merge pull request #812 from processing/feat/perf)
 
   return (
     <div
@@ -161,7 +165,11 @@ export const CodeFrame = (props: CodeFrameProps) => {
           htmlBody: props.htmlBodyCode,
           base: props.base,
           scripts: props.scripts,
+<<<<<<< HEAD
         }) : ""}
+=======
+        }) : undefined}
+>>>>>>> 9513801a6 (Merge pull request #812 from processing/feat/perf)
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
         title="Code Preview"
