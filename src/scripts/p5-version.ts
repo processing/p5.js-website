@@ -14,7 +14,7 @@ export const p5SoundVersion = "0.2.0" as const;\n`;
 const run = async () => {
   console.log("Reading latest p5 version to update config...");
 
-  await cloneLibraryRepo(clonedRepoPath, p5RepoUrl, "main");
+  await cloneLibraryRepo(clonedRepoPath, p5RepoUrl, "dev-2.0");
 
   // read version from package.json
   const packageConfigContents = await readFile(
