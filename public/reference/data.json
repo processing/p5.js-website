@@ -307,7 +307,6 @@
         "Attributes": 1,
         "Curves": 1,
         "Custom Shapes": 1,
-        "Vertex": 1,
         "3D Primitives": 1,
         "3D Models": 1
       },
@@ -446,11 +445,6 @@
     },
     "Custom Shapes": {
       "name": "Custom Shapes",
-      "module": "Shape",
-      "is_submodule": 1
-    },
-    "Vertex": {
-      "name": "Vertex",
       "module": "Shape",
       "is_submodule": 1
     },
@@ -1360,7 +1354,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 219,
+      "line": 220,
       "description": "Creates a sawtooth oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -1385,7 +1379,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 233,
+      "line": 234,
       "description": "Creates a square oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -1410,7 +1404,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 247,
+      "line": 248,
       "description": "Creates a triangle oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -1435,7 +1429,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/Oscillator.js",
-      "line": 261,
+      "line": 262,
       "description": "Creates a sine oscillator.",
       "is_constructor": 1,
       "extends": "Oscillator",
@@ -11794,38 +11788,6 @@
       "module": "Math"
     },
     {
-      "name": "createMatrix",
-      "file": "src/scripts/parsers/in/p5.js/src/math/math.js",
-      "line": 132,
-      "itemtype": "method",
-      "description": "<p>Creates a new <a href=\"#/p5.Matrix\">p5.Matrix</a> object.</p>\n<p>A matrix is a mathematical concept that is useful in many fields, including\ncomputer graphics. In p5.js, matrices are used to perform transformations\non shapes and images. The <code>createMatrix</code> method can take a column-major\narray representation of a square matrix as an argument. In the current implementation we only use squared matrices.</p>\n",
-      "example": [
-        "<div class=\"norender\">\n<code>\nfunction setup() {\n  let matrix = createMatrix([1, 2, 3, 4, 5, 6, 7, 8, 9]);\n}\n</code>\n</div>"
-      ],
-      "overloads": [
-        {
-          "params": [
-            {
-              "name": "components",
-              "description": "Column-major array representation of the square matrix.",
-              "type": "Number[]"
-            }
-          ],
-          "return": {
-            "description": "new <a href=\"#/p5.Matrix\">p5.Matrix</a> object.",
-            "type": "p5.Matrix"
-          }
-        }
-      ],
-      "return": {
-        "description": "new <a href=\"#/p5.Matrix\">p5.Matrix</a> object.",
-        "type": "p5.Matrix"
-      },
-      "class": "p5",
-      "static": false,
-      "module": "Math"
-    },
-    {
       "name": "noise",
       "file": "src/scripts/parsers/in/p5.js/src/math/noise.js",
       "line": 251,
@@ -13640,30 +13602,32 @@
     {
       "name": "bezierOrder",
       "file": "src/scripts/parsers/in/p5.js/src/shape/custom_shapes.js",
-      "line": 1594,
+      "line": 1645,
       "itemtype": "method",
-      "description": "",
-      "example": [],
+      "description": "<p>Influences the shape of the Bézier curve segment in a custom shape.\nBy default, this is 3; the other possible parameter is 2. This\nresults in quadratic Bézier curves.</p>\n<p><code>bezierVertex()</code> adds a curved segment to custom shapes. The Bézier curves\nit creates are defined like those made by the\n<a href=\"#/p5/bezier\">bezier()</a> function. <code>bezierVertex()</code> must be\ncalled between the\n<a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> functions. There must be at least\none call to <a href=\"#/p5/vertex\">bezierVertex()</a>, before\na number of <code>bezierVertex()</code> calls that is a multiple of the parameter\nset by <a href=\"#/p5/bezierOrder\">bezierOrder(...)</a> (default 3).</p>\n<p>Each curve of order 3 requires three calls to <code>bezierVertex</code>, so\n2 curves would need 7 calls to <code>bezierVertex()</code>:\n(1 one initial anchor point, two sets of 3 curves describing the curves)\nWith <code>bezierOrder(2)</code>, two curves would need 5 calls: 1 + 2 + 2.</p>\n<p>Bézier curves can also be drawn in 3D using WebGL mode.</p>\n<p>Note: <code>bezierVertex()</code> won’t work when an argument is passed to\n<a href=\"#/p5/beginShape\">beginShape()</a>.</p>\n",
+      "example": [
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // set the order to 2 for a quadratic Bézier curve\n  bezierOrder(2);\n\n  // Add the first anchor point.\n  bezierVertex(30, 20);\n\n  // Add the Bézier vertex.\n  bezierVertex(80, 20);\n  bezierVertex(50, 50);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('A black curve drawn on a gray square. The curve starts at the top-left corner and ends at the center.');\n}\n</code>\n</div>"
+      ],
       "overloads": [
-        {
-          "params": [],
-          "return": {
-            "description": "The current bezier order.",
-            "type": "Number"
-          }
-        },
         {
           "params": [
             {
               "name": "order",
-              "description": "The new order to set.",
+              "description": "The new order to set. Can be either 2 or 3, by default 3",
               "type": "Number"
             }
           ]
+        },
+        {
+          "params": [],
+          "return": {
+            "description": "The current Bézier order.",
+            "type": "Number"
+          }
         }
       ],
       "return": {
-        "description": "The current bezier order.",
+        "description": "The current Bézier order.",
         "type": "Number"
       },
       "class": "p5",
@@ -13674,11 +13638,47 @@
     {
       "name": "splineVertex",
       "file": "src/scripts/parsers/in/p5.js/src/shape/custom_shapes.js",
-      "line": 1613,
+      "line": 2046,
       "itemtype": "method",
-      "description": "",
-      "example": [],
+      "chainable": 1,
+      "description": "<p>Adds a spline curve segment to a custom shape.</p>\n<p><code>splineVertex()</code> adds a curved segment to custom shapes. The spline curves\nit creates are defined like those made by the\n<a href=\"#/p5/curve\">curve()</a> function. <code>splineVertex()</code> must be called\nbetween the <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> functions.</p>\n<p>Spline curves can form shapes and curves that slope gently. They’re like\ncables that are attached to a set of points. Splines are defined by two\nanchor points and two control points. <code>splineVertex()</code> must be called at\nleast four times between\n<a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> in order to draw a curve:</p>\n<pre><code class=\"language-js\">beginShape();\n\n// Add the first control point.\nsplineVertex(84, 91);\n\n// Add the anchor points to draw between.\nsplineVertex(68, 19);\nsplineVertex(21, 17);\n\n// Add the second control point.\nsplineVertex(32, 91);\n\nendShape();</code></pre><p>The code snippet above would only draw the curve between the anchor points,\nsimilar to the <a href=\"#/p5/curve\">curve()</a> function. The segments\nbetween the control and anchor points can be drawn by calling\n<code>splineVertex()</code> with the coordinates of the control points:</p>\n<pre><code class=\"language-js\">beginShape();\n\n// Add the first control point and draw a segment to it.\nsplineVertex(84, 91);\nsplineVertex(84, 91);\n\n// Add the anchor points to draw between.\nsplineVertex(68, 19);\nsplineVertex(21, 17);\n\n// Add the second control point.\nsplineVertex(32, 91);\n\n// Uncomment the next line to draw the segment to the second control point.\n// splineVertex(32, 91);\n\nendShape();</code></pre><p>The first two parameters, <code>x</code> and <code>y</code>, set the vertex’s location. For\nexample, calling <code>splineVertex(10, 10)</code> adds a point to the curve at\n<code>(10, 10)</code>.</p>\n<p>Spline curves can also be drawn in 3D using WebGL mode. The 3D version of\n<code>splineVertex()</code> has three arguments because each point has x-, y-, and\nz-coordinates. By default, the vertex’s z-coordinate is set to 0.</p>\n<p>Note: <code>splineVertex()</code> won’t work when an argument is passed to\n<a href=\"#/p5/beginShape\">beginShape()</a>.</p>\n",
+      "example": [
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point.\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point.\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(32, 91);\n  point(84, 91);\n\n  describe(\n    'A black curve drawn on a gray background. The curve has black dots at its ends. Two red dots appear near the bottom of the canvas.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(32, 91);\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point.\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(32, 91);\n  point(84, 91);\n\n  describe(\n    'A black curve drawn on a gray background. The curve passes through one red dot and two black dots. Another red dot appears near the bottom of the canvas.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(32, 91);\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point and draw a segment to it.\n  splineVertex(84, 91);\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(32, 91);\n  point(84, 91);\n\n  describe(\n    'A black U curve drawn upside down on a gray background. The curve passes from one red dot through two black dots and ends at another red dot.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click the mouse near the red dot in the bottom-left corner\n// and drag to change the curve's shape.\n\nlet x1 = 32;\nlet y1 = 91;\nlet isChanging = false;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A black U curve drawn upside down on a gray background. The curve passes from one red dot through two black dots and ends at another red dot.'\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the shape.\n  noFill();\n  stroke(0);\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(x1, y1);\n  splineVertex(x1, y1);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point and draw a segment to it.\n  splineVertex(84, 91);\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(x1, y1);\n  point(84, 91);\n}\n\n// Start changing the first control point if the user clicks near it.\nfunction mousePressed() {\n  if (dist(mouseX, mouseY, x1, y1) < 20) {\n    isChanging = true;\n  }\n}\n\n// Stop changing the first control point when the user releases the mouse.\nfunction mouseReleased() {\n  isChanging = false;\n}\n\n// Update the first control point while the user drags the mouse.\nfunction mouseDragged() {\n  if (isChanging === true) {\n    x1 = mouseX;\n    y1 = mouseY;\n  }\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(32, 91);\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point.\n  splineVertex(84, 91);\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('A ghost shape drawn in white on a gray background.');\n}\n</code>\n</div>",
+        "<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A ghost shape drawn in white on a blue background. When the user drags the mouse, the scene rotates to reveal the outline of a second ghost.');\n}\n\nfunction draw() {\n  background('midnightblue');\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Draw the first ghost.\n  noStroke();\n  fill('ghostwhite');\n\n  beginShape();\n  splineVertex(-28, 41, 0);\n  splineVertex(-28, 41, 0);\n  splineVertex(-29, -33, 0);\n  splineVertex(18, -31, 0);\n  splineVertex(34, 41, 0);\n  splineVertex(34, 41, 0);\n  endShape();\n\n  // Draw the second ghost.\n  noFill();\n  stroke('ghostwhite');\n\n  beginShape();\n  splineVertex(-28, 41, -20);\n  splineVertex(-28, 41, -20);\n  splineVertex(-29, -33, -20);\n  splineVertex(18, -31, -20);\n  splineVertex(34, 41, -20);\n  splineVertex(34, 41, -20);\n  endShape();\n}\n</code>\n</div>"
+      ],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "x",
+              "description": "x-coordinate of the vertex",
+              "type": "Number"
+            },
+            {
+              "name": "y",
+              "description": "y-coordinate of the vertex",
+              "type": "Number"
+            }
+          ]
+        },
+        {
+          "params": [
+            {
+              "name": "x",
+              "type": "Number"
+            },
+            {
+              "name": "y",
+              "type": "Number"
+            },
+            {
+              "name": "z",
+              "description": "z-coordinate of the vertex.",
+              "optional": 1,
+              "type": "Number"
+            }
+          ]
+        },
         {
           "params": [
             {
@@ -13736,22 +13736,13 @@
     {
       "name": "splineProperty",
       "file": "src/scripts/parsers/in/p5.js/src/shape/custom_shapes.js",
-      "line": 1637,
+      "line": 2121,
       "itemtype": "method",
-      "description": "",
-      "example": [],
+      "description": "<p>Sets the property of a curve.</p>\n<p>For example, set tightness,\nuse <code>splineProperty('tightness', t)</code>, with <code>t</code> between 0 and 1,\nat 0 as default.</p>\n<p>Spline curves are like cables that are attached to a set of points.\nAdjusting tightness adjusts how tightly the cable is\nattached to the points. The parameter, tightness, determines\nhow the curve fits to the vertex points. By default,\ntightness is set to 0. Setting tightness to 1, as in\n<code>splineProperty('tightness', 1)</code>, connects the curve's points\nusing straight lines. Values in the range from –5 to 5\ndeform curves while leaving them recognizable.</p>\n<p>This function can also be used to set 'ends' property\n(see also: the <a href=\"#/p5/curveDetail\">curveDetail()</a> example),\nsuch as: <code>splineProperty('ends', EXCLUDE)</code> to exclude\nvertices, or <code>splineProperty('ends', INCLUDE)</code> to include them.</p>\n",
+      "example": [
+        "<div>\n<code>\n// Move the mouse left and right to see the curve change.\n\nfunction setup() {\n  createCanvas(100, 100);\n  describe('A black curve forms a sideways U shape. The curve deforms as the user moves the mouse from left to right');\n}\n\nfunction draw() {\n  background(200);\n\n  // Set the curve's tightness using the mouse.\n  let t = map(mouseX, 0, 100, -5, 5, true);\n  splineProperty('tightness', t);\n\n  // Draw the curve.\n  noFill();\n  beginShape();\n  splineVertex(10, 26);\n  splineVertex(10, 26);\n  splineVertex(83, 24);\n  splineVertex(83, 61);\n  splineVertex(25, 65);\n  splineVertex(25, 65);\n  endShape();\n}\n</code>\n</div>"
+      ],
       "overloads": [
-        {
-          "params": [
-            {
-              "name": "property",
-              "type": "String"
-            }
-          ],
-          "return": {
-            "description": "value The current value for the given property."
-          }
-        },
         {
           "params": [
             {
@@ -13763,10 +13754,21 @@
               "description": "Value to set the given property to."
             }
           ]
+        },
+        {
+          "params": [
+            {
+              "name": "property",
+              "type": "String"
+            }
+          ],
+          "return": {
+            "description": "The current value for the given property."
+          }
         }
       ],
       "return": {
-        "description": "value The current value for the given property."
+        "description": "The current value for the given property."
       },
       "class": "p5",
       "static": false,
@@ -13776,26 +13778,26 @@
     {
       "name": "splineProperties",
       "file": "src/scripts/parsers/in/p5.js/src/shape/custom_shapes.js",
-      "line": 1649,
+      "line": 2139,
       "itemtype": "method",
-      "description": "",
+      "description": "<p>Get or set multiple spline properties at once.</p>\n<p>Similar to <a href=\"#/p5/splineProperty\">splineProperty()</a>:\n<code>splineProperty('tightness', t)</code> is the same as\n<code>splineProperties({'tightness': t})</code></p>\n",
       "example": [],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "properties",
+              "description": "An object containing key-value pairs to set.",
+              "type": "Object"
+            }
+          ]
+        },
         {
           "params": [],
           "return": {
             "description": "The current spline properties.",
             "type": "Object"
           }
-        },
-        {
-          "params": [
-            {
-              "name": "An",
-              "description": "object containing key-value pairs to set.",
-              "type": "Object"
-            }
-          ]
         }
       ],
       "return": {
@@ -13810,11 +13812,11 @@
     {
       "name": "vertex",
       "file": "src/scripts/parsers/in/p5.js/src/shape/custom_shapes.js",
-      "line": 1836,
+      "line": 2366,
       "itemtype": "method",
       "description": "<p>Adds a vertex to a custom shape.</p>\n<p><code>vertex()</code> sets the coordinates of vertices drawn between the\n<a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> functions.</p>\n<p>The first two parameters, <code>x</code> and <code>y</code>, set the x- and y-coordinates of the\nvertex.</p>\n<p>The third parameter, <code>z</code>, is optional. It sets the z-coordinate of the\nvertex in WebGL mode. By default, <code>z</code> is 0.</p>\n<p>The fourth and fifth parameters, <code>u</code> and <code>v</code>, are also optional. They set\nthe u- and v-coordinates for the vertex’s texture when used with\n<a href=\"#/p5/endShape\">endShape()</a>. By default, <code>u</code> and <code>v</code> are both 0.</p>\n",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  strokeWeight(3);\n\n  // Start drawing the shape.\n  // Only draw the vertices.\n  beginShape(POINTS);\n\n  // Add the vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Four black dots that form a square are drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(-20, -30, 0);\n  vertex(35, -30, 0);\n  vertex(35, 25, 0);\n  vertex(-20, 25, 0);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A white square spins around slowly on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Rotate around the y-axis.\n  rotateY(frameCount * 0.01);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(-20, -30, 0);\n  vertex(35, -30, 0);\n  vertex(35, 25, 0);\n  vertex(-20, 25, 0);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet img;\n\nasync function setup() {\n  // Load an image to apply as a texture.\n  img = await loadImage('assets/laDefense.jpg');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe('A photograph of a ceiling rotates slowly against a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Rotate around the y-axis.\n  rotateY(frameCount * 0.01);\n\n  // Style the shape.\n  noStroke();\n\n  // Apply the texture.\n  texture(img);\n  textureMode(NORMAL);\n\n  // Start drawing the shape\n  beginShape();\n\n  // Add vertices.\n  vertex(-20, -30, 0, 0, 0);\n  vertex(35, -30, 0, 1, 0);\n  vertex(35, 25, 0, 1, 1);\n  vertex(-20, 25, 0, 0, 1);\n\n  // Stop drawing the shape.\n  endShape();\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  strokeWeight(3);\n\n  // Start drawing the shape.\n  // Only draw the vertices.\n  beginShape(POINTS);\n\n  // Add the vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Four black dots that form a square are drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(-20, -30, 0);\n  vertex(35, -30, 0);\n  vertex(35, 25, 0);\n  vertex(-20, 25, 0);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A white square spins around slowly on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Rotate around the y-axis.\n  rotateY(frameCount * 0.01);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(-20, -30, 0);\n  vertex(35, -30, 0);\n  vertex(35, 25, 0);\n  vertex(-20, 25, 0);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet img;\n\nasync function setup() {\n  // Load an image to apply as a texture.\n  img = await loadImage('assets/laDefense.jpg');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe('A photograph of a ceiling rotates slowly against a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Rotate around the y-axis.\n  rotateY(frameCount * 0.01);\n\n  // Style the shape.\n  noStroke();\n\n  // Apply the texture.\n  texture(img);\n  textureMode(NORMAL);\n\n  // Start drawing the shape\n  beginShape();\n\n  // Add vertices.\n  vertex(-20, -30, 0, 0, 0);\n  vertex(35, -30, 0, 1, 0);\n  vertex(35, 25, 0, 1, 1);\n  vertex(-20, 25, 0, 0, 1);\n\n  // Stop drawing the shape.\n  endShape();\n}\n</code>\n</div>\n\n<div>\n<code>\nlet vid;\nfunction setup() {\n  // Load a video and create a p5.MediaElement object.\n  vid = createVideo('/assets/fingers.mov');\n  createCanvas(100, 100, WEBGL);\n\n  // Hide the video.\n  vid.hide();\n\n  // Set the video to loop.\n  vid.loop();\n\n  describe('A rectangle with video as texture');\n}\n\nfunction draw() {\n  background(0);\n\n  // Rotate around the y-axis.\n  rotateY(frameCount * 0.01);\n\n  // Set the texture mode.\n  textureMode(NORMAL);\n\n  // Apply the video as a texture.\n  texture(vid);\n\n  // Draw a custom shape using uv coordinates.\n  beginShape();\n  vertex(-40, -40, 0, 0);\n  vertex(40, -40, 1, 0);\n  vertex(40, 40, 1, 1);\n  vertex(-40, 40, 0, 1);\n  endShape();\n}\n</code>\n</div>"
       ],
       "overloads": [
         {
@@ -13892,11 +13894,11 @@
     {
       "name": "beginContour",
       "file": "src/scripts/parsers/in/p5.js/src/shape/custom_shapes.js",
-      "line": 1957,
+      "line": 2487,
       "itemtype": "method",
       "description": "<p>Begins creating a hole within a flat shape.</p>\n<p>The <code>beginContour()</code> and <a href=\"#/p5/endContour\">endContour()</a>\nfunctions allow for creating negative space within custom shapes that are\nflat. <code>beginContour()</code> begins adding vertices to a negative space and\n<a href=\"#/p5/endContour\">endContour()</a> stops adding them.\n<code>beginContour()</code> and <a href=\"#/p5/endContour\">endContour()</a> must be\ncalled between <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a>.</p>\n<p>Transformations such as <a href=\"#/p5/translate\">translate()</a>,\n<a href=\"#/p5/rotate\">rotate()</a>, and <a href=\"#/p5/scale\">scale()</a>\ndon't work between <code>beginContour()</code> and\n<a href=\"#/p5/endContour\">endContour()</a>. It's also not possible to use\nother shapes, such as <a href=\"#/p5/ellipse\">ellipse()</a> or\n<a href=\"#/p5/rect\">rect()</a>, between <code>beginContour()</code> and\n<a href=\"#/p5/endContour\">endContour()</a>.</p>\n<p>Note: The vertices that define a negative space must \"wind\" in the opposite\ndirection from the outer shape. First, draw vertices for the outer shape\nclockwise order. Then, draw vertices for the negative space in\ncounter-clockwise order.</p>\n",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(10, 10);\n  vertex(90, 10);\n  vertex(90, 90);\n  vertex(10, 90);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(30, 30);\n  vertex(30, 70);\n  vertex(70, 70);\n  vertex(70, 30);\n  endContour();\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(-40, -40);\n  vertex(40, -40);\n  vertex(40, 40);\n  vertex(-40, 40);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(-20, -20);\n  vertex(-20, 20);\n  vertex(20, 20);\n  vertex(20, -20);\n  endContour();\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(10, 10);\n  vertex(90, 10);\n  vertex(90, 90);\n  vertex(10, 90);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(30, 30);\n  vertex(30, 70);\n  vertex(70, 70);\n  vertex(70, 30);\n  endContour(CLOSE);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(-40, -40);\n  vertex(40, -40);\n  vertex(40, 40);\n  vertex(-40, 40);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(-20, -20);\n  vertex(-20, 20);\n  vertex(20, 20);\n  vertex(20, -20);\n  endContour(CLOSE);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n}\n</code>\n</div>"
       ],
       "overloads": [
         {
@@ -13911,17 +13913,18 @@
     {
       "name": "endContour",
       "file": "src/scripts/parsers/in/p5.js/src/shape/custom_shapes.js",
-      "line": 2059,
+      "line": 2593,
       "itemtype": "method",
-      "description": "<p>Stops creating a hole within a flat shape.</p>\n<p>The <a href=\"#/p5/beginContour\">beginContour()</a> and <code>endContour()</code>\nfunctions allow for creating negative space within custom shapes that are\nflat. <a href=\"#/p5/beginContour\">beginContour()</a> begins adding vertices\nto a negative space and <code>endContour()</code> stops adding them.\n<a href=\"#/p5/beginContour\">beginContour()</a> and <code>endContour()</code> must be\ncalled between <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a>.</p>\n<p>Transformations such as <a href=\"#/p5/translate\">translate()</a>,\n<a href=\"#/p5/rotate\">rotate()</a>, and <a href=\"#/p5/scale\">scale()</a>\ndon't work between <a href=\"#/p5/beginContour\">beginContour()</a> and\n<code>endContour()</code>. It's also not possible to use other shapes, such as\n<a href=\"#/p5/ellipse\">ellipse()</a> or <a href=\"#/p5/rect\">rect()</a>,\nbetween <a href=\"#/p5/beginContour\">beginContour()</a> and <code>endContour()</code>.</p>\n<p>Note: The vertices that define a negative space must \"wind\" in the opposite\ndirection from the outer shape. First, draw vertices for the outer shape\nclockwise order. Then, draw vertices for the negative space in\ncounter-clockwise order.</p>\n",
+      "description": "<p>Stops creating a hole within a flat shape.</p>\n<p>The <a href=\"#/p5/beginContour\">beginContour()</a> and <code>endContour()</code>\nfunctions allow for creating negative space within custom shapes that are\nflat. <a href=\"#/p5/beginContour\">beginContour()</a> begins adding vertices\nto a negative space and <code>endContour()</code> stops adding them.\n<a href=\"#/p5/beginContour\">beginContour()</a> and <code>endContour()</code> must be\ncalled between <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a>.</p>\n<p>By default,\nthe controur has an <code>OPEN</code> end, and to close it,\ncall <code>endContour(CLOSE)</code>. The CLOSE contour mode closes splines smoothly.</p>\n<p>Transformations such as <a href=\"#/p5/translate\">translate()</a>,\n<a href=\"#/p5/rotate\">rotate()</a>, and <a href=\"#/p5/scale\">scale()</a>\ndon't work between <a href=\"#/p5/beginContour\">beginContour()</a> and\n<code>endContour()</code>. It's also not possible to use other shapes, such as\n<a href=\"#/p5/ellipse\">ellipse()</a> or <a href=\"#/p5/rect\">rect()</a>,\nbetween <a href=\"#/p5/beginContour\">beginContour()</a> and <code>endContour()</code>.</p>\n<p>Note: The vertices that define a negative space must \"wind\" in the opposite\ndirection from the outer shape. First, draw vertices for the outer shape\nclockwise order. Then, draw vertices for the negative space in\ncounter-clockwise order.</p>\n",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(10, 10);\n  vertex(90, 10);\n  vertex(90, 90);\n  vertex(10, 90);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(30, 30);\n  vertex(30, 70);\n  vertex(70, 70);\n  vertex(70, 30);\n  endContour();\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(-40, -40);\n  vertex(40, -40);\n  vertex(40, 40);\n  vertex(-40, 40);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(-20, -20);\n  vertex(-20, 20);\n  vertex(20, 20);\n  vertex(20, -20);\n  endContour();\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(10, 10);\n  vertex(90, 10);\n  vertex(90, 90);\n  vertex(10, 90);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(30, 30);\n  vertex(30, 70);\n  vertex(70, 70);\n  vertex(70, 30);\n  endContour(CLOSE);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A white square with a square hole in its center drawn on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Exterior vertices, clockwise winding.\n  vertex(-40, -40);\n  vertex(40, -40);\n  vertex(40, 40);\n  vertex(-40, 40);\n\n  // Interior vertices, counter-clockwise winding.\n  beginContour();\n  vertex(-20, -20);\n  vertex(-20, 20);\n  vertex(20, 20);\n  vertex(20, -20);\n  endContour(CLOSE);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n}\n</code>\n</div>"
       ],
       "overloads": [
         {
           "params": [
             {
               "name": "mode",
+              "description": "By default, the value is OPEN",
               "optional": 1,
               "type": "OPEN|CLOSE"
             }
@@ -13936,10 +13939,10 @@
     {
       "name": "beginShape",
       "file": "src/scripts/parsers/in/p5.js/src/shape/vertex.js",
-      "line": 400,
+      "line": 399,
       "itemtype": "method",
       "chainable": 1,
-      "description": "<p>Begins adding vertices to a custom shape.</p>\n<p>The <code>beginShape()</code> and <a href=\"#/p5/endShape\">endShape()</a> functions\nallow for creating custom shapes in 2D or 3D. <code>beginShape()</code> begins adding\nvertices to a custom shape and <a href=\"#/p5/endShape\">endShape()</a> stops\nadding them.</p>\n<p>The parameter, <code>kind</code>, sets the kind of shape to make. The available kinds are:</p>\n<ul><li><code>PATH</code> (the default) to draw shapes by tracing out the path along their edges.</li><li><code>POINTS</code> to draw a series of points.</li><li><code>LINES</code> to draw a series of unconnected line segments.</li><li><code>TRIANGLES</code> to draw a series of separate triangles.</li><li><code>TRIANGLE_FAN</code> to draw a series of connected triangles sharing the first vertex in a fan-like fashion.</li><li><code>TRIANGLE_STRIP</code> to draw a series of connected triangles in strip fashion.</li><li><code>QUADS</code> to draw a series of separate quadrilaterals (quads).</li><li><code>QUAD_STRIP</code> to draw quad strip using adjacent edges to form the next quad.</li></ul><p>After calling <code>beginShape()</code>, shapes can be built by calling\n<a href=\"#/p5/vertex\">vertex()</a>,\n<a href=\"#/p5/bezierVertex\">bezierVertex()</a>,\n<a href=\"#/p5/bezierVertex\">bezierVertex()</a>, and/or\n<a href=\"#/p5/splineVertex\">splineVertex()</a>. Calling\n<a href=\"#/p5/endShape\">endShape()</a> will stop adding vertices to the\nshape. Each shape will be outlined with the current stroke color and filled\nwith the current fill color.</p>\n<p>Transformations such as <a href=\"#/p5/translate\">translate()</a>,\n<a href=\"#/p5/rotate\">rotate()</a>, and\n<a href=\"#/p5/scale\">scale()</a> don't work between <code>beginShape()</code> and\n<a href=\"#/p5/endShape\">endShape()</a>. It's also not possible to use\nother shapes, such as <a href=\"#/p5/ellipse\">ellipse()</a> or\n<a href=\"#/p5/rect\">rect()</a>, between <code>beginShape()</code> and\n<a href=\"#/p5/endShape\">endShape()</a>.</p>\n",
+      "description": "<p>Begins adding vertices to a custom shape.</p>\n<p>The <code>beginShape()</code> and <a href=\"#/p5/endShape\">endShape()</a> functions\nallow for creating custom shapes in 2D or 3D. <code>beginShape()</code> begins adding\nvertices to a custom shape and <a href=\"#/p5/endShape\">endShape()</a> stops\nadding them.</p>\n<p>The parameter, <code>kind</code>, sets the kind of shape to make. The available kinds are:</p>\n<ul><li><code>PATH</code> (the default) to draw shapes by tracing out the path along their edges.</li><li><code>POINTS</code> to draw a series of points.</li><li><code>LINES</code> to draw a series of unconnected line segments.</li><li><code>TRIANGLES</code> to draw a series of separate triangles.</li><li><code>TRIANGLE_FAN</code> to draw a series of connected triangles sharing the first vertex in a fan-like fashion.</li><li><code>TRIANGLE_STRIP</code> to draw a series of connected triangles in strip fashion.</li><li><code>QUADS</code> to draw a series of separate quadrilaterals (quads).</li><li><code>QUAD_STRIP</code> to draw quad strip using adjacent edges to form the next quad.</li></ul><p>After calling <code>beginShape()</code>, shapes can be built by calling\n<a href=\"#/p5/vertex\">vertex()</a>,\n<a href=\"#/p5/bezierVertex\">bezierVertex()</a>, and/or\n<a href=\"#/p5/splineVertex\">splineVertex()</a>. Calling\n<a href=\"#/p5/endShape\">endShape()</a> will stop adding vertices to the\nshape. Each shape will be outlined with the current stroke color and filled\nwith the current fill color.</p>\n<p>Transformations such as <a href=\"#/p5/translate\">translate()</a>,\n<a href=\"#/p5/rotate\">rotate()</a>, and\n<a href=\"#/p5/scale\">scale()</a> don't work between <code>beginShape()</code> and\n<a href=\"#/p5/endShape\">endShape()</a>. It's also not possible to use\nother shapes, such as <a href=\"#/p5/ellipse\">ellipse()</a> or\n<a href=\"#/p5/rect\">rect()</a>, between <code>beginShape()</code> and\n<a href=\"#/p5/endShape\">endShape()</a>.</p>\n",
       "example": [
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape(CLOSE);\n\n  describe('A white square on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Only draw the vertices (points).\n  beginShape(POINTS);\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Four black dots that form a square are drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Only draw lines between alternating pairs of vertices.\n  beginShape(LINES);\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Two horizontal black lines on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Three black lines form a sideways U shape on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(85, 20);\n  vertex(85, 75);\n  vertex(30, 75);\n\n  // Stop drawing the shape.\n  // Connect the first and last vertices.\n  endShape(CLOSE);\n\n  describe('A black outline of a square drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Draw a series of triangles.\n  beginShape(TRIANGLES);\n\n  // Left triangle.\n  vertex(30, 75);\n  vertex(40, 20);\n  vertex(50, 75);\n\n  // Right triangle.\n  vertex(60, 20);\n  vertex(70, 75);\n  vertex(80, 20);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Two white triangles drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Draw a series of triangles.\n  beginShape(TRIANGLE_STRIP);\n\n  // Add vertices.\n  vertex(30, 75);\n  vertex(40, 20);\n  vertex(50, 75);\n  vertex(60, 20);\n  vertex(70, 75);\n  vertex(80, 20);\n  vertex(90, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Five white triangles that are interleaved drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Draw a series of triangles that share their first vertex.\n  beginShape(TRIANGLE_FAN);\n\n  // Add vertices.\n  vertex(57.5, 50);\n  vertex(57.5, 15);\n  vertex(92, 50);\n  vertex(57.5, 85);\n  vertex(22, 50);\n  vertex(57.5, 15);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Four white triangles form a square are drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Draw a series of quadrilaterals.\n  beginShape(QUADS);\n\n  // Left rectangle.\n  vertex(30, 20);\n  vertex(30, 75);\n  vertex(50, 75);\n  vertex(50, 20);\n\n  // Right rectangle.\n  vertex(65, 20);\n  vertex(65, 75);\n  vertex(85, 75);\n  vertex(85, 20);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Two white rectangles drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Draw a series of quadrilaterals.\n  beginShape(QUAD_STRIP);\n\n  // Add vertices.\n  vertex(30, 20);\n  vertex(30, 75);\n  vertex(50, 20);\n  vertex(50, 75);\n  vertex(65, 20);\n  vertex(65, 75);\n  vertex(85, 20);\n  vertex(85, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('Three white rectangles that share edges are drawn on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  background(200);\n\n  // Start drawing the shape.\n  // Draw a series of quadrilaterals.\n  beginShape(PATH);\n\n  // Add the vertices.\n  vertex(-30, -30, 0);\n  vertex(30, -30, 0);\n  vertex(30, -10, 0);\n  vertex(-10, -10, 0);\n  vertex(-10, 10, 0);\n  vertex(30, 10, 0);\n  vertex(30, 30, 0);\n  vertex(-30, 30, 0);\n\n  // Stop drawing the shape.\n  // Connect the first and last vertices.\n  endShape(CLOSE);\n\n  describe('A blocky C shape drawn in white on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag with the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A blocky C shape drawn in red, blue, and green on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Start drawing the shape.\n  // Draw a series of quadrilaterals.\n  beginShape(PATH);\n\n  // Add the vertices.\n  fill('red');\n  stroke('red');\n  vertex(-30, -30, 0);\n  vertex(30, -30, 0);\n  vertex(30, -10, 0);\n  fill('green');\n  stroke('green');\n  vertex(-10, -10, 0);\n  vertex(-10, 10, 0);\n  vertex(30, 10, 0);\n  fill('blue');\n  stroke('blue');\n  vertex(30, 30, 0);\n  vertex(-30, 30, 0);\n\n  // Stop drawing the shape.\n  // Connect the first and last vertices.\n  endShape(CLOSE);\n}\n</code>\n</div>"
       ],
@@ -13958,16 +13961,16 @@
       "class": "p5",
       "static": false,
       "module": "Shape",
-      "submodule": "Vertex"
+      "submodule": "Custom Shapes"
     },
     {
       "name": "bezierVertex",
       "file": "src/scripts/parsers/in/p5.js/src/shape/vertex.js",
-      "line": 659,
+      "line": 686,
       "itemtype": "method",
-      "description": "<p>Adds a Bézier curve segment to a custom shape.</p>\n<p><code>bezierVertex()</code> adds a curved segment to custom shapes. The Bézier curves\nit creates are defined like those made by the\n<a href=\"#/p5/bezier\">bezier()</a> function. <code>bezierVertex()</code> must be\ncalled between the\n<a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> functions. The curved segment uses\nthe previous vertex as the first anchor point, so there must be at least\none call to <a href=\"#/p5/vertex\">vertex()</a> before <code>bezierVertex()</code> can\nbe used.</p>\n<p>The first four parameters, <code>x2</code>, <code>y2</code>, <code>x3</code>, and <code>y3</code>, set the curve’s two\ncontrol points. The control points \"pull\" the curve towards them.</p>\n<p>The fifth and sixth parameters, <code>x4</code>, and <code>y4</code>, set the last anchor point.\nThe last anchor point is where the curve ends.</p>\n<p>Bézier curves can also be drawn in 3D using WebGL mode. The 3D version of\n<code>bezierVertex()</code> has eight arguments because each point has x-, y-, and\nz-coordinates.</p>\n<p>Note: <code>bezierVertex()</code> won’t work when an argument is passed to\n<a href=\"#/p5/beginShape\">beginShape()</a>.</p>\n",
+      "description": "<p>Adds a Bézier curve segment to a custom shape.</p>\n<p><code>bezierVertex()</code> adds a curved segment to custom shapes. The Bézier curves\nit creates are defined like those made by the\n<a href=\"#/p5/bezier\">bezier()</a> function. <code>bezierVertex()</code> must be\ncalled between the\n<a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> functions.\nBézier need a starting point. Building a shape\nonly with Bézier curves needs one initial\ncall to <a href=\"#/p5/vertex\">bezierVertex()</a>, before\na number of <code>bezierVertex()</code> calls that is a multiple of the parameter\nset by <a href=\"#/p5/bezierOrder\">bezierOrder(...)</a> (default 3).\nBut shapes can mix different types of vertices, so if there\nare some previous vertices, then the initial anchor is not needed,\nonly the multiples of 3 (or the Bézier order) calls to\n<code>bezierVertex</code> for each curve.</p>\n<p>Each curve of order 3 requires three calls to <code>bezierVertex</code>, so\n2 curves would need 7 calls to <code>bezierVertex()</code>:\n(1 one initial anchor point, two sets of 3 curves describing the curves)\nWith <code>bezierOrder(2)</code>, two curves would need 5 calls: 1 + 2 + 2.</p>\n<p>Bézier curves can also be drawn in 3D using WebGL mode.</p>\n<p>Note: <code>bezierVertex()</code> won’t work when an argument is passed to\n<a href=\"#/p5/beginShape\">beginShape()</a>.</p>\n",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  vertex(30, 20);\n\n  // Add the Bézier vertex.\n  bezierVertex(80, 0, 80, 75, 30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('A black C curve on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  strokeWeight(5);\n  point(30, 20);\n  point(30, 75);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(80, 0);\n  point(80, 75);\n\n  // Style the shape.\n  noFill();\n  stroke(0);\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  vertex(30, 20);\n\n  // Add the Bézier vertex.\n  bezierVertex(80, 0, 80, 75, 30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Draw red lines from the anchor points to the control points.\n  stroke(255, 0, 0);\n  line(30, 20, 80, 0);\n  line(30, 75, 80, 75);\n\n  describe(\n    'A gray square with three curves. A black curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click the mouse near the red dot in the top-right corner\n// and drag to change the curve's shape.\n\nlet x2 = 80;\nlet y2 = 0;\nlet isChanging = false;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A gray square with three curves. A black curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  strokeWeight(5);\n  point(30, 20);\n  point(30, 75);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(x2, y2);\n  point(80, 75);\n\n  // Style the shape.\n  noFill();\n  stroke(0);\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  vertex(30, 20);\n\n  // Add the Bézier vertex.\n  bezierVertex(x2, y2, 80, 75, 30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Draw red lines from the anchor points to the control points.\n  stroke(255, 0, 0);\n  line(30, 20, x2, y2);\n  line(30, 75, 80, 75);\n}\n\n// Start changing the first control point if the user clicks near it.\nfunction mousePressed() {\n  if (dist(mouseX, mouseY, x2, y2) < 20) {\n    isChanging = true;\n  }\n}\n\n// Stop changing the first control point when the user releases the mouse.\nfunction mouseReleased() {\n  isChanging = false;\n}\n\n// Update the first control point while the user drags the mouse.\nfunction mouseDragged() {\n  if (isChanging === true) {\n    x2 = mouseX;\n    y2 = mouseY;\n  }\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  vertex(30, 20);\n\n  // Add the Bézier vertices.\n  bezierVertex(80, 0, 80, 75, 30, 75);\n  bezierVertex(50, 80, 60, 25, 30, 20);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('A crescent moon shape drawn in white on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A crescent moon shape drawn in white on a blue background. When the user drags the mouse, the scene rotates and a second moon is revealed.');\n}\n\nfunction draw() {\n  background('midnightblue');\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Style the moons.\n  noStroke();\n  fill('lemonchiffon');\n\n  // Draw the first moon.\n  beginShape();\n  vertex(-20, -30, 0);\n  bezierVertex(30, -50, 0, 30, 25, 0, -20, 25, 0);\n  bezierVertex(0, 30, 0, 10, -25, 0, -20, -30, 0);\n  endShape();\n\n  // Draw the second moon.\n  beginShape();\n  vertex(-20, -30, -20);\n  bezierVertex(30, -50, -20, 30, 25, -20, -20, 25, -20);\n  bezierVertex(0, 30, -20, 10, -25, -20, -20, -30, -20);\n  endShape();\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  bezierVertex(30, 20);\n\n  // Add the Bézier vertex.\n  bezierVertex(80, 0);\n  bezierVertex(80, 75);\n  bezierVertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('A black C curve on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  strokeWeight(5);\n  point(30, 20);\n  point(30, 75);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(80, 0);\n  point(80, 75);\n\n  // Style the shape.\n  noFill();\n  stroke(0);\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  bezierVertex(30, 20);\n\n  // Add the Bézier vertex.\n  bezierVertex(80, 0);\n  bezierVertex(80, 75);\n  bezierVertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Draw red lines from the anchor points to the control points.\n  stroke(255, 0, 0);\n  line(30, 20, 80, 0);\n  line(30, 75, 80, 75);\n\n  describe(\n    'A gray square with three curves. A black curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click the mouse near the red dot in the top-right corner\n// and drag to change the curve's shape.\n\nlet x2 = 80;\nlet y2 = 0;\nlet isChanging = false;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A gray square with three curves. A black curve has two straight, red lines that extend from its ends. The endpoints of all the curves are marked with dots.'\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  strokeWeight(5);\n  point(30, 20);\n  point(30, 75);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(x2, y2);\n  point(80, 75);\n\n  // Style the shape.\n  noFill();\n  stroke(0);\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  bezierVertex(30, 20);\n\n  // Add the Bézier vertex.\n  bezierVertex(x2, y2);\n  bezierVertex(80, 75);\n  bezierVertex(30, 75);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Draw red lines from the anchor points to the control points.\n  stroke(255, 0, 0);\n  line(30, 20, x2, y2);\n  line(30, 75, 80, 75);\n}\n\n// Start changing the first control point if the user clicks near it.\nfunction mousePressed() {\n  if (dist(mouseX, mouseY, x2, y2) < 20) {\n    isChanging = true;\n  }\n}\n\n// Stop changing the first control point when the user releases the mouse.\nfunction mouseReleased() {\n  isChanging = false;\n}\n\n// Update the first control point while the user drags the mouse.\nfunction mouseDragged() {\n  if (isChanging === true) {\n    x2 = mouseX;\n    y2 = mouseY;\n  }\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first anchor point.\n  bezierVertex(30, 20);\n\n  // Add the Bézier vertices.\n  bezierVertex(80, 0);\n  bezierVertex(80, 75);\n  bezierVertex(30, 75);\n\n  bezierVertex(50, 80);\n  bezierVertex(60, 25);\n  bezierVertex(30, 20);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('A crescent moon shape drawn in white on a gray background.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A crescent moon shape drawn in white on a blue background. When the user drags the mouse, the scene rotates and a second moon is revealed.');\n}\n\nfunction draw() {\n  background('midnightblue');\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Style the moons.\n  noStroke();\n  fill('lemonchiffon');\n\n  // Draw the first moon.\n  beginShape();\n  bezierVertex(-20, -30, 0);\n\n  bezierVertex(30, -50, 0);\n  bezierVertex(30, 25, 0);\n  bezierVertex(-20, 25, 0);\n\n  bezierVertex(0, 30, 0);\n  bezierVertex(10, -25, 0);\n  bezierVertex(-20, -30, 0);\n  endShape();\n\n  // Draw the second moon.\n  beginShape();\n\n  bezierVertex(-20, -30, -20);\n\n  bezierVertex(30, -50, -20);\n  bezierVertex(30, 25, -20);\n  bezierVertex(-20, 25, -20);\n\n  bezierVertex(0, 30, -20);\n  bezierVertex(10, -25, -20);\n  bezierVertex(-20, -30, -20);\n\n  endShape();\n}\n</code>\n</div>"
       ],
       "overloads": [
         {
@@ -14024,67 +14027,17 @@
       "class": "p5",
       "static": false,
       "module": "Shape",
-      "submodule": "Vertex"
-    },
-    {
-      "name": "curveVertex",
-      "file": "src/scripts/parsers/in/p5.js/src/shape/vertex.js",
-      "line": 1044,
-      "itemtype": "method",
-      "chainable": 1,
-      "description": "<p>Adds a spline curve segment to a custom shape.</p>\n<p><code>splineVertex()</code> adds a curved segment to custom shapes. The spline curves\nit creates are defined like those made by the\n<a href=\"#/p5/curve\">curve()</a> function. <code>splineVertex()</code> must be called\nbetween the <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> functions.</p>\n<p>Spline curves can form shapes and curves that slope gently. They’re like\ncables that are attached to a set of points. Splines are defined by two\nanchor points and two control points. <code>splineVertex()</code> must be called at\nleast four times between\n<a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> in order to draw a curve:</p>\n<pre><code class=\"language-js\">beginShape();\n\n// Add the first control point.\nsplineVertex(84, 91);\n\n// Add the anchor points to draw between.\nsplineVertex(68, 19);\nsplineVertex(21, 17);\n\n// Add the second control point.\nsplineVertex(32, 91);\n\nendShape();</code></pre><p>The code snippet above would only draw the curve between the anchor points,\nsimilar to the <a href=\"#/p5/curve\">curve()</a> function. The segments\nbetween the control and anchor points can be drawn by calling\n<code>splineVertex()</code> with the coordinates of the control points:</p>\n<pre><code class=\"language-js\">beginShape();\n\n// Add the first control point and draw a segment to it.\nsplineVertex(84, 91);\nsplineVertex(84, 91);\n\n// Add the anchor points to draw between.\nsplineVertex(68, 19);\nsplineVertex(21, 17);\n\n// Add the second control point.\nsplineVertex(32, 91);\n\n// Uncomment the next line to draw the segment to the second control point.\n// splineVertex(32, 91);\n\nendShape();</code></pre><p>The first two parameters, <code>x</code> and <code>y</code>, set the vertex’s location. For\nexample, calling <code>splineVertex(10, 10)</code> adds a point to the curve at\n<code>(10, 10)</code>.</p>\n<p>Spline curves can also be drawn in 3D using WebGL mode. The 3D version of\n<code>splineVertex()</code> has three arguments because each point has x-, y-, and\nz-coordinates. By default, the vertex’s z-coordinate is set to 0.</p>\n<p>Note: <code>splineVertex()</code> won’t work when an argument is passed to\n<a href=\"#/p5/beginShape\">beginShape()</a>.</p>\n",
-      "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point.\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point.\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(32, 91);\n  point(84, 91);\n\n  describe(\n    'A black curve drawn on a gray background. The curve has black dots at its ends. Two red dots appear near the bottom of the canvas.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(32, 91);\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point.\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(32, 91);\n  point(84, 91);\n\n  describe(\n    'A black curve drawn on a gray background. The curve passes through one red dot and two black dots. Another red dot appears near the bottom of the canvas.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shape.\n  noFill();\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(32, 91);\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point and draw a segment to it.\n  splineVertex(84, 91);\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(32, 91);\n  point(84, 91);\n\n  describe(\n    'A black U curve drawn upside down on a gray background. The curve passes from one red dot through two black dots and ends at another red dot.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click the mouse near the red dot in the bottom-left corner\n// and drag to change the curve's shape.\n\nlet x1 = 32;\nlet y1 = 91;\nlet isChanging = false;\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A black U curve drawn upside down on a gray background. The curve passes from one red dot through two black dots and ends at another red dot.'\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the shape.\n  noFill();\n  stroke(0);\n  strokeWeight(1);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(x1, y1);\n  splineVertex(x1, y1);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point and draw a segment to it.\n  splineVertex(84, 91);\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  // Style the anchor and control points.\n  strokeWeight(5);\n\n  // Draw the anchor points in black.\n  stroke(0);\n  point(21, 17);\n  point(68, 19);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(x1, y1);\n  point(84, 91);\n}\n\n// Start changing the first control point if the user clicks near it.\nfunction mousePressed() {\n  if (dist(mouseX, mouseY, x1, y1) < 20) {\n    isChanging = true;\n  }\n}\n\n// Stop changing the first control point when the user releases the mouse.\nfunction mouseReleased() {\n  isChanging = false;\n}\n\n// Update the first control point while the user drags the mouse.\nfunction mouseDragged() {\n  if (isChanging === true) {\n    x1 = mouseX;\n    y1 = mouseY;\n  }\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Start drawing the shape.\n  beginShape();\n\n  // Add the first control point and draw a segment to it.\n  splineVertex(32, 91);\n  splineVertex(32, 91);\n\n  // Add the anchor points.\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n\n  // Add the second control point.\n  splineVertex(84, 91);\n  splineVertex(84, 91);\n\n  // Stop drawing the shape.\n  endShape();\n\n  describe('A ghost shape drawn in white on a gray background.');\n}\n</code>\n</div>",
-        "<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A ghost shape drawn in white on a blue background. When the user drags the mouse, the scene rotates to reveal the outline of a second ghost.');\n}\n\nfunction draw() {\n  background('midnightblue');\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Draw the first ghost.\n  noStroke();\n  fill('ghostwhite');\n\n  beginShape();\n  splineVertex(-28, 41, 0);\n  splineVertex(-28, 41, 0);\n  splineVertex(-29, -33, 0);\n  splineVertex(18, -31, 0);\n  splineVertex(34, 41, 0);\n  splineVertex(34, 41, 0);\n  endShape();\n\n  // Draw the second ghost.\n  noFill();\n  stroke('ghostwhite');\n\n  beginShape();\n  splineVertex(-28, 41, -20);\n  splineVertex(-28, 41, -20);\n  splineVertex(-29, -33, -20);\n  splineVertex(18, -31, -20);\n  splineVertex(34, 41, -20);\n  splineVertex(34, 41, -20);\n  endShape();\n}\n</code>\n</div>"
-      ],
-      "overloads": [
-        {
-          "params": [
-            {
-              "name": "x",
-              "description": "x-coordinate of the vertex",
-              "type": "Number"
-            },
-            {
-              "name": "y",
-              "description": "y-coordinate of the vertex",
-              "type": "Number"
-            }
-          ]
-        },
-        {
-          "params": [
-            {
-              "name": "x",
-              "type": "Number"
-            },
-            {
-              "name": "y",
-              "type": "Number"
-            },
-            {
-              "name": "z",
-              "description": "z-coordinate of the vertex.",
-              "optional": 1,
-              "type": "Number"
-            }
-          ]
-        }
-      ],
-      "class": "p5",
-      "static": false,
-      "module": "Shape",
-      "submodule": "Vertex"
+      "submodule": "Custom Shapes"
     },
     {
       "name": "endShape",
       "file": "src/scripts/parsers/in/p5.js/src/shape/vertex.js",
-      "line": 1213,
+      "line": 876,
       "itemtype": "method",
       "chainable": 1,
-      "description": "<p>Begins adding vertices to a custom shape.</p>\n<p>The <a href=\"#/p5/beginShape\">beginShape()</a> and <code>endShape()</code> functions\nallow for creating custom shapes in 2D or 3D.\n<a href=\"#/p5/beginShape\">beginShape()</a> begins adding vertices to a\ncustom shape and <code>endShape()</code> stops adding them.</p>\n<p>The first parameter, <code>mode</code>, is optional. By default, the first and last\nvertices of a shape aren't connected. If the constant <code>CLOSE</code> is passed, as\nin <code>endShape(CLOSE)</code>, then the first and last vertices will be connected.</p>\n<p>The second parameter, <code>count</code>, is also optional. In WebGL mode, it’s more\nefficient to draw many copies of the same shape using a technique called\n<a href=\"https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html\" target=\"_blank\">instancing</a>.\nThe <code>count</code> parameter tells WebGL mode how many copies to draw. For\nexample, calling <code>endShape(CLOSE, 400)</code> after drawing a custom shape will\nmake it efficient to draw 400 copies. This feature requires\n<a href=\"https://p5js.org/tutorials/intro-to-shaders/\" target=\"_blank\">writing a custom shader</a>.</p>\n<p>After calling <a href=\"#/p5/beginShape\">beginShape()</a>, shapes can be\nbuilt by calling <a href=\"#/p5/vertex\">vertex()</a>,\n<a href=\"#/p5/bezierVertex\">bezierVertex()</a>,\n<a href=\"#/p5/quadraticVertex\">quadraticVertex()</a>, and/or\n<a href=\"#/p5/curveVertex\">splineVertex()</a>. Calling\n<code>endShape()</code> will stop adding vertices to the\nshape. Each shape will be outlined with the current stroke color and filled\nwith the current fill color.</p>\n<p>Transformations such as <a href=\"#/p5/translate\">translate()</a>,\n<a href=\"#/p5/rotate\">rotate()</a>, and\n<a href=\"#/p5/scale\">scale()</a> don't work between\n<a href=\"#/p5/beginShape\">beginShape()</a> and <code>endShape()</code>. It's also not\npossible to use other shapes, such as <a href=\"#/p5/ellipse\">ellipse()</a> or\n<a href=\"#/p5/rect\">rect()</a>, between\n<a href=\"#/p5/beginShape\">beginShape()</a> and <code>endShape()</code>.</p>\n",
+      "description": "<p>Concludes the vertices of a custom shape.</p>\n<p>The <a href=\"#/p5/beginShape\">beginShape()</a> and <code>endShape()</code> functions\nallow for creating custom shapes in 2D or 3D.\n<a href=\"#/p5/beginShape\">beginShape()</a> begins adding vertices to a\ncustom shape and <code>endShape()</code> stops adding them.</p>\n<p>The first parameter, <code>mode</code>, is optional. By default, the first and last\nvertices of a shape aren't connected. If the constant <code>CLOSE</code> is passed, as\nin <code>endShape(CLOSE)</code>, then the first and last vertices will be connected.\nWhen CLOSE mode is used for splines (with <code>splineVeertex()</code>), the shape is ended smoothly.</p>\n<p>The second parameter, <code>count</code>, is also optional. In WebGL mode, it’s more\nefficient to draw many copies of the same shape using a technique called\n<a href=\"https://webglfundamentals.org/webgl/lessons/webgl-instanced-drawing.html\" target=\"_blank\">instancing</a>.\nThe <code>count</code> parameter tells WebGL mode how many copies to draw. For\nexample, calling <code>endShape(CLOSE, 400)</code> after drawing a custom shape will\nmake it efficient to draw 400 copies. This feature requires\n<a href=\"https://p5js.org/tutorials/intro-to-shaders/\" target=\"_blank\">writing a custom shader</a>.</p>\n<p>After calling <a href=\"#/p5/beginShape\">beginShape()</a>, shapes can be\nbuilt by calling <a href=\"#/p5/vertex\">vertex()</a>,\n<a href=\"#/p5/bezierVertex\">bezierVertex()</a> and/or\n<a href=\"#/p5/splineVertex\">splineVertex()</a>. Calling\n<code>endShape()</code> will stop adding vertices to the\nshape. Each shape will be outlined with the current stroke color and filled\nwith the current fill color.</p>\n<p>Transformations such as <a href=\"#/p5/translate\">translate()</a>,\n<a href=\"#/p5/rotate\">rotate()</a>, and\n<a href=\"#/p5/scale\">scale()</a> don't work between\n<a href=\"#/p5/beginShape\">beginShape()</a> and <code>endShape()</code>. It's also not\npossible to use other shapes, such as <a href=\"#/p5/ellipse\">ellipse()</a> or\n<a href=\"#/p5/rect\">rect()</a>, between\n<a href=\"#/p5/beginShape\">beginShape()</a> and <code>endShape()</code>.</p>\n",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shapes.\n  noFill();\n\n  // Left triangle.\n  beginShape();\n  vertex(20, 20);\n  vertex(45, 20);\n  vertex(45, 80);\n  endShape(CLOSE);\n\n  // Right triangle.\n  beginShape();\n  vertex(50, 20);\n  vertex(75, 20);\n  vertex(75, 80);\n  endShape();\n\n  describe(\n    'Two sets of black lines drawn on a gray background. The three lines on the left form a right triangle. The two lines on the right form a right angle.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\n// Note: A \"uniform\" is a global variable within a shader program.\n\n// Create a string with the vertex shader program.\n// The vertex shader is called for each vertex.\nlet vertSrc = `#version 300 es\n\nprecision mediump float;\n\nin vec3 aPosition;\nflat out int instanceID;\n\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvoid main() {\n\n  // Copy the instance ID to the fragment shader.\n  instanceID = gl_InstanceID;\n  vec4 positionVec4 = vec4(aPosition, 1.0);\n\n  // gl_InstanceID represents a numeric value for each instance.\n  // Using gl_InstanceID allows us to move each instance separately.\n  // Here we move each instance horizontally by ID * 23.\n  float xOffset = float(gl_InstanceID) * 23.0;\n\n  // Apply the offset to the final position.\n  gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -\n    vec4(xOffset, 0.0, 0.0, 0.0));\n}\n`;\n\n// Create a string with the fragment shader program.\n// The fragment shader is called for each pixel.\nlet fragSrc = `#version 300 es\n\nprecision mediump float;\n\nout vec4 outColor;\nflat in int instanceID;\nuniform float numInstances;\n\nvoid main() {\n  vec4 red = vec4(1.0, 0.0, 0.0, 1.0);\n  vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);\n\n  // Normalize the instance ID.\n  float normId = float(instanceID) / numInstances;\n\n  // Mix between two colors using the normalized instance ID.\n  outColor = mix(red, blue, normId);\n}\n`;\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  // Create a p5.Shader object.\n  let myShader = createShader(vertSrc, fragSrc);\n\n  background(220);\n\n  // Compile and apply the p5.Shader.\n  shader(myShader);\n\n  // Set the numInstances uniform.\n  myShader.setUniform('numInstances', 4);\n\n  // Translate the origin to help align the drawing.\n  translate(25, -10);\n\n  // Style the shapes.\n  noStroke();\n\n  // Draw the shapes.\n  beginShape();\n  vertex(0, 0);\n  vertex(0, 20);\n  vertex(20, 20);\n  vertex(20, 0);\n  vertex(0, 0);\n  endShape(CLOSE, 4);\n\n  describe('A row of four squares. Their colors transition from purple on the left to red on the right');\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Style the shapes.\n  noFill();\n\n  // Left triangle.\n  beginShape();\n  vertex(20, 20);\n  vertex(45, 20);\n  vertex(45, 80);\n  endShape(CLOSE);\n\n  // Right triangle.\n  beginShape();\n  vertex(50, 20);\n  vertex(75, 20);\n  vertex(75, 80);\n  endShape();\n\n  describe(\n    'Two sets of black lines drawn on a gray background. The three lines on the left form a right triangle. The two lines on the right form a right angle.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n  background(200);\n\n  beginShape();\n\n  splineVertex(32, 91);\n  splineVertex(21, 17);\n  splineVertex(68, 19);\n  splineVertex(82, 91);\n\n  endShape(CLOSE);\n\n  describe(\n    'A curvy four-sided slightly lopsided blob.'\n  );\n}\n</div>\n</code>\n\n<div>\n<code>\n// Note: A \"uniform\" is a global variable within a shader program.\n\n// Create a string with the vertex shader program.\n// The vertex shader is called for each vertex.\nlet vertSrc = `#version 300 es\n\nprecision mediump float;\n\nin vec3 aPosition;\nflat out int instanceID;\n\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nvoid main() {\n\n  // Copy the instance ID to the fragment shader.\n  instanceID = gl_InstanceID;\n  vec4 positionVec4 = vec4(aPosition, 1.0);\n\n  // gl_InstanceID represents a numeric value for each instance.\n  // Using gl_InstanceID allows us to move each instance separately.\n  // Here we move each instance horizontally by ID * 23.\n  float xOffset = float(gl_InstanceID) * 23.0;\n\n  // Apply the offset to the final position.\n  gl_Position = uProjectionMatrix * uModelViewMatrix * (positionVec4 -\n    vec4(xOffset, 0.0, 0.0, 0.0));\n}\n`;\n\n// Create a string with the fragment shader program.\n// The fragment shader is called for each pixel.\nlet fragSrc = `#version 300 es\n\nprecision mediump float;\n\nout vec4 outColor;\nflat in int instanceID;\nuniform float numInstances;\n\nvoid main() {\n  vec4 red = vec4(1.0, 0.0, 0.0, 1.0);\n  vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);\n\n  // Normalize the instance ID.\n  float normId = float(instanceID) / numInstances;\n\n  // Mix between two colors using the normalized instance ID.\n  outColor = mix(red, blue, normId);\n}\n`;\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  // Create a p5.Shader object.\n  let myShader = createShader(vertSrc, fragSrc);\n\n  background(220);\n\n  // Compile and apply the p5.Shader.\n  shader(myShader);\n\n  // Set the numInstances uniform.\n  myShader.setUniform('numInstances', 4);\n\n  // Translate the origin to help align the drawing.\n  translate(25, -10);\n\n  // Style the shapes.\n  noStroke();\n\n  // Draw the shapes.\n  beginShape();\n  vertex(0, 0);\n  vertex(0, 20);\n  vertex(20, 20);\n  vertex(20, 0);\n  vertex(0, 0);\n  endShape(CLOSE, 4);\n\n  describe('A row of four squares. Their colors transition from purple on the left to red on the right');\n}\n</code>\n</div>"
       ],
       "overloads": [
         {
@@ -14107,12 +14060,12 @@
       "class": "p5",
       "static": false,
       "module": "Shape",
-      "submodule": "Vertex"
+      "submodule": "Custom Shapes"
     },
     {
       "name": "normal",
       "file": "src/scripts/parsers/in/p5.js/src/shape/vertex.js",
-      "line": 1405,
+      "line": 1068,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the normal vector for vertices in a custom 3D shape.</p>\n<p>3D shapes created with <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> are made by connecting sets of\npoints called vertices. Each vertex added with\n<a href=\"#/p5/vertex\">vertex()</a> has a normal vector that points away\nfrom it. The normal vector controls how light reflects off the shape.</p>\n<p><code>normal()</code> can be called two ways with different parameters to define the\nnormal vector's components.</p>\n<p>The first way to call <code>normal()</code> has three parameters, <code>x</code>, <code>y</code>, and <code>z</code>.\nIf <code>Number</code>s are passed, as in <code>normal(1, 2, 3)</code>, they set the x-, y-, and\nz-components of the normal vector.</p>\n<p>The second way to call <code>normal()</code> has one parameter, <code>vector</code>. If a\n<a href=\"#/p5.Vector\">p5.Vector</a> object is passed, as in\n<code>normal(myVector)</code>, its components will be used to set the normal vector.</p>\n<p><code>normal()</code> changes the normal vector of vertices added to a custom shape\nwith <a href=\"#/p5/vertex\">vertex()</a>. <code>normal()</code> must be called between\nthe <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a> functions, just like\n<a href=\"#/p5/vertex\">vertex()</a>. The normal vector set by calling\n<code>normal()</code> will affect all following vertices until <code>normal()</code> is called\nagain:</p>\n<pre><code class=\"language-js\">beginShape();\n\n// Set the vertex normal.\nnormal(-0.4, -0.4, 0.8);\n\n// Add a vertex.\nvertex(-30, -30, 0);\n\n// Set the vertex normal.\nnormal(0, 0, 1);\n\n// Add vertices.\nvertex(30, -30, 0);\nvertex(30, 30, 0);\n\n// Set the vertex normal.\nnormal(0.4, -0.4, 0.8);\n\n// Add a vertex.\nvertex(-30, 30, 0);\n\nendShape();</code></pre>",
@@ -14152,12 +14105,12 @@
       "class": "p5",
       "static": false,
       "module": "Shape",
-      "submodule": "Vertex"
+      "submodule": "Custom Shapes"
     },
     {
       "name": "vertexProperty",
       "file": "src/scripts/parsers/in/p5.js/src/shape/vertex.js",
-      "line": 1581,
+      "line": 1244,
       "itemtype": "method",
       "description": "<p>Sets the shader's vertex property or attribute variables.</p>\n<p>A vertex property, or vertex attribute, is a variable belonging to a vertex in a shader. p5.js provides some\ndefault properties, such as <code>aPosition</code>, <code>aNormal</code>, <code>aVertexColor</code>, etc. These are\nset using <a href=\"#/p5/vertex\">vertex()</a>, <a href=\"#/p5/normal\">normal()</a>\nand <a href=\"#/p5/fill\">fill()</a> respectively. Custom properties can also\nbe defined within <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a>.</p>\n<p>The first parameter, <code>propertyName</code>, is a string with the property's name.\nThis is the same variable name which should be declared in the shader, such as\n<code>in vec3 aProperty</code>, similar to .<code>setUniform()</code>.</p>\n<p>The second parameter, <code>data</code>, is the value assigned to the shader variable. This\nvalue will be applied to subsequent vertices created with\n<a href=\"#/p5/vertex\">vertex()</a>. It can be a Number or an array of numbers,\nand in the shader program the type can be declared according to the WebGL\nspecification. Common types include <code>float</code>, <code>vec2</code>, <code>vec3</code>, <code>vec4</code> or matrices.</p>\n<p>See also the <a href=\"#/p5/vertexProperty\">vertexProperty()</a> method on\n<a href=\"#/p5/Geometry\">Geometry</a> objects.</p>\n",
       "example": [
@@ -14182,7 +14135,7 @@
       "class": "p5",
       "static": false,
       "module": "Shape",
-      "submodule": "Vertex"
+      "submodule": "Custom Shapes"
     },
     {
       "name": "loadFont",
@@ -16360,19 +16313,19 @@
     {
       "name": "curveDetail",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/3d_primitives.js",
-      "line": 2761,
+      "line": 2727,
       "itemtype": "method",
       "chainable": 1,
-      "description": "<p>Sets the number of segments used to draw spline curves in WebGL mode.</p>\n<p>In WebGL mode, smooth shapes are drawn using many flat segments. Adding\nmore flat segments makes shapes appear smoother.</p>\n<p>The parameter, <code>detail</code>, is the number of segments to use while drawing a\nspline curve. For example, calling <code>curveDetail(5)</code> will use 5 segments to\ndraw curves with the <a href=\"#/p5/curve\">curve()</a> function. By\ndefault,<code>detail</code> is 20.</p>\n<p>Note: <code>curveDetail()</code> has no effect in 2D mode.</p>\n",
+      "description": "<p>Sets the number of segments used to draw spline curves in WebGL mode.</p>\n<p>In WebGL mode, smooth shapes are drawn using many flat segments. Adding\nmore flat segments makes shapes appear smoother.</p>\n<p>The parameter, <code>detail</code>, is the density of segments to use while drawing a\nspline curve.</p>\n<p>Note: <code>curveDetail()</code> has no effect in 2D mode.</p>\n",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Draw a black spline curve.\n  noFill();\n  strokeWeight(1);\n  stroke(0);\n  curve(5, 26, 73, 24, 73, 61, 15, 65);\n\n  // Draw red spline curves from the anchor points to the control points.\n  stroke(255, 0, 0);\n  curve(5, 26, 5, 26, 73, 24, 73, 61);\n  curve(73, 24, 73, 61, 15, 65, 15, 65);\n\n  // Draw the anchor points in black.\n  strokeWeight(5);\n  stroke(0);\n  point(73, 24);\n  point(73, 61);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(5, 26);\n  point(15, 65);\n\n  describe(\n    'A gray square with a curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'\n  );\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  background(200);\n\n  // Set the curveDetail() to 3.\n  curveDetail(3);\n\n  // Draw a black spline curve.\n  noFill();\n  strokeWeight(1);\n  stroke(0);\n  curve(-45, -24, 0, 23, -26, 0, 23, 11, 0, -35, 15, 0);\n\n  // Draw red spline curves from the anchor points to the control points.\n  stroke(255, 0, 0);\n  curve(-45, -24, 0, -45, -24, 0, 23, -26, 0, 23, 11, 0);\n  curve(23, -26, 0, 23, 11, 0, -35, 15, 0, -35, 15, 0);\n\n  // Draw the anchor points in black.\n  strokeWeight(5);\n  stroke(0);\n  point(23, -26);\n  point(23, 11);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(-45, -24);\n  point(-35, 15);\n\n  describe(\n    'A gray square with a jagged curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'\n  );\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  background(200);\n\n  // Set the curveDetail() to 0.5\n  curveDetail(0.5);\n\n  // Do not show all the vertices\n  splineProperty('ends', EXCLUDE)\n\n  // Draw a black spline curve.\n  noFill();\n  strokeWeight(1);\n  stroke(0);\n  spline(-45, -24, 0, 23, -26, 0, 23, 11, 0, -35, 15, 0);\n\n  // Draw red spline curves from the anchor points to the control points.\n  spline(255, 0, 0);\n  spline(-45, -24, 0, -45, -24, 0, 23, -26, 0, 23, 11, 0);\n  spline(23, -26, 0, 23, 11, 0, -35, 15, 0, -35, 15, 0);\n\n  // Draw the anchor points in black.\n  strokeWeight(5);\n  stroke(0);\n  point(23, -26);\n  point(23, 11);\n\n  // Draw the control points in red.\n  stroke(255, 0, 0);\n  point(-45, -24);\n  point(-35, 15);\n\n  describe(\n    'A gray square with a jagged curve drawn in three segments. The curve is a sideways U shape with red segments on top and bottom, and a black segment on the right. The endpoints of all the segments are marked with dots.'\n  );\n}\n</code>\n</div>"
       ],
       "overloads": [
         {
           "params": [
             {
               "name": "resolution",
-              "description": "number of segments to use. Defaults to 20.",
+              "description": "number of segments to use. Default is 1/4",
               "type": "Number"
             }
           ]
@@ -17561,111 +17514,9 @@
       "submodule": "3D Models"
     },
     {
-      "name": "parseObj",
-      "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 545,
-      "itemtype": "method",
-      "description": "<p>Parse OBJ lines into model. For reference, this is what a simple model of a\nsquare might look like:</p>\n<p>v -0.5 -0.5 0.5\nv -0.5 -0.5 -0.5\nv -0.5 0.5 -0.5\nv -0.5 0.5 0.5</p>\n<p>f 4 3 2 1</p>\n",
-      "example": [],
-      "overloads": [
-        {
-          "params": []
-        }
-      ],
-      "class": "p5",
-      "static": false,
-      "module": "Shape",
-      "submodule": "3D Models"
-    },
-    {
-      "name": "parseSTL",
-      "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 674,
-      "itemtype": "method",
-      "description": "<p>STL files can be of two types, ASCII and Binary,</p>\n<p>We need to convert the arrayBuffer to an array of strings,\nto parse it as an ASCII file.</p>\n",
-      "example": [],
-      "overloads": [
-        {
-          "params": []
-        }
-      ],
-      "class": "p5",
-      "static": false,
-      "module": "Shape",
-      "submodule": "3D Models"
-    },
-    {
-      "name": "isBinary",
-      "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 708,
-      "itemtype": "method",
-      "description": "<p>This function checks if the file is in ASCII format or in Binary format</p>\n<p>It is done by searching keyword <code>solid</code> at the start of the file.</p>\n<p>An ASCII STL data must begin with <code>solid</code> as the first six bytes.\nHowever, ASCII STLs lacking the SPACE after the <code>d</code> are known to be\nplentiful. So, check the first 5 bytes for <code>solid</code>.</p>\n<p>Several encodings, such as UTF-8, precede the text with up to 5 bytes:\nhttps://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding\nSearch for <code>solid</code> to start anywhere after those prefixes.</p>\n",
-      "example": [],
-      "overloads": [
-        {
-          "params": []
-        }
-      ],
-      "class": "p5",
-      "static": false,
-      "module": "Shape",
-      "submodule": "3D Models"
-    },
-    {
-      "name": "matchDataViewAt",
-      "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 725,
-      "itemtype": "method",
-      "description": "This function matches the <code>query</code> at the provided <code>offset</code>",
-      "example": [],
-      "overloads": [
-        {
-          "params": []
-        }
-      ],
-      "class": "p5",
-      "static": false,
-      "module": "Shape",
-      "submodule": "3D Models"
-    },
-    {
-      "name": "parseBinarySTL",
-      "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 740,
-      "itemtype": "method",
-      "description": "<p>This function parses the Binary STL files.\nhttps://en.wikipedia.org/wiki/STL_%28file_format%29#Binary_STL</p>\n<p>Currently there is no support for the colors provided in STL files.</p>\n",
-      "example": [],
-      "overloads": [
-        {
-          "params": []
-        }
-      ],
-      "class": "p5",
-      "static": false,
-      "module": "Shape",
-      "submodule": "3D Models"
-    },
-    {
-      "name": "parseASCIISTL",
-      "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 832,
-      "itemtype": "method",
-      "description": "ASCII STL file starts with <code>solid 'nameOfFile'</code>\nThen contain the normal of the face, starting with <code>facet normal</code>\nNext contain a keyword indicating the start of face vertex, <code>outer loop</code>\nNext comes the three vertex, starting with <code>vertex x y z</code>\nVertices ends with <code>endloop</code>\nFace ends with <code>endfacet</code>\nNext face starts with <code>facet normal</code>\nThe end of the file is indicated by <code>endsolid</code>",
-      "example": [],
-      "overloads": [
-        {
-          "params": []
-        }
-      ],
-      "class": "p5",
-      "static": false,
-      "module": "Shape",
-      "submodule": "3D Models"
-    },
-    {
       "name": "model",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 1090,
+      "line": 1099,
       "itemtype": "method",
       "description": "<p>Draws a <a href=\"#/p5.Geometry\">p5.Geometry</a> object to the canvas.</p>\n<p>The parameter, <code>model</code>, is the\n<a href=\"#/p5.Geometry\">p5.Geometry</a> object to draw.\n<a href=\"#/p5.Geometry\">p5.Geometry</a> objects can be built with\n<a href=\"#/p5/buildGeometry\">buildGeometry()</a>, or\n<a href=\"#/p5/beginGeometry\">beginGeometry()</a> and\n<a href=\"#/p5/endGeometry\">endGeometry()</a>. They can also be loaded from\na file with <a href=\"#/p5/loadGeometry\">loadGeometry()</a>.</p>\n<p>Note: <code>model()</code> can only be used in WebGL mode.</p>\n",
       "example": [
@@ -17690,7 +17541,7 @@
     {
       "name": "createModel",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/loading.js",
-      "line": 1186,
+      "line": 1195,
       "itemtype": "method",
       "description": "<p>Load a 3d model from an OBJ or STL string.</p>\n<p>OBJ and STL files lack a built-in sense of scale, causing models exported from different programs to vary in size.\nIf your model doesn't display correctly, consider using <code>loadModel()</code> with <code>normalize</code> set to <code>true</code> to standardize its size.\nFurther adjustments can be made using the <code>scale()</code> function.</p>\n<p>Also, the support for colored STL files is not present. STL files with color will be\nrendered without color properties.</p>\n<ul><li>Options can include:</li></ul><ul><li><code>modelString</code>: Specifies the plain text string of either an stl or obj file to be loaded.</li><li><code>fileType</code>: Defines the file extension of the model.</li><li><code>normalize</code>: Enables standardized size scaling during loading if set to true.</li><li><code>successCallback</code>: Callback for post-loading actions with the 3D model object.</li><li><code>failureCallback</code>: Handles errors if model loading fails, receiving an event error.</li><li><code>flipU</code>: Flips the U texture coordinates of the model.</li><li><code>flipV</code>: Flips the V texture coordinates of the model.</li></ul>",
       "example": [
@@ -18397,7 +18248,7 @@
     {
       "name": "emissiveMaterial",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/material.js",
-      "line": 3207,
+      "line": 3209,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the emissive color of shapes’ surface material.</p>\n<p>The <code>emissiveMaterial()</code> color sets a color shapes display at full\nstrength, regardless of lighting. This can give the appearance that a shape\nis glowing. However, emissive materials don’t actually emit light that\ncan affect surrounding objects.</p>\n<p><code>emissiveMaterial()</code> can be called three ways with different parameters to\nset the material’s color.</p>\n<p>The first way to call <code>emissiveMaterial()</code> has one parameter, <code>gray</code>.\nGrayscale values between 0 and 255, as in <code>emissiveMaterial(50)</code>, can be\npassed to set the material’s color. Higher grayscale values make shapes\nappear brighter.</p>\n<p>The second way to call <code>emissiveMaterial()</code> has one parameter, <code>color</code>. A\n<a href=\"#/p5.Color\">p5.Color</a> object, an array of color values, or a\nCSS color string, as in <code>emissiveMaterial('magenta')</code>, can be passed to set\nthe material’s color.</p>\n<p>The third way to call <code>emissiveMaterial()</code> has four parameters, <code>v1</code>, <code>v2</code>,\n<code>v3</code>, and <code>alpha</code>. <code>alpha</code> is optional. RGBA, HSBA, or HSLA values can be\npassed to set the material’s colors, as in <code>emissiveMaterial(255, 0, 0)</code> or\n<code>emissiveMaterial(255, 0, 0, 30)</code>. Color values will be interpreted using\nthe current <a href=\"#/p5/colorMode\">colorMode()</a>.</p>\n<p>Note: <code>emissiveMaterial()</code> can only be used in WebGL mode.</p>\n",
@@ -18457,7 +18308,7 @@
     {
       "name": "specularMaterial",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/material.js",
-      "line": 3462,
+      "line": 3464,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the specular color of shapes’ surface material.</p>\n<p>The <code>specularMaterial()</code> color sets the components of light color that\nglossy coats on shapes will reflect. For example, calling\n<code>specularMaterial(255, 255, 0)</code> would cause a shape to reflect red and\ngreen light, but not blue light.</p>\n<p>Unlike <a href=\"#/p5/ambientMaterial\">ambientMaterial()</a>,\n<code>specularMaterial()</code> will reflect the full color of light sources including\n<a href=\"#/p5/directionalLight\">directionalLight()</a>,\n<a href=\"#/p5/pointLight\">pointLight()</a>,\nand <a href=\"#/p5/spotLight\">spotLight()</a>. This is what gives it shapes\ntheir \"shiny\" appearance. The material’s shininess can be controlled by the\n<a href=\"#/p5/shininess\">shininess()</a> function.</p>\n<p><code>specularMaterial()</code> can be called three ways with different parameters to\nset the material’s color.</p>\n<p>The first way to call <code>specularMaterial()</code> has one parameter, <code>gray</code>.\nGrayscale values between 0 and 255, as in <code>specularMaterial(50)</code>, can be\npassed to set the material’s color. Higher grayscale values make shapes\nappear brighter.</p>\n<p>The second way to call <code>specularMaterial()</code> has one parameter, <code>color</code>. A\n<a href=\"#/p5.Color\">p5.Color> object, an array of color values, or a CSS\ncolor string, as in <code>specularMaterial('magenta')</code>, can be passed to set the\nmaterial’s color.</p>\n<p>The third way to call <code>specularMaterial()</code> has four parameters, <code>v1</code>, <code>v2</code>,\n<code>v3</code>, and <code>alpha</code>. <code>alpha</code> is optional. RGBA, HSBA, or HSLA values can be\npassed to set the material’s colors, as in <code>specularMaterial(255, 0, 0)</code> or\n<code>specularMaterial(255, 0, 0, 30)</code>. Color values will be interpreted using\nthe current <a href=\"#/p5/colorMode\">colorMode()</a>.</p>\n",
@@ -18522,7 +18373,7 @@
     {
       "name": "shininess",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/material.js",
-      "line": 3535,
+      "line": 3537,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the amount of gloss (\"shininess\") of a\n<a href=\"#/p5/specularMaterial\">specularMaterial()</a>.</p>\n<p>Shiny materials focus reflected light more than dull materials.\n<code>shininess()</code> affects the way materials reflect light sources including\n<a href=\"#/p5/directionalLight\">directionalLight()</a>,\n<a href=\"#/p5/pointLight\">pointLight()</a>,\nand <a href=\"#/p5/spotLight\">spotLight()</a>.</p>\n<p>The parameter, <code>shine</code>, is a number that sets the amount of shininess.\n<code>shine</code> must be greater than 1, which is its default value.</p>\n",
@@ -18548,7 +18399,7 @@
     {
       "name": "metalness",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/material.js",
-      "line": 3651,
+      "line": 3653,
       "itemtype": "method",
       "description": "<p>Sets the amount of \"metalness\" of a\n<a href=\"#/p5/specularMaterial\">specularMaterial()</a>.</p>\n<p><code>metalness()</code> can make materials appear more metallic. It affects the way\nmaterials reflect light sources including\naffects the way materials reflect light sources including\n<a href=\"#/p5/directionalLight\">directionalLight()</a>,\n<a href=\"#/p5/pointLight\">pointLight()</a>,\n<a href=\"#/p5/spotLight\">spotLight()</a>, and\n<a href=\"#/p5/imageLight\">imageLight()</a>.</p>\n<p>The parameter, <code>metallic</code>, is a number that sets the amount of metalness.\n<code>metallic</code> must be greater than 1, which is its default value. Higher\nvalues, such as <code>metalness(100)</code>, make specular materials appear more\nmetallic.</p>\n",
       "example": [
@@ -18972,7 +18823,7 @@
     {
       "name": "setAttributes",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.RendererGL.js",
-      "line": 2701,
+      "line": 2700,
       "itemtype": "method",
       "description": "<p>Set attributes for the WebGL Drawing context.\nThis is a way of adjusting how the WebGL\nrenderer works to fine-tune the display and performance.</p>\n<p>Note that this will reinitialize the drawing context\nif called after the WebGL canvas is made.</p>\n<p>If an object is passed as the parameter, all attributes\nnot declared in the object will be set to defaults.</p>\n<p>The available attributes are:\n<br>\nalpha - indicates if the canvas contains an alpha buffer\ndefault is true</p>\n<p>depth - indicates whether the drawing buffer has a depth buffer\nof at least 16 bits - default is true</p>\n<p>stencil - indicates whether the drawing buffer has a stencil buffer\nof at least 8 bits</p>\n<p>antialias - indicates whether or not to perform anti-aliasing\ndefault is false (true in Safari)</p>\n<p>premultipliedAlpha - indicates that the page compositor will assume\nthe drawing buffer contains colors with pre-multiplied alpha\ndefault is true</p>\n<p>preserveDrawingBuffer - if true the buffers will not be cleared and\nand will preserve their values until cleared or overwritten by author\n(note that p5 clears automatically on draw loop)\ndefault is true</p>\n<p>perPixelLighting - if true, per-pixel lighting will be used in the\nlighting shader otherwise per-vertex lighting is used.\ndefault is true.</p>\n<p>version - either 1 or 2, to specify which WebGL version to ask for. By\ndefault, WebGL 2 will be requested. If WebGL2 is not available, it will\nfall back to WebGL 1. You can check what version is used with by looking at\nthe global <code>webglVersion</code> property.</p>\n",
       "example": [
@@ -27972,7 +27823,7 @@
     },
     {
       "file": "src/Oscillator.js",
-      "line": 168,
+      "line": 169,
       "description": "Starts the oscillator. Usually from user gesture.",
       "itemtype": "method",
       "name": "start",
@@ -27985,7 +27836,7 @@
     },
     {
       "file": "src/Oscillator.js",
-      "line": 193,
+      "line": 194,
       "description": "Stops the oscillator.",
       "itemtype": "method",
       "name": "stop",
