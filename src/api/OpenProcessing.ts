@@ -36,16 +36,23 @@ export type OpenProcessingCurationResponse = Array<{
  * @param limit max number of sketches to return
  * @returns sketches
  */
-export const getCurationSketches = async (
-  limit?: number,
-): Promise<OpenProcessingCurationResponse> => {
+export const getCurationSketches = memoize(
+  async (limit?: number): Promise<OpenProcessingCurationResponse> => {
   const limitParam = limit ? `limit=${limit}` : "";
   const response = await fetch(
     `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
   );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed getCurationSketches: ${response.status} ${response.statusText}`,
+      );
+    }
+
   const payload = await response.json();
   return payload as OpenProcessingCurationResponse;
-};
+  },
+);
 
 /**
  * API Response from a call to the Sketch endpoint
@@ -79,6 +86,13 @@ export const getSketch = memoize(async (
 ): Promise<OpenProcessingSketchResponse> => {
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
   const payload = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed getSketch for id - ${id}: ${response.status} ${response.statusText}`,
+      );
+    }
+
   return payload as OpenProcessingSketchResponse;
 });
 
@@ -89,6 +103,13 @@ export const getSketchSize = memoize(async (id: string) => {
   }
 
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}/code`);
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed getSketchSize for id - ${id}: ${response.status} ${response.statusText}`,
+    );
+  }
+
   const payload = await response.json();
 
   for (const tab of payload) {
