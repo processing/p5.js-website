@@ -43,6 +43,13 @@ export const getCurationSketches = async (
   const response = await fetch(
     `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
   );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed getCurationSketches: ${response.status} ${response.statusText}`,
+    );
+  }
+
   const payload = await response.json();
   return payload as OpenProcessingCurationResponse;
 };
@@ -78,6 +85,13 @@ export const getSketch = memoize(async (
   id: string,
 ): Promise<OpenProcessingSketchResponse> => {
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed getSketch for id - ${id}: ${response.status} ${response.statusText}`,
+      );
+    }
+
   const payload = await response.json();
   return payload as OpenProcessingSketchResponse;
 });
@@ -89,6 +103,13 @@ export const getSketchSize = memoize(async (id: string) => {
   }
 
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}/code`);
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed getSketchSize for id - ${id}: ${response.status} ${response.statusText}`,
+    );
+  }
+
   const payload = await response.json();
 
   for (const tab of payload) {
