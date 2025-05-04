@@ -18,9 +18,10 @@ import { ScalingIframe } from "@components/ScalingIframe";
 interface Props {
   sketchId: string;
   authorName: string;
+  title: string;
 }
 
-const { sketchId, authorName } = Astro.props;
+const { sketchId, authorName, title } = Astro.props;
 const sketchInfo = await getSketch(sketchId);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -46,18 +47,18 @@ if (width && height) {
   heightOverWidth = height / width;
 }
 
-const iframeTitle = `OpenProcessing Sketch: ${sketchInfo.title} by ${authorName}`;
+const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
 ---
 
 <Head
-  title={sketchInfo.title}
+  title={title}
   locale={currentLocale}
   featuredImageSrc={featuredImageURL}
   description={sketchInfo.instructions}
 />
 
 <BaseLayout
-  title={sketchInfo.title}
+  title={title}
   titleAuthor={authorName}
   subtitle={dateString}
   variant="item"
