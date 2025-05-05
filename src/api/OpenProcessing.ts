@@ -36,7 +36,7 @@ export type OpenProcessingCurationResponse = Array<{
  * @param limit max number of sketches to return
  * @returns sketches
  */
-export const getCurationSketches = async (
+export const getCurationSketches = memoize(async (
   limit?: number,
 ): Promise<OpenProcessingCurationResponse> => {
   const limitParam = limit ? `limit=${limit}` : "";
@@ -44,11 +44,11 @@ export const getCurationSketches = async (
     `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
   );
   if(!response.ok){ //log error instead of throwing error to not cache result in memoize
-    console.log('getCurationSketches', response.status, response.statusText)
+    console.error('getCurationSketches', response.status, response.statusText)
   }
   const payload = await response.json();
   return payload as OpenProcessingCurationResponse;
-};
+});
 
 /**
  * API Response from a call to the Sketch endpoint
@@ -82,7 +82,7 @@ export const getSketch = memoize(async (
 ): Promise<OpenProcessingSketchResponse> => {
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
   if(!response.ok){ //log error instead of throwing error to not cache result in memoize
-    console.log('getSketch', id, response.status, response.statusText)
+    console.error('getSketch', id, response.status, response.statusText)
   }
   const payload = await response.json();
   return payload as OpenProcessingSketchResponse;
@@ -96,7 +96,7 @@ export const getSketchSize = memoize(async (id: string) => {
 
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}/code`);
   if(!response.ok){ //log error instead of throwing error to not cache result in memoize
-    console.log('getSketchSize', id, response.status, response.statusText)
+    console.error('getSketchSize', id, response.status, response.statusText)
   }
   const payload = await response.json();
 
