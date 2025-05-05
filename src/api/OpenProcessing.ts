@@ -43,7 +43,7 @@ export const getCurationSketches = async (
   const response = await fetch(
     `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
   );
-  if(!response.ok){
+  if(!response.ok){ //log error instead of throwing error to not cache result in memoize
     console.log('getCurationSketches', response.status, response.statusText)
   }
   const payload = await response.json();
@@ -81,7 +81,7 @@ export const getSketch = memoize(async (
   id: string,
 ): Promise<OpenProcessingSketchResponse> => {
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
-  if(!response.ok){
+  if(!response.ok){ //log error instead of throwing error to not cache result in memoize
     console.log('getSketch', id, response.status, response.statusText)
   }
   const payload = await response.json();
@@ -95,6 +95,9 @@ export const getSketchSize = memoize(async (id: string) => {
   }
 
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}/code`);
+  if(!response.ok){ //log error instead of throwing error to not cache result in memoize
+    console.log('getSketchSize', id, response.status, response.statusText)
+  }
   const payload = await response.json();
 
   for (const tab of payload) {
