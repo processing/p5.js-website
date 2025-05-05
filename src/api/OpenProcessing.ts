@@ -45,9 +45,8 @@ export const getCurationSketches = async (
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Failed getCurationSketches: ${response.status} ${response.statusText}`,
-    );
+    //log error instead of throwing error to not cache result in memoize
+    console.error("getCurationSketches", response.status, response.statusText);
   }
 
   const payload = await response.json();
@@ -87,9 +86,8 @@ export const getSketch = memoize(async (
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
 
     if (!response.ok) {
-      throw new Error(
-        `Failed getSketch for id - ${id}: ${response.status} ${response.statusText}`,
-      );
+      //log error instead of throwing error to not cache result in memoize
+      console.error("getSketch", id, response.status, response.statusText);
     }
 
   const payload = await response.json();
@@ -105,9 +103,8 @@ export const getSketchSize = memoize(async (id: string) => {
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}/code`);
 
   if (!response.ok) {
-    throw new Error(
-      `Failed getSketchSize for id - ${id}: ${response.status} ${response.statusText}`,
-    );
+    //log error instead of throwing error to not cache result in memoize
+    console.error("getSketchSize", id, response.status, response.statusText);
   }
 
   const payload = await response.json();
