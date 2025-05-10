@@ -23,6 +23,9 @@ export type OpenProcessingCurationResponse = Array<{
   title: string;
   /** Description of sketch */
   description: string;
+  instructions: string;
+  mode: string;
+  createdOn: string;
   userID: string;
   submittedOn: string;
   /** Author's name */
@@ -72,17 +75,31 @@ export type OpenProcessingSketchResponse = {
 
 /**
  * Get info about a specific sketch from the OpenProcessing API
+ * First checks if the sketch is in the memoized curated sketches and returns the data if so,
+ * Otherwise calls OpenProcessing API for this specific sketch
  *
  * https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
  * @param id
  * @returns
  */
-export const getSketch = memoize(async (
-  id: string,
-): Promise<OpenProcessingSketchResponse> => {
+export const getSketch = memoize(
+  async (id: string): Promise<OpenProcessingSketchResponse> => {
+    // check for memoized sketch in curation sketches
+    const curationSketches = await getCurationSketches();
+    const memoizedSketch = curationSketches.find((el) => el.visualID === id);
+    if (memoizedSketch) {
+      return {
+        ...memoizedSketch,
+        license: "",
+      } as OpenProcessingSketchResponse;
+    }
+
+    // check for sketch data in Open Processing API
+    console.log("CALLING API TEST FOR:", id);
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
-  if(!response.ok){ //log error instead of throwing error to not cache result in memoize
-    console.error('getSketch', id, response.status, response.statusText)
+    if (!response.ok) {
+      //log error instead of throwing error to not cache result in memoize
+      console.error("getSketch", id, response.status, response.statusText);
   }
   const payload = await response.json();
   return payload as OpenProcessingSketchResponse;
