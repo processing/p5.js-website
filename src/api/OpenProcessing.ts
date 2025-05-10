@@ -88,6 +88,11 @@ export const getSketch = memoize(async (
   return payload as OpenProcessingSketchResponse;
 });
 
+/**
+ * Note: this currently calls `/api/sketch/:id/code`
+ * But only uses the width and height properties from this call
+ * Width and height should instead be added to properties for `/api/sketch/:id` or `api/curation/:curationId/sketches` instead
+ */
 export const getSketchSize = memoize(async (id: string) => {
   const sketch = await getSketch(id)
   if (sketch.mode !== 'p5js') {
