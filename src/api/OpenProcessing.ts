@@ -95,7 +95,6 @@ export const getSketch = memoize(
     }
 
     // check for sketch data in Open Processing API
-    console.log("CALLING API TEST FOR:", id);
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
     if (!response.ok) {
       //log error instead of throwing error to not cache result in memoize
