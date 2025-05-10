@@ -26,11 +26,10 @@ const { title, createdOn, instructions } = await getSketch(sketchId);
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 const dateString = new Date(createdOn).toLocaleDateString(currentLocale, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }
-);
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 
 setJumpToState(null);
 const moreSketches = await getRandomCurationSketches(4);
@@ -39,17 +38,17 @@ const featuredImageURL = makeThumbnailUrl(sketchId);
 // NOTE: Commenting out the call to getSketchSize to minimise calls to OP due to rate limiting
 // width and height should be moved to data fetched by either getCuratedSketches or getSketch to minimise calls.
 
-// let { width, height } = await getSketchSize(sketchId);
-// let heightOverWidth = 1 / 1.5;
-// if (width && height) {
-//   // Account for OP header bar
-//   height += 50;
-//   heightOverWidth = height / width;
-// }
-
-let width = undefined;
-let height = undefined;
+let { width, height } = await getSketchSize(sketchId);
 let heightOverWidth = 1 / 1.5;
+if (width && height) {
+  // Account for OP header bar
+  height += 50;
+  heightOverWidth = height / width;
+}
+
+// let width = undefined;
+// let height = undefined;
+// let heightOverWidth = 1 / 1.5;
 
 const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
 ---
