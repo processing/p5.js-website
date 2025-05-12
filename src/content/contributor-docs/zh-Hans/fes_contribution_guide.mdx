@@ -4,25 +4,24 @@ title: |
 description: |
   友好错误系统代码库概述和开发者参考。
 ---
-
 {/* 友好错误系统代码库概述和开发者参考。 */}
+
 
 
 `core/friendly_errors`文件夹包含了p5js的友好错误系统(FES)代码，该系统负责生成友好错误消息或友好错误。您可能已经在控制台中看到以"`🌸 p5.js says:`"开头的友好错误消息，这些消息是对默认浏览器生成的错误消息的补充。
 
 FES包含多个负责生成不同类型错误的友好错误消息的函数。这些函数从各种位置收集错误，包括文件加载错误和自动播放错误的错误处理，库内的参数检查，以及p5.js贡献者实现的其他自定义错误处理。
 
-本文档首先概述了FES的主要函数及其位置。在随后的参考部分，您将找到有关这些单独函数的完整信息（描述、语法、参数、位置）。在文档的最后部分，您将找到我们以前的贡献者的笔记（开发笔记），概述了FES的已知限制和可能的未来方向。如果您正在考虑为FES做贡献，请查看[开发笔记](#-开发笔记)！
-
+本文档首先概述了FES的主要函数及其位置。在随后的参考部分，您将找到有关这些单独函数的完整信息（描述、语法、参数、位置）。在文档的最后部分，您将找到我们以前的贡献者的笔记（开发笔记），概述了FES的已知限制和可能的未来方向。如果您正在考虑为FES做贡献，请查看[开发笔记](#-开发笔记/)！
 
 ## 概述
 
 生成友好错误消息的主要函数是：
 
-- `p5._friendlyError()`：将输入消息格式化并打印（通过`_report()`）为友好错误
-- `p5._validateParameters()`：验证接收到的输入值是否有错误类型或缺少值
-- `p5._friendlyFileLoadError()`：指导用户解决与文件加载函数相关的错误
-- `p5._friendlyAutoplayError()`：指导用户解决与浏览器自动播放策略相关的错误
+* `p5._friendlyError()`：将输入消息格式化并打印（通过`_report()`）为友好错误
+* `p5._validateParameters()`：验证接收到的输入值是否有错误类型或缺少值
+* `p5._friendlyFileLoadError()`：指导用户解决与文件加载函数相关的错误
+* `p5._friendlyAutoplayError()`：指导用户解决与浏览器自动播放策略相关的错误
 
 以下是一个图表，概述了FES中所有函数的位置以及它们如何相互连接：
 
@@ -30,12 +29,11 @@ FES包含多个负责生成不同类型错误的友好错误消息的函数。�
 
 各个文件包含以下主要FES函数：
 
-- `fes_core.js`：包含`_report()`、`_friendlyError()`和`_friendlyAutoplayError()`，以及用于格式化和测试友好错误的其他辅助函数。
-- `validate_params.js`：包含`_validateParameters()`以及用于参数验证的其他辅助函数。
-- `file_errors.js`：包含`_friendlyFileLoadError()`和用于文件加载错误的其他辅助函数。
-- `browser_errors.js`：包含将使用FES全局错误类（`fes.globalErrors`）生成的浏览器错误列表。
-- `stacktrace.js`：包含解析错误堆栈的代码（借用自[stacktrace.js](https://github.com/stacktracejs/stacktrace.js)）。
-
+* `fes_core.js`：包含`_report()`、`_friendlyError()`和`_friendlyAutoplayError()`，以及用于格式化和测试友好错误的其他辅助函数。
+* `validate_params.js`：包含`_validateParameters()`以及用于参数验证的其他辅助函数。
+* `file_errors.js`：包含`_friendlyFileLoadError()`和用于文件加载错误的其他辅助函数。
+* `browser_errors.js`：包含将使用FES全局错误类（`fes.globalErrors`）生成的浏览器错误列表。
+* `stacktrace.js`：包含解析错误堆栈的代码（借用自[stacktrace.js](https://github.com/stacktracejs/stacktrace.js)）。
 
 ## 📚 参考：FES函数
 
@@ -45,8 +43,7 @@ FES包含多个负责生成不同类型错误的友好错误消息的函数。�
 
 `_report()`是直接将错误辅助消息输出到控制台的主要函数。
 
-**注意：**如果设置了`p5._fesLogger`（即，我们正在运行测试），则将使用它代替`console.log`。这在我们通过Mocha运行测试时非常有用。在这种情况下，`_fesLogger`将让`_report`将错误消息作为字符串传递给Mocha，该字符串将与断言的字符串进行测试。
-
+\*\*注意：\*\*如果设置了`p5._fesLogger`（即，我们正在运行测试），则将使用它代替`console.log`。这在我们通过Mocha运行测试时非常有用。在这种情况下，`_fesLogger`将让`_report`将错误消息作为字符串传递给Mocha，该字符串将与断言的字符串进行测试。
 
 #### 语法
 
@@ -57,7 +54,6 @@ _report(message, func);
 
 _report(message, func, color);
 ```
-
 
 #### 参数
 
@@ -71,7 +67,6 @@ _report(message, func, color);
 
 `[color]`输入用于设置错误消息的颜色属性。这在当前版本的友好错误消息中未使用。
 
-
 #### 位置
 
 core/friendly\_errors/fes\_core.js
@@ -84,13 +79,13 @@ core/friendly\_errors/fes\_core.js
 
 `_friendlyFileLoadError()`位于以下函数内：
 
-- `image/loading_displaying/loadImage()`
-- `io/files/loadFont()`
-- `io/files/loadTable()`
-- `io/files/loadJSON()`
-- `io/files/loadStrings()`
-- `io/files/loadXML()`
-- `io/files/loadBytes()`。
+* `image/loading_displaying/loadImage()`
+* `io/files/loadFont()`
+* `io/files/loadTable()`
+* `io/files/loadJSON()`
+* `io/files/loadStrings()`
+* `io/files/loadXML()`
+* `io/files/loadBytes()`。
 
 对`_friendlyFileLoadError`的调用序列看起来像这样：
 
@@ -99,13 +94,11 @@ _friendlyFileLoadError
   _report
 ```
 
-
 #### 语法
 
 ```js
 _friendlyFileLoadError(errorType, filePath);
 ```
-
 
 #### 参数
 
@@ -115,7 +108,6 @@ _friendlyFileLoadError(errorType, filePath);
 ```
 
 `errorType`输入指的是`core/friendly_errors/file_errors.js`中枚举的特定类型的文件加载错误。p5.js中的文件加载错误被分为各种不同的情况。这种分类旨在便于提供与不同错误场景相对应的精确和信息丰富的错误消息。例如，当它无法读取字体文件中的数据时，它可以显示与尝试加载过大无法读取的文件时不同的错误。
-
 
 #### 示例
 
@@ -144,11 +136,9 @@ function draw() {}
 + 更多信息：https://github.com/processing/p5.js/wiki/Local-server
 ```
 
-
 #### 位置
 
 /friendly\_errors/file\_errors.js
-
 
 ### `_friendlyAutoplayError()`
 
@@ -158,11 +148,9 @@ function draw() {}
 
 它调用`translator()`使用键`fes.autoplay`生成并打印友好错误消息。您可以在`translations/en/translation.json`中查看所有可用的键。
 
-
 #### 位置
 
 core/friendly\_errors/fes\_core.js
-
 
 ### `_validateParameters()`
 
@@ -176,36 +164,36 @@ core/friendly\_errors/fes\_core.js
 
 `_validateParameters()`函数位于这些函数内：
 
-- `accessibility/outputs`
-- `color/creating_reading`
-- `color/setting`
-- `core/environment`
-- `core/rendering`
-- `core/shape/2d_primitives`
-- `core/shape/attributes`
-- `core/shape/curves`
-- `core/shape/vertex`
-- `core/transform`
-- `data/p5.TypedDict`
-- `dom/dom`
-- `events/acceleration`
-- `events/keyboard`
-- `image/image`
-- `image/loading_displaying`
-- `image/p5.Image`
-- `image/pixel`
-- `io/files`
-- `math/calculation`
-- `math/random`
-- `typography/attributes`
-- `typography/loading_displaying`
-- `utilities/string_functions`
-- `webgl/3d_primitives`
-- `webgl/interaction`
-- `webgl/light`
-- `webgl/loading`
-- `webgl/material`
-- `webgl/p5.Camera`
+* `accessibility/outputs`
+* `color/creating_reading`
+* `color/setting`
+* `core/environment`
+* `core/rendering`
+* `core/shape/2d_primitives`
+* `core/shape/attributes`
+* `core/shape/curves`
+* `core/shape/vertex`
+* `core/transform`
+* `data/p5.TypedDict`
+* `dom/dom`
+* `events/acceleration`
+* `events/keyboard`
+* `image/image`
+* `image/loading_displaying`
+* `image/p5.Image`
+* `image/pixel`
+* `io/files`
+* `math/calculation`
+* `math/random`
+* `typography/attributes`
+* `typography/loading_displaying`
+* `utilities/string_functions`
+* `webgl/3d_primitives`
+* `webgl/interaction`
+* `webgl/light`
+* `webgl/loading`
+* `webgl/material`
+* `webgl/p5.Camera`
 
 从`_validateParameters`的调用序列看起来像这样：
 
@@ -224,13 +212,11 @@ validateParameters
         friendlyWelcome
 ```
 
-
 #### 语法
 
 ```js
 _validateParameters(func, args);
 ```
-
 
 #### 参数
 
@@ -238,7 +224,6 @@ _validateParameters(func, args);
 @param  {String}  func    被调用的函数的名称
 @param  {Array}   args    用户输入参数
 ```
-
 
 #### 示例
 
@@ -266,11 +251,9 @@ FES将在控制台中生成以下消息：
 🌸 p5.js says: [sketch.js, line 14] arc()的第一个参数需要Number类型，但收到了string类型。 (https://p5js.org/reference/p5/arc)
 ```
 
-
 #### 位置
 
 core/friendly\_errors/validate\_params.js
-
 
 ### `fesErrorMonitor()`
 
@@ -282,10 +265,10 @@ core/friendly\_errors/validate\_params.js
 
 以下是通过`fesErrorMonitor()`生成的错误消息的综合列表：
 
-- 使用键的友好错误消息：`fes.globalErrors.syntax.*`、`fes.globalErrors.reference.*`、`fes.globalErrors.type.*`。
-- 通过`processStack()`使用键的"内部库"错误消息：`fes.wrongPreload`、`fes.libraryError`。
-- 通过`printFriendlyStack()`使用键的堆栈跟踪消息：`fes.globalErrors.stackTop`、`fes.globalErrors.stackSubseq`。
-- 通过`handleMisspelling()`使用键的拼写检查消息（来自引用错误）：`fes.misspelling`。
+* 使用键的友好错误消息：`fes.globalErrors.syntax.*`、`fes.globalErrors.reference.*`、`fes.globalErrors.type.*`。
+* 通过`processStack()`使用键的"内部库"错误消息：`fes.wrongPreload`、`fes.libraryError`。
+* 通过`printFriendlyStack()`使用键的堆栈跟踪消息：`fes.globalErrors.stackTop`、`fes.globalErrors.stackSubseq`。
+* 通过`handleMisspelling()`使用键的拼写检查消息（来自引用错误）：`fes.misspelling`。
 
 `_fesErrorMonitor()`由`window`上的`error`事件和未处理的承诺拒绝（`unhandledrejection`事件）自动触发。但是，可以在catch块中手动调用，如下所示：
 
@@ -312,20 +295,17 @@ try { someCode(); } catch(err) { p5._fesErrorMonitor(err); }
        printFriendlyStack
 ```
 
-
 #### 语法
 
 ```js
 fesErrorMonitor(event);
 ```
 
-
 #### 参数
 
 ```
 @param {*}  e     错误事件
 ```
-
 
 #### 示例
 
@@ -395,11 +375,9 @@ FES将在控制台中生成以下消息：
 🌸 p5.js says: [sketch.js, line 2] 您可能不小心写了"xolor"而不是"color"。如果您希望使用p5.js中的函数，请将其更正为color。 (https://p5js.org/reference/p5/color)
 ```
 
-
 #### 位置
 
 core/friendly\_errors/fes\_core.js
-
 
 ### `checkForUserDefinedFunctions()`
 
@@ -409,13 +387,11 @@ core/friendly\_errors/fes\_core.js
 
 它调用`translator()`使用键`fes.checkUserDefinedFns`生成并打印友好错误消息。您可以在`translations/en/translation.json`中查看所有可用的键。
 
-
 #### 语法
 
 ```js
 checkForUserDefinedFunctions(context);
 ```
-
 
 #### 参数
 
@@ -424,7 +400,6 @@ checkForUserDefinedFunctions(context);
                     在"全局模式"下设置为window，
                     在"实例模式"下设置为p5实例
 ```
-
 
 #### 示例
 
@@ -440,11 +415,9 @@ FES将在控制台中生成以下消息：
 🌸 p5.js says: 您可能不小心写了preLoad而不是preload。如果这不是有意的，请更正它。 (https://p5js.org/reference/p5/preload)
 ```
 
-
 #### 位置
 
 /friendly\_errors/fes\_core.js
-
 
 ### `helpForMisusedAtTopLevelCode()`
 
@@ -454,7 +427,6 @@ FES将在控制台中生成以下消息：
 
 它调用`translator()`使用键`fes.misusedTopLevel`生成并打印友好错误消息。您可以在`translations/en/translation.json`中查看所有可用的键。
 
-
 #### 参数
 
 ```
@@ -462,11 +434,9 @@ FES将在控制台中生成以下消息：
 @param {Boolean}  log    false
 ```
 
-
 #### 位置
 
 /friendly\_errors/fes\_core.js
-
 
 ## 💌 开发笔记
 
@@ -480,17 +450,15 @@ FES将在控制台中生成以下消息：
 
 在某些不理想的情况下，错误处理的设计可能需要选择消除假阳性或假阴性。如果必须选择，通常最好消除假阳性。这样，您可以避免生成可能分散注意力或误导用户的不正确警告。
 
-
 #### 与`fes.GlobalErrors`相关的限制
 
 FES只能检测到使用`const`或`var`声明的被覆盖的全局变量。使用let声明的变量不会被检测到。这个限制是由于`let`处理变量实例化的特定方式导致的，目前无法解决。
 
-`fesErrorMonitor()`下描述的功能目前仅在Web编辑器上或在本地服务器上运行时有效。有关更多详情，请参见 pull request \[[#4730](https://github.com/processing/p5.js/pull/4730)]。
-
+`fesErrorMonitor()`下描述的功能目前仅在Web编辑器上或在本地服务器上运行时有效。有关更多详情，请参见 pull request \[[#4730](https://github.com/processing/p5.js/pull/4730/)]。
 
 ### FES的性能问题
 
-默认情况下，p5.js启用FES，而在`p5.min.js`中禁用，以防止FES函数减慢进程。错误检查系统可能会显著减慢您的代码（在某些情况下最多慢10倍）。请参见[友好错误性能测试](https://github.com/processing/p5.js-website/tree/main/src/assets/learn/performance/code/friendly-error-system)。
+默认情况下，p5.js启用FES，而在`p5.min.js`中禁用，以防止FES函数减慢进程。错误检查系统可能会显著减慢您的代码（在某些情况下最多慢10倍）。请参见[友好错误性能测试](https://github.com/processing/p5.js-website/tree/main/src/assets/learn/performance/code/friendly-error-system/)。
 
 您可以在草图顶部使用一行代码禁用FES：
 
@@ -506,16 +474,14 @@ function draw() {
 
 请注意，此操作将禁用已知会降低性能的FES某些功能，例如参数检查。但是，不影响性能的友好错误消息仍将启用。这包括在文件加载失败时提供详细的错误消息，或者在您尝试覆盖全局空间中的p5.js函数时显示警告。
 
-
 ### 未来工作的想法
 
-- 解耦FES \[[#5629](https://github.com/processing/p5.js/issues/5629)]
-- 消除假阳性情况
-- 识别假阴性情况
-- 添加更多单元测试以获得全面的测试覆盖
-- 更直观、清晰且可翻译的消息。关于友好错误国际化的更多讨论，请查看[友好错误i18n手册](https://almchung.github.io/p5-fes-i18n-book/en/)。
-- 识别更多常见错误类型并使用FES进行泛化（例如 `bezierVertex()`、`quadraticVertex()` - 必需对象未初始化；检查 `nf()`、`nfc()`、`nfp()`、`nfs()` 的Number参数是否为正）
-
+* 解耦FES \[[#5629](https://github.com/processing/p5.js/issues/5629/)]
+* 消除假阳性情况
+* 识别假阴性情况
+* 添加更多单元测试以获得全面的测试覆盖
+* 更直观、清晰且可翻译的消息。关于友好错误国际化的更多讨论，请查看[友好错误i18n手册](https://almchung.github.io/p5-fes-i18n-book/en/)。
+* 识别更多常见错误类型并使用FES进行泛化（例如 `bezierVertex()`、`quadraticVertex()` - 必需对象未初始化；检查 `nf()`、`nfc()`、`nfp()`、`nfs()` 的Number参数是否为正）
 
 ## 结论
 
@@ -525,8 +491,9 @@ function draw() {
 
 此外，我们很高兴通过2021-2022年进行的FES调查分享来自我们社区的见解。调查结果有两种格式可供查阅：
 
-- [21-22 FES调查报告漫画](https://almchung.github.io/p5jsFESsurvey/)
-- [21-22 FES调查完整报告](https://observablehq.com/@almchung/p5-fes-21-survey)。
+* [21-22 FES调查报告漫画](https://almchung.github.io/p5jsFESsurvey/)
+* [21-22 FES调查完整报告](https://observablehq.com/@almchung/p5-fes-21-survey/)。
 
 {/* TODO: 当我们发布下面的文章时取消注释 */}
-{/* 如果您正在寻找向方法添加友好错误消息的方法，我们建议查看[如何添加友好错误消息](#)。它将一步步引导您完成向方法添加这些错误消息的过程。 */}
+
+{/* 如果您正在寻找向方法添加友好错误消息的方法，我们建议查看[如何添加友好错误消息](#/)。它将一步步引导您完成向方法添加这些错误消息的过程。 */}
