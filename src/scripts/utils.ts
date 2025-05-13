@@ -304,3 +304,15 @@ export const rewriteRelativeMdLinks = (markdownText: string): string => {
     return `[${linkText}](${updatedUrl})`;
   });
 };
+/**
+ * Deletes the contents of the given directory.
+ * @param dirPath Path to the directory to clean up.
+ */
+export const cleanUpDirectory = async (dirPath: string) => {
+  try {
+    await fs.rm(dirPath, { recursive: true, force: true });
+    console.log(`Cleaned up directory: ${dirPath}`);
+  } catch (err) {
+    console.error(`Error cleaning up directory ${dirPath}: ${err}`);
+  }
+};

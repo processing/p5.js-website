@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "preact/hooks";
 import { type JSX } from "preact";
 import { Icon } from "../Icon";
 import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
+import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -43,6 +44,10 @@ const getOneLineDescription = (description: string): string => {
   let [oneLineDescription] = description.replace(/\n/g, " ").trim()
     .match(firstParagraphRegex) ?? [];
 
+  if (!oneLineDescription && description) {
+    oneLineDescription = description;
+  }
+
   if(oneLineDescription){
     oneLineDescription = oneLineDescription
       .replace(/^<p>|<\/p>$/g, "")
@@ -67,18 +72,25 @@ export const ReferenceDirectoryWithFilter = ({
 
     return categoryData.reduce((acc: FilteredCategoryData[], category) => {
       const filteredSubcats = category.subcats.reduce(
-        (subAcc, subcat) => {
+        (subAcc: typeof category.subcats, subcat) => {
           const filteredEntries = subcat.entries.filter((entry) =>
             entry.data.title
               .toLowerCase()
               .includes(searchKeyword.toLowerCase()),
           );
+          if (
+            subcat.entry &&
+            subcat.entry.data.title.toLowerCase().includes(searchKeyword.toLowerCase())
+          ) {
+            filteredEntries.push(subcat.entry);
+          }
+          
           if (filteredEntries.length > 0) {
             subAcc.push({ ...subcat, entries: filteredEntries });
           }
           return subAcc;
         },
-        [] as typeof category.subcats,
+        [],
       );
 
       if (filteredSubcats.length > 0) {
@@ -106,6 +118,12 @@ export const ReferenceDirectoryWithFilter = ({
                   <div
                     className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
                     dangerouslySetInnerHTML={{ __html: flask }}
+                  />
+                )}
+                {entry.data.deprecated && (
+                  <div
+                    className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
+                    dangerouslySetInnerHTML={{ __html: warning }}
                   />
                 )}
                 <span dangerouslySetInnerHTML={{ __html: entry.data.title }} />

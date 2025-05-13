@@ -12,7 +12,7 @@ If you are here to edit or translate content, please do so inside [the `src/cont
 For making code changes, please check out the [technical overview](./docs/technical_overview.md) to get started.
 
 ### Adding Libraries
-Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your libary to the collection!
+Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your library to the collection!
 
 ## Add Yourself to p5.js Contributors
 We recognize all types of contributions. This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Add yourself to the [p5.js repository readme](https://github.com/processing/p5.js/blob/main/README.md#contributors) by following the [instructions here](https://github.com/processing/p5.js/issues/2309)!

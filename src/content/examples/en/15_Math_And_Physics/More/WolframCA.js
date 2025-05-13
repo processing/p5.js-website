@@ -44,8 +44,8 @@ function draw() {
 function generate() {
   // First we create an empty array for the new values
   let nextgen = Array(cells.length);
-  // For every spot, determine new state by examing current state, and neighbor states
-  // Ignore edges that only have one neighor
+  // For every spot, determine new state by examining current state, and neighbor states
+  // Ignore edges that only have one neighbor
   for (let i = 1; i < cells.length-1; i++) {
     let left   = cells[i-1];   // Left neighbor state
     let me     = cells[i];     // Current state

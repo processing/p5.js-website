@@ -1,4 +1,4 @@
-import { cloneLibraryRepo, p5RepoUrl, readFile } from "../utils";
+import { cloneLibraryRepo,cleanUpDirectory, p5RepoUrl, readFile } from "../utils";
 import fs from "fs/promises";
 import { exec, execSync } from "child_process";
 import path from "path";
@@ -13,6 +13,10 @@ const localPath = path.join(__dirname, "in", "p5.js");
 const localSoundPath = path.join(__dirname, "in", "p5.sound.js");
 const yuidocOutputPath = path.join(__dirname, "out")
 
+//Directory to clean after cloning the libraries
+const parsersInPath = path.join(__dirname, "in");
+const parsersOutPath = path.join(__dirname, "out");
+
 /**
  * Main function to clone the p5.js library and save the YUIDoc output to a file
  */
@@ -23,6 +27,9 @@ export const parseLibraryReference =
       latestRelease = 'v' + latestRelease;
     }
 
+    const useExternalP5Sound = !!process.env.P5_REPO_BRANCH ||
+      latestRelease.startsWith('v2');
+
     // Clone p5.js
     await cloneLibraryRepo(
       localPath,
@@ -32,52 +39,68 @@ export const parseLibraryReference =
     );
 
     // Install dependencies and build docs in the p5 repo
-    await createP5Docs('p5.js', 'data-p5')
+    await createP5Docs('p5.js', 'data-p5');
 
     // If we're using a custom build of p5 instead of a public release, create
     // a build and copy it to the specified path
     if (process.env.PUBLIC_P5_LIBRARY_PATH) {
-      await createP5Build('p5.js', '../../../public' + process.env.PUBLIC_P5_LIBRARY_PATH)
+      await createP5Build('p5.js', '../../../public' + process.env.PUBLIC_P5_LIBRARY_PATH);
     }
 
     // Copy the reference output so we can process it
     const p5Data = await getYuidocOutput('data-p5');
     if (!p5Data) throw new Error('Error generating p5 reference data!');
 
-    // Clone p5.sound.js
-    await cloneLibraryRepo(
-      localSoundPath,
-      'https://github.com/processing/p5.sound.js.git',
-      'main'
-    );
-    await saveYuidocOutput('p5.sound.js', 'data-sound');
-    const soundData = await getYuidocOutput('data-sound');
-    if (!soundData) throw new Error('Error generating p5.sound reference data!');
+    let result;
+    if (useExternalP5Sound) {
+      console.log('Cloning separate p5.sound repo');
 
-    // Fix p5.sound classes
-    for (const key in soundData.classes) {
-      const newName = 'p5.' + soundData.classes[key].name;
-      const updated = {
-        ...soundData.classes[key],
-        name: newName,
-      };
-      soundData.classes[newName] = updated;
-      delete soundData.classes[key];
-    }
-    for (const item of soundData.classitems) {
-      item.class = 'p5.' + item.class;
-    }
+      // Clone p5.sound.js
+      await cloneLibraryRepo(
+        localSoundPath,
+        'https://github.com/processing/p5.sound.js.git',
+        'main'
+      );
+      await saveYuidocOutput('p5.sound.js', 'data-sound');
+      const soundData = await getYuidocOutput('data-sound');
+      if (!soundData) throw new Error('Error generating p5.sound reference data!');
 
-    const combined = await combineYuidocData(
-      [
-        p5Data,
-        soundData,
-      ],
-      'data'
-    );
+      // Fix p5.sound classes
+      for (const key in soundData.classes) {
+        const newName = 'p5.' + soundData.classes[key].name;
+        const updated = {
+          ...soundData.classes[key],
+          name: newName,
+        };
+        soundData.classes[newName] = updated;
+        delete soundData.classes[key];
+      }
+      for (const item of soundData.classitems) {
+        item.class = 'p5.' + item.class;
+      }
+
+      result = await combineYuidocData(
+        [
+          p5Data,
+          soundData,
+        ],
+        'data'
+      );
+    } else {
+      result = await combineYuidocData(
+        [
+          p5Data,
+        ],
+        'data'
+      );
+    }
 
     await serveYuidocOutput('data');
-    return combined;
+
+    //delete the cloned directories
+    await cleanUpDirectory(parsersInPath );
+    await cleanUpDirectory(parsersOutPath );
+    return result;
   };
 
 /**
@@ -128,8 +151,7 @@ export const saveYuidocOutput = async (
     const inPath = path.join(__dirname, "in", inDirName);
     console.log(inPath)
     await new Promise((resolve, reject) => {
-      exec(`yuidoc -p --outdir ${outputFilePath} ${flags} ${inputPath}`, { cwd: inPath }, (error, stdout) => {
-        if (error) {
+exec(`yuidoc -p --outdir "${outputFilePath.replace(/"/g, '\\"')}" ${flags} ${inputPath}`, { cwd: inPath }, (error, stdout) => {        if (error) {
           console.error(`Error running YUIDoc command: ${error}`);
           reject(error);
         } else {
