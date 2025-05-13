@@ -14,8 +14,13 @@ import { CopyCodeButton } from "../CopyCodeButton";
 
 const { params, name, overloads } = Astro.props;
 
-const formatParam = (param: ReferenceParam) =>
-  param.optional ? `[${param.name}]` : `${param.name}`;
+const formatParam = (param: ReferenceParam) => {
+  let formatted = param.optional ? `[${param.name}]` : `${param.name}`;
+  if (param.rest) {
+    formatted = `${param.name}1, ${param.name}2, ..., ${param.name}n`;
+  }
+  return formatted;
+};
 
 const signatures = params 
   ? [`${name}(${params.map(formatParam).join(", ")})`]
