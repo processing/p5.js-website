@@ -5,17 +5,15 @@ let img;
 let offset = 0;
 let easing = 0.05;
 
-function preload() {
-  // Load the bottom image from the canvas's assets directory.
-  img = loadImage('/assets/moonwalk.jpg');
-}
-
-function setup() {
+async function setup() {
   describe(
     "An astronaut on a planet as the background with a slightly transparent version of this image on top that moves with the horizontal direction of the user's mouse."
   );
 
   createCanvas(720, 400);
+
+  // Load the bottom image from the canvas's assets directory.
+  img = await loadImage('/assets/moonwalk.jpg');
 }
 
 function draw() {

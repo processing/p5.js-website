@@ -66,13 +66,13 @@ function drawShape() {
 
   // Draw the polygon
 
-  curveTightness(organicConstant);
+  splineProperty('tightness', organicConstant);
   let shapeColor = lerpColor(color('red'), color('yellow'), organicConstant);
   fill(shapeColor);
 
   beginShape();
   for (let i = 0; i < nodes; i++) {
-    curveVertex(nodeX[i], nodeY[i]);
+    splineVertex(nodeX[i], nodeY[i]);
   }
   endShape(CLOSE);
 }

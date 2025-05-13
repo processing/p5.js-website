@@ -3,49 +3,75 @@ title: loadBytes
 module: IO
 submodule: Input
 file: src/io/files.js
-description: |
-  <p>This method is suitable for fetching files up to size of 64MB.</p>
-line: 986
+description: This method is suitable for fetching files up to size of 64MB.
+line: 775
 isConstructor: false
 itemtype: method
 example:
-  - |-
+  - >-
+    <div>
 
-    <div class='norender'><code>
+    <code>
+
     let data;
 
-    function preload() {
-      data = loadBytes('/assets/mammals.xml');
+
+    async function setup() {
+
+    createCanvas(100, 100); // Create a canvas
+
+    data = await loadBytes('/assets/mammals.xml'); // Load the bytes from the
+    XML file
+
+
+    background(255); // Set a white background
+
+    fill(0);       // Set text color to black
+
+
+    // Display the first 5 byte values on the canvas in hexadecimal format
+
+    for (let i = 0; i < 5; i++) {
+
+    let byteHex = data[i].toString(16);
+
+    text(byteHex, 10, 18 * (i + 1)); // Adjust spacing as needed
+
     }
 
-    function setup() {
-      for (let i = 0; i < 5; i++) {
-        console.log(data.bytes[i].toString(16));
-      }
-      describe('no image displayed');
+
+    describe('no image displayed, displays first 5 bytes of mammals.xml in
+    hexadecimal format');
+
     }
-    </code></div>
+
+    </code>
+
+    </div>
 class: p5
-params:
-  - name: file
-    description: |
-      <p>name of the file or URL to load</p>
-    type: String
-  - name: callback
-    description: |
-      <p>function to be executed after <a href="#/p5/loadBytes">loadBytes()</a>
-                                         completes</p>
-    type: Function
-    optional: true
-  - name: errorCallback
-    description: |
-      <p>function to be executed if there
-                                         is an error</p>
-    type: Function
-    optional: true
 return:
-  description: an object whose 'bytes' property will be the loaded buffer
-  type: Object
+  description: a Uint8Array containing the loaded buffer
+  type: Promise<Uint8Array>
+overloads:
+  - params:
+      - name: file
+        description: name of the file or URL to load
+        type: String|Request
+      - name: callback
+        description: |-
+          function to be executed after <a href="#/p5/loadBytes">loadBytes()</a>
+          completes
+        optional: 1
+        type: Function
+      - name: errorCallback
+        description: |-
+          function to be executed if there
+          is an error
+        optional: 1
+        type: Function
+    return:
+      description: a Uint8Array containing the loaded buffer
+      type: Promise<Uint8Array>
 chainable: false
 ---
 

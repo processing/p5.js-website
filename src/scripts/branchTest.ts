@@ -35,7 +35,7 @@ if (existsSync(parsedP5Path)) {
 }
 
 // Build the reference using the specified environment
-execSync(`${env} npm run build:reference`, { stdio: "inherit" });
+execSync(`cross-env ${env} npm run build:reference`, { stdio: "inherit" });
 
 // Run a dev server
-execSync(`${env} npm run dev`, { stdio: "inherit" });
+execSync(`cross-env ${env} npm run dev`, { stdio: "inherit" });

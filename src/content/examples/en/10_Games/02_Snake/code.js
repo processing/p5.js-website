@@ -251,8 +251,8 @@ function updateFruitCoordinates() {
 // When an arrow key is pressed, switch the snake's direction of movement,
 // but if the snake is already moving in the opposite direction,
 // do nothing.
-function keyPressed() {
-  switch (keyCode) {
+function keyPressed(event) {
+  switch (event.code) {
     case LEFT_ARROW:
       if (direction !== 'right') {
         direction = 'left';

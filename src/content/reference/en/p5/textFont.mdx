@@ -1,8 +1,8 @@
 ---
 title: textFont
 module: Typography
-submodule: Loading & Displaying
-file: src/typography/loading_displaying.js
+submodule: ''
+file: src/type/textCore.js
 description: >
   <p>Sets the font used by the <a href="/reference/p5/text/">text()</a>
   function.</p>
@@ -24,15 +24,15 @@ description: >
   <p>Note: <code>WEBGL</code> mode only supports fonts loaded with
 
   <a href="/reference/p5/loadFont/">loadFont()</a>.</p>
-line: 335
+line: 1401
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div>
     <code>
     function setup() {
+      createCanvas(100, 100);
       background(200);
       textFont('Courier New');
       textSize(24);
@@ -42,10 +42,11 @@ example:
     }
     </code>
     </div>
-
+  - |-
     <div>
     <code>
     function setup() {
+      createCanvas(100, 100);
       background('black');
       fill('palegreen');
       textFont('Courier New', 10);
@@ -56,10 +57,11 @@ example:
     }
     </code>
     </div>
-
+  - |-
     <div>
     <code>
     function setup() {
+      createCanvas(100, 100);
       background(200);
       textFont('Verdana');
       let currentFont = textFont();
@@ -69,20 +71,19 @@ example:
     }
     </code>
     </div>
-
+  - |-
     <div>
     <code>
     let fontRegular;
     let fontItalic;
     let fontBold;
 
-    function preload() {
-      fontRegular = loadFont('/assets/Regular.otf');
-      fontItalic = loadFont('/assets/Italic.ttf');
-      fontBold = loadFont('/assets/Bold.ttf');
-    }
+    async function setup() {
+      createCanvas(100, 100);
+      fontRegular = await loadFont('/assets/Regular.otf');
+      fontItalic = await loadFont('/assets/Italic.ttf');
+      fontBold = await loadFont('/assets/Bold.ttf');
 
-    function setup() {
       background(200);
       textFont(fontRegular);
       text('I am Normal', 10, 30);
@@ -96,27 +97,15 @@ example:
     </code>
     </div>
 class: p5
-return:
-  description: current font or p5 Object.
-  type: Object
 overloads:
-  - line: 335
-    params: []
-    return:
-      description: current font or p5 Object.
-      type: Object
-  - line: 418
-    params:
+  - params:
       - name: font
-        description: |
-          <p>font as a <a href="#/p5.Font">p5.Font</a> object or a string.</p>
-        type: Object|String
+        description: The font to apply
+        type: p5.Font|String|Object
       - name: size
-        description: |
-          <p>font size in pixels.</p>
+        description: An optional text size to apply.
+        optional: 1
         type: Number
-        optional: true
-    chainable: 1
 chainable: false
 ---
 

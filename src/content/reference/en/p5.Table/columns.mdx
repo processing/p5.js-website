@@ -3,45 +3,42 @@ title: columns
 module: IO
 submodule: Table
 file: src/io/p5.Table.js
-description: >
-  <p>An array containing the names of the columns in the table, if the "header"
-  the table is
+description: >-
+  An array containing the names of the columns in the table, if the "header" the
+  table is
 
-  loaded with the "header" parameter.</p>
-line: 43
+  loaded with the "header" parameter.
+line: 1360
+deprecated: >-
+  p5.Table will be removed in a future version of p5.js to make way for a new,
+  friendlier version :)
 isConstructor: false
 itemtype: property
 example:
   - |-
-
-    <div class="norender">
+    <div >
     <code>
-    // Given the CSV file "mammals.csv"
-    // in the project's "assets" folder:
-    //
-    // id,species,name
-    // 0,Capra hircus,Goat
-    // 1,Panthera pardus,Leopard
-    // 2,Equus zebra,Zebra
-
     let table;
 
-    function preload() {
-      //my table is comma separated value "csv"
-      //and has a header specifying the columns labels
-      table = loadTable('/assets/mammals.csv', 'csv', 'header');
-    }
+    async function setup() {
+      // Create a 200x200 canvas
+      createCanvas(200, 200);
 
-    function setup() {
-      //print the column names
+      // Load the CSV file with a header row
+      table = await loadTable('/assets/mammals.csv', ',', 'header');
+
+      // Set text properties for drawing on the canvas
+      fill(0);       // Set text color to black
+      textSize(12);  // Adjust text size as needed
+
+      // Display the column names on the canvas
       for (let c = 0; c < table.getColumnCount(); c++) {
-        print('column ' + c + ' is named ' + table.columns[c]);
+        text('column ' + c + ' is named ' + table.columns[c], 10, 30 + c * 20);
       }
     }
     </code>
     </div>
 class: p5.Table
-type: '{String[]}'
 ---
 
 

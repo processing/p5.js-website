@@ -17,20 +17,19 @@ description: >
   <a href="/reference/p5/setup/">setup()</a> function, then
   <code>millis()</code> begins tracking
 
-  time before the code in <a href="/reference/p5/setup/">setup()</a> runs. If a
+  time before the code in <a href="/reference/p5/setup/">setup()</a> runs.  If a
 
-  sketch includes a <a href="/reference/p5/preload/">preload()</a> function,
-  then
+  sketch includes asynchronous loading using
+  <code>async</code>/<code>await</code>, then
 
-  <code>millis()</code> begins tracking time as soon as the code in
+  <code>millis()</code> begins tracking time as soon as the asynchronous code
 
-  <a href="/reference/p5/preload/">preload()</a> starts running.</p>
-line: 112
+  starts running.</p>
+line: 228
 isConstructor: false
 itemtype: method
 example:
   - |-
-
     <div>
     <code>
     function setup() {
@@ -106,12 +105,9 @@ example:
 
     <div>
     <code>
-    // Load the GeoJSON.
-    function preload() {
-      loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
-    }
-
-    function setup() {
+    async function setup() {
+      // Load the GeoJSON.
+      await loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
       createCanvas(100, 100);
 
       background(200);
@@ -137,6 +133,11 @@ class: p5
 return:
   description: number of milliseconds since starting the sketch.
   type: Number
+overloads:
+  - params: []
+    return:
+      description: number of milliseconds since starting the sketch.
+      type: Number
 chainable: false
 ---
 
