@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, useEffect } from "preact/hooks";
+import { useRef, useLayoutEffect, useEffect, useState } from "preact/hooks";
 import { cdnLibraryUrl } from "@/src/globals/globals";
 
 interface CodeBundle {
@@ -42,7 +42,9 @@ canvas {
 }
 ${code.css || ""}
 </style>
-${(code.scripts ? [cdnLibraryUrl, ...code.scripts] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
+<!-- If we need an addon script, load p5 the usual way with no caching to make sure
+the import order doesn't get messed up. -->
+${((code.scripts?.length ?? 0) > 0 ? [cdnLibraryUrl, ...(code.scripts ?? [])] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${wrapSketch(code.js) || ""}</script>
 ${(code.scripts?.length ?? 0) > 0 ? '' : `
@@ -84,6 +86,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
   const p5ScriptTag = document.getElementById(
     "p5ScriptTag",
   ) as HTMLScriptElement;
+  const [mounted, setMounted] = useState(false);
 
   // For performance, set the iframe to display:none when
   // not visible on the page. This will stop the browser
@@ -99,11 +102,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
       (entries) => {
         entries.forEach((entry) => {
           if (!iframeRef.current) return;
-          if (entry.isIntersecting) {
-            iframeRef.current.style.removeProperty("display");
-          } else {
-            iframeRef.current.style.display = "none";
-          }
+          setMounted(entry.isIntersecting);
         });
       },
       { rootMargin: "20px" },
@@ -116,6 +115,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
   useEffect(() => {
     (async () => {
       if (!p5ScriptTag || !iframeRef.current) return;
+      if (!mounted) return;
 
       /*
        * Uses postMessage to receive the text content of p5.min.js, to be included
@@ -146,7 +146,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
         return;
       }
     })();
-  }, [props.jsCode]);
+  }, [props.jsCode, mounted]);
 
   return (
     <div
@@ -155,13 +155,13 @@ export const CodeFrame = (props: CodeFrameProps) => {
     >
       <iframe
         ref={iframeRef}
-        srcDoc={wrapInMarkup({
+        srcDoc={mounted ? wrapInMarkup({
           js: props.jsCode,
           css: props.cssCode,
           htmlBody: props.htmlBodyCode,
           base: props.base,
           scripts: props.scripts,
-        })}
+        }) : undefined}
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
         title="Code Preview"
