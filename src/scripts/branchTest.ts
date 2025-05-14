@@ -26,7 +26,7 @@ currentEnv = currentEnv
   .split('\n')
   .filter((line: string) => !line.startsWith('P5_') && !line.startsWith('PUBLIC_P5_'))
   .join('\n')
-writeFileSync(envFilePath, currentEnv + '\n' + envVars.join('\n'));
+writeFileSync(envFilePath, `${currentEnv  }\n${  envVars.join('\n')}`);
 
 // First delete the existing cloned p5 to make sure we clone fresh
 const parsedP5Path = path.join(__dirname, "./parsers/in/p5.js/");
