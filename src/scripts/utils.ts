@@ -6,11 +6,11 @@ import { fileURLToPath } from "url";
 import { rewriteRelativeLink } from "../pages/_utils-node";
 import { p5Version } from "../globals/p5-version";
 
-let latestRelease = p5Version;
+let latestRelease:string = p5Version;
 // If the latest release is a version number (e.g. 1.10.0) without a 'v'
 // prefix, add the v prefix
 if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
-  latestRelease = 'v' + latestRelease;
+  latestRelease = `v${  latestRelease}`;
 }
 
 export const p5RepoUrl = "https://github.com/processing/p5.js.git";
@@ -295,7 +295,7 @@ export const rewriteRelativeMdLinks = (markdownText: string): string => {
    * 1. Text for the link
    * 2. Link url (but not the .md extension at the end)
    */
-  const regexPattern: RegExp = /(\!?)\[([^\]]+)\]\(([^\)]+)\)/g;
+  const regexPattern: RegExp = /(!?)\[([^\]]+)\]\(([^)]+)\)/g;
   return markdownText.replace(regexPattern, (match, img, linkText, url: string) => {
     // Don't convert images
     if (img) return match;
