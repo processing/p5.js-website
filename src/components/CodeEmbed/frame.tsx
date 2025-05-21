@@ -146,7 +146,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
         return;
       }
     })();
-  }, [props.jsCode, mounted]);
+  }, [props.jsCode, mounted,p5ScriptTag]);
 
   return (
     <div
