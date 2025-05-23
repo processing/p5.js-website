@@ -17,5 +17,12 @@ export const examplesCollection = defineCollection({
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
+      archiveAttributionPrefix: z.string().optional().default(""),
+      archiveAttributionName: z.string().optional().default(""),
+      archiveAttributionURL: z.string().optional().default(""),
+      revisedAttributionPrefix: z.string().optional().default(""),
+      revisedAttributionPrefixURL: z.string().optional().default(""),
+      revisedAttributionName: z.string().optional().default(""),
+      revisedAttributionURL: z.string().optional().default(""),
     }),
 });
