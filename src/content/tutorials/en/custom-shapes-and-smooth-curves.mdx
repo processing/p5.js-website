@@ -242,13 +242,7 @@ To create a curved line, we’ll need to use the [`bezierVertex()`](/reference/p
 - Just like we did for the pointed sparkles, we’ll begin our shape with `beginShape()`, and end it with `endShape()`.
 - Any shape with `bezierVertex()` functions must still begin with a `vertex()` function. We’ll call `vertex(x, y)` first. This acts as the first point in our shape.
   - `x` and `y` represent the x-y coordinates for the first vertex in our star.
-- Next, we’ll call the `bezierVertex()` function. Since we’re working on a 2D sketch, the function takes six parameters, ordered as follows: 
-  - the x-coordinate for the first control point
-  - the y-coordinate for the first control point
-  - the x-coordinate for the second control point
-  - the y-coordinate for the second control point
-  - the x-coordinate for the anchor point
-  - the y-coordinate for the anchor point
+- Next, we’ll call the `bezierVertex()` function. In p5.js 2.0, each bezierVertext(x, y) is just one point; you need the first point to anchor, and each curve after that needs 3 points.
 
 Now that you have some context, let’s begin our shape!
 
@@ -263,10 +257,9 @@ beginShape();
 vertex(0, -100);     // anchor point 1
 
 // Top-right curve.
-bezierVertex(0, -50, // control point 1 x-y coord
-             50, 0,  // control point 2 x-y coord
-             100, 0  // anchor point 2
-);
+bezierVertex(0, -50);
+bezierVertex(50, 0);
+bezierVertex(100, 0);
 endShape();
 ```
 
@@ -292,19 +285,28 @@ Let’s complete our shape:
 beginShape();
 
 // Original anchor at top.
-vertex(0, -100);
+bezierVertex(0, -100);
 
 // Top-right curve.
-bezierVertex(0, -50, 50, 0, 100, 0);
+bezierVertex(0, -50);
+bezierVertex(50, 0);
+bezierVertex(100, 0);
 
 // Bottom-right curve.
-bezierVertex(50, 0, 0, 50, 0, 100);
+bezierVertex(50, 0);
+bezierVertex(0, 50);
+bezierVertex(0, 100);
 
 // Bottom-left curve.
-bezierVertex(  0, 50, -50, 0, -100, 0);
+bezierVertex(0, 50);
+bezierVertex(-50, 0);
+bezierVertex(-100, 0);
 
 // Top-left curve.
-bezierVertex(-50, 0, 0,-50, 0,-100);
+bezierVertex(-50, 0);
+bezierVertex(0, -50);
+bezierVertex(0,-100);
+
 endShape();
 ```
 
@@ -321,38 +323,47 @@ Your `curvedSparkle()` function looks like this:
 
 ```js
 function curvedSparkle() {
-  push();
+    push();
 
-  // Translate to the mouse's position.
-  translate(mouseX, mouseY);
+    // Translate to the mouse's position.
+    translate(mouseX, mouseY);
 
-  // Scale the coordinate system.
-  let starScale = random(0.1, 0.5);
-  scale(starScale);
+    // Scale the coordinate system.
+    let starScale = random(0.1, 0.5);
+    scale(starScale);
 
-  // Set fill color.
-  fill(0, 0, 100);
+    // Set fill color.
+    fill(0, 0, 100);
 
-  // Draw the curved star shape.
-  beginShape();
+    // Draw the curved star shape.
+    beginShape();
 
-  // Original anchor at top.
-  vertex(0, -100);
+    // Original anchor at top.
+    bezierVertex(0, -100);
 
-  // Top-right curve.
-  bezierVertex(0, -50, 50, 0, 100, 0);
+    // Top-right curve.
+    bezierVertex(0, -50);
+    bezierVertex(50, 0);
+    bezierVertex(100, 0);
 
-  // Bottom-right curve.
-  bezierVertex(50, 0, 0, 50, 0, 100);
+    // Bottom-right curve.
+    bezierVertex(50, 0);
+    bezierVertex(0, 50);
+    bezierVertex(0, 100);
 
-  // Bottom-left curve.
-  bezierVertex(  0, 50, -50, 0, -100, 0);
+    // Bottom-left curve.
+    bezierVertex(0, 50);
+    bezierVertex(-50, 0);
+    bezierVertex(-100, 0);
 
-  // Top-left curve.
-  bezierVertex(-50, 0, 0,-50, 0,-100);
+    // Top-left curve.
+    bezierVertex(-50, 0);
+    bezierVertex(0, -50);
+    bezierVertex(0,-100);
 
-  endShape();
-  pop();
+    endShape();
+    pop();
+
 }
 ```
 
@@ -464,37 +475,47 @@ function sparkle() {
 }
 
 function curvedSparkle() {
-  push();
+    push();
 
-  // Translate to the mouse's position.
-  translate(mouseX, mouseY);
+    // Translate to the mouse's position.
+    translate(mouseX, mouseY);
 
-  // Scale the coordinate system.
-  let starScale = random(0.1, 0.5);
-  scale(starScale);
+    // Scale the coordinate system.
+    let starScale = random(0.1, 0.5);
+    scale(starScale);
 
-  // Set fill color.
-  fill(0, 0, 100);
+    // Set fill color.
+    fill(0, 0, 100);
 
-  // Draw the curved star shape.
-  beginShape();
+    // Draw the curved star shape.
+    beginShape();
 
-  // Original anchor at top.
-  vertex(0, -100);
+    // Original anchor at top.
+    bezierVertex(0, -100);
 
-  // Top-right curve.
-  bezierVertex(0, -50, 50, 0, 100, 0);
+    // Top-right curve.
+    bezierVertex(0, -50);
+    bezierVertex(50, 0);
+    bezierVertex(100, 0);
 
-  // Bottom-right curve.
-  bezierVertex(50, 0, 0, 50, 0, 100);
+    // Bottom-right curve.
+    bezierVertex(50, 0);
+    bezierVertex(0, 50);
+    bezierVertex(0, 100);
 
-  // Bottom-left curve.
-  bezierVertex(  0, 50, -50, 0, -100, 0);
+    // Bottom-left curve.
+    bezierVertex(0, 50);
+    bezierVertex(-50, 0);
+    bezierVertex(-100, 0);
 
-  // Top-left curve.
-  bezierVertex(-50, 0, 0,-50, 0,-100);
-  endShape();
-  pop();
+    // Top-left curve.
+    bezierVertex(-50, 0);
+    bezierVertex(0, -50);
+    bezierVertex(0,-100);
+
+    endShape();
+    pop();
+
 }
 
 //Draws circles filled with radial gradients when we click the screen
@@ -534,9 +555,159 @@ Keep adding stickers, and you’ll be able to cover the entire screen in sticker
 
 ![A white person with short, dark curly hair wears pink heart-shaped glasses and a dark sleeveless shirt. He places his hand on his cheek and looks diagonally to the left, smiling softly. Image is covered in angular and curved 4-pointed white sparkles and lens flares to create a humorous effect. We see only a tiny sliver of the person's face and the gradient.](../images/drawing/even-more-sparkles.png)
 
-[Here is the completed sketch](https://editor.p5js.org/juleskris/sketches/IZa2De7xH) for reference.
+Here is the completed sketch for reference:
+```
+  let video;
+  let snapped = false;
+  let sparkleCounter = 0;
+
+  function setup() {
+    createCanvas(640, 480);
+    colorMode(HSB, 360, 100, 100);
+    noStroke();
+
+    //instantiate the VIDEO object, and draw it on the screen at 0, 0 
+    video = createCapture(VIDEO);
+    video.position(0, 0);
 
 
+    //When we click the snap button, run the takeSnap function
+    let snapButton = createButton("snap");
+    snapButton.mouseClicked(takeSnap);
+
+    blendMode(LIGHTEST);
+  }
+
+
+  //Cycle through our three stickers each time we press the mouse
+  function mousePressed() {
+    if (snapped === true) {
+      gradientFilter();
+
+      if (sparkleCounter % 3 === 0) {
+        sparkle();
+      } else if (sparkleCounter % 3 === 1) {
+        curvedSparkle();
+      } else {
+        lensFlare();
+      }
+
+      sparkleCounter += 1;
+    }
+  }
+
+
+  //If we haven’t snapped a photo yet, we see our webcam video feed
+  //Once we run the takeSnap function, set snapped to true and remove the video feed, leaving only the still photo we took
+  function takeSnap() {
+    if (snapped === false) {
+      image(video, 0, 0);
+      snapped = true;
+      video.remove();
+    }
+  }
+
+  function sparkle() {
+    push();
+
+    // Translate to the mouse's position.
+    translate(mouseX, mouseY);
+
+    // Set the shape's vertices.
+    let vertex1 = random(3, 5);
+    let vertex2 = random(10, 50);
+
+    // Draw the star shape.
+    beginShape();
+    vertex(-vertex1, vertex1);
+    vertex(0, vertex2);
+    vertex(vertex1, vertex1);
+    vertex(vertex2, 0);
+    vertex(vertex1, -vertex1);
+    vertex(0, -vertex2);
+    vertex(-vertex1, -vertex1);
+    vertex(-vertex2, 0);
+    endShape(CLOSE);
+
+    pop();
+  }
+
+  function curvedSparkle() {
+      push();
+
+      // Translate to the mouse's position.
+      translate(mouseX, mouseY);
+
+      // Scale the coordinate system.
+      let starScale = random(0.1, 0.5);
+      scale(starScale);
+
+      // Set fill color.
+      fill(0, 0, 100);
+
+      // Draw the curved star shape.
+      beginShape();
+
+      // Original anchor at top.
+      bezierVertex(0, -100);
+
+      // Top-right curve.
+      bezierVertex(0, -50);
+      bezierVertex(50, 0);
+      bezierVertex(100, 0);
+
+      // Bottom-right curve.
+      bezierVertex(50, 0);
+      bezierVertex(0, 50);
+      bezierVertex(0, 100);
+
+      // Bottom-left curve.
+      bezierVertex(0, 50);
+      bezierVertex(-50, 0);
+      bezierVertex(-100, 0);
+
+      // Top-left curve.
+      bezierVertex(-50, 0);
+      bezierVertex(0, -50);
+      bezierVertex(0,-100);
+
+      endShape();
+      pop();
+
+  }
+
+
+  //Draws circles filled with radial gradients when we click the screen
+  //Each circle’s size and color are a random value contained in the diameter and h variables
+  function lensFlare() {
+    push();
+    let diameter = random(50, 200);
+    let h = random(150, 360);
+
+    for (let d = diameter; d > 0; d -= 1) {
+      fill(h, 90, 90);
+      circle(mouseX, mouseY, d);
+      h = (h + 1) % 360;
+    }
+    pop();
+  }
+
+
+  //Draws a linear gradient on the screen using a for loop and lerpColor
+  function gradientFilter() {
+    push();
+    let startColor = color(200, 100, 100);
+    let endColor = color(300, 100, 100);
+
+    for (let y = 0; y < height; y += 1) {
+      let amt = map(y, 0, height, 0, 1);
+      let gradColor = lerpColor(startColor, endColor, amt);
+      stroke(gradColor);
+      line(0, y, width, y);
+    }
+    pop();
+  }
+```
 <Callout>
 Use what you’ve learned so far to create a fourth sticker function, containing anything from the previous lessons. Then, add it to our existing conditional statement within mousePressed so the sketch cycles through all four shape functions each time you click the canvas.
 </Callout>
