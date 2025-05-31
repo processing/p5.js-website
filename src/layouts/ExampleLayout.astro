@@ -66,10 +66,46 @@ const { Content } = await example.render();
     <div class="rendered-markdown">
       <p>
 
-        <a href={Astro.url.pathname}>{example.data.title}</a>: 
-        {example.data.archiveAttributionPrefix} <a href={example.data.archiveAttributionURL}>{example.data.archiveAttributionName}</a>.
-        <a href={example.data.revisedAttributionPrefixURL}>{example.data.revisedAttributionPrefix}</a> by <a href={example.data.revisedAttributionURL}>{example.data.revisedAttributionName}</a>.
-        From 2023 onwards, edited and maintained by <a href="https://github.com/processing/p5.js?tab=readme-ov-file#contributors">p5.js Contributors</a> and the <a href="https://processingfoundation.org/people">Processing Foundation</a>. Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>.
+        <a href={Astro.url.pathname}>{example.data.title}</a>:
+        Edited and maintained by
+        <a href="https://github.com/processing/p5.js?tab=readme-ov-file#contributors">p5.js Contributors</a>
+        and the
+        <a href="https://processingfoundation.org/people">Processing Foundation</a>.
+        Licensed under{" "}
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+
+
+{example.data.remix?.map((item, i) => (
+  <>
+    {i > 0 && " "}
+    {item.remixLabel && item.remixURL ? (
+      <>
+        <a href={item.remixURL}>{item.remixLabel}</a>
+        {item.attributionLabel && (
+          <>
+            {" "}by{" "}
+            {item.attributionURL ? (
+              <a href={item.attributionURL}>{item.attributionLabel}</a>
+            ) : (
+              item.attributionName
+            )}
+          </>
+        )}
+      </>
+    ) : item.attributionLabel ? (
+      <>
+        Remixed from{" "}
+        {item.attributionURL ? (
+          <a href={item.attributionURL}>{item.attributionLabel}</a>
+        ) : (
+          item.attributionName
+        )}
+      </>
+    ) : null}
+    {i < example.data.remix.length - 1 && "."}
+  </>
+))}
+
 
       </p>
       <img src="/images/by-nc-sa.svg" />

@@ -17,12 +17,18 @@ export const examplesCollection = defineCollection({
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
-      archiveAttributionPrefix: z.string().optional().default(""),
-      archiveAttributionName: z.string().optional().default(""),
-      archiveAttributionURL: z.string().optional().default(""),
-      revisedAttributionPrefix: z.string().optional().default(""),
-      revisedAttributionPrefixURL: z.string().optional().default(""),
-      revisedAttributionName: z.string().optional().default(""),
-      revisedAttributionURL: z.string().optional().default(""),
+      // Optional list of remixes to add to license
+      remix: z
+        .array(
+          z.object({
+            attributionURL: z.string().optional(),
+            attributionLabel: z.string().optional(),
+            remixURL: z.string().optional(),
+            remixLabel: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
     }),
 });
+
