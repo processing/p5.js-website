@@ -17,5 +17,18 @@ export const examplesCollection = defineCollection({
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
+      // Optional list of remixes to add to license
+      remix: z
+        .array(
+          z.object({
+            attributionURL: z.string().optional(),
+            attributionLabel: z.string().optional(),
+            remixURL: z.string().optional(),
+            remixLabel: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
     }),
 });
+
