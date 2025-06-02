@@ -49,10 +49,18 @@ export const examplesCollection = defineCollection({
  * When rendering (in ExampleLayout.astro), these keys are replaced 
  * with their full details from `remixLookup`.
  */
-export const remixLookup = {
+
+type RemixEntry = {
+  attributionURL: string;
+  attributionLabel: string;
+  remixURL: string;
+  remixLabel: string;
+};
+
+export const remixLookup: { [key: string]: RemixEntry } = {
   "revision-2023-calebfoss": {
     attributionURL: "https://github.com/calebfoss",
-    attributionLabel: "Caleb calebfoss",
+    attributionLabel: "Caleb Foss",
     remixURL: "https://github.com/processing/p5.js-example",
     remixLabel: "Revised in 2023",
   },
@@ -62,10 +70,10 @@ export const remixLookup = {
     remixURL: "https://github.com/processing/p5.js-example",
     remixLabel: "Revised in 2023",
   },
-  "revision-2023-katlich112358": {
+  "revision-2023-klich": {
     attributionURL: "https://www.klich.co/",
     attributionLabel: "Kasey Lichtlyter",
     remixURL: "https://github.com/processing/p5.js-example",
     remixLabel: "Revised in 2023",
-  }
+  },
 };
