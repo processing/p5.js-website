@@ -66,45 +66,53 @@ const { Content } = await example.render();
     <div class="rendered-markdown">
       <p>
 
-        <a href={Astro.url.pathname}>{example.data.title}</a>:
-        Edited and maintained by
+        <a href={Astro.url.pathname}>{example.data.title}</a>:   
+
+        {example.data.remix?.map((item, i) => (
+          <>
+            {i > 0 && " "}
+            {item.remixLabel && item.remixURL ? (
+              <>
+                <a href={item.remixURL}>{item.remixLabel}</a>
+                {item.attributionLabel && (
+                  <>
+                    {" "}by{" "}
+                    {item.attributionURL ? (
+                      <a href={item.attributionURL}>{item.attributionLabel}</a>
+                    ) : (
+                      item.attributionLabel
+                    )}.
+                  </>
+                )}
+              </>
+            ) : item.attributionLabel ? (
+              <>
+                Remixed from{" "}
+                {item.attributionURL ? (
+                  <a href={item.attributionURL}>{item.attributionLabel}</a>
+                ) : (
+                  item.attributionLabel
+                )}.
+              </>
+            ) : null}
+          </>
+        ))}
+
+        {example.data.collectivelyAttributedSince ? (
+          <>
+            From {example.data.collectivelyAttributedSince} onwards, edited and maintained by
+          </>
+        ) : (
+          <>
+            Edited and maintained by
+          </>
+        )}
+        
         <a href="https://github.com/processing/p5.js?tab=readme-ov-file#contributors">p5.js Contributors</a>
         and the
         <a href="https://processingfoundation.org/people">Processing Foundation</a>.
         Licensed under{" "}
         <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
-
-
-{example.data.remix?.map((item, i) => (
-  <>
-    {i > 0 && " "}
-    {item.remixLabel && item.remixURL ? (
-      <>
-        <a href={item.remixURL}>{item.remixLabel}</a>
-        {item.attributionLabel && (
-          <>
-            {" "}by{" "}
-            {item.attributionURL ? (
-              <a href={item.attributionURL}>{item.attributionLabel}</a>
-            ) : (
-              item.attributionLabel
-            )}.
-          </>
-        )}
-      </>
-    ) : item.attributionLabel ? (
-      <>
-        Remixed from{" "}
-        {item.attributionURL ? (
-          <a href={item.attributionURL}>{item.attributionLabel}</a>
-        ) : (
-          item.attributionLabel
-        )}.
-      </>
-    ) : null}
-  </>
-))}
-
 
       </p>
       <img src="/images/by-nc-sa.svg" />
