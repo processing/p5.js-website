@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Head from "@components/Head/index.astro";
 import { setJumpToState } from "../globals/state";
+import { remixLookup } from "../content/examples/config";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import {
   generateJumpToState,
@@ -41,6 +42,12 @@ const relatedReferences =
       )
     : [];
 
+// Rather than using example.data.remix, use resolvedRemix
+// Which fills in widely-used attributions to avoid duplication
+const resolvedRemix = example.data.remix.map((entry: any) =>
+  typeof entry === "string" ? remixLookup[entry] : entry
+);
+
 const { Content } = await example.render();
 ---
 
@@ -68,7 +75,7 @@ const { Content } = await example.render();
 
         <a href={Astro.url.pathname}>{example.data.title}</a>:   
 
-        {example.data.remix?.map((item, i) => (
+        {resolvedRemix?.map((item, i) => (
           <>
             {i > 0 && " "}
             {item.remixLabel && item.remixURL ? (
