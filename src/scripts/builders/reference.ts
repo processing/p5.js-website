@@ -208,7 +208,7 @@ const correctRelativeLinksInDescription = (description: string | undefined) => {
       !href.endsWith('/') &&
       !/(\.\w+)$/.exec(href) &&
       !href.includes('?') &&
-      !/#([\w\-]+)$/.exec(href)
+      !/#([\w-]+)$/.exec(href)
     ) {
       href += '/';
     }
