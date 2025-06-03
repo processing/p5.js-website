@@ -21,24 +21,21 @@ interface Props {
 }
 
 const { sketchId, authorName } = Astro.props;
-const sketchInfo = await getSketch(sketchId);
+const { title, createdOn, instructions } = await getSketch(sketchId);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
-const dateString = new Date(sketchInfo.createdOn).toLocaleDateString(
-  currentLocale,
-  {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }
-);
+const dateString = new Date(createdOn).toLocaleDateString(currentLocale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 
 setJumpToState(null);
 const moreSketches = await getRandomCurationSketches(4);
-const featuredImageURL = makeThumbnailUrl(sketchInfo.visualID);
+const featuredImageURL = makeThumbnailUrl(sketchId);
 
-let { width, height } = await getSketchSize(sketchInfo.visualID);
+let { width, height } = await getSketchSize(sketchId);
 let heightOverWidth = 1 / 1.5;
 if (width && height) {
   // Account for OP header bar
@@ -46,51 +43,61 @@ if (width && height) {
   heightOverWidth = height / width;
 }
 
-const iframeTitle = `OpenProcessing Sketch: ${sketchInfo.title} by ${authorName}`;
+const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
 ---
 
 <Head
-  title={sketchInfo.title}
+  title={title}
   locale={currentLocale}
   featuredImageSrc={featuredImageURL}
-  description={sketchInfo.instructions}
+  description={instructions}
 />
 
 <BaseLayout
-  title={sketchInfo.title}
+  title={title}
   titleAuthor={authorName}
   subtitle={dateString}
   variant="item"
   topic={"community"}
 >
   <div class="max-w-[770px]">
-    <div style={{
-      position: 'relative',
-      width: '100%',
-      paddingBottom: `${(heightOverWidth * 100).toFixed(4)}%`,
-    }}>
-      {width ? (
-        <ScalingIframe
-          client:load
-          src={makeSketchEmbedUrl(sketchInfo.visualID)}
-          width={width}
-          height={height}
-          title={iframeTitle}
-        />
-      ) : (
-        <iframe
-          src={makeSketchEmbedUrl(sketchInfo.visualID)}
-          width="100%"
-          height="100%"
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-          title={iframeTitle}
-        />
-      )}
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        paddingBottom: `${(heightOverWidth * 100).toFixed(4)}%`,
+      }}
+    >
+      {
+        width ? (
+          <ScalingIframe
+            client:load
+            src={makeSketchEmbedUrl(sketchId)}
+            width={width}
+            height={height}
+            title={iframeTitle}
+          />
+        ) : (
+          <iframe
+            src={makeSketchEmbedUrl(sketchId)}
+            width="100%"
+            height="100%"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+            title={iframeTitle}
+          />
+        )
+      }
     </div>
     <div class="py-md grid gap-y-sm md:gap-y-md">
       <LinkButton
         variant="code"
-        url={`${makeSketchLinkUrl(sketchInfo.visualID)}/#code`}
+        url={`${makeSketchLinkUrl(sketchId)}/#code`}
         class="min-w-[184px] lg:min-w-[220px]">{t("Show Code")}</LinkButton
       >
       <LinkButton
@@ -100,16 +107,11 @@ const iframeTitle = `OpenProcessing Sketch: ${sketchInfo.title} by ${authorName}
       >
     </div>
 
-    {
-      sketchInfo.instructions && (
-        <p class="text-md my-sm md:my-lg">{sketchInfo.instructions}</p>
-      )
-    }
+    {instructions && <p class="text-md my-sm md:my-lg">{instructions}</p>}
 
     <p class="text-xs md:text-base mb-3xl">
-      This <a
-        class="text-type-magenta"
-        href={makeSketchLinkUrl(sketchInfo.visualID)}>sketch</a
+      This <a class="text-type-magenta" href={makeSketchLinkUrl(sketchId)}
+        >sketch</a
       > is ported from the <a
         class="text-type-magenta"
         href="https://openprocessing.org">OpenProcessing</a

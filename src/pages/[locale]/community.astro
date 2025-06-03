@@ -5,7 +5,8 @@ import CommunityLayout from "@layouts/CommunityLayout.astro";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 
 export const getStaticPaths = async () => {
-  const sketches = await getCurationSketches(10);
+  const allSketches = await getCurationSketches();
+  const sketches = allSketches.slice(0, 10);
   return await Promise.all(
     nonDefaultSupportedLocales.map(async (locale) => {
       const libraries = await getCollectionInLocaleWithFallbacks(

@@ -146,7 +146,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
         return;
       }
     })();
-  }, [props.jsCode, mounted]);
+  }, [props.jsCode, mounted,p5ScriptTag]);
 
   return (
     <div
@@ -161,7 +161,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
           htmlBody: props.htmlBodyCode,
           base: props.base,
           scripts: props.scripts,
-        }) : undefined}
+        }) : ""}
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
         title="Code Preview"
