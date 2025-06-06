@@ -20,9 +20,9 @@ async function setup() {
   // Use async/await with Promise.all to load all three images at once
   // This waits until ALL images are loaded before continuing
   [img1, img2, img3] = await Promise.all([
-    loadImageAsync('https://picsum.photos/100/100?random=1'), // Replace the image links with user wanted images.
-    loadImageAsync('https://picsum.photos/100/100?random=2'),
-    loadImageAsync('https://picsum.photos/100/100?random=3')
+    loadImage('https://picsum.photos/100/100?random=1'), // Replace the image links with user wanted images.
+    loadImage('https://picsum.photos/100/100?random=2'),
+    loadImage('https://picsum.photos/100/100?random=3')
   ]);
 
   // Once all images are ready, draw them on the canvas
@@ -35,12 +35,3 @@ async function setup() {
   text("All images loaded!", width / 2, 50);
 }
 
-// Helper function to load images using a Promise
-// Makes loadImage compatible with async/await style
-function loadImageAsync(url) {
-  return new Promise((resolve, reject) => {
-    // Try to load the image from the given URL.
-    //If successful, resolve the promise with the image. If it fails, reject with the error.
-    loadImage(url, img => resolve(img), err => reject(err));
-  });
-}
