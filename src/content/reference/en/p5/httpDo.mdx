@@ -17,7 +17,7 @@ description: >
 
   <p>This method is suitable for fetching files up to size of 64MB when "GET" is
   used.</p>
-line: 1135
+line: 1144
 isConstructor: false
 itemtype: method
 example:
@@ -32,18 +32,27 @@ example:
     let eqFeatureIndex = 0;
 
     function setup() {
+     createCanvas(100,100);
+
       let url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson';
+
+      const req = new Request(url, {
+       method: 'GET',
+       headers: {authorization: 'Bearer secretKey'}
+     });
+     // httpDo(path, method, datatype, success, error) 
+
       httpDo(
-        url,
-        {
-          method: 'GET',
-          // Other Request options, like special headers for apis
-          headers: { authorization: 'Bearer secretKey' }
+        req,
+        'GET',
+       'json',
+        res => {
+         earthquakes = res;
         },
-        function(res) {
-          earthquakes = res;
-        }
-      );
+       err => {
+         console.error('Error loading data:', err);
+       }
+     );
     }
 
     function draw() {
@@ -115,11 +124,14 @@ overloads:
       type: Promise
   - params:
       - name: path
+        description: ''
         type: String|Request
       - name: callback
+        description: ''
         optional: 1
         type: Function
       - name: errorCallback
+        description: ''
         optional: 1
         type: Function
     return:

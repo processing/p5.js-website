@@ -40,6 +40,7 @@ export interface ReferenceParam {
   description: string; // A description of the parameter.
   type: string; // The data type of the parameter.
   optional?: boolean; // Indicates if the parameter is optional.
+  rest?: boolean; // Whether or not this is a variadic parameter at the end of the arg list
 }
 
 export type ReferenceOverload = {

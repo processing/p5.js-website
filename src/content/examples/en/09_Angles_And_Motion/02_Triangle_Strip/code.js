@@ -2,7 +2,10 @@ let insideRadius = 100;
 let outsideRadius = 150;
 
 function setup() {
-  createCanvas(720, 400);
+  createCanvas(720, 400, WEBGL);
+  label = createP('');
+  label.style('color', 'white');
+  label.position(20, 10);
   angleMode(DEGREES, 360, 255, 255);
   colorMode(HSB);
 
@@ -16,7 +19,7 @@ function draw() {
 
   let centerX = width / 2;
   let centerY = height / 2;
-
+  translate(-centerX, -centerY);
   // Set the number of points based on the mouse x position
   let pointCount = map(mouseX, 0, width, 6, 60);
 
@@ -24,10 +27,7 @@ function draw() {
   pointCount = round(pointCount);
 
   // Display the current pointCount
-  fill(255);
-  textSize(20);
-  text(`pointCount: ${pointCount}`, 30, 30);
-
+  label.html(`pointCount: ${pointCount}`);
   // Draw the triangle strip by specifying points on
   // the inside circle and outside circle alternately
 

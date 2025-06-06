@@ -28,6 +28,7 @@ const paramSchema = z.object({
   description: z.string().optional(),
   type: z.string().optional(),
   optional: z.coerce.boolean().optional(),
+  rest: z.coerce.boolean().optional(),
 });
 
 const returnSchema = z.object({
