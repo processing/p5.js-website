@@ -22,7 +22,7 @@ const parsersOutPath = path.join(__dirname, "out");
  */
 export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
-    let latestRelease = p5Version;
+    let latestRelease:string = p5Version;
     if (/^\d+\.\d+\.\d+(-[\w.]+)?$/.exec(latestRelease)) {
       latestRelease = `v${  latestRelease}`;
     }
