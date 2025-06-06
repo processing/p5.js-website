@@ -18,7 +18,7 @@ async function setup() {
   textSize(18);
 
   // Use async/await with Promise.all to load all three images at once
-  // This waits untill ALL images are loaded before continuing
+  // This waits until ALL images are loaded before continuing
   [img1, img2, img3] = await Promise.all([
     loadImageAsync('https://picsum.photos/100/100?random=1'), // Replace the image links with user wanted images.
     loadImageAsync('https://picsum.photos/100/100?random=2'),
