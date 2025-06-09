@@ -10,7 +10,7 @@ const ENGLISH_PATH = path.join(REFERENCE_PATH, 'en');
 
 function getChangedFiles() {
   try {
-    console.log('🔍 Detecting changed files...');
+    
     
     
     const gitCommand = process.env.GITHUB_EVENT_NAME === 'pull_request' 
@@ -25,8 +25,8 @@ function getChangedFiles() {
       file.startsWith(ENGLISH_PATH) && file.endsWith('.mdx')
     );
     
-    console.log(`📝 Total changed files: ${allChangedFiles.length}`);
-    console.log(`🇺🇸 Changed English reference files: ${changedEnglishFiles.length}`);
+    console.log(` Total changed files: ${allChangedFiles.length}`);
+    console.log(` Changed English reference files: ${changedEnglishFiles.length}`);
     
     if (changedEnglishFiles.length > 0) {
       console.log('📄 Changed English files:');
@@ -35,7 +35,7 @@ function getChangedFiles() {
     
     return changedEnglishFiles;
   } catch (error) {
-    console.error('❌ Error getting changed files:', error.message);
+    console.error(' Error getting changed files:', error.message);
     return [];
   }
 }
@@ -67,7 +67,7 @@ function getFileModTime(filePath) {
 
 
 function checkTranslationStatus(changedEnglishFiles) {
-  console.log('\n🌐 Checking translation status...');
+  
   
   const translationStatus = {
     needsUpdate: [],
@@ -76,11 +76,11 @@ function checkTranslationStatus(changedEnglishFiles) {
   };
   
   changedEnglishFiles.forEach(englishFile => {
-    console.log(`\n📖 Analyzing: ${englishFile}`);
+    
     
     const englishModTime = getFileModTime(englishFile);
     if (!englishModTime) {
-      console.log(`  ⚠️  Could not get modification time for English file`);
+      console.log(`Could not get modification time for English file`);
       return;
     }
     
@@ -148,15 +148,7 @@ function displaySummary(translationStatus) {
   console.log(`✅ Up-to-date translations: ${translationStatus.upToDate.length}`);
   
   console.log('\n💡 Next steps for Week 2+:');
-  if (translationStatus.missing.length > 0) {
-    console.log('  - Create GitHub issues for missing translations');
-  }
-  if (translationStatus.needsUpdate.length > 0) {
-    console.log('  - Create GitHub issues for outdated translations');
-  }
-  console.log('  - Implement automated issue creation');
-  console.log('  - Set up notification system for translation teams');
-}
+  
 
 function exploreRepoStructure() {
   console.log('\n🔍 REPOSITORY STRUCTURE ANALYSIS');
