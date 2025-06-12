@@ -149,7 +149,7 @@ function displaySummary(translationStatus) {
   
   console.log('\n💡 Next steps for Week 2+:');
   
-
+}
 function exploreRepoStructure() {
   console.log('\n🔍 REPOSITORY STRUCTURE ANALYSIS');
   console.log('═══════════════════════════════════');
