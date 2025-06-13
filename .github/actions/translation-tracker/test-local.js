@@ -1,39 +1,20 @@
-#!/usr/bin/env node
 
-/**
- * Local test script for the translation tracker
- * This simulates the GitHub Action environment for testing
- */
 
-const { execSync } = require('child_process');
-const path = require('path');
+const { main } = require('./index.js');
 
-process.env.GITHUB_EVENT_NAME = 'push';
-process.env.GITHUB_WORKSPACE = process.cwd();
+// Test scenarios using actual example files that exist
+const testFiles = [
+  'src/content/examples/en/01_Shapes_And_Color/00_Shape_Primitives/description.mdx',
+  'src/content/examples/en/02_Animation_And_Variables/00_Drawing_Lines/description.mdx',
+  'src/content/examples/en/03_Imported_Media/00_Words/description.mdx'
+];
 
-console.log('🧪 LOCAL TEST: Translation Tracker');
-console.log('═══════════════════════════════════');
-console.log(`📁 Working directory: ${process.cwd()}`);
+console.log('🧪 Testing Example Translation Tracker Locally');
+console.log('===============================================\n');
 
-// Navigate to repository root
-const repoRoot = path.resolve(__dirname, '../../..');
-process.chdir(repoRoot);
+// Run the main function with test files
+main(testFiles);
 
-console.log(`📁 Changed to repository root: ${process.cwd()}`);
-
-try {
-  const gitLogOutput = execSync('git log --oneline -5', { encoding: 'utf8' });
-  console.log(' Recent commits:');
-  console.log(gitLogOutput);
-} catch (error) {
-  console.log(' No git history available or not in a git repository');
-}
-
-console.log(' Running translation tracker...\n');
-
-try {
-  require('./index.js');
-} catch (error) {
-  console.error('❌ Error running translation tracker:', error.message);
-  console.error(error.stack);
-} 
+console.log('\n💡 This demonstrates local testing capability as requested by mentor');
+console.log('🔧 The git logic is now separated and modular for easier testing');
+console.log('📖 Now tracking examples instead of tutorials as requested'); 
