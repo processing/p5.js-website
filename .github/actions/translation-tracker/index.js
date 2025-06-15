@@ -8,37 +8,122 @@ const { Octokit } = require('@octokit/rest');
 const SUPPORTED_LANGUAGES = ['hi']; // Start with Hindi only
 
 /**
- * Week 2: GitHub API integration for commit tracking
+ * Week 2: GitHub API integration for commit tracking with branch detection
  */
 class GitHubCommitTracker {
   constructor(token, owner, repo) {
     this.octokit = new Octokit({ auth: token });
     this.owner = owner;
     this.repo = repo;
+    this.currentBranch = this.detectCurrentBranch();
+    console.log(`🌿 Using branch: ${this.currentBranch}`);
+  }
+
+  /**
+   * Detect the current git branch
+   */
+  detectCurrentBranch() {
+    try {
+      // Try different methods to get current branch
+      
+      // Method 1: GitHub Actions environment
+      if (process.env.GITHUB_HEAD_REF) {
+        // For pull requests
+        return process.env.GITHUB_HEAD_REF;
+      }
+      
+      if (process.env.GITHUB_REF_NAME) {
+        // For push events
+        return process.env.GITHUB_REF_NAME;
+      }
+      
+      // Method 2: Git command
+      try {
+        const branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
+        if (branch && branch !== 'HEAD') {
+          return branch;
+        }
+      } catch (gitError) {
+        console.log(`⚠️ Git command failed: ${gitError.message}`);
+      }
+      
+      // Method 3: Git symbolic-ref (alternative)
+      try {
+        const ref = execSync('git symbolic-ref HEAD', { encoding: 'utf8' }).trim();
+        return ref.replace('refs/heads/', '');
+      } catch (refError) {
+        console.log(`⚠️ Git symbolic-ref failed: ${refError.message}`);
+      }
+      
+      // Fallback to main
+      console.log('⚠️ Could not detect branch, defaulting to main');
+      return 'main';
+      
+    } catch (error) {
+      console.log(`⚠️ Branch detection error: ${error.message}, using main`);
+      return 'main';
+    }
   }
 
   
   async getLastCommit(filePath) {
     try {
+      console.log(`  🔍 Querying commits for ${filePath} on branch ${this.currentBranch}`);
+      
       const { data } = await this.octokit.rest.repos.listCommits({
         owner: this.owner,
         repo: this.repo,
+        sha: this.currentBranch, // Use detected branch
         path: filePath,
         per_page: 1
       });
 
       if (data.length > 0) {
-        return {
+        const commit = {
           sha: data[0].sha,
           date: new Date(data[0].commit.committer.date),
           message: data[0].commit.message,
           author: data[0].commit.author.name,
           url: data[0].html_url
         };
+        
+        console.log(`  ✅ Found commit: ${commit.sha.substring(0, 7)} (${commit.date.toISOString()})`);
+        return commit;
       }
+      
+      console.log(`  ⚠️ No commits found for ${filePath} on branch ${this.currentBranch}`);
       return null;
     } catch (error) {
-      console.error(`❌ Error fetching commit for ${filePath}:`, error.message);
+      console.error(`  ❌ Error fetching commit for ${filePath}:`, error.message);
+      
+      // If branch-specific query fails, try main branch as fallback
+      if (this.currentBranch !== 'main') {
+        console.log(`  🔄 Retrying with main branch...`);
+        try {
+          const { data } = await this.octokit.rest.repos.listCommits({
+            owner: this.owner,
+            repo: this.repo,
+            sha: 'main',
+            path: filePath,
+            per_page: 1
+          });
+          
+          if (data.length > 0) {
+            const commit = {
+              sha: data[0].sha,
+              date: new Date(data[0].commit.committer.date),
+              message: data[0].commit.message,
+              author: data[0].commit.author.name,
+              url: data[0].html_url
+            };
+            console.log(`  ✅ Found commit on main: ${commit.sha.substring(0, 7)} (${commit.date.toISOString()})`);
+            return commit;
+          }
+        } catch (fallbackError) {
+          console.error(`  ❌ Fallback to main also failed:`, fallbackError.message);
+        }
+      }
+      
       return null;
     }
   }
@@ -77,14 +162,15 @@ class GitHubCommitTracker {
 **File**: \`${englishFile}\`
 **Language**: ${this.getLanguageDisplayName(language)}
 **Translation file**: \`${translationPath}\`
+**Branch**: \`${this.currentBranch}\`
 
 ### 📅 Timeline
 - **English last updated**: ${englishCommit.date.toLocaleDateString()} by ${englishCommit.author}
 - **Translation last updated**: ${translationCommit ? translationCommit.date.toLocaleDateString() + ' by ' + translationCommit.author : 'Never translated'}
 
 ### 🔗 Quick Links
-- [📄 Current English file](https://github.com/${this.owner}/${this.repo}/blob/main/${englishFile})
-- [📝 Translation file](https://github.com/${this.owner}/${this.repo}/blob/main/${translationPath})
+- [📄 Current English file](https://github.com/${this.owner}/${this.repo}/blob/${this.currentBranch}/${englishFile})
+- [📝 Translation file](https://github.com/${this.owner}/${this.repo}/blob/${this.currentBranch}/${translationPath})
 - [🔍 Compare changes](https://github.com/${this.owner}/${this.repo}/compare/${translationCommit ? translationCommit.sha : 'HEAD'}...${englishCommit.sha})
 
 ### 📋 What to do
