@@ -5,18 +5,16 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const { Octokit } = require('@octokit/rest');
 
-const SUPPORTED_LANGUAGES = ['hi']; // Start with Hindi only
 
-/**
- * Week 2: GitHub API integration for commit tracking with branch detection
- */
+const SUPPORTED_LANGUAGES = ['es', 'hi', 'ko', 'zh-Hans'];
+
+
 class GitHubCommitTracker {
   constructor(token, owner, repo) {
     this.octokit = new Octokit({ auth: token });
     this.owner = owner;
     this.repo = repo;
     this.currentBranch = this.detectCurrentBranch();
-    console.log(`🌿 Using branch: ${this.currentBranch}`);
   }
 
   /**
@@ -24,81 +22,60 @@ class GitHubCommitTracker {
    */
   detectCurrentBranch() {
     try {
-      // Try different methods to get current branch
-      
-      // Method 1: GitHub Actions environment
+      // GitHub Actions environment
       if (process.env.GITHUB_HEAD_REF) {
-        // For pull requests
-        return process.env.GITHUB_HEAD_REF;
+        return process.env.GITHUB_HEAD_REF; // For pull requests
       }
       
       if (process.env.GITHUB_REF_NAME) {
-        // For push events
-        return process.env.GITHUB_REF_NAME;
+        return process.env.GITHUB_REF_NAME; // For push events
       }
       
-      // Method 2: Git command
+      // Git command fallback
       try {
         const branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
         if (branch && branch !== 'HEAD') {
           return branch;
         }
       } catch (gitError) {
-        console.log(`⚠️ Git command failed: ${gitError.message}`);
+        // Silent fallback
       }
       
-      // Method 3: Git symbolic-ref (alternative)
-      try {
-        const ref = execSync('git symbolic-ref HEAD', { encoding: 'utf8' }).trim();
-        return ref.replace('refs/heads/', '');
-      } catch (refError) {
-        console.log(`⚠️ Git symbolic-ref failed: ${refError.message}`);
-      }
-      
-      // Fallback to main
-      console.log('⚠️ Could not detect branch, defaulting to main');
+      // Default fallback
       return 'main';
       
     } catch (error) {
-      console.log(`⚠️ Branch detection error: ${error.message}, using main`);
       return 'main';
     }
   }
 
-  
+  /**
+   * Get the last commit for a specific file using GitHub API
+   */
   async getLastCommit(filePath) {
     try {
-      console.log(`  🔍 Querying commits for ${filePath} on branch ${this.currentBranch}`);
-      
       const { data } = await this.octokit.rest.repos.listCommits({
         owner: this.owner,
         repo: this.repo,
-        sha: this.currentBranch, // Use detected branch
+        sha: this.currentBranch,
         path: filePath,
         per_page: 1
       });
 
       if (data.length > 0) {
-        const commit = {
+        return {
           sha: data[0].sha,
           date: new Date(data[0].commit.committer.date),
           message: data[0].commit.message,
           author: data[0].commit.author.name,
           url: data[0].html_url
         };
-        
-        console.log(`  ✅ Found commit: ${commit.sha.substring(0, 7)} (${commit.date.toISOString()})`);
-        return commit;
       }
       
-      console.log(`  ⚠️ No commits found for ${filePath} on branch ${this.currentBranch}`);
       return null;
     } catch (error) {
-      console.error(`  ❌ Error fetching commit for ${filePath}:`, error.message);
-      
-      // If branch-specific query fails, try main branch as fallback
+      // Fallback to main branch if current branch fails
       if (this.currentBranch !== 'main') {
-        console.log(`  🔄 Retrying with main branch...`);
         try {
           const { data } = await this.octokit.rest.repos.listCommits({
             owner: this.owner,
@@ -109,18 +86,16 @@ class GitHubCommitTracker {
           });
           
           if (data.length > 0) {
-            const commit = {
+            return {
               sha: data[0].sha,
               date: new Date(data[0].commit.committer.date),
               message: data[0].commit.message,
               author: data[0].commit.author.name,
               url: data[0].html_url
             };
-            console.log(`  ✅ Found commit on main: ${commit.sha.substring(0, 7)} (${commit.date.toISOString()})`);
-            return commit;
           }
         } catch (fallbackError) {
-          console.error(`  ❌ Fallback to main also failed:`, fallbackError.message);
+          // Silent fallback
         }
       }
       
@@ -128,10 +103,11 @@ class GitHubCommitTracker {
     }
   }
 
- 
+  /**
+   * Create a GitHub issue for outdated translation
+   */
   async createTranslationIssue(englishFile, language, commitInfo) {
     const issueTitle = `🌍 Update ${language.toUpperCase()} translation for ${path.basename(englishFile)}`;
-    
     const issueBody = this.formatIssueBody(englishFile, language, commitInfo);
     
     try {
@@ -143,7 +119,6 @@ class GitHubCommitTracker {
         labels: ['translation', `lang-${language}`, 'help wanted']
       });
 
-      console.log(`✅ Created issue #${data.number}: ${issueTitle}`);
       return data;
     } catch (error) {
       console.error(`❌ Error creating issue:`, error.message);
@@ -151,7 +126,9 @@ class GitHubCommitTracker {
     }
   }
 
-
+  /**
+   * Format the issue body with helpful information
+   */
   formatIssueBody(englishFile, language, commitInfo) {
     const translationPath = englishFile.replace('/en/', `/${language}/`);
     const englishCommit = commitInfo.english;
@@ -187,7 +164,9 @@ class GitHubCommitTracker {
 *Need help? Check our [translation guidelines](https://github.com/processing/p5.js-website/blob/main/contributor_docs/translation.md)*`;
   }
 
-  
+  /**
+   * Get display name for language code
+   */
   getLanguageDisplayName(langCode) {
     const languages = {
       'es': 'Spanish (Español)',
@@ -199,8 +178,12 @@ class GitHubCommitTracker {
   }
 }
 
-
+/**
+ * Week 1: Get changed files from git or test files
+ * This is the core Week 1 functionality that remains unchanged
+ */
 function getChangedFiles(testFiles = null) {
+  // Allow passing test files for local development (Week 1 feature)
   if (testFiles) {
     console.log('🧪 Using provided test files for local testing');
     return testFiles.filter(file => 
@@ -235,9 +218,7 @@ function getChangedFiles(testFiles = null) {
   }
 }
 
-/**
- * Check if a file exists
- */
+
 function fileExists(filePath) {
   try {
     return fs.existsSync(filePath);
@@ -247,7 +228,16 @@ function fileExists(filePath) {
 }
 
 
-async function checkTranslationStatus(changedExampleFiles, githubTracker, createIssues = false) {
+function getFileModTime(filePath) {
+  try {
+    return fs.statSync(filePath).mtime;
+  } catch (error) {
+    return null;
+  }
+}
+
+
+async function checkTranslationStatus(changedExampleFiles, githubTracker = null, createIssues = false) {
   const translationStatus = {
     needsUpdate: [],
     missing: [],
@@ -257,18 +247,6 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker, create
   
   for (const englishFile of changedExampleFiles) {
     console.log(`\n📝 Checking translations for: ${englishFile}`);
-    
-    if (!githubTracker) {
-      console.log(`⚠️ No GitHub tracker available - skipping commit analysis`);
-      console.log(`ℹ️ To enable full Week 2 features, provide GITHUB_TOKEN`);
-      continue;
-    }
-    
-    const englishCommit = await githubTracker.getLastCommit(englishFile);
-    if (!englishCommit) {
-      console.log(`⚠️ Could not get commit info for English file`);
-      continue;
-    }
     
     for (const language of SUPPORTED_LANGUAGES) {
       const translationPath = englishFile.replace('/en/', `/${language}/`);
@@ -285,56 +263,103 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker, create
         continue;
       }
 
-      const translationCommit = await githubTracker.getLastCommit(translationPath);
       
-      if (!translationCommit) {
-        console.log(`  ⚠️ ${language}: Could not get commit info for translation`);
-        continue;
-      }
+      if (githubTracker) {
+        const englishCommit = await githubTracker.getLastCommit(englishFile);
+        const translationCommit = await githubTracker.getLastCommit(translationPath);
 
-      const isOutdated = translationCommit.date < englishCommit.date;
-      
-      if (isOutdated) {
-        console.log(`  🔄 ${language}: Needs update`);
-        console.log(`    - English: ${englishCommit.date.toISOString()} (${englishCommit.sha.substring(0, 7)})`);
-        console.log(`    - Translation: ${translationCommit.date.toISOString()} (${translationCommit.sha.substring(0, 7)})`);
+        if (!englishCommit) {
+          console.log(`  ⚠️ ${language}: Could not get English commit info`);
+          continue;
+        }
+
+        if (!translationCommit) {
+          console.log(`  🆕 ${language}: Missing translation (no commits)`);
+          translationStatus.missing.push({
+            englishFile,
+            language,
+            translationPath,
+            status: 'missing'
+          });
+          continue;
+        }
+
+        const isOutdated = englishCommit.date > translationCommit.date;
         
-        const statusItem = {
-          englishFile,
-          language,
-          translationPath,
-          status: 'outdated',
-          commitInfo: {
-            english: englishCommit,
-            translation: translationCommit
+        if (isOutdated) {
+          console.log(`  🔄 ${language}: Needs update`);
+          console.log(`    - English: ${englishCommit.date.toISOString()} (${englishCommit.sha.substring(0, 7)})`);
+          console.log(`    - Translation: ${translationCommit.date.toISOString()} (${translationCommit.sha.substring(0, 7)})`);
+          
+          const statusItem = {
+            englishFile,
+            language,
+            translationPath,
+            status: 'outdated',
+            commitInfo: {
+              english: englishCommit,
+              translation: translationCommit
+            }
+          };
+          
+          translationStatus.needsUpdate.push(statusItem);
+          
+          
+          if (createIssues) {
+            console.log(`  📝 Creating GitHub issue for ${language} translation...`);
+            const issue = await githubTracker.createTranslationIssue(
+              englishFile, 
+              language, 
+              statusItem.commitInfo
+            );
+            if (issue) {
+              console.log(`  ✅ Created issue #${issue.number}: ${issue.title}`);
+              translationStatus.issuesCreated.push({
+                ...statusItem,
+                issueNumber: issue.number,
+                issueUrl: issue.html_url
+              });
+            }
           }
-        };
-        
-        translationStatus.needsUpdate.push(statusItem);
-        
-        // Week 2: Create issue if requested
-        if (createIssues && githubTracker) {
-          const issue = await githubTracker.createTranslationIssue(
-            englishFile, 
-            language, 
-            statusItem.commitInfo
-          );
-          if (issue) {
-            translationStatus.issuesCreated.push({
-              ...statusItem,
-              issueNumber: issue.number,
-              issueUrl: issue.html_url
-            });
-          }
+        } else {
+          console.log(`  ✅ ${language}: Up to date`);
+          translationStatus.upToDate.push({
+            englishFile,
+            language,
+            translationPath,
+            status: 'up-to-date'
+          });
         }
       } else {
-        console.log(`  ✅ ${language}: Up to date`);
-        translationStatus.upToDate.push({
-          englishFile,
-          language,
-          translationPath,
-          status: 'up-to-date'
-        });
+        // Week 1: Fallback to file modification time comparison
+        const englishModTime = getFileModTime(englishFile);
+        if (!englishModTime) {
+          console.log(`  ⚠️ Could not get modification time for English file`);
+          continue;
+        }
+        
+        const translationModTime = getFileModTime(translationPath);
+        const isOutdated = translationModTime < englishModTime;
+        
+        if (isOutdated) {
+          console.log(`  🔄 ${language}: Needs update (English: ${englishModTime.toISOString()}, Translation: ${translationModTime.toISOString()})`);
+          translationStatus.needsUpdate.push({
+            englishFile,
+            language,
+            translationPath,
+            status: 'outdated',
+            englishModTime,
+            translationModTime
+          });
+        } else {
+          console.log(`  ✅ ${language}: Up to date`);
+          translationStatus.upToDate.push({
+            englishFile,
+            language,
+            translationPath,
+            status: 'up-to-date'
+          });
+        }
       }
     }
   }
@@ -343,9 +368,9 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker, create
 }
 
 
-function displaySummary(translationStatus) {
-  console.log('\n📊 WEEK 2 TRANSLATION STATUS SUMMARY');
-  console.log('════════════════════════════════════════');
+function displaySummary(translationStatus, isWeek2 = false) {
+  console.log(`\n📊 TRANSLATION STATUS SUMMARY ${isWeek2 ? '(Week 2)' : '(Week 1)'}`);
+  console.log('═══════════════════════════════════════');
   
   console.log(`🆕 Missing translations: ${translationStatus.missing.length}`);
   if (translationStatus.missing.length > 0) {
@@ -371,17 +396,19 @@ function displaySummary(translationStatus) {
     });
   }
   
-  console.log('\n💡 Week 2 Progress:');
-  console.log('✅ GitHub API integration for commit tracking');
-  console.log('✅ Automated issue creation for outdated translations');
-  console.log('✅ Enhanced issue formatting with helpful links');
-  console.log('✅ Focus on Hindi language (as planned)');
+  if (isWeek2) {
+    console.log('\n💡 Week 2 Features:');
+    console.log('✅ GitHub API integration for accurate commit tracking');
+    console.log('✅ Automated issue creation for outdated translations');
+    console.log('✅ Enhanced issue templates with helpful links');
+    console.log('✅ Backward compatibility with Week 1 functionality');
+  }
 }
 
 
 function exploreRepoStructure() {
-  console.log('\n🔍 WEEK 2 REPOSITORY STRUCTURE ANALYSIS');
-  console.log('══════════════════════════════════════════');
+  console.log('\n🔍 REPOSITORY STRUCTURE ANALYSIS');
+  console.log('═══════════════════════════════════');
   
   try {
     const examplesPath = 'src/content/examples';
@@ -393,7 +420,6 @@ function exploreRepoStructure() {
         .filter(item => !item.startsWith('.') && item !== 'images');
       
       console.log(`🌐 Available languages: ${languages.join(', ')}`);
-      console.log(`🎯 Week 2 focus: ${SUPPORTED_LANGUAGES.join(', ')} (Hindi only)`);
       
       // Count example files in each language
       languages.forEach(lang => {
@@ -421,8 +447,7 @@ function exploreRepoStructure() {
             totalFiles += countFilesRecursively(categoryPath);
           });
           
-          const indicator = SUPPORTED_LANGUAGES.includes(lang) ? '🎯' : '📋';
-          console.log(`  ${indicator} ${lang}: ${totalFiles} example files across ${categories.length} categories`);
+          console.log(`  ${lang}: ${totalFiles} example files across ${categories.length} categories`);
         } catch (error) {
           console.log(`  ${lang}: Error reading directory - ${error.message}`);
         }
@@ -437,25 +462,34 @@ function exploreRepoStructure() {
 
 
 async function main(testFiles = null, options = {}) {
-  console.log('🎯 p5.js Translation Tracker - Week 2 Prototype');
-  console.log('════════════════════════════════════════════════');
+  const isWeek2 = !!options.enableWeek2 || !!process.env.GITHUB_TOKEN;
+  
+  console.log(`🎯 p5.js Translation Tracker - ${isWeek2 ? 'Week 2' : 'Week 1'} Mode`);
+  console.log('═══════════════════════════════════════════════════════');
   console.log(`📅 Event: ${process.env.GITHUB_EVENT_NAME || 'local'}`);
   console.log(`🏠 Working directory: ${process.cwd()}`);
   console.log(`🌍 Tracking languages: ${SUPPORTED_LANGUAGES.join(', ')}`);
-  
+
+  // Week 2: Initialize GitHub tracker if token is available
   let githubTracker = null;
-  const token = process.env.GITHUB_TOKEN || options.githubToken;
-  const [owner, repo] = (process.env.GITHUB_REPOSITORY || 'processing/p5.js-website').split('/');
-  
-  if (token) {
-    githubTracker = new GitHubCommitTracker(token, owner, repo);
-    console.log(`🔗 GitHub API initialized for ${owner}/${repo}`);
-  } else {
-    console.log('⚠️ No GitHub token provided - running in basic mode');
+  if (isWeek2) {
+    const token = process.env.GITHUB_TOKEN || options.githubToken;
+    if (token) {
+      try {
+        const [owner, repo] = (process.env.GITHUB_REPOSITORY || 'processing/p5.js-website').split('/');
+        githubTracker = new GitHubCommitTracker(token, owner, repo);
+        console.log(`🔗 GitHub API initialized for ${owner}/${repo} (branch: ${githubTracker.currentBranch})`);
+      } catch (error) {
+        console.error('⚠️ GitHub API initialization failed:', error.message);
+        console.log('📝 Falling back to Week 1 mode...');
+      }
+    } else {
+      console.log('⚠️ No GitHub token provided - running in Week 1 mode');
+    }
   }
-  
+
   exploreRepoStructure();
-  
+ 
   const changedExampleFiles = getChangedFiles(testFiles);
   
   if (changedExampleFiles.length === 0) {
@@ -463,19 +497,19 @@ async function main(testFiles = null, options = {}) {
     console.log('📝 Nothing to track for translations in this commit!');
     return;
   }
-  
-  const createIssues = options.createIssues !== false; // Default to true
+ 
+  const createIssues = options.createIssues !== false && githubTracker !== null;
   const translationStatus = await checkTranslationStatus(
     changedExampleFiles, 
     githubTracker, 
     createIssues
   );
   
-  // Display summary
-  displaySummary(translationStatus);
+
+  displaySummary(translationStatus, isWeek2);
 }
 
-// Export for testing
+// Export for testing (Week 1 + Week 2)
 module.exports = {
   main,
   getChangedFiles,
@@ -484,7 +518,7 @@ module.exports = {
   GitHubCommitTracker
 };
 
-
+// Run if called directly
 if (require.main === module) {
   main();
 } 
