@@ -20,16 +20,17 @@ export const JumpToLinks = ({
   return (
     <div class={`${styles.jumpto} ${isOpen && "open"}`}>
       <button
-        class={styles.toggle}
-        onClick={handleToggle}
-        aria-hidden="true"
-        tabIndex={-1}
-      >
-        <span>{heading}</span>
-        <div class="pt-[6px]">
-          <Icon kind={isOpen ? "chevron-down" : "chevron-up"} />
-        </div>
-      </button>
+  class={styles.toggle}
+  onClick={handleToggle}
+  aria-expanded={isOpen}
+  aria-label={`${heading} menu toggle`}
+>
+  <span>{heading}</span>
+  <div class="pt-[6px]">
+    <Icon kind={isOpen ? "chevron-down" : "chevron-up"} />
+  </div>
+</button>
+
       {isOpen && (
         <ul>
           {links?.map((link) => (
