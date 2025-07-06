@@ -1,8 +1,6 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const core = require('@actions/core');
-const github = require('@actions/github');
 const { Octokit } = require('@octokit/rest');
 
 
@@ -525,15 +523,18 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
 
 async function main(testFiles = null, options = {}) {
   const hasToken = !!process.env.GITHUB_TOKEN;
-  const scanAll = process.env.SCAN_ALL === 'true' || options.scanAll;
-  const isProduction = hasToken && !testFiles; // Production if has token and no test files
+  const isGitHubAction = !!process.env.GITHUB_ACTIONS; // Detect if running in GitHub Actions
+  
+  // Default behavior: scan all files UNLESS running in GitHub Actions or test mode
+  const scanAll = isGitHubAction ? false : (process.env.SCAN_ALL !== 'false');
+  const isProduction = hasToken && !testFiles;
   
   if (testFiles) {
     console.log(`🧪 Test mode: Checking ${testFiles.length} predefined files`);
-  } else if (scanAll) {
-    console.log(`🔍 Scan ALL mode: ${hasToken ? 'Creating real issues' : 'File-based tracking only'}`);
+  } else if (isGitHubAction) {
+    console.log(`🚀 GitHub Actions: Checking changed files only`);
   } else {
-    console.log(`🎯 Production mode: ${hasToken ? 'Creating real issues' : 'File-based tracking only'}`);
+    console.log(`🔍 Manual run: Scanning all ${scanAll ? 'files' : 'changed files'}`);
   }
 
   // Initialize GitHub tracker if token is available
@@ -550,7 +551,7 @@ async function main(testFiles = null, options = {}) {
 
   // Get files to check
   let filesToCheck;
-  if (scanAll && !testFiles) {
+  if (scanAll && !testFiles && !isGitHubAction) {
     console.log('📊 Scanning all English example files...');
     filesToCheck = getAllEnglishExampleFiles();
   } else {
@@ -558,12 +559,16 @@ async function main(testFiles = null, options = {}) {
   }
   
   if (filesToCheck.length === 0) {
-    console.log('✅ No English example files changed');
+    if (isGitHubAction) {
+      console.log('✅ No English example files changed in this push');
+    } else {
+      console.log('✅ No files to check');
+    }
     return;
   }
  
   console.log(`📝 Checking ${filesToCheck.length} English example file(s):`);
-  filesToCheck.forEach(file => console.log(`   - ${file.split('/').pop()}`));
+  filesToCheck.forEach(file => console.log(`   - ${file}`));
 
   const createIssues = isProduction && githubTracker !== null;
   const translationStatus = await checkTranslationStatus(
@@ -572,18 +577,56 @@ async function main(testFiles = null, options = {}) {
     createIssues
   );
 
-  // Simple summary
-  const { needsUpdate, missing, issuesCreated } = translationStatus;
-  if (needsUpdate.length > 0 || missing.length > 0) {
-    console.log(`\n📊 Translation issues found: ${needsUpdate.length + missing.length}`);
-    if (issuesCreated.length > 0) {
-      console.log(`🎫 GitHub issues created: ${issuesCreated.length}`);
-      issuesCreated.forEach(issue => console.log(`   - Issue #${issue.issueNumber}: ${issue.englishFile.split('/').pop()}`));
-    } else if (!hasToken) {
-      console.log(`💡 Run with GITHUB_TOKEN to create issues`);
+  // Detailed results
+  const { needsUpdate, missing, upToDate, issuesCreated } = translationStatus;
+  
+  console.log('\n📊 Translation Status Summary:');
+  console.log(`   🔄 Outdated: ${needsUpdate.length}`);
+  console.log(`   ❌ Missing: ${missing.length}`);
+  console.log(`   ✅ Up-to-date: ${upToDate.length}`);
+  
+  if (needsUpdate.length > 0) {
+    console.log('\n🔄 Files needing translation updates:');
+    needsUpdate.forEach(item => {
+      const langName = githubTracker ? githubTracker.getLanguageDisplayName(item.language) : item.language;
+      if (githubTracker && item.commitInfo) {
+        console.log(`   - ${item.englishFile} → ${langName}`);
+        console.log(`     English: ${item.commitInfo.english.date.toLocaleDateString()} by ${item.commitInfo.english.author}`);
+        console.log(`     Translation: ${item.commitInfo.translation.date.toLocaleDateString()} by ${item.commitInfo.translation.author}`);
+      } else {
+        console.log(`   - ${item.englishFile} → ${langName}`);
+        if (item.englishModTime && item.translationModTime) {
+          console.log(`     English: ${item.englishModTime.toLocaleDateString()}`);
+          console.log(`     Translation: ${item.translationModTime.toLocaleDateString()}`);
+        }
+      }
+    });
+  }
+  
+  if (missing.length > 0) {
+    console.log('\n❌ Missing translation files:');
+    missing.forEach(item => {
+      const langName = githubTracker ? githubTracker.getLanguageDisplayName(item.language) : item.language;
+      console.log(`   - ${item.englishFile} → ${langName}`);
+      console.log(`     Expected: ${item.translationPath}`);
+    });
+  }
+  
+  if (issuesCreated.length > 0) {
+    console.log(`\n🎫 GitHub issues created: ${issuesCreated.length}`);
+    issuesCreated.forEach(issue => {
+      console.log(`   - Issue #${issue.issueNumber}: ${issue.englishFile}`);
+      console.log(`     Languages: ${issue.affectedLanguages.map(lang => githubTracker.getLanguageDisplayName(lang)).join(', ')}`);
+      console.log(`     URL: ${issue.issueUrl}`);
+    });
+  } else if (needsUpdate.length > 0 || missing.length > 0) {
+    if (!hasToken) {
+      console.log(`\n💡 Run with GITHUB_TOKEN to create GitHub issues`);
     }
-  } else {
-    console.log('\n✅ All translations are up to date');
+  }
+  
+  if (needsUpdate.length === 0 && missing.length === 0) {
+    console.log('\n✅ All translations are up to date!');
   }
 }
 
