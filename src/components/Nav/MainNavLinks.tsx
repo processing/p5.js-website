@@ -43,11 +43,12 @@ export const MainNavLinks = ({
       </a>
 
       <button
-        class={styles.toggle}
-        onClick={handleToggle}
-        aria-hidden="true"
-        tabIndex={-1}
-      >
+  class={styles.toggle}
+  onClick={handleToggle}
+  aria-expanded={isOpen}
+  aria-label={mobileMenuLabel || "Toggle navigation menu"}
+>
+
         <div class={styles.mobileMenuLabel}>
           {isOpen ? (
             <Icon kind="close" />
