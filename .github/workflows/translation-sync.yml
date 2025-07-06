@@ -9,6 +9,18 @@ on:
     branches: [main, week2]
     paths:
       - 'src/content/examples/en/**'
+  workflow_dispatch:
+    inputs:
+      scan_all:
+        description: 'Scan all files instead of just changed files'
+        required: false
+        default: false
+        type: boolean
+      create_issues:
+        description: 'Create GitHub issues for outdated translations'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   track-translation-changes:
@@ -34,4 +46,20 @@ jobs:
       - name: Run translation tracker
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node .github/actions/translation-tracker/index.js 
+          SCAN_ALL: ${{ inputs.scan_all || 'false' }}
+          CREATE_ISSUES: ${{ inputs.create_issues }}
+        run: |
+          if [ "$SCAN_ALL" = "true" ]; then
+            echo "🔍 Running manual scan of ALL files..."
+            node -e "
+              const { main } = require('./.github/actions/translation-tracker/index.js');
+              main(null, { 
+                scanAll: true, 
+                createIssues: process.env.CREATE_ISSUES === 'true',
+                githubToken: process.env.GITHUB_TOKEN 
+              });
+            "
+          else
+            echo "📝 Running normal change detection..."
+            node .github/actions/translation-tracker/index.js
+          fi 
