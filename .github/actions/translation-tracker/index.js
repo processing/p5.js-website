@@ -525,10 +525,13 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
 
 async function main(testFiles = null, options = {}) {
   const hasToken = !!process.env.GITHUB_TOKEN;
+  const scanAll = process.env.SCAN_ALL === 'true' || options.scanAll;
   const isProduction = hasToken && !testFiles; // Production if has token and no test files
   
   if (testFiles) {
     console.log(`🧪 Test mode: Checking ${testFiles.length} predefined files`);
+  } else if (scanAll) {
+    console.log(`🔍 Scan ALL mode: ${hasToken ? 'Creating real issues' : 'File-based tracking only'}`);
   } else {
     console.log(`🎯 Production mode: ${hasToken ? 'Creating real issues' : 'File-based tracking only'}`);
   }
@@ -546,7 +549,13 @@ async function main(testFiles = null, options = {}) {
   }
 
   // Get files to check
-  const filesToCheck = getChangedFiles(testFiles);
+  let filesToCheck;
+  if (scanAll && !testFiles) {
+    console.log('📊 Scanning all English example files...');
+    filesToCheck = getAllEnglishExampleFiles();
+  } else {
+    filesToCheck = getChangedFiles(testFiles);
+  }
   
   if (filesToCheck.length === 0) {
     console.log('✅ No English example files changed');
