@@ -7,6 +7,7 @@ interface CodeBundle {
   js?: string;
   base?: string;
   scripts?: string[];
+  instanceMode?: boolean;
 }
 
 /*
@@ -44,7 +45,7 @@ ${code.css || ""}
 </style>
 <!-- If we need an addon script, load p5 the usual way with no caching to make sure
 the import order doesn't get messed up. -->
-${((code.scripts?.length ?? 0) > 0 ? [cdnLibraryUrl, ...(code.scripts ?? [])] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
+${(code.instanceMode || (code.scripts?.length ?? 0) > 0 ? [cdnLibraryUrl, ...(code.scripts ?? [])] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${wrapSketch(code.js) || ""}</script>
 ${(code.scripts?.length ?? 0) > 0 ? '' : `
@@ -161,6 +162,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
           htmlBody: props.htmlBodyCode,
           base: props.base,
           scripts: props.scripts,
+          instanceMode: props.jsCode.includes('new p5'),
         }) : undefined}
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"

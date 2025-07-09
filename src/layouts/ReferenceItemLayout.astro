@@ -21,6 +21,7 @@ import { setJumpToState } from "../globals/state";
 import { p5Version } from "../globals/p5-version";
 import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
 import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
+import _ from 'lodash';
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -121,9 +122,9 @@ const descriptionParts = description.split(
       )}
       {descriptionParts.map((part) => {
         if (part.startsWith('<pre')) {
-          const exampleCode = part
+          const exampleCode = _.unescape(part
             .replace(/<pre><code class="language-js example">/, '')
-            .replace(/<\/code><\/pre>/, '');
+            .replace(/<\/code><\/pre>/, ''));
 
           return (
             <CodeEmbed
