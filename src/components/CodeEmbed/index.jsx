@@ -36,7 +36,7 @@ export const CodeEmbed = (props) => {
   );
 
   let { previewWidth, previewHeight } = props;
-  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
+  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:\w+\.)?(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
   if (canvasMatch) {
     previewWidth = previewWidth || parseFloat(canvasMatch[1]);
     previewHeight = previewHeight || parseFloat(canvasMatch[2]);
