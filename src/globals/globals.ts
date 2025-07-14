@@ -23,6 +23,6 @@ export const libraryDownloadUrl =
 export const minifiedLibraryDownloadUrl =
   `https://github.com/processing/p5.js/releases/download/v${p5Version}/p5.min.js` as const;
 export const cdnSoundUrl =
-  (!!import.meta.env?.PUBLIC_P5_LIBRARY_PATH || p5Version.startsWith('v2'))
-    ? `https://cdn.jsdelivr.net/npm/p5.sound@${p5SoundVersion}` as const
+  (!!import.meta.env?.PUBLIC_P5_LIBRARY_PATH || p5Version.startsWith('2'))
+    ? `https://cdn.jsdelivr.net/npm/p5.sound@${p5SoundVersion}/dist/p5.sound.min.js` as const
     : `https://cdn.jsdelivr.net/npm/p5@${p5Version}/lib/addons/p5.sound.min.js` as const
