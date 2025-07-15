@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useLiveRegion } from '../hooks/useLiveRegion';
 import CircleButton from "../CircleButton";
 
 interface CopyCodeButtonProps {
@@ -12,23 +13,7 @@ export const CopyCodeButton = ({
 }: CopyCodeButtonProps) => {
   const [isCopied, setIsCopied] = useState(false);
 
-  // const liveId = useId();
-  const [liveId] = useState(
-    () => 'copy-live-' + Math.random().toString(36).slice(2)
-  );
-
-  /** Write a message into the live region so screen readers will announce it */
-  const announce = (message: string) => {
-    const region = document.getElementById(liveId) as HTMLSpanElement | null;
-    if (!region) return;
-
-    region.textContent = message;
-
-    // Clear the text after 1 s so a future announcement will fire again
-    setTimeout(() => {
-      region.textContent = '';
-    }, 1000);
-  };
+  const { ref: liveRegionRef, announce } = useLiveRegion<HTMLSpanElement>();
 
   const copyTextToClipboard = async () => {
     console.log('Copy button clicked');
@@ -103,7 +88,7 @@ export const CopyCodeButton = ({
         )}
       </CircleButton>
       {/* Visually hidden live region for accessibility announcements */}
-      <span id={liveId} aria-live="polite" class="sr-only" />
+      <span ref={liveRegionRef} aria-live="polite" class="sr-only" />
     </>
   );
 };
