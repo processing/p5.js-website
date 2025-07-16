@@ -30,30 +30,7 @@ const SearchProvider = ({
   const [results, setResults] = useState<SearchResult[]>([]);
 
   // Flattens the search index data
-  const flattenData = (data: FuseResult<SearchResult>) => {
-    const flatData: SearchResult[] = [];
-    let flatId = 0;
-    Object.entries(data).forEach(([category, entries]) => {
-      Object.entries(entries).forEach(([title, docDetails]) => {
-        // Since we are generating these links with Javascript and the
-        // middleware doesn't prefix the locale automatically, we need to
-        // do it manually here.
-        const relativeUrl =
-          currentLocale === defaultLocale
-            ? docDetails.relativeUrl
-            : `/${currentLocale}${docDetails.relativeUrl}`;
-        docDetails.relativeUrl = relativeUrl;
-        flatData.push({
-          id: flatId++,
-          category: category.replace("-fallback", ""),
-          title,
-          ...docDetails,
-        });
-      });
-    });
-
-    return flatData;
-  };
+  
 
   // Read the search term from query params on first load
   useEffect(() => {
@@ -80,6 +57,30 @@ const SearchProvider = ({
     }
 
     if (!searchTerm) return;
+    const flattenData = (data: FuseResult<SearchResult>) => {
+      const flatData: SearchResult[] = [];
+      let flatId = 0;
+      Object.entries(data).forEach(([category, entries]) => {
+        Object.entries(entries).forEach(([title, docDetails]) => {
+          // Since we are generating these links with Javascript and the
+          // middleware doesn't prefix the locale automatically, we need to
+          // do it manually here.
+          const relativeUrl =
+            currentLocale === defaultLocale
+              ? docDetails.relativeUrl
+              : `/${currentLocale}${docDetails.relativeUrl}`;
+          docDetails.relativeUrl = relativeUrl;
+          flatData.push({
+            id: flatId++,
+            category: category.replace("-fallback", ""),
+            title,
+            ...docDetails,
+          });
+        });
+      });
+  
+      return flatData;
+    };
 
     let flatData;
 

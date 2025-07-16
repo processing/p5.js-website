@@ -22,9 +22,9 @@ const parsersOutPath = path.join(__dirname, "out");
  */
 export const parseLibraryReference =
   async (): Promise<ParsedLibraryReference | null> => {
-    let latestRelease = p5Version;
-    if (/^\d+\.\d+\.\d+$/.exec(latestRelease)) {
-      latestRelease = 'v' + latestRelease;
+    let latestRelease:string = p5Version;
+    if (/^\d+\.\d+\.\d+(-[\w.]+)?$/.exec(latestRelease)) {
+      latestRelease = `v${  latestRelease}`;
     }
 
     const useExternalP5Sound = !!process.env.P5_REPO_BRANCH ||
@@ -44,7 +44,7 @@ export const parseLibraryReference =
     // If we're using a custom build of p5 instead of a public release, create
     // a build and copy it to the specified path
     if (process.env.PUBLIC_P5_LIBRARY_PATH) {
-      await createP5Build('p5.js', '../../../public' + process.env.PUBLIC_P5_LIBRARY_PATH);
+      await createP5Build('p5.js', `../../../public${  process.env.PUBLIC_P5_LIBRARY_PATH}`);
     }
 
     // Copy the reference output so we can process it
@@ -67,7 +67,7 @@ export const parseLibraryReference =
 
       // Fix p5.sound classes
       for (const key in soundData.classes) {
-        const newName = 'p5.' + soundData.classes[key].name;
+        const newName = `p5.${  soundData.classes[key].name}`;
         const updated = {
           ...soundData.classes[key],
           name: newName,
@@ -76,7 +76,7 @@ export const parseLibraryReference =
         delete soundData.classes[key];
       }
       for (const item of soundData.classitems) {
-        item.class = 'p5.' + item.class;
+        item.class = `p5.${  item.class}`;
       }
 
       result = await combineYuidocData(
