@@ -57,23 +57,5 @@ type RemixEntry = {
   remixLabel: string;
 };
 
-export const remixLookup: { [key: string]: RemixEntry } = {
-  "revision-2023-calebfoss": {
-    attributionURL: "https://github.com/calebfoss",
-    attributionLabel: "Caleb Foss",
-    remixURL: "https://github.com/processing/p5.js-example",
-    remixLabel: "Revised in 2023",
-  },
-  "revision-2023-dkessner": {
-    attributionURL: "https://github.com/dkessner",
-    attributionLabel: "Darren Kessner",
-    remixURL: "https://github.com/processing/p5.js-example",
-    remixLabel: "Revised in 2023",
-  },
-  "revision-2023-klich": {
-    attributionURL: "https://www.klich.co/",
-    attributionLabel: "Kasey Lichtlyter",
-    remixURL: "https://github.com/processing/p5.js-example",
-    remixLabel: "Revised in 2023",
-  },
-};
+
+// TODO instead of this emit a warning if there's multiple URLs used for the same person
