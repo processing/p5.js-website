@@ -141,19 +141,11 @@ const jumpCategoryData = categoryData.length === 1
   : categoryData;
 
 const pageJumpToLinks: JumpToLink[] = jumpCategoryData
-  .map((categoryItem) => ({
-    label: categoryItem.name as string,
-    url: `#${categoryItem.name}`,
-  }))
-   .filter((link, index) => {
-    if (link.label === undefined) {
-      return false; // Completely remove all undefined labels
-    }
-    if (categoryData.length === 1 && index === 1) {
-      return false; // Specifically remove the redundant subcat under main cat
-    }
-    return true;
-  });
+  .filter((category) => !!category.name)  // REMOVE undefined ones
+  .map((category) => ({
+    label: category.name as string,
+    url: `#${category.name}`,
+  }));
 
 const pageJumpToState: JumpToState = {
   links: pageJumpToLinks,
