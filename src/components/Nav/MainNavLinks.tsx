@@ -27,6 +27,7 @@ export const MainNavLinks = ({
   isOpen,
   hasJumpTo,
 }: MainNavLinksProps) => {
+  
   //Fix : Menu list automatically expands on Tab key navigation but is not visible
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
