@@ -1,6 +1,7 @@
 import styles from "./styles.module.scss";
 import { Logo } from "../Logo";
 import { Icon } from "../Icon";
+import { useEffect, useRef } from "preact/hooks";
 
 type MainNavLinksProps = {
   links: {
@@ -26,6 +27,38 @@ export const MainNavLinks = ({
   isOpen,
   hasJumpTo,
 }: MainNavLinksProps) => {
+  //Fix : Menu list automatically expands on Tab key navigation but is not visible
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e : KeyboardEvent) => {
+      if (e.key === "Tab"){
+        requestAnimationFrame(()=>{
+          const active = document.activeElement;
+          if (menuRef.current && buttonRef.current && !menuRef.current.contains(active as Node) && !buttonRef.current.contains(active as Node)) {
+
+            if (isOpen){
+              handleToggle();
+            }
+            
+          }
+        });
+      }
+    };
+
+    document.addEventListener("keydown",handleKeyDown);
+    
+
+  
+    return () => {
+      document.removeEventListener("keydown",handleKeyDown)
+    }
+  }, [isOpen , handleToggle])
+  
+
+
+
   if (!links || links?.length <= 0) return null;
 
   const renderLogo = () => (
@@ -43,6 +76,7 @@ export const MainNavLinks = ({
       </a>
 
       <button
+        ref={buttonRef}
         class={styles.toggle}
         onClick={handleToggle}
         aria-expanded={isOpen}
@@ -67,6 +101,7 @@ export const MainNavLinks = ({
 
   return (
     <div
+      ref={menuRef}
       class={`${styles.mainlinks} ${isOpen && "open"} ${
         !hasJumpTo && "noJumpTo"
       }`}
