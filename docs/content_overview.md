@@ -11,6 +11,8 @@
 - Stored in `/src/content/examples/`
 - All translations are stored and edited directly in this repo under the corresponding language folder in `/src/content/examples/`
 
+All original examples (created new for p5.js) since 2024 are collectively attributed to p5.js Contributors under the CC-BY-NC-SA 4.0 license. However, examples that build on prior work (under a compatible license) can be attributed in more detail, to make sure that authorship is clear in citation, and code history is available to viewers.
+
 To add attribution, you can use the following block in the headers, listing in chronological order all arrtibutions. Below is the example from `examples/animation-and-variables-conditions/`:
 
 ```yaml
@@ -21,8 +23,9 @@ remix:
       - name: Prof. WM Harris
         URL: https://people.rit.edu/wmhics/
 
-    codeURL: https://github.com/processing/p5.js-website-legacy/blob/main/src/data/examples/en/04_Control/05_Logical_Operators_2.js
-    codeLabel: pre-2023 code
+    code:
+      - URL: https://github.com/processing/p5.js-website-legacy/blob/main/src/data/examples/en/04_Control/05_Logical_Operators_2.js
+      - label: pre-2023 code
 
   - description: Revised by
 
@@ -30,8 +33,9 @@ remix:
       - name: Caleb Foss
         URL: https://github.com/calebfoss
  
-    codeURL: https://github.com/processing/p5.js-example/tree/main/examples/02_Animation_And_Variables/03_Conditions
-    codeLabel: 2023 revision code
+    code:
+      - URL: https://github.com/processing/p5.js-example/tree/main/examples/02_Animation_And_Variables/03_Conditions
+        label: 2023 revision code
 
   - collectivelyAttributedSince: 2024
 ```
@@ -40,11 +44,9 @@ This will result in a block that lists, in order, the initial inspiration; any r
 
 A remix can be many things ([here is an example analysis of sketch remixing (PDF)](https://dl.acm.org/doi/pdf/10.1145/3563657.3595969)); the `description` will be by default "Remixed by", so a more specific description is recommended.
 
-If the `collectivelyAttributedSince` information is missing, then no year will be included, but the collective attribution statement will still show: "Edited and maintained by p5.js Contributors and the Processing Foundation. Licensed under CC BY-NC-SA 4.0."
+If the `collectivelyAttributedSince` information is missing, then no year will be included, but the collective attribution statement will still show: "Edited and maintained by p5.js Contributors and the Processing Foundation. Licensed under CC BY-NC-SA 4.0." You'll see this in examples that were part of a major revision project with specific attribution, but have collective authorship before and after.
 
-Each item in the remix history must have an original codeURL and/or at least one person listed in the attribution section. When multiple people are listed, their names will be shown in that order. For people, URLs are optional but recommended.
-
-If no `codeLabel` is given but there is a `codeURL`, then the default label "code" will be used - however, for accessibility, it is strongly recommended to use short, descriptive labels.
+Each item in the remix history must have an at least one person listed in the attribution section. When multiple people are listed, their names will be shown in that order. For people, URLs are optional but recommended.
 
 ---
 

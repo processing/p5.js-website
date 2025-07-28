@@ -22,23 +22,26 @@ export const examplesCollection = defineCollection({
       // Optional list of remixes to add to license
       remix: z
         .array(
-          z.union([
-            z.string(),
-            z.object({
-              description: z.string().default("Remixed by"),
-              codeURL: z.string().optional(),
-              codeLabel: z.string().optional(),
-              attribution: z
-                .array(
-                  z.object({
-                    name: z.string(),
-                    URL: z.string().optional(),
-                  })
-                )
-                .optional(),
-              collectivelyAttributedSince: z.number().optional(),
-            }),
-          ])
+          z.object({
+            description: z.string().default("Remixed by"),
+            attribution: z
+              .array(
+                z.object({
+                  name: z.string(),
+                  URL: z.string().optional(),
+                })
+              )
+              .optional(),
+            code: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  URL: z.string(),
+                })
+              )
+              .optional(),
+            collectivelyAttributedSince: z.number().optional(),
+          })
         )
         .optional()
         .default([]),

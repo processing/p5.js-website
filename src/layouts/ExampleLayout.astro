@@ -46,13 +46,17 @@ const { Content } = await example.render();
 // Extract the collective attribution year. If multiple provided, uses last shown.
 const collectivelyAttributedSince = example.data.remix?.reduce(
   (acc: number | null, item) => {
-    if (typeof item === "string") return acc;
     if (item.collectivelyAttributedSince) {
       return item.collectivelyAttributedSince;
     }
     return acc;
   },
   null
+);
+
+// Boolean value on whether the remix history contains links to code
+const remixHistoryHasCodeLinks = example.data.remix?.some(
+  (item) => Array.isArray(item.code) && item.code.length > 0
 );
 
 ---
@@ -77,19 +81,19 @@ const collectivelyAttributedSince = example.data.remix?.reduce(
       <Content />
     </div>
     <div class="rendered-markdown">
+      <img src="/images/by-nc-sa.svg" />
+
       <p>
 
       <a href={Astro.url.pathname}>{example.data.title}</a>:{" "}
 
       {example.data.remix?.map((item, i) => {
-        if (typeof item === "string") return null;
-
         const parts = [];
 
-        // Each remix entry requires either attribution, or a codeURL; these have no defaults
+        // Each remix entry requires at least one attribution
         // If a remix entry contains a collective attribution starting year, it is ignored here
 
-        if (!item.collectivelyAttributedSince && (item.attribution || item.codeURL)) {
+        if (!item.collectivelyAttributedSince && item.attribution) {
           parts.push(<>{item.description}</>);
 
           if (item.attribution?.length) {
@@ -99,18 +103,14 @@ const collectivelyAttributedSince = example.data.remix?.reduce(
                 {item.attribution.map((a, j) => (
                   <>
                     {a.URL ? <a href={a.URL}>{a.name}</a> : a.name}
-                    {j < (item.attribution?.length ?? 0) - 1 ? ", " : !item.codeURL ? "." : ""}
+                    {
+                      item.attribution?.length
+                      ? j < item.attribution.length - 1 ? ", " : "."
+                      : ""
+                    }
                   </>
                 ))}
               </>
-            );
-          }
-
-          if (item.codeURL) {
-            parts.push(
-              <span>
-                (<a href={item.codeURL}>{item.codeLabel || "code"}</a>).
-              </span>
             );
           }
         }
@@ -131,7 +131,30 @@ const collectivelyAttributedSince = example.data.remix?.reduce(
         <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
       </span>
     </p>
-    <img src="/images/by-nc-sa.svg" />
+
+    <p>
+      {remixHistoryHasCodeLinks ? (
+        <>
+          View example history:{" "}
+          {example.data.remix
+            .map(item => item?.code)
+            .flat()
+            .filter(codeItem => codeItem && codeItem.URL)
+            .map((codeItem, i, codeItemsList) => (
+              <>
+                <a href={codeItem?.URL}>{codeItem?.label}</a>{
+                  i < (codeItemsList?.length ?? 0) - 1 ? ", " : "... "
+                }
+              </>
+            ))}
+          or <a href="https://github.com/processing/p5.js-website">contribute to the current website</a>!
+        </>
+      ) : (
+        <></>
+      )}
+    </p>
+
+
   </div>
 
   <EditableSketch code={code} />
