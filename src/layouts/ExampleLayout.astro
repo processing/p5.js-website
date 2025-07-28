@@ -43,14 +43,17 @@ const relatedReferences =
 
 const { Content } = await example.render();
 
-const collectivelyAttributedSince = example.data.remix?.reduce((acc, item) => {
-  if (typeof item === "string") return acc;
-  if (item.collectivelyAttributedSince) {
-    return item.collectivelyAttributedSince;
-  }
-  return acc;
-}, null);
-
+// Extract the collective attribution year. If multiple provided, uses last shown.
+const collectivelyAttributedSince = example.data.remix?.reduce(
+  (acc: number | null, item) => {
+    if (typeof item === "string") return acc;
+    if (item.collectivelyAttributedSince) {
+      return item.collectivelyAttributedSince;
+    }
+    return acc;
+  },
+  null
+);
 
 ---
 
@@ -83,6 +86,9 @@ const collectivelyAttributedSince = example.data.remix?.reduce((acc, item) => {
 
         const parts = [];
 
+        // Each remix entry requires either attribution, or a codeURL; these have no defaults
+        // If a remix entry contains a collective attribution starting year, it is ignored here
+
         if (!item.collectivelyAttributedSince && (item.attribution || item.codeURL)) {
           parts.push(<>{item.description}</>);
 
@@ -93,7 +99,7 @@ const collectivelyAttributedSince = example.data.remix?.reduce((acc, item) => {
                 {item.attribution.map((a, j) => (
                   <>
                     {a.URL ? <a href={a.URL}>{a.name}</a> : a.name}
-                    {j < item.attribution.length - 1 ? ", " : !item.codeURL ? "." : ""}
+                    {j < (item.attribution?.length ?? 0) - 1 ? ", " : !item.codeURL ? "." : ""}
                   </>
                 ))}
               </>
@@ -109,7 +115,7 @@ const collectivelyAttributedSince = example.data.remix?.reduce((acc, item) => {
           }
         }
 
-        return <span key={i}>{i > 0 && " "}{parts}</span>;
+        return <span>{i > 0 && " "}{parts}</span>;
       })}
 
       {collectivelyAttributedSince ? (
