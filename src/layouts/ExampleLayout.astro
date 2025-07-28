@@ -2,7 +2,6 @@
 import type { CollectionEntry } from "astro:content";
 import Head from "@components/Head/index.astro";
 import { setJumpToState } from "../globals/state";
-import { remixLookup } from "../content/examples/config";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import {
   generateJumpToState,
@@ -42,13 +41,17 @@ const relatedReferences =
       )
     : [];
 
-// Rather than using example.data.remix, use resolvedRemix
-// Which fills in widely-used attributions to avoid duplication
-const resolvedRemix = example.data.remix.map((entry: any) =>
-  typeof entry === "string" ? remixLookup[entry] : entry
-);
-
 const { Content } = await example.render();
+
+const collectivelyAttributedSince = example.data.remix?.reduce((acc, item) => {
+  if (typeof item === "string") return acc;
+  if (item.collectivelyAttributedSince) {
+    return item.collectivelyAttributedSince;
+  }
+  return acc;
+}, null);
+
+
 ---
 
 <Head
@@ -73,67 +76,60 @@ const { Content } = await example.render();
     <div class="rendered-markdown">
       <p>
 
-        <a href={Astro.url.pathname}>{example.data.title}</a>:   
+      <a href={Astro.url.pathname}>{example.data.title}</a>:{" "}
 
-        {resolvedRemix?.map((item, i) => (
-          <>
-            {i > 0 && " "}
-            {item.remixLabel ? (
+      {example.data.remix?.map((item, i) => {
+        if (typeof item === "string") return null;
+
+        const parts = [];
+
+        if (!item.collectivelyAttributedSince && (item.attribution || item.codeURL)) {
+          parts.push(<>{item.description}</>);
+
+          if (item.attribution?.length) {
+            parts.push(
               <>
-                {item.remixURL ? (
+                {" "}
+                {item.attribution.map((a, j) => (
                   <>
-                    <a href={item.remixURL}>{item.remixLabel}</a> by
+                    {a.URL ? <a href={a.URL}>{a.name}</a> : a.name}
+                    {j < item.attribution.length - 1 ? ", " : !item.codeURL ? "." : ""}
                   </>
-                ) : (
-                  item.remixLabel
-                )}
-
-                {item.attributionLabel && (
-                  <>
-                    {" "}
-                    {item.attributionURL ? (
-                      <a href={item.attributionURL}>{item.attributionLabel}</a>
-                    ) : (
-                      item.attributionLabel
-                    )}.
-                  </>
-                )}
+                ))}
               </>
-            ) : item.attributionLabel ? (
-              <>
-                Remixed from{" "}
-                {item.attributionURL ? (
-                  <a href={item.attributionURL}>{item.attributionLabel}</a>
-                ) : (
-                  item.attributionLabel
-                )}.
-              </>
-            ) : null}
-          </>
-        ))}
+            );
+          }
 
-        {example.data.collectivelyAttributedSince ? (
-          <>
-            From {example.data.collectivelyAttributedSince} onwards, edited and maintained by
-          </>
-        ) : (
-          <>
-            Edited and maintained by
-          </>
-        )}
-        
-        <a href="https://github.com/processing/p5.js?tab=readme-ov-file#contributors">p5.js Contributors</a>
-        and the
+          if (item.codeURL) {
+            parts.push(
+              <span>
+                (<a href={item.codeURL}>{item.codeLabel || "code"}</a>).
+              </span>
+            );
+          }
+        }
+
+        return <span key={i}>{i > 0 && " "}{parts}</span>;
+      })}
+
+      {collectivelyAttributedSince ? (
+        <>From {collectivelyAttributedSince} onwards, edited and maintained by{" "}</>
+      ) : (
+        <>Edited and maintained by{" "}</>
+      )}
+      <span>
+        <a href="https://github.com/processing/p5.js?tab=readme-ov-file#contributors">p5.js Contributors</a>{" "}
+        and the{" "}
         <a href="https://processingfoundation.org/people">Processing Foundation</a>.
         Licensed under{" "}
         <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+      </span>
+    </p>
+    <img src="/images/by-nc-sa.svg" />
+  </div>
 
-      </p>
-      <img src="/images/by-nc-sa.svg" />
-    </div>
-
-    <EditableSketch code={code} />
-    <p>{example.data.arialabel}</p>
+  <EditableSketch code={code} />
+  <p>{example.data.arialabel}</p>
 
   </div>
   <div class="grid gap-y-4xl lg:gap-y-mb-3xl mt-2xl">
