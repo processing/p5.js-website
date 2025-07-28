@@ -77,6 +77,8 @@ const SearchResults = ({
                 value={category}
                 className="capitalize"
                 onClick={() => toggleFilter(category)}
+                aria-pressed={currentFilter === category}
+                aria-label={`Filter by ${uiTranslations[uiTranslationKey(category)]}`}
               >
                 <div class="flex flex-nowrap gap-xs">
                   {uiTranslations[uiTranslationKey(category)]}
@@ -131,6 +133,7 @@ const SearchResults = ({
             type="submit"
             class="absolute right-0 top-[2px] px-[22px] py-[13px]"
             onClick={submitInput}
+            aria-label="Submit search"
           >
             <Icon kind="arrow-lg" />
           </button>
@@ -139,6 +142,7 @@ const SearchResults = ({
             type="reset"
             class="absolute right-0 top-0 px-[22px] py-[13px]"
             onClick={clearInput}
+            aria-label="Clear search input"
           >
             <Icon kind="close-lg" />
           </button>

@@ -221,9 +221,10 @@ export const ReferenceDirectoryWithFilter = ({
               }}
             />
             {searchKeyword.length > 0 && (
-              <button type="reset" class="" onClick={clearInput}>
-                <Icon kind="close" className="h-4 w-4" />
-              </button>
+            <button type="reset" class="" onClick={clearInput} aria-label="Clear search input">
+          <Icon kind="close" className="h-4 w-4" />
+        </button>
+
             )}
           </div>
         </div>
