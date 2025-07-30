@@ -2,12 +2,13 @@ import { z, defineCollection } from "astro:content";
 import { relatedContent } from "../shared";
 
 export const categories = [
+  "2.0",
   "introduction",
   "drawing",
   "web-design",
   "accessibility",
   "criticalAI",
-  "p5-strands",
+  // "p5-strands",
   "webgl",
   "advanced",
 ] as const;

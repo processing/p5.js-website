@@ -23,6 +23,7 @@ import { Icon } from "../Icon";
  *   allowSideBySide?: boolean
  *   fullWidth?: boolean
  *   includeSound?: boolean
+ *   scripts?: string[]
  * }
  */
 export const CodeEmbed = (props) => {
@@ -96,7 +97,10 @@ export const CodeEmbed = (props) => {
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
-              scripts={props.includeSound ? [cdnSoundUrl] : []}
+              scripts={[
+                ...(props.includeSound ? [cdnSoundUrl] : []),
+                ...(props.scripts ?? []),
+              ]}
             />
           </div>
           <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
