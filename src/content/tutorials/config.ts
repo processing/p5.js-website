@@ -8,7 +8,7 @@ export const categories = [
   "web-design",
   "accessibility",
   "criticalAI",
-  "p5-strands",
+  // "p5-strands",
   "webgl",
   "advanced",
 ] as const;
