@@ -876,7 +876,7 @@ function draw() {
 
 We've got a nice looking postcard already! But since this isn't going to be a physical postcard--we're going to put it on a website--we want viewers who use screen readers to be able to tell what's on the canvas.
 
-To do so, we can use `describe()` in setup, and write a short, descriptive string about what we've drawn.
+To do so, we can use `describe()` in setup, and write a short, descriptive string about what we've drawn. [Check out our `describe` tutorial](https://p5js.org/tutorials/writing-accessible-canvas-descriptions/) for more info!
 
 ```js
 describe(`An old postcard that says, "Greetings from ${greeting}"`);
@@ -1404,6 +1404,28 @@ function draw() {
 }
 `} />
 
+## High-res exports
+
+We have a small canvas here, what would you do if you wanted to get a high-res image saved?
+
+Well, first, I'll add `setAttributes({ antialias: true })` after the `createCanvas` line to make sure our edges are nice and smooth.
+
+Then, we can use `pixelDensity()` to make the sketch draw at higher resolution than what the screen needs. If the default size is 600x400, a pixel density of 2 will render 1200x800 pixels, even though the canvas looks the same size onscreen.
+
+Often, to save an image, you'll wait for a key to be pressed (e.g. the s key), set the pixel density very high, redraw, save the canvas, then set it back. We'll use this technique by defining the keyPressed function, which p5.js will call whenever a key is pressed, and checking the value of key, a global variable set to the recent key. Here's a snippet you can add to a sketch to add that functionality:
+
+```js
+async function keyPressed() {
+  if (key === 's') {
+    const prevDensity = pixelDensity();
+    pixelDensity(3); // Make the canvas high res
+    await redraw(); // Redraw the canvas at high res
+    save('sketch.png');
+    pixelDensity(prevDensity); // Put the density back
+  }
+}
+```
+
 ## Mouse interactivity
 
 Let's make it so that when you mouse over each letter, the animation for that letter restarts! To do this, rather than having a **fixed** start time for each letter, we'll make a variable start time that we can update dynamically. We'll make a **variable** at the top with the start time for each letter, and then refer to those times in `draw()` when calculating the progress.
@@ -1590,19 +1612,7 @@ function draw() {
   );
   pop();
 }
-`} />
 
-## High-res exports
-
-We have a small canvas here, what would you do if you wanted to get a high-res image saved?
-
-Well, first, I'll add `setAttributes({ antialias: true })` after the `createCanvas` line to make sure our edges are nice and smooth.
-
-Then, we can use `pixelDensity()` to make the sketch draw at higher resolution than what the screen needs. If the default size is 600x400, a pixel density of 2 will render 1200x800 pixels, even though the canvas looks the same size onscreen.
-
-Often, to save an image, you'll wait for a key to be pressed (e.g. the s key), set the pixel density very high, redraw, save the canvas, then set it back. We'll use this technique by defining the keyPressed function, which p5.js will call whenever a key is pressed, and checking the value of key, a global variable set to the recent key. Here's a snippet you can add to a sketch to add that functionality:
-
-```js
 async function keyPressed() {
   if (key === 's') {
     const prevDensity = pixelDensity();
@@ -1612,7 +1622,7 @@ async function keyPressed() {
     pixelDensity(prevDensity); // Put the density back
   }
 }
-```
+`} />
 
 ## Add your postcard to the collection!
 
