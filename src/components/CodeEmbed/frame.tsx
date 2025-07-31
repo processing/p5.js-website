@@ -163,7 +163,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
           base: props.base,
           scripts: props.scripts,
           instanceMode: props.jsCode.includes('new p5'),
-        }) : undefined}
+        }) : ""}
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
         title="Code Preview"

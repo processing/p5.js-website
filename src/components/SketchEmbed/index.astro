@@ -1,5 +1,6 @@
 ---
 import { CodeFrameForServer } from "../CodeEmbed/frameForServer";
+import { CodeFrame } from "../CodeEmbed/frame";
 
 interface Props {
   code: string;
@@ -7,19 +8,27 @@ interface Props {
   bodyCode?: string;
   width?: number | string;
   height?: number | string;
+  scripts?: string[];
+  hideOffscreen?: boolean;
 }
 
 const defaultHeight = 400,
   defaultWidth = "100%";
 
-const { code, cssCode, bodyCode, height, width } = Astro.props;
+const { code, cssCode, bodyCode, height, width, scripts, hideOffscreen } = Astro.props;
 // A component that displays a full-width sketch without showing its code.
----
 
-<CodeFrameForServer
-  jsCode={code}
-  cssCode={cssCode}
-  htmlBodyCode={bodyCode}
-  height={height || defaultHeight}
-  width={width || defaultWidth}
-/>
+const frameProps = {
+  jsCode: code,
+  cssCode: cssCode,
+  htmlBodyCode: bodyCode,
+  height: height || defaultHeight,
+  width: width || defaultWidth,
+  scripts,
+};
+---
+{hideOffscreen ? (
+  <CodeFrame client:only {...frameProps} />
+) : (
+  <CodeFrameForServer {...frameProps} />
+)}

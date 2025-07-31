@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "preact/hooks";
+import { useLiveRegion } from '../hooks/useLiveRegion';
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
@@ -22,9 +23,11 @@ import { Icon } from "../Icon";
  *   allowSideBySide?: boolean
  *   fullWidth?: boolean
  *   includeSound?: boolean
+ *   scripts?: string[]
  * }
  */
 export const CodeEmbed = (props) => {
+  const { ref: liveRegionRef, announce } = useLiveRegion();
   const [rendered, setRendered] = useState(false);
   const initialCode = props.initialValue ?? "";
   // Source code from Google Docs sometimes uses a unicode non-breaking space
@@ -59,6 +62,7 @@ export const CodeEmbed = (props) => {
     } else {
       setPreviewCodeString(codeString);
     }
+    announce("Sketch is running");
   };
 
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
@@ -93,7 +97,10 @@ export const CodeEmbed = (props) => {
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
-              scripts={props.includeSound ? [cdnSoundUrl] : []}
+              scripts={[
+                ...(props.includeSound ? [cdnSoundUrl] : []),
+                ...(props.scripts ?? []),
+              ]}
             />
           </div>
           <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
@@ -108,6 +115,7 @@ export const CodeEmbed = (props) => {
               className="bg-bg-gray-40"
               onClick={() => {
                 setPreviewCodeString("");
+                announce("Sketch stopped");
               }}
               ariaLabel="Stop sketch"
             >
@@ -148,6 +156,7 @@ export const CodeEmbed = (props) => {
             onClick={() => {
               setCodeString(initialCode);
               setPreviewCodeString(initialCode);
+              announce("Code reset to initial value.");
             }}
             ariaLabel="Reset code to initial value"
             className="bg-white text-black"
@@ -156,6 +165,7 @@ export const CodeEmbed = (props) => {
           </CircleButton>
         </div>
       </div>
+      <span ref={liveRegionRef} aria-live="polite" class="sr-only" />
     </div>
   );
 };
