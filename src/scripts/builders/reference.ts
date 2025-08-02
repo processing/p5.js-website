@@ -161,8 +161,8 @@ const correctRelativeLinksToExampleAssets = (
     return content;
   }
   return Array.isArray(content)
-    ? content.map((ex) => ex.replaceAll("assets/", "/assets/").replaceAll(/\n$/g, ""))
-    : content.replaceAll("assets/", "/assets/");
+  ? content.map((ex) => ex.replaceAll(/(?<!\/)assets\//g, "/assets/").replaceAll(/\n$/g, ""))
+  : content.replaceAll(/(?<!\/)assets\//g, "/assets/");
 };
 
 /**
