@@ -6,6 +6,7 @@ interface CodeBundle {
   htmlBody?: string;
   js?: string;
   base?: string;
+  scripts?: string[]
 }
 
 /*
@@ -29,6 +30,7 @@ ${code.css || ""}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${code.js || ""}</script>
 <script src="${cdnLibraryUrl}"></script>
+${(code.scripts || []).map(src => `<script src="${src}"></script>`).join('\n')}
 `.replace(/\u00A0/g, " ");
 
 export interface CodeFrameProps {
@@ -38,6 +40,7 @@ export interface CodeFrameProps {
   height?: number | string;
   width?: number | string;
   base?: string;
+  scripts?: string[]
 }
 
 /*
@@ -88,6 +91,7 @@ export const CodeFrameForServer = (props: CodeFrameProps) => {
           css: props.cssCode,
           htmlBody: props.htmlBodyCode,
           base: props.base,
+          scripts: props.scripts,
         })}
         sandbox="allow-scripts allow-popups allow-modals allow-forms"
         aria-label="Code Preview"
