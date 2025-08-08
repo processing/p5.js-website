@@ -140,10 +140,12 @@ const jumpCategoryData = categoryData.length === 1
   ? [...categoryData, ...categoryData[0].subcats]
   : categoryData;
 
-const pageJumpToLinks: JumpToLink[] = jumpCategoryData.map((category) => ({
-  label: category.name as string,
-  url: `#${category.name}`,
-}));
+const pageJumpToLinks: JumpToLink[] = jumpCategoryData
+  .filter((category) => !!category.name)  // REMOVE undefined ones
+  .map((category) => ({
+    label: category.name as string,
+    url: `#${category.name}`,
+  }));
 
 const pageJumpToState: JumpToState = {
   links: pageJumpToLinks,
