@@ -3,18 +3,16 @@ title: modify
 module: 3D
 submodule: Material
 file: src/webgl/p5.Shader.js
-description: >
+description: >-
   <p>Returns a new shader, based on the original, but with custom snippets
 
   of shader code replacing default behaviour.</p>
 
   <p>Each shader may let you override bits of its behavior. Each bit is called
 
-  a hook. A hook is either for the vertex shader, if it affects the
+  a hook. For example, a hook can let you adjust positions of vertices, or
 
-  position of vertices, or in the fragment shader, if it affects the pixel
-
-  color. You can inspect the different hooks available by calling
+  the color of a pixel. You can inspect the different hooks available by calling
 
   <a
   href="/reference/p5.Shader/inspectHooks/"><code>yourShader.inspectHooks()</code></a>.
@@ -25,8 +23,116 @@ description: >
 
   see what hooks they have available.</p>
 
-  <p><code>modify()</code> takes one parameter, <code>hooks</code>, an object
-  with the hooks you want
+  <p><code>modify()</code> can be passed a function as a parameter. Inside, you
+  can override hooks
+
+  by calling them as functions. Each hook will take in a callback that takes in
+  inputs
+
+  and is expected to return an output. For example, here is a function that
+  changes the
+
+  material color to red:</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = baseMaterialShader().modify(() => {
+      getPixelInputs((inputs) => {
+        inputs.color = [inputs.texCoord, 0, 1];
+        return inputs;
+      });
+    });
+  }
+
+
+  function draw() {
+    background(255);
+    noStroke();
+    shader(myShader); // Apply the custom shader
+    plane(width, height); // Draw a plane with the shader applied
+  }</code></pre><p>In addition to calling hooks, you can create uniforms, which
+  are special variables
+
+  used to pass data from p5.js into the shader. They can be created by calling
+  <code>uniform</code> + the
+
+  type of the data, such as <code>uniformFloat</code> for a number of
+  <code>uniformVector2</code> for a two-component vector.
+
+  They take in a function that returns the data for the variable. You can then
+  reference these
+
+  variables in your hooks, and their values will update every time you apply
+
+  the shader with the result of your function.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = baseMaterialShader().modify(() => {
+      // Get the current time from p5.js
+      let t = uniformFloat(() => millis());
+
+      getPixelInputs((inputs) => {
+        inputs.color = [
+          inputs.texCoord,
+          sin(t * 0.01) / 2 + 0.5,
+          1,
+        ];
+        return inputs;
+      });
+    });
+  }
+
+
+  function draw() {
+    background(255);
+    noStroke(255);
+    shader(myShader); // Apply the custom shader
+    plane(width, height); // Draw a plane with the shader applied
+  }</code></pre><p>p5.strands functions are special, since they get turned into
+  a shader instead of being
+
+  run like the rest of your code. They only have access to p5.js functions, and
+  variables
+
+  you declare inside the <code>modify</code> callback. If you need access to
+  local variables, you
+
+  can pass them into <code>modify</code> with an optional second parameter,
+  <code>variables</code>. If you are
+
+  using instance mode, you will need to pass your sketch object in this way.</p>
+
+  <pre><code class="language-js example">new p5((sketch) => {
+    let myShader;
+
+    sketch.setup = function() {
+      sketch.createCanvas(200, 200, sketch.WEBGL);
+      myShader = sketch.baseMaterialShader().modify(() => {
+        sketch.getPixelInputs((inputs) => {
+          inputs.color = [inputs.texCoord, 0, 1];
+          return inputs;
+        });
+      }, { sketch });
+    }
+
+    sketch.draw = function() {
+      sketch.background(255);
+      sketch.noStroke();
+      sketch.shader(myShader); // Apply the custom shader
+      sketch.plane(sketch.width, sketch.height); // Draw a plane with the shader applied
+    }
+  });</code></pre><p>You can also write GLSL directly in <code>modify</code> if
+  you need direct access. To do so,
+
+  <code>modify()</code> takes one parameter, <code>hooks</code>, an object with
+  the hooks you want
 
   to override. Each key of the <code>hooks</code> object is the name
 
@@ -48,8 +154,33 @@ description: >
 
   with <code>shader(yourShader)</code>.</p>
 
-  <p>You can also add a <code>declarations</code> key, where the value is a GLSL
-  string declaring
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = baseMaterialShader().modify({
+      uniforms: {
+        'float time': () => millis() // Uniform for time
+      },
+      'Vertex getWorldInputs': `(Vertex inputs) {
+        inputs.position.y +=
+          20. * sin(time * 0.001 + inputs.position.x * 0.05);
+        return inputs;
+      }`
+    });
+  }
+
+
+  function draw() {
+    background(255);
+    shader(myShader); // Apply the custom shader
+    lights();         // Enable lighting
+    noStroke();       // Disable stroke
+    fill('red');      // Set fill color to red
+    sphere(50);       // Draw a sphere with the shader applied
+  }</code></pre><p>You can also add a <code>declarations</code> key, where the
+  value is a GLSL string declaring
 
   custom uniform variables, globals, and functions shared
 
@@ -57,73 +188,55 @@ description: >
 
   <code>vertexDeclarations</code> and <code>fragmentDeclarations</code>
   keys.</p>
-line: 370
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = baseMaterialShader().modify({
+      // Manually specifying a uniform
+      declarations: 'uniform float time;',
+      'Vertex getWorldInputs': `(Vertex inputs) {
+        inputs.position.y +=
+          20. * sin(time * 0.001 + inputs.position.x * 0.05);
+        return inputs;
+      }`
+    });
+  }
+
+
+  function draw() {
+    background(255);
+    shader(myShader);
+    myShader.setUniform('time', millis());
+    lights();
+    noStroke();
+    fill('red');
+    sphere(50);
+  }</code></pre>
+line: 460
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseMaterialShader().modify({
-        uniforms: {
-          'float time': () => millis() // Uniform for time
-        },
-        'Vertex getWorldInputs': `(Vertex inputs) {
-          inputs.position.y +=
-            20. * sin(time * 0.001 + inputs.position.x * 0.05);
-          return inputs;
-        }`
-      });
-    }
-
-    function draw() {
-      background(255);
-      shader(myShader); // Apply the custom shader
-      lights();         // Enable lighting
-      noStroke();       // Disable stroke
-      fill('red');      // Set fill color to red
-      sphere(50);       // Draw a sphere with the shader applied
-    }
-    </code>
-    </div>
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseMaterialShader().modify({
-        // Manually specifying a uniform
-        declarations: 'uniform float time;',
-        'Vertex getWorldInputs': `(Vertex inputs) {
-          inputs.position.y +=
-            20. * sin(time * 0.001 + inputs.position.x * 0.05);
-          return inputs;
-        }`
-      });
-    }
-
-    function draw() {
-      background(255);
-      shader(myShader);
-      myShader.setUniform('time', millis());
-      lights();
-      noStroke();
-      fill('red');
-      sphere(50);
-    }
-    </code>
-    </div>
+example: []
 class: p5.Shader
 return:
   description: ''
   type: p5.Shader
 overloads:
+  - params:
+      - name: callback
+        description: A function with p5.strands code to modify the shader.
+        type: Function
+      - name: variables
+        description: |-
+          An optional object with local variables p5.strands
+          should have access to.
+        optional: 1
+        type: Object
+    return:
+      description: ''
+      type: p5.Shader
   - params:
       - name: hooks
         description: The hooks in the shader to replace.
