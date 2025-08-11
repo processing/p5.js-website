@@ -4,6 +4,28 @@ const path = require('path');
 const { Octokit } = require('@octokit/rest');
 
 
+function getTranslationPath(englishFilePath, language) {
+  // Ensure we have a valid English path
+  if (!englishFilePath.includes('/en/')) {
+    throw new Error(`Invalid English file path: ${englishFilePath}. Must contain '/en/'`);
+  }
+  
+  // Split path into parts and replace 'en' directory with target language
+  const pathParts = englishFilePath.split('/');
+  const enIndex = pathParts.findIndex(part => part === 'en');
+  
+  if (enIndex === -1) {
+    throw new Error(`Could not find 'en' directory in path: ${englishFilePath}`);
+  }
+  
+  // Create new path with language replacement
+  const translationParts = [...pathParts];
+  translationParts[enIndex] = language;
+  
+  return translationParts.join('/');
+}
+
+
 const SUPPORTED_LANGUAGES = ['es', 'hi', 'ko', 'zh-Hans'];
 
 
@@ -72,6 +94,8 @@ class GitHubCommitTracker {
       
       return null;
     } catch (error) {
+      console.log(`⚠️  Primary commit lookup failed for ${filePath} on branch '${this.currentBranch}': ${error.message}`);
+      
       // Fallback to main branch if current branch fails
       if (this.currentBranch !== 'main') {
         try {
@@ -93,11 +117,101 @@ class GitHubCommitTracker {
             };
           }
         } catch (fallbackError) {
-          // Silent fallback
+          console.log(`⚠️  Fallback to main branch also failed for ${filePath}: ${fallbackError.message}`);
         }
       }
       
+      console.log(`❌ Could not get commit info for ${filePath} from any branch`);
       return null;
+    }
+  }
+
+  /**
+   * Get a recent diff for a file (head vs previous commit) and return a short patch snippet
+   */
+  async getRecentDiffForFile(filePath) {
+    try {
+      // Get latest two commits for this file on current branch
+      const { data: commits } = await this.octokit.rest.repos.listCommits({
+        owner: this.owner,
+        repo: this.repo,
+        sha: this.currentBranch,
+        path: filePath,
+        per_page: 2,
+      });
+
+      if (!commits || commits.length === 0) {
+        return null;
+      }
+
+      const headSha = commits[0].sha;
+      let baseSha = commits.length > 1 ? commits[1].sha : null;
+
+      // If only one commit is found for the file (new file), use the parent of head
+      if (!baseSha) {
+        try {
+          const { data: headCommit } = await this.octokit.rest.repos.getCommit({
+            owner: this.owner,
+            repo: this.repo,
+            ref: headSha,
+          });
+          baseSha = headCommit.parents && headCommit.parents.length > 0 ? headCommit.parents[0].sha : null;
+        } catch (parentErr) {
+          console.log(`⚠️  Could not resolve base commit for diff of ${filePath}: ${parentErr.message}`);
+        }
+      }
+
+      if (!baseSha) {
+        return {
+          baseSha: null,
+          headSha,
+          compareUrl: `https://github.com/${this.owner}/${this.repo}/commit/${headSha}`,
+          patchSnippet: null,
+          isTruncated: false,
+        };
+      }
+
+      // Compare the two commits and extract the file patch
+      const { data: compare } = await this.octokit.rest.repos.compareCommits({
+        owner: this.owner,
+        repo: this.repo,
+        base: baseSha,
+        head: headSha,
+      });
+
+      const changedFile = (compare.files || []).find((f) => f.filename === filePath);
+      const patch = changedFile && changedFile.patch ? changedFile.patch : null;
+
+      let patchSnippet = null;
+      let isTruncated = false;
+      if (patch) {
+        const lines = patch.split('\n');
+        const maxLines = 80;
+        if (lines.length > maxLines) {
+          patchSnippet = lines.slice(0, maxLines).join('\n');
+          isTruncated = true;
+        } else {
+          patchSnippet = patch;
+        }
+      }
+
+      return {
+        baseSha,
+        headSha,
+        compareUrl: `https://github.com/${this.owner}/${this.repo}/compare/${baseSha}...${headSha}`,
+        patchSnippet,
+        isTruncated,
+      };
+    } catch (error) {
+      console.log(`⚠️  Failed to compute diff for ${filePath} on branch '${this.currentBranch}': ${error.message}`);
+      // Fallback to at least provide a compare link to branch head
+      return {
+        baseSha: null,
+        headSha: null,
+        compareUrl: `https://github.com/${this.owner}/${this.repo}/blob/${this.currentBranch}/${filePath}`,
+        patchSnippet: null,
+        isTruncated: false,
+      };
     }
   }
 
@@ -130,7 +244,9 @@ class GitHubCommitTracker {
   async createMultiLanguageTranslationIssue(fileTranslations) {
     const englishFile = fileTranslations.englishFile;
     const issueTitle = `🌍 Update translations for ${path.basename(englishFile)}`;
-    const issueBody = this.formatMultiLanguageIssueBody(fileTranslations);
+    // Fetch recent English diff (best-effort)
+    const englishDiff = await this.getRecentDiffForFile(englishFile);
+    const issueBody = this.formatMultiLanguageIssueBody(fileTranslations, englishDiff);
     
     // Create labels: "needs translation" + specific language labels
     const labels = ['needs translation', 'help wanted'];
@@ -165,7 +281,7 @@ class GitHubCommitTracker {
    * Format the issue body with helpful information
    */
   formatIssueBody(englishFile, language, commitInfo) {
-    const translationPath = englishFile.replace('/en/', `/${language}/`);
+    const translationPath = getTranslationPath(englishFile, language);
     const englishCommit = commitInfo.english;
     const translationCommit = commitInfo.translation;
 
@@ -202,7 +318,7 @@ class GitHubCommitTracker {
   /**
    * Format the issue body for multi-language updates
    */
-  formatMultiLanguageIssueBody(fileTranslations) {
+  formatMultiLanguageIssueBody(fileTranslations, englishDiff) {
     const englishFile = fileTranslations.englishFile;
     const outdatedLanguages = fileTranslations.outdatedLanguages;
     const missingLanguages = fileTranslations.missingLanguages;
@@ -236,6 +352,19 @@ class GitHubCommitTracker {
         body += `- **${this.getLanguageDisplayName(lang.language)}**: Translation file does not exist\n`;
         body += `  - Expected location: \`${translationPath}\`\n\n`;
       });
+    }
+
+    // Include an English diff snippet if available
+    if (englishDiff) {
+      body += `### 🧾 English Changes (Recent)\n\n`;
+      body += `- [🔍 View full diff](${englishDiff.compareUrl})\n`;
+      if (englishDiff.patchSnippet) {
+        body += `\n\n\u0060\u0060\u0060diff\n${englishDiff.patchSnippet}\n\u0060\u0060\u0060\n`;
+        if (englishDiff.isTruncated) {
+          body += `\n_(diff truncated — open the full diff link above for all changes)_\n`;
+        }
+      }
+      body += `\n`;
     }
 
     body += `### 🔗 Quick Links
@@ -291,9 +420,10 @@ function getChangedFiles(testFiles = null) {
   }
 
   try {
+    // Different git commands for different event types
     const gitCommand = process.env.GITHUB_EVENT_NAME === 'pull_request' 
-      ? 'git diff --name-only HEAD~1 HEAD'
-      : 'git diff --name-only HEAD~1 HEAD';
+      ? 'git diff --name-only origin/main...HEAD'  // Compare with base branch for PRs
+      : 'git diff --name-only HEAD~1 HEAD';       // Compare with previous commit for pushes
     
     const changedFilesOutput = execSync(gitCommand, { encoding: 'utf8' });
     const allChangedFiles = changedFilesOutput.trim().split('\n').filter(file => file.length > 0);
@@ -357,6 +487,7 @@ function getFileModTime(filePath) {
   try {
     return fs.statSync(filePath).mtime;
   } catch (error) {
+    console.log(`⚠️  Could not get file timestamp for ${filePath}: ${error.message}`);
     return null;
   }
 }
@@ -385,7 +516,7 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
     };
     
     for (const language of SUPPORTED_LANGUAGES) {
-      const translationPath = englishFile.replace('/en/', `/${language}/`);
+      const translationPath = getTranslationPath(englishFile, language);
       const exists = fileExists(translationPath);
       
       if (!exists) {
