@@ -19,6 +19,13 @@ import path from "path";
 import { load } from "cheerio";
 import he from "he";
 
+// Helper: returns true for absolute URLs (http:, https:, mailto:, protocol-relative //, etc.)
+const isAbsoluteUrl = (url: string | undefined): boolean => {
+  if (!url) return false;
+  // matches scheme:// or scheme: (mailto:, tel:, etc.) or protocol-relative //example.com
+  return /^(?:[a-zA-Z][a-zA-Z\d+\-.]*:)?\/\//.test(url) || /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(url);
+};
+
 /* Base path for the content directory */
 const prefix = "./src/content/reference/en/";
 
@@ -203,7 +210,9 @@ const correctRelativeLinksInDescription = (description: string | undefined) => {
     }
     
     // Add a trailing / if the link isn't to a file and does not have query params or a hash reference
+    // Add a trailing / only if the link is NOT absolute and is not an anchor, file, or query/hash link
     if (
+      !isAbsoluteUrl(href) &&
       !href.startsWith('#') &&
       !href.endsWith('/') &&
       !/(\.\w+)$/.exec(href) &&
@@ -212,6 +221,7 @@ const correctRelativeLinksInDescription = (description: string | undefined) => {
     ) {
       href += '/';
     }
+
 
     $(this).attr("href", href);
   });
