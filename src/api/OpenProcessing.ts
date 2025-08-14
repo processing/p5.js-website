@@ -10,6 +10,7 @@ const openProcessingEndpoint = "https://openprocessing.org/api/";
  * Currently a placeholder (https://openprocessing.org/curation/78544/)
  */
 const curationId = "87649";
+const newCurationId = "89576";
 
 /**
  * API Response from a call to the Curation Sketches endpoint
@@ -43,14 +44,38 @@ export const getCurationSketches = memoize(async (
   limit?: number,
 ): Promise<OpenProcessingCurationResponse> => {
   const limitParam = limit ? `limit=${limit}` : "";
-  const response = await fetch(
+  const response1 = await fetch(
     `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
   );
-  if(!response.ok){ //log error instead of throwing error to not cache result in memoize
-    console.error('getCurationSketches', response.status, response.statusText)
+  if(!response1.ok){ //log error instead of throwing error to not cache result in memoize
+    console.error('getCurationSketches', response1.status, response1.statusText)
   }
-  const payload = await response.json();
-  return payload as OpenProcessingCurationResponse;
+  const payload1 = await response1.json();
+
+  const response2 = await fetch(
+    `${openProcessingEndpoint}curation/${newCurationId}/sketches?${limitParam}`,
+  );
+  if(!response2.ok){ //log error instead of throwing error to not cache result in memoize
+    console.error('getCurationSketches', response2.status, response2.statusText)
+  }
+  const payload2 = await response2.json();
+
+  // Selected Sketches from the 2025 curation
+  const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
+
+  const prioritySketches = payload2.filter(
+    (sketch: OpenProcessingCurationResponse[number]) => priorityIds.includes(String(sketch.visualID)))
+    .sort((a: OpenProcessingCurationResponse[number], b: OpenProcessingCurationResponse[number]) => priorityIds.indexOf(String(a.visualID)) - priorityIds.indexOf(String(b.visualID)));
+
+
+  const finalSketches = [
+    ...prioritySketches.map((sketch: OpenProcessingCurationResponse[number]) => ({ ...sketch, curation: '2025' })),
+    ...payload1.map((sketch: OpenProcessingCurationResponse[number]) => ({ ...sketch, curation: '2024' })),
+  ];
+
+  return [
+    ...finalSketches,
+  ] as OpenProcessingCurationResponse;
 });
 
 /**
