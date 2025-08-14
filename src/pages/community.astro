@@ -3,8 +3,18 @@ import { getCurationSketches } from "../api/OpenProcessing";
 import CommunityLayout from "../layouts/CommunityLayout.astro";
 import { getCollectionInDefaultLocale } from "./_utils";
 
-const allSketches = await getCurationSketches(10);
-const sketches = allSketches.slice(0, 10);
+const allSketches = await getCurationSketches();
+const priorityIds = [
+  '2684408', '2693274', '2693345',
+  '2689119', '2484739', '2688829',
+  '2690571', '2690405', '2691712', '2690038'
+  ];
+const sketches = allSketches
+  .filter(sk => priorityIds.includes(String(sk.visualID)))
+  .filter((sk, index, self) =>
+    index === self.findIndex(s => s.visualID === sk.visualID)
+  )
+  .slice(0, 8);
 const libraries = await getCollectionInDefaultLocale("libraries");
 const pastEvents = await getCollectionInDefaultLocale("events");
 ---
