@@ -618,7 +618,7 @@
     "p5.Color": {
       "name": "p5.Color",
       "file": "src/scripts/parsers/in/p5.js/src/color/p5.Color.js",
-      "line": 688,
+      "line": 700,
       "description": "<p>A class to describe a color.</p>\n<p>Each <code>p5.Color</code> object stores the color mode\nand level maxes that were active during its construction. These values are\nused to interpret the arguments passed to the object's constructor. They\nalso determine output formatting such as when\n<a href=\"#/p5/saturation\">saturation()</a> is called.</p>\n<p>Color is stored internally as an array of ideal RGBA values in floating\npoint form, normalized from 0 to 1. These values are used to calculate the\nclosest screen colors, which are RGBA levels from 0 to 255. Screen colors\nare sent to the renderer.</p>\n<p>When different color representations are calculated, the results are cached\nfor performance. These values are normalized, floating-point numbers.</p>\n<p>Note: <a href=\"#/p5/color\">color()</a> is the recommended way to create an\ninstance of this class.</p>\n",
       "example": [],
       "params": [
@@ -683,7 +683,7 @@
     "p5.Element": {
       "name": "p5.Element",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2466,
+      "line": 2482,
       "description": "<p>A class to describe an\n<a href=\"https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started\" target=\"_blank\">HTML element</a>.</p>\n<p>Sketches can use many elements. Common elements include the drawing canvas,\nbuttons, sliders, webcam feeds, and so on.</p>\n<p>All elements share the methods of the <code>p5.Element</code> class. They're created\nwith functions such as <a href=\"#/p5/createCanvas\">createCanvas()</a> and\n<a href=\"#/p5/createButton\">createButton()</a>.</p>\n",
       "example": [
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a button element and\n  // place it beneath the canvas.\n  let btn = createButton('change');\n  btn.position(0, 100);\n\n  // Call randomColor() when\n  // the button is pressed.\n  btn.mousePressed(randomColor);\n\n  describe('A gray square with a button that says \"change\" beneath it. The square changes color when the user presses the button.');\n}\n\n// Paint the background either\n// red, yellow, blue, or green.\nfunction randomColor() {\n  let c = random(['red', 'yellow', 'blue', 'green']);\n  background(c);\n}\n</code>\n</div>"
@@ -879,7 +879,7 @@
     "p5.Font": {
       "name": "p5.Font",
       "file": "src/scripts/parsers/in/p5.js/src/type/p5.Font.js",
-      "line": 1147,
+      "line": 1158,
       "description": "A class to describe fonts. Create through <a href=\"#/p5/loadFont\"><code>loadFont()</code></a>.",
       "example": [],
       "params": [],
@@ -930,7 +930,7 @@
     "p5.Geometry": {
       "name": "p5.Geometry",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 2165,
+      "line": 2166,
       "description": "<p>A class to describe a 3D shape.</p>\n<p>Each <code>p5.Geometry</code> object represents a 3D shape as a set of connected\npoints called vertices. All 3D shapes are made by connecting vertices to\nform triangles that are stitched together. Each triangular patch on the\ngeometry's surface is called a face. The geometry stores information\nabout its vertices and faces for use with effects such as lighting and\ntexture mapping.</p>\n<p>The first parameter, <code>detailX</code>, is optional. If a number is passed, as in\n<code>new p5.Geometry(24)</code>, it sets the number of triangle subdivisions to use\nalong the geometry's x-axis. By default, <code>detailX</code> is 1.</p>\n<p>The second parameter, <code>detailY</code>, is also optional. If a number is passed,\nas in <code>new p5.Geometry(24, 16)</code>, it sets the number of triangle\nsubdivisions to use along the geometry's y-axis. By default, <code>detailX</code> is\n1.</p>\n<p>The third parameter, <code>callback</code>, is also optional. If a function is passed,\nas in <code>new p5.Geometry(24, 16, createShape)</code>, it will be called once to add\nvertices to the new 3D shape.</p>\n",
       "example": [
         "<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nlet myGeometry;\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  // Create a p5.Geometry object.\n  myGeometry = new p5.Geometry();\n\n  // Create p5.Vector objects to position the vertices.\n  let v0 = createVector(-40, 0, 0);\n  let v1 = createVector(0, -40, 0);\n  let v2 = createVector(40, 0, 0);\n\n  // Add the vertices to the p5.Geometry object's vertices array.\n  myGeometry.vertices.push(v0, v1, v2);\n\n  describe('A white triangle drawn on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Draw the p5.Geometry object.\n  model(myGeometry);\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nlet myGeometry;\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  // Create a p5.Geometry object using a callback function.\n  myGeometry = new p5.Geometry(1, 1, createShape);\n\n  describe('A white triangle drawn on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Draw the p5.Geometry object.\n  model(myGeometry);\n}\n\nfunction createShape() {\n  // Create p5.Vector objects to position the vertices.\n  let v0 = createVector(-40, 0, 0);\n  let v1 = createVector(0, -40, 0);\n  let v2 = createVector(40, 0, 0);\n\n  // \"this\" refers to the p5.Geometry object being created.\n\n  // Add the vertices to the p5.Geometry object's vertices array.\n  this.vertices.push(v0, v1, v2);\n\n  // Add an array to list which vertices belong to the face.\n  // Vertices are listed in clockwise \"winding\" order from\n  // left to top to right.\n  this.faces.push([0, 1, 2]);\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\nlet myGeometry;\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  // Create a p5.Geometry object using a callback function.\n  myGeometry = new p5.Geometry(1, 1, createShape);\n\n  describe('A white triangle drawn on a gray background.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Draw the p5.Geometry object.\n  model(myGeometry);\n}\n\nfunction createShape() {\n  // Create p5.Vector objects to position the vertices.\n  let v0 = createVector(-40, 0, 0);\n  let v1 = createVector(0, -40, 0);\n  let v2 = createVector(40, 0, 0);\n\n  // \"this\" refers to the p5.Geometry object being created.\n\n  // Add the vertices to the p5.Geometry object's vertices array.\n  this.vertices.push(v0, v1, v2);\n\n  // Add an array to list which vertices belong to the face.\n  // Vertices are listed in clockwise \"winding\" order from\n  // left to top to right.\n  this.faces.push([0, 1, 2]);\n\n  // Compute the surface normals to help with lighting.\n  this.computeNormals();\n}\n</code>\n</div>\n\n<div>\n<code>\n// Click and drag the mouse to view the scene from different angles.\n\n// Adapted from Paul Wheeler's wonderful p5.Geometry tutorial.\n// https://www.paulwheeler.us/articles/custom-3d-geometry-in-p5js/\n// CC-BY-SA 4.0\n\nlet myGeometry;\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  // Create the p5.Geometry object.\n  // Set detailX to 48 and detailY to 2.\n  // >>> try changing them.\n  myGeometry = new p5.Geometry(48, 2, createShape);\n}\n\nfunction draw() {\n  background(50);\n\n  // Enable orbiting with the mouse.\n  orbitControl();\n\n  // Turn on the lights.\n  lights();\n\n  // Style the p5.Geometry object.\n  strokeWeight(0.2);\n\n  // Draw the p5.Geometry object.\n  model(myGeometry);\n}\n\nfunction createShape() {\n  // \"this\" refers to the p5.Geometry object being created.\n\n  // Define the Möbius strip with a few parameters.\n  let spread = 0.1;\n  let radius = 30;\n  let stripWidth = 15;\n  let xInterval = 4 * PI / this.detailX;\n  let yOffset = -stripWidth / 2;\n  let yInterval = stripWidth / this.detailY;\n\n  for (let j = 0; j <= this.detailY; j += 1) {\n    // Calculate the \"vertical\" point along the strip.\n    let v = yOffset + yInterval * j;\n\n    for (let i = 0; i <= this.detailX; i += 1) {\n      // Calculate the angle of rotation around the strip.\n      let u = i * xInterval;\n\n      // Calculate the coordinates of the vertex.\n      let x = (radius + v * cos(u / 2)) * cos(u) - sin(u / 2) * 2 * spread;\n      let y = (radius + v * cos(u / 2)) * sin(u);\n      if (u < TWO_PI) {\n        y += sin(u) * spread;\n      } else {\n        y -= sin(u) * spread;\n      }\n      let z = v * sin(u / 2) + sin(u / 4) * 4 * spread;\n\n      // Create a p5.Vector object to position the vertex.\n      let vert = createVector(x, y, z);\n\n      // Add the vertex to the p5.Geometry object's vertices array.\n      this.vertices.push(vert);\n    }\n  }\n\n  // Compute the faces array.\n  this.computeFaces();\n\n  // Compute the surface normals to help with lighting.\n  this.computeNormals();\n}\n</code>\n</div>"
@@ -962,7 +962,7 @@
     "p5.Shader": {
       "name": "p5.Shader",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Shader.js",
-      "line": 1497,
+      "line": 1587,
       "description": "<p>A class to describe a shader program.</p>\n<p>Each <code>p5.Shader</code> object contains a shader program that runs on the graphics\nprocessing unit (GPU). Shaders can process many pixels or vertices at the\nsame time, making them fast for many graphics tasks. They’re written in a\nlanguage called\n<a href=\"https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders\" target=\"_blank\">GLSL</a>\nand run along with the rest of the code in a sketch.</p>\n<p>A shader program consists of two files, a vertex shader and a fragment\nshader. The vertex shader affects where 3D geometry is drawn on the screen\nand the fragment shader affects color. Once the <code>p5.Shader</code> object is\ncreated, it can be used with the <a href=\"#/p5/shader\">shader()</a>\nfunction, as in <code>shader(myShader)</code>.</p>\n<p>A shader can optionally describe hooks, which are functions in GLSL that\nusers may choose to provide to customize the behavior of the shader. For the\nvertex or the fragment shader, users can pass in an object where each key is\nthe type and name of a hook function, and each value is a string with the\nparameter list and default implementation of the hook. For example, to let users\noptionally run code at the start of the vertex shader, the options object could\ninclude:</p>\n<pre><code class=\"language-js\">{\n  vertex: {\n    'void beforeVertex': '() {}'\n  }\n}</code></pre><p>Then, in your vertex shader source, you can run a hook by calling a function\nwith the same name prefixed by <code>HOOK_</code>:</p>\n<pre><code class=\"language-glsl\">void main() {\n  HOOK_beforeVertex();\n  // Add the rest ofy our shader code here!\n}</code></pre><p>Note: <a href=\"#/p5/createShader\">createShader()</a>,\n<a href=\"#/p5/createFilterShader\">createFilterShader()</a>, and\n<a href=\"#/p5/loadShader\">loadShader()</a> are the recommended ways to\ncreate an instance of this class.</p>\n",
       "example": [
         "<div>\n<code>\n// Note: A \"uniform\" is a global variable within a shader program.\n\n// Create a string with the vertex shader program.\n// The vertex shader is called for each vertex.\nlet vertSrc = `\nprecision highp float;\nuniform mat4 uModelViewMatrix;\nuniform mat4 uProjectionMatrix;\n\nattribute vec3 aPosition;\nattribute vec2 aTexCoord;\nvarying vec2 vTexCoord;\n\nvoid main() {\n  vTexCoord = aTexCoord;\n  vec4 positionVec4 = vec4(aPosition, 1.0);\n  gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;\n}\n`;\n\n// Create a string with the fragment shader program.\n// The fragment shader is called for each pixel.\nlet fragSrc = `\nprecision highp float;\n\nvoid main() {\n  // Set each pixel's RGBA value to yellow.\n  gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);\n}\n`;\n\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  // Create a p5.Shader object.\n  let myShader = createShader(vertSrc, fragSrc);\n\n  // Apply the p5.Shader object.\n  shader(myShader);\n\n  // Style the drawing surface.\n  noStroke();\n\n  // Add a plane as a drawing surface.\n  plane(100, 100);\n\n  describe('A yellow square.');\n}\n</code>\n</div>\n\n<div>\n<code>\n// Note: A \"uniform\" is a global variable within a shader program.\n\nlet mandelbrot;\n\nasync function setup() {\n  mandelbrot = await loadShader('assets/shader.vert', 'assets/shader.frag');\n  createCanvas(100, 100, WEBGL);\n\n  // Use the p5.Shader object.\n  shader(mandelbrot);\n\n  // Set the shader uniform p to an array.\n  mandelbrot.setUniform('p', [-0.74364388703, 0.13182590421]);\n\n  describe('A fractal image zooms in and out of focus.');\n}\n\nfunction draw() {\n  // Set the shader uniform r to a value that oscillates between 0 and 2.\n  mandelbrot.setUniform('r', sin(frameCount * 0.01) + 1);\n\n  // Add a quad as a display surface for the shader.\n  quad(-1, -1, 1, -1, 1, 1, -1, 1);\n}\n</code>\n</div>"
@@ -2933,7 +2933,7 @@
       "itemtype": "property",
       "name": "disableFriendlyErrors",
       "file": "src/scripts/parsers/in/p5.js/src/core/main.js",
-      "line": 678,
+      "line": 683,
       "type": "Boolean",
       "module": "Structure",
       "submodule": "Structure",
@@ -4693,7 +4693,7 @@
       "itemtype": "property",
       "name": "key",
       "file": "src/scripts/parsers/in/p5.js/src/events/keyboard.js",
-      "line": 196,
+      "line": 195,
       "type": "String",
       "module": "Events",
       "submodule": "Keyboard",
@@ -4705,9 +4705,23 @@
     },
     {
       "itemtype": "property",
+      "name": "code",
+      "file": "src/scripts/parsers/in/p5.js/src/events/keyboard.js",
+      "line": 380,
+      "type": "String",
+      "module": "Events",
+      "submodule": "Keyboard",
+      "class": "p5",
+      "example": [
+        "<div>\n<code>\n// Click on the canvas to begin detecting key presses.\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A gray square. The last key pressed is displayed at the center.'\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the last key pressed.\n  text(code, 50, 50);\n}\n</code>\n</div>\n<div>\n<code>\n\nfunction setup() {\n  createCanvas(100, 100);\n}\n\nfunction draw() {\n  background(220);\n  fill(\"black\");\n  if (keyIsDown(BACKSPACE) || keyIsDown(ENTER) ||\n      keyIsDown(DELETE) || keyIsDown(RETURN) ||\n      keyIsDown(TAB) || keyIsDown(ESCAPE) ||\n      keyIsDown(CONTROL) || keyIsDown(OPTION) ||\n      keyIsDown(UP_ARROW) || keyIsDown(LEFT_ARROW) ||\n      keyIsDown(RIGHT_ARROW) || keyIsDown(DOWN_ARROW) ||\n      keyIsDown(SHIFT)) {\n    fill(\"red\");\n    text(\"System Variable\", 7, 75);\n  }\n\n  text(key, 30, 25);\n  text(keyCode, 7, 25);\n  text(code || \" \", 30, 50);\n}\n</div>\n</code>\n<div>\n<code>\n// Click on the canvas to begin detecting key presses.\n\nlet x = 50;\nlet y = 50;\n \nfunction setup() {\n  createCanvas(100, 100);\n \n  background(200);\n \n  describe(\n    'A gray square with a black circle at its center. The circle moves when the user presses an arrow key. It leaves a trail as it moves.'\n  );\n}\n \nfunction draw() {\n  // Update x and y if an arrow key is pressed.\n  if (keyIsPressed){\n    if (keyIsDown(LEFT_ARROW)){\n      x -= 1;\n    }\n \n    if (keyIsDown(RIGHT_ARROW)) {\n      x += 1;\n    }\n \n    if (keyIsDown(UP_ARROW)) {\n      y -= 1;\n    }\n \n    if (keyIsDown(DOWN_ARROW)) {\n      y += 1;\n    }\n  }\n \n  // Style the circle.\n  fill(0);\n \n  // Draw the circle.\n  circle(x, y, 5);\n}\n\n</code>\n</div>"
+      ],
+      "description": "<p>The <code>code</code> property represents a physical key on the keyboard (as opposed\nto the character generated by pressing the key). In other words, this\nproperty returns a value that isn't altered by keyboard layout or the state\nof the modifier keys.</p>\n<p>This property is useful when you want to handle keys based on their\nphysical positions on the input device rather than the characters associated\nwith those keys;</p>\n<p>Unlike <a href=\"#/p5/key\">key</a>, the <code>code</code> property differentiates between\nphysical keys that generate the same character—for example, <code>CtrlLeft</code> and\n<code>CtrlRight</code>—so each can be handled independently.\nHere's the MDN docs for <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code\" target=\"_blank\">KeyboardEvent.code</a></p>\n<p>Pressing the key physically labeled “A” always yields <code>KeyA</code>, regardless\nof the current keyboard layout (QWERTY, Dvorak, AZERTY, etc.) or the character\nthat appears in a text field.</p>\n<p>The code property returns a plain string (e.g., 'ArrowRight'). You can\ncompare it directly with string literals:</p>\n<pre><code class=\"language-js\">if (keyIsDown(RIGHT_ARROW)) {\n  // …\n}\n// The line above is equivalent to:\nif (code === 'ArrowRight') {\n  // …\n}\nif (key  === 'ArrowRight') { \n// …\n}</code></pre><p>The system variables <code>BACKSPACE</code>, <code>DELETE</code>, <code>ENTER</code>, <code>RETURN</code>, <code>TAB</code>,\n<code>ESCAPE</code>, <code>SHIFT</code>, <code>CONTROL</code>, <code>OPTION</code>, <code>ALT</code>, <code>UP_ARROW</code>, <code>DOWN_ARROW</code>,\n<code>LEFT_ARROW</code>, and <code>RIGHT_ARROW</code> are all helpful shorthands the key codes of\nspecial keys.\nThese are simply shorthands for the same string values:</p>\n<pre><code class=\"language-js\">if (code === RIGHT_ARROW) {\n// ..\n}</code></pre><p>The table below summarizes how the main keyboard-related system variables changed between p5.js 1.x and 2.x.</p>\n<table>\n  <thead>\n    <tr>\n      <th>Variable</th>\n      <th>p5.js 1.x </th>\n      <th>p5.js 2.x </th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><code>key</code></td>\n      <td>Text string (e.g., <code>\"ArrowUp\"</code>).</td>\n      <td>Text string (e.g., <code>\"ArrowUp\"</code>, <code>\"f\"</code> or <code>\"F\"</code>).</td>\n    </tr>\n    <tr>\n      <td><code>code</code></td>\n      <td><em>Not supported.</em></td>\n      <td>Text String (e.g., <code>\"ArrowUp\"</code>, <code>\"KeyF\"</code>).</td>\n    </tr>\n    <tr>\n      <td><code>keyCode</code></td>\n      <td>Number (e.g., <code>70</code>).</td>\n      <td>Number (unchanged; e.g., <code>70</code>).</td>\n    </tr>\n    <tr>\n      <td>System variables (<code>BACKSPACE</code>, <code>UP_ARROW</code>, …)</td>\n      <td>Number</td>\n      <td>Text String (e.g., <code>\"ArrowUp\"</code>).</td>\n    </tr>\n  </tbody>\n</table>"
+    },
+    {
+      "itemtype": "property",
       "name": "keyCode",
       "file": "src/scripts/parsers/in/p5.js/src/events/keyboard.js",
-      "line": 300,
+      "line": 484,
       "type": "Integer",
       "module": "Events",
       "submodule": "Keyboard",
@@ -4749,35 +4763,35 @@
       "itemtype": "property",
       "name": "mouseX",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 216,
+      "line": 212,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
       "class": "p5",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A vertical black line moves left and right following the mouse's x-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw a vertical line that follows the mouse's x-coordinate.\n  line(mouseX, 0, mouseX, 100);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates.\n  text(`x: ${mouseX} y: ${mouseY}`, 50, 50);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe(\"A vertical black line moves left and right following the mouse's x-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Adjust coordinates for WebGL mode.\n  // The origin (0, 0) is at the center of the canvas.\n  let mx = mouseX - 50;\n\n  // Draw the line.\n  line(mx, -50, mx, 50);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet font;\n\nasync function setup() {\n  // Load a font for WebGL mode.\n  font = await loadFont('assets/inconsolata.otf');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe(\n    \"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\"\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n  textFont(font);\n  fill(0);\n\n  // Display the mouse's coordinates.\n  text(`x: ${mouseX} y: ${mouseY}`, 0, 0);\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A vertical black line moves left and right following the mouse's x-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw a vertical line that follows the mouse's x-coordinate.\n  line(mouseX, 0, mouseX, 100);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates.\n  text(`x: ${int(mouseX)} y: ${int(mouseY)}`, 50, 50);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe(\"A vertical black line moves left and right following the mouse's x-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Adjust coordinates for WebGL mode.\n  // The origin (0, 0) is at the center of the canvas.\n  let mx = mouseX - 50;\n\n  // Draw the line.\n  line(mx, -50, mx, 50);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet font;\n\nasync function setup() {\n  // Load a font for WebGL mode.\n  font = await loadFont('assets/inconsolata.otf');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe(\n    \"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\"\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n  textFont(font);\n  fill(0);\n\n  // Display the mouse's coordinates.\n  text(`x: ${int(mouseX)} y: ${int(mouseY)}`, 0, 0);\n}\n</code>\n</div>"
       ],
-      "description": "<p>A <code>Number</code> system variable that tracks the mouse's horizontal position.</p>\n<p>In 2D mode, <code>mouseX</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. For example, if the mouse is 50 pixels from\nthe left edge of the canvas, then <code>mouseX</code> will be 50.</p>\n<p>In WebGL mode, <code>mouseX</code> keeps track of the mouse's position relative to the\ncenter of the canvas. For example, if the mouse is 50 pixels to the right\nof the canvas' center, then <code>mouseX</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>mouseX</code> will hold the\nx-coordinate of the most recent touch point.</p>\n"
+      "description": "<p>A <code>Number</code> system variable that tracks the mouse's horizontal position.</p>\n<p><code>mouseX</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. For example, if the mouse is 50 pixels from\nthe left edge of the canvas, then <code>mouseX</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>mouseX</code> will hold the\nx-coordinate of the most recent touch point.</p>\n"
     },
     {
       "itemtype": "property",
       "name": "mouseY",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 325,
+      "line": 317,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
       "class": "p5",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A horizontal black line moves up and down following the mouse's y-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw a horizontal line that follows the mouse's y-coordinate.\n  line(0, mouseY, 100, mouseY);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates.\n  text(`x: ${mouseX} y: ${mouseY}`, 50, 50);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe(\"A horizontal black line moves up and down following the mouse's y-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Adjust coordinates for WebGL mode.\n  // The origin (0, 0) is at the center of the canvas.\n  let my = mouseY - 50;\n\n  // Draw the line.\n  line(-50, my, 50, my);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet font;\n\nasync function setup() {\n  // Load a font for WebGL mode.\n  font = await loadFont('assets/inconsolata.otf');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe(\n    \"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\"\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n  textFont(font);\n  fill(0);\n\n  // Display the mouse's coordinates.\n  text(`x: ${mouseX} y: ${mouseY}`, 0, 0);\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A horizontal black line moves up and down following the mouse's y-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw a horizontal line that follows the mouse's y-coordinate.\n  line(0, mouseY, 100, mouseY);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates.\n  text(`x: ${int(mouseX)} y: ${int(mouseY)}`, 50, 50);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe(\"A horizontal black line moves up and down following the mouse's y-position.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Adjust coordinates for WebGL mode.\n  // The origin (0, 0) is at the center of the canvas.\n  let my = mouseY - 50;\n\n  // Draw the line.\n  line(-50, my, 50, my);\n}\n</code>\n</div>\n\n<div>\n<code>\nlet font;\n\nasync function setup() {\n  // Load a font for WebGL mode.\n  font = await loadFont('assets/inconsolata.otf');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe(\n    \"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\"\n  );\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n  textFont(font);\n  fill(0);\n\n  // Display the mouse's coordinates.\n  text(`x: ${int(mouseX)} y: ${int(mouseY)}`, 0, 0);\n}\n</code>\n</div>"
       ],
-      "description": "<p>A <code>Number</code> system variable that tracks the mouse's vertical position.</p>\n<p>In 2D mode, <code>mouseY</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. For example, if the mouse is 50 pixels from\nthe top edge of the canvas, then <code>mouseY</code> will be 50.</p>\n<p>In WebGL mode, <code>mouseY</code> keeps track of the mouse's position relative to the\ncenter of the canvas. For example, if the mouse is 50 pixels below the\ncanvas' center, then <code>mouseY</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>mouseY</code> will hold the\ny-coordinate of the most recent touch point.</p>\n"
+      "description": "<p>A <code>Number</code> system variable that tracks the mouse's vertical position.</p>\n<p><code>mouseY</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. For example, if the mouse is 50 pixels from\nthe top edge of the canvas, then <code>mouseY</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>mouseY</code> will hold the\ny-coordinate of the most recent touch point.</p>\n"
     },
     {
       "itemtype": "property",
       "name": "pmouseX",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 394,
+      "line": 382,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
@@ -4785,13 +4799,13 @@
       "example": [
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Slow the frame rate.\n  frameRate(10);\n\n  describe('A line follows the mouse as it moves. The line grows longer with faster movements.');\n}\n\nfunction draw() {\n  background(200);\n\n  line(pmouseX, pmouseY, mouseX, mouseY);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A line follows the mouse as it moves. The line grows longer with faster movements.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Adjust coordinates for WebGL mode.\n  // The origin (0, 0) is at the center of the canvas.\n  let pmx = pmouseX - 50;\n  let pmy = pmouseY - 50;\n  let mx = mouseX - 50;\n  let my = mouseY - 50;\n\n  // Draw the line.\n  line(pmx, pmy, mx, my);\n}\n</code>\n</div>"
       ],
-      "description": "<p>A <code>Number</code> system variable that tracks the mouse's previous horizontal\nposition.</p>\n<p>In 2D mode, <code>pmouseX</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. Its value is\n<a href=\"#/p5/mouseX\">mouseX</a> from the previous frame. For example, if\nthe mouse was 50 pixels from the left edge of the canvas during the last\nframe, then <code>pmouseX</code> will be 50.</p>\n<p>In WebGL mode, <code>pmouseX</code> keeps track of the mouse's position relative to the\ncenter of the canvas. For example, if the mouse was 50 pixels to the right\nof the canvas' center during the last frame, then <code>pmouseX</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>pmouseX</code> will hold the\nx-coordinate of the last touch point.</p>\n<p>Note: <code>pmouseX</code> is reset to the current <a href=\"#/p5/mouseX\">mouseX</a>\nvalue at the start of each touch event.</p>\n"
+      "description": "<p>A <code>Number</code> system variable that tracks the mouse's previous horizontal\nposition.</p>\n<p><code>pmouseX</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. Its value is\n<a href=\"#/p5/mouseX\">mouseX</a> from the previous frame. For example, if\nthe mouse was 50 pixels from the left edge of the canvas during the last\nframe, then <code>pmouseX</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>pmouseX</code> will hold the\nx-coordinate of the last touch point.</p>\n<p>Note: <code>pmouseX</code> is reset to the current <a href=\"#/p5/mouseX\">mouseX</a>\nvalue at the start of each touch event.</p>\n"
     },
     {
       "itemtype": "property",
       "name": "pmouseY",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 463,
+      "line": 447,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
@@ -4799,19 +4813,19 @@
       "example": [
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  // Slow the frame rate.\n  frameRate(10);\n\n  describe('A line follows the mouse as it moves. The line grows longer with faster movements.');\n}\n\nfunction draw() {\n  background(200);\n\n  line(pmouseX, pmouseY, mouseX, mouseY);\n}\n</code>\n</div>\n\n<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n\n  describe('A line follows the mouse as it moves. The line grows longer with faster movements.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Adjust coordinates for WebGL mode.\n  // The origin (0, 0) is at the center of the canvas.\n  let pmx = pmouseX - 50;\n  let pmy = pmouseY - 50;\n  let mx = mouseX - 50;\n  let my = mouseY - 50;\n\n  // Draw the line.\n  line(pmx, pmy, mx, my);\n}\n</code>\n</div>"
       ],
-      "description": "<p>A <code>Number</code> system variable that tracks the mouse's previous vertical\nposition.</p>\n<p>In 2D mode, <code>pmouseY</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. Its value is\n<a href=\"#/p5/mouseY\">mouseY</a> from the previous frame. For example, if\nthe mouse was 50 pixels from the top edge of the canvas during the last\nframe, then <code>pmouseY</code> will be 50.</p>\n<p>In WebGL mode, <code>pmouseY</code> keeps track of the mouse's position relative to the\ncenter of the canvas. For example, if the mouse was 50 pixels below the\ncanvas' center during the last frame, then <code>pmouseY</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>pmouseY</code> will hold the\ny-coordinate of the last touch point.</p>\n<p>Note: <code>pmouseY</code> is reset to the current <a href=\"#/p5/mouseY\">mouseY</a>\nvalue at the start of each touch event.</p>\n"
+      "description": "<p>A <code>Number</code> system variable that tracks the mouse's previous vertical\nposition.</p>\n<p><code>pmouseY</code> keeps track of the mouse's position relative to the\ntop-left corner of the canvas. Its value is\n<a href=\"#/p5/mouseY\">mouseY</a> from the previous frame. For example, if\nthe mouse was 50 pixels from the top edge of the canvas during the last\nframe, then <code>pmouseY</code> will be 50.</p>\n<p>If touch is used instead of the mouse, then <code>pmouseY</code> will hold the\ny-coordinate of the last touch point.</p>\n<p>Note: <code>pmouseY</code> is reset to the current <a href=\"#/p5/mouseY\">mouseY</a>\nvalue at the start of each touch event.</p>\n"
     },
     {
       "itemtype": "property",
       "name": "winMouseX",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 504,
+      "line": 488,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
       "class": "p5",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates within the browser window.\n  text(`x: ${winMouseX} y: ${winMouseY}`, 50, 50);\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates within the browser window.\n  text(`x: ${int(winMouseX)} y: ${int(winMouseY)}`, 50, 50);\n}\n</code>\n</div>"
       ],
       "description": "<p>A <code>Number</code> variable that tracks the mouse's horizontal position within the\nbrowser.</p>\n<p><code>winMouseX</code> keeps track of the mouse's position relative to the top-left\ncorner of the browser window. For example, if the mouse is 50 pixels from\nthe left edge of the browser, then <code>winMouseX</code> will be 50.</p>\n<p>On a touchscreen device, <code>winMouseX</code> will hold the x-coordinate of the most\nrecent touch point.</p>\n<p>Note: Use <a href=\"#/p5/mouseX\">mouseX</a> to track the mouse’s\nx-coordinate within the canvas.</p>\n"
     },
@@ -4819,13 +4833,13 @@
       "itemtype": "property",
       "name": "winMouseY",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 545,
+      "line": 529,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
       "class": "p5",
       "example": [
-        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates within the browser window.\n  text(`x: ${winMouseX} y: ${winMouseY}`, 50, 50);\n}\n</code>\n</div>"
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\"A gray square. The mouse's x- and y-coordinates are displayed as the user moves the mouse.\");\n}\n\nfunction draw() {\n  background(200);\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the mouse's coordinates within the browser window.\n  text(`x: ${int(winMouseX)} y: ${int(winMouseY)}`, 50, 50);\n}\n</code>\n</div>"
       ],
       "description": "<p>A <code>Number</code> variable that tracks the mouse's vertical position within the\nbrowser.</p>\n<p><code>winMouseY</code> keeps track of the mouse's position relative to the top-left\ncorner of the browser window. For example, if the mouse is 50 pixels from\nthe top edge of the browser, then <code>winMouseY</code> will be 50.</p>\n<p>On a touchscreen device, <code>winMouseY</code> will hold the y-coordinate of the most\nrecent touch point.</p>\n<p>Note: Use <a href=\"#/p5/mouseY\">mouseY</a> to track the mouse’s\ny-coordinate within the canvas.</p>\n"
     },
@@ -4833,7 +4847,7 @@
       "itemtype": "property",
       "name": "pwinMouseX",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 616,
+      "line": 600,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
@@ -4847,7 +4861,7 @@
       "itemtype": "property",
       "name": "pwinMouseY",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 687,
+      "line": 671,
       "type": "Number",
       "module": "Events",
       "submodule": "Pointer",
@@ -4861,7 +4875,7 @@
       "itemtype": "property",
       "name": "mouseButton",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 762,
+      "line": 746,
       "type": "Object",
       "module": "Events",
       "submodule": "Pointer",
@@ -4875,7 +4889,7 @@
       "itemtype": "property",
       "name": "touches",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 851,
+      "line": 835,
       "type": "Object[]",
       "module": "Events",
       "submodule": "Pointer",
@@ -4889,7 +4903,7 @@
       "itemtype": "property",
       "name": "mouseIsPressed",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 911,
+      "line": 895,
       "type": "Boolean",
       "module": "Events",
       "submodule": "Pointer",
@@ -5127,7 +5141,7 @@
       "itemtype": "property",
       "name": "width",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2466,
+      "line": 2482,
       "module": "DOM",
       "submodule": "DOM",
       "class": "p5.Element",
@@ -5138,7 +5152,7 @@
       "itemtype": "property",
       "name": "height",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2466,
+      "line": 2482,
       "module": "DOM",
       "submodule": "DOM",
       "class": "p5.Element",
@@ -5149,7 +5163,7 @@
       "itemtype": "property",
       "name": "elt",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2466,
+      "line": 2482,
       "module": "DOM",
       "submodule": "DOM",
       "class": "p5.Element",
@@ -5517,7 +5531,7 @@
       "itemtype": "property",
       "name": "vertices",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 2165,
+      "line": 2166,
       "module": "Shape",
       "submodule": "3D Primitives",
       "class": "p5.Geometry",
@@ -5530,7 +5544,7 @@
       "itemtype": "property",
       "name": "vertexNormals",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 2165,
+      "line": 2166,
       "module": "Shape",
       "submodule": "3D Primitives",
       "class": "p5.Geometry",
@@ -5543,7 +5557,7 @@
       "itemtype": "property",
       "name": "faces",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 2165,
+      "line": 2166,
       "module": "Shape",
       "submodule": "3D Primitives",
       "class": "p5.Geometry",
@@ -5556,7 +5570,7 @@
       "itemtype": "property",
       "name": "uvs",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 2165,
+      "line": 2166,
       "module": "Shape",
       "submodule": "3D Primitives",
       "class": "p5.Geometry",
@@ -7251,7 +7265,7 @@
     {
       "name": "setup",
       "file": "src/scripts/parsers/in/p5.js/src/core/main.js",
-      "line": 678,
+      "line": 683,
       "itemtype": "method",
       "description": "<p>A function that's called once when the sketch begins running.</p>\n<p>Declaring the function <code>setup()</code> sets a code block to run once\nautomatically when the sketch starts running. It's used to perform\nsetup tasks such as creating the canvas and initializing variables:</p>\n<pre><code class=\"language-js\">function setup() {\n  // Code to run once at the start of the sketch.\n}</code></pre><p>Code placed in <code>setup()</code> will run once before code placed in\n<a href=\"#/p5/draw\">draw()</a> begins looping.\nIf <code>setup()</code> is declared <code>async</code> (e.g. <code>async function setup()</code>),\nexecution pauses at each <code>await</code> until its promise resolves.\nFor example, <code>font = await loadFont(...)</code> waits for the font asset\nto load because <code>loadFont()</code> function returns a promise, and the await\nkeyword means the program will wait for the promise to resolve.\nThis ensures that all assets are fully loaded before the sketch continues.</p>\n<p>loading assets.</p>\n<p>Note: <code>setup()</code> doesn’t have to be declared, but it’s common practice to do so.</p>\n",
       "example": [
@@ -7270,7 +7284,7 @@
     {
       "name": "draw",
       "file": "src/scripts/parsers/in/p5.js/src/core/main.js",
-      "line": 678,
+      "line": 683,
       "itemtype": "method",
       "description": "<p>A function that's called repeatedly while the sketch runs.</p>\n<p>Declaring the function <code>draw()</code> sets a code block to run repeatedly\nonce the sketch starts. It’s used to create animations and respond to\nuser inputs:</p>\n<pre><code class=\"language-js\">function draw() {\n  // Code to run repeatedly.\n}</code></pre><p>This is often called the \"draw loop\" because p5.js calls the code in\n<code>draw()</code> in a loop behind the scenes. By default, <code>draw()</code> tries to run\n60 times per second. The actual rate depends on many factors. The\ndrawing rate, called the \"frame rate\", can be controlled by calling\n<a href=\"#/p5/frameRate\">frameRate()</a>. The number of times <code>draw()</code>\nhas run is stored in the system variable\n<a href=\"#/p5/frameCount\">frameCount()</a>.</p>\n<p>Code placed within <code>draw()</code> begins looping after\n<a href=\"#/p5/setup\">setup()</a> runs. <code>draw()</code> will run until the user\ncloses the sketch. <code>draw()</code> can be stopped by calling the\n<a href=\"#/p5/noLoop\">noLoop()</a> function. <code>draw()</code> can be resumed by\ncalling the <a href=\"#/p5/loop\">loop()</a> function.</p>\n",
       "example": [
@@ -8904,7 +8918,7 @@
       "itemtype": "method",
       "description": "<p>Creates an <code>&lt;input&gt;&lt;/input&gt;</code> element of type <code>'file'</code>.</p>\n<p><code>createFileInput()</code> allows users to select local files for use in a sketch.\nIt returns a <a href=\"#/p5.File\">p5.File</a> object.</p>\n<p>The first parameter, <code>callback</code>, is a function that's called when the file\nloads. The callback function should have one parameter, <code>file</code>, that's a\n<a href=\"#/p5.File\">p5.File</a> object.</p>\n<p>The second parameter, <code>multiple</code>, is optional. It's a boolean value that\nallows loading multiple files if set to <code>true</code>. If <code>true</code>, <code>callback</code>\nwill be called once per file.</p>\n",
       "example": [
-        "<div>\n<code>\n// Use the file input to select an image to\n// load and display.\nlet input;\nlet img;\n\nfunction setup() {\n  createCanvas(200, 200);\n\n  // Create a file input and place it beneath\n  // the canvas.\n  input = createFileInput(handleImage);\n  input.position(0, 100);\n\n  describe('A gray square with a file input beneath it. If the user selects an image file to load, it is displayed on the square.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw the image if loaded.\n  if (img) {\n    image(img, 0, 0, width, height);\n  }\n}\n\n// Create an image if the file is an image.\nfunction handleImage(file) {\n  if (file.type === 'image') {\n    img = createImg(file.data, '');\n    img.hide();\n  } else {\n    img = null;\n  }\n}\n</code>\n</div>\n\n<div>\n<code>\n// Use the file input to select multiple images\n// to load and display.\nlet input;\nlet images = [];\n\nfunction setup() {\n  // Create a file input and place it beneath\n  // the canvas. Allow it to load multiple files.\n  input = createFileInput(handleImage, true);\n  input.position(0, 100);\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw the images if loaded. Each image\n  // is drawn 20 pixels lower than the\n  // previous image.\n  for (let i = 0; i < images.length; i += 1) {\n    // Calculate the y-coordinate.\n    let y = i * 20;\n\n    // Draw the image.\n    image(img, 0, y, 100, 100);\n  }\n\n  describe('A gray square with a file input beneath it. If the user selects multiple image files to load, they are displayed on the square.');\n}\n\n// Create an image if the file is an image,\n// then add it to the images array.\nfunction handleImage(file) {\n  if (file.type === 'image') {\n    let img = createImg(file.data, '');\n    img.hide();\n    images.push(img);\n  }\n}\n</code>\n</div>"
+        "<div>\n<code>\n// Use the file input to select an image to\n// load and display.\nlet input;\nlet img;\n\nfunction setup() {\n  createCanvas(200, 200);\n\n  // Create a file input and place it beneath\n  // the canvas.\n  input = createFileInput(handleImage);\n  input.position(0, 100);\n\n  describe('A gray square with a file input beneath it. If the user selects an image file to load, it is displayed on the square.');\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw the image if loaded.\n  if (img) {\n    image(img, 0, 0, width, height);\n  }\n}\n\n// Create an image if the file is an image.\nfunction handleImage(file) {\n  if (file.type === 'image') {\n    img = createImg(file.data, '');\n    img.hide();\n  } else {\n    img = null;\n  }\n}\n</code>\n</div>\n\n<div>\n<code>\n// Use the file input to select multiple images\n// to load and display.\nlet input;\nlet images = [];\n\nfunction setup() {\n  // Create a file input and place it beneath\n  // the canvas. Allow it to load multiple files.\n  input = createFileInput(handleImage, true);\n  input.position(0, 100);\n}\n\nfunction draw() {\n  background(200);\n\n  // Draw the images if loaded. Each image\n  // is drawn 20 pixels lower than the\n  // previous image.\n  for (let i = 0; i < images.length; i += 1) {\n    // Calculate the y-coordinate.\n    let y = i * 20;\n\n    // Draw the image.\n    image(images[i], 0, y, 100, 100);\n  }\n\n  describe('A gray square with a file input beneath it. If the user selects multiple image files to load, they are displayed on the square.');\n}\n\n// Create an image if the file is an image,\n// then add it to the images array.\nfunction handleImage(file) {\n  if (file.type === 'image') {\n    let img = createImg(file.data, '');\n    img.hide();\n    images.push(img);\n  }\n}\n</code>\n</div>"
       ],
       "overloads": [
         {
@@ -9046,7 +9060,7 @@
     {
       "name": "keyPressed",
       "file": "src/scripts/parsers/in/p5.js/src/events/keyboard.js",
-      "line": 461,
+      "line": 645,
       "itemtype": "method",
       "description": "<p>A function that's called once when any key is pressed.</p>\n<p>Declaring the function <code>keyPressed()</code> sets a code block to run once\nautomatically when the user presses any key:</p>\n<pre><code class=\"language-js\">function keyPressed() {\n  // Code to run.\n}</code></pre><p>The <a href=\"#/p5/key\">key</a> and <a href=\"#/p5/keyCode\">keyCode</a>\nvariables will be updated with the most recently typed value when\n<code>keyPressed()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function keyPressed() {\n  if (key === 'c') {\n    // Code to run.\n  }\n\n  if (keyCode === 13) { // Enter key\n    // Code to run.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>keyPressed()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent\" target=\"_blank\">KeyboardEvent</a>\nobject with properties that describe the key press event:</p>\n<pre><code class=\"language-js\">function keyPressed(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>Browsers may have default behaviors attached to various key events. For\nexample, some browsers may jump to the bottom of a web page when the\n<code>SPACE</code> key is pressed. To prevent any default behavior for this event, add\n<code>return false;</code> to the end of the function.</p>\n",
       "example": [
@@ -9072,7 +9086,7 @@
     {
       "name": "keyReleased",
       "file": "src/scripts/parsers/in/p5.js/src/events/keyboard.js",
-      "line": 638,
+      "line": 822,
       "itemtype": "method",
       "description": "<p>A function that's called once when any key is released.</p>\n<p>Declaring the function <code>keyReleased()</code> sets a code block to run once\nautomatically when the user releases any key:</p>\n<pre><code class=\"language-js\">function keyReleased() {\n  // Code to run.\n}</code></pre><p>The <a href=\"#/p5/key\">key</a> and <a href=\"#/p5/keyCode\">keyCode</a>\nvariables will be updated with the most recently released value when\n<code>keyReleased()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function keyReleased() {\n  if (key === 'c') {\n    // Code to run.\n  }\n\n  if (keyCode === 13) { // Enter key\n    // Code to run.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>keyReleased()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent\" target=\"_blank\">KeyboardEvent</a>\nobject with properties that describe the key press event:</p>\n<pre><code class=\"language-js\">function keyReleased(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>Browsers may have default behaviors attached to various key events. To\nprevent any default behavior for this event, add <code>return false;</code> to the end\nof the function.</p>\n",
       "example": [
@@ -9098,7 +9112,7 @@
     {
       "name": "keyTyped",
       "file": "src/scripts/parsers/in/p5.js/src/events/keyboard.js",
-      "line": 796,
+      "line": 980,
       "itemtype": "method",
       "description": "<p>A function that's called once when keys with printable characters are pressed.</p>\n<p>Declaring the function <code>keyTyped()</code> sets a code block to run once\nautomatically when the user presses any key with a printable character such\nas <code>a</code> or 1. Modifier keys such as <code>SHIFT</code>, <code>CONTROL</code>, and the arrow keys\nwill be ignored:</p>\n<pre><code class=\"language-js\">function keyTyped() {\n  // Code to run.\n}</code></pre><p>The <a href=\"#/p5/key\">key</a> and <a href=\"#/p5/keyCode\">keyCode</a>\nvariables will be updated with the most recently released value when\n<code>keyTyped()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function keyTyped() {\n  // Check for the \"c\" character using key.\n  if (key === 'c') {\n    // Code to run.\n  }\n\n  // Check for \"c\" using keyCode.\n  if (keyCode === 67) { // 67 is the ASCII code for 'c'\n    // Code to run.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>keyTyped()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent\" target=\"_blank\">KeyboardEvent</a>\nobject with properties that describe the key press event:</p>\n<pre><code class=\"language-js\">function keyReleased(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>Note: Use the <a href=\"#/p5/keyPressed\">keyPressed()</a> function and\n<a href=\"#/p5/keyCode\">keyCode</a> system variable to respond to modifier\nkeys such as <code>ALT</code>.</p>\n<p>Browsers may have default behaviors attached to various key events. To\nprevent any default behavior for this event, add <code>return false;</code> to the end\nof the function.</p>\n",
       "example": [
@@ -9124,7 +9138,7 @@
     {
       "name": "keyIsDown",
       "file": "src/scripts/parsers/in/p5.js/src/events/keyboard.js",
-      "line": 940,
+      "line": 1124,
       "itemtype": "method",
       "description": "<p>Returns <code>true</code> if the key it’s checking is pressed and <code>false</code> if not.</p>\n<p><code>keyIsDown()</code> is helpful when checking for multiple different key presses.\nFor example, <code>keyIsDown()</code> can be used to check if both <code>LEFT_ARROW</code> and\n<code>UP_ARROW</code> are pressed:</p>\n<pre><code class=\"language-js\">if (keyIsDown(LEFT_ARROW) && keyIsDown(UP_ARROW)) {\n  // Move diagonally.\n}</code></pre><p><code>keyIsDown()</code> can check for key presses using strings based on\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key\" target=\"_blank\">KeyboardEvent.key</a>\nor <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code\" target=\"_blank\">KeyboardEvent.code</a> values,\nsuch as <code>keyIsDown('x')</code> or <code>keyIsDown('ArrowLeft')</code>.</p>\n<p>Note: In p5.js 2.0 and newer, numeric keycodes (such as 88 for 'X') are no longer supported.\nThis is a breaking change from previous versions.</p>\n<p>You can still use the p5 constants like <code>LEFT_ARROW</code> which now map to string values\ninternally rather than numeric codes.</p>\n",
       "example": [
@@ -9157,7 +9171,7 @@
     {
       "name": "mouseMoved",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1157,
+      "line": 1141,
       "itemtype": "method",
       "description": "<p>A function that's called when the mouse moves.</p>\n<p>Declaring the function <code>mouseMoved()</code> sets a code block to run\nautomatically when the user moves the mouse without clicking any mouse\nbuttons:</p>\n<pre><code class=\"language-js\">function mouseMoved() {\n  // Code to run.\n}</code></pre><p>The mouse system variables, such as <a href=\"#/p5/mouseX\">mouseX</a> and\n<a href=\"#/p5/mouseY\">mouseY</a>, will be updated with their most recent\nvalue when <code>mouseMoved()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function mouseMoved() {\n  if (mouseX < 50) {\n    // Code to run if the mouse is on the left.\n  }\n\n  if (mouseY > 50) {\n    // Code to run if the mouse is near the bottom.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>mouseMoved()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent\" target=\"_blank\">MouseEvent</a>\nobject with properties that describe the mouse move event:</p>\n<pre><code class=\"language-js\">function mouseMoved(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>Browsers may have default behaviors attached to various mouse events. For\nexample, some browsers highlight text when the user moves the mouse while\npressing a mouse button. To prevent any default behavior for this event,\nadd <code>return false;</code> to the end of the function.</p>\n",
       "example": [
@@ -9183,7 +9197,7 @@
     {
       "name": "mouseDragged",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1157,
+      "line": 1141,
       "itemtype": "method",
       "description": "<p>A function that's called when the mouse moves while a button is pressed.</p>\n<p>Declaring the function <code>mouseDragged()</code> sets a code block to run\nautomatically when the user clicks and drags the mouse:</p>\n<pre><code class=\"language-js\">function mouseDragged() {\n  // Code to run.\n}</code></pre><p>The mouse system variables, such as <a href=\"#/p5/mouseX\">mouseX</a> and\n<a href=\"#/p5/mouseY\">mouseY</a>, will be updated with their most recent\nvalue when <code>mouseDragged()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function mouseDragged() {\n  if (mouseX < 50) {\n    // Code to run if the mouse is on the left.\n  }\n\n  if (mouseY > 50) {\n    // Code to run if the mouse is near the bottom.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>mouseDragged()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent\" target=\"_blank\">MouseEvent</a>\nobject with properties that describe the mouse drag event:</p>\n<pre><code class=\"language-js\">function mouseDragged(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>On touchscreen devices, <code>mouseDragged()</code> will run when a user moves a touch\npoint.</p>\n<p>Browsers may have default behaviors attached to various mouse events. For\nexample, some browsers highlight text when the user moves the mouse while\npressing a mouse button. To prevent any default behavior for this event,\nadd <code>return false;</code> to the end of the function.</p>\n",
       "example": [
@@ -9209,7 +9223,7 @@
     {
       "name": "mousePressed",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1320,
+      "line": 1304,
       "itemtype": "method",
       "description": "<p>A function that's called once when a mouse button is pressed.</p>\n<p>Declaring the function <code>mousePressed()</code> sets a code block to run\nautomatically when the user presses a mouse button:</p>\n<pre><code class=\"language-js\">function mousePressed() {\n  // Code to run.\n}</code></pre><p>The mouse system variables, such as <a href=\"#/p5/mouseX\">mouseX</a> and\n<a href=\"#/p5/mouseY\">mouseY</a>, will be updated with their most recent\nvalue when <code>mousePressed()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function mousePressed() {\n  if (mouseX < 50) {\n    // Code to run if the mouse is on the left.\n  }\n\n  if (mouseY > 50) {\n    // Code to run if the mouse is near the bottom.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>mousePressed()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent\" target=\"_blank\">MouseEvent</a>\nobject with properties that describe the mouse press event:</p>\n<pre><code class=\"language-js\">function mousePressed(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>On touchscreen devices, <code>mousePressed()</code> will run when a user’s touch\nbegins.</p>\n<p>Browsers may have default behaviors attached to various mouse events. For\nexample, some browsers highlight text when the user moves the mouse while\npressing a mouse button. To prevent any default behavior for this event,\nadd <code>return false;</code> to the end of the function.</p>\n<p>Note: <code>mousePressed()</code>, <a href=\"#/p5/mouseReleased\">mouseReleased()</a>,\nand <a href=\"#/p5/mouseClicked\">mouseClicked()</a> are all related.\n<code>mousePressed()</code> runs as soon as the user clicks the mouse.\n<a href=\"#/p5/mouseReleased\">mouseReleased()</a> runs as soon as the user\nreleases the mouse click. <a href=\"#/p5/mouseClicked\">mouseClicked()</a>\nruns immediately after <a href=\"#/p5/mouseReleased\">mouseReleased()</a>.</p>\n",
       "example": [
@@ -9235,7 +9249,7 @@
     {
       "name": "mouseReleased",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1480,
+      "line": 1464,
       "itemtype": "method",
       "description": "<p>A function that's called once when a mouse button is released.</p>\n<p>Declaring the function <code>mouseReleased()</code> sets a code block to run\nautomatically when the user releases a mouse button after having pressed\nit:</p>\n<pre><code class=\"language-js\">function mouseReleased() {\n  // Code to run.\n}</code></pre><p>The mouse system variables, such as <a href=\"#/p5/mouseX\">mouseX</a> and\n<a href=\"#/p5/mouseY\">mouseY</a>, will be updated with their most recent\nvalue when <code>mouseReleased()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function mouseReleased() {\n  if (mouseX < 50) {\n    // Code to run if the mouse is on the left.\n  }\n\n  if (mouseY > 50) {\n    // Code to run if the mouse is near the bottom.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>mouseReleased()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent\" target=\"_blank\">MouseEvent</a>\nobject with properties that describe the mouse release event:</p>\n<pre><code class=\"language-js\">function mouseReleased(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>On touchscreen devices, <code>mouseReleased()</code> will run when a user’s touch\nends.</p>\n<p>Browsers may have default behaviors attached to various mouse events. For\nexample, some browsers highlight text when the user moves the mouse while\npressing a mouse button. To prevent any default behavior for this event,\nadd <code>return false;</code> to the end of the function.</p>\n<p>Note: <a href=\"#/p5/mousePressed\">mousePressed()</a>, <code>mouseReleased()</code>,\nand <a href=\"#/p5/mouseClicked\">mouseClicked()</a> are all related.\n<a href=\"#/p5/mousePressed\">mousePressed()</a> runs as soon as the user\nclicks the mouse. <code>mouseReleased()</code> runs as soon as the user releases the\nmouse click. <a href=\"#/p5/mouseClicked\">mouseClicked()</a> runs\nimmediately after <code>mouseReleased()</code>.</p>\n",
       "example": [
@@ -9261,7 +9275,7 @@
     {
       "name": "mouseClicked",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1644,
+      "line": 1628,
       "itemtype": "method",
       "description": "<p>A function that's called once after a mouse button is pressed and released.</p>\n<p>Declaring the function <code>mouseClicked()</code> sets a code block to run\nautomatically when the user releases a mouse button after having pressed\nit:</p>\n<pre><code class=\"language-js\">function mouseClicked() {\n  // Code to run.\n}</code></pre><p>The mouse system variables, such as <a href=\"#/p5/mouseX\">mouseX</a> and\n<a href=\"#/p5/mouseY\">mouseY</a>, will be updated with their most recent\nvalue when <code>mouseClicked()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function mouseClicked() {\n  if (mouseX < 50) {\n    // Code to run if the mouse is on the left.\n  }\n\n  if (mouseY > 50) {\n    // Code to run if the mouse is near the bottom.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>mouseClicked()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent\" target=\"_blank\">MouseEvent</a>\nobject with properties that describe the mouse click event:</p>\n<pre><code class=\"language-js\">function mouseClicked(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>On touchscreen devices, <code>mouseClicked()</code> will run when a user’s touch\nends.</p>\n<p>Browsers may have default behaviors attached to various mouse events. For\nexample, some browsers highlight text when the user moves the mouse while\npressing a mouse button. To prevent any default behavior for this event,\nadd <code>return false;</code> to the end of the function.</p>\n<p>Note: <a href=\"#/p5/mousePressed\">mousePressed()</a>,\n<a href=\"#/p5/mouseReleased\">mouseReleased()</a>,\nand <code>mouseClicked()</code> are all related.\n<a href=\"#/p5/mousePressed\">mousePressed()</a> runs as soon as the user\nclicks the mouse. <a href=\"#/p5/mouseReleased\">mouseReleased()</a> runs as\nsoon as the user releases the mouse click. <code>mouseClicked()</code> runs\nimmediately after <a href=\"#/p5/mouseReleased\">mouseReleased()</a>.</p>\n",
       "example": [
@@ -9287,7 +9301,7 @@
     {
       "name": "doubleClicked",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1775,
+      "line": 1759,
       "itemtype": "method",
       "description": "<p>A function that's called once when a mouse button is clicked twice quickly.</p>\n<p>Declaring the function <code>doubleClicked()</code> sets a code block to run\nautomatically when the user presses and releases the mouse button twice\nquickly:</p>\n<pre><code class=\"language-js\">function doubleClicked() {\n  // Code to run.\n}</code></pre><p>The mouse system variables, such as <a href=\"#/p5/mouseX\">mouseX</a> and\n<a href=\"#/p5/mouseY\">mouseY</a>, will be updated with their most recent\nvalue when <code>doubleClicked()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function doubleClicked() {\n  if (mouseX < 50) {\n    // Code to run if the mouse is on the left.\n  }\n\n  if (mouseY > 50) {\n    // Code to run if the mouse is near the bottom.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>doubleClicked()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent\" target=\"_blank\">MouseEvent</a>\nobject with properties that describe the double-click event:</p>\n<pre><code class=\"language-js\">function doubleClicked(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>On touchscreen devices, code placed in <code>doubleClicked()</code> will run after two\ntouches that occur within a short time.</p>\n<p>Browsers may have default behaviors attached to various mouse events. For\nexample, some browsers highlight text when the user moves the mouse while\npressing a mouse button. To prevent any default behavior for this event,\nadd <code>return false;</code> to the end of the function.</p>\n",
       "example": [
@@ -9313,7 +9327,7 @@
     {
       "name": "mouseWheel",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1923,
+      "line": 1907,
       "itemtype": "method",
       "description": "<p>A function that's called once when the mouse wheel moves.</p>\n<p>Declaring the function <code>mouseWheel()</code> sets a code block to run\nautomatically when the user scrolls with the mouse wheel:</p>\n<pre><code class=\"language-js\">function mouseWheel() {\n  // Code to run.\n}</code></pre><p>The mouse system variables, such as <a href=\"#/p5/mouseX\">mouseX</a> and\n<a href=\"#/p5/mouseY\">mouseY</a>, will be updated with their most recent\nvalue when <code>mouseWheel()</code> is called by p5.js:</p>\n<pre><code class=\"language-js\">function mouseWheel() {\n  if (mouseX < 50) {\n    // Code to run if the mouse is on the left.\n  }\n\n  if (mouseY > 50) {\n    // Code to run if the mouse is near the bottom.\n  }\n}</code></pre><p>The parameter, <code>event</code>, is optional. <code>mouseWheel()</code> is always passed a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent\" target=\"_blank\">MouseEvent</a>\nobject with properties that describe the mouse scroll event:</p>\n<pre><code class=\"language-js\">function mouseWheel(event) {\n  // Code to run that uses the event.\n  console.log(event);\n}</code></pre><p>The <code>event</code> object has many properties including <code>delta</code>, a <code>Number</code>\ncontaining the distance that the user scrolled. For example, <code>event.delta</code>\nmight have the value 5 when the user scrolls up. <code>event.delta</code> is positive\nif the user scrolls up and negative if they scroll down. The signs are\nopposite on macOS with \"natural\" scrolling enabled.</p>\n<p>Browsers may have default behaviors attached to various mouse events. For\nexample, some browsers highlight text when the user moves the mouse while\npressing a mouse button. To prevent any default behavior for this event,\nadd <code>return false;</code> to the end of the function.</p>\n<p>Note: On Safari, <code>mouseWheel()</code> may only work as expected if\n<code>return false;</code> is added at the end of the function.</p>\n",
       "example": [
@@ -9339,7 +9353,7 @@
     {
       "name": "requestPointerLock",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 1988,
+      "line": 1972,
       "itemtype": "method",
       "description": "<p>Locks the mouse pointer to its current position and makes it invisible.</p>\n<p><code>requestPointerLock()</code> allows the mouse to move forever without leaving the\nscreen. Calling <code>requestPointerLock()</code> locks the values of\n<a href=\"#/p5/mouseX\">mouseX</a>, <a href=\"#/p5/mouseY\">mouseY</a>,\n<a href=\"#/p5/pmouseX\">pmouseX</a>, and <a href=\"#/p5/pmouseY\">pmouseY</a>.\n<a href=\"#/p5/movedX\">movedX</a> and <a href=\"#/p5/movedY\">movedY</a>\ncontinue updating and can be used to get the distance the mouse moved since\nthe last frame was drawn. Calling\n<a href=\"#/p5/exitPointerLock\">exitPointerLock()</a> resumes updating the\nmouse system variables.</p>\n<p>Note: Most browsers require an input, such as a click, before calling\n<code>requestPointerLock()</code>. It’s recommended to call <code>requestPointerLock()</code> in\nan event function such as <a href=\"#/p5/doubleClicked\">doubleClicked()</a>.</p>\n",
       "example": [
@@ -9358,7 +9372,7 @@
     {
       "name": "exitPointerLock",
       "file": "src/scripts/parsers/in/p5.js/src/events/pointer.js",
-      "line": 2057,
+      "line": 2041,
       "itemtype": "method",
       "description": "<p>Exits a pointer lock started with\n<a href=\"#/p5/requestPointerLock\">requestPointerLock</a>.</p>\n<p>Calling <code>requestPointerLock()</code> locks the values of\n<a href=\"#/p5/mouseX\">mouseX</a>, <a href=\"#/p5/mouseY\">mouseY</a>,\n<a href=\"#/p5/pmouseX\">pmouseX</a>, and <a href=\"#/p5/pmouseY\">pmouseY</a>.\nCalling <code>exitPointerLock()</code> resumes updating the mouse system variables.</p>\n<p>Note: Most browsers require an input, such as a click, before calling\n<code>requestPointerLock()</code>. It’s recommended to call <code>requestPointerLock()</code> in\nan event function such as <a href=\"#/p5/doubleClicked\">doubleClicked()</a>.</p>\n",
       "example": [
@@ -13431,22 +13445,22 @@
           "params": [
             {
               "name": "a",
-              "description": "coordinate of first control point.",
-              "type": "Number"
-            },
-            {
-              "name": "b",
               "description": "coordinate of first anchor point.",
               "type": "Number"
             },
             {
+              "name": "b",
+              "description": "coordinate of first control point.",
+              "type": "Number"
+            },
+            {
               "name": "c",
-              "description": "coordinate of second anchor point.",
+              "description": "coordinate of second control point.",
               "type": "Number"
             },
             {
               "name": "d",
-              "description": "coordinate of second control point.",
+              "description": "coordinate of second anchor point.",
               "type": "Number"
             },
             {
@@ -13662,22 +13676,22 @@
           "params": [
             {
               "name": "a",
-              "description": "coordinate of first anchor point.",
-              "type": "Number"
-            },
-            {
-              "name": "b",
               "description": "coordinate of first control point.",
               "type": "Number"
             },
             {
+              "name": "b",
+              "description": "coordinate of first anchor point.",
+              "type": "Number"
+            },
+            {
               "name": "c",
-              "description": "coordinate of second control point.",
+              "description": "coordinate of second anchor point.",
               "type": "Number"
             },
             {
               "name": "d",
-              "description": "coordinate of second anchor point.",
+              "description": "coordinate of second control point.",
               "type": "Number"
             },
             {
@@ -14320,7 +14334,7 @@
     {
       "name": "loadFont",
       "file": "src/scripts/parsers/in/p5.js/src/type/p5.Font.js",
-      "line": 1315,
+      "line": 1326,
       "itemtype": "method",
       "description": "<p>Loads a font and creates a <a href=\"#/p5.Font\">p5.Font</a> object.\n<code>loadFont()</code> can load fonts in either .otf or .ttf format. Loaded fonts can\nbe used to style text on the canvas and in HTML elements.</p>\n<p>The first parameter, <code>path</code>, is the path to a font file.\nPaths to local files should be relative. For example,\n<code>'assets/inconsolata.otf'</code>. The Inconsolata font used in the following\nexamples can be downloaded for free\n<a href=\"https://www.fontsquirrel.com/fonts/inconsolata\" target=\"_blank\">here</a>.\nPaths to remote files should be URLs. For example,\n<code>'https://example.com/inconsolata.otf'</code>. URLs may be blocked due to browser\nsecurity.</p>\n<p>In 2D mode, <code>path</code> can take on a few other forms. It could be a path to a CSS file,\nsuch as one from <a href=\"https://fonts.google.com/\">Google Fonts.</a> It could also\nbe a string with a <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face\">CSS <code>@font-face</code> declaration.</a></p>\n<p>The second parameter, <code>successCallback</code>, is optional. If a function is\npassed, it will be called once the font has loaded. The callback function\nmay use the new <a href=\"#/p5.Font\">p5.Font</a> object if needed.</p>\n<p>The third parameter, <code>failureCallback</code>, is also optional. If a function is\npassed, it will be called if the font fails to load. The callback function\nmay use the error\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Event\" target=\"_blank\">Event</a>\nobject if needed.</p>\n<p>Fonts can take time to load. <code>await</code> the result of <code>loadFont()</code> in\n<a href=\"#/p5/setup\">setup()</a> before using the result.</p>\n",
       "example": [
@@ -18329,7 +18343,7 @@
       "file": "src/scripts/parsers/in/p5.js/src/webgl/material.js",
       "line": 2561,
       "itemtype": "method",
-      "description": "<p>Changes the coordinate system used for textures when they’re applied to\ncustom shapes.</p>\n<p>In order for <a href=\"#/p5/texture\">texture()</a> to work, a shape needs a\nway to map the points on its surface to the pixels in an image. Built-in\nshapes such as <a href=\"#/p5/rect\">rect()</a> and\n<a href=\"#/p5/box\">box()</a> already have these texture mappings based on\ntheir vertices. Custom shapes created with\n<a href=\"#/p5/vertex\">vertex()</a> require texture mappings to be passed as\nuv coordinates.</p>\n<p>Each call to <a href=\"#/p5/vertex\">vertex()</a> must include 5 arguments,\nas in <code>vertex(x, y, z, u, v)</code>, to map the vertex at coordinates <code>(x, y, z)</code>\nto the pixel at coordinates <code>(u, v)</code> within an image. For example, the\ncorners of a rectangular image are mapped to the corners of a rectangle by default:</p>\n<code>\n// Apply the image as a texture.\ntexture(img);<p>// Draw the rectangle.\nrect(0, 0, 30, 50);\n</code></p>\n<p>If the image in the code snippet above has dimensions of 300 x 500 pixels,\nthe same result could be achieved as follows:</p>\n<code>\n// Apply the image as a texture.\ntexture(img);<p>// Draw the rectangle.\nbeginShape();</p>\n<p>// Top-left.\n// u: 0, v: 0\nvertex(0, 0, 0, 0, 0);</p>\n<p>// Top-right.\n// u: 300, v: 0\nvertex(30, 0, 0, 300, 0);</p>\n<p>// Bottom-right.\n// u: 300, v: 500\nvertex(30, 50, 0, 300, 500);</p>\n<p>// Bottom-left.\n// u: 0, v: 500\nvertex(0, 50, 0, 0, 500);</p>\n<p>endShape();\n</code></p>\n<p><code>textureMode()</code> changes the coordinate system for uv coordinates.</p>\n<p>The parameter, <code>mode</code>, accepts two possible constants. If <code>NORMAL</code> is\npassed, as in <code>textureMode(NORMAL)</code>, then the texture’s uv coordinates can\nbe provided in the range 0 to 1 instead of the image’s dimensions. This can\nbe helpful for using the same code for multiple images of different sizes.\nFor example, the code snippet above could be rewritten as follows:</p>\n<code>\n// Set the texture mode to use normalized coordinates.\ntextureMode(NORMAL);<p>// Apply the image as a texture.\ntexture(img);</p>\n<p>// Draw the rectangle.\nbeginShape();</p>\n<p>// Top-left.\n// u: 0, v: 0\nvertex(0, 0, 0, 0, 0);</p>\n<p>// Top-right.\n// u: 1, v: 0\nvertex(30, 0, 0, 1, 0);</p>\n<p>// Bottom-right.\n// u: 1, v: 1\nvertex(30, 50, 0, 1, 1);</p>\n<p>// Bottom-left.\n// u: 0, v: 1\nvertex(0, 50, 0, 0, 1);</p>\n<p>endShape();\n</code></p>\n<p>By default, <code>mode</code> is <code>IMAGE</code>, which scales uv coordinates to the\ndimensions of the image. Calling <code>textureMode(IMAGE)</code> applies the default.</p>\n<p>Note: <code>textureMode()</code> can only be used in WebGL mode.</p>\n",
+      "description": "<p>Changes the coordinate system used for textures when they’re applied to\ncustom shapes.</p>\n<p>In order for <a href=\"#/p5/texture\">texture()</a> to work, a shape needs a\nway to map the points on its surface to the pixels in an image. Built-in\nshapes such as <a href=\"#/p5/rect\">rect()</a> and\n<a href=\"#/p5/box\">box()</a> already have these texture mappings based on\ntheir vertices. Custom shapes created with\n<a href=\"#/p5/vertex\">vertex()</a> require texture mappings to be passed as\nuv coordinates.</p>\n<p>Each call to <a href=\"#/p5/vertex\">vertex()</a> must include 5 arguments,\nas in <code>vertex(x, y, z, u, v)</code>, to map the vertex at coordinates <code>(x, y, z)</code>\nto the pixel at coordinates <code>(u, v)</code> within an image. For example, the\ncorners of a rectangular image are mapped to the corners of a rectangle by default:</p>\n<pre><code class=\"language-js\">// Apply the image as a texture.\ntexture(img);\n\n// Draw the rectangle.\nrect(0, 0, 30, 50);</code></pre><p>If the image in the code snippet above has dimensions of 300 x 500 pixels,\nthe same result could be achieved as follows:</p>\n<pre><code class=\"language-js\">// Apply the image as a texture.\ntexture(img);\n\n// Draw the rectangle.\nbeginShape();\n\n// Top-left.\n// u: 0, v: 0\nvertex(0, 0, 0, 0, 0);\n\n// Top-right.\n// u: 300, v: 0\nvertex(30, 0, 0, 300, 0);\n\n// Bottom-right.\n// u: 300, v: 500\nvertex(30, 50, 0, 300, 500);\n\n// Bottom-left.\n// u: 0, v: 500\nvertex(0, 50, 0, 0, 500);\n\nendShape();</code></pre><p><code>textureMode()</code> changes the coordinate system for uv coordinates.</p>\n<p>The parameter, <code>mode</code>, accepts two possible constants. If <code>NORMAL</code> is\npassed, as in <code>textureMode(NORMAL)</code>, then the texture’s uv coordinates can\nbe provided in the range 0 to 1 instead of the image’s dimensions. This can\nbe helpful for using the same code for multiple images of different sizes.\nFor example, the code snippet above could be rewritten as follows:</p>\n<pre><code class=\"language-js\">// Set the texture mode to use normalized coordinates.\ntextureMode(NORMAL);\n\n// Apply the image as a texture.\ntexture(img);\n\n// Draw the rectangle.\nbeginShape();\n\n// Top-left.\n// u: 0, v: 0\nvertex(0, 0, 0, 0, 0);\n\n// Top-right.\n// u: 1, v: 0\nvertex(30, 0, 0, 1, 0);\n\n// Bottom-right.\n// u: 1, v: 1\nvertex(30, 50, 0, 1, 1);\n\n// Bottom-left.\n// u: 0, v: 1\nvertex(0, 50, 0, 0, 1);\n\nendShape();</code></pre><p>By default, <code>mode</code> is <code>IMAGE</code>, which scales uv coordinates to the\ndimensions of the image. Calling <code>textureMode(IMAGE)</code> applies the default.</p>\n<p>Note: <code>textureMode()</code> can only be used in WebGL mode.</p>\n",
       "example": [
         "<div>\n<code>\nlet img;\n\nasync function setup() {\n  // Load an image and create a p5.Image object.\n  img = await loadImage('assets/laDefense.jpg');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe('An image of a ceiling against a black background.');\n}\n\nfunction draw() {\n  background(0);\n\n  // Apply the image as a texture.\n  texture(img);\n\n  // Draw the custom shape.\n  // Use the image's width and height as uv coordinates.\n  beginShape();\n  vertex(-30, -30, 0, 0);\n  vertex(30, -30, img.width, 0);\n  vertex(30, 30, img.width, img.height);\n  vertex(-30, 30, 0, img.height);\n  endShape();\n}\n</code>\n</div>\n\n<div>\n<code>\nlet img;\n\nasync function setup() {\n  // Load an image and create a p5.Image object.\n  img = await loadImage('assets/laDefense.jpg');\n\n  createCanvas(100, 100, WEBGL);\n\n  describe('An image of a ceiling against a black background.');\n}\n\nfunction draw() {\n  background(0);\n\n  // Set the texture mode.\n  textureMode(NORMAL);\n\n  // Apply the image as a texture.\n  texture(img);\n\n  // Draw the custom shape.\n  // Use normalized uv coordinates.\n  beginShape();\n  vertex(-30, -30, 0, 0);\n  vertex(30, -30, 1, 0);\n  vertex(30, 30, 1, 1);\n  vertex(-30, 30, 0, 1);\n  endShape();\n}\n</code>\n</div>"
       ],
@@ -18956,7 +18970,7 @@
     {
       "name": "saveObj",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 369,
+      "line": 370,
       "itemtype": "method",
       "description": "<p>The <code>saveObj()</code> function exports <code>p5.Geometry</code> objects as\n3D models in the Wavefront .obj file format.\nThis way, you can use the 3D shapes you create in p5.js in other software\nfor rendering, animation, 3D printing, or more.</p>\n<p>The exported .obj file will include the faces and vertices of the <code>p5.Geometry</code>,\nas well as its texture coordinates and normals, if it has them.</p>\n",
       "example": [
@@ -18982,7 +18996,7 @@
     {
       "name": "saveStl",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 480,
+      "line": 481,
       "itemtype": "method",
       "description": "<p>The <code>saveStl()</code> function exports <code>p5.Geometry</code> objects as\n3D models in the STL stereolithography file format.\nThis way, you can use the 3D shapes you create in p5.js in other software\nfor rendering, animation, 3D printing, or more.</p>\n<p>The exported .stl file will include the faces, vertices, and normals of the <code>p5.Geometry</code>.</p>\n<p>By default, this method saves a text-based .stl file. Alternatively, you can save a more compact\nbut less human-readable binary .stl file by passing <code>{ binary: true }</code> as a second parameter.</p>\n",
       "example": [
@@ -19014,7 +19028,7 @@
     {
       "name": "flipV",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 715,
+      "line": 716,
       "itemtype": "method",
       "description": "<p>Flips the geometry’s texture v-coordinates.</p>\n<p>In order for <a href=\"#/p5/texture\">texture()</a> to work, the geometry\nneeds a way to map the points on its surface to the pixels in a rectangular\nimage that's used as a texture. The geometry's vertex at coordinates\n<code>(x, y, z)</code> maps to the texture image's pixel at coordinates <code>(u, v)</code>.</p>\n<p>The <a href=\"#/p5.Geometry/uvs\">myGeometry.uvs</a> array stores the\n<code>(u, v)</code> coordinates for each vertex in the order it was added to the\ngeometry. Calling <code>myGeometry.flipV()</code> flips a geometry's v-coordinates\nso that the texture appears mirrored vertically.</p>\n<p>For example, a plane's four vertices are added clockwise starting from the\ntop-left corner. Here's how calling <code>myGeometry.flipV()</code> would change a\nplane's texture coordinates:</p>\n<pre><code class=\"language-js\">// Print the original texture coordinates.\n// Output: [0, 0, 1, 0, 0, 1, 1, 1]\nconsole.log(myGeometry.uvs);\n\n// Flip the v-coordinates.\nmyGeometry.flipV();\n\n// Print the flipped texture coordinates.\n// Output: [0, 1, 1, 1, 0, 0, 1, 0]\nconsole.log(myGeometry.uvs);\n\n// Notice the swaps:\n// Left vertices: [0, 0] <--> [1, 0]\n// Right vertices: [1, 0] <--> [1, 1]</code></pre>",
       "example": [
@@ -19033,7 +19047,7 @@
     {
       "name": "setAttributes",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.RendererGL.js",
-      "line": 2699,
+      "line": 2704,
       "itemtype": "method",
       "description": "<p>Set attributes for the WebGL Drawing context.\nThis is a way of adjusting how the WebGL\nrenderer works to fine-tune the display and performance.</p>\n<p>Note that this will reinitialize the drawing context\nif called after the WebGL canvas is made.</p>\n<p>If an object is passed as the parameter, all attributes\nnot declared in the object will be set to defaults.</p>\n<p>The available attributes are:\n<br>\nalpha - indicates if the canvas contains an alpha buffer\ndefault is true</p>\n<p>depth - indicates whether the drawing buffer has a depth buffer\nof at least 16 bits - default is true</p>\n<p>stencil - indicates whether the drawing buffer has a stencil buffer\nof at least 8 bits</p>\n<p>antialias - indicates whether or not to perform anti-aliasing\ndefault is false (true in Safari)</p>\n<p>premultipliedAlpha - indicates that the page compositor will assume\nthe drawing buffer contains colors with pre-multiplied alpha\ndefault is true</p>\n<p>preserveDrawingBuffer - if true the buffers will not be cleared and\nand will preserve their values until cleared or overwritten by author\n(note that p5 clears automatically on draw loop)\ndefault is true</p>\n<p>perPixelLighting - if true, per-pixel lighting will be used in the\nlighting shader otherwise per-vertex lighting is used.\ndefault is true.</p>\n<p>version - either 1 or 2, to specify which WebGL version to ask for. By\ndefault, WebGL 2 will be requested. If WebGL2 is not available, it will\nfall back to WebGL 1. You can check what version is used with by looking at\nthe global <code>webglVersion</code> property.</p>\n",
       "example": [
@@ -19079,9 +19093,24 @@
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let myColor = color('darkorchid');\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the text.\n  text(myColor.toString('#rrggbb'), 50, 50);\n\n  describe('The text \"#9932cc\" written in purple on a gray background.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let myColor = color('darkorchid');\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the text.\n  text(myColor.toString('#rrggbb'), 50, 50);\n\n  describe('The text \"#9932cc\" written in purple on a gray background.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let myColor = color('darkorchid');\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the text.\n  text(myColor.toString('#rrggbb'), 50, 50);\n\n  describe('The text \"#9932cc\" written in purple on a gray background.');\n}\n</code>\n</div>",
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let myColor = color('darkorchid');\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the text.\n  text(myColor.toString('#rrggbb'), 50, 50);\n\n  describe('The text \"#9932cc\" written in purple on a gray background.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let myColor = color('darkorchid');\n\n  // Style the text.\n  textAlign(CENTER);\n  textSize(16);\n\n  // Display the text.\n  text(myColor.toString('#rrggbb'), 50, 50);\n\n  describe('The text \"#9932cc\" written in purple on a gray background.');\n}\n</code>\n</div>"
       ],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "format",
+              "description": "how the color string will be formatted.\nLeaving this empty formats the string as rgba(r, g, b, a).\n'#rgb' '#rgba' '#rrggbb' and '#rrggbbaa' format as hexadecimal color codes.\n'rgb' 'hsb' and 'hsl' return the color formatted in the specified color mode.\n'rgba' 'hsba' and 'hsla' are the same as above but with alpha channels.\n'rgb%' 'hsb%' 'hsl%' 'rgba%' 'hsba%' and 'hsla%' format as percentages.",
+              "optional": 1,
+              "type": "String"
+            }
+          ],
+          "return": {
+            "description": "the formatted string.",
+            "type": "String"
+          }
+        },
         {
           "params": [
             {
@@ -19158,9 +19187,19 @@
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the red value.\n  c.setRed(64);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is teal.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the red value.\n  c.setRed(64);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is teal.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the red value.\n  c.setRed(64);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is teal.');\n}\n</code>\n</div>",
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the red value.\n  c.setRed(64);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is teal.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the red value.\n  c.setRed(64);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is teal.');\n}\n</code>\n</div>"
       ],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "red",
+              "description": "the new red value.",
+              "type": "Number"
+            }
+          ]
+        },
         {
           "params": [
             {
@@ -19213,9 +19252,19 @@
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the green value.\n  c.setGreen(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is yellow.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the green value.\n  c.setGreen(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is yellow.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the green value.\n  c.setGreen(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is yellow.');\n}\n</code>\n</div>",
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the green value.\n  c.setGreen(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is yellow.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the green value.\n  c.setGreen(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is yellow.');\n}\n</code>\n</div>"
       ],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "green",
+              "description": "the new green value.",
+              "type": "Number"
+            }
+          ]
+        },
         {
           "params": [
             {
@@ -19268,9 +19317,19 @@
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the blue value.\n  c.setBlue(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is pale fuchsia.');\n}\n</code>\n</div>\n*",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the blue value.\n  c.setBlue(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is pale fuchsia.');\n}\n</code>\n</div>\n*",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the blue value.\n  c.setBlue(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is pale fuchsia.');\n}\n</code>\n</div>\n*",
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the blue value.\n  c.setBlue(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is pale fuchsia.');\n}\n</code>\n</div>\n*",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the blue value.\n  c.setBlue(255);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is pale fuchsia.');\n}\n</code>\n</div>\n*"
       ],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "blue",
+              "description": "the new blue value.",
+              "type": "Number"
+            }
+          ]
+        },
         {
           "params": [
             {
@@ -19323,9 +19382,19 @@
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the alpha value.\n  c.setAlpha(128);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is faded pink.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the alpha value.\n  c.setAlpha(128);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is faded pink.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the alpha value.\n  c.setAlpha(128);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is faded pink.');\n}\n</code>\n</div>",
+        "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the alpha value.\n  c.setAlpha(128);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is faded pink.');\n}\n</code>\n</div>",
         "<div>\n<code>\nfunction setup() {\n  createCanvas(100, 100);\n\n  background(200);\n\n  // Create a p5.Color object.\n  let c = color(255, 128, 128);\n\n  // Draw the left rectangle.\n  noStroke();\n  fill(c);\n  rect(15, 20, 35, 60);\n\n  // Change the alpha value.\n  c.setAlpha(128);\n\n  // Draw the right rectangle.\n  fill(c);\n  rect(50, 20, 35, 60);\n\n  describe('Two rectangles. The left one is salmon pink and the right one is faded pink.');\n}\n</code>\n</div>"
       ],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "alpha",
+              "description": "the new alpha value.",
+              "type": "Number"
+            }
+          ]
+        },
         {
           "params": [
             {
@@ -19371,24 +19440,16 @@
     {
       "name": "remove",
       "file": "src/scripts/parsers/in/p5.js/src/core/main.js",
-      "line": 370,
+      "line": 375,
       "itemtype": "method",
       "description": "<p>Removes the sketch from the web page.</p>\n<p>Calling <code>remove()</code> stops the draw loop and removes any HTML elements\ncreated by the sketch, including the canvas. A new sketch can be\ncreated by using the <a href=\"#/p5/p5\">p5()</a> constructor, as in\n<code>new p5()</code>.</p>\n",
       "example": [
         "<div>\n<code>\n// Double-click to remove the canvas.\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A white circle on a gray background. The circle follows the mouse as the user moves. The sketch disappears when the user double-clicks.'\n  );\n}\n\nfunction draw() {\n  // Paint the background repeatedly.\n  background(200);\n\n  // Draw circles repeatedly.\n  circle(mouseX, mouseY, 40);\n}\n\n// Remove the sketch when the user double-clicks.\nfunction doubleClicked() {\n  remove();\n}\n</code>\n</div>",
         "<div>\n<code>\n// Double-click to remove the canvas.\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A white circle on a gray background. The circle follows the mouse as the user moves. The sketch disappears when the user double-clicks.'\n  );\n}\n\nfunction draw() {\n  // Paint the background repeatedly.\n  background(200);\n\n  // Draw circles repeatedly.\n  circle(mouseX, mouseY, 40);\n}\n\n// Remove the sketch when the user double-clicks.\nfunction doubleClicked() {\n  remove();\n}\n</code>\n</div>",
         "<div>\n<code>\n// Double-click to remove the canvas.\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A white circle on a gray background. The circle follows the mouse as the user moves. The sketch disappears when the user double-clicks.'\n  );\n}\n\nfunction draw() {\n  // Paint the background repeatedly.\n  background(200);\n\n  // Draw circles repeatedly.\n  circle(mouseX, mouseY, 40);\n}\n\n// Remove the sketch when the user double-clicks.\nfunction doubleClicked() {\n  remove();\n}\n</code>\n</div>",
-        "<div>\n<code>\n// Double-click to remove the canvas.\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A white circle on a gray background. The circle follows the mouse as the user moves. The sketch disappears when the user double-clicks.'\n  );\n}\n\nfunction draw() {\n  // Paint the background repeatedly.\n  background(200);\n\n  // Draw circles repeatedly.\n  circle(mouseX, mouseY, 40);\n}\n\n// Remove the sketch when the user double-clicks.\nfunction doubleClicked() {\n  remove();\n}\n</code>\n</div>",
-        "<div>\n<code>\n// Double-click to remove the canvas.\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A white circle on a gray background. The circle follows the mouse as the user moves. The sketch disappears when the user double-clicks.'\n  );\n}\n\nfunction draw() {\n  // Paint the background repeatedly.\n  background(200);\n\n  // Draw circles repeatedly.\n  circle(mouseX, mouseY, 40);\n}\n\n// Remove the sketch when the user double-clicks.\nfunction doubleClicked() {\n  remove();\n}\n</code>\n</div>",
         "<div>\n<code>\n// Double-click to remove the canvas.\n\nfunction setup() {\n  createCanvas(100, 100);\n\n  describe(\n    'A white circle on a gray background. The circle follows the mouse as the user moves. The sketch disappears when the user double-clicks.'\n  );\n}\n\nfunction draw() {\n  // Paint the background repeatedly.\n  background(200);\n\n  // Draw circles repeatedly.\n  circle(mouseX, mouseY, 40);\n}\n\n// Remove the sketch when the user double-clicks.\nfunction doubleClicked() {\n  remove();\n}\n</code>\n</div>"
       ],
       "overloads": [
-        {
-          "params": []
-        },
-        {
-          "params": []
-        },
         {
           "params": []
         },
@@ -19629,7 +19690,7 @@
     {
       "name": "parent",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 204,
+      "line": 220,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Attaches the element to a parent element.</p>\n<p>For example, a <code>&lt;div&gt;&lt;/div&gt;</code> element may be used as a box to\nhold two pieces of text, a header and a paragraph. The\n<code>&lt;div&gt;&lt;/div&gt;</code> is the parent element of both the header and\nparagraph.</p>\n<p>The parameter <code>parent</code> can have one of three types. <code>parent</code> can be a\nstring with the parent element's ID, as in\n<code>myElement.parent('container')</code>. It can also be another\n<a href=\"#/p5.Element\">p5.Element</a> object, as in\n<code>myElement.parent(myDiv)</code>. Finally, <code>parent</code> can be an <code>HTMLElement</code>\nobject, as in <code>myElement.parent(anotherElement)</code>.</p>\n<p>Calling <code>myElement.parent()</code> without an argument returns the element's\nparent.</p>\n",
@@ -19666,7 +19727,7 @@
     {
       "name": "child",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 305,
+      "line": 321,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Attaches the element as a child of another element.</p>\n<p><code>myElement.child()</code> accepts either a string ID, DOM node, or\n<a href=\"#/p5.Element\">p5.Element</a>. For example,\n<code>myElement.child(otherElement)</code>. If no argument is provided, an array of\nchildren DOM nodes is returned.</p>\n",
@@ -19704,7 +19765,7 @@
     {
       "name": "html",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 397,
+      "line": 413,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the inner HTML of the element, replacing any existing HTML.</p>\n<p>The second parameter, <code>append</code>, is optional. If <code>true</code> is passed, as in\n<code>myElement.html('hi', true)</code>, the HTML is appended instead of replacing\nexisting HTML.</p>\n<p>If no arguments are passed, as in <code>myElement.html()</code>, the element's inner\nHTML is returned.</p>\n",
@@ -19748,7 +19809,7 @@
     {
       "name": "id",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 443,
+      "line": 459,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the element's ID using a given string.</p>\n<p>Calling <code>myElement.id()</code> without an argument returns its ID as a string.</p>\n",
@@ -19785,7 +19846,7 @@
     {
       "name": "class",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 492,
+      "line": 508,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Adds a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class\" target=\"_blank\">class attribute</a>\nto the element using a given string.</p>\n<p>Calling <code>myElement.class()</code> without an argument returns a string with its current classes.</p>\n",
@@ -19822,7 +19883,7 @@
     {
       "name": "addClass",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 528,
+      "line": 544,
       "itemtype": "method",
       "chainable": 1,
       "description": "Adds a class to the element.",
@@ -19848,7 +19909,7 @@
     {
       "name": "removeClass",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 575,
+      "line": 591,
       "itemtype": "method",
       "chainable": 1,
       "description": "Removes a class from the element.",
@@ -19874,7 +19935,7 @@
     {
       "name": "hasClass",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 617,
+      "line": 633,
       "itemtype": "method",
       "description": "Checks if a class is already applied to element.",
       "example": [
@@ -19906,7 +19967,7 @@
     {
       "name": "toggleClass",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 653,
+      "line": 669,
       "itemtype": "method",
       "chainable": 1,
       "description": "Toggles whether a class is applied to the element.",
@@ -19931,7 +19992,7 @@
     {
       "name": "center",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 698,
+      "line": 714,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Centers the element either vertically, horizontally, or both.</p>\n<p><code>center()</code> will center the element relative to its parent or according to\nthe page's body if the element has no parent.</p>\n<p>If no argument is passed, as in <code>myElement.center()</code> the element is aligned\nboth vertically and horizontally.</p>\n",
@@ -19958,7 +20019,7 @@
     {
       "name": "position",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 786,
+      "line": 802,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the element's position.</p>\n<p>The first two parameters, <code>x</code> and <code>y</code>, set the element's position relative\nto the top-left corner of the web page.</p>\n<p>The third parameter, <code>positionType</code>, is optional. It sets the element's\n<a target=\"_blank\"\nhref=\"https://developer.mozilla.org/en-US/docs/Web/CSS/position\">positioning scheme</a>.\n<code>positionType</code> is a string that can be either <code>'static'</code>, <code>'fixed'</code>,\n<code>'relative'</code>, <code>'sticky'</code>, <code>'initial'</code>, or <code>'inherit'</code>.</p>\n<p>If no arguments passed, as in <code>myElement.position()</code>, the method returns\nthe element's position in an object, as in <code>{ x: 0, y: 0 }</code>.</p>\n",
@@ -20008,7 +20069,7 @@
     {
       "name": "show",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 840,
+      "line": 856,
       "itemtype": "method",
       "chainable": 1,
       "description": "Shows the current element.",
@@ -20028,7 +20089,7 @@
     {
       "name": "hide",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 872,
+      "line": 888,
       "itemtype": "method",
       "chainable": 1,
       "description": "Hides the current element.",
@@ -20048,7 +20109,7 @@
     {
       "name": "size",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 995,
+      "line": 1011,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the element's width and height.</p>\n<p>Calling <code>myElement.size()</code> without an argument returns the element's size\nas an object with the properties <code>width</code> and <code>height</code>. For example,\n<code>{ width: 20, height: 10 }</code>.</p>\n<p>The first parameter, <code>width</code>, is optional. It's a number used to set the\nelement's width. Calling <code>myElement.size(10)</code></p>\n<p>The second parameter, 'height<code>, is also optional. It's a\nnumber used to set the element's height. For example, calling\n</code>myElement.size(20, 10)` sets the element's width to 20 pixels and height\nto 10 pixels.</p>\n<p>The constant <code>AUTO</code> can be used to adjust one dimension at a time while\nmaintaining the aspect ratio, which is <code>width / height</code>. For example,\nconsider an element that's 200 pixels wide and 100 pixels tall. Calling\n<code>myElement.size(20, AUTO)</code> sets the width to 20 pixels and height to 10\npixels.</p>\n<p>Note: In the case of elements that need to load data, such as images, wait\nto call <code>myElement.size()</code> until after the data loads.</p>\n",
@@ -20092,7 +20153,7 @@
     {
       "name": "style",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1149,
+      "line": 1165,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Applies a style to the element by adding a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Syntax\" target=\"_blank\">CSS declaration</a>.</p>\n<p>The first parameter, <code>property</code>, is a string. If the name of a style\nproperty is passed, as in <code>myElement.style('color')</code>, the method returns\nthe current value as a string or <code>null</code> if it hasn't been set. If a\n<code>property:style</code> string is passed, as in\n<code>myElement.style('color:deeppink')</code>, the method sets the style <code>property</code>\nto <code>value</code>.</p>\n<p>The second parameter, <code>value</code>, is optional. It sets the property's value.\n<code>value</code> can be a string, as in\n<code>myElement.style('color', 'deeppink')</code>, or a\n<a href=\"#/p5.Color\">p5.Color</a> object, as in\n<code>myElement.style('color', myColor)</code>.</p>\n",
@@ -20144,7 +20205,7 @@
     {
       "name": "attribute",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1305,
+      "line": 1321,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Adds an\n<a href=\"https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started#attributes\" target=\"_blank\">attribute</a>\nto the element.</p>\n<p>This method is useful for advanced tasks. Most commonly-used attributes,\nsuch as <code>id</code>, can be set with their dedicated methods. For example,\n<code>nextButton.id('next')</code> sets an element's <code>id</code> attribute. Calling\n<code>nextButton.attribute('id', 'next')</code> has the same effect.</p>\n<p>The first parameter, <code>attr</code>, is the attribute's name as a string. Calling\n<code>myElement.attribute('align')</code> returns the attribute's current value as a\nstring or <code>null</code> if it hasn't been set.</p>\n<p>The second parameter, <code>value</code>, is optional. It's a string used to set the\nattribute's value. For example, calling\n<code>myElement.attribute('align', 'center')</code> sets the element's horizontal\nalignment to <code>center</code>.</p>\n",
@@ -20186,7 +20247,7 @@
     {
       "name": "removeAttribute",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1364,
+      "line": 1380,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Removes an attribute from the element.</p>\n<p>The parameter <code>attr</code> is the attribute's name as a string. For example,\ncalling <code>myElement.removeAttribute('align')</code> removes its <code>align</code>\nattribute if it's been set.</p>\n",
@@ -20212,7 +20273,7 @@
     {
       "name": "value",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1448,
+      "line": 1464,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Returns or sets the element's value.</p>\n<p>Calling <code>myElement.value()</code> returns the element's current value.</p>\n<p>The parameter, <code>value</code>, is an optional number or string. If provided,\nas in <code>myElement.value(123)</code>, it's used to set the element's value.</p>\n",
@@ -20249,7 +20310,7 @@
     {
       "name": "mousePressed",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1498,
+      "line": 1514,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse is pressed over the element.</p>\n<p>Calling <code>myElement.mousePressed(false)</code> disables the function.</p>\n<p>Note: Some mobile browsers may also trigger this event when the element\nreceives a quick tap.</p>\n",
@@ -20275,7 +20336,7 @@
     {
       "name": "doubleClicked",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1551,
+      "line": 1567,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse is pressed twice over the element.</p>\n<p>Calling <code>myElement.doubleClicked(false)</code> disables the function.</p>\n",
@@ -20301,7 +20362,7 @@
     {
       "name": "mouseWheel",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1636,
+      "line": 1652,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse wheel scrolls over the element.</p>\n<p>The callback function, <code>fxn</code>, is passed an <code>event</code> object. <code>event</code> has\ntwo numeric properties, <code>deltaY</code> and <code>deltaX</code>. <code>event.deltaY</code> is\nnegative if the mouse wheel rotates away from the user. It's positive if\nthe mouse wheel rotates toward the user. <code>event.deltaX</code> is positive if\nthe mouse wheel moves to the right. It's negative if the mouse wheel moves\nto the left.</p>\n<p>Calling <code>myElement.mouseWheel(false)</code> disables the function.</p>\n",
@@ -20327,7 +20388,7 @@
     {
       "name": "mouseReleased",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1680,
+      "line": 1696,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse is released over the element.</p>\n<p>Calling <code>myElement.mouseReleased(false)</code> disables the function.</p>\n<p>Note: Some mobile browsers may also trigger this event when the element\nreceives a quick tap.</p>\n",
@@ -20353,7 +20414,7 @@
     {
       "name": "mouseClicked",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1724,
+      "line": 1740,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse is pressed and released over the element.</p>\n<p>Calling <code>myElement.mouseReleased(false)</code> disables the function.</p>\n<p>Note: Some mobile browsers may also trigger this event when the element\nreceives a quick tap.</p>\n",
@@ -20379,7 +20440,7 @@
     {
       "name": "mouseMoved",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1765,
+      "line": 1781,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse moves over the element.</p>\n<p>Calling <code>myElement.mouseMoved(false)</code> disables the function.</p>\n",
@@ -20405,7 +20466,7 @@
     {
       "name": "mouseOver",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1806,
+      "line": 1822,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse moves onto the element.</p>\n<p>Calling <code>myElement.mouseOver(false)</code> disables the function.</p>\n",
@@ -20431,7 +20492,7 @@
     {
       "name": "mouseOut",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1847,
+      "line": 1863,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the mouse moves off the element.</p>\n<p>Calling <code>myElement.mouseOut(false)</code> disables the function.</p>\n",
@@ -20457,7 +20518,7 @@
     {
       "name": "dragOver",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1888,
+      "line": 1904,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when a file is dragged over the element.</p>\n<p>Calling <code>myElement.dragOver(false)</code> disables the function.</p>\n",
@@ -20483,7 +20544,7 @@
     {
       "name": "dragLeave",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 1929,
+      "line": 1945,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when a file is dragged off the element.</p>\n<p>Calling <code>myElement.dragLeave(false)</code> disables the function.</p>\n",
@@ -20509,7 +20570,7 @@
     {
       "name": "changed",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2003,
+      "line": 2019,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the element changes.</p>\n<p>Calling <code>myElement.changed(false)</code> disables the function.</p>\n",
@@ -20535,7 +20596,7 @@
     {
       "name": "input",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2075,
+      "line": 2091,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the element receives input.</p>\n<p><code>myElement.input()</code> is often used to with text inputs and sliders. Calling\n<code>myElement.input(false)</code> disables the function.</p>\n",
@@ -20561,7 +20622,7 @@
     {
       "name": "drop",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2189,
+      "line": 2205,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calls a function when the user drops a file on the element.</p>\n<p>The first parameter, <code>callback</code>, is a function to call once the file loads.\nThe callback function should have one parameter, <code>file</code>, that's a\n<a href=\"#/p5.File\">p5.File</a> object. If the user drops multiple files on\nthe element, <code>callback</code>, is called once for each file.</p>\n<p>The second parameter, <code>fxn</code>, is a function to call when the browser detects\none or more dropped files. The callback function should have one\nparameter, <code>event</code>, that's a\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/DragEvent\">DragEvent</a>.</p>\n",
@@ -20593,7 +20654,7 @@
     {
       "name": "draggable",
       "file": "src/scripts/parsers/in/p5.js/src/dom/p5.Element.js",
-      "line": 2301,
+      "line": 2317,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Makes the element draggable.</p>\n<p>The parameter, <code>elmnt</code>, is optional. If another\n<a href=\"#/p5.Element\">p5.Element</a> object is passed, as in\n<code>myElement.draggable(otherElement)</code>, the other element will become draggable.</p>\n",
@@ -27269,7 +27330,7 @@
     {
       "name": "calculateBoundingBox",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 170,
+      "line": 171,
       "itemtype": "method",
       "description": "<p>Calculates the position and size of the smallest box that contains the geometry.</p>\n<p>A bounding box is the smallest rectangular prism that contains the entire\ngeometry. It's defined by the box's minimum and maximum coordinates along\neach axis, as well as the size (length) and offset (center).</p>\n<p>Calling <code>myGeometry.calculateBoundingBox()</code> returns an object with four\nproperties that describe the bounding box:</p>\n<pre><code class=\"language-js\">// Get myGeometry's bounding box.\nlet bbox = myGeometry.calculateBoundingBox();\n\n// Print the bounding box to the console.\nconsole.log(bbox);\n\n// {\n//  // The minimum coordinate along each axis.\n//  min: { x: -1, y: -2, z: -3 },\n//\n//  // The maximum coordinate along each axis.\n//  max: { x: 1, y: 2, z: 3},\n//\n//  // The size (length) along each axis.\n//  size: { x: 2, y: 4, z: 6},\n//\n//  // The offset (center) along each axis.\n//  offset: { x: 0, y: 0, z: 0}\n// }</code></pre>",
       "example": [
@@ -27296,7 +27357,7 @@
     {
       "name": "clearColors",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 315,
+      "line": 316,
       "itemtype": "method",
       "description": "<p>Removes the geometry’s internal colors.</p>\n<p><code>p5.Geometry</code> objects can be created with \"internal colors\" assigned to\nvertices or the entire shape. When a geometry has internal colors,\n<a href=\"#/p5/fill\">fill()</a> has no effect. Calling\n<code>myGeometry.clearColors()</code> allows the\n<a href=\"#/p5/fill\">fill()</a> function to apply color to the geometry.</p>\n",
       "example": [
@@ -27315,7 +27376,7 @@
     {
       "name": "flipU",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 623,
+      "line": 624,
       "itemtype": "method",
       "description": "<p>Flips the geometry’s texture u-coordinates.</p>\n<p>In order for <a href=\"#/p5/texture\">texture()</a> to work, the geometry\nneeds a way to map the points on its surface to the pixels in a rectangular\nimage that's used as a texture. The geometry's vertex at coordinates\n<code>(x, y, z)</code> maps to the texture image's pixel at coordinates <code>(u, v)</code>.</p>\n<p>The <a href=\"#/p5.Geometry/uvs\">myGeometry.uvs</a> array stores the\n<code>(u, v)</code> coordinates for each vertex in the order it was added to the\ngeometry. Calling <code>myGeometry.flipU()</code> flips a geometry's u-coordinates\nso that the texture appears mirrored horizontally.</p>\n<p>For example, a plane's four vertices are added clockwise starting from the\ntop-left corner. Here's how calling <code>myGeometry.flipU()</code> would change a\nplane's texture coordinates:</p>\n<pre><code class=\"language-js\">// Print the original texture coordinates.\n// Output: [0, 0, 1, 0, 0, 1, 1, 1]\nconsole.log(myGeometry.uvs);\n\n// Flip the u-coordinates.\nmyGeometry.flipU();\n\n// Print the flipped texture coordinates.\n// Output: [1, 0, 0, 0, 1, 1, 0, 1]\nconsole.log(myGeometry.uvs);\n\n// Notice the swaps:\n// Top vertices: [0, 0, 1, 0] --> [1, 0, 0, 0]\n// Bottom vertices: [0, 1, 1, 1] --> [1, 1, 0, 1]</code></pre>",
       "example": [
@@ -27334,7 +27395,7 @@
     {
       "name": "computeFaces",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 854,
+      "line": 855,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Computes the geometry's faces using its vertices.</p>\n<p>All 3D shapes are made by connecting sets of points called vertices. A\ngeometry's surface is formed by connecting vertices to form triangles that\nare stitched together. Each triangular patch on the geometry's surface is\ncalled a face. <code>myGeometry.computeFaces()</code> performs the math needed to\ndefine each face based on the distances between vertices.</p>\n<p>The geometry's vertices are stored as <a href=\"#/p5.Vector\">p5.Vector</a>\nobjects in the <a href=\"#/p5.Geometry/vertices\">myGeometry.vertices</a>\narray. The geometry's first vertex is the\n<a href=\"#/p5.Vector\">p5.Vector</a> object at <code>myGeometry.vertices[0]</code>,\nits second vertex is <code>myGeometry.vertices[1]</code>, its third vertex is\n<code>myGeometry.vertices[2]</code>, and so on.</p>\n<p>Calling <code>myGeometry.computeFaces()</code> fills the\n<a href=\"#/p5.Geometry/faces\">myGeometry.faces</a> array with three-element\narrays that list the vertices that form each face. For example, a geometry\nmade from a rectangle has two faces because a rectangle is made by joining\ntwo triangles. <a href=\"#/p5.Geometry/faces\">myGeometry.faces</a> for a\nrectangle would be the two-dimensional array\n<code>[[0, 1, 2], [2, 1, 3]]</code>. The first face, <code>myGeometry.faces[0]</code>, is the\narray <code>[0, 1, 2]</code> because it's formed by connecting\n<code>myGeometry.vertices[0]</code>, <code>myGeometry.vertices[1]</code>,and\n<code>myGeometry.vertices[2]</code>. The second face, <code>myGeometry.faces[1]</code>, is the\narray <code>[2, 1, 3]</code> because it's formed by connecting\n<code>myGeometry.vertices[2]</code>, <code>myGeometry.vertices[1]</code>, and\n<code>myGeometry.vertices[3]</code>.</p>\n<p>Note: <code>myGeometry.computeFaces()</code> only works when geometries have four or more vertices.</p>\n",
@@ -27354,7 +27415,7 @@
     {
       "name": "computeNormals",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 1199,
+      "line": 1200,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Calculates the normal vector for each vertex on the geometry.</p>\n<p>All 3D shapes are made by connecting sets of points called vertices. A\ngeometry's surface is formed by connecting vertices to create triangles\nthat are stitched together. Each triangular patch on the geometry's\nsurface is called a face. <code>myGeometry.computeNormals()</code> performs the\nmath needed to orient each face. Orientation is important for lighting\nand other effects.</p>\n<p>A face's orientation is defined by its normal vector which points out\nof the face and is normal (perpendicular) to the surface. Calling\n<code>myGeometry.computeNormals()</code> first calculates each face's normal vector.\nThen it calculates the normal vector for each vertex by averaging the\nnormal vectors of the faces surrounding the vertex. The vertex normals\nare stored as <a href=\"#/p5.Vector\">p5.Vector</a> objects in the\n<a href=\"#/p5.Geometry/vertexNormals\">myGeometry.vertexNormals</a> array.</p>\n<p>The first parameter, <code>shadingType</code>, is optional. Passing the constant\n<code>FLAT</code>, as in <code>myGeometry.computeNormals(FLAT)</code>, provides neighboring\nfaces with their own copies of the vertices they share. Surfaces appear\ntiled with flat shading. Passing the constant <code>SMOOTH</code>, as in\n<code>myGeometry.computeNormals(SMOOTH)</code>, makes neighboring faces reuse their\nshared vertices. Surfaces appear smoother with smooth shading. By\ndefault, <code>shadingType</code> is <code>FLAT</code>.</p>\n<p>The second parameter, <code>options</code>, is also optional. If an object with a\n<code>roundToPrecision</code> property is passed, as in\n<code>myGeometry.computeNormals(SMOOTH, { roundToPrecision: 5 })</code>, it sets the\nnumber of decimal places to use for calculations. By default,\n<code>roundToPrecision</code> uses 3 decimal places.</p>\n",
@@ -27387,7 +27448,7 @@
     {
       "name": "makeEdgesFromFaces",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 1391,
+      "line": 1392,
       "itemtype": "method",
       "description": "",
       "example": [
@@ -27406,7 +27467,7 @@
     {
       "name": "normalize",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 1711,
+      "line": 1712,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Transforms the geometry's vertices to fit snugly within a 100×100×100 box\ncentered at the origin.</p>\n<p>Calling <code>myGeometry.normalize()</code> translates the geometry's vertices so that\nthey're centered at the origin <code>(0, 0, 0)</code>. Then it scales the vertices so\nthat they fill a 100×100×100 box. As a result, small geometries will grow\nand large geometries will shrink.</p>\n<p>Note: <code>myGeometry.normalize()</code> only works when called in the\n<a href=\"#/p5/setup\">setup()</a> function.</p>\n",
@@ -27426,7 +27487,7 @@
     {
       "name": "vertexProperty",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Geometry.js",
-      "line": 1842,
+      "line": 1843,
       "itemtype": "method",
       "description": "<p>Sets the shader's vertex property or attribute variables.</p>\n<p>A vertex property, or vertex attribute, is a variable belonging to a vertex in a shader. p5.js provides some\ndefault properties, such as <code>aPosition</code>, <code>aNormal</code>, <code>aVertexColor</code>, etc. These are\nset using <a href=\"#/p5/vertex\">vertex()</a>, <a href=\"#/p5/normal\">normal()</a>\nand <a href=\"#/p5/fill\">fill()</a> respectively. Custom properties can also\nbe defined within <a href=\"#/p5/beginShape\">beginShape()</a> and\n<a href=\"#/p5/endShape\">endShape()</a>.</p>\n<p>The first parameter, <code>propertyName</code>, is a string with the property's name.\nThis is the same variable name which should be declared in the shader, as in\n<code>in vec3 aProperty</code>, similar to .<code>setUniform()</code>.</p>\n<p>The second parameter, <code>data</code>, is the value assigned to the shader variable. This value\nwill be pushed directly onto the Geometry object. There should be the same number\nof custom property values as vertices, this method should be invoked once for each\nvertex.</p>\n<p>The <code>data</code> can be a Number or an array of numbers. Tn the shader program the type\ncan be declared according to the WebGL specification. Common types include <code>float</code>,\n<code>vec2</code>, <code>vec3</code>, <code>vec4</code> or matrices.</p>\n<p>See also the global <a href=\"#/p5/vertexProperty\">vertexProperty()</a> function.</p>\n",
       "example": [
@@ -27504,14 +27565,30 @@
     {
       "name": "modify",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Shader.js",
-      "line": 370,
+      "line": 460,
       "itemtype": "method",
-      "description": "<p>Returns a new shader, based on the original, but with custom snippets\nof shader code replacing default behaviour.</p>\n<p>Each shader may let you override bits of its behavior. Each bit is called\na hook. A hook is either for the vertex shader, if it affects the\nposition of vertices, or in the fragment shader, if it affects the pixel\ncolor. You can inspect the different hooks available by calling\n<a href=\"#/p5.Shader/inspectHooks\"><code>yourShader.inspectHooks()</code></a>. You can\nalso read the reference for the default material, normal material, color, line, and point shaders to\nsee what hooks they have available.</p>\n<p><code>modify()</code> takes one parameter, <code>hooks</code>, an object with the hooks you want\nto override. Each key of the <code>hooks</code> object is the name\nof a hook, and the value is a string with the GLSL code for your hook.</p>\n<p>If you supply functions that aren't existing hooks, they will get added at the start of\nthe shader as helper functions so that you can use them in your hooks.</p>\n<p>To add new <a href=\"#/p5.Shader/setUniform\">uniforms</a> to your shader, you can pass in a <code>uniforms</code> object containing\nthe type and name of the uniform as the key, and a default value or function returning\na default value as its value. These will be automatically set when the shader is set\nwith <code>shader(yourShader)</code>.</p>\n<p>You can also add a <code>declarations</code> key, where the value is a GLSL string declaring\ncustom uniform variables, globals, and functions shared\nbetween hooks. To add declarations just in a vertex or fragment shader, add\n<code>vertexDeclarations</code> and <code>fragmentDeclarations</code> keys.</p>\n",
-      "example": [
-        "<div modernizr='webgl'>\n<code>\nlet myShader;\n\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  myShader = baseMaterialShader().modify({\n    uniforms: {\n      'float time': () => millis() // Uniform for time\n    },\n    'Vertex getWorldInputs': `(Vertex inputs) {\n      inputs.position.y +=\n        20. * sin(time * 0.001 + inputs.position.x * 0.05);\n      return inputs;\n    }`\n  });\n}\n\nfunction draw() {\n  background(255);\n  shader(myShader); // Apply the custom shader\n  lights();         // Enable lighting\n  noStroke();       // Disable stroke\n  fill('red');      // Set fill color to red\n  sphere(50);       // Draw a sphere with the shader applied\n}\n</code>\n</div>",
-        "<div modernizr='webgl'>\n<code>\nlet myShader;\n\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  myShader = baseMaterialShader().modify({\n    // Manually specifying a uniform\n    declarations: 'uniform float time;',\n    'Vertex getWorldInputs': `(Vertex inputs) {\n      inputs.position.y +=\n        20. * sin(time * 0.001 + inputs.position.x * 0.05);\n      return inputs;\n    }`\n  });\n}\n\nfunction draw() {\n  background(255);\n  shader(myShader);\n  myShader.setUniform('time', millis());\n  lights();\n  noStroke();\n  fill('red');\n  sphere(50);\n}\n</code>\n</div>"
-      ],
+      "description": "<p>Returns a new shader, based on the original, but with custom snippets\nof shader code replacing default behaviour.</p>\n<p>Each shader may let you override bits of its behavior. Each bit is called\na hook. For example, a hook can let you adjust positions of vertices, or\nthe color of a pixel. You can inspect the different hooks available by calling\n<a href=\"#/p5.Shader/inspectHooks\"><code>yourShader.inspectHooks()</code></a>. You can\nalso read the reference for the default material, normal material, color, line, and point shaders to\nsee what hooks they have available.</p>\n<p><code>modify()</code> can be passed a function as a parameter. Inside, you can override hooks\nby calling them as functions. Each hook will take in a callback that takes in inputs\nand is expected to return an output. For example, here is a function that changes the\nmaterial color to red:</p>\n<pre><code class=\"language-js example\">let myShader;\n\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  myShader = baseMaterialShader().modify(() => {\n    getPixelInputs((inputs) => {\n      inputs.color = [inputs.texCoord, 0, 1];\n      return inputs;\n    });\n  });\n}\n\nfunction draw() {\n  background(255);\n  noStroke();\n  shader(myShader); // Apply the custom shader\n  plane(width, height); // Draw a plane with the shader applied\n}</code></pre><p>In addition to calling hooks, you can create uniforms, which are special variables\nused to pass data from p5.js into the shader. They can be created by calling <code>uniform</code> + the\ntype of the data, such as <code>uniformFloat</code> for a number of <code>uniformVector2</code> for a two-component vector.\nThey take in a function that returns the data for the variable. You can then reference these\nvariables in your hooks, and their values will update every time you apply\nthe shader with the result of your function.</p>\n<pre><code class=\"language-js example\">let myShader;\n\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  myShader = baseMaterialShader().modify(() => {\n    // Get the current time from p5.js\n    let t = uniformFloat(() => millis());\n\n    getPixelInputs((inputs) => {\n      inputs.color = [\n        inputs.texCoord,\n        sin(t * 0.01) / 2 + 0.5,\n        1,\n      ];\n      return inputs;\n    });\n  });\n}\n\nfunction draw() {\n  background(255);\n  noStroke(255);\n  shader(myShader); // Apply the custom shader\n  plane(width, height); // Draw a plane with the shader applied\n}</code></pre><p>p5.strands functions are special, since they get turned into a shader instead of being\nrun like the rest of your code. They only have access to p5.js functions, and variables\nyou declare inside the <code>modify</code> callback. If you need access to local variables, you\ncan pass them into <code>modify</code> with an optional second parameter, <code>variables</code>. If you are\nusing instance mode, you will need to pass your sketch object in this way.</p>\n<pre><code class=\"language-js example\">new p5((sketch) => {\n  let myShader;\n\n  sketch.setup = function() {\n    sketch.createCanvas(200, 200, sketch.WEBGL);\n    myShader = sketch.baseMaterialShader().modify(() => {\n      sketch.getPixelInputs((inputs) => {\n        inputs.color = [inputs.texCoord, 0, 1];\n        return inputs;\n      });\n    }, { sketch });\n  }\n\n  sketch.draw = function() {\n    sketch.background(255);\n    sketch.noStroke();\n    sketch.shader(myShader); // Apply the custom shader\n    sketch.plane(sketch.width, sketch.height); // Draw a plane with the shader applied\n  }\n});</code></pre><p>You can also write GLSL directly in <code>modify</code> if you need direct access. To do so,\n<code>modify()</code> takes one parameter, <code>hooks</code>, an object with the hooks you want\nto override. Each key of the <code>hooks</code> object is the name\nof a hook, and the value is a string with the GLSL code for your hook.</p>\n<p>If you supply functions that aren't existing hooks, they will get added at the start of\nthe shader as helper functions so that you can use them in your hooks.</p>\n<p>To add new <a href=\"#/p5.Shader/setUniform\">uniforms</a> to your shader, you can pass in a <code>uniforms</code> object containing\nthe type and name of the uniform as the key, and a default value or function returning\na default value as its value. These will be automatically set when the shader is set\nwith <code>shader(yourShader)</code>.</p>\n<pre><code class=\"language-js example\">let myShader;\n\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  myShader = baseMaterialShader().modify({\n    uniforms: {\n      'float time': () => millis() // Uniform for time\n    },\n    'Vertex getWorldInputs': `(Vertex inputs) {\n      inputs.position.y +=\n        20. * sin(time * 0.001 + inputs.position.x * 0.05);\n      return inputs;\n    }`\n  });\n}\n\nfunction draw() {\n  background(255);\n  shader(myShader); // Apply the custom shader\n  lights();         // Enable lighting\n  noStroke();       // Disable stroke\n  fill('red');      // Set fill color to red\n  sphere(50);       // Draw a sphere with the shader applied\n}</code></pre><p>You can also add a <code>declarations</code> key, where the value is a GLSL string declaring\ncustom uniform variables, globals, and functions shared\nbetween hooks. To add declarations just in a vertex or fragment shader, add\n<code>vertexDeclarations</code> and <code>fragmentDeclarations</code> keys.</p>\n<pre><code class=\"language-js example\">let myShader;\n\nfunction setup() {\n  createCanvas(200, 200, WEBGL);\n  myShader = baseMaterialShader().modify({\n    // Manually specifying a uniform\n    declarations: 'uniform float time;',\n    'Vertex getWorldInputs': `(Vertex inputs) {\n      inputs.position.y +=\n        20. * sin(time * 0.001 + inputs.position.x * 0.05);\n      return inputs;\n    }`\n  });\n}\n\nfunction draw() {\n  background(255);\n  shader(myShader);\n  myShader.setUniform('time', millis());\n  lights();\n  noStroke();\n  fill('red');\n  sphere(50);\n}</code></pre>",
+      "example": [],
       "overloads": [
+        {
+          "params": [
+            {
+              "name": "callback",
+              "description": "A function with p5.strands code to modify the shader.",
+              "type": "Function"
+            },
+            {
+              "name": "variables",
+              "description": "An optional object with local variables p5.strands\nshould have access to.",
+              "optional": 1,
+              "type": "Object"
+            }
+          ],
+          "return": {
+            "description": "",
+            "type": "p5.Shader"
+          }
+        },
         {
           "params": [
             {
@@ -27539,7 +27616,7 @@
     {
       "name": "copyToContext",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Shader.js",
-      "line": 692,
+      "line": 782,
       "itemtype": "method",
       "description": "<p>Copies the shader from one drawing context to another.</p>\n<p>Each <code>p5.Shader</code> object must be compiled by calling\n<a href=\"#/p5/shader\">shader()</a> before it can run. Compilation happens\nin a drawing context which is usually the main canvas or an instance of\n<a href=\"#/p5.Graphics\">p5.Graphics</a>. A shader can only be used in the\ncontext where it was compiled. The <code>copyToContext()</code> method compiles the\nshader again and copies it to another drawing context where it can be\nreused.</p>\n<p>The parameter, <code>context</code>, is the drawing context where the shader will be\nused. The shader can be copied to an instance of\n<a href=\"#/p5.Graphics\">p5.Graphics</a>, as in\n<code>myShader.copyToContext(pg)</code>. The shader can also be copied from a\n<a href=\"#/p5.Graphics\">p5.Graphics</a> object to the main canvas using\nthe <code>p5.instance</code> variable, as in <code>myShader.copyToContext(p5.instance)</code>.</p>\n<p>Note: A <a href=\"#/p5.Shader\">p5.Shader</a> object created with\n<a href=\"#/p5/createShader\">createShader()</a>,\n<a href=\"#/p5/createFilterShader\">createFilterShader()</a>, or\n<a href=\"#/p5/loadShader\">loadShader()</a>\ncan be used directly with a <a href=\"#/p5.Framebuffer\">p5.Framebuffer</a>\nobject created with\n<a href=\"#/p5/createFramebuffer\">createFramebuffer()</a>. Both objects\nhave the same context as the main canvas.</p>\n",
       "example": [
@@ -27572,7 +27649,7 @@
     {
       "name": "setUniform",
       "file": "src/scripts/parsers/in/p5.js/src/webgl/p5.Shader.js",
-      "line": 1135,
+      "line": 1225,
       "itemtype": "method",
       "chainable": 1,
       "description": "<p>Sets the shader’s uniform (global) variables.</p>\n<p>Shader programs run on the computer’s graphics processing unit (GPU).\nThey live in part of the computer’s memory that’s completely separate\nfrom the sketch that runs them. Uniforms are global variables within a\nshader program. They provide a way to pass values from a sketch running\non the CPU to a shader program running on the GPU.</p>\n<p>The first parameter, <code>uniformName</code>, is a string with the uniform’s name.\nFor the shader above, <code>uniformName</code> would be <code>'r'</code>.</p>\n<p>The second parameter, <code>data</code>, is the value that should be used to set the\nuniform. For example, calling <code>myShader.setUniform('r', 0.5)</code> would set\nthe <code>r</code> uniform in the shader above to <code>0.5</code>. data should match the\nuniform’s type. Numbers, strings, booleans, arrays, and many types of\nimages can all be passed to a shader with <code>setUniform()</code>.</p>\n",
