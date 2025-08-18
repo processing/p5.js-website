@@ -1,28 +1,29 @@
 ---
-import { getEntry } from "astro:content";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 import AboutLayout from "@layouts/AboutLayout.astro";
-import { defaultLocale } from "../../i18n/const";
+import { nonDefaultSupportedLocales, defaultLocale } from "@i18n/const";
 import { setJumpToState } from "../../globals/state";
-import { nonDefaultSupportedLocales } from "@/src/i18n/const";
+import type { CollectionEntry } from "astro:content";
 
-export const getStaticPaths = async () => {
-  const defaultAboutEntry = await getEntry(
-    "text-detail",
-    `${defaultLocale}/about`
-  )!;
-  const pages = await Promise.all(
-    nonDefaultSupportedLocales.map(async (locale) => {
-      const aboutEntry = await getEntry("text-detail", `${locale}/about`);
-      return {
-        params: { locale },
-        props: {
-          entry: aboutEntry ?? defaultAboutEntry,
-        },
-      };
-    })
-  );
-  return pages;
-};
+export async function getStaticPaths() {
+  const pages = nonDefaultSupportedLocales.map(async (locale) => {
+    const entries = await getCollectionInLocaleWithFallbacks(
+      "text-detail",
+      locale
+    );
+    const aboutEntry = entries.find(entry => 
+      entry.id.endsWith('/about.mdx') || 
+      entry.id === `${defaultLocale}/about.mdx`
+    ) as CollectionEntry<"text-detail">;
+
+    return {
+      params: { locale },
+      props: { entry: aboutEntry },
+    };
+  });
+
+  return await Promise.all(pages);
+}
 
 const { entry } = Astro.props;
 setJumpToState(null);

@@ -7,7 +7,7 @@
  */
 let r;
 
-// Angle and angular velocity, accleration
+// Angle and angular velocity, acceleration
 let theta;
 let theta_vel;
 let theta_acc;

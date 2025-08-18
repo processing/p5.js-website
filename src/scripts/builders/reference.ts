@@ -208,7 +208,7 @@ const correctRelativeLinksInDescription = (description: string | undefined) => {
       !href.endsWith('/') &&
       !/(\.\w+)$/.exec(href) &&
       !href.includes('?') &&
-      !/#([\w\-]+)$/.exec(href)
+      !/#([\w-]+)$/.exec(href)
     ) {
       href += '/';
     }
@@ -415,6 +415,7 @@ const convertDocsToMDX = async (
           doc.example = correctRelativeLinksToExampleAssets(
             doc.example,
           ) as string[];
+          doc.deprecated = (doc.deprecated ? (doc.deprecationMessage ?? true) : undefined) as any;
           const mdx = await convertToMDX(doc);
 
           return mdx ? { mdx, savePath, name: doc.name } : null;

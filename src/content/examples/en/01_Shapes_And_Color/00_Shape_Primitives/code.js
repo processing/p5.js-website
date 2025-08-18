@@ -34,7 +34,7 @@ function setup() {
   circle(560, 100, 100);
 
   // Draw arc (compare to ellipse()) as eyelid
-  // x, y, width, heght, start angle, stop angle, mode
+  // x, y, width, height, start angle, stop angle, mode
   arc(540, 100, 300, 100, 180, 360, CHORD);
 
   // Draw line

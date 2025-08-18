@@ -72,18 +72,25 @@ export const ReferenceDirectoryWithFilter = ({
 
     return categoryData.reduce((acc: FilteredCategoryData[], category) => {
       const filteredSubcats = category.subcats.reduce(
-        (subAcc, subcat) => {
+        (subAcc: typeof category.subcats, subcat) => {
           const filteredEntries = subcat.entries.filter((entry) =>
             entry.data.title
               .toLowerCase()
               .includes(searchKeyword.toLowerCase()),
           );
+          if (
+            subcat.entry &&
+            subcat.entry.data.title.toLowerCase().includes(searchKeyword.toLowerCase())
+          ) {
+            filteredEntries.push(subcat.entry);
+          }
+          
           if (filteredEntries.length > 0) {
             subAcc.push({ ...subcat, entries: filteredEntries });
           }
           return subAcc;
         },
-        [] as typeof category.subcats,
+        [],
       );
 
       if (filteredSubcats.length > 0) {
@@ -214,9 +221,10 @@ export const ReferenceDirectoryWithFilter = ({
               }}
             />
             {searchKeyword.length > 0 && (
-              <button type="reset" class="" onClick={clearInput}>
-                <Icon kind="close" className="h-4 w-4" />
-              </button>
+            <button type="reset" class="" onClick={clearInput} aria-label="Clear search input">
+          <Icon kind="close" className="h-4 w-4" />
+        </button>
+
             )}
           </div>
         </div>
