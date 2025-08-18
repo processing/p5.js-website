@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Head from "@components/Head/index.astro";
 import { setJumpToState } from "../globals/state";
-import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import { getCurrentLocale, getUiTranslator, removeLocalePrefix } from "../i18n/utils";
 import {
   generateJumpToState,
   getRelatedEntriesinCollection,
@@ -11,6 +11,8 @@ import BaseLayout from "./BaseLayout.astro";
 import EditableSketch from "@components/EditableSketch/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
+import fs from "fs";
+import path from "path";
 
 interface Props {
   example: CollectionEntry<"examples">;
@@ -43,6 +45,49 @@ const relatedReferences =
     : [];
 
 const { Content } = await example.render();
+
+// Determine if this example is marked outdated/missing for the current locale
+let showBanner = false;
+// Build English URL by manually replacing the locale prefix
+let englishUrl = Astro.url.pathname;
+if (currentLocale !== 'en') {
+  // Replace /{locale}/ with / to get English URL
+  englishUrl = englishUrl.replace(`/${currentLocale}/`, '/');
+}
+
+if (!englishUrl.startsWith('http')) {
+  englishUrl = `${Astro.url.origin}${englishUrl}`;
+}
+console.log('DEBUG: Current pathname:', Astro.url.pathname);
+console.log('DEBUG: English URL after manual replacement:', englishUrl);
+console.log('DEBUG: Current locale:', currentLocale);
+
+try {
+  const manifestPath = path.join(process.cwd(), "public", "translation-status", "examples.json");
+  if (fs.existsSync(manifestPath)) {
+    const raw = fs.readFileSync(manifestPath, "utf8");
+    const manifest = JSON.parse(raw);
+    // Derive keys compatible with the manifest
+    const idNoLocale = (example.id || "").replace(/^[\w-]+\//, "");
+    const withoutExt = idNoLocale.replace(/\.(mdx?|ya?ml)$/, "");
+    const keyWithDescription = withoutExt; // e.g. 11_3D/00_Geometries/description
+    const keyWithoutDescription = withoutExt.replace(/\/description$/, ""); // e.g. 11_3D/00_Geometries
+    const entry = manifest.examples?.[keyWithoutDescription] || manifest.examples?.[keyWithDescription];
+    if (entry && currentLocale !== "en") {
+      const isOutdated = Array.isArray(entry.outdated) && entry.outdated.includes(currentLocale);
+      const isMissing = Array.isArray(entry.missing) && entry.missing.includes(currentLocale);
+      showBanner = isOutdated || isMissing;
+      if (isMissing) {
+        // If missing, always point to English counterpart
+        let missingEnglishUrl = Astro.url.pathname.replace(`/${currentLocale}/`, '/');
+        englishUrl = `${Astro.url.origin}${missingEnglishUrl}`;
+      }
+    }
+  }
+} catch (e) {
+  console.error(e);
+  
+}
 ---
 
 <Head
@@ -60,8 +105,8 @@ const { Content } = await example.render();
   topic="examples"
   className="example"
 >
-  {currentLocale === 'hi' ? (
-    <OutdatedTranslationBanner englishUrl={Astro.url.pathname.replace('/hi/', '/en/')} />
+  {showBanner ? (
+    <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />
   ) : null}
   <div class="mt-xl mb-4xl lg:mb-3xl max-w-[770px]">
     <div class="rendered-markdown">

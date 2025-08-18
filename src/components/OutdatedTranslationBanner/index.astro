@@ -4,26 +4,65 @@ interface Props {
   contributeUrl?: string;
   title?: string;
   message?: string;
+  locale?: string;
 }
 
 const {
   englishUrl = '/en',
-  contributeUrl = 'https://github.com/processing/p5.js-website',
-  title = 'यह अनुवाद पुराना हो सकता है',
-  message = 'यह पृष्ठ अंग्रेज़ी संस्करण की तुलना में अद्यतन नहीं है। कृपया अंग्रेज़ी पृष्ठ देखें या अनुवाद सुधारने में मदद करें।',
+  contributeUrl = 'https://github.com/processing/p5.js-website/tree/main?tab=readme-ov-file#content-changes',
+  title,
+  message,
+  locale = 'en',
 } = Astro.props as Props;
+
+const copyByLocale: Record<string, { title: string; message: string; viewEnglish: string; contribute: string; }> = {
+  'hi': {
+    title: 'यह अनुवाद पुराना हो सकता है',
+    message: 'यह पृष्ठ अंग्रेज़ी संस्करण की तुलना में अद्यतन नहीं है।',
+    viewEnglish: 'अंग्रेज़ी संस्करण देखें',
+    contribute: 'अनुवाद में योगदान दें',
+  },
+  'es': {
+    title: 'Esta traducción podría estar desactualizada',
+    message: 'Esta página no está actualizada en comparación con la versión en inglés.',
+    viewEnglish: 'Ver versión en inglés',
+    contribute: 'Contribuir a la traducción',
+  },
+  'ko': {
+    title: '이 번역은 오래되었을 수 있습니다',
+    message: '이 페이지는 영어 버전과 비교하여 최신 상태가 아닙니다.',
+    viewEnglish: '영어 페이지 보기',
+    contribute: '번역에 기여하기',
+  },
+  'zh-Hans': {
+    title: '此翻译可能已过期',
+    message: '与英文版本相比，此页面不是最新的。',
+    viewEnglish: '查看英文页面',
+    contribute: '参与翻译',
+  },
+};
+
+const fallback = {
+  title: 'This translation might be outdated',
+  message: 'This page is not updated compared to the English version.',
+  viewEnglish: 'View English page',
+  contribute: 'Contribute to translation',
+};
+
+const copy = copyByLocale[locale] || fallback;
+const resolvedTitle = title ?? copy.title;
+const resolvedMessage = message ?? copy.message;
 ---
 
 <section class="outdated-banner" role="status" aria-live="polite">
   <div class="icon" aria-hidden="true">⚠️</div>
   <div class="content">
-    <div class="title">{title}</div>
+    <div class="title">{resolvedTitle}</div>
     <p class="desc">
-      {message}
-      
-      <a class="link" href={englishUrl}>अंग्रेज़ी संस्करण देखें</a>
+      {resolvedMessage}
+      <a class="link" href={englishUrl}>{copy.viewEnglish}</a>
       ·
-      <a class="link" href={contributeUrl} target="_blank" rel="noopener noreferrer">अनुवाद में योगदान दें</a>
+      <a class="link" href={contributeUrl} target="_blank" rel="noopener noreferrer">{copy.contribute}</a>
     </p>
   </div>
   

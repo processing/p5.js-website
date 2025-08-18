@@ -25,6 +25,20 @@ function getTranslationPath(englishFilePath, language) {
   return translationParts.join('/');
 }
 
+function getExampleSlugFromEnglishPath(englishFilePath) {
+  // Expecting paths like: src/content/examples/en/.../description.mdx
+  const prefix = 'src/content/examples/en/';
+  if (!englishFilePath.startsWith(prefix)) return null;
+  let relative = englishFilePath.substring(prefix.length);
+  // Remove trailing filename (description.mdx or other .mdx)
+  if (relative.endsWith('/description.mdx')) {
+    relative = relative.slice(0, -'/description.mdx'.length);
+  } else if (relative.endsWith('.mdx')) {
+    relative = relative.slice(0, -'.mdx'.length);
+  }
+  return relative;
+}
+
 
 const SUPPORTED_LANGUAGES = ['es', 'hi', 'ko', 'zh-Hans'];
 
@@ -498,11 +512,12 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
     needsUpdate: [],
     missing: [],
     upToDate: [],
-    issuesCreated: []
+    issuesCreated: [],
+    fileTranslationMap: new Map()
   };
   
   // Group translation issues by file to create single issues per file
-  const fileTranslationMap = new Map();
+  const fileTranslationMap = translationStatus.fileTranslationMap;
   
   for (const englishFile of changedExampleFiles) {
     const fileName = englishFile.split('/').pop();
@@ -697,7 +712,7 @@ async function main(testFiles = null, options = {}) {
     }
     return;
   }
- 
+  
   console.log(`📝 Checking ${filesToCheck.length} English example file(s):`);
   filesToCheck.forEach(file => console.log(`   - ${file}`));
 
@@ -758,6 +773,38 @@ async function main(testFiles = null, options = {}) {
   
   if (needsUpdate.length === 0 && missing.length === 0) {
     console.log('\n✅ All translations are up to date!');
+  }
+
+  // Write manifest JSON for the site to consume
+  try {
+    const manifestDir = path.join(process.cwd(), 'public', 'translation-status');
+    const manifestPath = path.join(manifestDir, 'examples.json');
+    if (!fs.existsSync(manifestDir)) {
+      fs.mkdirSync(manifestDir, { recursive: true });
+    }
+    const examples = {};
+    for (const [englishFile, fileTranslations] of translationStatus.fileTranslationMap) {
+      const slug = getExampleSlugFromEnglishPath(englishFile);
+      if (!slug) continue;
+      const outdated = fileTranslations.outdatedLanguages.map(l => l.language);
+      const missingLangs = fileTranslations.missingLanguages.map(l => l.language);
+      const upToDateLangs = fileTranslations.upToDateLanguages.map(l => l.language);
+      examples[slug] = {
+        englishFile,
+        outdated,
+        missing: missingLangs,
+        upToDate: upToDateLangs,
+      };
+    }
+    const manifest = {
+      generatedAt: new Date().toISOString(),
+      branch: githubTracker ? githubTracker.currentBranch : null,
+      examples,
+    };
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
+    console.log(`\n🗂️  Wrote translation manifest: ${manifestPath}`);
+  } catch (writeErr) {
+    console.log(`\n⚠️  Could not write translation manifest: ${writeErr.message}`);
   }
 }
 
