@@ -670,9 +670,6 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
 async function main(testFiles = null, options = {}) {
   const hasToken = !!process.env.GITHUB_TOKEN;
   const isGitHubAction = !!process.env.GITHUB_ACTIONS; // Detect if running in GitHub Actions
-  
-  // Default behavior: scan all files UNLESS running in GitHub Actions or test mode
-  const scanAll = isGitHubAction ? false : (process.env.SCAN_ALL !== 'false');
   const isProduction = hasToken && !testFiles;
   
   if (testFiles) {
@@ -680,7 +677,7 @@ async function main(testFiles = null, options = {}) {
   } else if (isGitHubAction) {
     console.log(`🚀 GitHub Actions: Checking changed files only`);
   } else {
-    console.log(`🔍 Manual run: Scanning all ${scanAll ? 'files' : 'changed files'}`);
+    console.log(`🔍 Manual run: Scanning all files`);
   }
 
   // Initialize GitHub tracker if token is available
@@ -697,11 +694,13 @@ async function main(testFiles = null, options = {}) {
 
   // Get files to check
   let filesToCheck;
-  if (scanAll && !testFiles && !isGitHubAction) {
+  if (testFiles) {
+    filesToCheck = getChangedFiles(testFiles);
+  } else if (isGitHubAction) {
+    filesToCheck = getChangedFiles();
+  } else {
     console.log('📊 Scanning all English example files...');
     filesToCheck = getAllEnglishExampleFiles();
-  } else {
-    filesToCheck = getChangedFiles(testFiles);
   }
   
   if (filesToCheck.length === 0) {
