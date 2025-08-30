@@ -18,19 +18,18 @@ export const JumpToLinks = ({
   if (!links || links?.length <= 0) return null;
 
   return (
-    <div className={`${styles.jumpto} ${isOpen ? styles.open : ""}`}>
+    <div class={`${styles.jumpto} ${isOpen && "open"}`}>
       <button
-        className={styles.toggle}
+        class={styles.toggle}
         onClick={handleToggle}
         aria-expanded={isOpen}
         aria-label={`${heading} menu toggle`}
       >
         <span>{heading}</span>
-        <div className="pt-[6px]">
-          <Icon kind={isOpen ? "chevron-down" : "chevron-up"} />
+        <div class="pt-[6px]">
+           <Icon kind={isOpen ? "chevron-down" : "chevron-up"} />
         </div>
       </button>
-// ✅ Active link underline bug fixed on 30-Aug-2025
       {isOpen && (
         <ul>
           {links?.map((link) => (
