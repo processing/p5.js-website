@@ -11,39 +11,34 @@ description: >
   the curve's slope at the point where it intersects.</p>
 
   <p><code>splineTangent()</code> calculates coordinates along a tangent line
-  using the
+  using four
 
-  spline curve's anchor and control points. It expects points in the same
+  points p0, p1, p2, p3. It expects points in the same order as the
 
-  order as the <a href="/reference/p5/spline/">spline()</a> function.
-  <code>splineTangent()</code>
+  <a href="/reference/p5/spline/">spline()</a> function.
+  <code>splineTangent()</code> works one
 
-  works one axis at a time. Passing the anchor and control points'
+  axis at a time. Passing the points' x-coordinates returns the x-component of
 
-  x-coordinates will calculate the x-coordinate of a point on the tangent
+  the tangent vector; passing the points' y-coordinates returns the y-component.
 
-  line. Passing the anchor and control points' y-coordinates will calculate
-
-  the y-coordinate of a point on the tangent line.</p>
-
-  <p>The first parameter, <code>a</code>, is the coordinate of the first control
-  point.</p>
+  The first parameter, <code>a</code>, is the coordinate of point p0.</p>
 
   <p>The second and third parameters, <code>b</code> and <code>c</code>, are the
-  coordinates of the
+  coordinates of
 
-  anchor points.</p>
+  points p1 and p2.</p>
 
-  <p>The fourth parameter, <code>d</code>, is the coordinate of the last control
-  point.</p>
+  <p>The fourth parameter, <code>d</code>, is the coordinate of point p3.</p>
 
   <p>The fifth parameter, <code>t</code>, is the amount to interpolate along the
-  curve. 0
+  span
 
-  is the first anchor point, 1 is the second anchor point, and 0.5 is halfway
+  from p1 to p2. <code>t = 0</code> is p1, <code>t = 1</code> is p2, and <code>t
+  = 0.5</code> is halfway
 
   between them.</p>
-line: 891
+line: 960
 isConstructor: false
 itemtype: method
 example:
@@ -51,11 +46,54 @@ example:
     <div>
     <code>
     function setup() {
+      createCanvas(120, 120);
+      describe('A black spline on a gray canvas. A red dot moves along the curve on its own. A short line shows the tangent direction at the dot.');
+    }
+
+    function draw() {
+      background(240);
+
+      const x1 = 15, y1 = 40;
+      const x2 = 90, y2 = 25;
+      const x3 = 95, y3 = 95;
+      const x4 = 30, y4 = 110;
+
+      noFill();
+      stroke(0);
+      strokeWeight(2);
+      spline(x1, y1, x2, y2, x3, y3, x4, y4);
+
+      const t = 0.5 + 0.5 * sin(frameCount * 0.03);
+
+      const px = splinePoint(x1, x2, x3, x4, t);
+      const py = splinePoint(y1, y2, y3, y4, t);
+
+      let tx = splineTangent(x1, x2, x3, x4, t);
+      let ty = splineTangent(y1, y2, y3, y4, t);
+
+      const m = Math.hypot(tx, ty) || 1;
+      tx = (tx / m) * 16;
+      ty = (ty / m) * 16;
+
+      stroke(0);
+      strokeWeight(2);
+      line(px, py, px + tx, py + ty);
+
+      noStroke();
+      fill('red');
+      circle(px, py, 7);
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
       createCanvas(100, 100);
 
       background(200);
 
-      // Set the coordinates for the curve's anchor and control points.
+      // Set the coordinates for the curve's four points (p0, p1, p2, p3).
       let x1 = 5;
       let y1 = 26;
       let x2 = 73;
@@ -124,16 +162,16 @@ return:
 overloads:
   - params:
       - name: a
-        description: coordinate of first control point.
+        description: coordinate of point p0.
         type: Number
       - name: b
-        description: coordinate of first anchor point.
+        description: coordinate of point p1.
         type: Number
       - name: c
-        description: coordinate of second anchor point.
+        description: coordinate of point p2.
         type: Number
       - name: d
-        description: coordinate of second control point.
+        description: coordinate of point p3.
         type: Number
       - name: t
         description: amount to interpolate between 0 and 1.
