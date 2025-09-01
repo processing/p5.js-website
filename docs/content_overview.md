@@ -18,24 +18,19 @@ To add attribution, you can use the following block in the headers, listing in c
 ```yaml
 remix:
   - description: Inspired by
-
     attribution:
-      - name: Prof. WM Harris
-        URL: https://people.rit.edu/wmhics/
-
+      - name: Name Name
+        URL: a-valid-link
     code:
-      - URL: https://github.com/processing/p5.js-website-legacy/blob/main/src/data/examples/en/04_Control/05_Logical_Operators_2.js
       - label: pre-2023 code
-
+        URL: a-valid-link
   - description: Revised by
-
     attribution:    
-      - name: Caleb Foss
-        URL: https://github.com/calebfoss
- 
+      - name: Name Name
+        URL: a-valid-link
     code:
-      - URL: https://github.com/processing/p5.js-example/tree/main/examples/02_Animation_And_Variables/03_Conditions
-        label: 2023 revision code
+      - label: 2023 revision code
+        URL: a-valid-link
 
   - collectivelyAttributedSince: 2024
 ```
