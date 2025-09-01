@@ -424,12 +424,15 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
  * Week 1: Get changed files from git or test files
  * This is the core Week 1 functionality that remains unchanged
  */
-function getChangedFiles(testFiles = null) {
+/**
+ * Get changed files from git or test files (generalized for different content types)
+ */
+function getChangedFiles(testFiles = null, contentType = 'examples') {
   // Allow passing test files for local development (Week 1 feature)
   if (testFiles) {
     console.log('🧪 Using provided test files for local testing');
     return testFiles.filter(file => 
-      file.startsWith('src/content/examples/en') && file.endsWith('.mdx')
+      file.startsWith(`src/content/${contentType}/en`) && file.endsWith('.mdx')
     );
   }
 
@@ -442,11 +445,11 @@ function getChangedFiles(testFiles = null) {
     const changedFilesOutput = execSync(gitCommand, { encoding: 'utf8' });
     const allChangedFiles = changedFilesOutput.trim().split('\n').filter(file => file.length > 0);
     
-      const changedExampleFiles = allChangedFiles.filter(file => 
-    file.startsWith('src/content/examples/en') && file.endsWith('.mdx')
-  );
+    const changedContentFiles = allChangedFiles.filter(file => 
+      file.startsWith(`src/content/${contentType}/en`) && file.endsWith('.mdx')
+    );
     
-    return changedExampleFiles;
+    return changedContentFiles;
   } catch (error) {
     console.error('❌ Error getting changed files:', error.message);
     return [];
@@ -454,15 +457,15 @@ function getChangedFiles(testFiles = null) {
 }
 
 /**
- * Scan all English example files (for manual scanning)
+ * Scan all English files in a content directory (generalized for examples, tutorials, text-detail)
  */
-function getAllEnglishExampleFiles() {
-  const examplesPath = 'src/content/examples/en';
+function getAllEnglishContentFiles(contentType = 'examples') {
+  const contentPath = `src/content/${contentType}/en`;
   const allFiles = [];
   
   try {
-    if (!fs.existsSync(examplesPath)) {
-      console.log(`❌ Examples path does not exist: ${examplesPath}`);
+    if (!fs.existsSync(contentPath)) {
+      console.log(`❌ Content path does not exist: ${contentPath}`);
       return [];
     }
     
@@ -478,13 +481,20 @@ function getAllEnglishExampleFiles() {
       });
     };
     
-    scanDirectory(examplesPath);
-    console.log(`📊 Found ${allFiles.length} English example files to check`);
+    scanDirectory(contentPath);
+    console.log(`📊 Found ${allFiles.length} English ${contentType} files to check`);
     return allFiles;
   } catch (error) {
-    console.error('❌ Error scanning English example files:', error.message);
+    console.error(`❌ Error scanning English ${contentType} files:`, error.message);
     return [];
   }
+}
+
+/**
+ * Scan all English example files (for backward compatibility)
+ */
+function getAllEnglishExampleFiles() {
+  return getAllEnglishContentFiles('examples');
 }
 
 
@@ -520,8 +530,6 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
   const fileTranslationMap = translationStatus.fileTranslationMap;
   
   for (const englishFile of changedExampleFiles) {
-    const fileName = englishFile.split('/').pop();
-    
     const fileTranslations = {
       englishFile,
       outdatedLanguages: [],
@@ -692,15 +700,16 @@ async function main(testFiles = null, options = {}) {
     }
   }
 
-  // Get files to check
+  // Get files to check (currently focused on examples)
+  const contentType = 'examples';
   let filesToCheck;
   if (testFiles) {
-    filesToCheck = getChangedFiles(testFiles);
+    filesToCheck = getChangedFiles(testFiles, contentType);
   } else if (isGitHubAction) {
-    filesToCheck = getChangedFiles();
+    filesToCheck = getChangedFiles(null, contentType);
   } else {
-    console.log('📊 Scanning all English example files...');
-    filesToCheck = getAllEnglishExampleFiles();
+    console.log(`📊 Scanning all English ${contentType} files...`);
+    filesToCheck = getAllEnglishContentFiles(contentType);
   }
   
   if (filesToCheck.length === 0) {
@@ -777,18 +786,18 @@ async function main(testFiles = null, options = {}) {
   // Write manifest JSON for the site to consume
   try {
     const manifestDir = path.join(process.cwd(), 'public', 'translation-status');
-    const manifestPath = path.join(manifestDir, 'examples.json');
+    const manifestPath = path.join(manifestDir, `${contentType}.json`);
     if (!fs.existsSync(manifestDir)) {
       fs.mkdirSync(manifestDir, { recursive: true });
     }
-    const examples = {};
+    const content = {};
     for (const [englishFile, fileTranslations] of translationStatus.fileTranslationMap) {
       const slug = getExampleSlugFromEnglishPath(englishFile);
       if (!slug) continue;
       const outdated = fileTranslations.outdatedLanguages.map(l => l.language);
       const missingLangs = fileTranslations.missingLanguages.map(l => l.language);
       const upToDateLangs = fileTranslations.upToDateLanguages.map(l => l.language);
-      examples[slug] = {
+      content[slug] = {
         englishFile,
         outdated,
         missing: missingLangs,
@@ -798,12 +807,13 @@ async function main(testFiles = null, options = {}) {
     const manifest = {
       generatedAt: new Date().toISOString(),
       branch: githubTracker ? githubTracker.currentBranch : null,
-      examples,
+      contentType,
+      [contentType]: content,
     };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
-    console.log(`\n🗂️  Wrote translation manifest: ${manifestPath}`);
+    console.log(`\n🗂️  Wrote ${contentType} translation manifest: ${manifestPath}`);
   } catch (writeErr) {
-    console.log(`\n⚠️  Could not write translation manifest: ${writeErr.message}`);
+    console.log(`\n⚠️  Could not write ${contentType} translation manifest: ${writeErr.message}`);
   }
 }
 
@@ -812,6 +822,7 @@ module.exports = {
   main,
   getChangedFiles,
   getAllEnglishExampleFiles,
+  getAllEnglishContentFiles,
   checkTranslationStatus,
   GitHubCommitTracker,
   SUPPORTED_LANGUAGES

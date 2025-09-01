@@ -4,7 +4,7 @@ Automatically tracks translation status for p5.js website examples, creates GitH
 
 ## Features
 
-- Detects outdated/missing translations using Git commit comparison
+- Detects outdated/missing translations using Git commit comparison (currently focused on Examples content)
 - Creates GitHub issues with diff snippets and action checklists
 - Shows localized banners on outdated translation pages
 - Supports Spanish, Hindi, Korean, and Chinese Simplified
