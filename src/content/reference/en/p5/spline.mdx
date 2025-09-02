@@ -8,35 +8,24 @@ description: >
 
   <p>Spline curves can form shapes and curves that slope gently. They’re like
 
-  cables that are attached to a set of points. Splines are defined by two
+  cables that are attached to a set of points. By default (<code>ends:
+  INCLUDE</code>),
 
-  anchor points and two control points.</p>
+  the curve passes through all four points you provide, in order
 
-  <p>The first two parameters, <code>x1</code> and <code>y1</code>, set the
-  first control point. This
+  <code>p0(x1,y1)</code> -> <code>p1(x2,y2)</code> -> <code>p2(x3,y3)</code> ->
+  <code>p3(x4,y4)</code>. Think of them as
 
-  point isn’t drawn and can be thought of as the curve’s starting point.</p>
+  points on a curve. If you switch to <code>ends: EXCLUDE</code>, p0 and p3 act
 
-  <p>The next four parameters, <code>x2</code>, <code>y2</code>,
-  <code>x3</code>, and <code>y3</code>, set the two anchor
-
-  points. The anchor points are the start and end points of the curve’s
-
-  visible segment.</p>
-
-  <p>The seventh and eighth parameters, <code>x4</code> and <code>y4</code>, set
-  the last control
-
-  point. This point isn’t drawn and can be thought of as the curve’s ending
-
-  point.</p>
+  like control points and only the middle span <code>p1->p2</code> is drawn.</p>
 
   <p>Spline curves can also be drawn in 3D using WebGL mode. The 3D version of
 
   <code>spline()</code> has twelve arguments because each point has x-, y-, and
 
   z-coordinates.</p>
-line: 655
+line: 682
 isConstructor: false
 itemtype: method
 example:
@@ -44,9 +33,34 @@ example:
     <div>
     <code>
     function setup() {
+      createCanvas(200, 200);
+      background(240);
+      noFill();
+
+      stroke(0);
+      strokeWeight(2);
+      spline(40, 60, 100, 40, 120, 120, 60, 140);
+
+      strokeWeight(5);
+      point(40, 60);
+      point(100, 40);
+      point(120, 120);
+      point(60, 140);
+
+      describe('A black spline passes smoothly through four points');
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
       createCanvas(100, 100);
 
       background(200);
+
+      // Exclude the ends—skip the outer spans (p0→p1 and p2→p3) so only the middle span (p1→p2) is drawn.
+      splineProperty('ends', EXCLUDE);
 
       // Draw a black spline curve.
       noFill();
@@ -54,18 +68,18 @@ example:
       stroke(0);
       spline(5, 26, 73, 24, 73, 61, 15, 65);
 
-      // Draw red spline curves from the anchor points to the control points.
+      // Draw red spline curves from the points.
       stroke(255, 0, 0);
       spline(5, 26, 5, 26, 73, 24, 73, 61);
       spline(73, 24, 73, 61, 15, 65, 15, 65);
 
-      // Draw the anchor points in black.
+      // Draw the points in black.
       strokeWeight(5);
       stroke(0);
       point(73, 24);
       point(73, 61);
 
-      // Draw the control points in red.
+      // Draw the points in red.
       stroke(255, 0, 0);
       point(5, 26);
       point(15, 65);
@@ -94,13 +108,16 @@ example:
     function draw() {
       background(200);
 
+      // Exclude the ends—skip the outer spans (p0→p1 and p2→p3) so only the middle span (p1→p2) is drawn.
+      splineProperty('ends', EXCLUDE);
+
       // Draw a black spline curve.
       noFill();
       strokeWeight(1);
       stroke(0);
       spline(x1, y1, 73, 24, 73, 61, 15, 65);
 
-      // Draw red spline curves from the anchor points to the control points.
+      // Draw red spline curves from the points.
       stroke(255, 0, 0);
       spline(x1, y1, x1, y1, 73, 24, 73, 61);
       spline(73, 24, 73, 61, 15, 65, 15, 65);
@@ -111,25 +128,25 @@ example:
       point(73, 24);
       point(73, 61);
 
-      // Draw the control points in red.
+      // Draw the points in red.
       stroke(255, 0, 0);
       point(x1, y1);
       point(15, 65);
     }
 
-    // Start changing the first control point if the user clicks near it.
+    // Start changing the first point if the user clicks near it.
     function mousePressed() {
       if (dist(mouseX, mouseY, x1, y1) < 20) {
         isChanging = true;
       }
     }
 
-    // Stop changing the first control point when the user releases the mouse.
+    // Stop changing the first point when the user releases the mouse.
     function mouseReleased() {
       isChanging = false;
     }
 
-    // Update the first control point while the user drags the mouse.
+    // Update the first point while the user drags the mouse.
     function mouseDragged() {
       if (isChanging === true) {
         x1 = mouseX;
@@ -145,6 +162,9 @@ example:
       createCanvas(100, 100);
 
       background('skyblue');
+
+      // Exclude the ends—skip the outer spans (p0→p1 and p2→p3) so only the middle span (p1→p2) is drawn.
+      splineProperty('ends', EXCLUDE);
 
       // Draw the red balloon.
       fill('red');
@@ -169,6 +189,9 @@ example:
     function draw() {
       background('skyblue');
 
+      // Exclude the ends—skip the outer spans (p0→p1 and p2→p3) so only the middle span (p1→p2) is drawn.
+      splineProperty('ends', EXCLUDE);
+
       // Rotate around the y-axis.
       rotateY(frameCount * 0.01);
 
@@ -185,28 +208,28 @@ class: p5
 overloads:
   - params:
       - name: x1
-        description: x-coordinate of the first control point.
+        description: x-coordinate of point p0.
         type: Number
       - name: y1
-        description: y-coordinate of the first control point.
+        description: y-coordinate of point p0.
         type: Number
       - name: x2
-        description: x-coordinate of the first anchor point.
+        description: x-coordinate of point p1.
         type: Number
       - name: y2
-        description: y-coordinate of the first anchor point.
+        description: y-coordinate of point p1.
         type: Number
       - name: x3
-        description: x-coordinate of the second anchor point.
+        description: x-coordinate of point p2.
         type: Number
       - name: y3
-        description: y-coordinate of the second anchor point.
+        description: y-coordinate of point p2.
         type: Number
       - name: x4
-        description: x-coordinate of the second control point.
+        description: x-coordinate of point p3.
         type: Number
       - name: y4
-        description: y-coordinate of the second control point.
+        description: y-coordinate of point p3.
         type: Number
   - params:
       - name: x1
@@ -216,7 +239,7 @@ overloads:
         description: ''
         type: Number
       - name: z1
-        description: z-coordinate of the first control point.
+        description: z-coordinate of point p0.
         type: Number
       - name: x2
         description: ''
@@ -225,7 +248,7 @@ overloads:
         description: ''
         type: Number
       - name: z2
-        description: z-coordinate of the first anchor point.
+        description: z-coordinate of point p1.
         type: Number
       - name: x3
         description: ''
@@ -234,7 +257,7 @@ overloads:
         description: ''
         type: Number
       - name: z3
-        description: z-coordinate of the second anchor point.
+        description: z-coordinate of point p2.
         type: Number
       - name: x4
         description: ''
@@ -243,7 +266,7 @@ overloads:
         description: ''
         type: Number
       - name: z4
-        description: z-coordinate of the second control point.
+        description: z-coordinate of point p3.
         type: Number
 chainable: true
 ---
