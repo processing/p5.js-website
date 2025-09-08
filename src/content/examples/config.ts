@@ -1,5 +1,6 @@
 import { z, defineCollection, reference } from "astro:content";
 
+
 /**
  * Content collection for the Examples section of the site.
  * Each file represents a single example.
@@ -17,5 +18,33 @@ export const examplesCollection = defineCollection({
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
+
+      // Optional list of remixes to add to license
+      remix: z
+        .array(
+          z.object({
+            description: z.string().default("Remixed by"),
+            attribution: z
+              .array(
+                z.object({
+                  name: z.string(),
+                  URL: z.string().optional(),
+                })
+              )
+              .optional(),
+            code: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  URL: z.string(),
+                })
+              )
+              .optional(),
+            collectivelyAttributedSince: z.number().optional(),
+          })
+        )
+        .optional()
+        .default([]),
     }),
 });
+

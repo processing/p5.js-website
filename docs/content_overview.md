@@ -11,6 +11,40 @@
 - Stored in `/src/content/examples/`
 - All translations are stored and edited directly in this repo under the corresponding language folder in `/src/content/examples/`
 
+All original examples (created new for p5.js) since 2024 are collectively attributed to p5.js Contributors under the CC-BY-NC-SA 4.0 license. However, examples that build on prior work (under a compatible license) can be attributed in more detail, to make sure that authorship is clear in citation, and code history is available to viewers.
+
+To add attribution, you can use the following block in the headers, listing in chronological order all arrtibutions. Below is the example from `examples/animation-and-variables-conditions/`:
+
+```yaml
+remix:
+  - description: Inspired by
+    attribution:
+      - name: Name Name
+        URL: a-valid-link
+    code:
+      - label: pre-2023 code
+        URL: a-valid-link
+  - description: Revised by
+    attribution:    
+      - name: Name Name
+        URL: a-valid-link
+    code:
+      - label: 2023 revision code
+        URL: a-valid-link
+
+  - collectivelyAttributedSince: 2024
+```
+
+This will result in a block that lists, in order, the initial inspiration; any revision or other remix; and the collective attribution statement that begins in 2024: "From 2024 onwards, edited and maintained by p5.js Contributors and the Processing Foundation. Licensed under CC BY-NC-SA 4.0."
+
+A remix can be many things ([here is an example analysis of sketch remixing (PDF)](https://dl.acm.org/doi/pdf/10.1145/3563657.3595969)); the `description` will be by default "Remixed by", so a more specific description is recommended.
+
+If the `collectivelyAttributedSince` information is missing, then no year will be included, but the collective attribution statement will still show: "Edited and maintained by p5.js Contributors and the Processing Foundation. Licensed under CC BY-NC-SA 4.0." You'll see this in examples that were part of a major revision project with specific attribution, but have collective authorship before and after.
+
+Each item in the remix history must have an at least one person listed in the attribution section. When multiple people are listed, their names will be shown in that order. For people, URLs are optional but recommended.
+
+---
+
 ## Tutorials
 
 - Stored in `/src/content/tutorials/`
