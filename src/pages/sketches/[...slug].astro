@@ -5,7 +5,9 @@ import { getCurationSketches } from "@src/api/OpenProcessing";
 export async function getStaticPaths() {
   const sketches = await getCurationSketches();
   return sketches.map((sketch) => ({
-    params: { slug: sketch.visualID },
+    // Even though slug gets converted to string at runtime,
+    // TypeScript infers it as number from sketch.visualID, so we explicitly convert to string.
+    params: { slug: String(sketch.visualID) },
     props: { authorName: sketch.fullname },
   }));
 }
