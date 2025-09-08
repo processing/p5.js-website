@@ -4,40 +4,110 @@ module: Shape
 submodule: Custom Shapes
 file: src/shape/custom_shapes.js
 description: >
-  <p>Sets the property of a curve.</p>
+  <p>Gets or sets a given spline property.</p>
 
-  <p>For example, set tightness,
+  <p>Use <code>splineProperty()</code> to adjust the behavior of splines
 
-  use <code>splineProperty('tightness', t)</code>, with <code>t</code> between 0
-  and 1,
+  created with <code>splineVertex()</code> or <code>spline()</code>. You can
+  control
 
-  at 0 as default.</p>
+  two key aspects of a spline: its end behavior (<code>ends</code>) and
 
-  <p>Spline curves are like cables that are attached to a set of points.
+  its curvature (<code>tightness</code>).</p>
 
-  Adjusting tightness adjusts how tightly the cable is
+  <p>By default, the ends property is set to <code>INCLUDE</code>, which means
 
-  attached to the points. The parameter, tightness, determines
+  the spline passes through every point, including the endpoints.
 
-  how the curve fits to the vertex points. By default,
+  You can also set it to <code>EXCLUDE</code> i.e. <code>splineProperty('ends',
+  EXCLUDE)</code>,
 
-  tightness is set to 0. Setting tightness to 1, as in
+  which makes the spline pass through all points except the endpoints.</p>
 
-  <code>splineProperty('tightness', 1)</code>, connects the curve's points
+  <p><code>INCLUDE</code> case will have the spline passing through
 
-  using straight lines. Values in the range from –5 to 5
+  all points, like this:</p>
 
-  deform curves while leaving them recognizable.</p>
+  <pre><code class="language-js">splineProperty('ends', INCLUDE); // no need to
+  set this, as it is the default
 
-  <p>This function can also be used to set 'ends' property
+  spline(25, 46, 93, 44, 93, 81, 35, 85);
 
-  (see also: the <a href="/reference/p5/curveDetail/">curveDetail()</a>
-  example),
 
-  such as: <code>splineProperty('ends', EXCLUDE)</code> to exclude
+  point(25, 46);
 
-  vertices, or <code>splineProperty('ends', INCLUDE)</code> to include them.</p>
-line: 2121
+  point(93, 44);
+
+  point(93, 81);
+
+  point(35, 85);</code></pre><p><img src="/assets/includeSpline.png"/></p>
+
+  <p>EXCLUDE case will have the spline passing through
+
+  the middle points, like this:</p>
+
+  <pre><code class="language-js">splineProperty('ends', INCLUDE);
+
+  spline(25, 46, 93, 44, 93, 81, 35, 85);
+
+
+  point(25, 46);
+
+  point(93, 44);
+
+  point(93, 81);
+
+  point(35, 85);</code></pre><p><img src="/assets/excludeSpline.png"/></p>
+
+  <p>By default, the tightness property is set to <code>0</code>,
+
+  producing a smooth curve that passes evenly through
+
+  the vertices. Negative values make the curve looser,
+
+  while positive values make it tighter. Common values
+
+  range between -1 and 1, though values outside this
+
+  range can also be used for different effects.</p>
+
+  <p>For example, To set tightness, use <code>splineProperty('tightness',
+  t)</code>,
+
+  (default: t = 0).</p>
+
+  <p>Here's the example showing negetive value of tightness,
+
+  which creates a rounder bulge:</p>
+
+  <pre><code class="language-js">splineProperty('tightness', -5)
+
+  stroke(0);
+
+  strokeWeight(2);
+
+  spline(25, 46, 93, 44, 93, 81, 35, 85);</code></pre><p>Here's the example
+  showing positive value of tightness,
+
+  which makes the curve tighter and more angular:</p>
+
+  <pre><code class="language-js">splineProperty('tightness', 5)
+
+  stroke(0);
+
+  strokeWeight(2);
+
+  spline(25, 46, 93, 44, 93, 81, 35, 85);</code></pre><p>In all cases, the
+  splines in p5.js are <a
+  href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Cardinal_spline">cardinal
+  splines</a>.
+
+  When tightness is 0, these splines are often known as
+
+  <a
+  href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Catmull%E2%80%93Rom_spline/">Catmull-Rom
+  splines</a></p>
+line: 2105
 isConstructor: false
 itemtype: method
 example:
@@ -46,30 +116,157 @@ example:
     <code>
     // Move the mouse left and right to see the curve change.
 
+    let t;
+
     function setup() {
       createCanvas(100, 100);
-      describe('A black curve forms a sideways U shape. The curve deforms as the user moves the mouse from left to right');
+
     }
 
     function draw() {
-      background(200);
+      background(240);
 
-      // Set the curve's tightness using the mouse.
-      let t = map(mouseX, 0, 100, -5, 5, true);
+      t = map(mouseX, 0, width, -5, 5, true);
       splineProperty('tightness', t);
 
-      // Draw the curve.
       noFill();
+      stroke(0);
+      strokeWeight(2);
+
       beginShape();
       splineVertex(10, 26);
-      splineVertex(10, 26);
       splineVertex(83, 24);
+
       splineVertex(83, 61);
       splineVertex(25, 65);
-      splineVertex(25, 65);
       endShape();
+
+      push();
+      strokeWeight(5);
+      point(10, 26);
+      point(83, 24);
+      point(83, 61);
+      point(25, 65);
+      pop();
+
+      fill(0);
+      noStroke();
+      textSize(10);
+      text(`tightness: ${round(t, 1)}`, 15, 90);
+      describe('A black spline forms a sideways U shape through four points. The spline passes through the points more loosely as the mouse moves left of center (negative tightness), and more tightly as it moves right of center (positive tightness). The tightness is displayed at the bottom.');
     }
     </code>
+    </div>
+  - >-
+    <div>
+
+    <code>
+
+    function setup() {
+
+    createCanvas(360, 140);
+
+    background(240);
+
+    noFill();
+
+
+    // Right panel: ends = INCLUDE (all spans).
+
+    push();
+
+    translate(10, 10);
+
+    stroke(220);
+
+    rect(0, 0, 160, 120);
+
+    fill(30);
+
+    textSize(11);
+
+    text('ends: INCLUDE (all spans)', 8, 16);
+
+    noFill();
+
+
+    splineProperty('ends', INCLUDE);
+
+    stroke(0);
+
+    strokeWeight(2);
+
+    spline(25, 46, 93, 44, 93, 81, 35, 85);
+
+
+    // vertices
+
+    strokeWeight(5);
+
+    stroke(0);
+
+    point(25, 46);
+
+    point(93, 44);
+
+    point(93, 81);
+
+    point(35, 85);
+
+    pop();
+
+
+    // Right panel: ends = EXCLUDE (middle only).
+
+    push();
+
+    translate(190, 10);
+
+    stroke(220);
+
+    rect(0, 0, 160, 120);
+
+    noStroke();
+
+    fill(30);
+
+    text('ends: EXCLUDE ', 18, 16);
+
+    noFill();
+
+
+    splineProperty('ends', EXCLUDE);
+
+    stroke(0);
+
+    strokeWeight(2);
+
+    spline(25, 46, 93, 44, 93, 81, 35, 85);
+
+
+    // vertices
+
+    strokeWeight(5);
+
+    stroke(0);
+
+    point(25, 46);
+
+    point(93, 44);
+
+    point(93, 81);
+
+    point(35, 85);
+     pop();
+
+    describe('Left panel shows spline with ends INCLUDE (three spans). Right
+    panel shows EXCLUDE (only the middle span). Four black points mark the
+    vertices.');
+
+    }
+
+    </code>
+
     </div>
 class: p5
 return:
