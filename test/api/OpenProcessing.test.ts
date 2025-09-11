@@ -146,3 +146,86 @@ describe('OpenProcessing API Caching', () => {
 
   });
 });
+
+describe('Error Handling', () => {
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    
+        getCurationSketches.cache.clear?.();
+        getSketch.cache.clear?.();
+        getSketchSize.cache.clear?.();
+      });
+      
+    it('should throw an error when getCurationSketches API call fails', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
+  
+      await expect(getCurationSketches()).rejects.toThrow(
+        'getCurationSketches: 500 Internal Server Error'
+      );
+    });
+  
+    it('should throw an error when rate limit is exceeded (429)', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 429,
+        statusText: 'Too Many Requests',
+      });
+  
+      await expect(getCurationSketches()).rejects.toThrow(
+        'getCurationSketches: 429 Too Many Requests'
+      );
+    });
+  
+    it('should throw an error when getSketch API call fails for individual sketch', async () => {
+      // Setup empty curations first
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([])
+      }).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([])
+      });
+  
+      await getCurationSketches(); // Create empty cache
+  
+      // Individual sketch API call fails with 429
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+        statusText: 'Too Many Requests'
+      });
+  
+      await expect(getSketch(999)).rejects.toThrow(
+        'getSketch: 999 429 Too Many Requests'
+      );
+    });
+  
+    it('should throw an error when getSketchSize API call fails', async () => {
+      // Setup sketch data first
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([getCurationSketchesData[0]])
+      }).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([])
+      });
+  
+      await getCurationSketches();
+  
+      // getSketchSize API call fails with rate limit
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+        statusText: 'Too Many Requests'
+      });
+  
+      await expect(getSketchSize(getCurationSketchesData[0].visualID)).rejects.toThrow(
+        `getSketchSize: ${getCurationSketchesData[0].visualID} 429 Too Many Requests`
+      );
+    });
+  });
