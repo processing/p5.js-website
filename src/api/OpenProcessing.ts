@@ -33,6 +33,9 @@ export type OpenProcessingCurationResponse = Array<{
   fullname: string;
 }>;
 
+// Selected Sketches from the 2025 curation
+export const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
+
 /**
  * Get basic info for the sketches contained in a Curation
  * from the OpenProcessing API
@@ -60,8 +63,7 @@ export const getCurationSketches = memoize(async (
   }
   const payload2 = await response2.json();
 
-  // Selected Sketches from the 2025 curation
-  const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
+
 
   const prioritySketches = payload2.filter(
     (sketch: OpenProcessingCurationResponse[number]) => priorityIds.includes(String(sketch.visualID)))
