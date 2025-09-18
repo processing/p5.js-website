@@ -33,6 +33,9 @@ export type OpenProcessingCurationResponse = Array<{
   fullname: string;
 }>;
 
+// Selected Sketches from the 2025 curation
+export const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
+
 /**
  * Get basic info for the sketches contained in a Curation
  * from the OpenProcessing API
@@ -47,21 +50,20 @@ export const getCurationSketches = memoize(async (
   const response1 = await fetch(
     `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
   );
-  if(!response1.ok){ //log error instead of throwing error to not cache result in memoize
-    console.error('getCurationSketches', response1.status, response1.statusText)
+  if(!response1.ok){ 
+    throw new Error(`getCurationSketches: ${response1.status} ${response1.statusText}`)
   }
   const payload1 = await response1.json();
 
   const response2 = await fetch(
     `${openProcessingEndpoint}curation/${newCurationId}/sketches?${limitParam}`,
   );
-  if(!response2.ok){ //log error instead of throwing error to not cache result in memoize
-    console.error('getCurationSketches', response2.status, response2.statusText)
+  if(!response2.ok){ 
+    throw new Error(`getCurationSketches: ${response2.status} ${response2.statusText}`)
   }
   const payload2 = await response2.json();
 
-  // Selected Sketches from the 2025 curation
-  const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
+
 
   const prioritySketches = payload2.filter(
     (sketch: OpenProcessingCurationResponse[number]) => priorityIds.includes(String(sketch.visualID)))
@@ -122,8 +124,7 @@ export const getSketch = memoize(
     // check for sketch data in Open Processing API
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
     if (!response.ok) {
-      //log error instead of throwing error to not cache result in memoize
-      console.error("getSketch", id, response.status, response.statusText);
+      throw new Error(`getSketch: ${id} ${response.status} ${response.statusText}`)
   }
   const payload = await response.json();
   return payload as OpenProcessingSketchResponse;
@@ -141,8 +142,8 @@ export const getSketchSize = memoize(async (id: number) => {
   }
 
   const response = await fetch(`${openProcessingEndpoint}sketch/${id}/code`);
-  if(!response.ok){ //log error instead of throwing error to not cache result in memoize
-    console.error('getSketchSize', id, response.status, response.statusText)
+  if(!response.ok){ 
+    throw new Error(`getSketchSize: ${id} ${response.status} ${response.statusText}`)
   }
   const payload = await response.json();
 
