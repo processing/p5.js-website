@@ -293,16 +293,31 @@ export const rewriteRelativeMdLinks = (markdownText: string): string => {
    * Regex to find relative links to a markdown document in a string of Markdown
    * Has 2 capture groups:
    * 1. Text for the link
-   * 2. Link url (but not the .md extension at the end)
+   * 2. Link url (including the .md extension and hash)
    */
-  const regexPattern: RegExp = /(!?)\[([^\]]+)\]\(([^)]+)\)/g;
-  return markdownText.replace(regexPattern, (match, img, linkText, url: string) => {
+  const inlineLinkRegexPattern: RegExp = /(!?)\[([^\]]+)\]\(([^)]+)\)/g;
+  let out = markdownText.replace(inlineLinkRegexPattern, (match, img, linkText, url: string) => {
     // Don't convert images
     if (img) return match;
 
     const updatedUrl = rewriteRelativeLink(url);
     return `[${linkText}](${updatedUrl})`;
   });
+
+  /**
+   * Regex to find reference links to a markdown document in a string of Markdown
+   * Has 2 capture groups:
+   * 1. Text for the link
+   * 2. Link url (including the .md extension and hash)
+   */
+
+  const referenceLinkRegexPattern: RegExp = /^(\[[^\]]+\]):\s*(\.[^\s]+)$/gm;
+  out = out.replace(referenceLinkRegexPattern, (match, linkText, fullUrl: string) => {
+    const updatedUrl = rewriteRelativeLink(fullUrl);
+    return `${linkText}: ${updatedUrl}`;
+  });
+
+  return out;
 };
 /**
  * Deletes the contents of the given directory.
