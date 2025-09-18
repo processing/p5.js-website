@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "preact/hooks";
+import { useMemo, useRef, useState, useEffect } from "preact/hooks";
 import { Icon } from "../Icon";
 
 type SearchResult = {
@@ -23,8 +23,18 @@ const SearchResults = ({
   uiTranslations,
 }: SearchResultProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const [currentFilter, setCurrentFilter] = useState("");
   const [isInputEdited, setInputEdited] = useState(false);
+
+  useEffect(() => {
+    if (searchTerm && clearButtonRef.current) {
+      clearButtonRef.current.focus();
+    } else if (!searchTerm && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchTerm]);
 
   const allUniqueCategoriesForResults = useMemo(() => {
     const categories = results.map((result) => result.category);
@@ -59,46 +69,12 @@ const SearchResults = ({
     }
   };
 
-  const renderFilterByOptions = () => {
-    if (results.length === 0) {
-      return null;
-    }
-
-    return (
-      <div className="flex w-fit py-lg">
-        <p className="mt-0 w-fit text-nowrap">Filter by</p>
-        <ul className="ml-sm flex gap-sm">
-          {allUniqueCategoriesForResults.map((category) => (
-            <li
-              key={category}
-              className={`${currentFilter === category ? "bg-sidebar-type-color text-bg-color" : "bg-bg-color text-sidebar-type-color"} h-[25px] rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-bg-color md:h-[30px]`}
-            >
-              <button
-                value={category}
-                className="capitalize"
-                onClick={() => toggleFilter(category)}
-                aria-pressed={currentFilter === category}
-                aria-label={`Filter by ${uiTranslations[uiTranslationKey(category)]}`}
-              >
-                <div class="flex flex-nowrap gap-xs">
-                  {uiTranslations[uiTranslationKey(category)]}
-                  {currentFilter === category && (
-                    <Icon kind="close" className="h-4 w-4 place-self-center" />
-                  )}
-                </div>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
   const clearInput = () => {
     if (inputRef.current) {
       inputRef.current.value = "";
     }
   };
+
   const submitInput = () => {
     if (inputRef.current) {
       onSearchChange(inputRef.current.value);
@@ -130,6 +106,7 @@ const SearchResults = ({
         />
         {isInputEdited ? (
           <button
+            ref={submitButtonRef}
             type="submit"
             class="absolute right-0 top-[2px] px-[22px] py-[13px]"
             onClick={submitInput}
@@ -139,6 +116,7 @@ const SearchResults = ({
           </button>
         ) : (
           <button
+            ref={clearButtonRef}
             type="reset"
             class="absolute right-0 top-0 px-[22px] py-[13px]"
             onClick={clearInput}
@@ -148,6 +126,45 @@ const SearchResults = ({
           </button>
         )}
       </search>
+    );
+  };
+
+  const renderFilterByOptions = () => {
+    if (results.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="flex w-fit py-lg">
+        <p className="mt-0 w-fit text-nowrap">Filter by</p>
+        <ul className="ml-sm flex gap-sm">
+          {allUniqueCategoriesForResults.map((category) => (
+            <li
+              key={category}
+              className={`${
+                currentFilter === category
+                  ? "bg-sidebar-type-color text-bg-color"
+                  : "bg-bg-color text-sidebar-type-color"
+              } h-[25px] rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-bg-color md:h-[30px]`}
+            >
+              <button
+                value={category}
+                className="capitalize"
+                onClick={() => toggleFilter(category)}
+                aria-pressed={currentFilter === category}
+                aria-label={`Filter by ${uiTranslations[uiTranslationKey(category)]}`}
+              >
+                <div class="flex flex-nowrap gap-xs">
+                  {uiTranslations[uiTranslationKey(category)]}
+                  {currentFilter === category && (
+                    <Icon kind="close" className="h-4 w-4 place-self-center" />
+                  )}
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   };
 
