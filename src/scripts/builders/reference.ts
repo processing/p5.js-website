@@ -18,6 +18,7 @@ import { sanitizeName } from "../utils";
 import path from "path";
 import { load } from "cheerio";
 import he from "he";
+import { p5Version } from "../../globals/p5-version";
 
 /* Base path for the content directory */
 const prefix = "./src/content/reference/en/";
@@ -290,14 +291,19 @@ const convertToMDX = async (
   );
 
   try {
+    // Add YAML comment to the frontmatter
+    const comment = `# This file was auto-generated. Please do not edit it manually!\n# To make changes, edit the comments in the corresponding source file:\n# https://github.com/processing/p5.js/blob/v${p5Version}/${doc.file}#L${doc.line}`;
+    
     // Convert the frontmatter to a string
     const frontmatter = matter.stringify("", frontMatterArgs);
+    const frontmatterWithComment = frontmatter.replace('---\n', `---\n${comment}\n`);
+    
     // Stores the body of the MDX file
     const markdownContent = `# ${sanitizeName(doc.name)}\n`;
     // Convert the markdown content to MDX
     const mdxContent = remark().use(remarkMDX).processSync(markdownContent);
     // Return the full MDX file as a string
-    return `${frontmatter}\n${mdxContent.toString()}`;
+    return `${frontmatterWithComment}\n${mdxContent.toString()}`;
   } catch (err) {
     console.error(`Error converting ${doc.name} to MDX: ${err}`);
     return;
