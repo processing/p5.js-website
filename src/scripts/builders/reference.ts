@@ -292,7 +292,7 @@ const convertToMDX = async (
 
   try {
     // Add YAML comment to the frontmatter
-    const comment = `# This file was auto-generated. Please do not edit it manually!\n# To make changes, edit the comments in the corresponding source file:\n# https://github.com/processing/p5.js/blob/v${p5Version}/${doc.file}#L${doc.line}`;
+    const comment = `# This file was auto-generated. Please do not edit it manually!\n# To make changes, edit the comments in the corresponding source file:\n# https://github.com/processing/p5.js/blob/v${p5Version}/${doc.file.replace(/\\/g, '/')}#L${doc.line}`;
     
     // Convert the frontmatter to a string
     const frontmatter = matter.stringify("", frontMatterArgs);
