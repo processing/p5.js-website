@@ -253,7 +253,7 @@ const convertToMDX = async (
     title: sanitizeName(doc.name),
     module: doc.module,
     submodule: doc.submodule ?? "",
-    file: doc.file.replace(/.*p5\.js\/(.*)/, "$1"),
+    file: doc.file.replace(/.*p5\.js\/(.*)/, "$1").replace(/\\/g, '/'),
     description: doc.description ?? "",
     line: doc.line,
     deprecated: doc.deprecated,
