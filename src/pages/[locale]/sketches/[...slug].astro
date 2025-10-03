@@ -7,7 +7,7 @@ export async function getStaticPaths() {
   const sketches = await getCurationSketches();
   const entries = await Promise.all(
     nonDefaultSupportedLocales.map(async (locale) => {
-      return sketches.map((sketch) => ({
+      return sketches.filter(sketch => sketch.visualID && typeof sketch.visualID === 'number').map((sketch) => ({
         // Even though slug gets converted to string at runtime,
         // TypeScript infers it as number from sketch.visualID, so we explicitly convert to string.
         params: { locale, slug: String(sketch.visualID) },
