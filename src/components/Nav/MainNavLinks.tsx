@@ -84,7 +84,7 @@ export const MainNavLinks = ({
       <ul class="flex flex-col gap-[15px]">
         <li>
           <a
-            className={styles.buttonlink}
+            class={styles.buttonlink}
             href="https://editor.p5js.org"
             tabIndex={isOpen ? 0 : -1}
           >
@@ -96,7 +96,7 @@ export const MainNavLinks = ({
         </li>
         <li>
           <a
-            className={styles.buttonlink}
+            class={styles.buttonlink}
             href="/donate/"
             tabIndex={isOpen ? 0 : -1}
           >
