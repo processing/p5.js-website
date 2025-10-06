@@ -75,13 +75,19 @@ export const MainNavLinks = ({
       <ul>
         {links.map((link) => (
           <li key={link.label}>
-            <a href={link.url}>{link.label}</a>
+            <a href={link.url} tabIndex={isOpen ? 0 : -1}>
+              {link.label}
+            </a>
           </li>
         ))}
       </ul>
       <ul class="flex flex-col gap-[15px]">
         <li>
-          <a className={styles.buttonlink} href="https://editor.p5js.org">
+          <a
+            className={styles.buttonlink}
+            href="https://editor.p5js.org"
+            tabIndex={isOpen ? 0 : -1}
+          >
             <div class="mr-xxs">
               <Icon kind="code-brackets" />
             </div>
@@ -89,7 +95,11 @@ export const MainNavLinks = ({
           </a>
         </li>
         <li>
-          <a className={styles.buttonlink} href="/donate/">
+          <a
+            className={styles.buttonlink}
+            href="/donate/"
+            tabIndex={isOpen ? 0 : -1}
+          >
             <div class="mr-xxs">
               <Icon kind="heart" />
             </div>
