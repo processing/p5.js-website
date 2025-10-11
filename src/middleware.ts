@@ -76,7 +76,8 @@ export const ensureCorrectLocalePrefixesInHtmlLinks = (
           $(this).attr("href", href);
         }
       } catch (e) {
-        // If URL parsing fails, leave the href unchanged
+        // If URL parsing fails, log the error and leave the href unchanged
+        console.error(`Failed to parse URL in <a> tag href: "${href}". Error:`, e);
       }
       return;
     }
