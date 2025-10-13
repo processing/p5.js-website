@@ -8,7 +8,7 @@ import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
 import CircleButton from "../CircleButton";
 import { Icon } from "../Icon";
-import { githubLightHighContrast } from '@uiw/codemirror-theme-github';
+import { githubLight} from '@uiw/codemirror-theme-github';
 
 /*
  * A more featured code embed component that uses CodeMirror
@@ -125,7 +125,7 @@ export const CodeEmbed = (props) => {
       <div className="code-editor-container relative w-full">
         <CodeMirror
           value={codeString}
-          theme= {githubLightHighContrast}
+          theme= {githubLight}
           width="100%"
           minimalSetup={{
             highlightSpecialChars: false,
