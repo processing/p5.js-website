@@ -11,6 +11,8 @@ import {
   generateJumpToState,
   getRelatedEntriesinCollection,
 } from "../pages/_utils";
+import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
+import { checkTranslationBanner } from "../utils/translationBanner";
 
 const { entry } = Astro.props;
 const { Content, components } = await entry.render();
@@ -44,6 +46,14 @@ const relatedExamples =
         entry.data.relatedContent.examples.map((r: any) => r.slug)
       )
     : [];
+
+const { showBanner, englishUrl } = checkTranslationBanner(
+  'tutorials',
+  entry.id,
+  currentLocale,
+  Astro.url.pathname,
+  Astro.url.origin
+);
 ---
 
 <Head
@@ -61,6 +71,7 @@ const relatedExamples =
   topic="tutorials"
   className="tutorials"
 >
+  {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   {entry.data.authors && <section role="group" aria-label="authors">By {entry.data.authors.join(", ")}</section>}
   {entry.data.authorsNote && <h7>{entry.data.authorsNote}</h7>}
   <div class="rendered-markdown">
