@@ -4,6 +4,8 @@ import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
 import { setJumpToState } from "../globals/state";
 import { getCurrentLocale } from "../i18n/utils";
+import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
+import { checkTranslationBanner } from "../utils/translationBanner";
 
 interface Props {
   page: CollectionEntry<"text-detail">;
@@ -19,6 +21,14 @@ const pageTopic = Astro.url.pathname.includes("donate")
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
 setJumpToState(null);
+
+const { showBanner, englishUrl } = checkTranslationBanner(
+  'text-detail',
+  page.id,
+  currentLocale,
+  Astro.url.pathname,
+  Astro.url.origin
+);
 ---
 
 <Head title={page.data.title} locale={currentLocale} />
@@ -30,6 +40,7 @@ setJumpToState(null);
   className={pageTopic}
   subtitle={null}
 >
+  {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   <div class="max-w-[770px] [&>*:first-child]:mt-0 rendered-markdown pb-[80px]">
     <Content />
   </div>
