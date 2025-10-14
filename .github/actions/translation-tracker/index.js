@@ -297,6 +297,23 @@ class GitHubCommitTracker {
 
       return data;
     } catch (error) {
+      // If assignees fail, try again without assignees
+      if (error.message.includes('assignees') && assignees.length > 0) {
+        try {
+          const { data } = await this.octokit.rest.issues.create({
+            owner: this.owner,
+            repo: this.repo,
+            title: issueTitle,
+            body: issueBody,
+            labels: labels
+          });
+          console.log(`⚠️  Issue created but stewards could not be assigned (not collaborators)`);
+          return data;
+        } catch (retryError) {
+          console.error(`❌ Error creating issue on retry:`, retryError.message);
+          return null;
+        }
+      }
       console.error(`❌ Error creating multi-language issue:`, error.message);
       return null;
     }
