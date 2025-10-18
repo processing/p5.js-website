@@ -8,6 +8,7 @@ export const categories = [
   "web-design",
   "accessibility",
   "criticalAI",
+  "beyond-web-editor",
   // "p5-strands",
   "webgl",
   "advanced",
