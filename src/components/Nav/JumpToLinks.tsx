@@ -27,18 +27,22 @@ export const JumpToLinks = ({
       >
         <span>{heading}</span>
         <div class="pt-[6px]">
-          <Icon kind={isOpen ? "chevron-down" : "chevron-up"} />
+           <Icon kind={isOpen ? "chevron-down" : "chevron-up"} />
         </div>
       </button>
-
       {isOpen && (
         <ul>
           {links?.map((link) => (
             <li
               key={link.label}
-              class={`${styles.linklabel} ${link.size ?? ""} ${link.current ? "current" : ""}`}
+              className={`${styles.linklabel} ${link.size ?? ""}`}
             >
-              <a href={link.url}>{link.label}</a>
+              <a
+                href={link.url}
+                className={`${link.current ? "current" : ""}`}
+              >
+                {link.label}
+              </a>
             </li>
           ))}
         </ul>
