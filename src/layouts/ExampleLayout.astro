@@ -10,6 +10,8 @@ import {
 import BaseLayout from "./BaseLayout.astro";
 import EditableSketch from "@components/EditableSketch/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
+import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
+import { checkTranslationBanner } from "../utils/translationBanner";
 
 interface Props {
   example: CollectionEntry<"examples">;
@@ -59,6 +61,13 @@ const remixHistoryHasCodeLinks = example.data.remix?.some(
   (item) => Array.isArray(item.code) && item.code.length > 0
 );
 
+const { showBanner, englishUrl } = checkTranslationBanner(
+  'examples',
+  example.id,
+  currentLocale,
+  Astro.url.pathname,
+  Astro.url.origin
+);
 ---
 
 <Head
@@ -76,6 +85,7 @@ const remixHistoryHasCodeLinks = example.data.remix?.some(
   topic="examples"
   className="example"
 >
+  {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   <div class="mt-xl mb-4xl lg:mb-3xl max-w-[770px]">
     <div class="rendered-markdown">
       <Content />
