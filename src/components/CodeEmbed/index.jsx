@@ -8,7 +8,8 @@ import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
 import CircleButton from "../CircleButton";
 import { Icon } from "../Icon";
-import { githubLight} from '@uiw/codemirror-theme-github';
+import { githubLight } from '@uiw/codemirror-theme-github';
+
 
 /*
  * A more featured code embed component that uses CodeMirror
