@@ -43,6 +43,8 @@ If the `collectivelyAttributedSince` information is missing, then no year will b
 
 Each item in the remix history must have an at least one person listed in the attribution section. When multiple people are listed, their names will be shown in that order. For people, URLs are optional but recommended.
 
+These attribution histories **do not need to be individually translated** for each sketch. It is enough to make sure that the descriptions (like 'Created by' and so on) appear in the different language strings in `src/content/ui/`. Then, these will be used for all examples. See [Localization](./localization.md) for more info.
+
 ---
 
 ## Tutorials
