@@ -20,6 +20,14 @@ Running this will start up a local dev server and print out the address in your 
 npm run dev
 ```
 
+### A Note About Trailing Slashes in Development
+
+When testing locally with `npm run dev`, you may encounter 404 errors when navigating to pages like `/examples`, `/tutorials`, `/reference`, `/contribute`, or `/community` without a trailing slash. This is expected behavior during local development.
+
+The site is configured with `trailingSlash: "always"` in `astro.config.mjs`, meaning all URLs should end with a `/`. In production on https://p5js.org, the server automatically redirects URLs to add the trailing slash, so `https://p5js.org/examples` becomes `https://p5js.org/examples/`. However, the local dev server does not handle these redirects.
+
+If you see a 404 error during local development, simply add a trailing slash to the URL in your browser (e.g. change `/examples` to `/examples/`).
+
 ## File Organization
 
 The website code is divided into a few main folders:
