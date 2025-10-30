@@ -13,7 +13,7 @@
 
 All original examples (created new for p5.js) since 2024 are collectively attributed to p5.js Contributors under the CC-BY-NC-SA 4.0 license. However, examples that build on prior work (under a compatible license) can be attributed in more detail, to make sure that authorship is clear in citation, and code history is available to viewers.
 
-To add attribution, you can use the following block in the headers, listing in chronological order all arrtibutions. Below is the example from `examples/animation-and-variables-conditions/`:
+To add attribution, you can use the following block in the headers, listing in **chronological** order all attribution. Below is the example from `examples/animation-and-variables-conditions/`:
 
 ```yaml
 remix:
@@ -38,6 +38,33 @@ remix:
 This will result in a block that lists, in order, the initial inspiration; any revision or other remix; and the collective attribution statement that begins in 2024: "From 2024 onwards, edited and maintained by p5.js Contributors and the Processing Foundation. Licensed under CC BY-NC-SA 4.0."
 
 A remix can be many things ([here is an example analysis of sketch remixing (PDF)](https://dl.acm.org/doi/pdf/10.1145/3563657.3595969)); the `description` will be by default "Remixed by", so a more specific description is recommended.
+
+To credit individuals, you can use the following descriptions, with `attribution.name` including the name of the author or contributor, with an optional link.
+
+* Remixed by
+* Revised by
+* Created by
+
+```yaml
+remix:
+  - description: Created by
+    attribution:
+      - name: Someone
+        URL: ...
+```
+
+To credit a specific work that was (1) not created by the p5.js contributors since 2024 and (2) is under a compatible license, you can use the following descriptions. Here, `attribution.name` should include both the person and a specific work of theirs that was the inspiration.
+
+* Inspired by
+* Based on
+
+```yaml
+remix:
+  - description: Inspired by
+    attribution:
+      - name: Someone's prior work
+        URL: ...
+```
 
 Each item in the remix history must have an at least one person listed in the attribution section. When multiple people are listed, their names will be shown **in that order**. For people, URLs are optional but recommended.
 
