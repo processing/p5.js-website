@@ -40,7 +40,11 @@ export const examplesCollection = defineCollection({
                 })
               )
               .optional(),
-            collectivelyAttributedSince: z.number().optional(),
+            // Collective attribution message either does not specify a year,
+            // or specifies 2024. To add a new possible value, update:
+            // 1) content/examples/config.ts to include new permitted values;
+            // 2) and content/ui/*.yaml strings for attribution to include the text
+            collectivelyAttributedSince: z.literal(2024).optional(),
           })
         )
         .optional()

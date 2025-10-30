@@ -39,11 +39,15 @@ This will result in a block that lists, in order, the initial inspiration; any r
 
 A remix can be many things ([here is an example analysis of sketch remixing (PDF)](https://dl.acm.org/doi/pdf/10.1145/3563657.3595969)); the `description` will be by default "Remixed by", so a more specific description is recommended.
 
-If the `collectivelyAttributedSince` information is missing, then no year will be included, but the collective attribution statement will still show: "Edited and maintained by p5.js Contributors and the Processing Foundation. Licensed under CC BY-NC-SA 4.0." You'll see this in examples that were part of a major revision project with specific attribution, but have collective authorship before and after.
+Each item in the remix history must have an at least one person listed in the attribution section. When multiple people are listed, their names will be shown **in that order**. For people, URLs are optional but recommended.
 
-Each item in the remix history must have an at least one person listed in the attribution section. When multiple people are listed, their names will be shown in that order. For people, URLs are optional but recommended.
+These attribution histories **do not need to be individually translated** for each sketch. It is enough to make sure that the descriptions (like 'Created by' and so on) appear in the different language strings in `src/content/ui/`. Then, these will be used for all examples. See [Localization](./localization.md) for more info. If you use special descriptions or names in the attribution, these do need either new strings, or localization in the respective example translations (in `src/content/examples/{language}`).
 
-These attribution histories **do not need to be individually translated** for each sketch. It is enough to make sure that the descriptions (like 'Created by' and so on) appear in the different language strings in `src/content/ui/`. Then, these will be used for all examples. See [Localization](./localization.md) for more info.
+If the `collectivelyAttributedSince` information is missing, then no year will be included, but the collective attribution statement will still show: "Edited and maintained by p5.js Contributors and the Processing Foundation. Licensed under CC BY-NC-SA 4.0." You'll see this in examples that were part of a major revision project with specific attribution, but have collective authorship before and after. Note that the collective attribution message either does not specify a year,
+ or specifies 2024. To add a new possible value, update:
+
+1. `content/examples/config.ts` to include new permitted values;
+2. and `content/ui/{language}.yaml` strings for attribution to include the text
 
 ---
 
