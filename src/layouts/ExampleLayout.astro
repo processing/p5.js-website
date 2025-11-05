@@ -45,6 +45,22 @@ const relatedReferences =
 
 const { Content } = await example.render();
 
+// Extract the collective attribution year. If multiple provided, uses last shown.
+const collectivelyAttributedSince = example.data.remix?.reduce(
+  (acc: number | null, item) => {
+    if (item.collectivelyAttributedSince) {
+      return item.collectivelyAttributedSince;
+    }
+    return acc;
+  },
+  null
+);
+
+// Boolean value on whether the remix history contains links to code
+const remixHistoryHasCodeLinks = example.data.remix?.some(
+  (item) => Array.isArray(item.code) && item.code.length > 0
+);
+
 const { showBanner, englishUrl } = checkTranslationBanner(
   'examples',
   example.id,
@@ -74,14 +90,87 @@ const { showBanner, englishUrl } = checkTranslationBanner(
     <div class="rendered-markdown">
       <Content />
     </div>
-    <EditableSketch code={code} />
-    <p>{example.data.arialabel}</p>
     <div class="rendered-markdown">
-      <p>
-        <a href={Astro.url.pathname}>{example.data.title}</a> by <a href="https://p5js.org/people">p5.js Contributors</a> and the <a href="https://processingfoundation.org/people">Processing Foundation</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>.
-      </p>
       <img src="/images/by-nc-sa.svg" />
-    </div>
+
+      <p>
+
+      <a href={Astro.url.pathname}>{example.data.title}</a>:{" "}
+
+      {example.data.remix?.map((item, i) => {
+        const parts = [];
+
+        // Each remix entry requires at least one attribution
+        // If a remix entry contains a collective attribution starting year, it is ignored here
+
+        if (!item.collectivelyAttributedSince && item.attribution) {
+          parts.push(<>{t("attribution", item.description)}</>);
+
+          if (item.attribution?.length) {
+            parts.push(
+              <>
+                {" "}
+                {item.attribution.map((a, j) => (
+                  <>
+                    {a.URL ? <a href={a.URL}>{t(a.name)}</a> : t(a.name)}
+                    {
+                      item.attribution?.length
+                      ? j < item.attribution.length - 1 ? ", " : "."
+                      : ""
+                    }
+                  </>
+                ))}
+              </>
+            );
+          }
+        }
+
+        return <span>{i > 0 && " "}{parts}</span>;
+      })}
+
+      {collectivelyAttributedSince ? (
+        <>{t("attribution", `From ${collectivelyAttributedSince} onwards, edited and maintained by`)}{" "}</>
+      ) : (
+        <>{t("attribution", "Edited and maintained by")}{" "}</>
+      )}
+      <span>
+        <a href="https://github.com/processing/p5.js?tab=readme-ov-file#contributors">p5.js Contributors</a>{" "}
+        {t("attribution", "and")}{" "}
+        <a href="https://processingfoundation.org/people">Processing Foundation</a>.
+        Licensed under{" "}
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+      </span>
+    </p>
+
+    <p>
+      {remixHistoryHasCodeLinks ? (
+        <>
+          {t("attribution", "You can find the code history of these examples here")}{": "}
+          {example.data.remix
+            .map(item => item?.code)
+            .flat()
+            .filter(codeItem => codeItem && codeItem.URL)
+            .map((codeItem, i, codeItemsList) => (
+              <>
+                <a href={codeItem?.URL}>{codeItem?.label}</a>{
+                  i < (codeItemsList?.length ?? 0) - 1 ? ", " : ". "
+                }
+              </>
+            ))}
+          {t("attribution", "You can suggest improvements by")}{" "}
+          <a href="https://github.com/processing/p5.js-website">{t("attribution", "contributing to the current website")}</a>!
+        </>
+      ) : (
+        <></>
+      )}
+    </p>
+
+
+  </div>
+
+  <EditableSketch code={code} />
+  <p>{example.data.arialabel}</p>
+
   </div>
   <div class="grid gap-y-4xl lg:gap-y-mb-3xl mt-2xl">
     {
