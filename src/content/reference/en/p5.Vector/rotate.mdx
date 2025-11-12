@@ -3,28 +3,158 @@ title: rotate
 module: Math
 submodule: ''
 file: src/math/p5.Vector.js
-description: >-
-  Rotates the vector (only 2D vectors) by the given angle; magnitude remains the
-  same. Returns a new vector.
-line: 3458
+description: >
+  <p>Rotates a 2D vector by an angle without changing its magnitude.</p>
+
+  <p>By convention, the positive x-axis has an angle of 0. Angles increase in
+
+  the clockwise direction.</p>
+
+  <p>If the vector was created with
+
+  <a href="/reference/p5/createVector/">createVector()</a>,
+  <code>rotate()</code> uses
+
+  the units of the current <a
+  href="/reference/p5/angleMode/">angleMode()</a>.</p>
+
+  <p>The static version of <code>rotate()</code>, as in
+  <code>p5.Vector.rotate(v, PI)</code>,
+
+  returns a new <a href="/reference/p5/p5.Vector">p5.Vector</a> object and
+  doesn't change
+
+  the original.</p>
+line: 2334
 isConstructor: false
 itemtype: method
-example: []
+example:
+  - |-
+    <div class="norender">
+    <code>
+    function setup() {
+      // Create a p5.Vector object.
+      let v = createVector(1, 0);
+
+      // Prints "p5.Vector Object : [1, 0, 0]" to the console.
+      print(v.toString());
+
+      // Rotate a quarter turn.
+      v.rotate(HALF_PI);
+
+      // Prints "p5.Vector Object : [0, 1, 0]" to the console.
+      print(v.toString());
+    }
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    function setup() {
+      // Use degrees.
+      angleMode(DEGREES);
+
+      // Create a p5.Vector object.
+      let v = createVector(1, 0);
+
+      // Prints "p5.Vector Object : [1, 0, 0]" to the console.
+      print(v.toString());
+
+      // Rotate a quarter turn.
+      v.rotate(90);
+
+      // Prints "p5.Vector Object : [0, 1, 0]" to the console.
+      print(v.toString());
+    }
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    function setup() {
+      // Create a p5.Vector object.
+      let v0 = createVector(1, 0);
+
+      // Create a rotated copy.
+      let v1 = p5.Vector.rotate(v0, HALF_PI);
+
+      // Prints "p5.Vector Object : [1, 0, 0]" to the console.
+      print(v0.toString());
+      // Prints "p5.Vector Object : [0, 1, 0]" to the console.
+      print(v1.toString());
+    }
+    </code>
+    </div>
+
+    <div class="norender">
+    <code>
+    function setup() {
+      // Use degrees.
+      angleMode(DEGREES);
+
+      // Create a p5.Vector object.
+      let v0 = createVector(1, 0);
+
+      // Create a rotated copy.
+      let v1 = p5.Vector.rotate(v0, 90);
+
+      // Prints "p5.Vector Object : [1, 0, 0]" to the console.
+      print(v0.toString());
+
+      // Prints "p5.Vector Object : [0, 1, 0]" to the console.
+      print(v1.toString());
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    let v0;
+    let v1;
+
+    function setup() {
+      createCanvas(100, 100);
+
+      // Create p5.Vector objects.
+      v0 = createVector(50, 50);
+      v1 = createVector(30, 0);
+
+      describe('A black arrow extends from the center of a gray square. The arrow rotates clockwise.');
+    }
+
+    function draw() {
+      background(240);
+
+      // Rotate v1.
+      v1.rotate(0.01);
+
+      // Draw the black arrow.
+      drawArrow(v0, v1, 'black');
+    }
+
+    // Draws an arrow between two vectors.
+    function drawArrow(base, vec, myColor) {
+      push();
+      stroke(myColor);
+      strokeWeight(3);
+      fill(myColor);
+      translate(base.x, base.y);
+      line(0, 0, vec.x, vec.y);
+      rotate(vec.heading());
+      let arrowSize = 7;
+      translate(vec.mag() - arrowSize, 0);
+      triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+      pop();
+    }
+    </code>
+    </div>
 class: p5.Vector
 overloads:
-  - params: []
   - params:
-      - name: v
-        description: ''
-        type: p5.Vector
       - name: angle
-        description: ''
+        description: angle of rotation.
         type: Number
-      - name: target
-        description: The vector to receive the result
-        optional: 1
-        type: p5.Vector
-chainable: false
+chainable: true
 ---
 
 

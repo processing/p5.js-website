@@ -448,7 +448,10 @@ const getUrl = (
 ) => {
   switch (collectionType) {
     case "reference":
-      return `/reference/${entry.slug}`;
+      // @ts-expect-error - Casting to the reference item schema
+      return entry.data.module === 'Constants'
+        ? `/reference/constants/${entry.slug}`
+        : `/reference/${entry.slug}`;
     case "tutorials":
       return `/tutorials/${removeLocalePrefix(entry.slug)}`;
     case "examples":
