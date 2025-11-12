@@ -65,7 +65,7 @@ const getModulePath = (doc: ReferenceClassDefinition | ReferenceClassItem) => {
   let docClass: string;
   let sortedModule = "";
 
-  if (doc.module === "Constants") {
+  if (doc.module === "Constants" || /^[A-Z][_A-Z0-9]*$/.test(doc.name)) {
     sortedModule = "constants";
   } else if ([
     "Array",
@@ -408,6 +408,9 @@ const convertDocsToMDX = async (
             return;
           }
           addDocToModulePathTree(doc, savePath);
+          if (/^[A-Z][_A-Z0-9]*$/.test(doc.name)) {
+            doc.module = 'Constants';
+          }
           doc.description = correctRelativeLinksInDescription(doc.description);
           doc.description = correctRelativeLinksToExampleAssets(
             doc.description,

@@ -42,7 +42,7 @@ export const getExampleCode = async (exampleId: string): Promise<string> => {
 };
 
 export const removeNestedReferencePaths = (route: string): string =>
-  route.replace(/constants\/|types\//, "")
+  route.replace(/types\//, "")
 
 export const rewriteRelativeLink = (url: string): string => {
   let updatedUrl: string;
