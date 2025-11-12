@@ -448,7 +448,7 @@ const getUrl = (
 ) => {
   switch (collectionType) {
     case "reference":
-      // @ts-ignore
+      // @ts-expect-error - Casting to the reference item schema
       return entry.data.module === 'Constants'
         ? `/reference/constants/${entry.slug}`
         : `/reference/${entry.slug}`;
