@@ -3,31 +3,122 @@ title: heading
 module: Math
 submodule: ''
 file: src/math/p5.Vector.js
-description: >-
-  Calculate the angle of rotation for this vector (only 2D vectors).
+description: >
+  <p>Calculates the angle a 2D vector makes with the positive x-axis.</p>
 
-  p5.Vectors created using <a
-  href="/reference/p5/createVector/">createVector()</a>
+  <p>By convention, the positive x-axis has an angle of 0. Angles increase in
 
-  will take the current <a href="/reference/p5/angleMode/">angleMode</a> into
+  the clockwise direction.</p>
 
-  consideration, and give the angle in radians or degrees accordingly.
-line: 3732
+  <p>If the vector was created with
+
+  <a href="/reference/p5/createVector/">createVector()</a>,
+  <code>heading()</code> returns angles
+
+  in the units of the current <a
+  href="/reference/p5/angleMode/">angleMode()</a>.</p>
+
+  <p>The static version of <code>heading()</code>, as in
+  <code>p5.Vector.heading(v)</code>, works the
+
+  same way.</p>
+line: 2090
 isConstructor: false
 itemtype: method
-example: []
+example:
+  - |-
+    <div class = "norender">
+    <code>
+    function setup() {
+      // Create a p5.Vector object.
+      let v = createVector(1, 1);
+
+      // Prints "0.785..." to the console.
+      print(v.heading());
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      // Prints "45" to the console.
+      print(v.heading());
+    }
+    </code>
+    </div>
+
+    <div class = "norender">
+    <code>
+    function setup() {
+      // Create a p5.Vector object.
+      let v = createVector(1, 1);
+
+      // Prints "0.785..." to the console.
+      print(p5.Vector.heading(v));
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      // Prints "45" to the console.
+      print(p5.Vector.heading(v));
+    }
+    </code>
+    </div>
+
+    <div>
+    <code>
+    function setup() {
+      createCanvas(100, 100);
+
+      describe('A black arrow extends from the top left of a square to its center. The text "Radians: 0.79" and "Degrees: 45" is written near the tip of the arrow.');
+    }
+
+    function draw() {
+      background(200);
+
+      let origin = createVector(0, 0);
+      let v = createVector(50, 50);
+
+      // Draw the black arrow.
+      drawArrow(origin, v, 'black');
+
+      // Use radians.
+      angleMode(RADIANS);
+
+      // Display the heading in radians.
+      let h = round(v.heading(), 2);
+      text(`Radians: ${h}`, 20, 70);
+
+      // Use degrees.
+      angleMode(DEGREES);
+
+      // Display the heading in degrees.
+      h = v.heading();
+      text(`Degrees: ${h}`, 20, 85);
+    }
+
+    // Draws an arrow between two vectors.
+    function drawArrow(base, vec, myColor) {
+      push();
+      stroke(myColor);
+      strokeWeight(3);
+      fill(myColor);
+      translate(base.x, base.y);
+      line(0, 0, vec.x, vec.y);
+      rotate(vec.heading());
+      let arrowSize = 7;
+      translate(vec.mag() - arrowSize, 0);
+      triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+      pop();
+    }
+    </code>
+    </div>
 class: p5.Vector
 return:
-  description: the angle of rotation
+  description: angle of rotation.
   type: Number
 overloads:
   - params: []
-  - params:
-      - name: v
-        description: the vector to find the angle of
-        type: p5.Vector
     return:
-      description: the angle of rotation
+      description: angle of rotation.
       type: Number
 chainable: false
 ---
