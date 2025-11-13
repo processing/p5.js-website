@@ -20,6 +20,7 @@ export const categories = [
   "networking",
   "export",
   "utils",
+  "integrations",
 ] as const;
 
 /**
