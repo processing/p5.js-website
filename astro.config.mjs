@@ -4,7 +4,6 @@ import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 import serviceWorker from "astrojs-service-worker";
 import fast from "./src/scripts/fast-compress";
-import mermaid from 'astro-mermaid'
 
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
@@ -48,7 +47,6 @@ export default defineConfig({
         ],
       },
     }),
-    mermaid(),
   ],
   prefetch: {
     defaultStrategy: "viewport",
@@ -80,6 +78,5 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-light',
     },
-    
   },
 });
