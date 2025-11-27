@@ -21,7 +21,7 @@ export default defineConfig({
   site: 'https://p5js.org',
   compressHTML: false,
   integrations: [
-    mermaid({autoTheme: true}),
+    mermaid(),
     preact({
       compat: true,
     }),
