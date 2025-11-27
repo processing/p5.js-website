@@ -49,6 +49,7 @@ export default defineConfig({
         ],
       },
     }),
+    mermaid(),
   ],
   prefetch: {
     defaultStrategy: "viewport",
@@ -80,5 +81,6 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-light',
     },
+    
   },
 });
