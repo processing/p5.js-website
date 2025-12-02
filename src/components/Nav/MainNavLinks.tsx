@@ -46,6 +46,7 @@ export const MainNavLinks = ({
         class={styles.toggle}
         onClick={handleToggle}
         aria-expanded={isOpen}
+        aria-controls="main-links-list main-cta-list"
         aria-label={mobileMenuLabel || "Toggle navigation menu"}
       >
         <div class={styles.mobileMenuLabel}>
@@ -72,21 +73,21 @@ export const MainNavLinks = ({
       }`}
     >
       {renderLogo()}
-      <ul>
+      <ul id="main-links-list" hidden={!isOpen}>
         {links.map((link) => (
           <li key={link.label}>
-            <a href={link.url} tabIndex={isOpen ? 0 : -1}>
+            <a href={link.url} tabIndex={isOpen ? undefined : -1}>
               {link.label}
             </a>
           </li>
         ))}
       </ul>
-      <ul class="flex flex-col gap-[15px]">
+      <ul id="main-cta-list" class="flex flex-col gap-[15px]" hidden={!isOpen}>
         <li>
           <a
-            class={styles.buttonlink}
+            className={styles.buttonlink}
             href="https://editor.p5js.org"
-            tabIndex={isOpen ? 0 : -1}
+            tabIndex={isOpen ? undefined : -1}
           >
             <div class="mr-xxs">
               <Icon kind="code-brackets" />
@@ -96,9 +97,9 @@ export const MainNavLinks = ({
         </li>
         <li>
           <a
-            class={styles.buttonlink}
+            className={styles.buttonlink}
             href="/donate/"
-            tabIndex={isOpen ? 0 : -1}
+            tabIndex={isOpen ? undefined : -1}
           >
             <div class="mr-xxs">
               <Icon kind="heart" />
