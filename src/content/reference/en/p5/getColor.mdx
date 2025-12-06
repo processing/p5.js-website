@@ -1,0 +1,68 @@
+---
+title: getColor
+module: 3D
+submodule: strands
+file: src/strands/p5.strands.js
+description: >-
+  <p>Registers a callback to set the final color for each pixel in a filter
+  shader. This hook can be used inside <a
+  href="/reference/p5/baseFilterShader/">baseFilterShader()</a>.modify() and
+  similar shader <a href="/reference/p5.Shader/modify/">modify()</a> calls to
+  control the output color for each pixel. The callback receives the following
+  arguments:</p>
+
+  <ul><li><p><code>inputs</code>: an object with the following properties:</p>
+
+  <ul><li><code>texCoord</code>: a two-component vector representing the texture
+  coordinates (u, v).</li><li><code>canvasSize</code>: a two-component vector
+  representing the canvas size in pixels (width,
+  height).</li><li><code>texelSize</code>: a two-component vector representing
+  the size of a single texel in texture
+  space.</li></ul></li><li><code>canvasContent</code>: a texture containing the
+  sketch's contents before the filter is applied.</li></ul><p>Return a
+  four-component vector <code>[r, g, b, a]</code> for the pixel.</p>
+
+  <p>This hook is available in:</p>
+
+  <ul><li><a
+  href="/reference/p5/baseFilterShader/">baseFilterShader()</a></li></ul>
+line: 110
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseFilterShader().modify(() => {
+        getColor((inputs, canvasContent) => {
+          // Warp the texture coordinates for a wavy effect
+          let warped = [inputs.texCoord.x, inputs.texCoord.y + 0.1 * sin(inputs.texCoord.x * 10.0)];
+          return getTexture(canvasContent, warped);
+        });
+      });
+    }
+    function draw() {
+      background(180);
+      // Draw something to the canvas
+      fill('yellow');
+      circle(0, 0, 150);
+      filter(myShader);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - params:
+      - name: callback
+        description: >-
+          A callback function which receives the inputs object and
+          canvasContent, and should return a color array.
+        type: Function
+chainable: false
+---
+
+
+# getColor
