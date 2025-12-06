@@ -126,142 +126,12 @@ spline(
 Use `splines` when the curve must go through specific coordinates.
 Use `Beziers` when you want to shape the curve with off-curve handles.
 
-## Sampling a Spline Curve
 
-Drawing a curve is great, but sometimes you need to know where a point lies along that curve or the direction of the curve at a certain position. This is where sampling functions come in. p5.js provides two useful functions for Catmull-Rom splines: `splinePoint()` to get coordinates along the curve and `splineTangent()` to get the slope (tangent vector) of the curve at a point. These functions are analogous to `bezierPoint()` and `bezierTangent()`, but for splines.
-
-### Using `splinePoint()` to Interpolate Along the Curve
-
-The function `splinePoint(a, b, c, d, t)` returns the coordinate of a point on the spline at a relative position `t` between the middle points. Here a, b, c, d are four numbers representing one coordinate (all `x’s` or all `y’s` of the four spline points), and t ranges from 0 to 1. Essentially, `splinePoint()` works one axis at a time: you call it once for `x` and once for `y` to get an `(x,y)` point on the curve. The parameter t specifies how far along the curve segment between the second point `(p1)` and third point `(p2)` you are: `t = 0` corresponds exactly to p1, `t = 1` corresponds to `p2`, and `t = 0.5` is the midpoint of the curve between `p1` and `p2`.
-
-For example:
-
-<EditableSketch code = {`
-function setup() {
-  createCanvas(100, 100);
-
-  background(200);
-
-
-  // Set the coordinates for the curve's four points (p0, p1, p2, p3).
-  let x1 = 5;
-  let y1 = 26;
-  let x2 = 73;
-  let y2 = 24;
-  let x3 = 73;
-  let y3 = 61;
-  let x4 = 15;
-  let y4 = 65;
-
-  // Draw the curve.
-  noFill();
-  spline(x1, y1, x2, y2, x3, y3, x4, y4);
-
-  // Draw circles along the curve's path.
-  fill(255);
-
-  // Top.
-  let x = splinePoint(x1, x2, x3, x4, 0);
-  let y = splinePoint(y1, y2, y3, y4, 0);
-  circle(x, y, 5);
-
-  // Center.
-  x = splinePoint(x1, x2, x3, x4, 0.5);
-  y = splinePoint(y1, y2, y3, y4, 0.5);
-  circle(x, y, 5);
-
-  // Bottom.
-  x = splinePoint(x1, x2, x3, x4, 1);
-  y = splinePoint(y1, y2, y3, y4, 1);
-  circle(x, y, 5);
-
-  describe('A black curve on a gray square. The endpoints and center of the curve are marked with white circles.');
-}
-`}/>
-
-In the above sketch, we have drawn three points on the curve through `splinePoint()`. In the very first point we have `t = 0` into the splinePoint() which basically represents the p1 of the curve. In the second half we have t=0.5 which basically represents the midway of the curve from p1->p2, and at last we have t = 1 as the curve which means the point p2 in the curve. By varying t from 0 to 1, you could trace the entire curved segment from p1 to p2.
-
-A typical use of splinePoint() is to animate objects moving along a path. For instance, you could increment t over time and draw an object (like a small circle) at (splinePoint(x0,x1,x2,x3,t), splinePoint(y0,y1,y2,y3,t)) each frame – the object would glide smoothly along the spline segment from the second point to the third. If your spline passes through more than four points (e.g., using splineVertex or multiple segments), you can apply splinePoint piecewise to each segment.
-
-<EditableSketch code = {`
-function setup() {
-  createCanvas(100, 100);
-
-  describe('A black curve on a gray square. A white circle moves back and forth along the curve.');
-}
-
-function draw() {
-  background(200);
-
-  // Set the coordinates for the curve's four points (p0, p1, p2, p3).
-  let x1 = 5;
-  let y1 = 26;
-  let x2 = 73;
-  let y2 = 24;
-  let x3 = 73;
-  let y3 = 61;
-  let x4 = 15;
-  let y4 = 65;
-
-  // Draw the curve.
-  noFill();
-  spline(x1, y1, x2, y2, x3, y3, x4, y4);
-
-  // Calculate the circle's coordinates.
-  let t = 0.5 * sin(frameCount * 0.01) + 0.5;
-  let x = splinePoint(x1, x2, x3, x4, t);
-  let y = splinePoint(y1, y2, y3, y4, t);
-
-  // Draw the circle.
-  fill(255);
-  circle(x, y, 5);
-}
-`}/>
-
-**Important:** Always supply the points to splinePoint in the same order that you would to `spline()` -- i.e. the four coordinates should correspond to `p0, p1, p2, p3` along the curve. The function uses Catmull-Rom interpolation internally with those four values. If you mix up the order, the results will not match your drawn curve.
-
-Also note that splinePoint (like curvePoint before it) is designed for the segment between p1 and p2. 
-
-### Using `splineTangent()` to Get the Curve’s Slope
-
-The function splineTangent(a, b, c, d, t) works similarly, but returns the components of the tangent vector to the spline at a given position. The tangent is a line that “skims” the curve at a single point – its slope equals the curve’s slope at that point. In practical terms, the tangent vector indicates the direction in which the curve is heading at that point.
-
-`splineTangent` also takes four coordinates (all x or all y) and a parameter t (again 0 to 1 from p1 to p2). It returns a number which is essentially the derivative along that axis at the point. To get the full 2D tangent vector, call it once for x and once for y:
-
-```js
-let tx = splineTangent(x0, x1, x2, x3, t);
-let ty = splineTangent(y0, y1, y2, y3, t);
-```
-
-Now (tx, ty) is a vector pointing in the direction of the curve’s tangent at the point corresponding to parameter t. For example, if you wanted to draw the tangent line at that point, you could draw a line starting at the point (midX, midY) we found earlier and extending a short distance in the direction of (tx, ty):
-
-The values returned by splineTangent() are not normalized. They give you the real rate of change of the curve, so their length (magnitude) depends on how far apart your spline points are.
-
-If you only care about the direction of the tangent (which way the curve is heading) and not how strong or fast it changes, you can normalize the (tx, ty) vector. Normalizing means:
-
-- You divide the vector by its own length
-- The direction stays the same
-- The length becomes exactly 1
-
-After normalizing, you can multiply the vector by any length you want (for example, 16) to draw a line or arrow with a consistent size, no matter how the spline control points are spaced. splineTangent() gives you the instantaneous direction of the spline at any point along the segment, and normalization helps you use that direction in a controlled way.
-
-```js
-  let tx = splineTangent(x1, x2, x3, x4, t);
-  let ty = splineTangent(y1, y2, y3, y4, t);
-  
-  // Finding the magnitude and normalizing
-  const m = Math.hypot(tx, ty) || 1;
-  tx = (tx / m) * 16;
-  ty = (ty / m) * 16;
-```
-
-Using splinePoint() and splineTangent(), you can retrieve fine-grained information from your spline curves. splinePoint gives you precise coordinates along the curve (useful for plotting points, collision detection, etc.), and splineTangent gives you the curve’s slope (useful for determining orientation or constructing perpendiculars/normals). These functions make Catmull-Rom splines not just pretty to look at, but also practical for guiding motion and shaping geometry in your sketches.
-
-### Advanced Spline Shapes and Customization                                                                
+### Spline Shapes and Customization                                                                
 
 So far we've been drawing a single curve segment defined by four points. Now, let's explore more advanced possibilities: creating complex shapes from multiple spline segments, closing splines into continuous loops, and customizing the spline’s properties (like its tightness or endpoint handling) to achieve different effects.
 
-The function splineVertex() allows you to build a custom shape out of spline curves by specifying an arbitrary number of vertices. It works in conjunction with beginShape() and endShape(), similar to how one would use vertex() or curveVertex(). Each call to splineVertex(x, y) adds a point through which the smooth curve will pass. p5.js will then draw a continuous Catmull-Rom spline through all the points you added in order.
+The function `splineVertex()` allows you to build a custom shape out of spline curves by specifying an arbitrary number of vertices. It works in conjunction with `beginShape()` and `endShape()`, similar to how one would use `vertex()` or `curveVertex()`. Each call to `splineVertex(x, y)` adds a point through which the smooth curve will pass. p5.js will then draw a continuous Catmull-Rom spline through all the points you added in order.
 
 Basic Usage:
 
@@ -318,6 +188,8 @@ function setup() {
 }
 `}/>
 
+### Closed Spline Loops
+
 Closed spline loops: You can create closed shapes by passing the constant CLOSE to endShape(). If you use endShape(CLOSE) after adding spline vertices, p5.js will connect the last point back to the first point with a smooth curve, closing the loop seamlessly. This is a powerful feature – it means you can make organic closed shapes (like blobs, loops, rounded polygons, etc.) easily. For example:
 
 ```js
@@ -358,9 +230,9 @@ function setup() {
 
 `}/>
 
-This might draw a closed, rounded pentagon-like shape. The end of the shape (last vertex at 200,200) connects smoothly back to the start (200,100). The curvature is continuous at the closure point as well – no sharp corners – because splineVertex() ensures continuity of the spline’s slope when closing.
+This might draw a closed, rounded pentagon-like shape. The end of the shape (last vertex at 200,200) connects smoothly back to the start (200,100). The curvature is continuous at the closure point as well – no sharp corners – because `splineVertex()` ensures continuity of the spline’s slope when closing.
 
-Remember that splineVertex() also supports 3D coordinates and even texture coordinates if needed. In WEBGL mode, you can pass three arguments (x, y, z) for each splineVertex to create 3D curves.
+Remember that `splineVertex()` also supports 3D coordinates and even texture coordinates if needed. In WEBGL mode, you can pass three arguments (x, y, z) for each `splineVertex()` to create 3D curves.
 
 For example: 
 
@@ -399,9 +271,140 @@ function draw() {
 }
 `}/>
 
+## Advanced: Sampling a Spline Curve
+
+Drawing a curve is great, but sometimes you need to know where a point lies along that curve or the direction of the curve at a certain position. This is where sampling functions come in. p5.js provides two useful functions for Catmull-Rom splines: `splinePoint()` to get coordinates along the curve and `splineTangent()` to get the slope (tangent vector) of the curve at a point. These functions are analogous to `bezierPoint()` and `bezierTangent()`, but for splines.
+
+### Using `splinePoint()` to Interpolate Along the Curve
+
+The function `splinePoint(a, b, c, d, t)` returns the coordinate of a point on the spline at a relative position `t` between the middle points. Here a, b, c, d are four numbers representing one coordinate (all `x’s` or all `y’s` of the four spline points), and t ranges from 0 to 1. Essentially, `splinePoint()` works one axis at a time: you call it once for `x` and once for `y` to get an `(x,y)` point on the curve. The parameter t specifies how far along the curve segment between the second point `(p1)` and third point `(p2)` you are: `t = 0` corresponds exactly to p1, `t = 1` corresponds to `p2`, and `t = 0.5` is the midpoint of the curve between `p1` and `p2`.
+
+For example:
+
+<EditableSketch code = {`
+function setup() {
+  createCanvas(100, 100);
+
+  background(200);
+
+
+  // Set the coordinates for the curve's four points (p0, p1, p2, p3).
+  let x1 = 5;
+  let y1 = 26;
+  let x2 = 73;
+  let y2 = 24;
+  let x3 = 73;
+  let y3 = 61;
+  let x4 = 15;
+  let y4 = 65;
+
+  // Draw the curve.
+  noFill();
+  spline(x1, y1, x2, y2, x3, y3, x4, y4);
+
+  // Draw circles along the curve's path.
+  fill(255);
+
+  // Top.
+  let x = splinePoint(x1, x2, x3, x4, 0);
+  let y = splinePoint(y1, y2, y3, y4, 0);
+  circle(x, y, 5);
+
+  // Center.
+  x = splinePoint(x1, x2, x3, x4, 0.5);
+  y = splinePoint(y1, y2, y3, y4, 0.5);
+  circle(x, y, 5);
+
+  // Bottom.
+  x = splinePoint(x1, x2, x3, x4, 1);
+  y = splinePoint(y1, y2, y3, y4, 1);
+  circle(x, y, 5);
+
+  describe('A black curve on a gray square. The endpoints and center of the curve are marked with white circles.');
+}
+`}/>
+
+In the above sketch, we have drawn three points on the curve through `splinePoint()`. In the very first point we have `t = 0` into `splinePoint()` which basically represents the p1 of the curve. In the second half we have t=0.5 which basically represents the midway of the curve from p1->p2, and at last we have t = 1 as the curve which means the point p2 in the curve. By varying t from 0 to 1, you could trace the entire curved segment from p1 to p2.
+
+A typical use of `splinePoint()` is to animate objects moving along a path. For instance, you could increment t over time and draw an object (like a small circle) at (`splinePoint(x0,x1,x2,x3,t)`, `splinePoint(y0,y1,y2,y3,t)`) each frame – the object would glide smoothly along the spline segment from the second point to the third. If your spline passes through more than four points (e.g., using `splineVertex()` or multiple segments), you can apply `splinePoint()` piecewise to each segment.
+
+<EditableSketch code = {`
+function setup() {
+  createCanvas(100, 100);
+
+  describe('A black curve on a gray square. A white circle moves back and forth along the curve.');
+}
+
+function draw() {
+  background(200);
+
+  // Set the coordinates for the curve's four points (p0, p1, p2, p3).
+  let x1 = 5;
+  let y1 = 26;
+  let x2 = 73;
+  let y2 = 24;
+  let x3 = 73;
+  let y3 = 61;
+  let x4 = 15;
+  let y4 = 65;
+
+  // Draw the curve.
+  noFill();
+  spline(x1, y1, x2, y2, x3, y3, x4, y4);
+
+  // Calculate the circle's coordinates.
+  let t = 0.5 * sin(frameCount * 0.01) + 0.5;
+  let x = splinePoint(x1, x2, x3, x4, t);
+  let y = splinePoint(y1, y2, y3, y4, t);
+
+  // Draw the circle.
+  fill(255);
+  circle(x, y, 5);
+}
+`}/>
+
+**Important:** Always supply the points to `splinePoint()` in the same order that you would to `spline()` -- i.e. the four coordinates should correspond to `p0, p1, p2, p3` along the curve. The function uses Catmull-Rom interpolation internally with those four values. If you mix up the order, the results will not match your drawn curve.
+
+Also note that `splinePoint()` (like `curvePoint()` before it) is designed for the segment between p1 and p2. 
+
+### Using `splineTangent()` to Get the Curve’s Slope
+
+The function `splineTangent(a, b, c, d, t)` works similarly, but returns the components of the tangent vector to the spline at a given position. The tangent is a line that “skims” the curve at a single point – its slope equals the curve’s slope at that point. In practical terms, the tangent vector indicates the direction in which the curve is heading at that point.
+
+`splineTangent()` also takes four coordinates (all x or all y) and a parameter t (again 0 to 1 from p1 to p2). It returns a number which is essentially the derivative along that axis at the point. To get the full 2D tangent vector, call it once for x and once for y:
+
+```js
+let tx = splineTangent(x0, x1, x2, x3, t);
+let ty = splineTangent(y0, y1, y2, y3, t);
+```
+
+Now (tx, ty) is a vector pointing in the direction of the curve’s tangent at the point corresponding to parameter t. For example, if you wanted to draw the tangent line at that point, you could draw a line starting at the point (midX, midY) we found earlier and extending a short distance in the direction of (tx, ty):
+
+The values returned by `splineTangent()` are not normalized. They give you the real rate of change of the curve, so their length (magnitude) depends on how far apart your spline points are.
+
+If you only care about the direction of the tangent (which way the curve is heading) and not how strong or fast it changes, you can normalize the (tx, ty) vector. Normalizing means:
+
+- You divide the vector by its own length
+- The direction stays the same
+- The length becomes exactly 1
+
+After normalizing, you can multiply the vector by any length you want (for example, 16) to draw a line or arrow with a consistent size, no matter how the spline control points are spaced. `splineTangent()` gives you the instantaneous direction of the spline at any point along the segment, and normalization helps you use that direction in a controlled way.
+
+```js
+  let tx = splineTangent(x1, x2, x3, x4, t);
+  let ty = splineTangent(y1, y2, y3, y4, t);
+  
+  // Finding the magnitude and normalizing
+  const m = Math.hypot(tx, ty) || 1;
+  tx = (tx / m) * 16;
+  ty = (ty / m) * 16;
+```
+
+Using `splinePoint()` and `splineTangent()`, you can retrieve fine-grained information from your spline curves. `splinePoint()` gives you precise coordinates along the curve (useful for plotting points, collision detection, etc.), and `splineTangent()` gives you the curve’s slope (useful for determining orientation or constructing perpendiculars/normals). These functions make Catmull-Rom splines not just pretty to look at, but also practical for guiding motion and shaping geometry in your sketches.
+
 ## Adjusting Spline Tightness (Curvature)
 
-One of the powerful ways to customize the look of your spline is by adjusting its tightness, which essentially controls how sharply the curve bends at the points. In p5.js 1.x, there was a function curveTightness() for this. In p5.js 2.x, tightness is managed via splineProperty('tightness', value) (or the batch version splineProperties() to set multiple properties at once). This function allows you to set a global tightness value that affects all subsequent splines you draw (until you change it again).
+One of the powerful ways to customize the look of your spline is by adjusting its tightness, which essentially controls how sharply the curve bends at the points. In p5.js 1.x, there was a function `curveTightness()` for this. In p5.js 2.x, tightness is managed via `splineProperty('tightness', value)` (or the batch version `splineProperties()` to set multiple properties at once). This function allows you to set a global tightness value that affects all subsequent splines you draw (until you change it again).
 
 By default, the tightness property is 0, which produces a smooth, natural Catmull-Rom curve that passes evenly through the vertices. Setting tightness to 0 yields the “normal” Catmull-Rom behavior (also known simply as a Cardinal spline with standard tension). When tightness is 0, the curve has a fairly balanced approach and departure at each point.
 
@@ -413,7 +416,7 @@ To set the tightness, you can do something like:
 splineProperty('tightness', t);
 ```
 
-Where t is your desired tightness value (positive, negative, or zero). This will affect subsequent calls to spline() or splineVertex()
+Where t is your desired tightness value (positive, negative, or zero). This will affect subsequent calls to `spline()` or `splineVertex()`
 
 Let’s see the effect of tightness with an example. Suppose we use the same four points but vary the tightness:
 
@@ -432,7 +435,7 @@ In the image above (t = -5), notice how far the curve arcs outward between the a
 
 In contrast, the second image (t = 5) shows the curve bending abruptly at each red point. The segments between points are much straighter (almost like line segments) before quickly turning near the anchor. This setting might be useful if you want a curve that is almost like a polyline but with slight rounding at the corners (for example, a stylized path or a network diagram where you want mostly straight connections with gentle rounding at junctions).
 
-If you want to go back to the default behavior after changing tightness, simply set splineProperty('tightness', 0) again. This will restore the standard Catmull-Rom calculations.
+If you want to go back to the default behavior after changing tightness, simply set `splineProperty('tightness', 0)` again. This will restore the standard Catmull-Rom calculations.
 
 
 <EditableSketch code = {`
