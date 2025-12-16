@@ -1,0 +1,91 @@
+---
+title: getPixelInputs
+module: 3D
+submodule: strands
+file: src/strands/p5.strands.js
+description: >-
+  <p>Registers a callback to modify the properties of each fragment (pixel)
+  before the final color is calculated in the fragment shader. This hook can be
+  used inside <a
+  href="/reference/p5/baseMaterialShader/">baseMaterialShader()</a>.modify() and
+  similar shader <a href="/reference/p5.Shader/modify/">modify()</a> calls to
+  adjust per-pixel data before lighting/mixing.</p>
+
+  <p>The callback receives an <code>Inputs</code> object. Available fields
+  depend on the shader:</p>
+
+  <ul><li><p>In <a
+  href="/reference/p5/baseMaterialShader/">baseMaterialShader()</a>:</p>
+
+  <ul><li><code>normal</code>: a three-component vector representing the surface
+  normal.</li><li><code>texCoord</code>: a two-component vector representing the
+  texture coordinates (u, v).</li><li><code>ambientLight</code>: a
+  three-component vector representing the ambient light
+  color.</li><li><code>ambientMaterial</code>: a three-component vector
+  representing the material's ambient
+  color.</li><li><code>specularMaterial</code>: a three-component vector
+  representing the material's specular
+  color.</li><li><code>emissiveMaterial</code>: a three-component vector
+  representing the material's emissive color.</li><li><code>color</code>: a
+  four-component vector representing the base color (red, green, blue,
+  alpha).</li><li><code>shininess</code>: a number controlling specular
+  highlights.</li><li><code>metalness</code>: a number controlling the metalness
+  factor.</li></ul></li><li><p>In <a
+  href="/reference/p5/baseStrokeShader/">baseStrokeShader()</a>:</p>
+
+  <ul><li><code>color</code>: a four-component vector representing the stroke
+  color (red, green, blue, alpha).</li><li><code>tangent</code>: a two-component
+  vector representing the stroke tangent.</li><li><code>center</code>: a
+  two-component vector representing the cap/join
+  center.</li><li><code>position</code>: a two-component vector representing the
+  current fragment position.</li><li><code>strokeWeight</code>: a number
+  representing the stroke weight in pixels.</li></ul></li></ul><p>Return the
+  modified object to update the fragment.</p>
+
+  <p>This hook is available in:</p>
+
+  <ul><li><a
+  href="/reference/p5/baseMaterialShader/">baseMaterialShader()</a></li><li><a
+  href="/reference/p5/baseStrokeShader/">baseStrokeShader()</a></li></ul>
+line: 110
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseMaterialShader().modify(() => {
+        let t = uniformFloat(() => millis());
+        getPixelInputs(inputs => {
+          // Animate alpha (transparency) based on x position
+          inputs.color.a = 0.5 + 0.5 * sin(inputs.texCoord.x * 10.0 + t * 0.002);
+          return inputs;
+        });
+      });
+    }
+    function draw() {
+      background(240);
+      shader(myShader);
+      lights();
+      noStroke();
+      fill('purple');
+      circle(0, 0, 100);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - params:
+      - name: callback
+        description: >-
+          A callback function which receives the fragment inputs object and
+          should return it after making any changes.
+        type: Function
+chainable: false
+---
+
+
+# getPixelInputs

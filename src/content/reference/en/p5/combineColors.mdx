@@ -1,0 +1,77 @@
+---
+title: combineColors
+module: 3D
+submodule: strands
+file: src/strands/p5.strands.js
+description: >-
+  <p>Registers a callback to customize how color components are combined in the
+  fragment shader. This hook can be used inside <a
+  href="/reference/p5/baseMaterialShader/">baseMaterialShader()</a>.modify() and
+  similar shader <a href="/reference/p5.Shader/modify/">modify()</a> calls to
+  control the final color output of a material. The callback receives an object
+  with the following properties:</p>
+
+  <ul><li><code>baseColor</code>: a three-component vector representing the base
+  color (red, green, blue).</li><li><code>diffuse</code>: a single number
+  representing the diffuse reflection.</li><li><code>ambientColor</code>: a
+  three-component vector representing the ambient
+  color.</li><li><code>ambient</code>: a single number representing the ambient
+  reflection.</li><li><code>specularColor</code>: a three-component vector
+  representing the specular color.</li><li><code>specular</code>: a single
+  number representing the specular reflection.</li><li><code>emissive</code>: a
+  three-component vector representing the emissive
+  color.</li><li><code>opacity</code>: a single number representing the
+  opacity.</li></ul><p>The callback should return a vector with four components
+  (red, green, blue, alpha) for the final color.</p>
+
+  <p>This hook is available in:</p>
+
+  <ul><li><a
+  href="/reference/p5/baseMaterialShader/">baseMaterialShader()</a></li></ul>
+line: 110
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div modernizr='webgl'>
+    <code>
+    let myShader;
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = baseMaterialShader().modify(() => {
+        combineColors(components => {
+          // Custom color combination: add a green tint using vector properties
+          return [
+            components.baseColor * components.diffuse +
+              components.ambientColor * components.ambient +
+              components.specularColor * components.specular +
+              components.emissive +
+              [0, 0.2, 0], // Green tint for visibility
+            components.opacity
+          ];
+        });
+      });
+    }
+    function draw() {
+      background(255);
+      shader(myShader);
+      lights();
+      noStroke();
+      fill('white');
+      sphere(50);
+    }
+    </code>
+    </div>
+class: p5
+overloads:
+  - params:
+      - name: callback
+        description: >-
+          A callback function which receives the object described above and
+          returns a vector with four components for the final color.
+        type: Function
+chainable: false
+---
+
+
+# combineColors

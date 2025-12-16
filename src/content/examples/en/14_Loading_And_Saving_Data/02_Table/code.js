@@ -25,6 +25,7 @@ function loadData(table) {
     // Put object in array
     bubbles.push(new Bubble(x, y, radius, name));
   }
+  return table;
 }
 
 async function setup() {

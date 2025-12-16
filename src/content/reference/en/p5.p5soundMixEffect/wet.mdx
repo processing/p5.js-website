@@ -1,0 +1,52 @@
+---
+title: wet
+module: p5.sound
+submodule: p5.sound
+file: src/core/p5soundMixEffect.js
+description: Set the wet/dry mix of the effect.
+line: 21
+isConstructor: false
+itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let osc, del
+
+    function setup() {
+      cnv = createCanvas(100, 100);
+      background(220);
+      osc = new p5.Oscillator();
+      osc.disconnect();
+      del = new p5.Delay();
+      osc.connect(del);
+      del.delayTime(0.25);
+      del.feedback(0.5);
+      del.wet(0.5);
+    }
+
+    function mousePressed() {
+      osc.start();
+    }
+
+    function draw() {
+      del.delayTime(map(mouseX, 0, width, 0.01, 0.5));
+      del.wet(map(mouseY, 0, height, 0.1, 0.9));
+      background(220);
+      textAlign(CENTER);
+      textSize(9);
+      text('delay dry/wet: ' + del.wet().toFixed(2), width / 2, height / 2);
+    }
+    </code>
+    </div>
+class: p5.p5soundMixEffect
+params:
+  - name: amount
+    description: Between 0 (dry) and 1 (wet)
+    type: Number
+chainable: false
+---
+
+
+# wet
