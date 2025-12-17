@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from "preact/hooks";
-import { useLiveRegion } from '../hooks/useLiveRegion';
+import { useLiveRegion } from "../hooks/useLiveRegion";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
+
+import { keymap } from "@codemirror/view";
+import { Prec } from "@codemirror/state";
+import { insertTab } from "@codemirror/commands";
+import { EditorState } from "@codemirror/state";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -26,6 +31,7 @@ import { Icon } from "../Icon";
  * }
  */
 export const CodeEmbed = (props) => {
+  const [enableTabIndent, setEnableTabIndent] = useState(false);
   const { ref: liveRegionRef, announce } = useLiveRegion();
   const [rendered, setRendered] = useState(false);
   const initialCode = props.initialValue ?? "";
@@ -38,7 +44,10 @@ export const CodeEmbed = (props) => {
   );
 
   let { previewWidth, previewHeight } = props;
-  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
+  const canvasMatch =
+    /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(
+      initialCode,
+    );
   if (canvasMatch) {
     previewWidth = previewWidth || parseFloat(canvasMatch[1]);
     previewHeight = previewHeight || parseFloat(canvasMatch[2]);
@@ -47,7 +56,9 @@ export const CodeEmbed = (props) => {
   const largeSketch = previewWidth && previewWidth > 770 - 60;
 
   // Quick hack to make room for DOM that gets added below the canvas by default
-  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(initialCode);
+  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(
+    initialCode,
+  );
   if (domMatch && previewHeight) {
     previewHeight += 100;
   }
@@ -80,13 +91,23 @@ export const CodeEmbed = (props) => {
 
   if (!rendered) return <div className="code-placeholder" />;
 
+  const escToBlur = EditorView.domEventHandlers({
+    keydown(event, view) {
+      if (event.key === "Escape") {
+        view.contentDOM.blur();
+        return true;
+      }
+      return false;
+    },
+  });
+
   return (
     <div
       className={`my-md flex w-full flex-col gap-[20px] overflow-hidden ${props.allowSideBySide ? "lg:flex-row" : ""} ${props.fullWidth ? "full-width" : ""}`}
     >
       {props.previewable ? (
         <div
-          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
+          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
         >
           <div>
             <CodeFrame
@@ -99,7 +120,9 @@ export const CodeEmbed = (props) => {
               scripts={props.includeSound ? [cdnSoundUrl] : []}
             />
           </div>
-          <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
+          <div
+            className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}
+          >
             <CircleButton
               className="bg-bg-gray-40"
               onClick={updateOrReRun}
@@ -120,6 +143,22 @@ export const CodeEmbed = (props) => {
           </div>
         </div>
       ) : null}
+      <label
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          marginBottom: "0.5rem",
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={enableTabIndent}
+          onChange={(e) => setEnableTabIndent(e.target.checked)}
+        />
+        <b>Enable tab indentation</b>
+      </label>
+
       <div className="code-editor-container relative w-full">
         <CodeMirror
           value={codeString}
@@ -138,8 +177,35 @@ export const CodeEmbed = (props) => {
             foldGutter: false,
             autocompletion: false,
           }}
-          indentWithTab={false}
-          extensions={[javascript(), EditorView.lineWrapping]}
+          extensions={[
+            javascript(),
+            EditorView.lineWrapping,
+            EditorState.tabSize.of(4),
+            
+            // When tab indentation is disabled, blur the editor to avoid a keyboard trap.
+            // CodeMirror runs in a contenteditable element, so native Tab navigation
+            // cannot resume without explicitly leaving the editor.
+
+            Prec.high(
+              keymap.of([
+                {
+                  key: "Tab",
+                  run: (view) => {
+                    if (!enableTabIndent) {
+                      // Exit editor to avoid keyboard trap
+                      view.contentDOM.blur();
+                      return true;
+                    }
+
+                    // Tab indentation mode
+                    return insertTab(view);
+                  },
+                },
+              ]),
+            ),
+
+            escToBlur,
+          ]}
           onChange={(val) => setCodeString(val)}
           editable={props.editable}
           onCreateEditor={(editorView) =>
