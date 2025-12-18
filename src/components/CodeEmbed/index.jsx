@@ -5,9 +5,8 @@ import { javascript } from "@codemirror/lang-javascript";
 import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
 
 import { keymap } from "@codemirror/view";
-import { Prec } from "@codemirror/state";
+import { Prec , EditorState } from "@codemirror/state";
 import { insertTab } from "@codemirror/commands";
-import { EditorState } from "@codemirror/state";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
