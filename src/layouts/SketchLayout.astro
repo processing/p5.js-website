@@ -21,7 +21,10 @@ interface Props {
 }
 
 const { sketchId, authorName } = Astro.props;
-const { title, createdOn, instructions } = await getSketch(sketchId);
+
+const sketchIdNumber = Number(sketchId);
+
+const { title, createdOn, instructions } = await getSketch(sketchIdNumber);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -33,9 +36,9 @@ const dateString = new Date(createdOn).toLocaleDateString(currentLocale, {
 
 setJumpToState(null);
 const moreSketches = await getRandomCurationSketches(4);
-const featuredImageURL = makeThumbnailUrl(sketchId);
+const featuredImageURL = makeThumbnailUrl(sketchIdNumber);
 
-let { width, height } = await getSketchSize(sketchId);
+let { width, height } = await getSketchSize(sketchIdNumber);
 let heightOverWidth = 1 / 1.5;
 if (width && height) {
   // Account for OP header bar
@@ -72,14 +75,14 @@ const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
         width ? (
           <ScalingIframe
             client:load
-            src={makeSketchEmbedUrl(sketchId)}
+            src={makeSketchEmbedUrl(sketchIdNumber)}
             width={width}
             height={height}
             title={iframeTitle}
           />
         ) : (
           <iframe
-            src={makeSketchEmbedUrl(sketchId)}
+            src={makeSketchEmbedUrl(sketchIdNumber)}
             width="100%"
             height="100%"
             style={{
@@ -97,7 +100,7 @@ const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
     <div class="py-md grid gap-y-sm md:gap-y-md">
       <LinkButton
         variant="code"
-        url={`${makeSketchLinkUrl(sketchId)}/#code`}
+        url={`${makeSketchLinkUrl(sketchIdNumber)}/#code`}
         class="min-w-[184px] lg:min-w-[220px]">{t("Show Code")}</LinkButton
       >
       <LinkButton
@@ -110,7 +113,7 @@ const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
     {instructions && <p class="text-md my-sm md:my-lg">{instructions}</p>}
 
     <p class="text-xs md:text-base mb-3xl">
-      This <a class="text-type-magenta" href={makeSketchLinkUrl(sketchId)}
+      This <a class="text-type-magenta" href={makeSketchLinkUrl(sketchIdNumber)}
         >sketch</a
       > is ported from the <a
         class="text-type-magenta"
