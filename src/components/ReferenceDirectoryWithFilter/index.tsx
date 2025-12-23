@@ -207,7 +207,7 @@ export const ReferenceDirectoryWithFilter = ({
   return (
     <div>
       <div class="h-0 overflow-visible">
-        <div class="content-grid-simple absolute -left-0 -right-0 -top-[60px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
+        <div class="content-grid-simple absolute -left-0 -right-0 -top-[30px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
           <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
             <input
               type="text"
