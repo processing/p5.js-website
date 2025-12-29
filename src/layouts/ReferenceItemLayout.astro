@@ -22,6 +22,7 @@ import { p5Version } from "../globals/p5-version";
 import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
 import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
 import _ from 'lodash';
+import { Code } from 'astro:components';
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -79,7 +80,7 @@ const relatedReferences = [
 const seenParams: Record<string, true> = {};
 
 const descriptionParts = description.split(
-  /(<pre><code class="language-js example">[\s\S]+?<\/code><\/pre>)/gm
+  /(<pre><code class="language-js(?: example)?">[\s\S]+?<\/code><\/pre>)/gm
 );
 
 ---
@@ -120,8 +121,8 @@ const descriptionParts = description.split(
           <p set:html={entry.data.deprecated} />
         </div>
       )}
-      {descriptionParts.map((part) => {
-        if (part.startsWith('<pre')) {
+      {descriptionParts.map((part, i) => {
+        if (part.startsWith('<pre><code class="languuage-js example">')) {
           const exampleCode = _.unescape(part
             .replace(/<pre><code class="language-js example">/, '')
             .replace(/<\/code><\/pre>/, ''));
@@ -137,6 +138,22 @@ const descriptionParts = description.split(
               includeSound={entry.data.module === 'p5.sound'}
             />
           )
+        } else if (part.startsWith('<pre>')) {
+          const code = _.unescape(part
+            .replace(/<pre><code( class="[^+]*")?>/, '')
+            .replace(/<\/code><\/pre>/, ''));
+          const langMatch = /<code class="language-(\w+)[^"]*">/.exec(part);
+          const lang = langMatch ? langMatch[1] : undefined;
+          return (
+            <Code code={code} lang={lang} theme="github-light" />
+          )
+          const html = descriptionPartRenderedCode[i];
+          return (
+            <div
+              set:html={html}
+              class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
+            />
+          );
         } else {
           return (
             <div
