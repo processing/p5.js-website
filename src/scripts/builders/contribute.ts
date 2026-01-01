@@ -322,4 +322,6 @@ const buildContributorDocs = async () => {
   console.log("Contributor docs build completed.");
 };
 
-buildContributorDocs();
+if(import.meta.main){
+  buildContributorDocs();
+}
