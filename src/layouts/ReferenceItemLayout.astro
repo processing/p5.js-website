@@ -25,12 +25,13 @@ import _ from 'lodash';
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
-
-/* 🔧 FIX #1030: choose correct GitHub repo for source links */
-const repo =
-  entry.data.module === "p5.sound"
-    ? "processing/p5.sound"
-    : "processing/p5.js";
+const isSound = entry.data.module === "p5.sound";
+const githubRepo = isSound
+  ? "processing/p5.sound.js"
+  : "processing/p5.js";
+const githubRef = isSound
+  ? "main"
+  : `v${p5Version}`;
 
 const examples = parseReferenceExamplesAndMetadata(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
@@ -189,9 +190,12 @@ const descriptionParts = description.split(
                 entry.data.params.map((param: ReferenceParam) => (
                   <div class="grid grid-cols-6 gap-gutter-md text-body">
                     <span class="col-span-1 text-body whitespace-normal break-words overflow-wrap-break-word">
+
                       {param.rest ? `${param.name}1, ..., ${param.name}n` : param.name}
                     </span>
-                    <div class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline">
+                    <div
+                          class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                    >
                       {param.type && <span>{param.type}: </span>}
                       <span set:html={param.description} />
                     </div>
@@ -207,7 +211,9 @@ const descriptionParts = description.split(
                         <span class="col-span-1">
                           {param.rest ? `${param.name}1, ..., ${param.name}n` : param.name}
                         </span>
-                        <div class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline">
+                        <div
+                          class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                        >
                           {param.type && <span>{param.type}: </span>}
                           <span set:html={param.description} />
                         </div>
@@ -220,16 +226,83 @@ const descriptionParts = description.split(
         )
       }
       {
+        (entry.data.return) && (
+          <>
+            <div class="mb-xl">
+              <h2 class="mb-md text-h3">{t("Returns")}</h2>
+              <div class="grid grid-cols-6 gap-gutter-md text-body">
+                <div
+                      class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
+                >
+                  {entry.data.return.type && <span>{entry.data.return.type}: </span>}
+                  <span set:html={entry.data.return.description} />
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      }
+      {
+        entry.data.properties && (
+          <div class="mb-xl">
+            <h2 class="mb-md text-h3">{t("Fields")}</h2>
+            {Object.entries(entry.data.properties).map(([key, value]) => {
+              const propertyValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={`/reference/${propertyValue.path}`}
+                    class="text-body-large underline"
+                  >
+                    {key}
+                  </a>
+                  <div class="mt-xxs [&_p]:mb-1 [&_p]:mt-0" set:html={propertyValue.description} />
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
+        entry.data.methods && (
+          <div class="my-xl">
+            <h2 class="text-h3">{t("Methods")}</h2>
+            {Object.entries(entry.data.methods).map(([key, value]) => {
+              const methodValue = value as {
+                description: string;
+                path: string;
+              };
+
+              return (
+                <div class="text-body my-lg">
+                  <a
+                    href={`/reference/${methodValue.path}`}
+                    class="text-body-large"
+                  >
+                    {key}
+                  </a>
+                  <div class="mt-xxs [&_p]:mb-1 [&_p]:mt-0" set:html={methodValue.description} />
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+      {
         entry.data.file && entry.data.line &&(
           <div class="my-xl">
            <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
-            Notice any errors or typos? <a href={`https://github.com/${repo}/issues`}>Please let us know</a>. Please feel free to edit 
+            Notice any errors or typos? <a href={`https://github.com/${githubRepo}/issues`}>Please let us know</a>. Please feel free to edit 
             <a
-              href={`https://github.com/${repo}/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
-            >
-              {entry.data.file}
-            </a>
-            and open a pull request!
+                href={`https://github.com/${githubRepo}/blob/${githubRef}/${entry.data.file}#L${entry.data.line}`}    
+                  >
+                  {entry.data.file}
+                  </a>
+                and open a pull request!
            </div>
           </div>
         )
