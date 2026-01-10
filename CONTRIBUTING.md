@@ -14,3 +14,25 @@ The guide includes:
 - Community guidelines
 
 Following these guidelines helps keep contributions consistent and welcoming for everyone.
+
+
+## Local Development Setup
+
+To set up the p5.js website locally:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/processing/p5.js-website.git
+   cd p5.js-website
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
