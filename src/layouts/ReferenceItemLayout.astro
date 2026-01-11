@@ -26,6 +26,13 @@ import { Code } from 'astro:components';
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
+const isSound = entry.data.module === "p5.sound";
+const githubRepo = isSound
+  ? "processing/p5.sound.js"
+  : "processing/p5.js";
+const githubRef = isSound
+  ? "main"
+  : `v${p5Version}`;
 
 const examples = parseReferenceExamplesAndMetadata(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
@@ -300,9 +307,9 @@ const descriptionParts = description.split(
         entry.data.file && entry.data.line &&(
           <div class="my-xl">
            <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
-            Notice any errors or typos? <a href ="https://github.com/processing/p5.js/issues">Please let us know</a>. Please feel free to edit 
+            Notice any errors or typos? <a href={`https://github.com/${githubRepo}/issues`}>Please let us know</a>. Please feel free to edit 
             <a
-                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
+                href={`https://github.com/${githubRepo}/blob/${githubRef}/${entry.data.file}#L${entry.data.line}`}    
                   >
                   {entry.data.file}
                   </a>
