@@ -46,6 +46,7 @@ export const MainNavLinks = ({
         class={styles.toggle}
         onClick={handleToggle}
         aria-expanded={isOpen}
+        aria-controls="main-links-list main-cta-list"
         aria-label={mobileMenuLabel || "Toggle navigation menu"}
       >
         <div class={styles.mobileMenuLabel}>
@@ -72,14 +73,18 @@ export const MainNavLinks = ({
       }`}
     >
       {renderLogo()}
-      <ul>
+      <ul id="main-links-list" hidden={!isOpen}>
         {links.map((link) => (
           <li key={link.label}>
             <a href={link.url}>{link.label}</a>
           </li>
         ))}
       </ul>
-      <ul class="flex flex-col gap-[15px]">
+      <ul
+        id="main-cta-list"
+        class={`${isOpen ? "flex" : ""} flex-col gap-[15px]`}
+        hidden={!isOpen}
+      >
         <li>
           <a className={styles.buttonlink} href="https://editor.p5js.org">
             <div class="mr-xxs">
