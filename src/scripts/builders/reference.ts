@@ -461,11 +461,13 @@ const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
   }
 };
 
-buildReference();
-
 export const testingExports = {
   modulePathTree,
   memberMethodPreviews: classMethodAndPropertyPreviews,
   addDocToModulePathTree,
   addMemberMethodPreviewsToClassDocs: addMethodAndPropertyPreviewsToClassDocs,
 };
+
+if(import.meta.main){
+  buildReference();
+}
