@@ -1,0 +1,92 @@
+---
+import type { ReferenceDocContentItem } from "@/src/content/types";
+import flask from "@src/content/ui/images/icons/flask.svg?raw";
+import warning from "@src/content/ui/images/icons/warning.svg?raw";
+
+type ReferenceDirectoryEntry = ReferenceDocContentItem & {
+  data: {
+    path: string;
+    title: string;
+    description: string;
+    beta?: boolean;
+    deprecated?: boolean;
+  };
+};
+
+interface Props {
+  categoryData: {
+    name: string;
+    subcats: {
+      name: string;
+      entry?: ReferenceDirectoryEntry;
+      entries: ReferenceDirectoryEntry[];
+    }[];
+  }[];
+}
+
+const { categoryData } = Astro.props;
+
+const getOneLineDescription = (description: string): string => {
+  const firstParagraphRegex = /^<p>(.*?)<\/p>/;
+  let [oneLineDescription] =
+    description.replace(/\n/g, " ").trim().match(firstParagraphRegex) ?? [];
+
+  if (!oneLineDescription && description) oneLineDescription = description;
+
+  return (
+    oneLineDescription
+      ?.replace(/^<p>|<\/p>$/g, "")
+      .replace(/<\/?code>/g, "")
+      .replace(/<var>(\d+?)<sup>(\d+?)<\/sup><\/var>/g, "$1^$2")
+      .replace(/<a href=".*?">|<\/a>/g, "")
+      .split(/\.\s|\?\s|!\s|।\s|。/)[0] ?? ""
+  );
+};
+---
+<aside class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
+<nav>
+  {categoryData.map((category) => (
+    <section id={category.name} key={category.name} aria-labelledby={`heading-${category.name}`}>
+      <h2>{category.name}</h2>
+
+      {category.subcats.map((subcat) => (
+        <div key={subcat.name}>
+          {subcat.name && <h3 id={subcat.name}>{subcat.name}</h3>}
+
+          <div class="content-grid">
+            {subcat.entries.map((entry) => (
+              <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
+                <a
+                  href={`/reference/${entry.data.path}/`}
+                  class="group hover:no-underline"
+                  aria-label={entry.data.title}
+                >
+                  <span class="text-body-mono group-hover:underline">
+                    {entry.data.beta && (
+                      <span
+                        class="inline-block h-[16px] w-[16px]"
+                        set:html={flask}
+                      />
+                    )}
+                    {entry.data.deprecated && (
+                      <span
+                        class="inline-block h-[16px] w-[16px]"
+                        set:html={warning}
+                      />
+                    )}
+                    <span set:html={entry.data.title} />
+                  </span>
+
+                  <p class="mt-1 text-sm">
+                    {getOneLineDescription(entry.data.description)}
+                  </p>
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  ))}
+</nav>
+</aside>
