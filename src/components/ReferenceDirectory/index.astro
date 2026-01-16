@@ -1,32 +1,22 @@
 ---
-import type { ReferenceDocContentItem } from "@/src/content/types";
 import flask from "@src/content/ui/images/icons/flask.svg?raw";
 import warning from "@src/content/ui/images/icons/warning.svg?raw";
-
-type ReferenceDirectoryEntry = ReferenceDocContentItem & {
-  data: {
-    path: string;
-    title: string;
-    description: string;
-    beta?: boolean;
-    deprecated?: boolean;
-  };
-};
+import type { ReferenceCategory } from "../../../types/reference";
 
 interface Props {
-  categoryData: {
-    name: string;
-    subcats: {
-      name: string;
-      entry?: ReferenceDirectoryEntry;
-      entries: ReferenceDirectoryEntry[];
-    }[];
-  }[];
+  categoryData: ReferenceCategory[];
 }
+
+
+interface Props {
+  categoryData: ReferenceCategory[];
+}
+
 
 const { categoryData } = Astro.props;
 
-const getOneLineDescription = (description: string): string => {
+const getOneLineDescription = (description?: string): string => {
+  if (!description) return "";
   const firstParagraphRegex = /^<p>(.*?)<\/p>/;
   let [oneLineDescription] =
     description.replace(/\n/g, " ").trim().match(firstParagraphRegex) ?? [];
@@ -46,18 +36,21 @@ const getOneLineDescription = (description: string): string => {
 <aside class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
 <nav>
   {categoryData.map((category) => (
-    <section id={category.name} key={category.name} aria-labelledby={`heading-${category.name}`}>
+   <section
+  id={String(category.name)}
+  aria-labelledby={`heading-${String(category.name)}`}
+  >
       <h2>{category.name}</h2>
 
       {category.subcats.map((subcat) => (
-        <div key={subcat.name}>
+        <div>
           {subcat.name && <h3 id={subcat.name}>{subcat.name}</h3>}
 
           <div class="content-grid">
             {subcat.entries.map((entry) => (
-              <div class="col-span-3 w-full overflow-hidden" key={entry.id}>
+              <div class="col-span-3 w-full overflow-hidden">
                 <a
-                  href={`/reference/${entry.data.path}/`}
+                  href={`/reference/${entry.id.replace(/\/index$/, "")}/`}
                   class="group hover:no-underline"
                   aria-label={entry.data.title}
                 >

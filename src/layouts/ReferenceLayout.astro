@@ -19,6 +19,10 @@ import {
   getUiTranslationWithFallback,
   getUiTranslator,
 } from "../i18n/utils";
+import type {
+  ReferenceCategory,
+  ReferenceSubcategory
+} from "../../types/reference";
 
 interface Props {
   title: string;
@@ -42,101 +46,109 @@ const uiTranslations = await getUiTranslationWithFallback(currentLocale);
 
 const { entries } = Astro.props;
 
-const categoryData = (Astro.props.categories ?? categories).map((category) => {
-  // Get all reference entries in the module
-  const directEntries = entries.filter(
-    (e) => e.data.module === t("referenceCategories", "modules", category)
-  );
+const categoryData: ReferenceCategory[] =
+  (Astro.props.categories ?? categories).map((category) => {
+    // Get all reference entries in the module
+    const translatedCategory = t("referenceCategories", "modules", category);
 
-  // Get the names of all submodules
-  const subcats = [
-    ...new Set(
-      directEntries
-        // Ignore classes here, they will be added later
-        .filter((e) => e.data.submodule && !e.data.isConstructor && (!e.data.class || e.data.class === 'p5'))
-        .map((e) => e.data.submodule)
-    ).values(),
-  ].sort();
+    const directEntries = entries.filter(
+      (e) => e.data.module === translatedCategory
+    );
 
-  // Find the classes in this module. These will be turned into subcategories.
-  const classes = directEntries
-    .filter(
-      (e) =>
-        e.data.isConstructor &&
-        e.data.module === category &&
-        e.data.title !== "p5"
-    )
-    .sort((a, b) => strCompare(a.data.title, b.data.title))
-    .map((e) => ({
-      ...e,
-      data: {
-        ...e.data,
-        path: normalizeReferenceRoute(e.id),
+    // Get the names of all submodules
+    const subcats = [
+      ...new Set(
+        directEntries
+          .filter(
+            (e) =>
+              e.data.submodule &&
+              !e.data.isConstructor &&
+              (!e.data.class || e.data.class === "p5")
+          )
+          .map((e) => e.data.submodule)
+      ).values(),
+    ].sort();
+
+    // Find the classes in this module
+    const classes = directEntries
+      .filter(
+        (e) =>
+          e.data.isConstructor &&
+          e.data.module === translatedCategory &&
+          e.data.title !== "p5"
+      )
+      .sort((a, b) => strCompare(a.data.title, b.data.title))
+      .map((e) => ({
+        ...e,
+        data: {
+          ...e.data,
+          path: normalizeReferenceRoute(e.id),
+        },
+      }));
+
+    // Build subcategories
+    const subcatData: ReferenceSubcategory[] = [
+      {
+        name: undefined,
+        entries: directEntries
+          .filter(
+            (e) =>
+              !e.data.submodule &&
+              !e.data.isConstructor &&
+              !classes.some((c) => c.data.title === e.data.class)
+          )
+          .map((e) => ({
+            ...e,
+            data: {
+              ...e.data,
+              title: getRefEntryTitleConcatWithParen(e),
+              path: normalizeReferenceRoute(e.id),
+            },
+          })),
       },
-    }));
+      ...subcats.map((subcat, i) => ({
+        name: i === 0 && subcat === category ? undefined : subcat,
+        entries: directEntries
+          .filter(
+            (e) =>
+              e.data.submodule === subcat &&
+              (!e.data.class || e.data.class === "p5") &&
+              !e.data.isConstructor &&
+              e.data.description !== ""
+          )
+          .map((e) => ({
+            ...e,
+            data: {
+              ...e.data,
+              title: getRefEntryTitleConcatWithParen(e),
+              path: normalizeReferenceRoute(e.id),
+            },
+          })),
+      })),
+      ...classes.map((entry) => ({
+        name: getRefEntryTitleConcatWithParen(entry),
+        entry,
+        entries: directEntries
+          .filter((e) => e.data.class === entry.data.title && e.data.class)
+          .map((e) => ({
+            ...e,
+            data: {
+              ...e.data,
+              title: getRefEntryTitleConcatWithParen(e),
+              path: normalizeReferenceRoute(e.id),
+            },
+          })),
+      })),
+    ];
 
-  // Return the data for each subcategory
-  const subcatData = [
-    {
-      name: undefined,
-      entry: undefined,
-      entries: directEntries
-        .filter(
-          (e) =>
-            !e.data.submodule &&
-            !e.data.isConstructor &&
-            !classes.some((c) => c.data.title === e.data.class)
-        )
-        .map((e) => ({
-          ...e,
-          data: {
-            ...e.data,
-            title: getRefEntryTitleConcatWithParen(e),
-            path: normalizeReferenceRoute(e.id),
-          },
-        })),
-    },
-    ...subcats.map((subcat, i) => ({
-      name: i === 0 && subcat === category ? undefined : subcat,
-      entry: undefined,
-      entries: directEntries
-        .filter(
-          (e) =>
-            e.data.submodule === subcat &&
-            (!e.data.class || e.data.class === "p5") &&
-            !e.data.isConstructor &&
-            e.data.description !== ""
-        )
-        .map((e) => ({
-          ...e,
-          data: {
-            ...e.data,
-            title: getRefEntryTitleConcatWithParen(e),
-            path: normalizeReferenceRoute(e.id),
-          },
-        })),
-    })),
-    ...classes.map((entry) => ({
-      name: getRefEntryTitleConcatWithParen(entry),
-      entry, // Include the class entry itself so we can make the header a link
-      entries: directEntries
-        .filter((e) => e.data.class === entry.data.title && e.data.class)
-        .map((e) => ({
-          ...e,
-          data: {
-            ...e.data,
-            title: getRefEntryTitleConcatWithParen(e),
-            path: normalizeReferenceRoute(e.id),
-          },
-        })),
-    })),
-  ];
-  return {
-    name: t("referenceCategories", "modules", category),
-    subcats: subcatData,
-  };
-});
-
+    return {
+      name:
+        typeof translatedCategory === "string"
+          ? translatedCategory
+          : category,
+      subcats: subcatData,
+    };
+  });
 const jumpCategoryData = categoryData.length === 1
   ? [...categoryData, ...categoryData[0].subcats]
   : categoryData;
