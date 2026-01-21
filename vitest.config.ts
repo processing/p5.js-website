@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import { getViteConfig } from "astro/config";
 import { configDefaults } from 'vitest/config';
 import preact from "@preact/preset-vite";
