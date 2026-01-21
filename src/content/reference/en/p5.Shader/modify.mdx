@@ -105,18 +105,29 @@ description: >-
   local variables, you
 
   can pass them into <code>modify</code> with an optional second parameter,
-  <code>variables</code>. If you are
+  <code>variables</code>. These will
+
+  then be passed into your function as an argument. If you are
 
   using instance mode, you will need to pass your sketch object in this way.</p>
+
+  <p>If you are also using a build system for your sketch, variable names may be
+  changed as
+
+  part of minification. When creating a uniform, you can pass the name of the
+  uniform in
+
+  as a first parameter to ensure it doesn't get changed.</p>
 
   <pre><code class="language-js example">new p5((sketch) => {
     let myShader;
 
     sketch.setup = function() {
       sketch.createCanvas(200, 200, sketch.WEBGL);
-      myShader = sketch.baseMaterialShader().modify(() => {
+      myShader = sketch.baseMaterialShader().modify(({ sketch }) => {
+        let b = uniformFloat('b');
         sketch.getPixelInputs((inputs) => {
-          inputs.color = [inputs.texCoord, 0, 1];
+          inputs.color = [inputs.texCoord, b, 1];
           return inputs;
         });
       }, { sketch });
@@ -125,6 +136,7 @@ description: >-
     sketch.draw = function() {
       sketch.background(255);
       sketch.noStroke();
+      myShader.setUniform('b', 0.5);
       sketch.shader(myShader); // Apply the custom shader
       sketch.plane(sketch.width, sketch.height); // Draw a plane with the shader applied
     }
@@ -215,7 +227,7 @@ description: >-
     fill('red');
     sphere(50);
   }</code></pre>
-line: 460
+line: 357
 isConstructor: false
 itemtype: method
 example: []

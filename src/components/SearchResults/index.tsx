@@ -98,6 +98,7 @@ const SearchResults = ({
     if (inputRef.current) {
       inputRef.current.value = "";
     }
+    onSearchChange("")
   };
   const submitInput = () => {
     if (inputRef.current) {
