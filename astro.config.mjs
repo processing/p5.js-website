@@ -20,6 +20,9 @@ if (shouldSkipCompress) {
 export default defineConfig({
   site: 'https://p5js.org',
   compressHTML: false,
+  legacy: {
+    collections: true
+  },
   integrations: [
     mermaid({autoTheme: true}),
     preact({
