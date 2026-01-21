@@ -206,34 +206,32 @@ export const ReferenceDirectoryWithFilter = ({
 
   return (
     <div>
-      <div class="h-0 overflow-visible">
-        <div class="content-grid-simple absolute -left-0 -right-0 -top-[60px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
-          <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
-            <input
-              type="text"
-              id="search"
-              ref={inputRef}
-              class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
-              placeholder={uiTranslations["Filter by keyword"]}
-              onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-                const target = e.target as HTMLInputElement;
-                setSearchKeyword(target?.value);
-              }}
-            />
-            {searchKeyword.length > 0 && (
-              <button
-                type="reset"
-                class=""
-                onClick={clearInput}
-                aria-label="Clear search input"
-              >
-                <Icon kind="close" className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+      <div class="content-grid-simple h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg">
+        <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
+          <input
+            type="text"
+            id="search"
+            ref={inputRef}
+            class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
+            placeholder={uiTranslations["Filter by keyword"]}
+            onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+              const target = e.target as HTMLInputElement;
+              setSearchKeyword(target?.value);
+            }}
+          />
+          {searchKeyword.length > 0 && (
+            <button
+              type="reset"
+              class=""
+              onClick={clearInput}
+              aria-label="Clear search input"
+            >
+              <Icon kind="close" className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
-      <div class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
+      <div class="mx-5 min-h-[50vh] md:mx-lg">
         {renderCategoryData()}
       </div>
     </div>
