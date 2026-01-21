@@ -3,6 +3,14 @@ import { JumpToLinks } from "./JumpToLinks";
 import { MainNavLinks } from "./MainNavLinks";
 import { useEffect, useState } from "preact/hooks";
 
+const BREAKPOINT = 768;
+
+const getIsMobile = () => {
+  if (typeof window === "undefined") return false; // assume desktop on SSR
+  return window.innerWidth < BREAKPOINT;
+};
+
+
 interface NavPanelsProps {
   mainLinks: {
     label: string;
@@ -32,38 +40,40 @@ export const NavPanels = (props: NavPanelsProps) => {
     jumpToState,
   } = props;
 
-  const [isOpen, setIsOpen] = useState({ main: false, jump: false });
-  const [isMobile, setIsMobile] = useState(true);
+  const [isMobile, setIsMobile] = useState(getIsMobile);
+
+const [isOpen, setIsOpen] = useState(() => {
+  const mobile = getIsMobile();
+  return {
+    main: !mobile,
+    jump: !mobile,
+  };
+});
+
 
   // Defaults to closed on mobile, open on desktop
   // Have to do this in a lifecycle method
   // so that we can still server-side render
   useEffect(() => {
-    const startsMobile = window.innerWidth < 768;
-    setIsMobile(startsMobile);
-    setIsOpen({ main: !startsMobile, jump: !startsMobile });
-    // We use a resize observer to the user's window crosses the
-    // threshhold between mobile and desktop
-    const documentObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (!isMobile && entry.contentRect.width < 768) {
-          setIsMobile(true);
-          setIsOpen({
-            main: false,
-            jump: false,
-          });
-        } else if (isMobile && entry.contentRect.width >= 768) {
-          setIsMobile(false);
-          setIsOpen({
-            main: true,
-            jump: true,
-          });
-        }
-      }
+  const handleResize = () => {
+    const mobile = window.innerWidth < BREAKPOINT;
+
+    setIsMobile((prev) => {
+      if (prev === mobile) return prev;
+
+      setIsOpen({
+        main: !mobile,
+        jump: !mobile,
+      });
+
+      return mobile;
     });
-    documentObserver.observe(document.body);
-    return () => documentObserver.disconnect();
-  }, [setIsMobile, setIsOpen, isMobile]);
+  };
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
 
   const handleMainNavToggle = () => {
     setIsOpen((prev) => ({
