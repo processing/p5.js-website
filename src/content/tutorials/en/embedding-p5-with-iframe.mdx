@@ -1,0 +1,238 @@
+---
+title: Embedding p5.js with an iframe
+description: Learn how to embed p5.js sketches in webpages using iframes, allowing you to use global mode and have multiple sketches on a single page.
+category: beyond-web-editor
+categoryIndex: 1
+authors:
+  - hxrshxz
+  - Dave Pagurek
+---
+
+import Callout from "../../../components/Callout/index.astro";
+
+## Introduction
+
+While the p5.js Web Editor is a great place to create and share sketches, you might want to embed your p5.js projects in other webpages—like a personal portfolio, blog, or documentation site. One of the most straightforward and flexible ways to do this is by using an `<iframe>` element.
+
+An iframe (inline frame) allows you to embed one HTML document inside another. This approach has several advantages:
+
+- You can use **global mode** p5.js code without worrying about conflicts
+- You can have **multiple sketches** on the same page, each in its own iframe
+- Your sketch runs in an **isolated environment**, preventing naming conflicts with the parent page
+- You can easily **dynamically load and unload** sketches for better performance
+
+## Prerequisites
+
+Before starting this tutorial, you should:
+
+- Have a basic understanding of HTML
+- Have a p5.js sketch ready to embed (either from the Web Editor or a local project)
+
+## Step 1: Create Your p5.js Sketch
+
+First, you'll need a p5.js sketch to embed. Here's a simple example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My p5.js Sketch</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+      }
+
+      function draw() {
+        background(220);
+        fill(255, 0, 200);
+        ellipse(mouseX, mouseY, 50, 50);
+      }
+    </script>
+  </body>
+</html>
+```
+
+Save this as `sketch.html` in a folder on your computer or web server.
+
+## Step 2: Embed the Sketch Using an iframe
+
+Now, in your main webpage, you can embed the sketch using an `<iframe>` element:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <style>
+      .sketch-container {
+        width: 400px;
+        height: 400px;
+        border: 2px solid #333;
+        margin: 20px auto;
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My Creative Coding Portfolio</h1>
+    <p>Check out my interactive sketch below!</p>
+    
+    <div class="sketch-container">
+      <iframe src="sketch.html" title="Interactive p5.js sketch"></iframe>
+    </div>
+    
+    <p>More content can go here...</p>
+  </body>
+</html>
+```
+
+<Callout variant="helpful">
+**Accessibility Tip:** Always include a `title` attribute on your iframe that describes what the embedded content is. This helps screen reader users understand what the iframe contains.
+</Callout>
+
+## Step 3: Embedding Web Editor Sketches
+
+If your sketch is hosted on the p5.js Web Editor, you can embed it directly by using the full-screen URL:
+
+```html
+<iframe 
+  src="https://editor.p5js.org/username/full/sketchID"
+  width="400" 
+  height="400"
+  title="My p5.js sketch from the Web Editor">
+</iframe>
+```
+
+To get the full-screen URL from the Web Editor:
+1. Open your sketch in the p5.js Web Editor
+2. Click **File** → **Share** → **Fullscreen**
+3. Copy the URL provided
+
+## Step 4: Multiple Sketches on One Page
+
+One of the key advantages of using iframes is that you can embed multiple sketches on the same page without conflicts:
+
+```html
+<div class="sketch-container">
+  <h2>Sketch 1</h2>
+  <iframe src="sketch1.html" width="400" height="400" title="First sketch"></iframe>
+</div>
+
+<div class="sketch-container">
+  <h2>Sketch 2</h2>
+  <iframe src="sketch2.html" width="400" height="400" title="Second sketch"></iframe>
+</div>
+```
+
+Each sketch runs in its own isolated environment, so global variables and function names won't conflict.
+
+## Step 5: Performance Optimization with Dynamic Loading
+
+For pages with many sketches, you can improve performance by dynamically loading and unloading iframes when they scroll into view:
+
+```html
+<div class="sketch-container" data-sketch-src="sketch.html">
+  <div class="loading">Loading sketch...</div>
+</div>
+
+<script>
+  // Create an Intersection Observer to load sketches when they're visible.
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting === true) {
+        const container = entry.target;
+        const sketchSrc = container.dataset.sketchSrc;
+        
+        if (sketchSrc && !container.querySelector('iframe')) {
+          const iframe = document.createElement('iframe');
+          iframe.src = sketchSrc;
+          iframe.width = '400';
+          iframe.height = '400';
+          iframe.title = 'p5.js sketch';
+          
+          container.innerHTML = '';
+          container.appendChild(iframe);
+        }
+      }
+    });
+  }, {
+    // Start loading slightly before it comes into view.
+    rootMargin: '50px',
+  });
+
+  // Observe all sketch containers.
+  document.querySelectorAll('.sketch-container').forEach((container) => {
+    observer.observe(container);
+  });
+</script>
+```
+
+<Callout variant="helpful">
+This technique is used on the p5.js website itself to efficiently handle pages with many example sketches!
+</Callout>
+
+## Styling and Responsive Design
+
+You can make your embedded sketches responsive using CSS:
+
+```css
+.sketch-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  /* Maintain square aspect ratio. */
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+.sketch-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+```
+
+## Common Issues and Solutions
+
+### Issue: Sketch doesn't load
+
+**Solution:** Make sure the `src` path in your iframe is correct. If the sketch file is in the same directory as your HTML file, use just the filename. If it's in a subdirectory, include the path (e.g., `src="sketches/sketch.html"`).
+
+### Issue: Sketch is cut off
+
+**Solution:** Ensure the iframe's width and height match your canvas size, or make sure your sketch canvas is sized to fit within the iframe.
+
+### Issue: CORS errors when loading from Web Editor
+
+**Solution:** The p5.js Web Editor handles CORS correctly when you use the full-screen URL format. Make sure you're using `https://editor.p5js.org/username/full/sketchID` and not the edit URL.
+
+## Next Steps
+
+Now that you know how to embed sketches with iframes, you might want to explore:
+
+- Loading sketches directly into a container using [Instance Mode](../p5-instance-mode) (coming soon)
+- Using p5.js with modern JavaScript modules
+- Integrating p5.js with React or other frameworks
+
+Happy coding!
