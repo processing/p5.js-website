@@ -36,11 +36,9 @@ export const JumpToLinks = ({
           {links?.map((link) => (
             <li
               key={link.label}
-              class={`${styles.linklabel} ${link.size ?? ""}`}
+              class={`${styles.linklabel} ${link.size ?? ""} ${link.current ? "current" : ""}`}
             >
-              <a href={link.url} class={link.current ? "current" : ""}>
-                {link.label}
-              </a>
+              <a href={link.url}>{link.label}</a>
             </li>
           ))}
         </ul>
