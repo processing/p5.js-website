@@ -38,12 +38,7 @@ export const JumpToLinks = ({
               key={link.label}
               class={`${styles.linklabel} ${link.size ?? ""} ${link.current ? "current" : ""}`}
             >
-              <a
-                href={link.url}
-                aria-current={link.current ? "page" : undefined}
-              >
-                {link.label}
-              </a>
+              <a href={link.url}>{link.label}</a>
             </li>
           ))}
         </ul>
