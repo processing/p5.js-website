@@ -233,7 +233,7 @@ export const sanitizeName = (name: string) =>
  * @returns full path to the entry
  */
 export const fullPathFromDirent = (dirent: Dirent): string =>
-  path.join(dirent.path, dirent.name);
+  path.join(dirent.parentPath, dirent.name);
 
 /**
  * Returns the absolute path of the files within a directory
@@ -254,7 +254,7 @@ export const getFilepathsWithinDir = async (
       [dirAbsolutePath]
     : // readdir returns relative filepaths 🥴
       (await readdir(dirAbsolutePath)).map((p) =>
-        path.join(dir.path, dir.name, p),
+        path.join(dir.parentPath, dir.name, p),
       );
 };
 
