@@ -379,7 +379,7 @@ class GitHubCommitTracker {
 **Branch**: \`${this.currentBranch}\`
 
 ### 📅 Timeline
-- **Latest English update**: ${englishCommit ? `${englishCommit.date.toLocaleDateString()} by ${englishCommit.author}` : 'Unknown (commit data unavailable)'}
+- **Latest English update**: ${englishCommit.date.toLocaleDateString()} by ${englishCommit.author}
 
 `;
 
@@ -421,7 +421,7 @@ class GitHubCommitTracker {
 - [ ] Ensure translation is accurate and culturally appropriate
 
 ### 📝 Summary of English File Changes
-**Last commit**: ${englishCommit ? `[${englishCommit.message}](${englishCommit.url})` : 'Unavailable'}
+**Last commit**: [${englishCommit.message}](${englishCommit.url})
 
 ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**: English file was updated. ${outdatedLanguages.length > 0 ? `${outdatedLanguages.map(l => this.getLanguageDisplayName(l.language)).join(', ')} translation${outdatedLanguages.length > 1 ? 's' : ''} may be outdated.` : ''} ${missingLanguages.length > 0 ? `${missingLanguages.map(l => this.getLanguageDisplayName(l.language)).join(', ')} translation${missingLanguages.length > 1 ? 's are' : ' is'} missing.` : ''}` : ''}
 
@@ -544,12 +544,22 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
   const fileTranslationMap = translationStatus.fileTranslationMap;
   
   for (const englishFile of changedFiles) {
+    
+    let englishCommit = null;
+    if (githubTracker) {
+      englishCommit = await githubTracker.getLastCommit(englishFile);
+      if (!englishCommit) {
+        console.log(`⚠️ Skipping ${englishFile} - could not retrieve commit data`);
+        continue; 
+      }
+    }
+
     const fileTranslations = {
       englishFile,
       outdatedLanguages: [],
       missingLanguages: [],
       upToDateLanguages: [],
-      englishCommit: null
+      englishCommit
     };
     
     for (const language of SUPPORTED_LANGUAGES) {
@@ -570,16 +580,7 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
 
       
       if (githubTracker) {
-        // Get English commit only once per file
-        if (!fileTranslations.englishCommit) {
-          fileTranslations.englishCommit = await githubTracker.getLastCommit(englishFile);
-        }
-        const englishCommit = fileTranslations.englishCommit;
         const translationCommit = await githubTracker.getLastCommit(translationPath);
-
-        if (!englishCommit) {
-          continue;
-        }
 
         if (!translationCommit) {
           const missingItem = {
