@@ -371,6 +371,7 @@ class GitHubCommitTracker {
     const englishFile = fileTranslations.englishFile;
     const outdatedLanguages = fileTranslations.outdatedLanguages;
     const missingLanguages = fileTranslations.missingLanguages;
+    const englishCommit = fileTranslations.englishCommit;
 
     let body = `## 🌍 Translation Update Needed
 
@@ -378,7 +379,7 @@ class GitHubCommitTracker {
 **Branch**: \`${this.currentBranch}\`
 
 ### 📅 Timeline
-- **Latest English update**: ${fileTranslations.englishCommit.date.toLocaleDateString()} by ${fileTranslations.englishCommit.author}
+- **Latest English update**: ${englishCommit ? `${englishCommit.date.toLocaleDateString()} by ${englishCommit.author}` : 'Unknown (commit data unavailable)'}
 
 `;
 
@@ -420,7 +421,7 @@ class GitHubCommitTracker {
 - [ ] Ensure translation is accurate and culturally appropriate
 
 ### 📝 Summary of English File Changes
-**Last commit**: [${fileTranslations.englishCommit.message}](${fileTranslations.englishCommit.url})
+**Last commit**: ${englishCommit ? `[${englishCommit.message}](${englishCommit.url})` : 'Unavailable'}
 
 ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**: English file was updated. ${outdatedLanguages.length > 0 ? `${outdatedLanguages.map(l => this.getLanguageDisplayName(l.language)).join(', ')} translation${outdatedLanguages.length > 1 ? 's' : ''} may be outdated.` : ''} ${missingLanguages.length > 0 ? `${missingLanguages.map(l => this.getLanguageDisplayName(l.language)).join(', ')} translation${missingLanguages.length > 1 ? 's are' : ' is'} missing.` : ''}` : ''}
 
