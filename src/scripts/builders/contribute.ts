@@ -264,7 +264,11 @@ const buildContributorDocs = async () => {
     latestRelease = `v${  latestRelease}`;
   }
 
-  await cloneLibraryRepo(clonedRepoPath, docsRepoUrl, latestRelease);
+  await cloneLibraryRepo(
+    clonedRepoPath,
+    process.env.P5_REPO_URL || docsRepoUrl,
+    process.env.P5_BRANCH || latestRelease,
+  );
 
   // Clean out previous files
   console.log("Cleaning out current content collection...");

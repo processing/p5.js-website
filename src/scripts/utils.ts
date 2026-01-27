@@ -35,6 +35,7 @@ export const cloneLibraryRepo = async (
     shouldFixAbsolutePathInPreprocessor?: boolean
   } = {}
 ) => {
+  console.log(`Considering cloning repo: ${repoUrl} branch: ${branch} into path: ${localSavePath}`);
   const git = simpleGit();
 
   const repoExists = await fileExistsAt(localSavePath);
