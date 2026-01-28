@@ -16,6 +16,22 @@ npm run custom:dev https://github.com/yourUsername/p5.js.git#yourBranch
 
 This will build the reference from your branch and start a development preview of the website. A URL will be logged in the console that you can go to in your browser to test out your changes.
 
+Actually, it's also possible to test against a branch from your _local_ repo.  This means you can test without first pushing to github (but you _will_ still need your changes checked into a branch, locally).
+
+To do this, just supply the file-path to the local repo, instead of the url to the repo.
+
+```sh
+npm run custom:dev path-to-local-repo#yourBranch
+```
+
+For example, if you have a local p5.js clone repo called `p5.js` as a sibling directory to the website, you could run the following:
+
+```sh
+npm run custom:dev ../p5.js#yourBranch
+```
+
+### Resetting your changes
+
 When you're done, you can run this command to reset your changes:
 ```sh
 npm run custom:cleanup
