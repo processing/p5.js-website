@@ -5,6 +5,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
+import { ConsolePanel } from "./ConsolePanel";
 import { CopyCodeButton } from "../CopyCodeButton";
 import CircleButton from "../CircleButton";
 import { Icon } from "../Icon";
@@ -36,6 +37,24 @@ export const CodeEmbed = (props) => {
   const [codeString, setCodeString] = useState(
     initialCode.replace(/\u00A0/g, " "),
   );
+  
+  const [showConsole, setShowConsole] = useState(false);
+  const [logs, setLogs] = useState([]);
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === 'P5_CONSOLE') {
+        setLogs(prevLogs => [...prevLogs, event.data]);
+        // Auto-open console on error if not already open? Optional UX choice.
+        if (event.data.level === 'error') {
+           setShowConsole(true);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   let { previewWidth, previewHeight } = props;
   const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
@@ -117,50 +136,69 @@ export const CodeEmbed = (props) => {
             >
               <Icon kind="stop" />
             </CircleButton>
+             <CircleButton
+              className={`bg-bg-gray-40 ${showConsole ? "bg-accent-color text-white" : ""}`} // Highlight when active
+              onClick={() => setShowConsole(!showConsole)}
+              ariaLabel="Toggle Console"
+            >
+              <Icon kind="code-brackets" />
+            </CircleButton>
           </div>
         </div>
       ) : null}
-      <div className="code-editor-container relative w-full">
-        <CodeMirror
-          value={codeString}
-          theme="light"
-          width="100%"
-          minimalSetup={{
-            highlightSpecialChars: false,
-            history: false,
-            drawSelection: true,
-            syntaxHighlighting: true,
-            defaultKeymap: true,
-            historyKeymap: true,
-          }}
-          basicSetup={{
-            lineNumbers: false,
-            foldGutter: false,
-            autocompletion: false,
-          }}
-          indentWithTab={false}
-          extensions={[javascript(), EditorView.lineWrapping]}
-          onChange={(val) => setCodeString(val)}
-          editable={props.editable}
-          onCreateEditor={(editorView) =>
-            (editorView.contentDOM.ariaLabel = "Code Editor")
-          }
-        />
-        <div className="absolute right-0 top-0 flex flex-col gap-xs p-xs md:flex-row">
-          <CopyCodeButton textToCopy={codeString || initialCode} />
-          <CircleButton
-            onClick={() => {
-              setCodeString(initialCode);
-              setPreviewCodeString(initialCode);
-              announce("Code reset to initial value.");
+      <div className="flex flex-col w-full"> {/* Container for Editor + Console */}
+        <div className="code-editor-container relative w-full">
+          <CodeMirror
+            value={codeString}
+            theme="light"
+            width="100%"
+            minimalSetup={{
+              highlightSpecialChars: false,
+              history: false,
+              drawSelection: true,
+              syntaxHighlighting: true,
+              defaultKeymap: true,
+              historyKeymap: true,
             }}
-            ariaLabel="Reset code to initial value"
-            className="bg-white text-black"
-          >
-            <Icon kind="refresh" />
-          </CircleButton>
+            basicSetup={{
+              lineNumbers: false,
+              foldGutter: false,
+              autocompletion: false,
+            }}
+            indentWithTab={false}
+            extensions={[javascript(), EditorView.lineWrapping]}
+            onChange={(val) => setCodeString(val)}
+            editable={props.editable}
+            onCreateEditor={(editorView) =>
+              (editorView.contentDOM.ariaLabel = "Code Editor")
+            }
+          />
+          <div className="absolute right-0 top-0 flex flex-col gap-xs p-xs md:flex-row">
+            <CopyCodeButton textToCopy={codeString || initialCode} />
+            <CircleButton
+              onClick={() => {
+                setCodeString(initialCode);
+                setPreviewCodeString(initialCode);
+                announce("Code reset to initial value.");
+                setLogs([]); // Clear logs on reset
+              }}
+              ariaLabel="Reset code to initial value"
+              className="bg-white text-black"
+            >
+              <Icon kind="refresh" />
+            </CircleButton>
+          </div>
         </div>
+        
+        {showConsole && (
+          <ConsolePanel 
+            logs={logs} 
+            onClear={() => setLogs([])} 
+            onClose={() => setShowConsole(false)} 
+          />
+        )}
       </div>
+
       <span ref={liveRegionRef} aria-live="polite" class="sr-only" />
     </div>
   );

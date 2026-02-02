@@ -61,6 +61,38 @@ ${(code.scripts?.length ?? 0) > 0 ? '' : `
       document.head.appendChild(p5ScriptElement);
     }
   })
+
+  // Console Shim
+  var _console = window.console;
+  window.console = {
+    ..._console,
+    log: function(...args) {
+      window.parent.postMessage({ type: 'P5_CONSOLE', level: 'log', args: args }, '*');
+      _console.log(...args);
+    },
+    info: function(...args) {
+      window.parent.postMessage({ type: 'P5_CONSOLE', level: 'info', args: args }, '*');
+      _console.info(...args);
+    },
+    warn: function(...args) {
+      window.parent.postMessage({ type: 'P5_CONSOLE', level: 'warn', args: args }, '*');
+      _console.warn(...args);
+    },
+    error: function(...args) {
+      window.parent.postMessage({ type: 'P5_CONSOLE', level: 'error', args: args }, '*');
+      _console.error(...args);
+    }
+  };
+
+  // Error Shim
+  window.onerror = function(msg, url, lineNo, columnNo, error) {
+    window.parent.postMessage({ type: 'P5_CONSOLE', level: 'error', args: [msg] }, '*');
+    return false;
+  };
+
+  window.onunhandledrejection = function(event) {
+    window.parent.postMessage({ type: 'P5_CONSOLE', level: 'error', args: [event.reason] }, '*');
+  };
 </script>
 `}
 `.replace(/\u00A0/g, " ");
