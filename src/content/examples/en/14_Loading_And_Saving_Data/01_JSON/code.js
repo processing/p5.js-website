@@ -8,12 +8,6 @@ let mousePressY = 0;
 // Remember whether bubble is currently being created
 let creatingBubble = false;
 
-// Put any asynchronous data loading in preload to complete before "setup" is run
-function preload() {
-  // Load the JSON file and then call the loadData() function below
-  loadJSON('/assets/bubbles.json', loadData);
-}
-
 // Convert saved bubble data into Bubble Objects
 function loadData(bubblesData) {
   bubbles = [];
@@ -31,8 +25,10 @@ function loadData(bubblesData) {
   }
 }
 
-function setup() {
+async function setup() {
   let p5Canvas = createCanvas(640, 360);
+
+  await loadJSON('/assets/bubbles.json', loadData);
 
   // When canvas is clicked, call saveMousePress()
   p5Canvas.mousePressed(saveMousePress);
