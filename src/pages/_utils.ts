@@ -196,7 +196,11 @@ export const getLibraryLink = (library: CollectionEntry<"libraries">) =>
  * @returns The examples separated into individual strings
  */
  // separateReferenceExamples
-export const parseReferenceExamplesAndMetadata = (examples: string[]): { src: string, classes: Record<string, any> }[] =>
+export const parseReferenceExamplesAndMetadata = (examples: string[]): {
+  src: string,
+  classes: Record<string, any>,
+  meta: string[]
+}[] =>
   examples
     ?.flatMap((example: string) => example.split("</div>"))
     .map((src: string) => {
@@ -210,7 +214,18 @@ export const parseReferenceExamplesAndMetadata = (examples: string[]): { src: st
       }
       return { classes, src }
     })
-    .map(({ src, classes }) => ({ classes, src: src.replace(/<\/?div[^>]*>|<\/?code>/g, "") }))
+    .map(({ src, classes }) => {
+      const metaMatch = src.match(/^\/\/ META:(.+)/);
+      let meta: string[] = [];
+      if(metaMatch !== null){
+        meta = metaMatch?.[1].split(",") ?? [];
+      }
+      return {
+        classes,
+        src: src.replace(/<\/?div[^>]*>|<\/?code>/g, "").replace(/^\/\/ META:(.+)/, ""),
+        meta
+      };
+    })
     .filter(({ src }) => src);
 
 /**

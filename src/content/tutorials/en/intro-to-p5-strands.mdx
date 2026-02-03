@@ -103,23 +103,23 @@ let firstShader;
 // which determines how to modify the baseColorShader()
 
 function firstShaderCallback() {
-	getFinalColor((color) => {
-		color = [1, 1, 0, 1]; // Yellow in RGBA (0-1 scale)
-		return color;
-	});
+  getFinalColor((color) => {
+	color = [1, 1, 0, 1]; // Yellow in RGBA (0-1 scale)
+	return color;
+  });
 } 
 
 async function setup() {
-	createCanvas(200, 200, WEBGL);
+  createCanvas(200, 200, WEBGL);
   pixelDensity(1);
-	// p5.strands are made using the modify function on a shader 
-	firstShader = baseColorShader().modify(firstShaderCallback);
+  // p5.strands are made using the modify function on a shader 
+  firstShader = baseColorShader().modify(firstShaderCallback);
 }
 
 function draw() {
   background(0);
-	shader(firstShader);
-	sphere(80);
+  shader(firstShader);
+  sphere(80);
 }
 `}/>
 
@@ -164,29 +164,29 @@ let instancingStrokeShader;
 let particleModel;
 
 function instancingCallback() {
-	getWorldInputs((inputs) => {
-		// Offset each instance by its ID
-		inputs.position.x += instanceID() * 20;
+  getWorldInputs((inputs) => {
+  // Offset each instance by its ID
+  inputs.position.x += instanceID() * 20;
     // Move the particles left on the screen
     inputs.position.x -= 150;
-		return inputs;
-	});
+    return inputs;
+  });
 }
 
 async function setup() {
-	createCanvas(300, 300, WEBGL);
+  createCanvas(300, 300, WEBGL);
   pixelDensity(1);
   particleModel = buildGeometry(() => sphere(10, 10, 2));
-	instancingShader = baseColorShader().modify(instancingCallback);
+  instancingShader = baseColorShader().modify(instancingCallback);
   instancingStrokeShader = baseStrokeShader().modify(instancingCallback);
 }
 
 function draw() {
-	background(0);
-	orbitControl();
-	shader(instancingShader)
+  background(0);
+  orbitControl();
+  shader(instancingShader)
   strokeShader(instancingStrokeShader)
-	model(particleModel, 16);
+  model(particleModel, 16);
 }
 `} />
 
@@ -343,14 +343,14 @@ This perspective makes it easier to determine how surfaces appear to the viewer:
 
 ```js
 function fresnelCallback() {
-	getCameraInputs((inputs) => {
-		// The normal vector on the sphere's surface
-		let normalVector = normalize(inputs.normal);
-		// This creates a vector pointing from the surface to the camera
-		let viewVector = normalize(-inputs.position);
-		// ...
-		return inputs;
-	})
+  getCameraInputs((inputs) => {
+    // The normal vector on the sphere's surface
+    let normalVector = normalize(inputs.normal);
+    // This creates a vector pointing from the surface to the camera
+    let viewVector = normalize(-inputs.position);
+    // ...
+    return inputs;
+  })
 }
 ```
 
