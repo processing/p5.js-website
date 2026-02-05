@@ -48,10 +48,10 @@ export const rewriteRelativeLink = (url: string): string => {
   let updatedUrl: string = url;
 
   if (/^(https?:|mailto:|\/\/)/.exec(url)) {
-    // Leave external URLs  alone
+    // Skip rewriting for external URLs (http(s), mailto)
     return url;
-  } else if (url.startsWith('#')) {
-    // Leave links to headings alone
+  } else if (url.startsWith('#')||url.startsWith('/')) {
+    // Skip rewriting for heading links and root-relative internal paths
     updatedUrl = url;
   } else {
     // Convert relative paths to '../' (because pages that started as files in the same directory
