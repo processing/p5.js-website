@@ -45,11 +45,11 @@ export const removeNestedReferencePaths = (route: string): string =>
   route.replace(/constants\/|types\//, "")
 
 export const rewriteRelativeLink = (url: string): string => {
-  let updatedUrl: string;
+  let updatedUrl: string = url;
 
-  if (/^((https?:\/)?)\//.exec(url) || url.startsWith('mailto:')) {
-    // Leave absolute paths alone
-    updatedUrl = url;
+  if (/^(https?:|mailto:|\/\/)/.exec(url)) {
+    // Leave external URLs  alone
+    return url;
   } else if (url.startsWith('#')) {
     // Leave links to headings alone
     updatedUrl = url;
