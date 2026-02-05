@@ -4,6 +4,7 @@ import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 import serviceWorker from "astrojs-service-worker";
 import fast from "./src/scripts/fast-compress";
+import mermaid from 'astro-mermaid';
 
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
@@ -19,7 +20,11 @@ if (shouldSkipCompress) {
 export default defineConfig({
   site: 'https://p5js.org',
   compressHTML: false,
+  legacy: {
+    collections: true
+  },
   integrations: [
+    mermaid({autoTheme: true}),
     preact({
       compat: true,
     }),
@@ -76,7 +81,7 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      theme: 'github-light-high-contrast',
     },
   },
 });

@@ -1,8 +1,12 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 const { Octokit } = require('@octokit/rest');
+const yaml = require('js-yaml');
 
+const SUPPORTED_LANGUAGES = ['es', 'hi', 'ko', 'zh-Hans'];
+const CONTENT_TYPES = ['examples', 'reference', 'tutorials', 'text-detail', 'events', 'libraries'];
 
 function getTranslationPath(englishFilePath, language) {
   // Ensure we have a valid English path
@@ -25,10 +29,80 @@ function getTranslationPath(englishFilePath, language) {
   return translationParts.join('/');
 }
 
+function getSlugFromEnglishPath(englishFilePath, contentType) {
+  const prefix = `src/content/${contentType}/en/`;
+  if (!englishFilePath.startsWith(prefix)) return null;
+  let relative = englishFilePath.substring(prefix.length);
+  
+  if (relative.endsWith('/description.mdx')) {
+    relative = relative.slice(0, -'/description.mdx'.length);
+  } else if (relative.endsWith('.mdx')) {
+    relative = relative.slice(0, -'.mdx'.length);
+  } else if (relative.endsWith('.yaml')) {
+    relative = relative.slice(0, -'.yaml'.length);
+  }
+  return relative;
+}
 
+async function loadStewardsConfig() {
+  const STEWARDS_URL = 'https://raw.githubusercontent.com/processing/p5.js/main/stewards.yml';
+  
+  return new Promise((resolve, reject) => {
+    https.get(STEWARDS_URL, (res) => {
+      let data = '';
+      
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      res.on('end', () => {
+        try {
+          const config = yaml.load(data);
+          console.log('Successfully loaded stewards config from p5.js repository');
+          resolve(config);
+        } catch (error) {
+          console.log(`Could not parse stewards config: ${error.message}`);
+          resolve(null);
+        }
+      });
+    }).on('error', (error) => {
+      console.log(` Could not load stewards config from remote: ${error.message}`);
+      resolve(null);
+    });
+  });
+}
 
-const SUPPORTED_LANGUAGES = ['es', 'hi', 'ko', 'zh-Hans'];
-
+function getStewardsForLanguage(stewardsConfig, language) {
+  if (!stewardsConfig) return [];
+  
+  // Map website language codes to stewards.yml language codes
+  const languageMap = {
+    'zh-Hans': 'zh', // Simplified Chinese
+    'hi': 'hi',
+    'ko': 'ko',
+    'es': 'es'
+  };
+  
+  const stewardsLangCode = languageMap[language] || language;
+  const stewards = [];
+  
+  for (const [username, areas] of Object.entries(stewardsConfig)) {
+    if (!Array.isArray(areas)) continue;
+    
+    // Check if this steward has i18n area with the target language
+    for (const area of areas) {
+      if (typeof area === 'object' && area.i18n) {
+        const languages = area.i18n;
+        if (Array.isArray(languages) && languages.includes(stewardsLangCode)) {
+          stewards.push(`@${username}`);
+          break; 
+        }
+      }
+    }
+  }
+  
+  return stewards;
+}
 
 class GitHubCommitTracker {
   constructor(token, owner, repo) {
@@ -36,6 +110,14 @@ class GitHubCommitTracker {
     this.owner = owner;
     this.repo = repo;
     this.currentBranch = this.detectCurrentBranch();
+    this.stewardsConfig = null;
+  }
+
+  
+  static async create(token, owner, repo) {
+    const instance = new GitHubCommitTracker(token, owner, repo);
+    instance.stewardsConfig = await loadStewardsConfig();
+    return instance;
   }
 
   /**
@@ -49,7 +131,7 @@ class GitHubCommitTracker {
       }
       
       if (process.env.GITHUB_REF_NAME) {
-        return process.env.GITHUB_REF_NAME; // For push events
+        return process.env.GITHUB_REF_NAME;
       }
       
       // Git command fallback
@@ -216,32 +298,6 @@ class GitHubCommitTracker {
     }
   }
 
-  /**
-   * Create a GitHub issue for outdated translation
-   */
-  async createTranslationIssue(englishFile, language, commitInfo) {
-    const issueTitle = `🌍 Update ${language.toUpperCase()} translation for ${path.basename(englishFile)}`;
-    const issueBody = this.formatIssueBody(englishFile, language, commitInfo);
-    
-    try {
-      const { data } = await this.octokit.rest.issues.create({
-        owner: this.owner,
-        repo: this.repo,
-        title: issueTitle,
-        body: issueBody,
-        labels: ['translation', `lang-${language}`, 'help wanted']
-      });
-
-      return data;
-    } catch (error) {
-      console.error(`❌ Error creating issue:`, error.message);
-      return null;
-    }
-  }
-
-  /**
-   * Create a single GitHub issue for a file covering multiple languages
-   */
   async createMultiLanguageTranslationIssue(fileTranslations) {
     const englishFile = fileTranslations.englishFile;
     const issueTitle = `🌍 Update translations for ${path.basename(englishFile)}`;
@@ -262,58 +318,50 @@ class GitHubCommitTracker {
       labels.push(`lang-${lang}`);
     });
     
+    let assignees = [];
+    uniqueLanguages.forEach(lang => {
+      const stewards = getStewardsForLanguage(this.stewardsConfig, lang);
+      assignees.push(...stewards);
+    });
+    assignees = [...new Set(assignees.map(a => a.replace('@', '')))];
+    
     try {
-      const { data } = await this.octokit.rest.issues.create({
+      const createParams = {
         owner: this.owner,
         repo: this.repo,
         title: issueTitle,
         body: issueBody,
         labels: labels
-      });
+      };
+      
+      if (assignees.length > 0) {
+        createParams.assignees = assignees;
+      }
+      
+      const { data } = await this.octokit.rest.issues.create(createParams);
 
       return data;
     } catch (error) {
+      // If assignees fail, try again without assignees
+      if (error.message.includes('assignees') && assignees.length > 0) {
+        try {
+          const { data } = await this.octokit.rest.issues.create({
+            owner: this.owner,
+            repo: this.repo,
+            title: issueTitle,
+            body: issueBody,
+            labels: labels
+          });
+          console.log(`⚠️  Issue created but stewards could not be assigned (not collaborators)`);
+          return data;
+        } catch (retryError) {
+          console.error(`❌ Error creating issue on retry:`, retryError.message);
+          return null;
+        }
+      }
       console.error(`❌ Error creating multi-language issue:`, error.message);
       return null;
     }
-  }
-
-  /**
-   * Format the issue body with helpful information
-   */
-  formatIssueBody(englishFile, language, commitInfo) {
-    const translationPath = getTranslationPath(englishFile, language);
-    const englishCommit = commitInfo.english;
-    const translationCommit = commitInfo.translation;
-
-    return `## 🌍 Translation Update Needed
-
-**File**: \`${englishFile}\`
-**Language**: ${this.getLanguageDisplayName(language)}
-**Translation file**: \`${translationPath}\`
-**Branch**: \`${this.currentBranch}\`
-
-### 📅 Timeline
-- **English last updated**: ${englishCommit.date.toLocaleDateString()} by ${englishCommit.author}
-- **Translation last updated**: ${translationCommit ? translationCommit.date.toLocaleDateString() + ' by ' + translationCommit.author : 'Never translated'}
-
-### 🔗 Quick Links
-- [📄 Current English file](https://github.com/${this.owner}/${this.repo}/blob/${this.currentBranch}/${englishFile})
-- [📝 Translation file](https://github.com/${this.owner}/${this.repo}/blob/${this.currentBranch}/${translationPath})
-- [🔍 Compare changes](https://github.com/${this.owner}/${this.repo}/compare/${translationCommit ? translationCommit.sha : 'HEAD'}...${englishCommit.sha})
-
-### 📋 What to do
-1. Review the English changes in the file
-2. Update the ${this.getLanguageDisplayName(language)} translation accordingly
-3. Maintain the same structure and formatting
-4. Test the translation for accuracy and cultural appropriateness
-
-### 📝 Recent English Changes
-**Last commit**: [${englishCommit.message}](${englishCommit.url})
-
----
-*This issue was automatically created by the p5.js Translation Tracker 🤖*
-*Need help? Check our [translation guidelines](https://github.com/processing/p5.js-website/blob/main/contributor_docs/translation.md)*`;
   }
 
   /**
@@ -323,6 +371,7 @@ class GitHubCommitTracker {
     const englishFile = fileTranslations.englishFile;
     const outdatedLanguages = fileTranslations.outdatedLanguages;
     const missingLanguages = fileTranslations.missingLanguages;
+    const englishCommit = fileTranslations.englishCommit;
 
     let body = `## 🌍 Translation Update Needed
 
@@ -330,7 +379,7 @@ class GitHubCommitTracker {
 **Branch**: \`${this.currentBranch}\`
 
 ### 📅 Timeline
-- **Latest English update**: ${fileTranslations.englishCommit.date.toLocaleDateString()} by ${fileTranslations.englishCommit.author}
+- **Latest English update**: ${englishCommit.date.toLocaleDateString()} by ${englishCommit.author}
 
 `;
 
@@ -339,9 +388,10 @@ class GitHubCommitTracker {
       body += `### 🔄 Outdated Translations\n\n`;
       outdatedLanguages.forEach(lang => {
         const translationPath = lang.translationPath;
-        body += `- **${this.getLanguageDisplayName(lang.language)}**: Last updated ${lang.commitInfo.translation.date.toLocaleDateString()} by ${lang.commitInfo.translation.author}\n`;
-        body += `  - [📝 View file](https://github.com/${this.owner}/${this.repo}/blob/${this.currentBranch}/${translationPath})\n`;
-        body += `  - [🔍 Compare changes](https://github.com/${this.owner}/${this.repo}/compare/${lang.commitInfo.translation.sha}...${lang.commitInfo.english.sha})\n\n`;
+        const stewards = getStewardsForLanguage(this.stewardsConfig, lang.language);
+        const stewardsText = stewards.length > 0 ? ` (cc ${stewards.join(', ')})` : '';
+        body += `- **${this.getLanguageDisplayName(lang.language)}**: Last updated ${lang.commitInfo.translation.date.toLocaleDateString()} by ${lang.commitInfo.translation.author}${stewardsText}\n`;
+        body += `  - [📝 View file](https://github.com/${this.owner}/${this.repo}/blob/${this.currentBranch}/${translationPath})\n\n`;
       });
     }
 
@@ -350,22 +400,11 @@ class GitHubCommitTracker {
       body += `### ❌ Missing Translations\n\n`;
       missingLanguages.forEach(lang => {
         const translationPath = lang.translationPath;
-        body += `- **${this.getLanguageDisplayName(lang.language)}**: Translation file does not exist\n`;
+        const stewards = getStewardsForLanguage(this.stewardsConfig, lang.language);
+        const stewardsText = stewards.length > 0 ? ` (cc ${stewards.join(', ')})` : '';
+        body += `- **${this.getLanguageDisplayName(lang.language)}**: Translation file does not exist${stewardsText}\n`;
         body += `  - Expected location: \`${translationPath}\`\n\n`;
       });
-    }
-
-    // Include an English diff snippet if available
-    if (englishDiff) {
-      body += `### 🧾 English Changes (Recent)\n\n`;
-      body += `- [🔍 View full diff](${englishDiff.compareUrl})\n`;
-      if (englishDiff.patchSnippet) {
-        body += `\n\n\u0060\u0060\u0060diff\n${englishDiff.patchSnippet}\n\u0060\u0060\u0060\n`;
-        if (englishDiff.isTruncated) {
-          body += `\n_(diff truncated — open the full diff link above for all changes)_\n`;
-        }
-      }
-      body += `\n`;
     }
 
     body += `### 🔗 Quick Links
@@ -382,12 +421,12 @@ class GitHubCommitTracker {
 - [ ] Ensure translation is accurate and culturally appropriate
 
 ### 📝 Summary of English File Changes
-**Last commit**: [${fileTranslations.englishCommit.message}](${fileTranslations.englishCommit.url})
+**Last commit**: [${englishCommit.message}](${englishCommit.url})
 
 ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**: English file was updated. ${outdatedLanguages.length > 0 ? `${outdatedLanguages.map(l => this.getLanguageDisplayName(l.language)).join(', ')} translation${outdatedLanguages.length > 1 ? 's' : ''} may be outdated.` : ''} ${missingLanguages.length > 0 ? `${missingLanguages.map(l => this.getLanguageDisplayName(l.language)).join(', ')} translation${missingLanguages.length > 1 ? 's are' : ' is'} missing.` : ''}` : ''}
 
 ---
-ℹ️ **Need help?** See our [Translation Guidelines](https://github.com/processing/p5.js-website/blob/main/contributor_docs/translation.md)
+ℹ️ **Need help?** See our [Contributor Guidelines](https://p5js.org/contribute/contributor_guidelines/)
 
 🤖 *This issue was auto-generated by the p5.js Translation Tracker*`;
     return body;
@@ -408,10 +447,6 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
 }
 
 /**
- * Week 1: Get changed files from git or test files
- * This is the core Week 1 functionality that remains unchanged
- */
-/**
  * Get changed files from git or test files (generalized for different content types)
  */
 function getChangedFiles(testFiles = null, contentType = 'examples') {
@@ -419,7 +454,7 @@ function getChangedFiles(testFiles = null, contentType = 'examples') {
   if (testFiles) {
     console.log('🧪 Using provided test files for local testing');
     return testFiles.filter(file => 
-      file.startsWith(`src/content/${contentType}/en`) && file.endsWith('.mdx')
+      file.startsWith(`src/content/${contentType}/en`) && (file.endsWith('.mdx') || file.endsWith('.yaml'))
     );
   }
 
@@ -433,7 +468,7 @@ function getChangedFiles(testFiles = null, contentType = 'examples') {
     const allChangedFiles = changedFilesOutput.trim().split('\n').filter(file => file.length > 0);
     
     const changedContentFiles = allChangedFiles.filter(file => 
-      file.startsWith(`src/content/${contentType}/en`) && file.endsWith('.mdx')
+      file.startsWith(`src/content/${contentType}/en`) && (file.endsWith('.mdx') || file.endsWith('.yaml'))
     );
     
     return changedContentFiles;
@@ -462,7 +497,7 @@ function getAllEnglishContentFiles(contentType = 'examples') {
         const itemPath = path.join(dir, item);
         if (fs.statSync(itemPath).isDirectory()) {
           scanDirectory(itemPath);
-        } else if (item.endsWith('.mdx')) {
+        } else if (item.endsWith('.mdx') || item.endsWith('.yaml')) {
           allFiles.push(itemPath);
         }
       });
@@ -476,14 +511,6 @@ function getAllEnglishContentFiles(contentType = 'examples') {
     return [];
   }
 }
-
-/**
- * Scan all English example files (for backward compatibility)
- */
-function getAllEnglishExampleFiles() {
-  return getAllEnglishContentFiles('examples');
-}
-
 
 function fileExists(filePath) {
   try {
@@ -504,7 +531,7 @@ function getFileModTime(filePath) {
 }
 
 
-async function checkTranslationStatus(changedExampleFiles, githubTracker = null, createIssues = false) {
+async function checkTranslationStatus(changedFiles, githubTracker = null, createIssues = false) {
   const translationStatus = {
     needsUpdate: [],
     missing: [],
@@ -516,13 +543,23 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
   // Group translation issues by file to create single issues per file
   const fileTranslationMap = translationStatus.fileTranslationMap;
   
-  for (const englishFile of changedExampleFiles) {
+  for (const englishFile of changedFiles) {
+    
+    let englishCommit = null;
+    if (githubTracker) {
+      englishCommit = await githubTracker.getLastCommit(englishFile);
+      if (!englishCommit) {
+        console.log(`⚠️ Skipping ${englishFile} - could not retrieve commit data`);
+        continue; 
+      }
+    }
+
     const fileTranslations = {
       englishFile,
       outdatedLanguages: [],
       missingLanguages: [],
       upToDateLanguages: [],
-      englishCommit: null
+      englishCommit
     };
     
     for (const language of SUPPORTED_LANGUAGES) {
@@ -543,16 +580,7 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
 
       
       if (githubTracker) {
-        // Get English commit only once per file
-        if (!fileTranslations.englishCommit) {
-          fileTranslations.englishCommit = await githubTracker.getLastCommit(englishFile);
-        }
-        const englishCommit = fileTranslations.englishCommit;
         const translationCommit = await githubTracker.getLastCommit(translationPath);
-
-        if (!englishCommit) {
-          continue;
-        }
 
         if (!translationCommit) {
           const missingItem = {
@@ -593,7 +621,7 @@ async function checkTranslationStatus(changedExampleFiles, githubTracker = null,
           fileTranslations.upToDateLanguages.push(upToDateItem);
         }
       } else {
-        // Week 1: Fallback to file modification time comparison
+        // Fallback to file modification time comparison
         const englishModTime = getFileModTime(englishFile);
         if (!englishModTime) {
           console.log(`  ⚠️ Could not get modification time for English file`);
@@ -680,110 +708,140 @@ async function main(testFiles = null, options = {}) {
   if (hasToken) {
     try {
       const [owner, repo] = (process.env.GITHUB_REPOSITORY || 'processing/p5.js-website').split('/');
-      githubTracker = new GitHubCommitTracker(process.env.GITHUB_TOKEN, owner, repo);
+      githubTracker = await GitHubCommitTracker.create(process.env.GITHUB_TOKEN, owner, repo);
       console.log(`📡 Connected to ${owner}/${repo}`);
     } catch (error) {
       console.error('❌ GitHub API failed, using file-based tracking');
     }
   }
 
-  // Get files to check (currently focused on examples)
-  const contentType = 'examples';
-  let filesToCheck;
-  if (testFiles) {
-    filesToCheck = getChangedFiles(testFiles, contentType);
-  } else if (isGitHubAction) {
-    filesToCheck = getChangedFiles(null, contentType);
-  } else {
-    console.log(`📊 Scanning all English ${contentType} files...`);
-    filesToCheck = getAllEnglishContentFiles(contentType);
-  }
-  
-  if (filesToCheck.length === 0) {
-    if (isGitHubAction) {
-      console.log('✅ No English example files changed in this push');
+  const allTranslationStatus = [];
+
+  for (const contentType of CONTENT_TYPES) {
+    let filesToCheck;
+    if (testFiles) {
+      filesToCheck = getChangedFiles(testFiles, contentType);
+    } else if (isGitHubAction) {
+      filesToCheck = getChangedFiles(null, contentType);
     } else {
-      console.log('✅ No files to check');
+      console.log(`📊 Scanning all English ${contentType} files...`);
+      filesToCheck = getAllEnglishContentFiles(contentType);
     }
-    return;
-  }
-  
-  console.log(`📝 Checking ${filesToCheck.length} English example file(s):`);
-  filesToCheck.forEach(file => console.log(`   - ${file}`));
+    
+    if (filesToCheck.length === 0) {
+      continue;
+    }
+    
+    console.log(`\n📝 Checking ${filesToCheck.length} English ${contentType} file(s):`);
+    filesToCheck.forEach(file => console.log(`   - ${file}`));
 
-  const createIssues = isProduction && githubTracker !== null;
-  const translationStatus = await checkTranslationStatus(
-    filesToCheck, 
-    githubTracker, 
-    createIssues
-  );
+    const createIssues = isProduction && githubTracker !== null;
+    const translationStatus = await checkTranslationStatus(
+      filesToCheck, 
+      githubTracker, 
+      createIssues
+    );
+    
+    allTranslationStatus.push({ contentType, translationStatus });
 
-  // Detailed results
-  const { needsUpdate, missing, upToDate, issuesCreated } = translationStatus;
-  
-  console.log('\n📊 Translation Status Summary:');
-  console.log(`   🔄 Outdated: ${needsUpdate.length}`);
-  console.log(`   ❌ Missing: ${missing.length}`);
-  console.log(`   ✅ Up-to-date: ${upToDate.length}`);
-  
-  if (needsUpdate.length > 0) {
-    console.log('\n🔄 Files needing translation updates:');
-    needsUpdate.forEach(item => {
-      const langName = githubTracker ? githubTracker.getLanguageDisplayName(item.language) : item.language;
-      if (githubTracker && item.commitInfo) {
-        console.log(`   - ${item.englishFile} → ${langName}`);
-        console.log(`     English: ${item.commitInfo.english.date.toLocaleDateString()} by ${item.commitInfo.english.author}`);
-        console.log(`     Translation: ${item.commitInfo.translation.date.toLocaleDateString()} by ${item.commitInfo.translation.author}`);
-      } else {
-        console.log(`   - ${item.englishFile} → ${langName}`);
-        if (item.englishModTime && item.translationModTime) {
-          console.log(`     English: ${item.englishModTime.toLocaleDateString()}`);
-          console.log(`     Translation: ${item.translationModTime.toLocaleDateString()}`);
+    const { needsUpdate, missing, upToDate, issuesCreated } = translationStatus;
+    
+    console.log(`\n📊 Translation Status Summary for ${contentType}:`);
+    console.log(`   🔄 Outdated: ${needsUpdate.length}`);
+    console.log(`   ❌ Missing: ${missing.length}`);
+    console.log(`   ✅ Up-to-date: ${upToDate.length}`);
+    
+    if (needsUpdate.length > 0) {
+      console.log(`\n🔄 Files needing translation updates:`);
+      needsUpdate.forEach(item => {
+        const langName = githubTracker ? githubTracker.getLanguageDisplayName(item.language) : item.language;
+        if (githubTracker && item.commitInfo) {
+          console.log(`   - ${item.englishFile} → ${langName}`);
+          console.log(`     English: ${item.commitInfo.english.date.toLocaleDateString()} by ${item.commitInfo.english.author}`);
+          console.log(`     Translation: ${item.commitInfo.translation.date.toLocaleDateString()} by ${item.commitInfo.translation.author}`);
+        } else {
+          console.log(`   - ${item.englishFile} → ${langName}`);
+          if (item.englishModTime && item.translationModTime) {
+            console.log(`     English: ${item.englishModTime.toLocaleDateString()}`);
+            console.log(`     Translation: ${item.translationModTime.toLocaleDateString()}`);
+          }
         }
+      });
+    }
+    
+    if (missing.length > 0) {
+      console.log(`\n❌ Missing translation files:`);
+      missing.forEach(item => {
+        const langName = githubTracker ? githubTracker.getLanguageDisplayName(item.language) : item.language;
+        console.log(`   - ${item.englishFile} → ${langName}`);
+        console.log(`     Expected: ${item.translationPath}`);
+      });
+    }
+    
+    if (issuesCreated.length > 0) {
+      console.log(`\n🎫 GitHub issues created: ${issuesCreated.length}`);
+      issuesCreated.forEach(issue => {
+        console.log(`   - Issue #${issue.issueNumber}: ${issue.englishFile}`);
+        console.log(`     Languages: ${issue.affectedLanguages.map(lang => githubTracker.getLanguageDisplayName(lang)).join(', ')}`);
+        console.log(`     URL: ${issue.issueUrl}`);
+      });
+    } else if (needsUpdate.length > 0 || missing.length > 0) {
+      if (!hasToken) {
+        console.log(`\n💡 Run with GITHUB_TOKEN to create GitHub issues`);
       }
-    });
-  }
-  
-  if (missing.length > 0) {
-    console.log('\n❌ Missing translation files:');
-    missing.forEach(item => {
-      const langName = githubTracker ? githubTracker.getLanguageDisplayName(item.language) : item.language;
-      console.log(`   - ${item.englishFile} → ${langName}`);
-      console.log(`     Expected: ${item.translationPath}`);
-    });
-  }
-  
-  if (issuesCreated.length > 0) {
-    console.log(`\n🎫 GitHub issues created: ${issuesCreated.length}`);
-    issuesCreated.forEach(issue => {
-      console.log(`   - Issue #${issue.issueNumber}: ${issue.englishFile}`);
-      console.log(`     Languages: ${issue.affectedLanguages.map(lang => githubTracker.getLanguageDisplayName(lang)).join(', ')}`);
-      console.log(`     URL: ${issue.issueUrl}`);
-    });
-  } else if (needsUpdate.length > 0 || missing.length > 0) {
-    if (!hasToken) {
-      console.log(`\n💡 Run with GITHUB_TOKEN to create GitHub issues`);
+    }
+    
+    if (needsUpdate.length === 0 && missing.length === 0) {
+      console.log(`\n✅ All ${contentType} translations are up to date!`);
+    }
+
+    // Write manifest JSON for the site to consume
+    try {
+      const manifestDir = path.join(process.cwd(), 'public', 'translation-status');
+      const manifestPath = path.join(manifestDir, `${contentType}.json`);
+      if (!fs.existsSync(manifestDir)) {
+        fs.mkdirSync(manifestDir, { recursive: true });
+      }
+      const content = {};
+      for (const [englishFile, fileTranslations] of translationStatus.fileTranslationMap) {
+        const slug = getSlugFromEnglishPath(englishFile, contentType);
+        if (!slug) continue;
+        const outdated = fileTranslations.outdatedLanguages.map(l => l.language);
+        const missingLangs = fileTranslations.missingLanguages.map(l => l.language);
+        const upToDateLangs = fileTranslations.upToDateLanguages.map(l => l.language);
+        content[slug] = {
+          englishFile,
+          outdated,
+          missing: missingLangs,
+          upToDate: upToDateLangs,
+        };
+      }
+      const manifest = {
+        generatedAt: new Date().toISOString(),
+        branch: githubTracker ? githubTracker.currentBranch : null,
+        contentType,
+        [contentType]: content,
+      };
+      fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
+      console.log(`\n🗂️  Wrote ${contentType} translation manifest: ${manifestPath}`);
+    } catch (writeErr) {
+      console.log(`\n⚠️  Could not write ${contentType} translation manifest: ${writeErr.message}`);
     }
   }
-  
-  if (needsUpdate.length === 0 && missing.length === 0) {
-    console.log('\n✅ All translations are up to date!');
-  }
-
 }
 
 // Export for testing (simplified)
 module.exports = {
   main,
   getChangedFiles,
-  getAllEnglishExampleFiles,
   getAllEnglishContentFiles,
   checkTranslationStatus,
   GitHubCommitTracker,
-  SUPPORTED_LANGUAGES
+  SUPPORTED_LANGUAGES,
+  CONTENT_TYPES
 };
 
 // Run if called directly
 if (require.main === module) {
   main();
-} 
+}
