@@ -42,7 +42,9 @@ export const tutorialsCollection = defineCollection({
             data.authors.length > 0 &&
             data.featuredImage !== undefined &&
             data.featuredImageAlt !== undefined &&
-            data.description !== undefined
+            data.featuredImageAlt.trim().length > 0 &&
+            data.description !== undefined &&
+            data.description.trim().length > 0
           );
         },
         {
