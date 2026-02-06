@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { useLiveRegion } from '../hooks/useLiveRegion';
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { minifiedLibraryDownloadUrl, cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
+import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -96,7 +96,7 @@ export const CodeEmbed = (props) => {
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
-	      scripts={props.includeSound ? [minifiedLibraryDownloadUrl, cdnSoundUrl] :[minifiedLibraryDownloadUrl]}
+	      scripts={props.includeSound ? [cdnLibraryUrl, cdnSoundUrl] :[cdnLibraryUrl]}
             />
           </div>
           <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
