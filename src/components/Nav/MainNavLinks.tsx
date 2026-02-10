@@ -1,6 +1,7 @@
 import styles from "./styles.module.scss";
 import { Logo } from "../Logo";
 import { Icon } from "../Icon";
+import { p5Version } from "@src/globals/p5-version";
 
 type MainNavLinksProps = {
   links: {
@@ -81,7 +82,7 @@ export const MainNavLinks = ({
       </ul>
       <ul class="flex flex-col gap-[15px]">
         <li>
-          <a className={styles.buttonlink} href="https://editor.p5js.org">
+          <a className={styles.buttonlink} href={`https://editor.p5js.org?version=${p5Version}`}>
             <div class="mr-xxs">
               <Icon kind="code-brackets" />
             </div>

@@ -6,15 +6,15 @@ categoryIndex: 4
 featuredImage: ../images/featured/node.png
 featuredImageAlt: A p5.js logo with musical notes above it has arrows labeled with HTTP methods pointing to a cloud labeled “Internet”. Above the cloud is an icon that reads “http\://”. Arrows point from the cloud to a pink cube labeled “Web Server” with the Node.js logo above it.
 relatedContent:
-  references:
-   - en/p5/async_await
-   - en/p5/loadjson
+  references: []
 authors:
   - Layla Quiñones
   - Nick McIntyre
 ---
 
-In this guide, we'll explore the fusion of p5.js and [Node.js](http://nodejs.org) to create dynamic applications that save and retrieve user-generated drawings, animations, and sound projects! For example, you can create a [Simple Melody App](/tutorials/simple-melody-app/) where you save files with melodies you create by interacting with the canvas! Node.js allows you to easily save, replay, and edit these files right from your browser!
+import { p5Version } from "@src/globals/p5-version";
+
+In this guide, we'll explore the fusion of p5.js and [Node.js](http://node.js) to create dynamic applications that save and retrieve user-generated drawings, animations, and sound projects! For example, you can create a [Simple Melody App](/tutorials/simple-melody-app/) where you save files with melodies you create by interacting with the canvas! Node.js allows you to easily save, replay, and edit these files right from your browser!
 
 
 ![A p5.js logo with musical notes above it has arrows labeled with HTTP methods pointing to a cloud labeled “Internet”. Above the cloud is an icon that reads “http://”. Arrows point from the cloud to a pink cube labeled “Web Server” with the Node.js logo above it.](../images/advanced/node.png)
@@ -36,7 +36,7 @@ This tutorial is part 2 in a series of 3 tutorials that walk you through creatin
 
 Have you ever wondered why many website urls begin with `https://...`? Computers connected to the internet are called [clients and servers](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works). A client is the computer you use to access the internet, and servers are computers that store information such as web pages and apps. When you're working with a web browser to access the [internet](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/How_does_the_Internet_work), the web browser uses [HTTP (Hypertext Transfer Protocol)](https://developer.mozilla.org/en-US/docs/Web/HTTP) to communicate with servers where resources like HTML documents, images, stylesheets, scripts, etc. live. Whenever you view any page on a web browser, it needs to communicate with web servers to retrieve the web pages you see!
 
-When using the [p5.js Web Editor](https://editor.p5js.org/), your code is executed within a web browser; therefore, [HTTP methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) are used to retrieve, store, change, and delete your projects. When you are building apps and projects where users read or write files by interacting with it, [HTTP methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) are also used to make this process secure and easy! 
+When using the [p5.js Web Editor](https://editor.p5js.org?version={p5Version}), your code is executed within a web browser; therefore, [HTTP methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) are used to retrieve, store, change, and delete your projects. When you are building apps and projects where users read or write files by interacting with it, [HTTP methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) are also used to make this process secure and easy! 
 
 ![A diagram illustrating how the p5.js Web Editor uses the GET HTTP method to retrieve index.html, sketch.js and style.css files from a web server to render a sketch. Arrows begin from the editor in a web browser, pass through a cloud labeled “Internet”, and point to a pink box labeled “Web Server”.](../images/advanced/client-server-diagram.svg)
 
@@ -175,13 +175,13 @@ let fs = require('fs');
 
 // API endpoint to get list of songs
 app.get('/songs', (req, res) => {
-  fs.readdir('songs', (err, files) => {
-    if (err) {
-      res.status(500).send('Error reading song files');
-    } else {
-      res.json({ files });
-    }
-  });
+  fs.readdir('songs', (err, files) => {
+    if (err) {
+      res.status(500).send('Error reading song files');
+    } else {
+      res.json({ files });
+    }
+  });
 });
 ```
 
@@ -189,17 +189,23 @@ The code above initializes the [file system module (`fs`)](https://nodejs.org/ap
 
 Now that you have instructed the GET request on how to read the songs folder filenames, we can upload filenames as a JSON object in `sketch.js`.
 
-**Note:** In p5.js 2.x, the `preload()` function and synchronous loading methods have been removed. Instead, you should use `async`/`await` and the browser's `fetch` API to load data before using it in your sketch. Here is how you can update your `sketch.js`:
+- Use `preload()` and `loadJSON()` to load files from the songs folder in a global variable named `songs`. Visit the [p5.js reference](/reference) to learn more about [`preload()`](/reference/p5/preload) and [`loadJSON()`](/reference/p5/loadJSON).
+- Use `console.log(songs)` in `setup()` to print the contents of the JSON array.
 
+Your sketch.js file should look like this:
 
 ```js
+//variable for JSON object with file names
 let songs;
 
-async function setup() {
-  createCanvas(400, 400);
-  // Fetch the list of songs from the server via loadJSON
-  songs = await loadJSON('/songs');
-  console.log(songs);
+function preload() {
+  //load and save the songs folder as JSON
+  songs = loadJSON("/songs");
+}
+
+function setup() {
+  createCanvas(400, 400);
+  console.log(songs)
 }
 
 function draw() {
@@ -210,11 +216,13 @@ function draw() {
 View your browser’s console to make sure the output of the `songs` variable looks something like this:
 
 ```
-{ files: [
-  "C Major Scale.json",
-  "Frere Jacques.json",
-  "Mary's Lamb.json"
-] }
+Object i
+  files: Array(3)
+    0: "C Major Scale.json"
+    1: "Frere Jacques.json"
+    2: "Mary's Lamb.json"
+    length: 3
+// ...prototype
 ```
 
 Now you are ready to build the [Melody App](https://docs.google.com/document/u/0/d/1mzJv-7qU1_CmkWI0ZFeqf3CeBfpOOVIrvPRZtxqFxRI/edit)! You can access completed code for this guide in [this Github repository](https://github.com/MsQCompSci/melodyAppNodeStarter/tree/main).
