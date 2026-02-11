@@ -8,7 +8,7 @@ export default getViteConfig({
   resolve: {
     mainFields: ["module"],
   },
-  // @ts-expect-error - vitest config not recognized by astro's getViteConfig
+  // @ts-expect-error - test config is valid for vitest but not recognized by astro's getViteConfig types
   test: {
     projects: [
       {
