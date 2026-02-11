@@ -5,6 +5,7 @@ import tailwind from "@astrojs/tailwind";
 import serviceWorker from "astrojs-service-worker";
 import fast from "./src/scripts/fast-compress";
 import mermaid from 'astro-mermaid';
+import sitemap from "@astrojs/sitemap";
 
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
@@ -24,6 +25,7 @@ export default defineConfig({
     collections: true
   },
   integrations: [
+    sitemap(),
     mermaid({autoTheme: true}),
     preact({
       compat: true,

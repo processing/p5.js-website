@@ -206,8 +206,9 @@ export const generateSearchIndex = async (
     const { data, content } = parsed;
     // Get the relative URL of the content
     // this is used to link to the content in the search results
-    const contentRelativeUrl = file
-      .replace(`${localeDir}/`, "")
+    const contentRelativeUrl = path
+      .relative(localeDir.replace(/\\/g, "/"), file.replace(/\\/g, "/"))
+      .replace(/\\/g, "/")
       .replace(".mdx", "")
       .replace(".yaml", "");
     let relativeUrl = `/${contentType}/${contentRelativeUrl}`;
