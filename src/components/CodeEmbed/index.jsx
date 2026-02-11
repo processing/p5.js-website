@@ -96,7 +96,7 @@ export const CodeEmbed = (props) => {
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
-              scripts={props.includeSound ? [cdnSoundUrl] : []}
+	      scripts={props.includeSound ? [cdnLibraryUrl, cdnSoundUrl] :[cdnLibraryUrl]}
             />
           </div>
           <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
