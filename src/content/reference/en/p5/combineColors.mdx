@@ -1,15 +1,18 @@
 ---
 title: combineColors
 module: 3D
-submodule: strands
+submodule: p5.strands
 file: src/strands/p5.strands.js
 description: >-
-  <p>Registers a callback to customize how color components are combined in the
+  <p>A shader hook block that modifies how color components are combined in the
   fragment shader. This hook can be used inside <a
-  href="/reference/p5/baseMaterialShader/">baseMaterialShader()</a>.modify() and
-  similar shader <a href="/reference/p5.Shader/modify/">modify()</a> calls to
-  control the final color output of a material. The callback receives an object
-  with the following properties:</p>
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader()</code></a>
+  and similar shader <a
+  href="/reference/p5.Shader/modify/"><code>modify()</code></a> calls to control
+  the final color output of a material. Modifications happen between the
+  <code>.begin()</code> and <code>.end()</code> methods of the hook.</p>
+
+  <p><code>combineColors</code> has the following properties:</p>
 
   <ul><li><code>baseColor</code>: a three-component vector representing the base
   color (red, green, blue).</li><li><code>diffuse</code>: a single number
@@ -21,37 +24,38 @@ description: >-
   number representing the specular reflection.</li><li><code>emissive</code>: a
   three-component vector representing the emissive
   color.</li><li><code>opacity</code>: a single number representing the
-  opacity.</li></ul><p>The callback should return a vector with four components
-  (red, green, blue, alpha) for the final color.</p>
+  opacity.</li></ul><p>Call <code>.set()</code> on the hook with a vector with
+  four components (red, green, blue, alpha) for the final color.</p>
 
   <p>This hook is available in:</p>
 
   <ul><li><a
-  href="/reference/p5/baseMaterialShader/">baseMaterialShader()</a></li></ul>
-line: 135
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader()</code></a></li></ul>
+line: 173
 isConstructor: false
-itemtype: method
+itemtype: property
 example:
   - |-
-    <div modernizr='webgl'>
-    <code>
     let myShader;
     function setup() {
       createCanvas(200, 200, WEBGL);
-      myShader = baseMaterialShader().modify(() => {
-        combineColors(components => {
-          // Custom color combination: add a green tint using vector properties
-          return [
-            components.baseColor * components.diffuse +
-              components.ambientColor * components.ambient +
-              components.specularColor * components.specular +
-              components.emissive +
-              [0, 0.2, 0], // Green tint for visibility
-            components.opacity
-          ];
-        });
-      });
+      myShader = buildMaterialShader(material);
     }
+
+    function material() {
+      combineColors.begin();
+      // Custom color combination: add a green tint using vector properties
+      combineColors.set([
+        combineColors.baseColor * combineColors.diffuse +
+          combineColors.ambientColor * combineColors.ambient +
+          combineColors.specularColor * combineColors.specular +
+          combineColors.emissive +
+          [0, 0.2, 0], // Green tint
+        combineColors.opacity
+      ]);
+      combineColors.end();
+    }
+
     function draw() {
       background(255);
       shader(myShader);
@@ -60,17 +64,8 @@ example:
       fill('white');
       sphere(50);
     }
-    </code>
-    </div>
 class: p5
-overloads:
-  - params:
-      - name: callback
-        description: >-
-          A callback function which receives the object described above and
-          returns a vector with four components for the final color.
-        type: Function
-chainable: false
+type: Object
 ---
 
 

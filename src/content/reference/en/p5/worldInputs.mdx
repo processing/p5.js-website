@@ -1,0 +1,68 @@
+---
+title: worldInputs
+module: 3D
+submodule: p5.strands
+file: src/strands/p5.strands.js
+description: >-
+  <p>A shader hook block that modifies the world-space properties of each vertex
+  in a shader. This hook can be used inside <a
+  href="/reference/p5/buildColorShader/"><code>buildColorShader()</code></a> and
+  similar shader <a
+  href="/reference/p5.Shader/modify/"><code>modify()</code></a> calls to
+  customize vertex positions, normals, texture coordinates, and colors before
+  rendering. Modifications happen between the <code>.begin()</code> and
+  <code>.end()</code> methods of the hook. "World space" refers to the
+  coordinate system of the 3D scene, before any camera or projection
+  transformations are applied.</p>
+
+  <p><code>worldInputs</code> has the following properties:</p>
+
+  <ul><li><code>position</code>: a three-component vector representing the
+  original position of the vertex.</li><li><code>normal</code>: a
+  three-component vector representing the direction the surface is
+  facing.</li><li><code>texCoord</code>: a two-component vector representing the
+  texture coordinates.</li><li><code>color</code>: a four-component vector
+  representing the color of the vertex (red, green, blue,
+  alpha).</li></ul><p>This hook is available in:</p>
+
+  <ul><li><a
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader()</code></a></li><li><a
+  href="/reference/p5/buildNormalShader/"><code>buildNormalShader()</code></a></li><li><a
+  href="/reference/p5/buildColorShader/"><code>buildColorShader()</code></a></li><li><a
+  href="/reference/p5/buildStrokeShader/"><code>buildStrokeShader()</code></a></li></ul>
+line: 173
+isConstructor: false
+itemtype: property
+example:
+  - |-
+    let myShader;
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(material);
+    }
+
+    function material() {
+      let t = uniformFloat();
+      worldInputs.begin();
+      // Move the vertex up and down in a wave in world space
+      // In world space, moving the object (e.g., with translate()) will affect these coordinates
+      // The sphere is ~50 units tall here, so 20 gives a noticeable wave
+      worldInputs.position.y += 20 * sin(t * 0.001 + worldInputs.position.x * 0.05);
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(255);
+      shader(myShader);
+      myShader.setUniform('t', millis());
+      lights();
+      noStroke();
+      fill('red');
+      sphere(50);
+    }
+class: p5
+type: Object
+---
+
+
+# worldInputs

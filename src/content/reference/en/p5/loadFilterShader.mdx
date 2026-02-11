@@ -1,42 +1,85 @@
 ---
 title: loadFilterShader
 module: 3D
-submodule: Material
+submodule: p5.strands
 file: src/webgl/material.js
-description: Creates and loads a filter shader from an external file.
-line: 553
+description: >
+  <p>Loads a new shader from a file that can be applied to the contents of the
+  canvas with
+
+  <a href="/reference/p5/filter/"><code>filter()</code></a>. Pass the resulting
+  shader into <code>filter()</code> to apply it.</p>
+
+  <p>Since this function loads data from another file, it returns a
+  <code>Promise</code>.
+
+  Use it in an <code>async function setup</code>, and <code>await</code> its
+  result.</p>
+
+  <pre><code class="language-js">async function setup() {
+    createCanvas(50, 50, WEBGL);
+    let img = await loadImage('/assets/bricks.jpg');
+    let myFilter = await loadFilterShader('myFilter.js');
+
+    image(img, -50, -50);
+    filter(myFilter);
+    describe('Bricks tinted red');
+  }</code></pre><p>Inside your shader file, you can use p5.strands hooks to
+  change parts of the shader. For
+
+  a filter shader, use <code>filterColor</code> to change each pixel on the
+  canvas.</p>
+
+  <pre><code class="language-js">// myFilter.js
+
+  filterColor.begin();
+
+  let result = getTexture(
+    filterColor.canvasContent,
+    filterColor.texCoord
+  );
+
+  // Zero out the green and blue channels, leaving red
+
+  result.g = 0;
+
+  result.b = 0;
+
+  filterColor.set(result);
+
+  filterColor.end();</code></pre><p>Read the reference for <a
+  href="/reference/p5/buildFilterShader/"><code>buildFilterShader</code></a>,
+
+  the version of <code>loadFilterShader</code> that takes in a function instead
+  of a separate file,
+
+  for more examples.</p>
+
+  <p>The second parameter, <code>successCallback</code>, is optional. If a
+  function is passed, as in
+
+  <code>loadFilterShader('myShader.js', onLoaded)</code>, then the
+  <code>onLoaded()</code> function will be called
+
+  once the shader loads. The shader will be passed to <code>onLoaded()</code> as
+  its only argument.
+
+  The return value of <code>handleData()</code>, if present, will be used as the
+  final return value of
+
+  <code>loadFilterShader('myShader.js', onLoaded)</code>.</p>
+line: 513
 isConstructor: false
 itemtype: method
-alt: A rectangle with a shader applied to it.
-example:
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    async function setup() {
-      myShader = await loadFilterShader('/assets/basic.frag');
-      createCanvas(100, 100, WEBGL);
-      noStroke();
-    }
-
-    function draw() {
-      // shader() sets the active shader with our shader
-      shader(myShader);
-
-      // rect gives us some geometry on the screen
-      rect(-50, -50, width, height);
-    }
-    </code>
-    </div>
+example: []
 class: p5
 return:
   description: a promise that resolves with a shader object
   type: Promise<p5.Shader>
 overloads:
   - params:
-      - name: fragFilename
-        description: path to the fragment shader file
+      - name: filename
+        description: path to a p5.strands JavaScript file or a GLSL fragment shader file
         type: String
       - name: successCallback
         description: |-

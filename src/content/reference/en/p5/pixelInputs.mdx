@@ -1,0 +1,82 @@
+---
+title: pixelInputs
+module: 3D
+submodule: p5.strands
+file: src/strands/p5.strands.js
+description: >-
+  <p>A shader hook block that modifies the properties of each pixel before the
+  final color is calculated. This hook can be used inside <a
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader()</code></a>
+  and similar shader <a
+  href="/reference/p5.Shader/modify/"><code>modify()</code></a> calls to adjust
+  per-pixel data before lighting is applied. Modifications happen between the
+  <code>.begin()</code> and <code>.end()</code> methods of the hook.</p>
+
+  <p>The properties of <code>pixelInputs</code> depend on the shader:</p>
+
+  <ul><li><p>In <a
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader()</code></a>:</p>
+
+  <ul><li><code>normal</code>: a three-component vector representing the surface
+  normal.</li><li><code>texCoord</code>: a two-component vector representing the
+  texture coordinates (u, v).</li><li><code>ambientLight</code>: a
+  three-component vector representing the ambient light
+  color.</li><li><code>ambientMaterial</code>: a three-component vector
+  representing the material's ambient
+  color.</li><li><code>specularMaterial</code>: a three-component vector
+  representing the material's specular
+  color.</li><li><code>emissiveMaterial</code>: a three-component vector
+  representing the material's emissive color.</li><li><code>color</code>: a
+  four-component vector representing the base color (red, green, blue,
+  alpha).</li><li><code>shininess</code>: a number controlling specular
+  highlights.</li><li><code>metalness</code>: a number controlling the metalness
+  factor.</li></ul></li><li><p>In <a
+  href="/reference/p5/buildStrokeShader/"><code>buildStrokeShader()</code></a>:</p>
+
+  <ul><li><code>color</code>: a four-component vector representing the stroke
+  color (red, green, blue, alpha).</li><li><code>tangent</code>: a two-component
+  vector representing the stroke tangent.</li><li><code>center</code>: a
+  two-component vector representing the cap/join
+  center.</li><li><code>position</code>: a two-component vector representing the
+  current fragment position.</li><li><code>strokeWeight</code>: a number
+  representing the stroke weight in pixels.</li></ul></li></ul><p>This hook is
+  available in:</p>
+
+  <ul><li><a
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader()</code></a></li><li><a
+  href="/reference/p5/buildStrokeShader/"><code>buildStrokeShader()</code></a></li></ul>
+line: 173
+isConstructor: false
+itemtype: property
+example:
+  - |-
+    let myShader;
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(material);
+    }
+
+    function material() {
+      let t = uniformFloat();
+      pixelInputs.begin();
+      // Animate alpha (transparency) based on x position
+      pixelInputs.color.a = 0.5 + 0.5 *
+        sin(pixelInputs.texCoord.x * 10.0 + t * 0.002);
+      pixelInputs.end();
+    }
+
+    function draw() {
+      background(240);
+      shader(myShader);
+      myShader.setUniform('t', millis());
+      lights();
+      noStroke();
+      fill('purple');
+      circle(0, 0, 100);
+    }
+class: p5
+type: Object
+---
+
+
+# pixelInputs
