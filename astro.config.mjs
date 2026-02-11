@@ -20,6 +20,9 @@ if (shouldSkipCompress) {
 export default defineConfig({
   site: 'https://p5js.org',
   compressHTML: false,
+  legacy: {
+    collections: true
+  },
   integrations: [
     mermaid({autoTheme: true}),
     preact({
@@ -78,7 +81,7 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      theme: 'github-light-high-contrast',
     },
   },
 });
