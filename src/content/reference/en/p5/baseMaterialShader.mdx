@@ -1,280 +1,40 @@
 ---
 title: baseMaterialShader
 module: 3D
-submodule: Material
+submodule: p5.strands
 file: src/webgl/material.js
 description: >
-  <p>Get the default shader used with lights, materials,
+  <p>Returns the default shader used for fills when lights or textures are
+  used.</p>
 
-  and textures.</p>
+  <p>Calling <a
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader(shaderFunction)</code></a>
 
-  <p>You can call <a
-  href="/reference/p5.Shader/modify/"><code>baseMaterialShader().modify()</code></a>
+  is equivalent to calling
+  <code>baseMaterialShader().modify(shaderFunction)</code>.</p>
 
-  and change any of the following hooks:</p>
+  <p>Read <a href="/reference/p5/buildMaterialShader/">the
+  <code>buildMaterialShader</code> reference</a> or
 
-  <table>
+  call <code>baseMaterialShader().inspectHooks()</code> for more information on
+  what you can do with
 
-  <tr><th>Hook</th><th>Description</th></tr>
-
-  <tr><td><p><code>void beforeVertex</code></p>
-
-  </td><td><p>Called at the start of the vertex shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>Vertex getObjectInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn before any
-  positioning has been applied. It takes in a <code>Vertex</code> struct, which
-  includes:</p>
-
-  <ul><li><code>vec3 position</code>, the position of the
-  vertex</li><li><code>vec3 normal</code>, the direction facing out of the
-  surface</li><li><code>vec2 texCoord</code>, the texture coordinates associeted
-  with the vertex</li><li><code>vec4 color</code>, the per-vertex color
-
-  The struct can be modified and returned.</li></ul></td></tr>
-
-  <tr><td><p><code>Vertex getWorldInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn after
-  transformations such as <code>translate()</code> and <code>scale()</code> have
-  been applied, but before the camera has been applied. It takes in a
-  <code>Vertex</code> struct like, in the <code>getObjectInputs</code> hook
-  above, that can be modified and returned.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>Vertex getCameraInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn as they appear
-  relative to the camera. It takes in a <code>Vertex</code> struct like, in the
-  <code>getObjectInputs</code> hook above, that can be modified and
-  returned.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void afterVertex</code></p>
-
-  </td><td><p>Called at the end of the vertex shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void beforeFragment</code></p>
-
-  </td><td><p>Called at the start of the fragment shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>Inputs getPixelInputs</code></p>
-
-  </td><td><p>Update the per-pixel inputs of the material. It takes in an
-  <code>Inputs</code> struct, which includes:</p>
-
-  <ul><li><code>vec3 normal</code>, the direction pointing out of the
-  surface</li><li><code>vec2 texCoord</code>, a vector where <code>x</code> and
-  <code>y</code> are between 0 and 1 describing the spot on a texture the pixel
-  is mapped to, as a fraction of the texture size</li><li><code>vec3
-  ambientLight</code>, the ambient light color on the vertex</li><li><code>vec4
-  color</code>, the base material color of the pixel</li><li><code>vec3
-  ambientMaterial</code>, the color of the pixel when affected by ambient
-  light</li><li><code>vec3 specularMaterial</code>, the color of the pixel when
-  reflecting specular highlights</li><li><code>vec3 emissiveMaterial</code>, the
-  light color emitted by the pixel</li><li><code>float shininess</code>, a
-  number representing how sharp specular reflections should be, from 1 to
-  infinity</li><li><code>float metalness</code>, a number representing how
-  mirrorlike the material should be, between 0 and 1
-
-  The struct can be modified and returned.</li></ul></td></tr>
-
-  <tr><td><p><code>vec4 combineColors</code></p>
-
-  </td><td><p>Take in a <code>ColorComponents</code> struct containing all the
-  different components of light, and combining them into
-
-  a single final color. The struct contains:</p>
-
-  <ul><li><code>vec3 baseColor</code>, the base color of the
-  pixel</li><li><code>float opacity</code>, the opacity between 0 and 1 that it
-  should be drawn at</li><li><code>vec3 ambientColor</code>, the color of the
-  pixel when affected by ambient light</li><li><code>vec3 specularColor</code>,
-  the color of the pixel when affected by specular
-  reflections</li><li><code>vec3 diffuse</code>, the amount of diffused light
-  hitting the pixel</li><li><code>vec3 ambient</code>, the amount of ambient
-  light hitting the pixel</li><li><code>vec3 specular</code>, the amount of
-  specular reflection hitting the pixel</li><li><code>vec3 emissive</code>, the
-  amount of light emitted by the pixel</li></ul></td></tr>
-
-  <tr><td><p><code>vec4 getFinalColor</code></p>
-
-  </td><td><p>Update the final color after mixing. It takes in a <code>vec4
-  color</code> and must return a modified version.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void afterFragment</code></p>
-
-  </td><td><p>Called at the end of the fragment shader.</p>
-
-  </td></tr>
-
-  </table><p>Most of the time, you will need to write your hooks in GLSL ES
-  version 300. If you
-
-  are using WebGL 1 instead of 2, write your hooks in GLSL ES 100 instead.</p>
-
-  <p>Call <code>baseMaterialShader().inspectHooks()</code> to see all the
-  possible hooks and
-
-  their default implementations.</p>
-line: 1510
+  the base material shader.</p>
+line: 1628
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseMaterialShader().modify(() => {
-        let time = uniformFloat(() => millis());
-        getWorldInputs((inputs) => {
-          inputs.position.y +=
-            20 * sin(time * 0.001 + inputs.position.x * 0.05);
-          return inputs;
-        });
-      });
-    }
-
-    function draw() {
-      background(255);
-      shader(myShader);
-      lights();
-      noStroke();
-      fill('red');
-      sphere(50);
-    }
-    </code>
-    </div>
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseMaterialShader().modify({
-        declarations: 'vec3 myNormal;',
-        'Inputs getPixelInputs': `(Inputs inputs) {
-          myNormal = inputs.normal;
-          return inputs;
-        }`,
-        'vec4 getFinalColor': `(vec4 color) {
-          return mix(
-            vec4(1.0, 1.0, 1.0, 1.0),
-            color,
-            abs(dot(myNormal, vec3(0.0, 0.0, 1.0)))
-          );
-        }`
-      });
-    }
-
-    function draw() {
-      background(255);
-      rotateY(millis() * 0.001);
-      shader(myShader);
-      lights();
-      noStroke();
-      fill('red');
-      torus(30);
-    }
-    </code>
-    </div>
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-    let environment;
-
-    async function setup() {
-      environment = await loadImage('/assets/outdoor_spheremap.jpg');
-
-      createCanvas(200, 200, WEBGL);
-      myShader = baseMaterialShader().modify(() => {
-        getPixelInputs((inputs) => {
-          let factor = sin(
-            TWO_PI * (inputs.texCoord.x + inputs.texCoord.y)
-          );
-          inputs.shininess = mix(1, 100, factor);
-          inputs.metalness = factor;
-          return inputs;
-        })
-      });
-    }
-
-    function draw() {
-      panorama(environment);
-      ambientLight(100);
-      imageLight(environment);
-      rotateY(millis() * 0.001);
-      shader(myShader);
-      noStroke();
-      fill(255);
-      specularMaterial(150);
-      sphere(50);
-    }
-    </code>
-    </div>
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseMaterialShader().modify(() => {
-        getPixelInputs((inputs) => {
-          inputs.normal.x += 0.2 * sin(
-            sin(TWO_PI * dot(inputs.texCoord.yx, vec2(10, 25)))
-          );
-          inputs.normal.y += 0.2 * sin(
-            sin(TWO_PI * dot(inputs.texCoord, vec2(10, 25)))
-          );
-          inputs.normal = normalize(inputs.normal);
-          return inputs;
-        });
-      });
-    }
-
-    function draw() {
-      background(255);
-      shader(myShader);
-      ambientLight(150);
-      pointLight(
-        255, 255, 255,
-        100*cos(frameCount*0.04), -50, 100*sin(frameCount*0.04)
-      );
-      noStroke();
-      fill('red');
-      shininess(200);
-      specularMaterial(255);
-      sphere(50);
-    }
-    </code>
-    </div>
+example: []
 class: p5
 return:
-  description: The material shader
+  description: The base material shader.
   type: p5.Shader
 overloads:
   - params: []
     return:
-      description: The material shader
+      description: The base material shader.
       type: p5.Shader
 chainable: false
+beta: true
 ---
 
 

@@ -11,20 +11,28 @@ description: >-
 
   can process many pixels or vertices at the same time, making them fast for
 
-  many graphics tasks. They’re written in a language called
+  many graphics tasks.</p>
+
+  <p>You can make new shaders using p5.strands with the
 
   <a
-  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders/"
-  target="_blank">GLSL</a>
+  href="/reference/p5/buildMaterialShader/"><code>buildMaterialShader</code></a>,
 
-  and run along with the rest of the code in a sketch.
+  <a href="/reference/p5/buildColorShader/"><code>buildColorShader</code></a>,
+  and
 
-  <a href="/reference/p5/p5.Shader">p5.Shader</a> objects can be created using
-  the
+  <a href="/reference/p5/buildNormalShader/"><code>buildNormalShader</code></a>
+  functions. You can also use
 
-  <a href="/reference/p5/createShader/">createShader()</a> and
+  <a href="/reference/p5/buildFilterShader/"><code>buildFilterShader</code></a>
+  alongside
 
-  <a href="/reference/p5/loadShader/">loadShader()</a> functions.</p>
+  <a href="/reference/p5/filter/"><code>filter</code></a>, and
+
+  <a href="/reference/p5/buildStrokeShader/"><code>buildStrokeShader</code></a>
+  alongside
+
+  <a href="/reference/p5/stroke/"><code>stroke</code></a>.</p>
 
   <p>The parameter, <code>s</code>, is the <a
   href="/reference/p5/p5.Shader">p5.Shader</a> object to
@@ -43,13 +51,7 @@ description: >-
 
   fragment and vertex shaders will be compiled the first time it's passed to
 
-  <code>shader()</code>. See
-
-  <a
-  href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/compileShader/"
-  target="_blank">MDN</a>
-
-  for more information about compiling shaders.</p>
+  <code>shader()</code>.</p>
 
   <p>Calling <a href="/reference/p5/resetShader/">resetShader()</a> restores a
   sketch’s
@@ -58,7 +60,171 @@ description: >-
 
   <p>Note: Shaders can only be used in WebGL mode.</p>
 
-  <div>
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildMaterialShader(material);
+    noStroke();
+    describe('A square with dynamically changing colors on a beige background.');
+  }
+
+
+  function material() {
+    let time = uniformFloat();
+    finalColor.begin();
+    let r = 0.2 + 0.5 * abs(sin(time + 0));
+    let g = 0.2 + 0.5 * abs(sin(time + 1));
+    let b = 0.2 + 0.5 * abs(sin(time + 2));
+    finalColor.set([r, g, b, 1]);
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(245, 245, 220);
+    myShader.setUniform('time', millis() / 1000);
+    shader(myShader);
+
+    rectMode(CENTER);
+    rect(0, 0, 50, 50);
+  }</code></pre><p>For advanced usage, shaders can be written in a language
+  called
+
+  <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders/"
+  target="_blank">GLSL</a>.
+
+  <a href="/reference/p5/p5.Shader">p5.Shader</a> objects can be created in this
+  way using the
+
+  <a href="/reference/p5/createShader/">createShader()</a> and
+
+  <a href="/reference/p5/loadShader/">loadShader()</a> functions.</p>
+
+  <pre><code class="language-js">let fillShader;
+
+
+  let vertSrc = `
+
+  precision highp float;
+
+  attribute vec3 aPosition;
+
+  uniform mat4 uModelViewMatrix;
+
+  uniform mat4 uProjectionMatrix;
+
+  varying vec3 vPosition;
+
+
+  void main() {
+    vPosition = aPosition;
+    gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+  }
+
+  `;
+
+
+  let fragSrc = `
+
+  precision highp float;
+
+  uniform vec3 uLightDir;
+
+  varying vec3 vPosition;
+
+
+  void main() {
+    vec3 lightDir = normalize(uLightDir);
+    float brightness = dot(lightDir, normalize(vPosition));
+    brightness = clamp(brightness, 0.4, 1.0);
+    vec3 color = vec3(0.3, 0.5, 1.0);
+    color = color * brightness * 3.0;
+    gl_FragColor = vec4(color, 1.0);
+  }
+
+  `;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    fillShader = createShader(vertSrc, fragSrc);
+    noStroke();
+    describe('A rotating torus with simulated directional lighting.');
+  }
+
+
+  function draw() {
+    background(20, 20, 40);
+    let lightDir = [0.5, 0.5, 1.0];
+    fillShader.setUniform('uLightDir', lightDir);
+    shader(fillShader);
+    rotateY(frameCount * 0.02);
+    rotateX(frameCount * 0.02);
+    torus(25, 10, 30, 30);
+  }</code></pre><pre><code class="language-js example">let fillShader;
+
+
+  let vertSrc = `
+
+  precision highp float;
+
+  attribute vec3 aPosition;
+
+  uniform mat4 uProjectionMatrix;
+
+  uniform mat4 uModelViewMatrix;
+
+  varying vec3 vPosition;
+
+  void main() {
+    vPosition = aPosition;
+    gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+  }
+
+  `;
+
+
+  let fragSrc = `
+
+  precision highp float;
+
+  uniform vec3 uLightPos;
+
+  uniform vec3 uFillColor;
+
+  varying vec3 vPosition;
+
+  void main() {
+    float brightness = dot(normalize(uLightPos), normalize(vPosition));
+    brightness = clamp(brightness, 0.0, 1.0);
+    vec3 color = uFillColor * brightness;
+    gl_FragColor = vec4(color, 1.0);
+  }
+
+  `;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    fillShader = createShader(vertSrc, fragSrc);
+    shader(fillShader);
+    noStroke();
+    describe('A square affected by both fill color and lighting, with lights controlled by mouse.');
+  }
+
+
+  function draw() {
+    let lightPos = [(mouseX - width / 2) / width,
+      (mouseY - height / 2) / height, 1.0];
+    fillShader.setUniform('uLightPos', lightPos);
+    let fillColor = [map(mouseX, 0, width, 0, 1),
+      map(mouseY, 0, height, 0, 1), 0.5];
+    fillShader.setUniform('uFillColor', fillColor);
+    plane(width, height);
+  }</code></pre><div>
 
   <p><p>If you want to apply shaders to strokes or images, use the following
   methods:</p>
@@ -71,143 +237,10 @@ description: >-
   during rendering.</li></ul></p>
 
   </div>
-line: 904
+line: 1032
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let fillShader;
-
-    let vertSrc = `
-    precision highp float;
-    attribute vec3 aPosition;
-    uniform mat4 uModelViewMatrix;
-    uniform mat4 uProjectionMatrix;
-    varying vec3 vPosition;
-
-    void main() {
-      vPosition = aPosition;
-      gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
-    }
-    `;
-
-    let fragSrc = `
-    precision highp float;
-    uniform vec3 uLightDir;
-    varying vec3 vPosition;
-
-    void main() {
-      vec3 lightDir = normalize(uLightDir);
-      float brightness = dot(lightDir, normalize(vPosition));
-      brightness = clamp(brightness, 0.4, 1.0);
-      vec3 color = vec3(0.3, 0.5, 1.0);
-      color = color * brightness * 3.0;
-      gl_FragColor = vec4(color, 1.0);
-    }
-    `;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      fillShader = createShader(vertSrc, fragSrc);
-      noStroke();
-      describe('A rotating torus with simulated directional lighting.');
-    }
-
-    function draw() {
-      background(20, 20, 40);
-      let lightDir = [0.5, 0.5, -1.0];
-      fillShader.setUniform('uLightDir', lightDir);
-      shader(fillShader);
-      rotateY(frameCount * 0.02);
-      rotateX(frameCount * 0.02);
-      //lights();
-      torus(25, 10, 30, 30);
-    }
-    </code>
-    </div>
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let fillShader;
-
-    let vertSrc = `
-    precision highp float;
-    attribute vec3 aPosition;
-    uniform mat4 uProjectionMatrix;
-    uniform mat4 uModelViewMatrix;
-    varying vec3 vPosition;
-    void main() {
-      vPosition = aPosition;
-      gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
-    }
-    `;
-
-    let fragSrc = `
-    precision highp float;
-    uniform vec3 uLightPos;
-    uniform vec3 uFillColor;
-    varying vec3 vPosition;
-    void main() {
-      float brightness = dot(normalize(uLightPos), normalize(vPosition));
-      brightness = clamp(brightness, 0.0, 1.0);
-      vec3 color = uFillColor * brightness;
-      gl_FragColor = vec4(color, 1.0);
-    }
-    `;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      fillShader = createShader(vertSrc, fragSrc);
-      shader(fillShader);
-      noStroke();
-      describe('A square affected by both fill color and lighting, with lights controlled by mouse.');
-    }
-
-    function draw() {
-      let lightPos = [(mouseX - width / 2) / width,
-        (mouseY - height / 2) / height, 1.0];
-      fillShader.setUniform('uLightPos', lightPos);
-      let fillColor = [map(mouseX, 0, width, 0, 1),
-        map(mouseY, 0, height, 0, 1), 0.5];
-      fillShader.setUniform('uFillColor', fillColor);
-      plane(100, 100);
-    }
-    </code>
-    </div>
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-
-      myShader = baseMaterialShader().modify({
-        declarations: 'uniform float time;',
-        'vec4 getFinalColor': `(vec4 color) {
-          float r = 0.2 + 0.5 * abs(sin(time + 0.0));
-          float g = 0.2 + 0.5 * abs(sin(time + 1.0));
-          float b = 0.2 + 0.5 * abs(sin(time + 2.0));
-          color.rgb = vec3(r, g, b);
-          return color;
-        }`
-      });
-
-      noStroke();
-      describe('A 3D cube with dynamically changing colors on a beige background.');
-    }
-
-    function draw() {
-      background(245, 245, 220);
-      shader(myShader);
-      myShader.setUniform('time', millis() / 1000.0);
-
-      box(50);
-    }
-    </code>
-    </div>
+example: []
 class: p5
 overloads:
   - params:
@@ -216,7 +249,8 @@ overloads:
           <a href="#/p5.Shader">p5.Shader</a> object
           to apply.
         type: p5.Shader
-chainable: true
+    chainable: 1
+chainable: false
 ---
 
 
