@@ -1,0 +1,111 @@
+---
+title: loadStrokeShader
+module: 3D
+submodule: p5.strands
+file: src/webgl/material.js
+description: >
+  <p>Loads a new shader from a file that can change how strokes are drawn. Pass
+  the resulting
+
+  shader into the <a
+  href="/reference/p5/strokeShader/"><code>strokeShader()</code></a> function to
+  apply it
+
+  to any strokes you draw.</p>
+
+  <p>Since this function loads data from another file, it returns a
+  <code>Promise</code>.
+
+  Use it in an <code>async function setup</code>, and <code>await</code> its
+  result.</p>
+
+  <pre><code class="language-js">let myShader;
+
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = await loadStrokeShader('myMaterial.js');
+  }
+
+
+  function draw() {
+    background(255);
+    strokeShader(myShader);
+    strokeWeight(30);
+    line(
+      -width/3,
+      sin(millis()*0.001) * height/4,
+      width/3,
+      sin(millis()*0.001 + 1) * height/4
+    );
+  }</code></pre><p>Inside your shader file, you can call p5.strands hooks to
+  change parts of the shader. For
+
+  example, you might use the <code>worldInputs</code> hook to change each
+  vertex, or you
+
+  might use the <code>pixelInputs</code> hook to change each pixel on the
+  surface of a stroke.</p>
+
+  <pre><code class="language-js">// myMaterial.js
+
+  pixelInputs.begin();
+
+  let opacity = 1 - smoothstep(
+    0,
+    15,
+    length(pixelInputs.position - pixelInputs.center)
+  );
+
+  pixelInputs.color.a *= opacity;
+
+  pixelInputs.end();</code></pre><p>Read the reference for <a
+  href="/reference/p5/buildStrokeShader/"><code>buildStrokeShader</code></a>,
+
+  the version of <code>loadStrokeShader</code> that takes in a function instead
+  of a separate file,
+
+  for a full list of hooks you can use and examples for each.</p>
+
+  <p>The second parameter, <code>successCallback</code>, is optional. If a
+  function is passed, as in
+
+  <code>loadStrokeShader('myShader.js', onLoaded)</code>, then the
+  <code>onLoaded()</code> function will be called
+
+  once the shader loads. The shader will be passed to <code>onLoaded()</code> as
+  its only argument.
+
+  The return value of <code>handleData()</code>, if present, will be used as the
+  final return value of
+
+  <code>loadStrokeShader('myShader.js', onLoaded)</code>.</p>
+line: 2237
+isConstructor: false
+itemtype: method
+example: []
+class: p5
+return:
+  description: The stroke shader.
+  type: Promise<p5.Shader>
+overloads:
+  - params:
+      - name: url
+        description: The URL of your p5.strands JavaScript file.
+        type: String
+      - name: onSuccess
+        description: A callback function to run when loading completes.
+        optional: 1
+        type: Function
+      - name: onFailure
+        description: A callback function to run when loading fails.
+        optional: 1
+        type: Function
+    return:
+      description: The stroke shader.
+      type: Promise<p5.Shader>
+chainable: false
+beta: true
+---
+
+
+# loadStrokeShader

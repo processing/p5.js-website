@@ -1,134 +1,40 @@
 ---
 title: baseColorShader
 module: 3D
-submodule: Material
+submodule: p5.strands
 file: src/webgl/material.js
 description: >
-  <p>Get the shader used when no lights or materials are applied.</p>
+  <p>Returns the default shader used for fills when no lights or textures are
+  activate.</p>
 
-  <p>You can call <a
-  href="/reference/p5.Shader/modify/"><code>baseColorShader().modify()</code></a>
+  <p>Calling <a
+  href="/reference/p5/buildColorShader/"><code>buildColorShader(shaderFunction)</code></a>
 
-  and change any of the following hooks:</p>
+  is equivalent to calling
+  <code>baseColorShader().modify(shaderFunction)</code>.</p>
 
-  <table>
+  <p>Read <a href="/reference/p5/buildColorShader/">the
+  <code>buildColorShader</code> reference</a> or
 
-  <tr><th>Hook</th><th>Description</th></tr>
+  call <code>baseColorShader().inspectHooks()</code> for more information on
+  what you can do with
 
-  <tr><td><p><code>void beforeVertex</code></p>
-
-  </td><td><p>Called at the start of the vertex shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>Vertex getObjectInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn before any
-  positioning has been applied. It takes in a <code>Vertex</code> struct, which
-  includes:</p>
-
-  <ul><li><code>vec3 position</code>, the position of the
-  vertex</li><li><code>vec3 normal</code>, the direction facing out of the
-  surface</li><li><code>vec2 texCoord</code>, the texture coordinates associeted
-  with the vertex</li><li><code>vec4 color</code>, the per-vertex color
-
-  The struct can be modified and returned.</li></ul></td></tr>
-
-  <tr><td><p><code>Vertex getWorldInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn after
-  transformations such as <code>translate()</code> and <code>scale()</code> have
-  been applied, but before the camera has been applied. It takes in a
-  <code>Vertex</code> struct like, in the <code>getObjectInputs</code> hook
-  above, that can be modified and returned.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>Vertex getCameraInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn as they appear
-  relative to the camera. It takes in a <code>Vertex</code> struct like, in the
-  <code>getObjectInputs</code> hook above, that can be modified and
-  returned.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void afterVertex</code></p>
-
-  </td><td><p>Called at the end of the vertex shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void beforeFragment</code></p>
-
-  </td><td><p>Called at the start of the fragment shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>vec4 getFinalColor</code></p>
-
-  </td><td><p>Update the final color after mixing. It takes in a <code>vec4
-  color</code> and must return a modified version.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void afterFragment</code></p>
-
-  </td><td><p>Called at the end of the fragment shader.</p>
-
-  </td></tr>
-
-  </table><p>Most of the time, you will need to write your hooks in GLSL ES
-  version 300. If you
-
-  are using WebGL 1 instead of 2, write your hooks in GLSL ES 100 instead.</p>
-
-  <p>Call <code>baseColorShader().inspectHooks()</code> to see all the possible
-  hooks and
-
-  their default implementations.</p>
-line: 1878
+  the base color shader.</p>
+line: 2009
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseColorShader().modify({
-        uniforms: {
-          'float time': () => millis()
-        },
-        'Vertex getWorldInputs': `(Vertex inputs) {
-          inputs.position.y +=
-            20. * sin(time * 0.001 + inputs.position.x * 0.05);
-          return inputs;
-        }`
-      });
-    }
-
-    function draw() {
-      background(255);
-      shader(myShader);
-      noStroke();
-      fill('red');
-      circle(0, 0, 50);
-    }
-    </code>
-    </div>
+example: []
 class: p5
 return:
-  description: The color shader
+  description: The base color shader.
   type: p5.Shader
 overloads:
   - params: []
     return:
-      description: The color shader
+      description: The base color shader.
       type: p5.Shader
 chainable: false
+beta: true
 ---
 
 

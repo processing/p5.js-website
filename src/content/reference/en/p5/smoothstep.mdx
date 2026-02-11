@@ -1,0 +1,119 @@
+---
+title: smoothstep
+module: 3D
+submodule: p5.strands
+file: src/strands/p5.strands.js
+description: >-
+  <p>A shader function that performs smooth Hermite interpolation between
+  <code>0.0</code>
+
+  and <code>1.0</code>.</p>
+
+  <p>This function is equivalent to the GLSL built-in
+
+  <code>smoothstep(edge0, edge1, x)</code> and is available inside p5.strands
+  shader
+
+  callbacks. It is commonly used to create soft transitions, smooth edges,
+
+  fades, and anti-aliased effects.</p>
+
+  <p>Smoothstep is useful when a threshold or cutoff is needed, but with a
+
+  gradual transition instead of a hard edge.</p>
+
+  <ul><li>Returns <code>0.0</code> when <code>x</code> is less than or equal to
+  <code>edge0</code></li><li>Returns <code>1.0</code> when <code>x</code> is
+  greater than or equal to <code>edge1</code></li><li>Smoothly interpolates
+  between <code>0.0</code> and <code>1.0</code> when <code>x</code> is between
+  them</li></ul>
+line: 173
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div modernizr="webgl">
+    <code>
+    // Example 1: A soft vertical fade using smoothstep (no uniforms)
+
+    let fadeShader;
+
+    function fadeCallback() {
+      getColor((inputs) => {
+        // x goes from 0 → 1 across the canvas
+        let x = inputs.texCoord.x;
+
+        // smoothstep creates a soft transition instead of a hard edge
+        let t = smoothstep(0.25, 0.35, x);
+
+        // Use t directly as brightness
+        return [t, t, t, 1];
+      });
+    }
+
+    function setup() {
+      createCanvas(300, 200, WEBGL);
+      fadeShader = baseFilterShader().modify(fadeCallback);
+    }
+
+    function draw() {
+      background(0);
+      filter(fadeShader);
+    }
+    </code>
+    </div>
+  - |-
+    <div modernizr="webgl">
+    <code>
+    // Example 2: Animate the smooth transition using a uniform
+
+    let animatedShader;
+
+    function animatedFadeCallback() {
+      const time = uniformFloat(() => millis() * 0.001);
+
+      getColor((inputs) => {
+        let x = inputs.texCoord.x;
+
+        // Move the smoothstep band back and forth over time
+        let center = 0.5 + 0.25 * sin(time);
+        let t = smoothstep(center - 0.05, center + 0.05, x);
+
+        return [t, t, t, 1];
+      });
+    }
+
+    function setup() {
+      createCanvas(300, 200, WEBGL);
+      animatedShader = baseFilterShader().modify(animatedFadeCallback);
+    }
+
+    function draw() {
+      background(0);
+      filter(animatedShader);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: A value between <code>0.0</code> and <code>1.0</code>
+  type: Number
+overloads:
+  - params:
+      - name: edge0
+        description: Lower edge of the transition
+        type: Number
+      - name: edge1
+        description: Upper edge of the transition
+        type: Number
+      - name: x
+        description: Input value to interpolate
+        type: Number
+    return:
+      description: A value between <code>0.0</code> and <code>1.0</code>
+      type: Number
+chainable: false
+---
+
+
+# smoothstep

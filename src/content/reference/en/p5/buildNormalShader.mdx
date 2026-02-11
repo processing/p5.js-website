@@ -1,0 +1,149 @@
+---
+title: buildNormalShader
+module: 3D
+submodule: p5.strands
+file: src/webgl/material.js
+description: >
+  <p>Create a new shader that can change how fills are drawn, based on the
+  material used
+
+  when <a href="/reference/p5/normalMaterial/"><code>normalMaterial()</code></a>
+  is active. Pass the resulting
+
+  shader into the <a href="/reference/p5/shader/"><code>shader()</code></a>
+  function to apply it to any fills
+
+  you draw.</p>
+
+  <p>The main way to use <code>buildNormalShader</code> is to pass a function in
+  as a parameter.
+
+  This will let you create a shader using p5.strands.</p>
+
+  <p>In your function, you can call hooks to change part of the shader. In a
+  material
+
+  shader, these are the hooks available:</p>
+
+  <ul><li><a href="/reference/p5/objectInputs/"><code>objectInputs</code></a>:
+  Update vertices before any positioning has been applied. Your function gets
+  run on every vertex.</li><li><a
+  href="/reference/p5/worldInputs/"><code>worldInputs</code></a>: Update
+  vertices after transformations have been applied. Your function gets run on
+  every vertex.</li><li><a
+  href="/reference/p5/cameraInputs/"><code>cameraInputs</code></a>: Update
+  vertices after transformations have been applied, relative to the camera. Your
+  function gets run on every vertex.</li><li><a
+  href="/reference/p5/finalColor/"><code>finalColor</code></a>: Update or
+  replace the pixel color on the surface of a shape. Your function gets run on
+  every pixel.</li></ul><p>Read the linked reference page for each hook for more
+  information about how to use them.</p>
+
+  <p>One thing you may want to do is update the position of all the vertices in
+  an object over time:</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildNormalShader(material);
+  }
+
+
+  function material() {
+    let time = uniformFloat();
+    worldInputs.begin();
+    worldInputs.position.y +=
+      20. * sin(time * 0.001 + worldInputs.position.x * 0.05);
+    worldInputs.end();
+  }
+
+
+  function draw() {
+    background(255);
+    shader(myShader);
+    myShader.setUniform('time', millis());
+    noStroke();
+    sphere(50);
+  }</code></pre><p>You may also want to change the colors used. By default, the
+  x, y, and z values of the orientation
+
+  of the surface are mapped directly to red, green, and blue. But you can pick
+  different colors:</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildNormalShader(material);
+  }
+
+
+  function material() {
+    cameraInputs.begin();
+    cameraInputs.normal = abs(cameraInputs.normal);
+    cameraInputs.end();
+
+    finalColor.begin();
+    // Map the r, g, and b values of the old normal to new colors
+    // instead of just red, green, and blue:
+    let newColor =
+      finalColor.color.r * [89, 240, 232] / 255 +
+      finalColor.color.g * [240, 237, 89] / 255 +
+      finalColor.color.b * [205, 55, 222] / 255;
+    newColor = newColor / (finalColor.color.r + finalColor.color.g + finalColor.color.b);
+    finalColor.set([newColor.r, newColor.g, newColor.b, finalColor.color.a]);
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(255);
+    shader(myShader);
+    noStroke();
+    rotateX(frameCount * 0.01);
+    rotateY(frameCount * 0.015);
+    box(100);
+  }</code></pre><p>Like the <code>modify()</code> method on shaders,
+
+  advanced users can also fill in hooks using <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders/"
+  target="_blank">GLSL</a>
+
+  instead of JavaScript.
+
+  Read the <a href="/reference/p5.Shader/modify/">reference entry for
+  <code>modify()</code></a>
+
+  for more info.</p>
+line: 1752
+isConstructor: false
+itemtype: method
+example: []
+class: p5
+return:
+  description: The normal shader.
+  type: p5.Shader
+overloads:
+  - params:
+      - name: callback
+        description: A function building a p5.strands shader.
+        type: Function
+    return:
+      description: The normal shader.
+      type: p5.Shader
+  - params:
+      - name: hooks
+        description: An object specifying p5.strands hooks in GLSL.
+        type: Object
+    return:
+      description: The normal shader.
+      type: p5.Shader
+chainable: false
+beta: true
+---
+
+
+# buildNormalShader

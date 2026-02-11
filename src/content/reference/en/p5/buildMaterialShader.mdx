@@ -1,0 +1,248 @@
+---
+title: buildMaterialShader
+module: 3D
+submodule: p5.strands
+file: src/webgl/material.js
+description: >
+  <p>Create a new shader that can change how fills are drawn. Pass the resulting
+
+  shader into the <a href="/reference/p5/shader/"><code>shader()</code></a>
+  function to apply it
+
+  to any fills you draw.</p>
+
+  <p>The main way to use <code>buildMaterialShader</code> is to pass a function
+  in as a parameter.
+
+  This will let you create a shader using p5.strands.</p>
+
+  <p>In your function, you can call hooks to change part of the shader. In a
+  material
+
+  shader, these are the hooks available:</p>
+
+  <ul><li><a href="/reference/p5/objectInputs/"><code>objectInputs</code></a>:
+  Update vertices before any positioning has been applied. Your function gets
+  run on every vertex.</li><li><a
+  href="/reference/p5/worldInputs/"><code>worldInputs</code></a>: Update
+  vertices after transformations have been applied. Your function gets run on
+  every vertex.</li><li><a
+  href="/reference/p5/cameraInputs/"><code>cameraInputs</code></a>: Update
+  vertices after transformations have been applied, relative to the camera. Your
+  function gets run on every vertex.</li><li><a
+  href="/reference/p5/pixelInputs/"><code>pixelInputs</code></a>: Update
+  property values on pixels on the surface of a shape. Your function gets run on
+  every pixel.</li><li><a
+  href="/reference/p5/combineColors/"><code>combineColors</code></a>: Control
+  how the ambient, diffuse, and specular components of lighting are combined
+  into a single color on the surface of a shape. Your function gets run on every
+  pixel.</li><li><a
+  href="/reference/p5/finalColor/"><code>finalColor</code></a>: Update or
+  replace the pixel color on the surface of a shape. Your function gets run on
+  every pixel.</li></ul><p>Read the linked reference page for each hook for more
+  information about how to use them.</p>
+
+  <p>One thing you can do with a material shader is animate the positions of
+  vertices
+
+  over time:</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildMaterialShader(material);
+  }
+
+
+  function material() {
+    let time = uniformFloat();
+    worldInputs.begin();
+    worldInputs.position.y +=
+      20 * sin(time * 0.001 + worldInputs.position.x * 0.05);
+    worldInputs.end();
+  }
+
+
+  function draw() {
+    background(255);
+    shader(myShader);
+    myShader.setUniform('time', millis());
+    lights();
+    noStroke();
+    fill('red');
+    sphere(50);
+  }</code></pre><p>There are also many uses in updating values per pixel. This
+  can be a good
+
+  way to give your sketch texture and detail. For example, instead of having a
+  single
+
+  shininess or metalness value for a whole shape, you could vary it in different
+  spots on its surface:</p>
+
+  <pre><code class="language-js example">let myShader;
+
+  let environment;
+
+
+  async function setup() {
+    environment = await loadImage('/assets/outdoor_spheremap.jpg');
+
+    createCanvas(200, 200, WEBGL);
+    myShader = buildMaterialShader(material);
+  }
+
+
+  function material() {
+    pixelInputs.begin();
+    let factor = sin(
+      TWO_PI * (pixelInputs.texCoord.x + pixelInputs.texCoord.y)
+    );
+    pixelInputs.shininess = mix(1, 100, factor);
+    pixelInputs.metalness = factor;
+    pixelInputs.end();
+  }
+
+
+  function draw() {
+    panorama(environment);
+    ambientLight(100);
+    imageLight(environment);
+    rotateY(millis() * 0.001);
+    shader(myShader);
+    noStroke();
+    fill(255);
+    specularMaterial(150);
+    sphere(50);
+  }</code></pre><p>A technique seen often in games called bump mapping is to
+  vary the
+
+  normal, which is the orientation of the surface, per pixel to create texture
+
+  rather than using many tightly packed vertices. Sometimes this can come from
+
+  bump images, but it can also be done generatively with math.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildMaterialShader(material);
+  }
+
+
+  function material() {
+    pixelInputs.begin();
+    pixelInputs.normal.x += 0.2 * sin(
+      sin(TWO_PI * dot(pixelInputs.texCoord.yx, vec2(10, 25)))
+    );
+    pixelInputs.normal.y += 0.2 * sin(
+      sin(TWO_PI * dot(pixelInputs.texCoord, vec2(10, 25)))
+    );
+    pixelInputs.normal = normalize(pixelInputs.normal);
+    pixelInputs.end();
+  }
+
+
+  function draw() {
+    background(255);
+    shader(myShader);
+    ambientLight(150);
+    pointLight(
+      255, 255, 255,
+      100*cos(frameCount*0.04), -50, 100*sin(frameCount*0.04)
+    );
+    noStroke();
+    fill('red');
+    shininess(200);
+    specularMaterial(255);
+    sphere(50);
+  }</code></pre><p>You can also update the final color directly instead of
+  modifying
+
+  lighting settings. Sometimes in photographs, a light source is placed
+
+  behind the subject to create rim lighting, where the edges of the
+
+  subject are lit up. This can be simulated by adding white to the final
+
+  color on parts of the shape that are facing away from the camera.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildMaterialShader(material);
+  }
+
+
+  function material() {
+    let myNormal = sharedVec3();
+
+    pixelInputs.begin();
+    myNormal = pixelInputs.normal;
+    pixelInputs.end();
+
+    finalColor.begin();
+    finalColor.set(mix(
+      [1, 1, 1, 1],
+      finalColor.color,
+      abs(dot(myNormal, [0, 0, 1]))
+    ));
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(255);
+    rotateY(millis() * 0.001);
+    shader(myShader);
+    lights();
+    noStroke();
+    fill('red');
+    torus(30);
+  }</code></pre><p>Like the <code>modify()</code> method on shaders,
+
+  advanced users can also fill in hooks using <a
+  href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders/"
+  target="_blank">GLSL</a>
+
+  instead of JavaScript.
+
+  Read the <a href="/reference/p5.Shader/modify/">reference entry for
+  <code>modify()</code></a>
+
+  for more info.</p>
+line: 1536
+isConstructor: false
+itemtype: method
+example: []
+class: p5
+return:
+  description: The material shader.
+  type: p5.Shader
+overloads:
+  - params:
+      - name: callback
+        description: A function building a p5.strands shader.
+        type: Function
+    return:
+      description: The material shader.
+      type: p5.Shader
+  - params:
+      - name: hooks
+        description: An object specifying p5.strands hooks in GLSL.
+        type: Object
+    return:
+      description: The material shader.
+      type: p5.Shader
+chainable: false
+beta: true
+---
+
+
+# buildMaterialShader

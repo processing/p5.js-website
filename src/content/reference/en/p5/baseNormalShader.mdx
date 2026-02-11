@@ -1,169 +1,42 @@
 ---
 title: baseNormalShader
 module: 3D
-submodule: Material
+submodule: p5.strands
 file: src/webgl/material.js
 description: >
-  <p>Get the shader used by <a
-  href="/reference/p5/normalMaterial/"><code>normalMaterial()</code></a>.</p>
+  <p>Returns the default shader used for fills when
 
-  <p>You can call <a
-  href="/reference/p5.Shader/modify/"><code>baseNormalShader().modify()</code></a>
+  <a href="/reference/p5/normalMaterial/"><code>normalMaterial()</code></a> is
+  activated.</p>
 
-  and change any of the following hooks:</p>
+  <p>Calling <a
+  href="/reference/p5/buildNormalShader/"><code>buildNormalShader(shaderFunction)</code></a>
 
-  <table>
+  is equivalent to calling
+  <code>baseNormalShader().modify(shaderFunction)</code>.</p>
 
-  <tr><th>Hook</th><th>Description</th></tr>
+  <p>Read <a href="/reference/p5/buildNormalShader/">the
+  <code>buildNormalShader</code> reference</a> or
 
-  <tr><td><p><code>void beforeVertex</code></p>
+  call <code>baseNormalShader().inspectHooks()</code> for more information on
+  what you can do with
 
-  </td><td><p>Called at the start of the vertex shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>Vertex getObjectInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn before any
-  positioning has been applied. It takes in a <code>Vertex</code> struct, which
-  includes:</p>
-
-  <ul><li><code>vec3 position</code>, the position of the
-  vertex</li><li><code>vec3 normal</code>, the direction facing out of the
-  surface</li><li><code>vec2 texCoord</code>, the texture coordinates associeted
-  with the vertex</li><li><code>vec4 color</code>, the per-vertex color
-
-  The struct can be modified and returned.</li></ul></td></tr>
-
-  <tr><td><p><code>Vertex getWorldInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn after
-  transformations such as <code>translate()</code> and <code>scale()</code> have
-  been applied, but before the camera has been applied. It takes in a
-  <code>Vertex</code> struct like, in the <code>getObjectInputs</code> hook
-  above, that can be modified and returned.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>Vertex getCameraInputs</code></p>
-
-  </td><td><p>Update the vertex data of the model being drawn as they appear
-  relative to the camera. It takes in a <code>Vertex</code> struct like, in the
-  <code>getObjectInputs</code> hook above, that can be modified and
-  returned.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void afterVertex</code></p>
-
-  </td><td><p>Called at the end of the vertex shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void beforeFragment</code></p>
-
-  </td><td><p>Called at the start of the fragment shader.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>vec4 getFinalColor</code></p>
-
-  </td><td><p>Update the final color after mixing. It takes in a <code>vec4
-  color</code> and must return a modified version.</p>
-
-  </td></tr>
-
-  <tr><td><p><code>void afterFragment</code></p>
-
-  </td><td><p>Called at the end of the fragment shader.</p>
-
-  </td></tr>
-
-  </table><p>Most of the time, you will need to write your hooks in GLSL ES
-  version 300. If you
-
-  are using WebGL 1 instead of 2, write your hooks in GLSL ES 100 instead.</p>
-
-  <p>Call <code>baseNormalShader().inspectHooks()</code> to see all the possible
-  hooks and
-
-  their default implementations.</p>
-line: 1747
+  the base normal shader.</p>
+line: 1848
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseNormalShader().modify({
-        uniforms: {
-          'float time': () => millis()
-        },
-        'Vertex getWorldInputs': `(Vertex inputs) {
-          inputs.position.y +=
-            20. * sin(time * 0.001 + inputs.position.x * 0.05);
-          return inputs;
-        }`
-      });
-    }
-
-    function draw() {
-      background(255);
-      shader(myShader);
-      noStroke();
-      sphere(50);
-    }
-    </code>
-    </div>
-  - |-
-    <div modernizr='webgl'>
-    <code>
-    let myShader;
-
-    function setup() {
-      createCanvas(200, 200, WEBGL);
-      myShader = baseNormalShader().modify({
-        'Vertex getCameraInputs': `(Vertex inputs) {
-          inputs.normal = abs(inputs.normal);
-          return inputs;
-        }`,
-        'vec4 getFinalColor': `(vec4 color) {
-          // Map the r, g, and b values of the old normal to new colors
-          // instead of just red, green, and blue:
-          vec3 newColor =
-            color.r * vec3(89.0, 240.0, 232.0) / 255.0 +
-            color.g * vec3(240.0, 237.0, 89.0) / 255.0 +
-            color.b * vec3(205.0, 55.0, 222.0) / 255.0;
-          newColor = newColor / (color.r + color.g + color.b);
-          return vec4(newColor, 1.0) * color.a;
-        }`
-      });
-    }
-
-    function draw() {
-      background(255);
-      shader(myShader);
-      noStroke();
-      rotateX(frameCount * 0.01);
-      rotateY(frameCount * 0.015);
-      box(100);
-    }
-    </code>
-    </div>
+example: []
 class: p5
 return:
-  description: The <code>normalMaterial</code> shader
+  description: The base material shader.
   type: p5.Shader
 overloads:
   - params: []
     return:
-      description: The <code>normalMaterial</code> shader
+      description: The base material shader.
       type: p5.Shader
 chainable: false
+beta: true
 ---
 
 
