@@ -4,10 +4,11 @@ import preact from "@preact/preset-vite";
 
 export default getViteConfig({
   // needed to ensure react 3rd party libraries work with preact
-  plugins: [preact()],
+  plugins: [preact() as any],
   resolve: {
     mainFields: ["module"],
   },
+  // @ts-expect-error - vitest config not recognized by astro's getViteConfig
   test: {
     projects: [
       {
