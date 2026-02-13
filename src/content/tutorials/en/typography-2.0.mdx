@@ -39,22 +39,22 @@ We'll use some of p5.js 2.0's 3D features to do our block letters, so we'll crea
 When debugging a 3D sketch, adding `orbitControl()` lets us click and drag to rotate the things we've drawn. If you run the sketch now, you'll see a box that you can spin around by clicking and dragging.
 
 <EditableSketch code={`
-function setup() {
-  /////////////////////////////////////////////////////
-  // Switch to WEBGL mode at postcard size
-  /////////////////////////////////////////////////////
-  createCanvas(600, 400, WEBGL);
-}
-
-function draw() {
-  background(255);
+  function setup() {
+    /////////////////////////////////////////////
+    // Switch to WEBGL mode at postcard size
+    /////////////////////////////////////////////
+    createCanvas(600, 400, WEBGL);
+  }
   
-  /////////////////////////////////////////////////////
-  // Draw a box that you can orbit around
-  /////////////////////////////////////////////////////
-  orbitControl();
-  box(50);
-}
+  function draw() {
+    background(255);
+    
+    /////////////////////////////////////////////
+    // Draw a box that you can orbit around
+    /////////////////////////////////////////////
+    orbitControl();
+    box(50);
+  }
 `} />
 
 ## 2D Text
@@ -62,18 +62,17 @@ function draw() {
 To load something in version 2.0, we turn our setup function into an `async` function. Then we can `await` something that needs to load, like [`loadFont`](/reference/p5/loadfont), and assign it to a variable:
 
 ```js
-/////////////////////////////////////////////////////
+///////////////////////////////////////////////
 // Add `async` to setup
-/////////////////////////////////////////////////////
+///////////////////////////////////////////////
 async function setup() {
   createCanvas(600, 400, WEBGL);
   
-  /////////////////////////////////////////////////////
+  ///////////////////////////////////////////
   // Load fonts with `await`
-  /////////////////////////////////////////////////////
+  ///////////////////////////////////////////
   cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
+    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
 }
 ```
 
@@ -81,7 +80,8 @@ Let's load a font in our sketch! You can always upload your own font file and th
 
 ```html
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+  <head>
     <script src="https://cdn.jsdelivr.net/npm/p5@2.0.3/lib/p5.js"></script>
 
     <!-- Add the p5.woff2 library with the line below: -->
@@ -89,14 +89,13 @@ Let's load a font in our sketch! You can always upload your own font file and th
 
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8">
-
   </head>
   <body>
     <main>
     </main>
     <script src="sketch.js"></script>
-
-</body></html>
+  </body>
+</html>
 ```
 
 Now, let's [go to Google Fonts](https://fonts.google.com/), and browse for one that you like. I'm going to use a cursive font for the smaller text on the postcard, so I've used [Meow Script](https://fonts.google.com/specimen/Meow+Script). If you find a font you like, click Get Font, and then click Get Embed Code, you'll see something like this:
@@ -114,46 +113,48 @@ Try taking out the `push` and `pop`. You'll see that the `fill(0)` starts to aff
 </Callout>
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-/////////////////////////////////////////////////////
-// Create variables to store the font, and to
-// control the font size
-/////////////////////////////////////////////////////
-let cursiveFont;
-let cursiveTextSize = 40;
-
-/////////////////////////////////////////////////////
-// Add \`async\` to setup
-/////////////////////////////////////////////////////
-async function setup() {
-  createCanvas(600, 400, WEBGL);
+  ///////////////////////////////////////////////
+  // Create variables to store the font, and to
+  // control the font size
+  ///////////////////////////////////////////////
+  let cursiveFont;
+  let cursiveTextSize = 40;
   
-  /////////////////////////////////////////////////////
-  // Load a font URL from Google Fonts
-  /////////////////////////////////////////////////////
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-}
-
-function draw() {
-  background(255);
+  ///////////////////////////////////////////////
+  // Add \`async\` to setup
+  ///////////////////////////////////////////////
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    
+    /////////////////////////////////////////////
+    // Load a font URL from Google Fonts
+    /////////////////////////////////////////////
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
+    );
+  }
   
-  orbitControl();
-  
-  /////////////////////////////////////////////////////
-  // Between a push() and pop(), set text settings,
-  // and then draw text
-  /////////////////////////////////////////////////////
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(0);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  box(50);
-}
+  function draw() {
+    background(255);
+    
+    orbitControl();
+    
+    /////////////////////////////////////////////
+    // Between a push() and pop(), 
+    // set text settings, and then draw text.
+    /////////////////////////////////////////////
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(0);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    box(50);
+  }
 `} />
 
 ## 3D text
@@ -185,58 +186,64 @@ Try using different `extrude` distances to change the thickness, and higher `sam
 </Callout>
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let cursiveFont;
-let cursiveTextSize = 40;
-
-/////////////////////////////////////////////////////
-// Create variables to store the block text font,
-// the model, the text size, and its text content
-/////////////////////////////////////////////////////
-let blockFont;
-let blockText;
-let blockTextSize = 130;
-let greeting = 'P5.JS-2.0';
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
+  let cursiveFont;
+  let cursiveTextSize = 40;
   
-  /////////////////////////////////////////////////////
-  // Load a second font
-  /////////////////////////////////////////////////////
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+  ///////////////////////////////////////////////
+  // Create variables to store the block text 
+  // font, the model, the text size, and its 
+  // text content.
+  ///////////////////////////////////////////////
+  let blockFont;
+  let blockText;
+  let blockTextSize = 130;
+  let greeting = 'P5.JS-2.0';
   
-  /////////////////////////////////////////////////////
-  // Convert the text into a 3D model
-  /////////////////////////////////////////////////////
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
-}
-
-function draw() {
-  background(255);
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
+    );
+    
+    /////////////////////////////////////////////
+    // Load a second font
+    /////////////////////////////////////////////
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    
+    /////////////////////////////////////////////
+    // Convert the text into a 3D model
+    /////////////////////////////////////////////
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+      extrude: 100,
+      sampleFactor: 0.25,
+    });
+  }
   
-  orbitControl();
-  
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(0);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  /////////////////////////////////////////////////////
-  // Instead of drawing a box, draw our text model
-  /////////////////////////////////////////////////////
-  model(blockText);
-}
+  function draw() {
+    background(255);
+    
+    orbitControl();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(0);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    /////////////////////////////////////////////
+    // Instead of drawing a box, 
+    // draw our text model
+    /////////////////////////////////////////////
+    model(blockText);
+  }
 `} />
 
 ## Drawing a background image
@@ -248,64 +255,69 @@ Like fonts, we need to create a variable at the top to store your image, and the
 We'll draw it to the canvas in `draw()`. `imageMode(CENTER)` lets us position the image via the coordinate of its center rather than its top left. We then can draw an image using `image(img, x, y)`. To make it fill the canvas, we can use `image(x, y, width, height)`, but it will stretch and distort the image to do so. By specifying the position and size on the original image after that and adding `COVER` at the end, we can fill the destination area without distortion. (`CONTAIN` would fit the image snugly in the destination area without cutting off any of the original image.)
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
+  let blockFont;
+  let cursiveFont;
+  let blockText;
 
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
 
-/////////////////////////////////////////////////////
-// Create a variable to store the background image
-/////////////////////////////////////////////////////
-let bgImg;
+  ///////////////////////////////////////////////
+  // Create a variable to store the background
+  // image
+  ///////////////////////////////////////////////
+  let bgImg;
 
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  
-  /////////////////////////////////////////////////////
-  // Load the background image with loadImage
-  /////////////////////////////////////////////////////
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
-  
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
-}
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+    
+    /////////////////////////////////////////////
+    // Load the background image with loadImage
+    /////////////////////////////////////////////
+    bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+      extrude: 100,
+      sampleFactor: 0.25,
+    });
+  }
 
-function draw() {
-  background(255);
-  /////////////////////////////////////////////////////
-  // Draw the background image, filling the canvas
-  /////////////////////////////////////////////////////
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
-  
-  orbitControl();
-  
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(0);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  model(blockText);
-}
+  function draw() {
+    background(255);
+    /////////////////////////////////////////////
+    // Draw the background image, 
+    // filling the canvas
+    /////////////////////////////////////////////
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
+    orbitControl();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(0);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    model(blockText);
+  }
 `} />
 
 ## Layering
@@ -323,63 +335,67 @@ In WebGL mode, if you want to treat 3D content like a flat 2D image, you can fla
 </Callout>
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-
-let bgImg;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
   
-  /////////////////////////////////////////////////////
-  // Draw a semitransparent black rectangle
-  /////////////////////////////////////////////////////
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
+  let bgImg;
   
-  orbitControl();
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Meow+Script&display=swap');
+    bgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+        extrude: 100,
+        sampleFactor: 0.25,
+    });
+  }
   
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  model(blockText);
-}
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //src size
+      COVER // Fill the area without distortion
+    );
+    
+    /////////////////////////////////////////////
+    // Draw a semitransparent black rectangle
+    /////////////////////////////////////////////
+    push();
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
+    pop();
+    
+    orbitControl();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    model(blockText);
+  }
 `} />
 
 ## 3D rotation
@@ -387,78 +403,83 @@ function draw() {
 Let's start to position the 3D text the way we'd see it in a postcard: a little lower in the canvas, and at an angle. To do this, we wrap the `model(blockText)` call in a `push()` and a `pop()`, and then we can start using `rotateX()` and `rotateY()` to tilt it.
 
 <Callout title="Note">
-By default, `rotateX()` and other rotation functions take angles in radians, so passing in `PI` as an angle will flip something backwards. Often, you'll use `PI * 0.1` or somet other fraction to get a smaller rotation.
+By default, `rotateX()` and other rotation functions take angles in radians, so passing in `PI` as an angle will flip something backwards. Often, you'll use `PI * 0.1` or some other fraction to get a smaller rotation.
 </Callout>
 
 At this point, the text starts clipping through the background image. We can replace the `orbitControl()` line with `clearDepth()`, which tells p5 to flatten everything drawn before it into a flat background that will go behind anything you draw next.
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-
-let bgImg;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
   
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
+  let bgImg;
   
-  /////////////////////////////////////////////////////
-  // Remove orbitControl(), and clear the 3D depth
-  /////////////////////////////////////////////////////
-  clearDepth();
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Meow+Script&display=swap');    
+    bgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+        extrude: 100,
+        sampleFactor: 0.25,
+    });
+  }
   
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  /////////////////////////////////////////////////////
-  // Wrap the model(...) call in push and pop, and
-  // apply rotation in two axes
-  /////////////////////////////////////////////////////
-  push();
-  translate(0, 40);
-  rotateX(PI * 0.1);
-  rotateY(PI * 0.1);
-  model(blockText);
-  pop();
-}
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
+    push();
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
+    pop();
+    
+    /////////////////////////////////////////////
+    // Remove orbitControl(), and 
+    // clear the 3D depth
+    /////////////////////////////////////////////
+    clearDepth();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    /////////////////////////////////////////////
+    // Wrap the model(...) call in push and pop, 
+    // and apply rotation in two axes
+    /////////////////////////////////////////////
+    push();
+    translate(0, 40);
+    rotateX(PI * 0.1);
+    rotateY(PI * 0.1);
+    model(blockText);
+    pop();
+  }
 `} />
 
 ## Lighting
@@ -471,72 +492,75 @@ To start with, let's remove the stroke on it with `noStroke()`. Then, we'll turn
 - [`directionalLight()`](/reference/p5/directionallight) casts light with a given color in a direction specified by `x`, `y`, and `z` coordinates. Here, we're casing two: one directly into the canvas, and one slightly left.
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-
-let bgImg;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
   
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
+  let bgImg;
   
-  clearDepth();
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+    bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+        extrude: 100,
+        sampleFactor: 0.25,
+      });
+  }
   
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  push();
-  translate(0, 40);
-  rotateX(PI * 0.1);
-  rotateY(PI * 0.1);
-  /////////////////////////////////////////////////////
-  // Remove stroke and add lighting
-  /////////////////////////////////////////////////////
-  noStroke();
-  ambientLight(0);
-  directionalLight(color("#FFFFFF"), 0, 0, -1);
-  directionalLight(color("#FFFFFF"), -0.2, 0, -1);
-  model(blockText);
-  pop();
-}
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
+    push();
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
+    pop();
+    
+    clearDepth();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    push();
+    translate(0, 40);
+    rotateX(PI * 0.1);
+    rotateY(PI * 0.1);
+    /////////////////////////////////////////////
+    // Remove stroke and add lighting
+    /////////////////////////////////////////////
+    noStroke();
+    ambientLight(0);
+    directionalLight(color("#FFFFFF"), 0, 0, -1);
+    directionalLight(color("#FFFFFF"), -0.2, 0, -1);
+    model(blockText);
+    pop();
+  }
 `} />
 
 ## Texture with a custom material
@@ -546,40 +570,47 @@ Now, let's make an image show through the block text! First, we need to load ano
 Generally, when you want to use an image as a texture on some 3D content, you can use the `texture()` function. It doesn't seem to work for 3D text, though, even though it works for other 3D content such as a `sphere()`. So what's going on?
 
 <EditableSketch code={`
-let img;
-async function setup() {
-  createCanvas(200, 200, WEBGL);
-  img = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Grouse_mountain_%28ski_runs_close_up%29.JPG/640px-Grouse_mountain_%28ski_runs_close_up%29.JPG');
-}
-function draw() {
-  background(255);
-  orbitControl();
-  noStroke();
-  // Texturing the sphere works:
-  texture(img);
-  sphere(80);
-}
+  let img;
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    img = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Grouse_mountain_%28ski_runs_close_up%29.JPG/640px-Grouse_mountain_%28ski_runs_close_up%29.JPG');
+  }
+  function draw() {
+    background(255);
+    orbitControl();
+    noStroke();
+    // Texturing the sphere works:
+    texture(img);
+    sphere(80);
+  }
 `} />
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let img;
-let blockText;
-async function setup() {
-  createCanvas(200, 200, WEBGL);
-  img = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Grouse_mountain_%28ski_runs_close_up%29.JPG/640px-Grouse_mountain_%28ski_runs_close_up%29.JPG');
-  let blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  textAlign(CENTER, CENTER);
-  textSize(75);
-  blockText = blockFont.textToModel('TEST', 0, 0, { extrude: 100, sampleFactor: 0.25 });
-}
-function draw() {
-  background(255);
-  orbitControl();
-  noStroke();
-  // Texturing the 3D text does not!
-  texture(img);
-  model(blockText);
-}
+  let img;
+  let blockText;
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    img = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Grouse_mountain_%28ski_runs_close_up%29.JPG/640px-Grouse_mountain_%28ski_runs_close_up%29.JPG');
+    let blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    textAlign(CENTER, CENTER);
+    textSize(75);
+    blockText = blockFont.textToModel(
+      'TEST', 0, 0, { 
+        extrude: 100, 
+        sampleFactor: 0.25 
+    });
+  }
+  function draw() {
+    background(255);
+    orbitControl();
+    noStroke();
+    // but texturing the 3D text does not work!
+    texture(img);
+    model(blockText);
+  }
 `} />
 
 3D content can optionally come with **texture coordinates** that specify, for each vertex in 3D space on the model, what 2D coordinate on the texture should be pinned to that vertex. Built-in p5 shapes like `sphere()` and `box()` come with some, but `textToModel` does not, so we end up with the top left pixel getting stretched over the whole model.
@@ -589,28 +620,28 @@ But that's ok! To get a texture to show through the text, we can make our own **
 When you draw shapes and models in WebGL mode, they get drawn with a **shader** to control their material. A shader is responsible for positioning all the points on the shape, and for coloring the faces of the shape. There are some built-in ones you can use -- by default, it's using a material shader, but you can try calling `normalMaterial()` before a call to `model()` or another 3D shape function to see another one that picks colors based on the orientation of the surface (its ["normal"](https://en.wikipedia.org/wiki/Normal_(geometry))) of a model.
 
 <EditableSketch code={`
-function setup() {
-  createCanvas(200, 200, WEBGL);
-}
-function draw() {
-  background(255);
-  orbitControl();
-  // Draw using the default material
-  sphere(80);
-}
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+  }
+  function draw() {
+    background(255);
+    orbitControl();
+    // Draw using the default material
+    sphere(80);
+  }
 `} />
 
 <EditableSketch code={`
-function setup() {
-  createCanvas(200, 200, WEBGL);
-}
-function draw() {
-  background(255);
-  orbitControl();
-  // Draw using a material visualizing the surface normal
-  normalMaterial();
-  sphere(80);
-}
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+  }
+  function draw() {
+    background(255);
+    orbitControl();
+    // Draw using a material visualizing the surface normal
+    normalMaterial();
+    sphere(80);
+  }
 `} />
 
 So, to map the image onto our 3D text, we'll create a custom shader. We'll declare a variable for it at the top and then create it in `setup()`. All we need to do is modify the default material but tell it how to create texture coordinates.
@@ -626,132 +657,141 @@ Each hook takes in an inputs object for us to modify and return. Texture coordin
 We can use our material at the bottom by setting `shader(textureMaterial)`. This will use our custom texture mapping, so we can then supply the texture to use by adding `texture(fgImg)`.
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let img;
-let blockText;
-let textureMaterial;
-async function setup() {
-  createCanvas(200, 200, WEBGL);
-  img = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Grouse_mountain_%28ski_runs_close_up%29.JPG/640px-Grouse_mountain_%28ski_runs_close_up%29.JPG');
-  let blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  textAlign(CENTER, CENTER);
-  textSize(75);
-  blockText = blockFont.textToModel('TEST', 0, 0, { extrude: 100, sampleFactor: 0.25 });
-
-  textureMaterial = baseMaterialShader().modify(() => {
-    getWorldInputs((inputs) => {
-      let size = [200, 200]; // width and height
-      inputs.texCoord = inputs.position.xy/size + 0.5;
-      return inputs;
+  let img;
+  let blockText;
+  let textureMaterial;
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    img = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Grouse_mountain_%28ski_runs_close_up%29.JPG/640px-Grouse_mountain_%28ski_runs_close_up%29.JPG');
+    let blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    textAlign(CENTER, CENTER);
+    textSize(75);
+    blockText = blockFont.textToModel(
+      'TEST', 0, 0, { extrude: 100, sampleFactor: 0.25 });
+  
+    textureMaterial = baseMaterialShader().modify(() => {
+      getWorldInputs((inputs) => {
+        let size = [200, 200]; // width and height
+        inputs.texCoord = inputs.position.xy/size + 0.5;
+        return inputs;
+      });
     });
-  });
-}
-function draw() {
-  background(255);
-  orbitControl();
-  noStroke();
-  shader(textureMaterial);
-  texture(img);
-  model(blockText);
-}
+  }
+  function draw() {
+    background(255);
+    orbitControl();
+    noStroke();
+    shader(textureMaterial);
+    texture(img);
+    model(blockText);
+  }
 `} />
 
 Here's how it looks in context:
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-
-let bgImg;
-/////////////////////////////////////////////////////
-// Create a variable to store the foreground image
-/////////////////////////////////////////////////////
-let fgImg;
-
-/////////////////////////////////////////////////////
-// Create a variable to store the material in
-/////////////////////////////////////////////////////
-let textureMaterial;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
-  /////////////////////////////////////////////////////
-  // Load the foreground image
-  /////////////////////////////////////////////////////
-  fgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
   
-  /////////////////////////////////////////////////////
-  // Create a material
-  /////////////////////////////////////////////////////
-  textureMaterial = baseMaterialShader().modify(() => {
-    getWorldInputs((inputs) => {
-      let size = [600, 400];
-      inputs.texCoord = inputs.position.xy/size + 0.5;
-      return inputs;
+  let bgImg;
+  ///////////////////////////////////////////////
+  // Create a variable to store the 
+  // foreground image
+  ///////////////////////////////////////////////
+  let fgImg;
+  
+  ///////////////////////////////////////////////
+  // Create a variable to store the material in
+  ///////////////////////////////////////////////
+  let textureMaterial;
+  
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+    bgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    /////////////////////////////////////////////
+    // Load the foreground image
+    /////////////////////////////////////////////
+    fgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+        extrude: 100,
+        sampleFactor: 0.25,
+      });
+    
+    /////////////////////////////////////////////
+    // Create a material
+    /////////////////////////////////////////////
+    textureMaterial = baseMaterialShader().modify(() => {
+      getWorldInputs((inputs) => {
+        let size = [600, 400];
+        inputs.texCoord = inputs.position.xy/size + 0.5;
+        return inputs;
+      });
     });
-  });
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
+  }
   
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
-  
-  clearDepth();
-  
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  push();
-  translate(0, 40);
-  rotateX(PI * 0.1);
-  rotateY(PI * 0.1);
-  noStroke();
-  ambientLight(0);
-  directionalLight(color("#FFFFFF"), 0, 0, -1);
-  directionalLight(color("#FFFFFF"), -0.2, 0, -1);
-  
-  /////////////////////////////////////////////////////
-  // Apply the foreground image as a texture, and
-  // use the foreground material
-  /////////////////////////////////////////////////////
-  texture(fgImg);
-  shader(textureMaterial);
-  model(blockText);
-  pop();
-}
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
+    push();
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
+    pop();
+    
+    clearDepth();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    push();
+    translate(0, 40);
+    rotateX(PI * 0.1);
+    rotateY(PI * 0.1);
+    noStroke();
+    ambientLight(0);
+    directionalLight(color("#FFFFFF"), 0, 0, -1);
+    directionalLight(color("#FFFFFF"), -0.2, 0, -1);
+    
+    /////////////////////////////////////////////
+    // Apply the foreground image as a texture, 
+    // and use the foreground material
+    /////////////////////////////////////////////
+    texture(fgImg);
+    shader(textureMaterial);
+    model(blockText);
+    pop();
+  }
 `} />
 
 ## Adding paper texture to the canvas
@@ -768,108 +808,114 @@ Is the `MULTIPLY` blend mode darkening your image too much? Try changing the ble
 If your paper texture image is darkening the resulting image too much, we can draw it semi-transparent. Before calling `image()`, we can use `tint(255 255, 255, 100)` (or equivalently, `tint(255, 100)` for short) to tint it semitransparent. A tint darkens the color channels of your image: `tint(255, 0, 0)` leaves the red channel as-is and sets the others to 0 to make your image look red. To just reduce transparency, you can leave all channels at 255 except for the opacity channel, which we can reduce.
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-
-let bgImg;
-let fgImg;
-/////////////////////////////////////////////////////
-// Create a variable for the paper image
-/////////////////////////////////////////////////////
-let paperImg;
-
-let textureMaterial;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
-  fgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
-  /////////////////////////////////////////////////////
-  // Load the paper image
-  /////////////////////////////////////////////////////
-  paperImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
   
-  textureMaterial = baseMaterialShader().modify(() => {
-    getWorldInputs((inputs) => {
-      let size = [600, 400];
-      inputs.texCoord = inputs.position.xy/size + 0.5;
-      return inputs;
+  let bgImg;
+  let fgImg;
+  ///////////////////////////////////////////////
+  // Create a variable for the paper image
+  ///////////////////////////////////////////////
+  let paperImg;
+  
+  let textureMaterial;
+  
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+    bgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    fgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
+    /////////////////////////////////////////////
+    // Load the paper image
+    /////////////////////////////////////////////
+    paperImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+        extrude: 100,
+        sampleFactor: 0.25,
+      });
+    
+    textureMaterial = baseMaterialShader().modify(() => {
+      getWorldInputs((inputs) => {
+        let size = [600, 400];
+        inputs.texCoord = inputs.position.xy/size + 0.5;
+        return inputs;
+      });
     });
-  });
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
+  }
   
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
-  
-  clearDepth();
-  
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  push();
-  translate(0, 40);
-  rotateX(PI * 0.1);
-  rotateY(PI * 0.1);
-  noStroke();
-  ambientLight(0);
-  directionalLight(color("#FFFFFF"), 0, 0, -1);
-  directionalLight(color("#FFFFFF"), -0.2, 0, -1);
-  
-  texture(fgImg);
-  shader(textureMaterial);
-  model(blockText);
-  pop();
-  
-  /////////////////////////////////////////////////////
-  // Clear the depth again, and blend the paper image
-  // on top of everything
-  /////////////////////////////////////////////////////
-  clearDepth();
-  push();
-  blendMode(MULTIPLY);
-  tint(255, 100);
-  image(
-    paperImg,
-    0, 0, width, height, // Destination size
-    0, 0, paperImg.width, paperImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
-  pop();
-}
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
+    push();
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
+    pop();
+    
+    clearDepth();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    push();
+    translate(0, 40);
+    rotateX(PI * 0.1);
+    rotateY(PI * 0.1);
+    noStroke();
+    ambientLight(0);
+    directionalLight(color("#FFFFFF"), 0, 0, -1);
+    directionalLight(color("#FFFFFF"), -0.2, 0, -1);
+    
+    texture(fgImg);
+    shader(textureMaterial);
+    model(blockText);
+    pop();
+    
+    /////////////////////////////////////////////
+    // Clear the depth again, and blend the 
+    // paper image on top of everything
+    /////////////////////////////////////////////
+    clearDepth();
+    push();
+    blendMode(MULTIPLY);
+    tint(255, 100);
+    image(
+      paperImg,
+      0, 0, width, height, // Destination size
+      0, 0, paperImg.width, paperImg.height,
+      COVER // Fill the area without distortion
+    );
+    pop();
+  }
 `} />
 
 ## Living on the web: screen reader accessibility
@@ -931,32 +977,36 @@ let textureMaterial;
 
 async function setup() {
   createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+  blockFont = await loadFont(
+    'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
   cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
-  fgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
-  paperImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+  bgImg = await loadImage(
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+  fgImg = await loadImage(
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
+  paperImg = await loadImage(
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
   
   textAlign(CENTER, CENTER);
   textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
+  blockText = blockFont.textToModel(
+    greeting, 0, 0, {
+      extrude: 100,
+      sampleFactor: 0.25,
+    });
   
   textureMaterial = baseMaterialShader().modify(() => {
-    /////////////////////////////////////////////////////
+    /////////////////////////////////////////////
     // Pass the current time into the shader
-    /////////////////////////////////////////////////////
+    /////////////////////////////////////////////
     const t = uniformFloat(() => millis());
     getWorldInputs((inputs) => {
       let size = [600, 400];
       inputs.texCoord = inputs.position.xy/size + 0.5;
-      /////////////////////////////////////////////////////
+      ///////////////////////////////////////////
       // Update vertex positions over time
-      /////////////////////////////////////////////////////
+      ///////////////////////////////////////////
       inputs.position = [
         inputs.position.x,
         inputs.position.y + 20 * sin(t * 0.001 + inputs.position.x * 0.01),
@@ -975,7 +1025,7 @@ function draw() {
   image(
     bgImg,
     0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
+    0, 0, bgImg.width, bgImg.height, //Src size
     COVER // Fill the area without distortion
   );
   
@@ -992,7 +1042,9 @@ function draw() {
   textSize(cursiveTextSize);
   fill(255);
   textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
+  text("Greetings from", 
+    -width / 2 + 40, 
+    -height / 2 + 50);
   pop();
   
   push();
@@ -1016,7 +1068,7 @@ function draw() {
   image(
     paperImg,
     0, 0, width, height, // Destination size
-    0, 0, paperImg.width, paperImg.height, // Source size
+    0, 0, paperImg.width, paperImg.height, //Src size
     COVER // Fill the area without distortion
   );
   pop();
@@ -1030,179 +1082,186 @@ We've seen how you can use `sin()` to make something continuously animate. But w
 A key concept here is **animation progress**, a value between 0 and 1. We need to turn the current time into a progress value. In p5, we can use `map(value, beforeA, beforeB, afterA, afterB, true)` to transform the current time from the 0-1000ms range to a 0-1 range. The `true` at the end of `map()` tells it to clamp it to that range, so it stays at 1 as we go past 1000ms. Here's how we can use that to animate a circle entering the canvas:
 
 <EditableSketch code={`
-function setup() {
-  createCanvas(200, 200);
-}
-
-function draw() {
-  background('white');
-  fill('red');
-
-  let progress = map(millis() % 3000, 1000, 2000, 0, 1, true);
-  let x = lerp(-20, width/2, progress);
-  circle(x, height/2, 20);
-}
+  function setup() {
+    createCanvas(200, 200);
+  }
+  
+  function draw() {
+    background('white');
+    fill('red');
+  
+    let progress = map(millis() % 3000, 1000, 2000, 0, 1, true);
+    let x = lerp(-20, width/2, progress);
+    circle(x, height/2, 20);
+  }
 `} />
 
 We could use that progress directly, but this produces linear motion which can look rather mechanical. We can run the linear progress through an **easing function** to get different styles of motion. An easing function takes in 0-1 linear progress and returns nonlinear progress. You can [copy-and-paste functions from this sketch](https://openprocessing.org/sketch/2676129) to try some out. Here, I've copied `easeOutElastic()`:
 
 <EditableSketch code={`
-function setup() {
-  createCanvas(200, 200);
-}
-
-function easeOutElastic(t, magnitude = 0.7) {
-  const p = 1 - magnitude;
-  const scaledTime = t * 2;
-  if ( t === 0 || t === 1 ) {
-    return t;
+  function setup() {
+    createCanvas(200, 200);
   }
-  const s = p / (2 * Math.PI) * Math.asin(1);
-  return 2 ** (-10 * scaledTime)
-    * Math.sin((scaledTime - s)
-    * (2 * Math.PI) / p) + 1;
-}
-
-function draw() {
-  background('white');
-  fill('red');
-
-  let progress = map(millis() % 3000, 1000, 2000, 0, 1, true);
-  // Add easing:
-  progress = easeOutElastic(progress);
-  let x = lerp(-20, width/2, progress);
-  circle(x, height/2, 20);
-}
+  
+  function easeOutElastic(t, magnitude = 0.7) {
+    const p = 1 - magnitude;
+    const scaledTime = t * 2;
+    if ( t === 0 || t === 1 ) {
+      return t;
+    }
+    const s = p / (2 * Math.PI) * Math.asin(1);
+    return 2 ** (-10 * scaledTime)
+      * Math.sin((scaledTime - s)
+      * (2 * Math.PI) / p) + 1;
+  }
+  
+  function draw() {
+    background('white');
+    fill('red');
+  
+    let progress = map(millis() % 3000, 1000, 2000, 0, 1, true);
+    // Add easing:
+    progress = easeOutElastic(progress);
+    let x = lerp(-20, width/2, progress);
+    circle(x, height/2, 20);
+  }
 `} />
 
 We can use that same `easeOutElastic` to animate a `scale()` that we apply before drawing the text model. That gives us this:
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-
-let bgImg;
-let fgImg;
-let paperImg;
-
-let textureMaterial;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
-  fgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
-  paperImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = blockFont.textToModel(greeting, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  });
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
   
-  textureMaterial = baseMaterialShader().modify(() => {
-    const t = uniformFloat(() => millis());
-    getWorldInputs((inputs) => {
-      let size = [600, 400];
-      inputs.texCoord = inputs.position.xy/size + 0.5;
-      inputs.position = [
-        inputs.position.x,
-        inputs.position.y + 20 * sin(t * 0.001 + inputs.position.x * 0.01),
-        inputs.position.z
-      ]
-      return inputs;
+  let bgImg;
+  let fgImg;
+  let paperImg;
+  
+  let textureMaterial;
+  
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+    bgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    fgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
+    paperImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = blockFont.textToModel(
+      greeting, 0, 0, {
+        extrude: 100,
+        sampleFactor: 0.25,
+      });
+    
+    textureMaterial = baseMaterialShader().modify(() => {
+      const t = uniformFloat(() => millis());
+      getWorldInputs((inputs) => {
+        let size = [600, 400];
+        inputs.texCoord = inputs.position.xy/size + 0.5;
+        inputs.position = [
+          inputs.position.x,
+          inputs.position.y + 20 * sin(t * 0.001 + inputs.position.x * 0.01),
+          inputs.position.z
+        ]
+        return inputs;
+      });
     });
-  });
-  
-  describe(\`An old postcard that says Greetings from... \${greeting}\`);
-}
-
-/////////////////////////////////////////////////////
-// Paste in an easing function
-/////////////////////////////////////////////////////
-function easeOutElastic(t, magnitude = 0.7) {
-  const p = 1 - magnitude;
-  const scaledTime = t * 2;
-
-  if ( t === 0 || t === 1 ) {
-    return t;
+    
+    describe(\`An old postcard that says Greetings from... \${greeting}\`);
   }
-
-  const s = p / (2 * Math.PI) * Math.asin(1);
-  return 2 ** (-10 * scaledTime)
-    * Math.sin((scaledTime - s)
-    * (2 * Math.PI) / p) + 1;
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
   
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
+  ///////////////////////////////////////////////
+  // Paste in an easing function
+  ///////////////////////////////////////////////
+  function easeOutElastic(t, magnitude = 0.7) {
+    const p = 1 - magnitude;
+    const scaledTime = t * 2;
   
-  clearDepth();
+    if ( t === 0 || t === 1 ) {
+      return t;
+    }
   
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
+    const s = p / (2 * Math.PI) * Math.asin(1);
+    return 2 ** (-10 * scaledTime)
+      * Math.sin((scaledTime - s)
+      * (2 * Math.PI) / p) + 1;
+  }
   
-  push();
-  translate(0, 40);
-  rotateX(PI * 0.1);
-  rotateY(PI * 0.1);
-  noStroke();
-  ambientLight(0);
-  directionalLight(color("#FFFFFF"), 0, 0, -1);
-  directionalLight(color("#FFFFFF"), -0.2, 0, -1);
-  
-  texture(fgImg);
-  shader(textureMaterial);
-  /////////////////////////////////////////////////////
-  // Calculate entrance progress, and scale by it
-  /////////////////////////////////////////////////////
-  let progress = map(millis(), 0, 2000, 0, 1, true);
-  progress = easeOutElastic(progress);
-  scale(progress);
-  model(blockText);
-  pop();
-  
-  clearDepth();
-  push();
-  blendMode(MULTIPLY);
-  tint(255, 100);
-  image(
-    paperImg,
-    0, 0, width, height, // Destination size
-    0, 0, paperImg.width, paperImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
-  pop();
-}
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
+    push();
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
+    pop();
+    
+    clearDepth();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    push();
+    translate(0, 40);
+    rotateX(PI * 0.1);
+    rotateY(PI * 0.1);
+    noStroke();
+    ambientLight(0);
+    directionalLight(color("#FFFFFF"), 0, 0, -1);
+    directionalLight(color("#FFFFFF"), -0.2, 0, -1);
+    
+    texture(fgImg);
+    shader(textureMaterial);
+    /////////////////////////////////////////////
+    // Calculate entrance progress, and scale 
+    // by it
+    /////////////////////////////////////////////
+    let progress = map(millis(), 0, 2000, 0, 1, true);
+    progress = easeOutElastic(progress);
+    scale(progress);
+    model(blockText);
+    pop();
+    
+    clearDepth();
+    push();
+    blendMode(MULTIPLY);
+    tint(255, 100);
+    image(
+      paperImg,
+      0, 0, width, height, // Destination size
+      0, 0, paperImg.width, paperImg.height,
+      COVER // Fill the area without distortion
+    );
+    pop();
+  }
 `} />
-
+  
 ### Staggered animation per letter
 
 Right now, the whole text animates at once. If we want the text to feel less like a single object and more like the letters are connected with some give between them, we can animate each letter individually with staggered entrances. It will look like each letter has some inertia, and each one pulls the next along.
@@ -1215,10 +1274,14 @@ let letters = greeting.split('');
 async function setup() {
   // ...
 
-  blockText = letters.map((letter) => blockFont.textToModel(letter, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  }));
+  blockText = letters.map(
+    (letter) => blockFont.textToModel(
+      letter, 0, 0, {
+        extrude: 100,
+        sampleFactor: 0.25,
+      }
+    )
+  );
 
   // ...
 }
@@ -1259,149 +1322,159 @@ Try experimenting with different offsets to see what kind of effect you get! I'v
 </Callout>
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-/////////////////////////////////////////////////////
-// Split the greeting text into an array of letters
-/////////////////////////////////////////////////////
-let letters = greeting.split('');
-
-let bgImg;
-let fgImg;
-let paperImg;
-
-let textureMaterial;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
-  fgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
-  paperImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  /////////////////////////////////////////////////////
-  // Create a separate model per letter by mapping
-  // the letters array
-  /////////////////////////////////////////////////////
-  blockText = letters.map((letter) => blockFont.textToModel(letter, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  }));
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
+  ///////////////////////////////////////////////
+  // Split the greeting text into an array 
+  // of letters
+  ///////////////////////////////////////////////
+  let letters = greeting.split('');
   
-  textureMaterial = baseMaterialShader().modify(() => {
-    const t = uniformFloat(() => millis());
-    getWorldInputs((inputs) => {
-      let size = [600, 400];
-      inputs.texCoord = inputs.position.xy/size + 0.5;
-      inputs.position = [
-        inputs.position.x,
-        inputs.position.y + 20 * sin(t * 0.001 + inputs.position.x * 0.01),
-        inputs.position.z
-      ]
-      return inputs;
+  let bgImg;
+  let fgImg;
+  let paperImg;
+  
+  let textureMaterial;
+  
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+    bgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    fgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
+    paperImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    /////////////////////////////////////////////
+    // Create a separate model per letter by 
+    // mapping the letters array
+    /////////////////////////////////////////////
+    blockText = letters.map(
+      (letter) => blockFont.textToModel(
+        letter, 0, 0, {
+          extrude: 100,
+          sampleFactor: 0.25,
+        }
+      )
+    );
+    
+    textureMaterial = baseMaterialShader().modify(() => {
+      const t = uniformFloat(() => millis());
+      getWorldInputs((inputs) => {
+        let size = [600, 400];
+        inputs.texCoord = inputs.position.xy/size + 0.5;
+        inputs.position = [
+          inputs.position.x,
+          inputs.position.y + 20 * sin(t * 0.001 + inputs.position.x * 0.01),
+          inputs.position.z
+        ]
+        return inputs;
+      });
     });
-  });
-  
-  describe(\`An old postcard that says Greetings from... \${greeting}\`);
-}
-
-function easeOutElastic(t, magnitude = 0.7) {
-  const p = 1 - magnitude;
-  const scaledTime = t * 2;
-
-  if ( t === 0 || t === 1 ) {
-    return t;
+    
+    describe(\`An old postcard that says Greetings from... \${greeting}\`);
   }
-
-  const s = p / (2 * Math.PI) * Math.asin(1);
-  return 2 ** (-10 * scaledTime)
-    * Math.sin((scaledTime - s)
-    * (2 * Math.PI) / p) + 1;
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
   
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
+  function easeOutElastic(t, magnitude = 0.7) {
+    const p = 1 - magnitude;
+    const scaledTime = t * 2;
   
-  clearDepth();
+    if ( t === 0 || t === 1 ) {
+      return t;
+    }
   
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
+    const s = p / (2 * Math.PI) * Math.asin(1);
+    return 2 ** (-10 * scaledTime)
+      * Math.sin((scaledTime - s)
+      * (2 * Math.PI) / p) + 1;
+  }
   
-  push();
-  translate(0, 40);
-  rotateX(PI * 0.1);
-  rotateY(PI * 0.1);
-  noStroke();
-  ambientLight(0);
-  directionalLight(color("#FFFFFF"), 0, 0, -1);
-  directionalLight(color("#FFFFFF"), -0.2, 0, -1);
-  
-  texture(fgImg);
-  shader(textureMaterial);
-  /////////////////////////////////////////////////////
-  // Match the font and size from before
-  /////////////////////////////////////////////////////
-  textSize(blockTextSize);
-  textFont(blockFont);
-  /////////////////////////////////////////////////////
-  // Draw the text by letter
-  /////////////////////////////////////////////////////
-  translate(-fontWidth(greeting)/2, 0);
-  letters.forEach((letter, i) => {
-    translate(fontWidth(letter) / 2, 0);
-    /////////////////////////////////////////////////////
-    // Calculate progress per letter
-    /////////////////////////////////////////////////////
-    let progress = map(millis(), i * 50, i * 50 + 2000, 0, 1, true);
-    progress = easeOutElastic(progress);
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
     push();
-    scale(progress);
-    model(blockText[i]);
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
     pop();
-    translate(fontWidth(letter) / 2, 0);
-  });
-  pop();
-  
-  clearDepth();
-  push();
-  blendMode(MULTIPLY);
-  tint(255, 100);
-  image(
-    paperImg,
-    0, 0, width, height, // Destination size
-    0, 0, paperImg.width, paperImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
-  pop();
-}
+    
+    clearDepth();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    push();
+    translate(0, 40);
+    rotateX(PI * 0.1);
+    rotateY(PI * 0.1);
+    noStroke();
+    ambientLight(0);
+    directionalLight(color("#FFFFFF"), 0, 0, -1);
+    directionalLight(color("#FFFFFF"), -0.2, 0, -1);
+    
+    texture(fgImg);
+    shader(textureMaterial);
+    /////////////////////////////////////////////
+    // Match the font and size from before
+    /////////////////////////////////////////////
+    textSize(blockTextSize);
+    textFont(blockFont);
+    /////////////////////////////////////////////
+    // Draw the text by letter
+    /////////////////////////////////////////////
+    translate(-fontWidth(greeting)/2, 0);
+    letters.forEach((letter, i) => {
+      translate(fontWidth(letter) / 2, 0);
+      ///////////////////////////////////////////
+      // Calculate progress per letter
+      ///////////////////////////////////////////
+      let progress = map(millis(), i * 50, i * 50 + 2000, 0, 1, true);
+      progress = easeOutElastic(progress);
+      push();
+      scale(progress);
+      model(blockText[i]);
+      pop();
+      translate(fontWidth(letter) / 2, 0);
+    });
+    pop();
+    
+    clearDepth();
+    push();
+    blendMode(MULTIPLY);
+    tint(255, 100);
+    image(
+      paperImg,
+      0, 0, width, height, // Destination size
+      0, 0, paperImg.width, paperImg.height,//Src
+      COVER // Fill the area without distortion
+    );
+    pop();
+  }
 `} />
 
 ## High-res exports
@@ -1440,19 +1513,20 @@ Then, we can **update the start times** when the mouse is over each letter. To d
 letters.forEach((letter, i) => {
   translate(fontWidth(letter) / 2, 0);
   
-  /////////////////////////////////////////////////////
-  // Convert the translated coordinate to screen space
-  // and update the letter start time if it's close to
-  // the mouse
-  /////////////////////////////////////////////////////
+  ///////////////////////////////////////////
+  // Convert the translated coordinate to 
+  // screen space and update the letter start
+  // time if it's close to the mouse
+  ///////////////////////////////////////////
   const screenCoord = worldToScreen(0, 0);
   if (dist(screenCoord.x, screenCoord.y, mouseX, mouseY) < 40) {
     letterStartTimes[i] = millis();
   }
   
-  /////////////////////////////////////////////////////
-  // Base progress off of the stored letter start time
-  /////////////////////////////////////////////////////
+  ///////////////////////////////////////////
+  // Base progress off of the stored letter 
+  // start time
+  ///////////////////////////////////////////
   let progress = map(millis(), letterStartTimes[i], letterStartTimes[i] + 2000, 0, 1, true);
   progress = easeOutElastic(progress);
   push();
@@ -1466,164 +1540,174 @@ letters.forEach((letter, i) => {
 Try wiggling your mouse over the letters!
 
 <EditableSketch scripts={['https://cdn.jsdelivr.net/npm/p5.woff2@0.0.3/lib/p5.woff2.js']} code={`
-let blockFont;
-let cursiveFont;
-let blockText;
-
-let blockTextSize = 130;
-let cursiveTextSize = 40;
-let greeting = 'P5.JS-2.0';
-let letters = greeting.split('');
-/////////////////////////////////////////////////////
-// Create an array with the start times for
-// each letter
-/////////////////////////////////////////////////////
-let letterStartTimes = letters.map((letter, i) => i * 50);
-
-let bgImg;
-let fgImg;
-let paperImg;
-
-let textureMaterial;
-
-async function setup() {
-  createCanvas(600, 400, WEBGL);
-  blockFont = await loadFont('https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
-  cursiveFont = await loadFont(
-    "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap"
-  );
-  bgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
-  fgImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
-  paperImg = await loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+  let blockFont;
+  let cursiveFont;
+  let blockText;
   
-  textAlign(CENTER, CENTER);
-  textSize(blockTextSize);
-  blockText = letters.map((letter) => blockFont.textToModel(letter, 0, 0, {
-    extrude: 100,
-    sampleFactor: 0.25,
-  }));
+  let blockTextSize = 130;
+  let cursiveTextSize = 40;
+  let greeting = 'P5.JS-2.0';
+  let letters = greeting.split('');
+  ///////////////////////////////////////////////
+  // Create an array with the start times for
+  // each letter
+  ///////////////////////////////////////////////
+  let letterStartTimes = letters.map((letter, i) => i * 50);
   
-  textureMaterial = baseMaterialShader().modify(() => {
-    const t = uniformFloat(() => millis());
-    getWorldInputs((inputs) => {
-      let size = [600, 400];
-      inputs.texCoord = inputs.position.xy/size + 0.5;
-      inputs.position = [
-        inputs.position.x,
-        inputs.position.y + 20 * sin(t * 0.001 + inputs.position.x * 0.01),
-        inputs.position.z
-      ]
-      return inputs;
+  let bgImg;
+  let fgImg;
+  let paperImg;
+  
+  let textureMaterial;
+  
+  async function setup() {
+    createCanvas(600, 400, WEBGL);
+    blockFont = await loadFont(
+      'https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap');
+    cursiveFont = await loadFont(
+      "https://fonts.googleapis.com/css2?family=Meow+Script&display=swap");
+    bgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg/640px-Vancouver_%28BC%2C_Canada%29%2C_Canada_Place_--_2022_--_1906.jpg');
+    fgImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Grouse_Mountain_%288598307419%29.jpg/960px-Grouse_Mountain_%288598307419%29.jpg?20210319145510');
+    paperImg = await loadImage(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Brown_paper_bag_texture.jpg/640px-Brown_paper_bag_texture.jpg');
+    
+    textAlign(CENTER, CENTER);
+    textSize(blockTextSize);
+    blockText = letters.map((letter) => blockFont.textToModel(letter, 0, 0, {
+      extrude: 100,
+      sampleFactor: 0.25,
+    }));
+    
+    textureMaterial = baseMaterialShader().modify(() => {
+      const t = uniformFloat(() => millis());
+      getWorldInputs((inputs) => {
+        let size = [600, 400];
+        inputs.texCoord = inputs.position.xy/size + 0.5;
+        inputs.position = [
+          inputs.position.x,
+          inputs.position.y + 20 * sin(t * 0.001 + inputs.position.x * 0.01),
+          inputs.position.z
+        ]
+        return inputs;
+      });
     });
-  });
-  
-  describe(\`An old postcard that says Greetings from... \${greeting}\`);
-}
-
-function easeOutElastic(t, magnitude = 0.7) {
-  const p = 1 - magnitude;
-  const scaledTime = t * 2;
-
-  if ( t === 0 || t === 1 ) {
-    return t;
-  }
-
-  const s = p / (2 * Math.PI) * Math.asin(1);
-  return 2 ** (-10 * scaledTime)
-    * Math.sin((scaledTime - s)
-    * (2 * Math.PI) / p) + 1;
-}
-
-function draw() {
-  background(255);
-  imageMode(CENTER);
-  image(
-    bgImg,
-    0, 0, width, height, // Destination size
-    0, 0, bgImg.width, bgImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
-  
-  push();
-  noStroke();
-  fill(0, 100);
-  plane(width, height);
-  pop();
-  
-  clearDepth();
-  
-  push();
-  textFont(cursiveFont);
-  textSize(cursiveTextSize);
-  fill(255);
-  textAlign(LEFT, TOP);
-  text("Greetings from", -width / 2 + 40, -height / 2 + 50);
-  pop();
-  
-  push();
-  translate(0, 40);
-  rotateX(PI * 0.1);
-  rotateY(PI * 0.1);
-  noStroke();
-  ambientLight(0);
-  directionalLight(color("#FFFFFF"), 0, 0, -1);
-  directionalLight(color("#FFFFFF"), -0.2, 0, -1);
-  
-  texture(fgImg);
-  shader(textureMaterial);
-  textSize(blockTextSize);
-  textFont(blockFont);
-  translate(-fontWidth(greeting)/2, 0);
-  letters.forEach((letter, i) => {
-    translate(fontWidth(letter) / 2, 0);
     
-    /////////////////////////////////////////////////////
-    // Convert the translated coordinate to screen space
-    // and update the letter start time if it's close to
-    // the mouse
-    /////////////////////////////////////////////////////
-    const screenCoord = worldToScreen(0, 0);
-    if (dist(screenCoord.x, screenCoord.y, mouseX, mouseY) < 40) {
-      letterStartTimes[i] = millis();
+    describe(\`An old postcard that says Greetings from... \${greeting}\`);
+  }
+  
+  function easeOutElastic(t, magnitude = 0.7) {
+    const p = 1 - magnitude;
+    const scaledTime = t * 2;
+  
+    if ( t === 0 || t === 1 ) {
+      return t;
     }
-    
-    /////////////////////////////////////////////////////
-    // Base progress off of the stored letter start time
-    /////////////////////////////////////////////////////
-    let progress = map(millis(), letterStartTimes[i], letterStartTimes[i] + 2000, 0, 1, true);
-    progress = easeOutElastic(progress);
-    push();
-    scale(progress);
-    model(blockText[i]);
-    pop();
-    translate(fontWidth(letter) / 2, 0);
-  });
-  pop();
   
-  clearDepth();
-  push();
-  blendMode(MULTIPLY);
-  tint(255, 100);
-  image(
-    paperImg,
-    0, 0, width, height, // Destination size
-    0, 0, paperImg.width, paperImg.height, // Source size
-    COVER // Fill the area without distortion
-  );
-  pop();
-}
-
-async function keyPressed() {
-  if (key === 's') {
-    const prevDensity = pixelDensity();
-    pixelDensity(3); // Make the canvas high res
-    await redraw(); // Redraw the canvas at high res
-    save('sketch.png');
-    pixelDensity(prevDensity); // Put the density back
+    const s = p / (2 * Math.PI) * Math.asin(1);
+    return 2 ** (-10 * scaledTime)
+      * Math.sin((scaledTime - s)
+      * (2 * Math.PI) / p) + 1;
   }
-}
+  
+  function draw() {
+    background(255);
+    imageMode(CENTER);
+    image(
+      bgImg,
+      0, 0, width, height, // Destination size
+      0, 0, bgImg.width, bgImg.height, //Src size
+      COVER // Fill the area without distortion
+    );
+    
+    push();
+    noStroke();
+    fill(0, 100);
+    plane(width, height);
+    pop();
+    
+    clearDepth();
+    
+    push();
+    textFont(cursiveFont);
+    textSize(cursiveTextSize);
+    fill(255);
+    textAlign(LEFT, TOP);
+    text("Greetings from", 
+      -width / 2 + 40, 
+      -height / 2 + 50);
+    pop();
+    
+    push();
+    translate(0, 40);
+    rotateX(PI * 0.1);
+    rotateY(PI * 0.1);
+    noStroke();
+    ambientLight(0);
+    directionalLight(color("#FFFFFF"), 0, 0, -1);
+    directionalLight(color("#FFFFFF"), -0.2, 0, -1);
+    
+    texture(fgImg);
+    shader(textureMaterial);
+    textSize(blockTextSize);
+    textFont(blockFont);
+    translate(-fontWidth(greeting)/2, 0);
+    letters.forEach((letter, i) => {
+      translate(fontWidth(letter) / 2, 0);
+      
+      ///////////////////////////////////////////
+      // Convert the translated coordinate to 
+      // screen space and update the letter 
+      // start time if it's close to the mouse
+      ///////////////////////////////////////////
+      const screenCoord = worldToScreen(0, 0);
+      if (dist(screenCoord.x, screenCoord.y, 
+               mouseX, mouseY) < 40) {
+        letterStartTimes[i] = millis();
+      }
+      
+      ///////////////////////////////////////////
+      // Base progress off of the stored letter 
+      // start time
+      ///////////////////////////////////////////
+      let progress = map(
+        millis(), 
+        letterStartTimes[i], 
+        letterStartTimes[i] + 2000, 0, 1, true);
+      progress = easeOutElastic(progress);
+      push();
+      scale(progress);
+      model(blockText[i]);
+      pop();
+      translate(fontWidth(letter) / 2, 0);
+    });
+    pop();
+    
+    clearDepth();
+    push();
+    blendMode(MULTIPLY);
+    tint(255, 100);
+    image(
+      paperImg,
+      0, 0, width, height, // Destination size
+      0, 0, paperImg.width, paperImg.height,//Src
+      COVER // Fill the area without distortion
+    );
+    pop();
+  }
+  
+  async function keyPressed() {
+    if (key === 's') {
+      const prevDensity = pixelDensity();
+      pixelDensity(3); // Make canvas high res
+      await redraw(); // Redraw at high res
+      save('sketch.png');
+      pixelDensity(prevDensity); // Restore
+    }
+  }
 `} />
-
+  
 ## Add your postcard to the collection!
 
 If you've created your own 600x400 postcard on the p5.js web editor, feel free to [add it to our postcard wall!](https://davepagurek.github.io/p5-siggraph-labs-2025/) On that page, there are a number of other postcards people have made, and instructions at the bottom for how to add yours to the collection. We'd love to see what you make!
