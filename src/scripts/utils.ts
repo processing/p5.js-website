@@ -290,29 +290,48 @@ export const getContentFilePaths = async (baseDir: string) => {
  */
 export const rewriteRelativeMdLinks = (markdownText: string): string => {
   /**
-   * Regex to find relative links to a markdown document in a string of Markdown
-   * Has 2 capture groups:
-   * 1. Text for the link
-   * 2. Link url (but not the .md extension at the end)
+   * Regex to find markdown links:
+   * 1. Optional "!" for images
+   * 2. Link text
+   * 3. URL (can include query/anchor)
    */
   const regexPattern: RegExp = /(!?)\[([^\]]+)\]\(([^)]+)\)/g;
-  return markdownText.replace(regexPattern, (match, img, linkText, url: string) => {
-    // Don't convert images
-    if (img) return match;
 
-    const updatedUrl = rewriteRelativeLink(url);
-    return `[${linkText}](${updatedUrl})`;
-  });
-};
-/**
- * Deletes the contents of the given directory.
- * @param dirPath Path to the directory to clean up.
- */
-export const cleanUpDirectory = async (dirPath: string) => {
-  try {
-    await fs.rm(dirPath, { recursive: true, force: true });
-    console.log(`Cleaned up directory: ${dirPath}`);
-  } catch (err) {
-    console.error(`Error cleaning up directory ${dirPath}: ${err}`);
-  }
+  return markdownText.replace(
+    regexPattern,
+    (match, img, linkText, url: string) => {
+      // Don't convert images
+      if (img) return match;
+
+      // Leave absolute URLs alone
+      if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(url)) {
+        return match;
+      }
+
+      // Only touch .md links (with or without #anchor)
+      const mdMatch = url.match(/^(\.?\.?\/[^#]+?\.md)(#.*)?$/);
+      if (!mdMatch) {
+        // Not a .md link -> keep existing behavior
+        const updatedUrl = rewriteRelativeLink(url);
+        return `[${linkText}](${updatedUrl})`;
+      }
+
+      const originalPath = mdMatch[1]; // e.g. ./contributor_guidelines.md
+      const anchor = mdMatch[2] ?? ""; // e.g. #software-design-principles
+
+      // Normalize leading ./ or ../
+      let normalizedPath = originalPath.replace(/^\.\//, ""); // ./foo.md -> foo.md
+      normalizedPath = normalizedPath.replace(/^\.\.\//, ""); // ../foo.md -> foo.md (for now)
+
+      // Drop the .md extension
+      const withoutExt = normalizedPath.replace(/\.md$/, ""); // contributor_guidelines.md -> contributor_guidelines
+
+      // Build site URL under /contribute/, keep any subdirs and add trailing slash
+      const sitePath = `/contribute/${withoutExt.replace(/^\/+/, "")}/`;
+
+      const finalUrl = `${sitePath}${anchor}`;
+
+      return `[${linkText}](${finalUrl})`;
+    },
+  );
 };
