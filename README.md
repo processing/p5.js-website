@@ -1,13 +1,10 @@
 # p5.js Website
 
-
-
-## p5.js-website README.MD Revised
-About This Repository 
+## About This Repository 
 
 Hi there! Welcome to p5.js contributing! Here are a few things to know:
 
-This repository contains the p5.js website, including:
+This is the repository for the p5js.org [https://p5js.org/] and the beta.p5js.org websites, including:
 
 - Reference pages and documentation
 - Examples and embedded sketches used on the site
@@ -19,7 +16,7 @@ Please make sure you are posting to the correct repository. See this section [ht
 
 Please be sure to review our community statement [https://p5js.org/about/#community-statement] and code of conduct [https://github.com/processing/p5.js/blob/main/CODE_OF_CONDUCT.md]. These things are very important to us. Check out the contributor docs [https://p5js.org/contribute/] for more in-depth details about contributing code, bug fixes, and documentation.
 
-### p5.js-website vs p5.js
+### p5.js-website and p5.js
 If you are seeing an issue about unclear wording, missing explanations, outdated examples, or reference structure, please open an issue in this repository. If the issue appears to be a bug or behavior change in the p5.js library itself, please open an issue in the core p5.js repository[https://github.com/processing/p5.js]. If you’re unsure where an issue belongs, feel free to open it here with as much context as possible, and a maintainer can help route it.
 
 ## How To Contribute
