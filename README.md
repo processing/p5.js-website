@@ -4,20 +4,20 @@
 
 Hi there! Welcome to p5.js contributing! Here are a few things to know:
 
-This is the repository for the p5js.org [https://p5js.org/] and the beta.p5js.org websites, including:
+This is the repository for the [p5js.org](https://p5js.org/) and the beta.p5js.org websites, including:
 
 - Reference pages and documentation
 - Examples and embedded sketches used on the site
 - Website-specific UI, layout, and accessibility improvements
 
-If you have a general question or bug programming with p5.js please post it in the p5.js forum [https://discourse.processing.org/c/p5js] or ask in our Discord server [https://discord.gg/SHQ8dH25r9] (check the #contribute-to-p5 channel).
+If you have a general question or bug programming with p5.js please post it in the [p5.js forum](https://discourse.processing.org/c/p5js) or ask in our [Discord server](https://discord.gg/SHQ8dH25r9) (check the #contribute-to-p5 channel).
 
-Please make sure you are posting to the correct repository. See this section [https://github.com/processing/p5.js/blob/main/README.md#issues] for a list of all p5.js repositories.
+Please make sure you are posting to the correct repository. See [this section](https://github.com/processing/p5.js/blob/main/README.md#issues) for a list of all p5.js repositories.
 
-Please be sure to review our community statement [https://p5js.org/about/#community-statement] and code of conduct [https://github.com/processing/p5.js/blob/main/CODE_OF_CONDUCT.md]. These things are very important to us. Check out the contributor docs [https://p5js.org/contribute/] for more in-depth details about contributing code, bug fixes, and documentation.
+Please be sure to review our [community statement](https://p5js.org/about/#community-statement) and [code of conduct](https://github.com/processing/p5.js/blob/main/CODE_OF_CONDUCT.md). These things are very important to us. Check out the [contributor docs](https://p5js.org/contribute/) for more in-depth details about contributing code, bug fixes, and documentation.
 
 ### p5.js-website and p5.js
-If you are seeing an issue about unclear wording, missing explanations, outdated examples, or reference structure, please open an issue in this repository. If the issue appears to be a bug or behavior change in the p5.js library itself, please open an issue in the core p5.js repository[https://github.com/processing/p5.js]. If you’re unsure where an issue belongs, feel free to open it here with as much context as possible, and a maintainer can help route it.
+If you are seeing an issue about unclear wording, missing explanations, outdated examples, or reference structure, please open an issue in this repository. If the issue appears to be a bug or behavior change in the p5.js library itself, please open an issue in the [core p5.js repository](https://github.com/processing/p5.js). If you’re unsure where an issue belongs, feel free to open it here with as much context as possible, and a maintainer can help route it.
 
 ## How To Contribute
 Known bugs and intended new features are tracked using [GitHub issues](https://github.com/processing/p5.js-website/issues). If you'd like to start working on an existing issue, comment on the issue that you plan to work on it so other contributors know it's being handled and can offer help. Once you have completed your work on this issue, [submit a pull request (PR)](https://github.com/processing/p5.js/blob/main/contributor_docs/contributor_guidelines.md#pull-requests) to the p5.js main branch. In the description field of the PR, include "resolves #XXXX" tagging the issue you are fixing. If the PR addresses the issue but doesn't completely resolve it (ie the issue should remain open after your PR is merged), write "addresses #XXXX".
