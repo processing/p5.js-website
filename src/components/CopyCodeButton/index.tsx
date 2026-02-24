@@ -36,8 +36,6 @@ export const CopyCodeButton = ({
     }
   };
 
-  console.log('Component rendered, isCopied:', isCopied);
-
   return (
     <>
       <CircleButton
