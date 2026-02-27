@@ -282,14 +282,13 @@ Strands provides a function, `millis()`, that returns the number of milliseconds
   
   function instancingCallback() {
   
-    const MILLIS = uniformFloat(() => millis());
     function getAnimatedSpherePosition() {
       let id = instanceID();
       let theta = noise([id, 0.1234])  * TWO_PI;
       // change the particle's position 
       // over time:
       let phi = noise([id, 3.321]) * PI + 
-                MILLIS / 10000;
+                millis() / 10000;
   
       // Change the radius to create a more 
       //interesting shape:
@@ -537,7 +536,6 @@ With that in mind, let's manipulate the number of texture coordinates, so that m
 
   function pixelateCallback() {
     const pixelCountX = 50;
-    const MILLIS = uniformFloat(() => millis())
     filterColor.begin();
     const aspectRatio = filterColor.canvasSize.x /
                         filterColor.canvasSize.y;
@@ -642,7 +640,6 @@ function bloomCallback() {
   }
   
   function bloomCallback() {
-    const MILLIS = uniformFloat(() => millis());
     // Receive the original image for use
     // in our shader.
     const preBlur = uniformTexture(getOriginalImage);
@@ -755,11 +752,10 @@ For more resources on shaders, try:
 
   function starShaderCallback() {
     const skyRadius = 250;
-    const MILLIS = uniformFloat(() => millis());
     function semiSphere() {
       let id = instanceID();
-      let theta = noise([id, 0.1234])  * TWO_PI + MILLIS / 100000;
-      let phi = noise([id, 3.321]) * PI + MILLIS / 50000;
+      let theta = noise([id, 0.1234])  * TWO_PI + millis() / 100000;
+      let phi = noise([id, 3.321]) * PI + millis() / 50000;
 
       let r = skyRadius;
       r *= sin(phi);
@@ -774,7 +770,7 @@ For more resources on shaders, try:
     worldInputs.end();
   
     objectInputs.begin();
-    let size = 1 + 0.5 * sin(MILLIS * 0.002 + instanceID());
+    let size = 1 + 0.5 * sin(millis() * 0.002 + instanceID());
     objectInputs.position *= size;
     objectInputs.end();
   }
