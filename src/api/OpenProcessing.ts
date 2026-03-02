@@ -1,20 +1,16 @@
-// HELPER FUNCTIONS TO USE THE OPENPROCESSING API
-// SEE https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#intro
-
 import type { AnyEntryMap, CollectionEntry } from "astro:content";
-import memoize from "lodash/memoize";
+import { readFile, access } from "node:fs/promises";
+import { constants as FS } from "node:fs";
+import path from "node:path";
 
-const openProcessingEndpoint = "https://openprocessing.org/api/";
-/**
- * ID of the OpenProcessing Curation we pull sketches from.
- * Currently a placeholder (https://openprocessing.org/curation/78544/)
- */
-const curationId = "87649";
-const newCurationId = "89576";
+const DATA_DIR = path.join(process.cwd(), "src", "cached-data");
+
+const CURATION_2024_FILE = path.join(DATA_DIR, "openprocessing-curation-87649-sketches.json");
+const CURATION_2025_FILE = path.join(DATA_DIR, "openprocessing-curation-89576-sketches.json");
+const SKETCH_FILE = (id: number) => path.join(DATA_DIR, "openprocessing-sketches", `${id}.json`);
 
 /**
- * API Response from a call to the Curation Sketches endpoint
- *
+ * API Response from a call to the Curation Sketches endpoint, cached in the above files
  * see https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
  */
 export type OpenProcessingCurationResponse = Array<{
@@ -32,53 +28,6 @@ export type OpenProcessingCurationResponse = Array<{
   /** Author's name */
   fullname: string;
 }>;
-
-// Selected Sketches from the 2025 curation
-export const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
-
-/**
- * Get basic info for the sketches contained in a Curation
- * from the OpenProcessing API
- *
- * @param limit max number of sketches to return
- * @returns sketches
- */
-export const getCurationSketches = memoize(async (
-  limit?: number,
-): Promise<OpenProcessingCurationResponse> => {
-  const limitParam = limit ? `limit=${limit}` : "";
-  const response1 = await fetch(
-    `${openProcessingEndpoint}curation/${curationId}/sketches?${limitParam}`,
-  );
-  if(!response1.ok){ 
-    throw new Error(`getCurationSketches: ${response1.status} ${response1.statusText}`)
-  }
-  const payload1 = await response1.json();
-
-  const response2 = await fetch(
-    `${openProcessingEndpoint}curation/${newCurationId}/sketches?${limitParam}`,
-  );
-  if(!response2.ok){ 
-    throw new Error(`getCurationSketches: ${response2.status} ${response2.statusText}`)
-  }
-  const payload2 = await response2.json();
-
-
-
-  const prioritySketches = payload2.filter(
-    (sketch: OpenProcessingCurationResponse[number]) => priorityIds.includes(String(sketch.visualID)))
-    .sort((a: OpenProcessingCurationResponse[number], b: OpenProcessingCurationResponse[number]) => priorityIds.indexOf(String(a.visualID)) - priorityIds.indexOf(String(b.visualID)));
-
-
-  const finalSketches = [
-    ...prioritySketches.map((sketch: OpenProcessingCurationResponse[number]) => ({ ...sketch, curation: '2025' })),
-    ...payload1.map((sketch: OpenProcessingCurationResponse[number]) => ({ ...sketch, curation: '2024' })),
-  ];
-
-  return [
-    ...finalSketches,
-  ] as OpenProcessingCurationResponse;
-});
 
 /**
  * API Response from a call to the Sketch endpoint
@@ -98,72 +47,62 @@ export type OpenProcessingSketchResponse = {
   submittedOn: string;
   createdOn: string;
   mode: string;
+  /* This is extracted from /code */
+  width: number;
+  height: number;
 };
 
+// Selected Sketches from the 2025 curation
+export const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
+
+async function exists(p: string) {
+  try {
+    await access(p, FS.F_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function readJson<T>(filePath: string): Promise<T> {
+  const text = await readFile(filePath, "utf8");
+  return JSON.parse(text) as T;
+}
+
 /**
- * Get info about a specific sketch from the OpenProcessing API
- * First checks if the sketch is in the memoized curated sketches and returns the data if so,
- * Otherwise calls OpenProcessing API for this specific sketch
+ * Get basic info for the sketches contained in a Curation
+ * from the OpenProcessing API
  *
- * https://documenter.getpostman.com/view/16936458/2s9YC1Xa6X#7cd344f6-6e87-426a-969b-2b4a79701dd1
- * @param id
- * @returns
+ * @param limit max number of sketches to return
+ * @returns sketches
  */
-export const getSketch = memoize(
-  async (id: number): Promise<OpenProcessingSketchResponse> => {
-    // check for memoized sketch in curation sketches
-    const curationSketches = await getCurationSketches();
-    const memoizedSketch = curationSketches.find((el) => el.visualID === id);
-    if (memoizedSketch) {
-      return {
-        ...memoizedSketch,
-        license: "",
-      } as OpenProcessingSketchResponse;
-    }
+export async function getCurationSketches(): Promise<OpenProcessingCurationResponse> {
+  const payload2024 = await readJson<OpenProcessingCurationResponse>(CURATION_2024_FILE);
+  const payload2025 = await readJson<OpenProcessingCurationResponse>(CURATION_2025_FILE);
 
-    // check for sketch data in Open Processing API
-  const response = await fetch(`${openProcessingEndpoint}sketch/${id}`);
-    if (!response.ok) {
-      throw new Error(`getSketch: ${id} ${response.status} ${response.statusText}`)
-  }
-  const payload = await response.json();
-  return payload as OpenProcessingSketchResponse;
-});
+  const prioritySketches = payload2025.filter(
+    (sketch: OpenProcessingCurationResponse[number]) => priorityIds.includes(String(sketch.visualID)))
+    .sort((a: OpenProcessingCurationResponse[number], b: OpenProcessingCurationResponse[number]) => priorityIds.indexOf(String(a.visualID)) - priorityIds.indexOf(String(b.visualID)));
 
-/**
- * Note: this currently calls `/api/sketch/:id/code`
- * But only uses the width and height properties from this call
- * Width and height should instead be added to properties for `/api/sketch/:id` or `api/curation/:curationId/sketches` instead
- */
-export const getSketchSize = memoize(async (id: number) => {
-  const sketch = await getSketch(id)
-  if (sketch.mode !== 'p5js') {
-    return { width: undefined, height: undefined };
+
+  const allSketches = [
+    ...prioritySketches.map((sketch: OpenProcessingCurationResponse[number]) => ({ ...sketch, curation: '2025' })),
+    ...payload2024.map((sketch: OpenProcessingCurationResponse[number]) => ({ ...sketch, curation: '2024' })),
+  ];
+
+  const availableSketches: OpenProcessingCurationResponse = [];
+  for (const sketch of allSketches) {
+    if (await exists(SKETCH_FILE(sketch.visualID))) availableSketches.push(sketch);
   }
 
-  const response = await fetch(`${openProcessingEndpoint}sketch/${id}/code`);
-  if(!response.ok){ 
-    throw new Error(`getSketchSize: ${id} ${response.status} ${response.statusText}`)
-  }
-  const payload = await response.json();
+  return [
+    ...availableSketches,
+  ] as OpenProcessingCurationResponse;
+};
 
-  for (const tab of payload) {
-    if (!tab.code) continue;
-    const match = /createCanvas\(\s*(\w+),\s*(\w+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(tab.code);
-    if (match) {
-      if (match[1] === 'windowWidth' && match[2] === 'windowHeight') {
-        return { width: undefined, height: undefined };
-      }
-
-      const width = parseFloat(match[1]);
-      const height = parseFloat(match[2]);
-      if (width && height) {
-        return { width, height };
-      }
-    }
-  }
-  return { width: undefined, height: undefined };
-});
+export async function getSketch(id: number): Promise<OpenProcessingSketchResponse> {
+  return await readJson<OpenProcessingSketchResponse>(SKETCH_FILE(id));
+}
 
 export const makeSketchLinkUrl = (id: number) =>
   `https://openprocessing.org/sketch/${id}`;
@@ -196,12 +135,14 @@ export function isCurationResponse<C extends keyof AnyEntryMap>(
   return "visualID" in (item as any);
 }
 
-export const getRandomCurationSketches = memoize(async (num = 4) => {
+export async function getRandomCurationSketches(num = 4) {
   const curationSketches = await getCurationSketches();
   const result: OpenProcessingCurationResponse = [];
   const usedIndices: Set<number> = new Set();
 
-  while (result.length < num) {
+  const n = Math.min(num, curationSketches.length);
+
+  while (result.length < n) {
     const randomIndex = Math.floor(Math.random() * curationSketches.length);
     if (!usedIndices.has(randomIndex)) {
       result.push(curationSketches[randomIndex]);
@@ -210,4 +151,4 @@ export const getRandomCurationSketches = memoize(async (num = 4) => {
   }
 
   return result;
-});
+}
