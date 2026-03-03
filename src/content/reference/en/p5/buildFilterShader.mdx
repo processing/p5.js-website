@@ -157,6 +157,43 @@ description: >
   function draw() {
     myFilter.setUniform('time', millis());
     filter(myFilter);
+  }</code></pre><p>We can use the <code>noise()</code> function built into
+  strands to generate a color for each pixel.  (Again no need here for
+  underlying content for the filter to operate on.)  Again we'll animate by
+  passing in an announced uniform variable  <code>time</code> with
+  <code>setUniform()</code>, each frame.</p>
+
+  <pre><code class="language-js example">let myFilter;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myFilter = buildFilterShader(noiseShaderCallback);
+    describe('Evolving animated cloud-like noise in cyan and magenta');
+  }
+
+
+  function noiseShaderCallback() {
+    let time = uniformFloat();
+    filterColor.begin();
+    let coord = filterColor.texCoord;
+
+    //generate a value roughly between 0 and 1
+    let noiseVal = noise(coord.x, coord.y, time / 2000);
+
+    let result = mix(
+      [1, 0, 1, 1], // Magenta
+      [0, 1, 1, 1], // Cyan
+      noiseVal
+    );
+    filterColor.set(result);
+    filterColor.end();
+  }
+
+
+  function draw() {
+    myFilter.setUniform("time", millis());
+    filter(myFilter);
   }</code></pre><p>Like the <code>modify()</code> method on shaders,
 
   advanced users can also fill in <code>filterColor</code> using <a
@@ -181,7 +218,7 @@ description: >
   or the <a
   href="https://p5js.org/learn/getting-started-in-webgl-shaders.html">Introduction
   to Shaders</a> tutorial.</p>
-line: 708
+line: 744
 isConstructor: false
 itemtype: method
 example: []
@@ -194,12 +231,20 @@ overloads:
       - name: callback
         description: A function building a p5.strands shader.
         type: Function
+      - name: scope
+        description: An optional scope object passed to .modify().
+        optional: 1
+        type: Object
     return:
       description: The material shader
       type: p5.Shader
   - params:
       - name: hooks
         description: An object specifying p5.strands hooks in GLSL.
+        type: Object
+      - name: scope
+        description: An optional scope object passed to .modify().
+        optional: 1
         type: Object
     return:
       description: The material shader
