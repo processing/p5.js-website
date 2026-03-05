@@ -1,6 +1,6 @@
 let p0 = { x: 300, y: 250 };
 
-// Start with a slight velocity 'kick' so eInitial isn't zero
+// Start with a slight velocity 'kick' so initialEnergy isn't zero
 let p1 = { x: 420, y: 250, lastX: 418, lastY: 250 };
 let p2 = { x: 540, y: 250, lastX: 538, lastY: 250 };
 let gravity = 0.9;
