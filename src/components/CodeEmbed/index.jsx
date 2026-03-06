@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "preact/hooks";
-import { useLiveRegion } from "../hooks/useLiveRegion";
+import { useLiveRegion } from '../hooks/useLiveRegion';
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
@@ -38,19 +38,14 @@ export const CodeEmbed = (props) => {
   );
 
   let { previewWidth, previewHeight } = props;
-  const canvasMatch =
-    /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(
-      initialCode,
-    );
+  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
   if (canvasMatch) {
     previewWidth = previewWidth || parseFloat(canvasMatch[1]);
     previewHeight = previewHeight || parseFloat(canvasMatch[2]);
   }
 
   // Quick hack to make room for DOM that gets added below the canvas by default
-  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(
-    initialCode,
-  );
+  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(initialCode);
   if (domMatch && previewHeight) {
     previewHeight += 100;
   }
@@ -59,9 +54,9 @@ export const CodeEmbed = (props) => {
   // Ensures DOM-based examples (e.g., createCapture with noCanvas) are visible.
   const DEFAULT_PREVIEW_WIDTH = 400;
   const DEFAULT_PREVIEW_HEIGHT = 300;
-  if (previewWidth === undefined && previewHeight === undefined) {
-    previewWidth = DEFAULT_PREVIEW_WIDTH;
-    previewHeight = DEFAULT_PREVIEW_HEIGHT;
+  if (previewWidth === undefined || previewHeight === undefined) {
+    previewWidth = previewWidth ?? DEFAULT_PREVIEW_WIDTH;
+    previewHeight = previewHeight ?? DEFAULT_PREVIEW_HEIGHT;
   }
 
   const largeSketch = previewWidth && previewWidth > 770 - 60;
@@ -100,7 +95,7 @@ export const CodeEmbed = (props) => {
     >
       {props.previewable ? (
         <div
-          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : props.allowSideBySide ? "" : "flex-col lg:flex-row"}`}
+          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
         >
           <div>
             <CodeFrame
@@ -110,16 +105,10 @@ export const CodeEmbed = (props) => {
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
-              scripts={
-                props.includeSound
-                  ? [cdnLibraryUrl, cdnSoundUrl]
-                  : [cdnLibraryUrl]
-              }
+	      scripts={props.includeSound ? [cdnLibraryUrl, cdnSoundUrl] :[cdnLibraryUrl]}
             />
           </div>
-          <div
-            className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}
-          >
+          <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
             <CircleButton
               className="bg-bg-gray-40"
               onClick={updateOrReRun}
