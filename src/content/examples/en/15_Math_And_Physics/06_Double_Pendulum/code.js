@@ -6,7 +6,8 @@ let p2 = { x: 540, y: 250, lastX: 538, lastY: 250 };
 let gravity = 0.9;
 let len = 100;
 let path = [];
-let initialEnergy;
+// More compelling animation when energy is higher
+let initialEnergy = 780;
 
 function checkLength() {
   // This is essentially a Gauss–Seidel method
@@ -94,7 +95,6 @@ function setup() {
     p.x += random(-8, 8);
     p.y += random(-8, 8);
   });
-  initialEnergy = getEnergy();
 }
 
 function draw() {
