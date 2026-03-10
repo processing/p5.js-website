@@ -65,18 +65,31 @@ export const parseLibraryReference =
       const soundData = await getYuidocOutput('data-sound');
       if (!soundData) throw new Error('Error generating p5.sound reference data!');
 
-      // Fix p5.sound classes
-      for (const key in soundData.classes) {
-        const newName = `p5.${  soundData.classes[key].name}`;
-        const updated = {
-          ...soundData.classes[key],
-          name: newName,
-        };
-        soundData.classes[newName] = updated;
-        delete soundData.classes[key];
+      // Fix p5.sound classes and map global methods to the 'p5' class
+      const classKeys = Object.keys(soundData.classes);
+      for (const key of classKeys) {
+        let newName = soundData.classes[key].name;
+        if (newName === 'p5.sound') {
+          newName = 'p5';
+        } else if (!newName.startsWith('p5.')) {
+          newName = `p5.${newName}`;
+        }
+
+        if (newName !== soundData.classes[key].name) {
+          const updated = {
+            ...soundData.classes[key],
+            name: newName,
+          };
+          soundData.classes[newName] = updated;
+          delete soundData.classes[key];
+        }
       }
       for (const item of soundData.classitems) {
-        item.class = `p5.${  item.class}`;
+        if (item.class === 'p5.sound') {
+          item.class = 'p5';
+        } else if (!item.class.startsWith('p5.')) {
+          item.class = `p5.${item.class}`;
+        }
       }
 
       result = await combineYuidocData(
