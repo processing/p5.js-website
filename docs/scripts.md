@@ -6,6 +6,8 @@ They are all runnable via npm scripts.
 
 ## Testing the docs of your fork
 
+### p5.js
+
 If you are contributing a change to the main p5.js repo that affects documentation, you will want to preview how your changes will look on the website. To do so, make sure you have committed your changes to a branch of your fork of p5.js.
 
 Then, in the p5.js-website repo, run the following command, using the URL of your fork  of p5 before the `#`, and the name of your branch after the `#`:
@@ -29,6 +31,23 @@ For example, if you have a local p5.js clone repo called `p5.js` as a sibling di
 ```sh
 npm run custom:dev ../p5.js#yourBranch
 ```
+
+### p5.sound.js
+
+If you want to preview changes to the `p5.sound.js` documentation from your local machine, you can use the `LOCAL_P5_SOUND_PATH` environment variable. This will copy your local `p5.sound` repository directly instead of cloning it from GitHub, which is useful when testing your own unpushed changes or custom branches.
+
+Provide the file-path to your local `p5.sound` repository when running the reference build script. For example, if you have a local clone called `p5.sound` as a sibling directory to the website, you could run:
+
+```sh
+LOCAL_P5_SOUND_PATH=../p5.sound npm run build:reference
+```
+otherwise if you have added the file-path to the `p5.sound.js` build in your `.env` file using the 
+`LOCAL_P5_SOUND_PATH` environment variable, you could simply run:
+
+```sh
+npm run build:reference
+```
+This will copy your local files over (ignoring `node_modules` and `.git` folders to speed up the process) and build the reference documentation using those files.
 
 ### Resetting your changes
 
