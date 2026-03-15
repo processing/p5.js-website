@@ -106,6 +106,7 @@ interface Return {
 
 interface MaybeBeta {
   beta?: number;
+  webgpu?: number;
 }
 
 /* Represents a method within a class */
