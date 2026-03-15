@@ -27,6 +27,6 @@ export const cdnSoundUrl =
     ? `https://cdn.jsdelivr.net/npm/p5.sound@${p5SoundVersion}/dist/p5.sound.min.js` as const
     : `https://cdn.jsdelivr.net/npm/p5@${p5Version}/lib/addons/p5.sound.min.js` as const
 export const p5MajorVersion = 
-  p5Version.split('.')[0] as const;
+  p5Version.split('.')[0];
 export const p5LatestUrl =
   `https://cdn.jsdelivr.net/npm/p5@${p5Version.split('.')[0]}/lib/p5.min.js` as const;
