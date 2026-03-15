@@ -86,6 +86,7 @@ export const referenceSchema = z.object({
     .or(z.literal("true").transform(() => true))
     .or(z.literal("false").transform(() => false))
     .optional(),
+  webgpu: z.coerce.boolean().optional(),
 });
 
 export const referenceCollection = defineCollection({

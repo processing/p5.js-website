@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { useLiveRegion } from '../hooks/useLiveRegion';
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
+import { cdnLibraryUrl, cdnSoundUrl, cdnWebGPUUrl } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -99,6 +99,7 @@ export const CodeEmbed = (props) => {
               lazyLoad={props.lazyLoad}
               scripts={[
                 ...(props.includeSound ? [cdnSoundUrl] : []),
+                ...(props.includeWebGPU ? [cdnWebGPUUrl] : []),
                 ...(props.scripts ?? []),
               ]}
             />
