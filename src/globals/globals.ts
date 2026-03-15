@@ -26,5 +26,7 @@ export const cdnSoundUrl =
   (!!import.meta.env?.PUBLIC_P5_LIBRARY_PATH || p5Version.startsWith('v2'))
     ? `https://cdn.jsdelivr.net/npm/p5.sound@${p5SoundVersion}` as const
     : `https://cdn.jsdelivr.net/npm/p5@${p5Version}/lib/addons/p5.sound.min.js` as const
+export const p5MajorVersion = 
+  p5Version.split('.')[0] as const;
 export const p5LatestUrl =
-  `https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js` as const;
+  `https://cdn.jsdelivr.net/npm/p5@${p5Version.split('.')[0]}/lib/p5.min.js` as const;
