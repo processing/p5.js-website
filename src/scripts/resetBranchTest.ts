@@ -29,6 +29,11 @@ async function main() {
   if (existsSync(p5BuildPath)) {
     rmSync(p5BuildPath);
   }
+
+  const p5WebGPUBuildPath = path.join(__dirname, '../../public/p5.webgpu.js');
+  if (existsSync(p5WebGPUBuildPath)) {
+    rmSync(p5WebGPUBuildPath);
+  }
 }
 
 main().then(() => process.exit(0))
