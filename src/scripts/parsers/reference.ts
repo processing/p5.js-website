@@ -66,13 +66,17 @@ export const parseLibraryReference =
       if (!soundData) throw new Error('Error generating p5.sound reference data!');
 
       // Fix p5.sound classes and map global methods to the 'p5' class
+      const P5_SOUND_CLASS = 'p5.sound';
+      const P5_CLASS = 'p5';
+      const P5_PREFIX = 'p5.';
+
       const classKeys = Object.keys(soundData.classes);
       for (const key of classKeys) {
         let newName = soundData.classes[key].name;
-        if (newName === 'p5.sound') {
-          newName = 'p5';
-        } else if (!newName.startsWith('p5.')) {
-          newName = `p5.${newName}`;
+        if (newName === P5_SOUND_CLASS) {
+          newName = P5_CLASS;
+        } else if (!newName.startsWith(P5_PREFIX)) {
+          newName = `${P5_PREFIX}${newName}`;
         }
 
         if (newName !== soundData.classes[key].name) {
@@ -85,10 +89,10 @@ export const parseLibraryReference =
         }
       }
       for (const item of soundData.classitems) {
-        if (item.class === 'p5.sound') {
-          item.class = 'p5';
-        } else if (!item.class.startsWith('p5.')) {
-          item.class = `p5.${item.class}`;
+        if (item.class === P5_SOUND_CLASS) {
+          item.class = P5_CLASS;
+        } else if (!item.class.startsWith(P5_PREFIX)) {
+          item.class = `${P5_PREFIX}${item.class}`;
         }
       }
 
