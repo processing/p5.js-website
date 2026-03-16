@@ -44,7 +44,13 @@ export const parseLibraryReference =
     // If we're using a custom build of p5 instead of a public release, create
     // a build and copy it to the specified path
     if (process.env.PUBLIC_P5_LIBRARY_PATH) {
-      await createP5Build('p5.js', `../../../public${  process.env.PUBLIC_P5_LIBRARY_PATH}`);
+      await createP5Build('p5.js', `../../../public${process.env.PUBLIC_P5_LIBRARY_PATH}`);
+    }
+    if (process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH) {
+      await fs.cp(
+        path.join(__dirname, 'in', 'p5.js', 'lib', 'p5.webgpu.js'),
+        path.join(__dirname, `../../../public${process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH}`),
+      );
     }
 
     // Copy the reference output so we can process it
