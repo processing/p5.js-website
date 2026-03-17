@@ -30,3 +30,6 @@ export const p5MajorVersion =
   p5Version.split('.')[0];
 export const p5LatestUrl =
   `https://cdn.jsdelivr.net/npm/p5@${p5Version.split('.')[0]}/lib/p5.min.js` as const;
+export const cdnWebGPUUrl =
+  import.meta.env?.PUBLIC_P5_WEBGPU_LIBRARY_PATH ||
+  (`https://cdn.jsdelivr.net/npm/p5@${p5Version}/lib/p5.webgpu.min.js` as const);

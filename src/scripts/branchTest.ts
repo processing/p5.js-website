@@ -17,7 +17,7 @@ if (!match) {
 const repoUrl = match[1];
 const branch = match[2];
 
-const envVars = [`PUBLIC_P5_LIBRARY_PATH='/p5.min.js'`, `P5_REPO_URL='${repoUrl}'`, `P5_BRANCH='${branch}'`];
+const envVars = [`PUBLIC_P5_LIBRARY_PATH='/p5.min.js'`, `PUBLIC_P5_WEBGPU_LIBRARY_PATH='/p5.webgpu.js'`, `P5_REPO_URL='${repoUrl}'`, `P5_BRANCH='${branch}'`];
 const env = envVars.join(' ');
 
 const envFilePath = path.join(__dirname, '../../.env');
