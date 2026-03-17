@@ -230,7 +230,9 @@ export const getRefEntryTitleConcatWithParen = (
  */
 export const escapeCodeTagsContent = (htmlString: string): string => {
   // Load the HTML string into Cheerio
-  const $ = load(htmlString);
+  const $ = load(htmlString, {
+    xmlMode: true
+  });
   // Loop through all <code> tags
   $("code").each(function () {
     // Don't escape code in multiline blocks, as these will already
