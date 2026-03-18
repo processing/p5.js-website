@@ -1,0 +1,52 @@
+---
+import Layout from "../layouts/BaseLayout.astro";
+
+/**
+ * Returns the last (non-empty) segment from the slash-separated path, or ""
+ * 
+ * @param path string to extract the last part of
+ * @returns the last non-empty segment or an empty string
+ * 
+ * @example 
+ * an input of `/reference/p5/basematerialshader/` will return `basematerialshader`
+ */
+function getLastPathElementOrEmptyString(path: string): string {
+    return path.split("/").filter(Boolean).pop() ?? "";
+}
+
+
+const currentPath = Astro.url.pathname;
+const finalTerm = getLastPathElementOrEmptyString(currentPath);
+---
+
+<Layout title="404: Page Not Found">
+    <main class="error-container">
+        <p>Sorry, we couldn't find your exact page <code>{currentPath}</code>.</p>
+
+        <div class="actions">
+            <a
+                href={`https://beta.p5js.org/search/?term=${finalTerm}`}
+                class="btn secondary"
+            >
+                Search here for <code>{finalTerm}</code>
+            </a>
+or
+            <a href="/" class="btn">go home</a>
+        </div>
+    </main>
+</Layout>
+<style>
+  .error-container {
+    display: flex;
+    flex-direction:column;
+    align-items: flex-start;
+    padding: 2rem 1rem;    
+    gap: 2rem;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+  }
+</style>
