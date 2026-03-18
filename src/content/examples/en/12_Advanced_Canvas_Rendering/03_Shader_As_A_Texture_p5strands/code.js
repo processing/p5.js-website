@@ -4,21 +4,11 @@ function setup() {
   createCanvas(710, 400, WEBGL);
   noStroke();
   angleMode(DEGREES);
-
-  // baseMaterialShader is used because it is the only base shader whose
-  // getPixelInputs hook exposes inputs.texCoord in JS callback form.
-  // baseColorShader only exposes getFinalColor, which does not include texCoord.
-  theShader = baseMaterialShader().modify(shaderAsTextureCallback);
-
+  theShader = buildMaterialShader(shaderAsTextureCallback);
   describe('Sphere broken up into a square grid with a gradient in each grid.');
 }
 
 function shaderAsTextureCallback() {
-  const time = uniformFloat(() => millis() / 1000.0);
-  const size = uniformVec2(() => [width, height]);
-  // Y is flipped to match gl_FragCoord's bottom-up axis.
-  const mouse = uniformVec2(() => [mouseX, height - mouseY]);
-
   let position = sharedVec3();
 
   function rotate2D(st, angle) {
@@ -37,45 +27,37 @@ function shaderAsTextureCallback() {
     return floor(distance(st, radius) * res) / scale;
   }
 
-  getCameraInputs((inputs) => {
-    position = inputs.position;
-    return inputs;
-  });
+  cameraInputs.begin();
+  position = cameraInputs.position;
+  cameraInputs.end();
 
-  getPixelInputs((inputs) => {
-    const st = inputs.texCoord;
+  pixelInputs.begin();
+  const fragCoord = position.xy + [width, height] * 0.5;
+  const safeMouse = [max(mouseX, 1), max(height - mouseY, 1)];
+  const mst = fragCoord / safeMouse;
+  const mdist = distance([1, 1], mst);
 
-    // Shift camera-space position (center origin) to bottom-left origin,
-    // producing the equivalent of gl_FragCoord.xy
-    const fragCoord = position.xy + size * 0.5;
-    const safeMouse = [max(mouse.x, 1.0), max(mouse.y, 1.0)];
-    const mst = fragCoord / safeMouse;
-    const mdist = distance([1.0, 1.0], mst);
+  const st = pixelInputs.texCoord;
+  const distToCenter = distance(st, [sin(millis() / 10000), cos(millis() / 10000)]);
+  let tiled = tile(st, 10);
+  tiled = rotate2D(tiled, distToCenter / (mdist / 5) * PI * 2);
 
-    const distToCenter = distance(st, [sin(time / 10.0), cos(time / 10.0)]);
-    let tiled = tile(st, 10.0);
-    tiled = rotate2D(tiled, distToCenter / (mdist / 5.0) * PI * 2.0);
+  const r = concentricCircles(tiled, [0, 0],  5,  5);
+  const g = concentricCircles(tiled, [0, 0], 10, 10);
+  const b = concentricCircles(tiled, [0, 0], 20, 10);
 
-    const r = concentricCircles(tiled, [0.0, 0.0],  5.0,  5.0);
-    const g = concentricCircles(tiled, [0.0, 0.0], 10.0, 10.0);
-    const b = concentricCircles(tiled, [0.0, 0.0], 20.0, 10.0);
-
-    inputs.color = [r, g, b, 1.0];
-    return inputs;
-  });
+  pixelInputs.color = [r, g, b, 1];
+  pixelInputs.end();
 }
 
 function draw() {
   background(255);
-
   shader(theShader);
-
   translate(-150, 0, 0);
   push();
   rotateX(-mouseY);
   rotateY(-mouseX);
   sphere(125);
   pop();
-
   ellipse(260, 0, 200, 200, 100);
 }

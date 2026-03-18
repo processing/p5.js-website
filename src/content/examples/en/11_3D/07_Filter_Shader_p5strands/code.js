@@ -9,44 +9,31 @@ function setup() {
   video.volume(0);
   video.hide();
   video.loop();
-
-  displaceColors = baseFilterShader().modify(displaceColorsCallback);
-
+  displaceColors = buildFilterShader(displaceColorsCallback);
   describe(
     'A video of a city crosswalk, with colors getting more offset the further from the center they are'
   );
 }
 
 function displaceColorsCallback() {
-
-  // Note: arithmetic on coord operates componentwise (vec2), as in GLSL.
   function zoom(coord, amount) {
     return (coord - 0.5) / amount + 0.5;
   }
-
-  getColor((inputs, canvasContent) => {
-    const uv = inputs.texCoord;
-
-    const r = getTexture(canvasContent, uv).r;
-    const g = getTexture(canvasContent, zoom(uv, 1.05)).g;
-    const b = getTexture(canvasContent, zoom(uv, 1.1)).b;
-    const a = getTexture(canvasContent, uv).a;
-
-    return [r, g, b, a];
-  });
+  filterColor.begin();
+  const uv = filterColor.texCoord;
+  const r = getTexture(filterColor.canvasContent, uv).r;
+  const g = getTexture(filterColor.canvasContent, zoom(uv, 1.05)).g;
+  const b = getTexture(filterColor.canvasContent, zoom(uv, 1.1)).b;
+  const a = getTexture(filterColor.canvasContent, uv).a;
+  filterColor.set([r, g, b, a]);
+  filterColor.end();
 }
 
 function draw() {
   background(255);
   push();
   imageMode(CENTER);
-  image(
-    video,
-    0, 0, width, height,
-    0, 0, video.width, video.height,
-    COVER
-  );
+  image(video, 0, 0, width, height, 0, 0, video.width, video.height, COVER);
   pop();
-
   filter(displaceColors);
 }

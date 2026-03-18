@@ -3,8 +3,7 @@ let ribbon;
 
 function setup() {
   createCanvas(700, 400, WEBGL);
-
-  wiggleShader = baseColorShader().modify(wiggleCallback);
+  wiggleShader = buildColorShader(wiggleCallback);
 
   let startColor = color('#F55');
   let endColor = color('#55F');
@@ -22,25 +21,19 @@ function setup() {
     }
     endShape();
   });
-
   describe('A red-to-blue ribbon that waves over time');
 }
 
 function wiggleCallback() {
-  const time = uniformFloat(() => millis());
-
-  getObjectInputs((inputs) => {
-    inputs.position.y += 20 * sin(time * 0.01 + inputs.position.y * 0.1);
-    return inputs;
-  });
+  objectInputs.begin();
+  objectInputs.position.y += 20 * sin(millis() * 0.01 + objectInputs.position.y * 0.1);
+  objectInputs.end();
 }
 
 function draw() {
   background(255);
   noStroke();
   rotateX(PI * 0.1);
-
   shader(wiggleShader);
-
   model(ribbon);
 }
