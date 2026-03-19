@@ -1,9 +1,15 @@
 ---
-import Layout from "../layouts/BaseLayout.astro";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCurrentLocale, getUiTranslator } from "../i18n/utils.ts";
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+// const t = await getUiTranslator(currentLocale);
 ---
 
-<Layout title="404: Page Not Found">
-    <main class="flex flex-col items-start gap-8 py-8 px-2 prose max-w-none">
+<Head title="404: Page Not Found" locale={currentLocale} />
+
+<BaseLayout title="About">
+    <section class="flex flex-col items-start gap-8 py-8 px-2 prose max-w-none">
         <p>
             Sorry, we couldn't find your exact page
             <code id="display-path"></code>.
@@ -16,7 +22,7 @@ import Layout from "../layouts/BaseLayout.astro";
                 <a href="/" class="btn secondary">go home</a>
             </div>
         </p>
-    </main>
+    </section>
     <script is:inline>
         (function update404PageDetails() {
             function getLastPathSegment(path) {
@@ -46,4 +52,4 @@ import Layout from "../layouts/BaseLayout.astro";
             }
         })();
     </script>
-</Layout>
+</BaseLayout>
