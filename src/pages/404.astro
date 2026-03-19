@@ -4,14 +4,20 @@ import Layout from "../layouts/BaseLayout.astro";
 /**
  * Returns the last (non-empty) segment from the slash-separated path, or ""
  *
+ * Discards any hash part of the URL before splitting it.
+ * 
  * @param path string to extract the last part of
  * @returns the last non-empty segment or an empty string
  *
  * @example
- * an input of `/reference/p5/basematerialshader/` will return `basematerialshader`
+ * An input of `/reference/p5/basematerialshader/` will return `basematerialshader`
+ * An input of `/reference/p5.Vector/dist/#Examples` will return `dist`
  */
 function getLastPathElementOrEmptyString(path: string): string {
-    return path.split("/").filter(Boolean).pop() ?? "";
+  //Get the part of the path before the (first) hash
+  const preHashPath = path.split("#")[0] ?? "";
+  //Then get the last non-empty slash-separated segment from that
+  return preHashPath.split("/").filter(Boolean).pop() ?? "";
 }
 
 const currentPath = Astro.url.pathname;
