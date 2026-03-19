@@ -693,8 +693,13 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
 async function main(testFiles = null, options = {}) {
   const hasToken = !!process.env.GITHUB_TOKEN;
   const isGitHubAction = !!process.env.GITHUB_ACTIONS; // Detect if running in GitHub Actions
-  const isProduction = hasToken && !testFiles;
+  const isDryRun = options.dryRun || process.argv.includes('--dry-run');
+  const isProduction = hasToken && !testFiles && !isDryRun;
   
+  if (isDryRun) {
+    console.log(`🧪 Dry run mode: scanning files but NOT creating GitHub issues`);
+  }
+
   if (testFiles) {
     console.log(`🧪 Test mode: Checking ${testFiles.length} predefined files`);
   } else if (isGitHubAction) {
@@ -786,7 +791,22 @@ async function main(testFiles = null, options = {}) {
         console.log(`     URL: ${issue.issueUrl}`);
       });
     } else if (needsUpdate.length > 0 || missing.length > 0) {
-      if (!hasToken) {
+      if (isDryRun) {
+        const fileTranslationMap = translationStatus.fileTranslationMap;
+        const wouldCreate = fileTranslationMap.size;
+        console.log(`\n🧪 Dry run: ${wouldCreate} issue(s) would be created:`);
+        for (const [englishFile, fileTranslations] of fileTranslationMap) {
+          const affectedLangs = [
+            ...fileTranslations.outdatedLanguages.map(l => l.language),
+            ...fileTranslations.missingLanguages.map(l => l.language)
+          ];
+          const langNames = affectedLangs.map(lang => 
+            githubTracker ? githubTracker.getLanguageDisplayName(lang) : lang
+          );
+          console.log(`   - 🌍 Update translations for ${path.basename(englishFile)}`);
+          console.log(`     Languages: ${langNames.join(', ')}`);
+        }
+      } else if (!hasToken) {
         console.log(`\n💡 Run with GITHUB_TOKEN to create GitHub issues`);
       }
     }
