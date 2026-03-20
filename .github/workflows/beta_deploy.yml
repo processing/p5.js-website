@@ -1,4 +1,4 @@
-name: Deploy beta to Netlify
+name: Deploy beta to Cloudflare
 
 on:
   # Trigger the workflow every time you push to the `main` branch
@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm ci
       - name: Build website
         run: npm run build
       - name: Deploy to Cloudflare Workers
