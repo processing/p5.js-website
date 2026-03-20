@@ -1,0 +1,54 @@
+---
+import Head from "@components/Head/index.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCurrentLocale } from "../i18n/utils.ts";
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+---
+
+<Head title="404: Page Not Found" locale={currentLocale} />
+
+<BaseLayout title="404: Page Not Found">
+    <section class="flex flex-col items-start gap-8 py-8 px-2 prose max-w-none">
+        <p>
+            Sorry, we couldn't find your exact page
+            <code id="display-path"></code>.
+
+            <div class="flex flex-col gap-4">
+                <a id="search-link" href="/search/" class="btn">
+                    Search here for <code id="display-search-term"></code>
+                </a>
+                or
+                <a href="/" class="btn secondary">go home</a>
+            </div>
+        </p>
+    </section>
+    <script is:inline>
+        (function update404PageDetails() {
+            function getLastPathSegment(path) {
+                return path.split("/").filter(Boolean).pop() ?? "";
+            }
+
+            // 1. Get the last meaningful segment from the URL path, excluding hash part
+            // 2. Use that in the link href to the search
+            // 3. Also display it and the failed path
+
+            //(This .pathname already strips away any hash part)
+            const realPath = window.location.pathname;
+            const term = getLastPathSegment(realPath);
+
+            const displayPathEl = document.getElementById("display-path");
+            const searchLinkEl = document.getElementById("search-link");
+            const displaySearchTermEl = document.getElementById("display-search-term");
+
+            if (displayPathEl) {
+                displayPathEl.textContent = realPath;
+            }
+            if (displaySearchTermEl) {
+                displaySearchTermEl.textContent = term;
+            }
+            if (searchLinkEl) {
+                searchLinkEl.href = `/search/?term=${encodeURIComponent(term)}`;
+            }
+        })();
+    </script>
+</BaseLayout>
