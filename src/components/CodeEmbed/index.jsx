@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { useLiveRegion } from '../hooks/useLiveRegion';
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { cdnLibraryUrl, cdnSoundUrl } from "@/src/globals/globals";
+import { cdnLibraryUrl, cdnSoundUrl, cdnWebGPUUrl } from "@/src/globals/globals";
 
 import { CodeFrame } from "./frame";
 import { CopyCodeButton } from "../CopyCodeButton";
@@ -39,7 +39,7 @@ export const CodeEmbed = (props) => {
   );
 
   let { previewWidth, previewHeight } = props;
-  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:\w+\.)?(?:P2D|WEBGL)\s*)?\)/m.exec(initialCode);
+  const canvasMatch = /createCanvas\(\s*(\d+),\s*(\d+)\s*(?:,\s*(?:\w+\.)?(?:P2D|WEBGL|WEBGPU)\s*)?\)/m.exec(initialCode);
   if (canvasMatch) {
     previewWidth = previewWidth || parseFloat(canvasMatch[1]);
     previewHeight = previewHeight || parseFloat(canvasMatch[2]);
@@ -99,6 +99,7 @@ export const CodeEmbed = (props) => {
               lazyLoad={props.lazyLoad}
               scripts={[
                 ...(props.includeSound ? [cdnSoundUrl] : []),
+                ...(props.includeWebGPU ? [cdnWebGPUUrl] : []),
                 ...(props.scripts ?? []),
               ]}
             />

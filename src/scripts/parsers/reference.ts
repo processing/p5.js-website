@@ -44,7 +44,13 @@ export const parseLibraryReference =
     // If we're using a custom build of p5 instead of a public release, create
     // a build and copy it to the specified path
     if (process.env.PUBLIC_P5_LIBRARY_PATH) {
-      await createP5Build('p5.js', `../../../public${  process.env.PUBLIC_P5_LIBRARY_PATH}`);
+      await createP5Build('p5.js', `../../../public${process.env.PUBLIC_P5_LIBRARY_PATH}`);
+    }
+    if (process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH) {
+      await fs.cp(
+        path.join(__dirname, 'in', 'p5.js', 'lib', 'p5.webgpu.js'),
+        path.join(__dirname, `../../../public${process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH}`),
+      );
     }
 
     // Copy the reference output so we can process it
@@ -65,18 +71,35 @@ export const parseLibraryReference =
       const soundData = await getYuidocOutput('data-sound');
       if (!soundData) throw new Error('Error generating p5.sound reference data!');
 
-      // Fix p5.sound classes
-      for (const key in soundData.classes) {
-        const newName = `p5.${  soundData.classes[key].name}`;
-        const updated = {
-          ...soundData.classes[key],
-          name: newName,
-        };
-        soundData.classes[newName] = updated;
-        delete soundData.classes[key];
+      // Fix p5.sound classes and map global methods to the 'p5' class
+      const P5_SOUND_CLASS = 'p5.sound';
+      const P5_CLASS = 'p5';
+      const P5_PREFIX = 'p5.';
+
+      const classKeys = Object.keys(soundData.classes);
+      for (const key of classKeys) {
+        let newName = soundData.classes[key].name;
+        if (newName === P5_SOUND_CLASS) {
+          newName = P5_CLASS;
+        } else if (!newName.startsWith(P5_PREFIX)) {
+          newName = `${P5_PREFIX}${newName}`;
+        }
+
+        if (newName !== soundData.classes[key].name) {
+          const updated = {
+            ...soundData.classes[key],
+            name: newName,
+          };
+          soundData.classes[newName] = updated;
+          delete soundData.classes[key];
+        }
       }
       for (const item of soundData.classitems) {
-        item.class = `p5.${  item.class}`;
+        if (item.class === P5_SOUND_CLASS) {
+          item.class = P5_CLASS;
+        } else if (!item.class.startsWith(P5_PREFIX)) {
+          item.class = `${P5_PREFIX}${item.class}`;
+        }
       }
 
       result = await combineYuidocData(
