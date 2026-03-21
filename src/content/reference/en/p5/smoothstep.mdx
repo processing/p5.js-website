@@ -27,14 +27,12 @@ description: >-
   greater than or equal to <code>edge1</code></li><li>Smoothly interpolates
   between <code>0.0</code> and <code>1.0</code> when <code>x</code> is between
   them</li></ul>
-line: 173
+line: 183
 isConstructor: false
 itemtype: method
 example:
   - |-
-    <div modernizr="webgl">
-    <code>
-    // Example 1: A soft vertical fade using smoothstep (no uniforms)
+    // Example 1: A soft vertical fade using smoothstep
 
     let fadeShader;
 
@@ -53,30 +51,24 @@ example:
 
     function setup() {
       createCanvas(300, 200, WEBGL);
-      fadeShader = baseFilterShader().modify(fadeCallback);
+      fadeShader = buildFilterShader(fadeCallback);
     }
 
     function draw() {
       background(0);
       filter(fadeShader);
     }
-    </code>
-    </div>
   - |-
-    <div modernizr="webgl">
-    <code>
-    // Example 2: Animate the smooth transition using a uniform
+    // Example 2: Animate the smooth transition over time
 
     let animatedShader;
 
     function animatedFadeCallback() {
-      const time = uniformFloat(() => millis() * 0.001);
-
       getColor((inputs) => {
         let x = inputs.texCoord.x;
 
         // Move the smoothstep band back and forth over time
-        let center = 0.5 + 0.25 * sin(time);
+        let center = 0.5 + 0.25 * sin(millis() * 0.001);
         let t = smoothstep(center - 0.05, center + 0.05, x);
 
         return [t, t, t, 1];
@@ -85,15 +77,13 @@ example:
 
     function setup() {
       createCanvas(300, 200, WEBGL);
-      animatedShader = baseFilterShader().modify(animatedFadeCallback);
+      animatedShader = buildFilterShader(animatedFadeCallback);
     }
 
     function draw() {
       background(0);
       filter(animatedShader);
     }
-    </code>
-    </div>
 class: p5
 return:
   description: A value between <code>0.0</code> and <code>1.0</code>

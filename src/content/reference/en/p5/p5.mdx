@@ -2,50 +2,223 @@
 title: p5
 module: Structure
 submodule: Structure
-file: src/core/main.js
+file: src/core/structure.js
 description: >
-  <p>This is the p5 instance constructor.</p>
+  <p>Creates a new sketch in "instance" mode.</p>
 
-  <p>A p5 instance holds all the properties and methods related to
+  <p>All p5.js sketches are instances of the <code>p5</code> class. Put another
+  way, all
 
-  a p5 sketch.  It expects an incoming sketch closure and it can also
+  p5.js sketches are objects with methods including <code>pInst.setup()</code>,
 
-  take an optional node parameter for attaching the generated p5 canvas
+  <code>pInst.draw()</code>, <code>pInst.circle()</code>, and
+  <code>pInst.fill()</code>. By default, sketches
 
-  to a node.  The sketch closure takes the newly created p5 instance as
+  run in "global mode" to hide some of this complexity.</p>
 
-  its sole argument and may optionally set an asynchronous function
+  <p>In global mode, a default instance of the <code>p5</code> class is created
 
-  using <code>async/await</code>, along with the standard <a
-  href="/reference/p5/setup/">setup()</a>,
+  automatically. The default <code>p5</code> instance searches the web page's
+  source
 
-  and/or <a href="/reference/p5/setup/">setup()</a>, and/or <a
-  href="/reference/p5/draw/">draw()</a>
+  code for declarations of system functions such as <code>setup()</code>,
+  <code>draw()</code>,
 
-  properties on it for running a sketch.</p>
+  and <code>mousePressed()</code>, then attaches those functions to itself as
+  methods.
 
-  <p>A p5 sketch can run in "global" or "instance" mode:
+  Calling a function such as <code>circle()</code> in global mode actually calls
+  the
 
-  "global"   - all properties and methods are attached to the window
+  default <code>p5</code> object's <code>pInst.circle()</code> method.</p>
 
-  "instance" - all properties and methods are bound to this p5 object</p>
-line: 33
-isConstructor: true
-params:
-  - name: sketch
-    description: >-
-      a closure that can set optional <a href="#/p5/preload">preload()</a>,
+  <p>It's often helpful to isolate the code within sketches from the rest of the
 
-      <a href="#/p5/setup">setup()</a>, and/or <a href="#/p5/draw">draw()</a>
-      properties on the
+  code on a web page. Two common use cases are web pages that use other
 
-      given p5 instance
-    type: function(p5)
-  - name: node
-    description: element to attach canvas to
-    optional: 1
-    type: String|HTMLElement
-example: []
+  JavaScript libraries and web pages with multiple sketches. "Instance mode"
+
+  makes it easy to support both of these scenarios.</p>
+
+  <p>Instance mode sketches support the same API as global mode sketches. They
+
+  use a function to bundle, or encapsulate, an entire sketch. The function
+
+  containing the sketch is then passed to the <code>p5()</code> constructor.</p>
+
+  <p>The first parameter, <code>sketch</code>, is a function that contains the
+  sketch. For
+
+  example, the statement <code>new p5(mySketch)</code> would create a new
+  instance mode
+
+  sketch from a function named <code>mySketch</code>. The function should have
+  one
+
+  parameter, <code>p</code>, that's a <code>p5</code> object.</p>
+
+  <p>The second parameter, <code>node</code>, is optional. If a string is
+  passed, as in
+
+  <code>new p5(mySketch, 'sketch-one')</code> the new instance mode sketch will
+  become a
+
+  child of the HTML element with the id <code>sketch-one</code>. If an HTML
+  element is
+
+  passed, as in <code>new p5(mySketch, myElement)</code>, then the new instance
+  mode
+
+  sketch will become a child of the <code>Element</code> object called
+  <code>myElement</code>.</p>
+line: 327
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    // META:norender
+    // Declare the function containing the sketch.
+    function sketch(p) {
+
+      // Declare the setup() method.
+      p.setup = function () {
+        p.createCanvas(100, 100);
+
+        p.describe('A white circle drawn on a gray background.');
+      };
+
+      // Declare the draw() method.
+      p.draw = function () {
+        p.background(200);
+
+        // Draw the circle.
+        p.circle(50, 50, 20);
+      };
+    }
+
+    // Initialize the sketch.
+    new p5(sketch);
+  - |-
+    // META:norender
+    // Declare the function containing the sketch.
+    function sketch(p) {
+      // Create the sketch's variables within its scope.
+      let x = 50;
+      let y = 50;
+
+      // Declare the setup() method.
+      p.setup = function () {
+        p.createCanvas(100, 100);
+
+        p.describe('A white circle moves randomly on a gray background.');
+      };
+
+      // Declare the draw() method.
+      p.draw = function () {
+        p.background(200);
+
+        // Update x and y.
+        x += p.random(-1, 1);
+        y += p.random(-1, 1);
+
+        // Draw the circle.
+        p.circle(x, y, 20);
+      };
+    }
+
+    // Initialize the sketch.
+    new p5(sketch);
+  - |-
+    // META:norender
+    // Declare the function containing the sketch.
+    function sketch(p) {
+
+      // Declare the setup() method.
+      p.setup = function () {
+        p.createCanvas(100, 100);
+
+        p.describe('A white circle drawn on a gray background.');
+      };
+
+      // Declare the draw() method.
+      p.draw = function () {
+        p.background(200);
+
+        // Draw the circle.
+        p.circle(50, 50, 20);
+      };
+    }
+
+    // Select the web page's body element.
+    let body = document.querySelector('body');
+
+    // Initialize the sketch and attach it to the web page's body.
+    new p5(sketch, body);
+  - |-
+    // META:norender
+    // Declare the function containing the sketch.
+    function sketch(p) {
+
+      // Declare the setup() method.
+      p.setup = function () {
+        p.createCanvas(100, 100);
+
+        p.describe(
+          'A white circle drawn on a gray background. The circle follows the mouse as the user moves.'
+        );
+      };
+
+      // Declare the draw() method.
+      p.draw = function () {
+        p.background(200);
+
+        // Draw the circle.
+        p.circle(p.mouseX, p.mouseY, 20);
+      };
+    }
+
+    // Initialize the sketch.
+    new p5(sketch);
+  - |-
+    // META:norender
+    // Declare the function containing the sketch.
+    function sketch(p) {
+
+      // Declare the setup() method.
+      p.setup = function () {
+        p.createCanvas(100, 100);
+
+        p.describe(
+          'A white circle drawn on a gray background. The circle follows the mouse as the user moves. The circle becomes black when the user double-clicks.'
+        );
+      };
+
+      // Declare the draw() method.
+      p.draw = function () {
+        p.background(200);
+
+        // Draw the circle.
+        p.circle(p.mouseX, p.mouseY, 20);
+      };
+
+      // Declare the doubleClicked() method.
+      p.doubleClicked = function () {
+        // Change the fill color when the user double-clicks.
+        p.fill(0);
+      };
+    }
+
+    // Initialize the sketch.
+    new p5(sketch);
+class: p5
+overloads:
+  - params:
+      - name: sketch
+        description: function containing the sketch.
+        type: Object
+      - name: node
+        description: ID or reference to the HTML element that will contain the sketch.
+        type: String|HTMLElement
 chainable: false
 ---
 
