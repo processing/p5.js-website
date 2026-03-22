@@ -1,10 +1,11 @@
 # p5.js Translation Tracker
 
-Automatically tracks translation status for p5.js website examples, creates GitHub issues for outdated translations, and shows banners on the website.
+Automatically tracks translation status for p5.js website content, creates GitHub issues for outdated translations, and shows banners on the website.
 
 ## Features
 
-- Detects outdated/missing translations using Git commit comparison (currently focused on Examples content)
+- Detects outdated/missing translations using Git commit comparison
+- Tracks all content types: examples, tutorials, reference, text-detail, events, and libraries
 - Creates GitHub issues with diff snippets and action checklists
 - Shows localized banners on outdated translation pages
 - Supports Spanish, Hindi, Korean, and Chinese Simplified
@@ -30,6 +31,12 @@ cd .github/actions/translation-tracker && npm install
 node test-local.js
 ```
 
+### Dry Run (Preview Without Creating Issues)
+Scan all files and show what issues would be created, without actually creating them:
+```bash
+node .github/actions/translation-tracker/index.js --dry-run
+```
+
 ### Scan All Files (File-based)
 ```bash
 node .github/actions/translation-tracker/index.js
@@ -41,51 +48,29 @@ GITHUB_TOKEN=your_token GITHUB_REPOSITORY=owner/repo node .github/actions/transl
 ```
 
 ### GitHub Actions Workflow
-Create `.github/workflows/translation-sync.yml`:
+The workflow is defined in `.github/workflows/translation-sync.yml` and triggers on pushes to `main` that modify English content files in any of the tracked content types:
 
-```yaml
-name: Translation Sync Tracker
+- `src/content/examples/en/**`
+- `src/content/tutorials/en/**`
+- `src/content/reference/en/**`
+- `src/content/text-detail/en/**`
+- `src/content/events/en/**`
+- `src/content/libraries/en/**`
 
-on:
-  push:
-    branches: [main, week2]
-    paths: ['src/content/examples/en/**']
-  workflow_dispatch:
-
-jobs:
-  track-translation-changes:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Install translation tracker dependencies
-        run: cd .github/actions/translation-tracker && npm install
-        
-      - name: Run translation tracker
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node .github/actions/translation-tracker/index.js
-```
+It can also be triggered manually via `workflow_dispatch`.
 
 ## Environment Variables
 
 - `GITHUB_TOKEN` - Required for GitHub API and issue creation
 - `GITHUB_REPOSITORY` - Format: `owner/repo` (auto-detected in Actions)
 
+## CLI Flags
+
+- `--dry-run` - Preview mode: scans files and logs what issues would be created, but does not create them on GitHub
+
 ## What It Does
 
-1. **Scans** English example files for changes
+1. **Scans** English content files for changes
 2. **Compares** with translation files using Git commits
 3. **Creates** GitHub issues for outdated translations with:
    - Diff snippets showing what changed
@@ -94,6 +79,17 @@ jobs:
    - Proper labels (`needs translation`, `lang-es`, etc.)
 4. **Generates** manifest file for website banner system
 5. **Shows** localized banners on outdated translation pages
+
+## Supported Content Types
+
+| Content Type | Path | Description |
+|---|---|---|
+| `examples` | `src/content/examples/` | Code examples |
+| `tutorials` | `src/content/tutorials/` | Tutorial pages |
+| `reference` | `src/content/reference/` | API reference docs |
+| `text-detail` | `src/content/text-detail/` | Detailed text content |
+| `events` | `src/content/events/` | Event pages |
+| `libraries` | `src/content/libraries/` | Library documentation |
 
 ## Sample Output
 
