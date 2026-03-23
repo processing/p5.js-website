@@ -7,7 +7,6 @@ import GridItemSketch from "@components/GridItem/Sketch.astro";
 import GridItemLibrary from "@components/GridItem/Library.astro";
 import GridItemEvent from "@components/GridItem/Event.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
-import { setJumpToState } from "../globals/state";
 import { type OpenProcessingCurationResponse } from "../api/OpenProcessing";
 
 interface Props {
@@ -32,13 +31,13 @@ const sketches = Astro.props.sketches.slice(0, sketchesLimit),
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
-setJumpToState({
+Astro.locals.jumpToState = {
   links: [
     { label: t("Sketches") as string, url: "#sketches" },
     { label: t("Libraries") as string, url: "#libraries" },
     { label: t("Events") as string, url: "#events" },
   ],
-});
+};
 ---
 
 <Head title={"Community"} locale={currentLocale} />

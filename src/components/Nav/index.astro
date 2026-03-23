@@ -1,6 +1,5 @@
 ---
 import { getCurrentLocale, getUiTranslator } from "@/src/i18n/utils";
-import { jumpToState } from "@/src/globals/state";
 import styles from "./styles.module.scss";
 import { NavPanels } from "./NavPanels";
 
@@ -9,6 +8,8 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 const pathMinusLocale = Astro.url.pathname.replace(`/${currentLocale}`, "");
 const isHomepage = pathMinusLocale === "/";
 const t = await getUiTranslator(currentLocale);
+
+const jumpToState = Astro.locals.jumpToState ?? null;
 
 const mainLinks = [
   { url: "/reference/", label: t("Reference") },
@@ -30,13 +31,13 @@ const jumpToLabel = t("Jump To");
     {t("Skip to main content")}
   </a>
   <NavPanels
+    client:load
     mainLinks={mainLinks}
     isHomepage={isHomepage}
+    jumpToState={jumpToState}
     editorButtonLabel={editorButtonLabel as string}
     donateButtonLabel={donateButtonLabel as string}
     mobileMenuLabel={mobileMenuLabel as string}
     jumpToLabel={jumpToLabel as string}
-    jumpToState={jumpToState}
-    client:load
   />
 </nav>

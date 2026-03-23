@@ -1,4 +1,4 @@
-import type { JumpToState } from "@/src/globals/state";
+import type { JumpToState } from "../../globals/state";
 import { JumpToLinks } from "./JumpToLinks";
 import { MainNavLinks } from "./MainNavLinks";
 import { useEffect, useState } from "preact/hooks";

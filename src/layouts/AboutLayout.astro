@@ -6,7 +6,6 @@ import LinkButton from "@components/LinkButton/index.astro";
 import GridItemPerson from "@components/GridItem/Person.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getCollectionInLocaleWithFallbacks } from "../pages/_utils";
-import { setJumpToState } from "../globals/state";
 
 interface Props {
   entry: CollectionEntry<"text-detail">;
@@ -41,9 +40,9 @@ const pageJumpToLinks = [
   },
 ];
 
-setJumpToState({
+Astro.locals.jumpToState = {
   links: [...markdownJumpToLinks, ...pageJumpToLinks],
-});
+};
 
 const people = await getCollectionInLocaleWithFallbacks(
   "people",
@@ -99,7 +98,7 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
         <a href="https://github.com/processing/p5.js">GitHub</a>,{` `}
         <a href="https://www.instagram.com/p5xjs/">Instagram</a>,{` `}
         <a href="https://twitter.com/p5xjs">X</a>,{` `}
-        <a href="https://www.youtube.com/@ProcessingFoundation">YouTube</a>,{` `}    
+        <a href="https://www.youtube.com/@ProcessingFoundation">YouTube</a>,{` `}  
         <a href="https://discord.p5js.org">Discord</a>,{` `}
         <a href="https://discourse.processing.org/c/p5js">{t("Forum")}</a>{` `}
       </div>
