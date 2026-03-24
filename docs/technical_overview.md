@@ -68,3 +68,8 @@ And then view it locally with
 ```shellsession
 npm run preview
 ```
+
+
+## Previewing the p5.js reference for work-in-progress
+
+If you're developing the p5.js library and want to preview your documentation, there are some specific notes at ["Generating and previewing the reference"](https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/#generating-and-previewing-the-reference).
