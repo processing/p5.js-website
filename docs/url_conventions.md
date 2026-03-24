@@ -1,0 +1,58 @@
+# URL conventions
+
+## Trailing slash in URLs
+
+All URLs for resources on the website should end with a slash character (`/`).  
+
+For example, the correct URL for the reference page about the `circle` function is
+* good: https://beta.p5js.org/reference/p5/circle/
+* bad: https://beta.p5js.org/reference/p5/circle
+
+More correctly, it should come at the end of the path part.  It should come _before_ any query string (starts with a question mark `?`), and before any hash / fragment part (starts with a hash character `#`), if either of those is present.
+
+Example before a query string
+* good: https://beta.p5js.org/search/?term=colorMode
+* bad: https://beta.p5js.org/search?term=colorMode
+* bad: https://beta.p5js.org/search?term=colorMode/
+
+Example before a hash / fragment part
+* good: https://beta.p5js.org/contribute/documentation_style_guide/#comments
+* bad: https://beta.p5js.org/contribute/documentation_style_guide#comments/
+
+#### Other correct examples
+* https://beta.p5js.org/download/
+* https://beta.p5js.org/reference/
+* https://beta.p5js.org/tutorials/
+* https://beta.p5js.org/examples/
+* https://beta.p5js.org/tutorials/get-started/
+* https://beta.p5js.org/examples/shapes-and-color-shape-primitives/
+* https://beta.p5js.org/
+
+The production webserver _may_ add a trailing slash to a requested URL when it is missing, but this should not be relied upon.
+
+
+## Case in URLs
+
+URL casing is somewhat inconsistent across the website.  Guidelines for new resources:
+
+* Prefer lower-case
+* Spaces should not be used in URLs.
+* In place of spaces, dashes (`-`) should ideally be used in preference to underscores (`_`).
+* Follow the local conventions used by other resources of the same type
+  * e.g. contributor docs use underscores "like_this"
+  * e.g. most other resources (tutorials, examples, code-of-conduct) use kebab-case "like-this"
+
+#### Examples of kebab-case URL:
+* https://beta.p5js.org/tutorials/variables-and-change/
+* https://beta.p5js.org/examples/3d-orbit-control/
+* https://beta.p5js.org/code-of-conduct/
+
+### A case exception: reference pages
+
+In reference pages, the URLs follow the names of the functions, classes, and variables.  So they include some capitals and use camel-case (`createCanvas`, not `create-canvas`).
+
+#### Examples of reference page URLs
+* https://p5js.org/reference/p5.Vector/fromAngle/
+* https://beta.p5js.org/reference/p5/p5.Image/
+
+More on reference page URLs can be found in https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/#linking
