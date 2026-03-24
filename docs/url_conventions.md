@@ -8,14 +8,16 @@ For example, the correct URL for the reference page about the `circle` function 
 * good: https://beta.p5js.org/reference/p5/circle/
 * bad: https://beta.p5js.org/reference/p5/circle
 
-More correctly, it should come at the end of the path part.  It should come _before_ any query string (starts with a question mark `?`), and before any hash / fragment part (starts with a hash character `#`), if either of those is present.
+More correctly, it should come at the end of the _path_ part of the URL.  
 
-Example before a query string
+If a query string or hash/fragment is present in the URL, the trailing slash should come before those, as shown in these examples:
+
+Example with a query string
 * good: https://beta.p5js.org/search/?term=colorMode
-* bad: https://beta.p5js.org/search?term=colorMode
 * bad: https://beta.p5js.org/search?term=colorMode/
+* bad: https://beta.p5js.org/search?term=colorMode
 
-Example before a hash / fragment part
+Example with a hash / fragment part
 * good: https://beta.p5js.org/contribute/documentation_style_guide/#comments
 * bad: https://beta.p5js.org/contribute/documentation_style_guide#comments/
 
@@ -28,8 +30,9 @@ Example before a hash / fragment part
 * https://beta.p5js.org/examples/shapes-and-color-shape-primitives/
 * https://beta.p5js.org/
 
-The production webserver _may_ add a trailing slash to a requested URL when it is missing, but this should not be relied upon.
-
+### Automatic trailing slash addition
+While the production webserver _may_ add a trailing slash to a requested URL when it is missing, but this should not be relied upon.  
+Instead write (or generate) links that follow the rules above.
 
 ## Case in URLs
 
@@ -38,9 +41,8 @@ URL casing is somewhat inconsistent across the website.  Guidelines for new reso
 * Prefer lower-case
 * Spaces should not be used in URLs.
 * In place of spaces, dashes (`-`) should ideally be used in preference to underscores (`_`).
-* Follow the local conventions used by other resources of the same type
-  * e.g. contributor docs use underscores "like_this"
-  * e.g. most other resources (tutorials, examples, code-of-conduct) use kebab-case "like-this"
+* First, however, follow established local conventions used by other resources of the same type
+  * e.g. all contributor docs use underscores "like_this"
 
 #### Examples of kebab-case URL:
 * https://beta.p5js.org/tutorials/variables-and-change/
@@ -49,7 +51,7 @@ URL casing is somewhat inconsistent across the website.  Guidelines for new reso
 
 ### A case exception: reference pages
 
-In reference pages, the URLs follow the names of the functions, classes, and variables.  So they include some capitals and use camel-case (`createCanvas`, not `create-canvas`).
+In reference pages, the URLs follow the names of the functions, classes, and variables.  So, they include some capitals and use "camel-case" e.g. `createCanvas`.
 
 #### Examples of reference page URLs
 * https://p5js.org/reference/p5.Vector/fromAngle/
