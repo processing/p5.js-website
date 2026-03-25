@@ -34,6 +34,13 @@ function setup() {
   describe(
     'Two narrow white rectangles and a white square representing the paddles and ball in a game of ping pong. The player scores are displayed in the upper corners, and initially text reads "Click to start"'
   );
+
+  // Add a listener to the window to "eat" the arrow key events
+  window.addEventListener("keydown", function(e) {
+    if(["ArrowUp", "ArrowDown"].indexOf(e.code) > -1) {
+        e.preventDefault();
+    }
+  }, false);
 }
 
 function draw() {
