@@ -1,5 +1,11 @@
 // This is a temporary file for early testing of playwright to find broken sketches in reference pages
 // eventually these urls would come from the build process (astro's or /docs/reference/data.json)
+// There are some paths here which do not end up having a page generated. Including:
+//  "/reference/p5/types/Array/",
+//  "/reference/p5/types/Boolean/",
+//  "/reference/p5/types/Number/",
+//  "/reference/p5/types/Object/",
+//  "/reference/p5/types/String/",
 export const referencePageURLPaths = [
   "/reference/p5.Amplitude/getLevel/",
   "/reference/p5.Amplitude/setInput/",
