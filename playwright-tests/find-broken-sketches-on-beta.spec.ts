@@ -43,7 +43,7 @@ function setupErrorTracking(page: Page, nonErrorLog: LogMsg[], errorLog: LogMsg[
       //is this an error we probably don't care about?
       if (msg.text().includes("Failed to load resource: the server responded with a status of 404") && config.on404ConsoleMsg !== "log") {
         if (config.on404ConsoleMsg === "skipButMention") {
-          console.log("skipping (maybe) expected 404 - prefetch with no trailing slash?")
+          console.log("Skipping a (maybe) expected 404 - often a prefetch with no trailing slash?")
         }
       } else {
         //log error normally
@@ -126,13 +126,13 @@ async function scrollToBottom(page: Page) {
     window.scrollY,
     window.document.documentElement.scrollHeight,
   ])
-  console.log(`window.scrollY at start: ${scrollY} window scrollHeight: ${scrollHeight}`)
+  // console.log(`window.scrollY at start: ${scrollY} window scrollHeight: ${scrollHeight}`)
 
   //TODO: are we going to pay attn to initial scrollY or not?
   for (let i = 0; scrollY + i < scrollHeight; i += 300) {
     await page.evaluate((i) => {
-      console.log("scrolling to: ", i)
-      //should be scrolling to i + scrollY if we're paying attn to the latter
+      // console.log("scrolling to: ", i)
+      // TODO: check. this should be scrolling to i + scrollY if we're going to pay attn to the latter
       window.scrollTo({ top: i, left: 0, behavior: 'smooth' })
     }, i)
     await sleep(0.1)
