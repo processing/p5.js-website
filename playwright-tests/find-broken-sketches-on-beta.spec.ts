@@ -2,18 +2,22 @@
 // sketches, and monitor the console, failing if errors are reported in the console 
 // (with some allowed).
 //
-//How to run: with UI: npx playwright test --project=chromium --ui
-//How to run: no UI: npx playwright test --project=chromium
+//How to run: headed: npx playwright test --project=chromium --headed
+//How to run: with UI*: npx playwright test --project=chromium --ui
+//How to run: no UI*: npx playwright test --project=chromium
+//\* these headless modes still have issues with webgl.
 //
 //TODO: rate-limit so we don't hassle the server or more likely get ip-banned by cloudflare CDN
 //TODO: prefetching gets in the way, when links don't have a trailing slash!
-//TODO: which test browsers will have a problem with webgl or webgpu?  "Error creating webgl context at ..."
+//TODO: consider turning off browser prefetching to lessen request rates.
+//TODO: fix webgl for headless (chromium).  "Error creating webgl context at ..."
 // It's not enough to LOAD the containing page, the browser has to scroll so the sketch is in viewport to get loaded. (and we have to wait a little, especially in the case of shader compilation)
 // TODO: can we cause the browser to load and start all the sketches, without needing them to be in view? 
 // TODO: can we detect and scroll directly to each sketch in turn (waiting 1sec once there), rather than just scrolling through?
 // TODO: test that a bad initial link is correctly reported as such (this could also legitimately be that a ref page has been renamed/removed)
 
 import { test, type Page, type ConsoleMessage, expect } from "@playwright/test";
+import { referencePageURLPaths } from "./reference-links.ts";
 
 type LogSeverity = "exception" | "error" | "other";
 type LogMsg = { url: string, text: string, severity: LogSeverity };
@@ -27,6 +31,20 @@ const config: Config = {
   shouldLogNonErrorLogsInline: false,
   on404ConsoleMsg: "skipButMention"
 }
+
+  //TODO: extract this from astro build or data.json
+  function getURLPathsToTest(): string[] {
+    return [      
+      "/reference/p5/intentionallyBadURL/",
+      //on local this will also 404 - no trailing slash
+      "/reference/p5/square",
+      //locally modded up to have some errors
+      "/reference/p5/filterColor/",
+      //the full set
+      ...referencePageURLPaths
+    ]
+  }
+
 
 /**
  * Attaches listeners to capture console errors, uncaught exceptions. (also non-error console msgs)
@@ -65,31 +83,16 @@ function setupErrorTracking(page: Page, nonErrorLog: LogMsg[], errorLog: LogMsg[
 }
 
 test("look for sketch console errors in ref pages", async ({ page }) => {
-  test.setTimeout(120_000);
-  const pathsToCheck: string[] = [
-    "/reference/p5/filterColor/",
-    "/reference/p5/createCanvas/",
-    "/reference/p5/fill/",
-    "/reference/p5/circle/",
-    "/reference/p5/colorMode/",
-    "/reference/p5/rectMode/",
-    "/reference/p5/imageMode/",
-    "/reference/p5/sphere/",
-    "/reference/p5/box/",
-    "/reference/p5/buildFilterShader/",
-    "/reference/p5/p5.Shader/",
-    "/reference/p5.Shader/setUniform/",
-    "/reference/p5/createFilterShader/",
-    "/reference/p5/emissiveMaterial/",
-    "/reference/p5/loadImage/",
-    "/reference/p5/p5.Image/",
-    "/reference/p5/imageMode/",
-  ];
+  test.setTimeout(60 * 60 * 1000);//60 minutes
+  const pathsToCheck: string[] = getURLPathsToTest();
+
 
   const allErrors: LogMsg[] = [];
-  const nonErrors: LogMsg[] = [];
 
-  setupErrorTracking(page, nonErrors, allErrors);
+  const errorsInPage: LogMsg[] = [];
+  const nonErrorsInPage: LogMsg[] = [];
+
+  setupErrorTracking(page, nonErrorsInPage, errorsInPage);
 
   for (const path of pathsToCheck) {
     const baseURL = "http://localhost:4321"; //"https://beta.p5js.org"
@@ -104,9 +107,11 @@ test("look for sketch console errors in ref pages", async ({ page }) => {
     //TODO: this is a weak point.  no idea how long it could take for everything to load (e.g. compile shader).  can we detect iframe's p5 setup completion? maybe with a small instrumentation change to p5?
     await page.waitForTimeout(1500);
 
-    if (allErrors.length > 0) {
-      console.error(`Errors on ${url}:`, allErrors);
-      allErrors.length = 0; // Clear for next page
+    if (errorsInPage.length > 0) {
+      console.error(`Errors on ${url}:`, errorsInPage);
+
+      allErrors.push(...errorsInPage);
+      errorsInPage.length = 0; // Clear for next page
     } else {
       console.log(`no errors on ${url}`);
     }
@@ -115,7 +120,7 @@ test("look for sketch console errors in ref pages", async ({ page }) => {
   //TODO: perhaps provide non-error console outputs for the url(s) which had errors, for more context.
   //Also take screenshots of them?
 
-  expect(allErrors).toEqual([]);
+  expect(allErrors).toHaveLength(0);
 });
 
 // We need to scroll slowly or otherwise make sure all sketches come into viewport to start loading.  THEN we need to wait a bit!
