@@ -46,4 +46,6 @@ function mousePressed() {
 function keyPressed() {
   // Draw one frame
   redraw();
+
+  return false;
 }

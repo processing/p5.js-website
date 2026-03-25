@@ -274,4 +274,6 @@ function keyPressed() {
       }
       break;
   }
+
+  return false;
 }
