@@ -1,0 +1,108 @@
+// Note: how to record test
+// 1. in vscode, `View: Show Testing`
+// 2. from the Playwright sidebar choose "Record New" (or "Record at cursor")
+// 3. wait for it to open GUI tool
+// 4. click around
+// 5. stop recording in top toolbar of test tool (not vscode)
+// 6. script will be written into new editor tab or at cursor (depending on choice in step 2)
+
+
+import { test, type Page } from "@playwright/test";
+
+test("screenshot alt colours", async ({ page }) => {
+
+  await page.goto('https://editor.p5js.org/');
+
+  //accept /dismiss cookie banner
+  await page.getByRole('button', { name: 'Allow Essential' }).click();
+
+  //switch on dark mode once for editor
+  //set dark mode
+  await page.getByRole('button', { name: 'Open Preferences' }).click();
+  await page.getByText('Dark').click();
+  await page.getByRole('button', { name: 'Close Settings overlay' }).click();
+
+  //1. do for settings
+  await page.getByRole('button', { name: 'p5.js' }).click();
+
+  await runAllStyleTrials(page, "in-settings");
+
+  await page.getByRole('button', { name: 'Close Settings overlay' }).click();
+
+  //2. do for about page
+  await page.getByRole('menuitem', { name: 'Help' }).click();
+  await page.getByRole('menuitem', { name: 'About' }).click();
+  await page.getByRole('link', { name: 'Report a Bug' }).scrollIntoViewIfNeeded();
+  //alternative: 
+  // await page.evaluate(() => {
+  //   window.scrollTo(0, 500); //some arbitrary y position
+  // })
+
+  await runAllStyleTrials(page, "in-about");
+
+  //3. do for file dialog
+  await page.getByRole('link', { name: 'Back to Editor' }).click();
+  await page.getByRole('menuitem', { name: 'File' }).click();
+  await page.getByRole('menuitem', { name: 'Examples' }).click();
+
+  await runAllStyleTrials(page, "in-file-list");
+
+
+});
+
+async function runAllStyleTrials(page: Page, locationLabel: string) {
+  const changesets = [
+    //Note this automation doesn't tidy up (doesn't reload) after each change, 
+    // so for now these changesets MUST all completely replace each other.
+    { name: "2-middle-light", style: { color: "#a6a6a6" } },
+    { name: "2-medium-light", style: { color: "#d9d9d9" } },
+    { name: "2-contrast-pink", style: { color: "#ffa9d9" } },
+    { name: "3-p5-pink-ish", style: { color: "#FF6691" } },
+    // { name: "1-changed-bg-and-link", style: { background: "#000000", color: "#eb285f" } },
+  ]
+
+
+  for (const changeset of changesets) {
+    //not needed
+    await page.waitForTimeout(500);
+    //TODO: how much to scroll?  
+    // perhaps until the first relevant <a href/> is in middle of viewport, ideally?
+    // await scrollToBottom(page);
+
+    await applyThemeOverride(page, "a", changeset.style);
+
+    await page.screenshot({ path: `${locationLabel}-${changeset.name}.png` });
+  }
+}
+
+
+
+
+
+/**
+ * Injects a temporary CSS override into the page.
+ */
+async function applyThemeOverride(page: Page, selector: string, style: { color: string }): Promise<void> {
+
+  await page.addStyleTag({
+
+    content: `
+      ${selector} { 
+      color: ${style.color} !important;      
+      }
+`
+  });
+
+    const cssForBackgroundOverridesUNUSED = `
+.preference {background: #000000}
+
+tr.sketches-table__row {
+  background: #000000 !important; 
+}
+
+.RootPage-sc-1nw49or-0  {
+  background:#000000;
+}
+`;
+
+}
