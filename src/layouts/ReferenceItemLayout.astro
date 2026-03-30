@@ -90,6 +90,15 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   Astro.url.pathname,
   Astro.url.origin
 );
+// Normalizes malformed p5.* reference anchors (e.g. "#/p5.Element")
+// to proper reference routes ("/reference/p5/p5.Element/")
+function normalizeP5ReferenceLinks(html: string | undefined): string | undefined {
+  if (!html) return html;
+  return html.replace(
+    /href="#\/(p5\.[^"]+)"/g,
+    'href="/reference/p5/$1/"'
+  );
+}
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
@@ -196,7 +205,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
                           class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                     >
                       {param.type && <span>{param.type}: </span>}
-                      <span set:html={param.description} />
+                      <span set:html={normalizeP5ReferenceLinks(param.description)} />
                     </div>
                   </div>
                 ))}
@@ -212,7 +221,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
                           class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                         >
                           {param.type && <span>{param.type}: </span>}
-                          <span set:html={param.description} />
+                          <span set:html={normalizeP5ReferenceLinks(param.description)} />
                         </div>
                       </div>
                     )
@@ -232,7 +241,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
                       class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                 >
                   {entry.data.return.type && <span>{entry.data.return.type}: </span>}
-                  <span set:html={entry.data.return.description} />
+                  <span set:html={normalizeP5ReferenceLinks(entry.data.return.description)} />
                 </div>
               </div>
             </div>
