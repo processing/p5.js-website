@@ -48,7 +48,7 @@ export const CodeEmbed = (props) => {
   const largeSketch = previewWidth && previewWidth > 770 - 60;
 
   // Quick hack to make room for DOM that gets added below the canvas by default
-  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(initialCode);
+  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker|Capture)/.exec(initialCode);
   if (domMatch && previewHeight) {
     previewHeight += 100;
   }
