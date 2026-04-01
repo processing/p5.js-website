@@ -127,7 +127,7 @@ interface MethodOverload {
 }
 
 /* Represents a property within a class */
-export interface ReferenceClassItemProperty extends BaseClassItem, Deprecatable {
+export interface ReferenceClassItemProperty extends BaseClassItem, Deprecatable, MaybeBeta, Deprecatable {
   type: string;
 }
 
