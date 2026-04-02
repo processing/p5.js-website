@@ -612,31 +612,21 @@ function draw() {
 We do this by calling the following in the function we pass to `buildFilterShader()`:
 
 ```js
-const ogImage = uniformTexture(getOriginalImage)
+const ogImage = uniformTexture(originalImage)
 ```
 
 This line does two things, representing the two halfs of a bridge between your sketch and your shader:
 
 1. It declares a uniform variable in the shader called `ogImage` which expects to receive a value from outside the shader.
-2. It causes your sketch to set that uniform variable **every frame** using [setUniform()](https://beta.p5js.org/reference/p5.Shader/setUniform/) on the shader. The given function (`getOriginalImage`) will be called each frame to decide the value to be passed to setUniform.
-
-For step 2, perhaps it is helpful to _imagine_ the following code being run each frame:
-```js
-bloomShader.setUniform("ogImage", getOriginalImage())
-```
-(You shouldn't _write_ the above code - something like it is written and run for you, behind the scenes).
+2. It causes your sketch to set that uniform variable **every frame** using [setUniform()](https://beta.p5js.org/reference/p5.Shader/setUniform/) on the shader, passing the value of `originalImage`.
 
 Here's our `bloomCallback` function with this original canvas image being received by the shader and sampled from:
 
 ```js
-function getOriginalImage(){
-  return originalImage;
-}
-
 function bloomCallback() {  
   // Receive the original image for use
   // in our shader.
-  const ogImage = uniformTexture(getOriginalImage)
+  const ogImage = uniformTexture(originalImage)
 
   filterColor.begin();
   // Get our textures converted into 
@@ -662,14 +652,10 @@ function bloomCallback() {
   let bloomShader;
   let originalImage;
 
-  function getOriginalImage(){
-    return originalImage;
-  }
-  
   function bloomCallback() {
     // Receive the original image for use
     // in our shader.
-    const preBlur = uniformTexture(getOriginalImage);
+    const preBlur = uniformTexture(originalImage);
   
     filterColor.begin();
     const blurred = getTexture(filterColor.canvasContent,
@@ -820,12 +806,8 @@ For more resources on shaders, try:
     filterColor.end();
   }
 
-  function getOriginalImage(){
-    return originalImage;
-  }
-
   function bloomShaderCallback() {
-    const preBlur = uniformTexture(getOriginalImage);
+    const preBlur = uniformTexture(originalImage);
 
     filterColor.begin();
     const blurredCol = getTexture(
