@@ -22,7 +22,6 @@ authors:
 import EditableSketch from "../../../components/EditableSketch/index.astro";
 import Callout from "../../../components/Callout/index.astro";
 
-
 ## Version
 
 Attempted simplification (25/03/2026).
@@ -37,7 +36,7 @@ Before p5.js 2.0, you could already use [GLSL](https://beta.p5js.org/tutorials/i
 
 When you write a p5.js sketch, you are giving the CPU a sequence of instructions. When you add a shader - using p5.strands or GLSL - you are giving instructions to the GPU to run many times at once, simultaneously. For example, in a fragment shader, that means many calculations for each pixel.
 
-Drawing to the screen (rendering) can take advantage of parallel operations. Shaders make it possible to create visuals that would otherwise be too slow or difficult, like realistic lighting simulations, post processing effects, and rendering complex geometries. Learning shaders is valuable for anyone interested in graphics programming. This could be for game development, VFX for films, or for any kind of digital arts. It's also a fun and unique way to think using computers.
+Drawing to the screen (rendering) can take advantage of parallel operations. Shaders make it possible to create visuals that would otherwise be too slow or difficult, like realistic lighting simulations, post-processing effects, and rendering complex geometries. Learning shaders is valuable for anyone interested in graphics programming. This could be for game development, VFX for films, or for any kind of digital arts. It's also a fun and unique way to think using computers.
 
 To learn how **p5.strands** works, we'll create a 3D sketch using 4 different shaders, each illustrating different concepts. The code will be built incrementally throughout the tutorial, with the complete code available at the end.
 
@@ -77,15 +76,17 @@ A vertex shader and a fragment shader are both required to render anything in We
   }
 `} />
 
-Even without explicitly setting it, a shader calculates the lighting and shading of the fill, and another does the stroke. Uncommenting `shader(baseColorShader())` produces a different result, where the blue tint of the lighting does not affect the visible color of the sphere.
-
+Even without explicitly setting it, a shader is used which calculates the lighting and shading of the fill for the sphere, and another does the stroke.
+ 
 <Callout title="Tip">
-Try uncommenting the 2nd line in `draw` to use `baseColorShader()` instead. The blue tint of the light in `lightingSetup` is taken into account by the material shader.
+Try uncommenting the 2nd line in `draw` to use `baseColorShader()` instead.
 </ Callout>
 
-Alternatively, we can use the `baseColorShader` instead and the fill is now a solid white color, not affected by lighting. The filters available when you call `filter()` are also shaders which p5.js provides for you.
+When we instead use the `baseColorShader`, the sphere fill is now a solid white color, not affected by lighting. 
 
-Part of the fun of WebGL is that you can write your own shaders, and it unlocks a lot of possibilities for creating which would be difficult to with the p2D renderer. They can also run a lot faster. In the next section, we will start the main part of the tutorial and learn how to use the new p5.js shading language.
+The filters available when you call `filter()` are also shaders which p5.js provides for you.
+
+Part of the fun of WebGL is that you can write your own shaders, and it unlocks a lot of possibilities for creating which would be difficult to achieve with p5's default 2D renderer. They can also run a lot faster. In the next section, we will start the main part of the tutorial and learn how to use the new p5.js shading language.
 
 ## What is p5.strands?
 
@@ -95,7 +96,7 @@ In the rest of p5.js, we're accustomed to writing instructions that run sequenti
 
 Instead, shaders apply a set of instructions across all vertices or pixels simultaneously. Each vertex or pixel independently follows the same rules, but produces a unique result based on its position. Rather than explicitly drawing the circle, we instead ask each pixel individually, "Are you within a circle centered at `(10, 10)`? If so, change your color."
 
-The "strands" also refer to access points into the shader pipeline that let you modify specific aspects of rendering without building entire shaders from scratch. These access points allow you to modify specific aspects of the rendering process without needing to construct the entire shader from scratch.
+The "strands" also refer to access points into the shader pipeline that let you modify specific aspects of rendering without building the entire shader from scratch.
 
 To summarise, p5.strands is a JavaScript-based shading language which sits on top of GLSL. It allows you to write shaders in a regular `.js` file without writing GLSL in string literals. It also removes some setup code in the process, and integrates with the rest of p5.js, to bring learning and using shaders closer to the core of p5.js.
 
@@ -140,7 +141,7 @@ In this sketch, you should see a yellow sphere.
 2. Strands: A "strand" is a specific part of a shader you can modify. In our example, getFinalColor is a strand that lets you change an object's final color.
 3. Modifying shaders: The pattern works like this:
 - Choose a build function, e.g. `buildColorShader()`, `buildMaterialShader()`, `buildFilterShader()`, `buildStrokeShader()`
-- pass in your callback function
+- Pass in your callback function
 - Inside your callback, use the strand blocks such as `finalColor` to override different parts of the default shader's behavior.
 4. Vectors: Shaders work with vectors — collections of numbers that represent colors, positions, etc. In p5.strands, you can create vectors using array syntax `[x, y, z, w]` or the `vec4()` function.
   - For example, `[1, 1, 0, 1]` made a 4-element vector representing a color.  The elements are Red, Green, Blue, and Alpha, all ranging between 0 and 1.
@@ -149,7 +150,7 @@ In this sketch, you should see a yellow sphere.
 p5.strands provides the following builder functions. Click the links below for their reference which tells us what functions are available for overriding.
 - [`buildColorShader`](/reference/p5/buildColorShader): Builds the default shader type in WebGL mode.
 - [`buildMaterialShader`](/reference/p5/buildMaterialShader): Builds the type of shader automatically applied if you have any lights in the scene.
-- [`buildNormalShader`](/reference/p5/buildNormalShader): Builds a default normally applied by calling `normalMaterial()`.  Often used in visually debugging geometry.
+- [`buildNormalShader`](/reference/p5/buildNormalShader): Builds a default shader normally applied by calling `normalMaterial()`.  Often used in visually debugging geometry.
 - [`buildStrokeShader`](/reference/p5/buildStrokeShader): Builds a shader type used to shade the geometry of strokes in 3D modes.
 - [`buildFilterShader`](/reference/p5/buildFilterShader): Builds a shader type for post-processing such as those provided by p5.js, like `filter(BLUR)`.
 
@@ -157,9 +158,9 @@ Now that we've built our first p5.strands modification, let's create a more comp
 
 ## Building a scene
 ### Instancing particles
-Because the GPU excels at parallel computation, it can draw thousands or millions of particles simultaneously. We can do this with a technique called **GPU Instancing**.
+Because the GPU excels at parallel computation, it can draw thousands or even millions of particles simultaneously. We can do this with a technique called **GPU Instancing**.
 
-In GPU instancing, we ask the GPU to draw multiple copies of the same object, each with a unique ID (from 0 to n-1). We can then position each instance based on its ID. For example, placing objects at coordinates `[ID, 0, 0]` would create a line along the x-axis.
+In GPU instancing, we ask the GPU to draw multiple copies of the same object, each with a unique ID (from 0 to n-1). We can then position each instance based on its ID. For example, placing objects at coordinates `[ID, 0, 0]` would create a line of objects along the x-axis.
 
 In p5.js, instancing is available via optional parameters for `endShape` and `model`. It does also require a custom shader to work. In our case, let's use `model` and build a sphere shape.
 
@@ -222,14 +223,14 @@ Let's start by offsetting instances along the x-axis using `baseColorShader()`:
   }
 `} />
 
-The worldInputs block contains data about the current vertex: `position`, `normal`, `texCoord`, and `color`. The "world" part indicates that this runs after JavaScript transformations like translate() or scale() have been applied.
+The `worldInputs` block contains data about the current vertex: `position`, `normal`, `texCoord`, and `color`. The "world" part indicates that this runs after JavaScript transformations like `translate()` or `scale()` have been applied.
 {/* TODO: have a pipeline diagram early that we repeatedly reference. */}
 
 <Callout title='World Space vs. Object Space'>
 Moving in world space is like moving relative to the entire scene, while object transformations are relative to the object's center.
 </ Callout>
 
-Now let's distribute our particles in a more interesting pattern - placing them randomly on a sphere:
+Now let's distribute our particles in a more interesting pattern: placing them randomly on a sphere:
 
 <EditableSketch code={`
   let instancingShader;
@@ -277,10 +278,10 @@ Now let's distribute our particles in a more interesting pattern - placing them 
   }
 `} />
 
-The noise() function is used to generate pseudorandom values based on the instance ID.
+The `noise()` function is used to generate pseudorandom values based on the instance ID.
 
 #### Adding movement to the particles
-Strands provides a function, `millis()`, that returns the number of milliseconds since a sketch started running.  It will give the same value as the [normal p5.js millis() function](/reference/p5/millis/). We can use it to change each particle's position over time.
+Strands provides a function, `millis()`, that returns the number of milliseconds since a sketch started running.  It will give the same value as the [standard p5.js `millis()` function](/reference/p5/millis/). We can use it to change each particle's position over time.
 
 <EditableSketch code={`
   let instancingShader;
@@ -343,7 +344,7 @@ By adding `millis() / 10000` to the phi angle and modifying the radius with `sin
 Try replacing `sin()` with `tan()`, `acosh()`, or combinations of functions. Small changes in shader code often create dramatically different visual effects, so experimentation goes a long way.
 </ Callout>
 
-#### standard p5.js variables available
+#### Standard p5.js variables available
 
 Some of the well-known p5.js global variables are made available to your shader when you use p5.strands.
 
@@ -359,7 +360,7 @@ Within a strands callback function, you can use any of these directly:
 * Time and frameCount: [deltaTime](/reference/p5/deltaTime),
 [frameCount](/reference/p5/frameCount).
 
-* Pointer (mouse, touch, etc): [mouseIsPressed](/reference/p5/mouseIsPressed),
+* Pointer (mouse, touch, etc.): [mouseIsPressed](/reference/p5/mouseIsPressed),
 [mouseX](/reference/p5/mouseX),
 [mouseY](/reference/p5/mouseY),
 [pmouseX](/reference/p5/pmouseX),
@@ -371,16 +372,18 @@ Within a strands callback function, you can use any of these directly:
 
 These are all numbers except `mouseIsPressed`, which is a boolean.
 
+These values are automatically passed from p5.js into your shader using "uniform variables" ("uniforms", for short), behind the scenes for your convenience.  This is an information-passing mechanism you don't need to understand for now, but which we'll see again, later.
+
 ### Fresnel effect
 If you've ever seen a material in a 3D render which appears to glow at the edges, or noticed how the light reflections appear to change on virtual water as you move your viewpoint, you were seeing the Fresnel effect. This effect changes how materials look when viewed at an angle.
 
 The Fresnel effect will be checking which parts of the shape are pointing away from the camera. For this reason, it is helpful for us to work in camera space. In camera space, also known as view space:
-- The camera is position at the origin `(0, 0, 0)`
+- The camera is positioned at the origin `(0, 0, 0)`
 - The camera looks along the negative Z-axis
 - All 3D positions are relative to the camera's perspective
 
 <Callout title='Camera Space'>
-This is another relative view of the virtual world, where the camera is positioned at `(0, 0)`, so everything else is position relative to it.
+Like Object Space and World Space, Camera space is another relative view of the virtual world.  In Camera Space, the current camera is positioned at `(0, 0, 0)`, so everything else is positioned relative to it.
 </ Callout>
 
 This perspective makes it easier to determine how surfaces appear to the viewer:
@@ -407,7 +410,7 @@ The line `let viewVector = normalize(-cameraInputs.position)` might seem counter
 1. In camera space, the camera is at `(0, 0, 0)`
 2. cameraInputs.position gives us the position of the current vertex being processed
 3. When we negate this (`-cameraInputs.position`), we get a vector pointing from the vertex toward the camera
-4. `normalize()` converts this to a unit vector (where every component is between 0 - 1), making it useful for direction calculations regardless of distance
+4. `normalize()` converts this to a "unit vector" (i.e., a vector with length of 1), making it useful for direction calculations regardless of distance
 
 #### Calculating the Fresnel factor
 
@@ -485,7 +488,7 @@ Notice the returned value above: `[col, 1]`. This is one of the ways in which ve
 
 
 <Callout title="Tip">
-Try using `mouseX` and `mouseY` for an interactive, color changing effect instead of the hardcoded pink.  You will probably want to divide them down by `width` and `height` to get values in a 0 to 1 range.
+Try using `mouseX` and `mouseY` for an interactive, color-changing effect instead of the hardcoded pink.  You will probably want to divide them down by their respective `width` and `height` to get values in a 0 to 1 range.
 </ Callout>
 
 #### Fine-tuning
@@ -504,12 +507,12 @@ Instead of leaving these fresnel variables hard-coded, try having them change ov
 </Callout>
 
 ## Post-processing
-Filter shaders are built in much the same way as any other shader in p5.strands. The only difference is that we are only concerned with the fragment shader in filters, the one which decides the color of what's on the screen. They work by taking a snapshot of the sketch every frame, and sending through a fragment shader to manipulate the color. There are effects which are only possible through post-processing in this way. 
+Filter shaders are built in much the same way as any other shader in p5.strands. The only difference is that we are only concerned with the fragment shader in filters, the one which decides the color of what's on the screen. They work by taking a snapshot of the sketch every frame, and sending it through a fragment shader to manipulate the color. Some effects are only possible through post-processing in this way. 
 
-For the filter shader built with `buildFilterShader()` there is only one hook block available, `filterColor`. This makes available these properties: `texCoord`, `canvasSize`, `texelSize`, and `canvasContent` - the snapshot of the sketch mentioned above, and its set() method allows us to set the color of the pixel being prepared.
+For the filter shader built with `buildFilterShader()` there is only one hook block available, `filterColor`. This makes available these properties: `texCoord`, `canvasSize`, `texelSize`, and `canvasContent` - the snapshot of the sketch mentioned above.  Its `set()` method allows us to set the color of the pixel being prepared.
 
 ### Pixelating effect
-We can achieve a pixelation effect by sampling the color of the scene at fewer points than there are real pixels. If you are not familiar with texture coordinates, also known as UV coordinates, try setting `filterColor.set([filterColor.texCoord, 0, 1])` - this will expand to a 4-element vector, using the x and y of texCoord as red and green values, respectively, setting blue to 0, and setting alpha (opacity) to 1.
+We can achieve a pixelation effect by sampling the color of the scene at fewer points than there are real pixels. If you are not familiar with texture coordinates, also known as UV coordinates, try setting `filterColor.set([filterColor.texCoord, 0, 1])` - this will expand to a 4-element vector, using the x and y of the 2D `texCoord` as red and green values, respectively, setting blue to 0, and setting alpha (opacity) to 1.
 
 <EditableSketch code={`
   let pixelateShader;
@@ -534,9 +537,9 @@ We can achieve a pixelation effect by sampling the color of the scene at fewer p
   
 `}/>
 
-The top left corner of the screen is now black, as it has a value of `(0, 0)` in texture coordinates. Down in the bottom left, it's green, showing that the texture coordinates are `(0, 1)`, and there is red in the top right with a value of `(1, 0)`.
+The top-left corner of the screen is now black, as it has a value of `(0, 0)` in texture coordinates. Down in the bottom-left, it's green, showing that the texture coordinates are `(0, 1)`, and there is red in the top-right with a value of `(1, 0)`.
 
-With that in mind, let's manipulate the number of texture coordinates, so that more pixels will sample their color from the same place on the original texture. We do this proportionally to `filterColor.canvasSize` to get square pixels.
+With that in mind, let's manipulate the texture coordinates, so that more pixels will sample their color from the same place on the original texture. We do this proportionally to `filterColor.canvasSize` to get square pixels.
 
 <EditableSketch code={`
   let pixelateShader;
@@ -574,11 +577,11 @@ With that in mind, let's manipulate the number of texture coordinates, so that m
 This is the entire code for our pixelating shader. Put this filter at the bottom of our draw function to pixelate the entire scene by calling `filter(pixelShader)`. We also need to use `buildFilterShader(pixelateCallback)` to construct the shader as before.
 
 ### Bloom
-In postprocessing, bloom is an effect which makes the brightest parts of an image bleed out and cause the surrounding pixels to light up. This produces the sense that light is emitting from parts of the scene, but without any expensive lighting calculations. 
+In post-processing, "bloom" is an effect which makes the brightest parts of an image bleed out and cause the surrounding pixels to light up. This produces the sense that light is emitting from parts of the scene, but without any expensive lighting calculations. 
 
-Bloom works by taking a blurred version of the image and setting some threshold values. Anything above that threshold (i.e. the brightest parts of an image) will be added to the original, non blurred version of the image. This creates a glow around the original objects.
+Bloom works by taking a blurred version of the image and setting some threshold values. Anything above that threshold (i.e., the brightest parts of an image) will be added to the original, non-blurred version of the image. This creates a glow around the original objects.
 
-We could write the shader to produce the blurred image, but p5.js already has provided us with a `filter(BLUR)` which we can use. We will have to approach this effect slightly differently. Firstly, we will need to create a `p5.Framebuffer` object to capture the contents of the canvas before we blur it. 
+We could write the shader to produce the blurred image, but p5.js already provides us with a `filter(BLUR)` which we can use. We will have to approach this effect slightly differently.  Firstly, we will need to create a `p5.Framebuffer` object to capture the contents of the canvas before we blur it. 
 
 ```js
 let originalImage;
