@@ -24,7 +24,7 @@ import Callout from "../../../components/Callout/index.astro";
 
 ## Version
 
-Attempted simplification (25/03/2026).
+Attempted simplification (02/04/2026).
 
 (This section to be removed!)
 
@@ -607,9 +607,24 @@ function draw() {
 }
 ```
 
- At this point, the sketch should look identical. However, we can now use this framebuffer in our bloom shader. We'll pass this texture data into the shader using a "uniform" variable, with the function `uniformTexture`.  We still want to define the default parameter as a function in order for it to be retrieved after we make the Framebuffer in `setup`.
+ At this point, the sketch should look identical. However, we can now use this framebuffer in our bloom shader. We'll pass this texture data from our sketch into the shader using a "uniform" variable.
 
-{ /* TODO: We're now springing "uniform" and uniformTexture on the reader here with no explanation. */ }
+We do this by calling the following in the function we pass to `buildFilterShader()`:
+
+```js
+const ogImage = uniformTexture(getOriginalImage)
+```
+
+This line does two things, representing the two halfs of a bridge between your sketch and your shader:
+
+1. It declares a uniform variable in the shader called `ogImage` which expects to receive a value from outside the shader.
+2. It causes your sketch to set that uniform variable **every frame** using [setUniform()](https://beta.p5js.org/reference/p5.Shader/setUniform/) on the shader. The given function (`getOriginalImage`) will be called each frame to decide the value to be passed to setUniform.
+
+For step 2, perhaps it is helpful to _imagine_ the following code being run each frame:
+```js
+bloomShader.setUniform("ogImage", getOriginalImage())
+```
+(You shouldn't write the above code - something like it is written and run for you, behind the scenes).
 
 ```js
 function getOriginalImage(){
