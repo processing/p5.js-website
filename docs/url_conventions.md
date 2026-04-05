@@ -36,7 +36,7 @@ Instead write (or generate) links that follow the rules above.
 
 ## Case in URLs
 
-URL casing is somewhat inconsistent across the website.  Guidelines for new resources:
+URL casing is somewhat inconsistent across the website. Guidelines for new resources:
 
 * Prefer lower-case
 * Spaces should not be used in URLs.
@@ -51,7 +51,7 @@ URL casing is somewhat inconsistent across the website.  Guidelines for new reso
 
 ### A case exception: reference pages
 
-In reference pages, the URLs follow the names of the functions, classes, and variables.  So, they include some capitals and use "camel-case" e.g. `createCanvas`.
+In reference pages, the URLs follow the names of the functions, classes, and variables. So, they include some capitals and use "camel-case" e.g. `createCanvas`.
 
 #### Examples of reference page URLs
 * https://p5js.org/reference/p5.Vector/fromAngle/
