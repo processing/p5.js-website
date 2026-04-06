@@ -614,7 +614,6 @@ attribute vec3 aPosition;
 ${begin('texcoord')}
 attribute vec2 aTexCoord;
 ${end('texcoord')}
-attribute vec4 aVertexColor;
 
 uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
@@ -622,15 +621,15 @@ uniform mat4 uProjectionMatrix;
 ${begin('varying')}
 varying vec2 vTexCoord;
 ${end('varying')}
-varying vec4 vVertexColor;
+
 void main() {
   // Apply the camera transform
   vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
   // Tell WebGL where the vertex goes
   gl_Position = uProjectionMatrix * viewModelPosition;
-${begin('assign')}
-  vVertexColor = aVertexColor;
-${end('assign')}
+  ${begin('assign')}
+    vTexCoord = aTexCoord;
+  ${end('assign')}
 }
 `}>
   <Fragment slot="texcoord">
