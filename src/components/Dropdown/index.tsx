@@ -113,13 +113,13 @@ export const Dropdown = ({
   // Render the collapsed dropdown button
   const renderCollapsedDropdown = () => (
     <button
-      className={styles.selected}
+      class={styles.selected}
       onClick={handleDropdownClick}
       aria-haspopup="listbox"
       aria-expanded={isOpen}
       tabIndex={0}
     >
-      <div className={styles.iconTop}>
+      <div class={styles.iconTop}>
         <Icon kind={iconKind} />
       </div>
       <span>
@@ -127,7 +127,7 @@ export const Dropdown = ({
           options.find((option) => isSelected(option))?.label ||
           "Select..."}
       </span>
-      <div className={styles.chevron}>
+      <div class={styles.chevron}>
         <Icon kind="chevron-down" />
       </div>
     </button>
@@ -135,15 +135,15 @@ export const Dropdown = ({
 
   // Render the expanded dropdown options
   const renderExpandedDropdown = () => (
-    <ul className={styles.options} role="listbox" tabIndex={-1}>
+    <ul class={styles.options} role="listbox" tabIndex={-1}>
       {options.map((option, index) => (
         <li
           key={option.value}
-          className={styles.option}
+          class={styles.option}
           role="option"
           aria-selected={isSelected(option)}
         >
-          <div className={styles.icon}>
+          <div class={styles.icon}>
             <Icon
               kind={
                 isSelected(option) ? "option-selected" : "option-unselected"
@@ -162,11 +162,11 @@ export const Dropdown = ({
         </li>
       ))}
       {variant === "radio" ? (
-        <button onClick={() => setIsOpen(false)} className={styles.chevron}>
+        <button onClick={() => setIsOpen(false)} class={styles.chevron}>
           <Icon kind="chevron-up" />
         </button>
       ) : (
-        <div className={styles.chevron}>
+        <div class={styles.chevron}>
           <Icon kind="chevron-up" />
         </div>
       )}
@@ -174,11 +174,7 @@ export const Dropdown = ({
   );
 
   return (
-    <div
-      className={styles.container}
-      ref={dropdownRef}
-      onKeyDown={handleKeyDown}
-    >
+    <div class={styles.container} ref={dropdownRef} onKeyDown={handleKeyDown}>
       {isOpen ? renderExpandedDropdown() : renderCollapsedDropdown()}
     </div>
   );
