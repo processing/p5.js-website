@@ -44,13 +44,22 @@ export const CodeEmbed = (props) => {
     previewHeight = previewHeight || parseFloat(canvasMatch[2]);
   }
 
-  const largeSketch = previewWidth && previewWidth > 770 - 60;
-
   // Quick hack to make room for DOM that gets added below the canvas by default
   const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(initialCode);
   if (domMatch && previewHeight) {
     previewHeight += 100;
   }
+
+  // Fallback preview size when no usable canvas dimensions are detected.
+  // Ensures DOM-based examples (e.g., createCapture with noCanvas) are visible.
+  const DEFAULT_PREVIEW_WIDTH = 400;
+  const DEFAULT_PREVIEW_HEIGHT = 300;
+  if (previewWidth === undefined || previewHeight === undefined) {
+    previewWidth = previewWidth ?? DEFAULT_PREVIEW_WIDTH;
+    previewHeight = previewHeight ?? DEFAULT_PREVIEW_HEIGHT;
+  }
+
+  const largeSketch = previewWidth && previewWidth > 770 - 60;
 
   const codeFrameRef = useRef(null);
 
@@ -96,7 +105,7 @@ export const CodeEmbed = (props) => {
               base={props.base}
               frameRef={codeFrameRef}
               lazyLoad={props.lazyLoad}
-              scripts={props.includeSound ? [cdnSoundUrl] : []}
+	      scripts={props.includeSound ? [cdnLibraryUrl, cdnSoundUrl] :[cdnLibraryUrl]}
             />
           </div>
           <div className={`flex gap-2.5 ${largeSketch ? "flex-row" : "md:flex-row lg:flex-col"}`}>
