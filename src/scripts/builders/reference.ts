@@ -327,6 +327,9 @@ const getClassItemFrontmatter = (doc: ReferenceClassItem) => {
     alt,
     example,
     class: doc.class,
+    beta: doc.beta ? !!doc.beta : undefined,
+    webgpu: doc.webgpu ? !!doc.webgpu : undefined,
+    webgpuOnly: doc.webgpuOnly ? !!doc.webgpuOnly : undefined,
   };
 };
 
