@@ -45,7 +45,7 @@ export const CodeEmbed = (props) => {
   }
 
   // Quick hack to make room for DOM that gets added below the canvas by default
-  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker)/.exec(initialCode);
+  const domMatch = /create(Button|Select|P|Div|Input|ColorPicker|Capture)/.exec(initialCode);
   if (domMatch && previewHeight) {
     previewHeight += 100;
   }
