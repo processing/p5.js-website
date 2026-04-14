@@ -39,13 +39,11 @@ export async function onRequest(
     currentLocale = pathSegments[0];
   }
 
-  let modifiedHtml = html;
-
-  // If we have a currentLocale, modify the HTML to ensure all links
-  // have the correct locale prefix
-  if (currentLocale) {
-    modifiedHtml = ensureCorrectLocalePrefixesInHtmlLinks(html, currentLocale);
-  }
+  // Process HTML links to normalize external URLs and add locale prefixes when applicable
+  const modifiedHtml = ensureCorrectLocalePrefixesInHtmlLinks(
+    html,
+    currentLocale,
+  );
 
   // Return a new Response with the modified HTML
   return new Response(modifiedHtml, {
@@ -56,7 +54,7 @@ export async function onRequest(
 
 export const ensureCorrectLocalePrefixesInHtmlLinks = (
   html: string,
-  currentLocale: string,
+  currentLocale?: string,
 ) => {
   const $ = load(html);
 
@@ -65,13 +63,24 @@ export const ensureCorrectLocalePrefixesInHtmlLinks = (
   $("a").each(function () {
     let href = $(this).attr("href");
     // Skip if href is undefined, an external link, or written with a dot slash
-    if (
-      !href ||
-      href.startsWith("http") ||
-      href.startsWith("./") ||
-      href.startsWith("#")
-    )
+    if (!href || href.startsWith("./") || href.startsWith("#")) return;
+
+    // Remove trailing slashes from external/absolute URLs (like Wikipedia)
+    // to prevent breaking external links
+    if (href.startsWith("http")) {
+      try {
+        const urlObj = new URL(href);
+        // Only remove trailing slash if the path is not just "/"
+        if (href.endsWith("/") && urlObj.pathname !== "/") {
+          href = href.slice(0, -1);
+          $(this).attr("href", href);
+        }
+      } catch (e) {
+        // If URL parsing fails, log the error and leave the href unchanged
+        console.error(`Failed to parse URL in <a> tag href: "${href}". Error:`, e);
+      }
       return;
+    }
 
     const startsWithLocale = nonDefaultSupportedLocales.some(
       (locale) => href && href.startsWith(`/${locale}/`),
