@@ -4,7 +4,7 @@ type CircleButtonProps = {
   onClick?: (ev: MouseEvent) => void;
   ariaLabel: string;
   children: Element | JSX.Element;
-  className?: string;
+  class?: string;
   href?: string;
 };
 
@@ -13,27 +13,23 @@ export const CircleButton = ({
   ariaLabel,
   children,
   href,
-  className = "",
+  class: customClass = "",
 }: CircleButtonProps) => {
-  const sharedClassName = `circle-button grid place-items-center w-[40px] h-[40px] rounded-full p-xs hover:border-type-white text-black hover:!bg-bg-black hover:text-type-white ${className}`;
+  const sharedClass = `circle-button grid place-items-center w-[40px] h-[40px] rounded-full p-xs hover:border-type-white text-black hover:!bg-bg-black hover:text-type-white ${customClass}`;
   if (href) {
     return (
       <a
         onClick={onClick}
         aria-label={ariaLabel}
         href={href}
-        className={sharedClassName}
+        class={sharedClass}
       >
         {children}
       </a>
     );
   }
   return (
-    <button
-      onClick={onClick}
-      aria-label={ariaLabel}
-      className={sharedClassName}
-    >
+    <button onClick={onClick} aria-label={ariaLabel} class={sharedClass}>
       {children}
     </button>
   );
