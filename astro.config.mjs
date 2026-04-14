@@ -74,6 +74,14 @@ export default defineConfig({
     rollupOptions: {
       external: ["/src/scripts/*"],
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          //Break build on @import.  We use @use instead.  See #1309
+          fatalDeprecations: ['import'],
+        },
+      },
+    },
   },
   image: {
     domains: ["openprocessing.org"],
