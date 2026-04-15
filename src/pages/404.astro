@@ -1,0 +1,32 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const rawPath = Astro.url.pathname;
+
+const cleanPath =
+  rawPath !== "/" ? rawPath.replace(/\/$/, "") : rawPath;
+
+const searchText =
+  cleanPath.split("/").filter(Boolean).pop() || "";
+---
+<BaseLayout title="404: Page Not Found">
+  <section class="flex flex-col gap-8 items-start max-w-none prose px-2 py-8">
+
+    <p>
+      Sorry, we couldn't find your exact page <code>{cleanPath}</code>.
+    </p>
+
+    <div class="flex flex-col gap-4">
+      <a class="btn" href={`/search/?term=${searchText}`}>
+        Search here for <code>{searchText}</code>
+      </a>
+
+      <span>or</span>
+
+      <a class="btn secondary" href="/">
+        go home
+      </a>
+    </div>
+
+  </section>
+</BaseLayout>
