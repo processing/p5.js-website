@@ -147,7 +147,6 @@ const SearchProvider = ({
       currentLocale={currentLocale as string}
       onSearchChange={handleSearchTermChange}
       uiTranslations={uiTranslations}
-      key={searchTerm}
     />
   );
 };

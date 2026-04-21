@@ -152,8 +152,8 @@ export const Dropdown = ({
           </div>
           <button
             onClick={() => handleOptionClick(option)}
-            ref={el => {
-              optionRefs.current[index] = el as HTMLButtonElement
+            ref={(el) => {
+              optionRefs.current[index] = el as HTMLButtonElement;
             }}
             onBlur={handleBlur}
           >
