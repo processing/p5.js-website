@@ -26,6 +26,9 @@ If you discover a bug or have an idea for a new feature you'd like to add, begin
 
 ### Content Changes
 If you are here to edit or translate content, please do so inside [the `src/content/` folder](/src/content).
+The English reference files in src/content/reference/en/ are auto-generated from JSDoc comments in the p5.js library source code and should not be edited directly in this repository. Any changes made here will be overwritten the next time the reference is generated.
+To fix or improve English reference content, make your changes in the p5.js library repository instead. [See the Contributing to the p5.js Reference guide] (https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/).
+Exception: Translation files such as src/content/reference/es/ are stored directly in this repository and can be edited here directly.
 
 ### Code Changes
 For making code changes, please check out the [technical overview](./docs/technical_overview.md) to get started.
