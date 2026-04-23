@@ -116,13 +116,13 @@ export const ReferenceDirectoryWithFilter = ({
               <span class="text-body-mono group-hover:underline">
                 {entry.data.beta && (
                   <div
-                    className="mb-[-2px] mr-2 inline-block h-[16px] w-[16px]"
+                    class="mb-[-2px] mr-2 inline-block h-[16px] w-[16px]"
                     dangerouslySetInnerHTML={{ __html: flask }}
                   />
                 )}
                 {entry.data.deprecated && (
                   <div
-                    className="mb-[-2px] mr-2 inline-block h-[16px] w-[16px]"
+                    class="mb-[-2px] mr-2 inline-block h-[16px] w-[16px]"
                     dangerouslySetInnerHTML={{ __html: warning }}
                   />
                 )}
@@ -160,10 +160,10 @@ export const ReferenceDirectoryWithFilter = ({
             id={subcat.name}
             href={`/reference/${category.name === "p5.sound" ? "p5.sound" : "p5"}/${subcat.name}/`}
           >
-            <h3 className="m-0 py-gutter-md">{subcat.name}</h3>
+            <h3 class="m-0 py-gutter-md">{subcat.name}</h3>
           </a>
         ) : (
-          <h3 className="m-0 py-gutter-md" id={subcat.name}>
+          <h3 class="m-0 py-gutter-md" id={subcat.name}>
             {subcat.name}
           </h3>
         )}
@@ -227,7 +227,7 @@ export const ReferenceDirectoryWithFilter = ({
                 onClick={clearInput}
                 aria-label="Clear search input"
               >
-                <Icon kind="close" className="h-4 w-4" />
+                <Icon kind="close" class="h-4 w-4" />
               </button>
             )}
           </div>

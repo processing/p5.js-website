@@ -1,5 +1,5 @@
-import { useState } from 'preact/hooks';
-import { useLiveRegion } from '../hooks/useLiveRegion';
+import { useState } from "preact/hooks";
+import { useLiveRegion } from "../hooks/useLiveRegion";
 import CircleButton from "../CircleButton";
 
 interface CopyCodeButtonProps {
@@ -9,30 +9,30 @@ interface CopyCodeButtonProps {
 
 export const CopyCodeButton = ({
   textToCopy,
-  announceOnCopy = 'Code copied to clipboard'
+  announceOnCopy = "Code copied to clipboard",
 }: CopyCodeButtonProps) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const { ref: liveRegionRef, announce } = useLiveRegion<HTMLSpanElement>();
 
   const copyTextToClipboard = async () => {
-    console.log('Copy button clicked');
-    console.log('Text to copy:', textToCopy);
+    console.log("Copy button clicked");
+    console.log("Text to copy:", textToCopy);
 
     try {
-      console.log('Using Clipboard API');
+      console.log("Using Clipboard API");
       await navigator.clipboard.writeText(textToCopy);
-      console.log('Text copied successfully');
+      console.log("Text copied successfully");
 
       announce(announceOnCopy);
 
       setIsCopied(true);
       setTimeout(() => {
         setIsCopied(false);
-        console.log('Copy state reset');
+        console.log("Copy state reset");
       }, 2000);
     } catch (err) {
-      console.error('Clipboard API copy failed:', err);
+      console.error("Clipboard API copy failed:", err);
     }
   };
 
@@ -40,25 +40,25 @@ export const CopyCodeButton = ({
     <>
       <CircleButton
         onClick={() => {
-          console.log('CircleButton clicked');
+          console.log("CircleButton clicked");
           copyTextToClipboard();
         }}
         ariaLabel="Copy code to clipboard"
-        className={`bg-white ${isCopied ? 'text-green-600' : 'text-black'} transition-colors duration-200`}
+        class={`bg-white ${isCopied ? "text-green-600" : "text-black"} transition-colors duration-200`}
       >
         {isCopied ? (
-          <svg 
-            width="18" 
-            height="22" 
-            viewBox="0 0 24 24" 
-            fill="none" 
+          <svg
+            width="18"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path 
-              d="M20 6L9 17L4 12" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <path
+              d="M20 6L9 17L4 12"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>

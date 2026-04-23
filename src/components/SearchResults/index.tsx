@@ -28,7 +28,7 @@ const SearchResults = ({
   const [isInputEdited, setInputEdited] = useState(false);
   const prevIsInputEdited = useRef(isInputEdited);
 
-   // Reset filter and input state when search term changes
+  // Reset filter and input state when search term changes
   useEffect(() => {
     setCurrentFilter("");
     setInputEdited(false);
@@ -81,17 +81,17 @@ const SearchResults = ({
     }
 
     return (
-      <div className="flex w-fit py-lg">
-        <p className="mt-0 w-fit text-nowrap">Filter by</p>
-        <ul className="ml-sm flex gap-sm">
+      <div class="flex w-fit py-lg">
+        <p class="mt-0 w-fit text-nowrap">Filter by</p>
+        <ul class="ml-sm flex gap-sm">
           {allUniqueCategoriesForResults.map((category) => (
             <li
               key={category}
-              className={`${currentFilter === category ? "bg-sidebar-type-color text-bg-color" : "bg-bg-color text-sidebar-type-color"} h-[25px] rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-bg-color md:h-[30px]`}
+              class={`${currentFilter === category ? "bg-sidebar-type-color text-bg-color" : "bg-bg-color text-sidebar-type-color"} h-[25px] rounded-[20px] border border-sidebar-type-color px-xs py-[0.1rem] hover:bg-sidebar-type-color hover:text-bg-color md:h-[30px]`}
             >
               <button
                 value={category}
-                className="capitalize"
+                class="capitalize"
                 onClick={() => toggleFilter(category)}
                 aria-pressed={currentFilter === category}
                 aria-label={`Filter by ${uiTranslations[uiTranslationKey(category)]}`}
@@ -99,7 +99,7 @@ const SearchResults = ({
                 <div class="flex flex-nowrap gap-xs">
                   {uiTranslations[uiTranslationKey(category)]}
                   {currentFilter === category && (
-                    <Icon kind="close" className="h-4 w-4 place-self-center" />
+                    <Icon kind="close" class="h-4 w-4 place-self-center" />
                   )}
                 </div>
               </button>
@@ -114,7 +114,7 @@ const SearchResults = ({
     if (inputRef.current) {
       inputRef.current.value = "";
     }
-    onSearchChange("")
+    onSearchChange("");
   };
   const submitInput = () => {
     if (inputRef.current) {
@@ -181,11 +181,11 @@ const SearchResults = ({
           <div key={category}>
             <hr />
             <h2>{uiTranslations[uiTranslationKey(category)]}</h2>
-            <ul className="mb-4xl mt-lg">
+            <ul class="mb-4xl mt-lg">
               {results
                 .filter((result) => result.category === category)
                 .map((result) => (
-                  <li key={result.id} className="text-body-large my-sm">
+                  <li key={result.id} class="text-body-large my-sm">
                     <a href={result.relativeUrl}>{result.title}</a>
                   </li>
                 ))}
@@ -197,12 +197,12 @@ const SearchResults = ({
   };
 
   return (
-    <div className="py-2xl md:py-3xl">
+    <div class="py-2xl md:py-3xl">
       <div class="sticky top-0 bg-bg-color">
-        <p className="mt-0 pb-xs pt-md">{results.length} results found for</p>
+        <p class="mt-0 pb-xs pt-md">{results.length} results found for</p>
         {renderBigSearchForm()}
       </div>
-      <div className="no-scrollbar w-full overflow-x-scroll">
+      <div class="no-scrollbar w-full overflow-x-scroll">
         {renderFilterByOptions()}
       </div>
 
