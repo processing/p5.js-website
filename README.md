@@ -24,6 +24,8 @@ Known bugs and intended new features are tracked using [GitHub issues](https://g
 
 If you discover a bug or have an idea for a new feature you'd like to add, begin by submitting an issue. Please do not simply submit a pull request containing the fix or new feature without making an issue first, we will probably not be able to accept it. Once you have gotten some feedback on the issue and a go ahead to address it, you can follow the process above to add the fix or feature.
 
+If you’ve been assigned to an issue and are working on it, the p5.js stewards or maintainers (you can check who this is in the README!) might comment and tag you in that comment to check in. Please reply within 1 week with any questions or updates; if you don’t respond in a week, stewards or maintainers may reassign the issue. This doesn’t mean you need to finish the work in 1 week: only to confirm you’re still on it.
+
 ### Content Changes
 If you are here to edit or translate content, please do so inside [the `src/content/` folder](/src/content).
 The English reference files in src/content/reference/en/ are auto-generated from JSDoc comments in the p5.js library source code and should not be edited directly in this repository. Any changes made here will be overwritten the next time the reference is generated.
