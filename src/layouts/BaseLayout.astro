@@ -7,6 +7,7 @@ import ItemPageHeader from "@/src/components/PageHeader/ItemPage.astro";
 import HomePageHeader from "@/src/components/PageHeader/HomePage.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
+import { type JumpToState } from "@src/globals/state";
 import "@styles/base.scss";
 import type { CollectionEntry } from "astro:content";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
@@ -21,6 +22,7 @@ interface Props {
   variant?: "root" | "item" | "search" | "homepage";
   topic?: PageTopic;
   mainContentParentClass?: string;
+  jumpToState?: JumpToState;
   /* Only needed for the homepage */
   homepageConfig?: CollectionEntry<"homepage">;
 }
@@ -34,6 +36,7 @@ const {
   variant = "root",
   mainContentParentClass = "mx-5 md:mx-lg mt-md",
   homepageConfig,
+  jumpToState
 } = Astro.props;
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -87,7 +90,7 @@ const headerTopic = topic
   </head>
   <body>
     <div class="top-layout-grid">
-      <Nav />
+      <Nav jumpToState={jumpToState} />
       <Settings hideSearch={variant === "search"} />
       <header class={homepageConfig && "h-[100vh] md:min-h-[calc(378px+50vh)]"}>
         {
