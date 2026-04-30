@@ -10,7 +10,7 @@ This is the repository for the [p5js.org](https://p5js.org/) and the beta.p5js.o
 - Examples and embedded sketches used on the site
 - Website-specific UI, layout, and accessibility improvements
 
-If you have a general question or bug programming with p5.js please post it in the [p5.js forum](https://discourse.processing.org/c/p5js) or ask in our [Discord server](https://discord.gg/SHQ8dH25r9) (check the #contribute-to-p5 channel).
+If you have a general question or bug programming with p5.js please post it in the [p5.js forum](https://discourse.processing.org/c/p5js) or ask in our [Discord server](https://discord.p5js.org) (check the #contribute-to-p5 channel).
 
 Please make sure you are posting to the correct repository. See [this section](https://github.com/processing/p5.js/blob/main/README.md#issues) for a list of all p5.js repositories.
 
@@ -24,13 +24,13 @@ Known bugs and intended new features are tracked using [GitHub issues](https://g
 
 If you discover a bug or have an idea for a new feature you'd like to add, begin by submitting an issue. Please do not simply submit a pull request containing the fix or new feature without making an issue first, we will probably not be able to accept it. Once you have gotten some feedback on the issue and a go ahead to address it, you can follow the process above to add the fix or feature.
 
-If you’ve been assigned to an issue and are working on it, the p5.js stewards or maintainers (you can check who this is in the README!) might comment and tag you in that comment to check in. Please reply within 1 week with any questions or updates; if you don’t respond in a week, stewards or maintainers may reassign the issue. This doesn’t mean you need to finish the work in 1 week: only to confirm you’re still on it.
+If you’ve been assigned to an issue and are working on it, the p5.js stewards or maintainers (you can check who this is in the [p5.js stewards table](https://github.com/processing/p5.js/blob/main/README.md#stewards)) might comment and tag you in that comment to check in. Please reply within 1 week with any questions or updates; if you don’t respond in a week, stewards or maintainers may reassign the issue. This doesn’t mean you need to finish the work in 1 week: only to confirm you’re still on it.
 
 ### Content Changes
 If you are here to edit or translate content, please do so inside [the `src/content/` folder](/src/content).
-The English reference files in src/content/reference/en/ are auto-generated from JSDoc comments in the p5.js library source code and should not be edited directly in this repository. Any changes made here will be overwritten the next time the reference is generated.
-To fix or improve English reference content, make your changes in the p5.js library repository instead. [See the Contributing to the p5.js Reference guide] (https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/).
-Exception: Translation files such as src/content/reference/es/ are stored directly in this repository and can be edited here directly.
+The English reference files in `src/content/reference/en/` are auto-generated from JSDoc comments in the p5.js library source code and should not be edited directly in this repository. Any changes made here will be overwritten the next time the reference is generated.
+To fix or improve English reference content, make your changes in the p5.js library repository instead. [See the Contributing to the p5.js Reference guide](https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/).
+Exception: Translation files such as `src/content/reference/es/`  are stored directly in this repository and can be edited here directly.
 
 ### Code Changes
 For making code changes, please check out the [technical overview](./docs/technical_overview.md) to get started.
@@ -39,7 +39,7 @@ For making code changes, please check out the [technical overview](./docs/techni
 Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your library to the collection!
 
 ### Get Assigned Before Working on an Issue
-Please read the Contributor guidelines before contributing: https://p5js.org/contribute/contributor_guidelines/
+Please read the Contributor guidelines before contributing: [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/)
 
 When an issue is first created, it may be labeled Under review, which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues.
 Once an issue has been reviewed and approved, it will be labeled Ready to contribute. Only issues with this label should be requested for assignment. When a contributor is set as “Assignee”, they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
