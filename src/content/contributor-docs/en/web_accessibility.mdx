@@ -11,9 +11,9 @@ description: >
 
 This document describes the structure of p5.js’ web accessibility features for contributors.
 
-If you want to make your sketches [screen reader](https://en.wikipedia.org/wiki/Screen_reader/)-accessible, visit the [Writing Accessible Canvas Descriptions](https://p5js.org/tutorials/writing-accessible-canvas-descriptions/) tutorial.
+If you want to make your sketches [screen reader](https://en.wikipedia.org/wiki/Screen_reader)-accessible, visit the [Writing Accessible Canvas Descriptions](https://p5js.org/tutorials/writing-accessible-canvas-descriptions/) tutorial.
 
-If you want to use p5.js with a screen reader, visit the [Using p5.js with a Screen Reader tutorial](https://p5js.org/tutorials/p5js-with-screen-reader/).
+If you want to use p5.js with a screen reader, visit the [Using p5.js with a Screen Reader tutorial](https://p5js.org/tutorials/p5js-with-screen-reader).
 
 The canvas HTML element is a grid of pixels. It doesn’t provide any screen reader-accessible information about the shapes drawn on it. p5.js has several functions that make the canvas more accessible to screen readers by providing [fallback text](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Basic_usage#accessible_content) descriptions. I’ll describe some of the details around the implementation of these functions.
 
@@ -56,10 +56,10 @@ This description is followed by a list of shapes where the color, position, and 
 > orange circle at top left covering 1% of the canvas.\
 > fuchsia square, at bottom right, covering 2% of the canvas.
 
-Each element can be selected to get more details. A table of elements is also provided. In this table, each element’s  shape, color, location, coordinates, and area are described:
+Each element can be selected to get more details. A table of elements is also provided. In this table, each element’s shape, color, location, coordinates, and area are described:
 
 > orange circle location=top left area=1%\
-> fuchsia square    location = bottom right    area = 2%
+> fuchsia square   location = bottom right area = 2%
 
 <details>
   <summary>This generates the following HTML:</summary>
@@ -104,7 +104,7 @@ Each element can be selected to get more details. A table of elements is also pr
 
 `gridOutput()` lays out the content of the canvas in the form of a grid using an HTML table element. Each shape’s location in the grid is based on its spatial location on the canvas. A brief description of the canvas is available before the table output. This description includes the color of the background, size of the canvas, number of objects, and object types:
 
-> lavender blue canvas, 400 by 400 pixels, contains 2 shapes:  1 circle 1 square
+> lavender blue canvas, 400 by 400 pixels, contains 2 shapes: 1 circle 1 square
 
 Each shape’s description is placed in a cell of the table depending on its location on the canvas. Each description includes the color and type of shape:
 
@@ -127,8 +127,8 @@ These descriptions can be selected individually to get more details. A list of e
       <div id="defaultCanvas0gridOutput">
         Grid Output
         <p id="defaultCanvas0gridOutput_summary" aria-label="grid output summary">
-       white canvas, 400 by 400 pixels, contains 2 shapes:  1 circle 1 square
-     </p>
+          white canvas, 400 by 400 pixels, contains 2 shapes: 1 circle 1 square
+        </p>
         <table id="defaultCanvas0gridOutput_map" summary="grid output content">
           <tbody>
             <tr></tr>
@@ -233,7 +233,7 @@ When `this._accessibleOutputs.text` or `this._accessibleOutputs.text` are `true`
 
 When creating screen reader-accessible outputs, naming the colors used in the canvas is important. [src/accessibility/color\_namer.js](https://github.com/processing/p5.js/blob/main/src/accessibility/color_namer.js) contains `_rgbColorName()` a method that receives RGBA values and returns a color name. This function is called by `_accsBackground()` and `_accsCanvasColors` in [src/accessibility/outputs.js](https://github.com/processing/p5.js/blob/main/src/accessibility/outputs.js).
 
-`_rgbColorName()` uses `p5.color_conversion._rgbaToHSBA()` to get the HSV values of the color and then uses `_calculateColor()` to get the color name. The function `_calculateColor()` in this file comes from [colorNamer.js](https://github.com/MathuraMG/color-namer/), which was developed as part of a [2018 Processing Foundation fellowship](https://medium.com/processing-foundation/making-p5-js-accessible-e2ce366e05a0/) and in consultation with blind screen reader expert users. This function returns color names by comparing HSV values to those stored in the `colorLookUp` array, returning the closest color name as a string.
+`_rgbColorName()` uses `p5.color_conversion._rgbaToHSBA()` to get the HSV values of the color and then uses `_calculateColor()` to get the color name. The function `_calculateColor()` in this file comes from [colorNamer.js](https://github.com/MathuraMG/color-namer), which was developed as part of a [2018 Processing Foundation fellowship](https://medium.com/processing-foundation/making-p5-js-accessible-e2ce366e05a0) and in consultation with blind screen reader expert users. This function returns color names by comparing HSV values to those stored in the `colorLookUp` array, returning the closest color name as a string.
 
 ## User-generated accessible canvas descriptions
 
@@ -268,7 +268,7 @@ The page will output:
 
 ### describeElement()
 
-The `describeElement()` function creates a screen reader-accessible description for groups of shapes that create meaning together. For example, a custom-drawn “heart” shape made out of multiple lines of code. The first parameter should be a string with the name of the element, for example, “Heart”. The second parameter should be a string with the description of the element, for example, “A red heart in the bottom-right corner.” The third parameter is optional. If a user passes `LABEL` as a third parameter, an additional `<div>` element is inserted next to the `<canvas>` element. The new \<div> will contain a visible version of the same  description embedded in the `<canvas>` element.
+The `describeElement()` function creates a screen reader-accessible description for groups of shapes that create meaning together. For example, a custom-drawn “heart” shape made out of multiple lines of code. The first parameter should be a string with the name of the element, for example, “Heart”. The second parameter should be a string with the description of the element, for example, “A red heart in the bottom-right corner.” The third parameter is optional. If a user passes `LABEL` as a third parameter, an additional `<div>` element is inserted next to the `<canvas>` element. The new \<div> will contain a visible version of the same description embedded in the `<canvas>` element.
 
 `describeElement()` is supported by several functions in [src/accessibility/describe.js](https://github.com/processing/p5.js/blob/main/src/accessibility/describe.js):
 

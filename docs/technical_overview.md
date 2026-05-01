@@ -4,7 +4,7 @@
 
 ### Setup
 
-1. Make sure you have [node and npm installed on your machine](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
+1. Make sure you have [node (at least version 22) and npm installed on your machine](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
 2. Clone this repo by typing git clone https://github.com/processing/p5.js-website/ in your terminal. (You can also use [GitHub Desktop](https://desktop.github.com/)).
 3. Then install the project's dependencies with:
 
