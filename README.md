@@ -39,7 +39,7 @@ For making code changes, please check out the [technical overview](./docs/techni
 Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your library to the collection!
 
 ### Get Assigned Before Working on an Issue
-Please read the Contributor guidelines before contributing: [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/)
+Please read the Contributor guidelines before contributing:[contributor guidelines](https://p5js.org/contribute/contributor_guidelines/)
 
 When an issue is first created, it may be labeled Under review, which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues.
 Once an issue has been reviewed and approved, it will be labeled Ready to contribute. Only issues with this label should be requested for assignment. When a contributor is set as “Assignee”, they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
