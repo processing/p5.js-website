@@ -4,7 +4,7 @@
 
 Hi there! Welcome to p5.js contributing! Here are a few things to know:
 
-This is the repository for the [p5js.org](https://p5js.org/) and the beta.p5js.org websites, including:
+This is the repository for the [p5js.org](https://p5js.org/) and the [beta.p5js.org](https://beta.p5js.org/) websites, including:
 
 - Reference pages and documentation
 - Examples and embedded sketches used on the site
@@ -39,11 +39,18 @@ For making code changes, please check out the [technical overview](./docs/techni
 Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your library to the collection!
 
 ### Get Assigned Before Working on an Issue
-Please read the Contributor guidelines before contributing:[contributor guidelines](https://p5js.org/contribute/contributor_guidelines/)
+Please read the [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/) before contributing.
 
-When an issue is first created, it may be labeled Under review, which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues.
-Once an issue has been reviewed and approved, it will be labeled Ready to contribute. Only issues with this label should be requested for assignment. When a contributor is set as “Assignee”, they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
+When an issue is first created, it may be labeled Under review, which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues. Once an issue has been reviewed and approved, it will be labeled Help wanted. Only issues with this label should be requested for assignment. When a contributor is set as "Assignee", they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
 
+When working on multiple issues, please create a separate branch for each one. This ensures each PR only contains the files related to that specific issue. Opening a PR from a branch that contains work from multiple issues makes it difficult to review and merge cleanly.
+
+When you are ready to open a PR, please keep the following in mind:
+- Link the issue your PR is addressing using "Resolves #" followed by the issue number in your PR description
+- Only include files related to the issue you are working on
+- Do not include `package-lock.json` unless your PR is specifically about updating dependencies
+- Test your changes locally before opening a PR
+- Test against the correct branch, either `main`, `2.0`, or both depending on the issue
 
 ## Add Yourself to p5.js Contributors
 We recognize all types of contributions. This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Add yourself to the [p5.js repository readme](https://github.com/processing/p5.js/blob/main/README.md#contributors) by following the [instructions here](https://github.com/processing/p5.js/issues/2309)!
