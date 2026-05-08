@@ -57,7 +57,7 @@ export const rewriteRelativeLink = (url: string): string => {
     // Convert relative paths to '../' (because pages that started as files in the same directory
     // get turned into directories themselves, we need to go up a directory in the link)
     if (url.startsWith('./')) {
-      updatedUrl = url.replace(/^\.\//, '../');
+      updatedUrl = `.${url}`
     } else if (!url.startsWith('../')) {
       updatedUrl = `../${url}`;
     } else {
@@ -90,7 +90,5 @@ export const rewriteRelativeLink = (url: string): string => {
 
     updatedUrl = normalizedBase + suffixPart;
   
-  // (no further trailing-slash rewriting; base+suffix already normalized above)
- 
    return updatedUrl;
  };
