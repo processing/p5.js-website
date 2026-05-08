@@ -57,7 +57,7 @@ export const rewriteRelativeLink = (url: string): string => {
     // Convert relative paths to '../' (because pages that started as files in the same directory
     // get turned into directories themselves, we need to go up a directory in the link)
     if (url.startsWith('./')) {
-      updatedUrl = `.${url}`
+      updatedUrl = `.${url}`;
     } else if (!url.startsWith('../')) {
       updatedUrl = `../${url}`;
     } else {
