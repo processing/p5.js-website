@@ -1,4 +1,6 @@
 # p5.js Website
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website?ref=badge_shield)
+
 
 ## How To Contribute
 Known bugs and intended new features are tracked using [GitHub issues](https://github.com/processing/p5.js-website/issues). If you'd like to start working on an existing issue, comment on the issue that you plan to work on it so other contributors know it's being handled and can offer help. Once you have completed your work on this issue, [submit a pull request (PR)](https://github.com/processing/p5.js/blob/main/contributor_docs/contributor_guidelines.md#pull-requests) to the p5.js main branch. In the description field of the PR, include "resolves #XXXX" tagging the issue you are fixing. If the PR addresses the issue but doesn't completely resolve it (ie the issue should remain open after your PR is merged), write "addresses #XXXX".
@@ -18,3 +20,7 @@ Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing 
 We recognize all types of contributions. This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Add yourself to the [p5.js repository readme](https://github.com/processing/p5.js/blob/main/README.md#contributors) by following the [instructions here](https://github.com/processing/p5.js/issues/2309)!
 
 If you've contributed to this website (or any other part of the p5.js project), add yourself [here](https://github.com/processing/p5.js#contributors). Instructions to do this can be found at the bottom of the section.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website?ref=badge_large)
