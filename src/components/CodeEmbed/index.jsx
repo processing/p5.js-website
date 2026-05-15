@@ -91,11 +91,11 @@ export const CodeEmbed = (props) => {
 
   return (
     <div
-      className={`sticky top-0 my-md flex w-full flex-col gap-[20px] overflow-hidden ${props.allowSideBySide ? "lg:flex-row" : ""} ${props.fullWidth ? "full-width" : ""}`}
+      className={`my-md flex w-full flex-col gap-[20px] overflow-y-auto max-h-screen ${props.allowSideBySide ? "lg:flex-row" : ""} ${props.fullWidth ? "full-width" : ""}`}
     >
       {props.previewable ? (
         <div
-          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
+          className={`sticky top-0 right-0 ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
         >
           <div>
             <CodeFrame
@@ -129,7 +129,7 @@ export const CodeEmbed = (props) => {
           </div>
         </div>
       ) : null}
-      <div className="code-editor-container relative w-full">
+      <div className="code-editor-container w-full">
         <CodeMirror
           value={codeString}
           theme="light"
@@ -155,7 +155,7 @@ export const CodeEmbed = (props) => {
             (editorView.contentDOM.ariaLabel = "Code Editor")
           }
         />
-        <div className="absolute right-0 top-0 flex flex-col gap-xs p-xs md:flex-row">
+        <div className="sticky absolute right-0 top-0 flex flex-col gap-xs p-xs md:flex-row">
           <CopyCodeButton textToCopy={codeString || initialCode} />
           <CircleButton
             onClick={() => {
