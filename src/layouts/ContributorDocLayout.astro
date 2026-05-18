@@ -9,6 +9,14 @@ import {
   type JumpToState,
 } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import {
+  HeadingPermalinkH1,
+  HeadingPermalinkH2,
+  HeadingPermalinkH3,
+  HeadingPermalinkH4,
+  HeadingPermalinkH5,
+  HeadingPermalinkH6,
+} from "@components/HeadingPermalink";
 
 interface Props {
   entry: CollectionEntry<"contributor-docs">;
@@ -18,7 +26,7 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
 const { entry } = Astro.props;
-const { Content, headings } = await entry.render();
+const { Content, components, headings } = await entry.render();
 
 const jumpToLinks = headings
   .filter((heading: MarkdownHeading) => heading.depth <= 3)
@@ -45,6 +53,16 @@ setJumpToState(jumpToState);
   className="contribute"
 >
   <section class="rendered-markdown">
-    <Content />
+    <Content
+      components={{
+        ...components,
+        h1: HeadingPermalinkH1,
+        h2: HeadingPermalinkH2,
+        h3: HeadingPermalinkH3,
+        h4: HeadingPermalinkH4,
+        h5: HeadingPermalinkH5,
+        h6: HeadingPermalinkH6,
+      }}
+    />
   </section>
 </BaseLayout>
