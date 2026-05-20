@@ -41,7 +41,7 @@ Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing 
 ### Get Assigned Before Working on an Issue
 Please read the [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/) before contributing.
 
-When an issue is first created, it may be labeled Under review, which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues. Once an issue has been reviewed and approved, it will be labeled Help wanted. Only issues with this label should be requested for assignment. When a contributor is set as "Assignee", they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
+When an issue is first created, it may be labeled "Awaiting Maintainer Approval", which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues. Once an issue has been reviewed and approved, it will be labeled Help wanted. Only issues with this label should be requested for assignment. When a contributor is set as "Assignee", they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
 
 When working on multiple issues, please create a separate branch for each one. This ensures each PR only contains the files related to that specific issue. Opening a PR from a branch that contains work from multiple issues makes it difficult to review and merge cleanly.
 
