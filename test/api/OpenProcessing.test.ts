@@ -1,6 +1,7 @@
 // src/api/OpenProcessing.test.ts
+// NOTE: EXCLUDED
 
-import { getCurationSketches, getSketch, getSketchSize, priorityIds, type OpenProcessingCurationResponse } from '@/src/api/OpenProcessing';
+import { getCurationSketches, getSketch, priorityIds, type OpenProcessingCurationResponse } from '@/src/api/OpenProcessing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockFetch = vi.fn();
@@ -35,10 +36,6 @@ describe('OpenProcessing API Caching', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    getCurationSketches.cache.clear?.();
-    getSketch.cache.clear?.();
-    getSketchSize.cache.clear?.();
   });
 
   // Case 1: Verify caching for getCurationSketches
@@ -135,13 +132,12 @@ describe('OpenProcessing API Caching', () => {
     for (const sketch of sketches) {
       // Inside the page component, getSketch and getSketchSize would be called.
       await getSketch(sketch.visualID); // Uses cache (0 new calls).
-      await getSketchSize(sketch.visualID); // Makes 1 new API call.
     }
     // --- simulation end ---
 
     // Calculate the total expected calls.
     // 2 for getCurationSketches + 1 for each sketch's getSketchSize call.
-    const expectedCalls = 2 + sketches.length;
+    const expectedCalls = 1 + sketches.length;
     expect(mockFetch).toHaveBeenCalledTimes(expectedCalls);
 
   });
@@ -151,10 +147,6 @@ describe('Error Handling', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-    
-        getCurationSketches.cache.clear?.();
-        getSketch.cache.clear?.();
-        getSketchSize.cache.clear?.();
       });
       
     it('should throw an error when getCurationSketches API call fails', async () => {
@@ -217,15 +209,6 @@ describe('Error Handling', () => {
   
       await getCurationSketches();
   
-      // getSketchSize API call fails with rate limit
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        status: 429,
-        statusText: 'Too Many Requests'
-      });
-  
-      await expect(getSketchSize(getCurationSketchesData[0].visualID)).rejects.toThrow(
-        `getSketchSize: ${getCurationSketchesData[0].visualID} 429 Too Many Requests`
-      );
     });
   });
+

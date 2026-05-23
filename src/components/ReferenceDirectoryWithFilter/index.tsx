@@ -1,7 +1,4 @@
 import type { ReferenceDocContentItem } from "@/src/content/types";
-import { useMemo, useRef, useState } from "preact/hooks";
-import { type JSX } from "preact";
-import { Icon } from "../Icon";
 import flask from "@src/content/ui/images/icons/flask.svg?raw";
 import warning from "@src/content/ui/images/icons/warning.svg?raw";
 
@@ -13,15 +10,7 @@ type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   };
 };
 
-type FilteredCategoryData = {
-  name: string;
-  subcats: {
-    name: string;
-    entries: ReferenceDirectoryEntry[];
-  }[];
-};
-
-type ReferenceDirectoryWithFilterProps = {
+type ReferenceDirectoryProps = {
   categoryData: {
     name: string;
     subcats: {
@@ -30,7 +19,6 @@ type ReferenceDirectoryWithFilterProps = {
       entries: ReferenceDirectoryEntry[];
     }[];
   }[];
-  uiTranslations: { [key: string]: string };
 };
 
 /**
@@ -62,46 +50,7 @@ const getOneLineDescription = (description: string): string => {
 
 export const ReferenceDirectoryWithFilter = ({
   categoryData,
-  uiTranslations,
-}: ReferenceDirectoryWithFilterProps) => {
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const filteredEntries = useMemo(() => {
-    if (!searchKeyword) return categoryData;
-
-    return categoryData.reduce((acc: FilteredCategoryData[], category) => {
-      const filteredSubcats = category.subcats.reduce(
-        (subAcc: typeof category.subcats, subcat) => {
-          const filteredEntries = subcat.entries.filter((entry) =>
-            entry.data.title
-              .toLowerCase()
-              .includes(searchKeyword.toLowerCase()),
-          );
-          if (
-            subcat.entry &&
-            subcat.entry.data.title
-              .toLowerCase()
-              .includes(searchKeyword.toLowerCase())
-          ) {
-            filteredEntries.push(subcat.entry);
-          }
-
-          if (filteredEntries.length > 0) {
-            subAcc.push({ ...subcat, entries: filteredEntries });
-          }
-          return subAcc;
-        },
-        [],
-      );
-
-      if (filteredSubcats.length > 0) {
-        acc.push({ ...category, subcats: filteredSubcats });
-      }
-      return acc;
-    }, []);
-  }, [categoryData, searchKeyword]);
-
+}: ReferenceDirectoryProps) => {
   const renderEntries = (entries: ReferenceDirectoryEntry[]) =>
     entries.length === 0 ? null : (
       <div class="content-grid">
@@ -172,10 +121,7 @@ export const ReferenceDirectoryWithFilter = ({
   };
 
   const renderCategoryData = () => {
-    if (filteredEntries.length === 0) {
-      return <div class="mt-lg">{uiTranslations["No Results"]}</div>;
-    }
-    return filteredEntries.map((category) => (
+    return categoryData.map((category) => (
       <section key={category.name}>
         <h2
           class={
@@ -197,45 +143,9 @@ export const ReferenceDirectoryWithFilter = ({
     ));
   };
 
-  const clearInput = () => {
-    if (inputRef.current) {
-      inputRef.current.value = "";
-      setSearchKeyword("");
-    }
-  };
-
   return (
-    <div>
-      <div class="h-0 overflow-visible">
-        <div class="content-grid-simple absolute -left-0 -right-0 -top-[60px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
-          <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
-            <input
-              type="text"
-              id="search"
-              ref={inputRef}
-              class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
-              placeholder={uiTranslations["Filter by keyword"]}
-              onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-                const target = e.target as HTMLInputElement;
-                setSearchKeyword(target?.value);
-              }}
-            />
-            {searchKeyword.length > 0 && (
-              <button
-                type="reset"
-                class=""
-                onClick={clearInput}
-                aria-label="Clear search input"
-              >
-                <Icon kind="close" className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-      <div class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
-        {renderCategoryData()}
-      </div>
+    <div class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
+      {renderCategoryData()}
     </div>
   );
 };

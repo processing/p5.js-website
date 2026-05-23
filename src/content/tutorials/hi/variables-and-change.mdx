@@ -1,0 +1,934 @@
+---
+title: "चर और बदलाव"
+description: चर के बारे में सीखें और जानें कि उनका उपयोग एनीमेटेड स्केच बनाने के लिए कैसे किया जा सकता है!
+category: introduction
+categoryIndex: 2
+featuredImage: ../images/featured/VarThumb.jpg
+featuredImageAlt: एक व्यक्ति तीन गेंदों को जगल कर रहा है जबकि उसके पीछे एक कार गुजर रही है। पृष्ठभूमि में एक रात के परिदृश्य की पेंटिंग है जिसमें एक पेड़, बादल और अर्धचंद्र है।
+relatedContent:
+  examples:
+    - en/02_animation_and_variables/00_drawing_lines/description
+  references:
+    - en/p5/mousex
+    - en/p5/mousey
+    - en/p5/types/number
+    - en/p5/let
+    - en/p5/random
+    - en/p5/line
+    - en/p5/triangle
+    - en/p5/framecount
+    - en/p5/framerate
+authors:
+  - Layla Quiñones
+  - Joanne Amarisa
+---
+
+import Video from "../../../components/Video/index.astro"
+import Callout from "../../../components/Callout/index.astro";
+import EditableSketch from "../../../components/EditableSketch/index.astro";
+
+इस ट्यूटोरियल का अनुसरण करें और एक [animated landscape](https://editor.p5js.org/Msqcoding/sketches/WQWNKZppu) बनाएं, जबकि आप p5.js में चर और मोशन बनाने की मूल बातें सीखते हैं।
+
+<Video src="/videos/tutorials/landscape.mp4" alt="एक एनीमेटेड परिदृश्य जिसमें अर्धचंद्र और पृष्ठभूमि में पहाड़ों की श्रृंखला है, और अग्रभूमि में बढ़ते पेड़ों के साथ घास है। बादल कैनवास पर चलते हैं जबकि तारे बेतरतीब ढंग से दिखाई देते हैं।" />
+
+इस ट्यूटोरियल में आप:
+
+- p5.js स्केच में चर को declare, initialize और update करेंगे
+- कैनवास पर मोशन बनाने के लिए p5.js shape कार्य में चर, ऑपरेटर और random() का उपयोग करेंगे
+- p5.js प्रोजैक्ट में linear और random दोनों प्रकार की मोशन जोड़ेंगे
+
+
+## आवश्यक पूर्व ज्ञान:
+
+- [Setting Up Your Environment](/tutorials/setting-up-your-environment)
+- [Get Started](/tutorials/get-started)
+- (वैकल्पिक) [Field Guide to Debugging](/tutorials/field-guide-to-debugging)
+
+शुरू करने से पहले, आपको निम्नलिखित चीज़ें आनी चाहिए:
+
+- [p5.js Web Editor](https://editor.p5js.org/) में लॉग इन करना और एक नया प्रोजैक्ट सेव करना
+- कैनवास का आकार और background रंग बदलना
+  - [`background()`](/reference/p5/background), [`createCanvas()`](/reference/p5/createCanvas), [`setup()`](/reference/p5/setup), [`draw()`](/reference/p5/draw)
+- आकृतियाँ और टेक्स्ट जोड़ना और कस्टमाइज़ करना
+  - 2D प्रिमिटिव आकृतियाँ जैसे [`circle()`](/reference/p5/circle) और [`rect()`](/reference/p5/rect)
+  - [`text()`](/reference/p5/text), [`fill()`](/reference/p5/fill), [`stroke()`](/reference/p5/stroke), [`textSize()`](/reference/p5/textSize)
+- [`mouseX`](/reference/p5/mouseX) और [`mouseY`](/reference/p5/mouseY) का उपयोग करके सरल इंटरैक्टिविटी जोड़ना
+- [कोड में टिप्पणी लिखना](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript#comments)
+- [error messages](/tutorials/field-guide-to-debugging) को पढ़ना और उन्हें ठीक करना
+
+
+## स्टेप 1: कहाँ से शुरू करें चुनें<a id="step-1"></a>
+
+[p5.js Web Editor](https://editor.p5js.org/) में लॉग इन करें और निम्नलिखित विकल्पों में से एक चुनें:
+
+- यदि आपने हमारे पिछले [Get Started Tutorial](/tutorials/get-started) का अनुसरण किया है:
+  - अपने [interactive landscape](https://editor.p5js.org/p5Master718/sketches/aDwxcxCbV) को डुप्लिकेट करें और उसे एक नया नाम दें।
+    - अपना [interactive landscape](https://editor.p5js.org/p5Master718/sketches/aDwxcxCbV) खोलें, *File* पर क्लिक करें, फिर *Duplicate* पर।
+    - इसका नाम कुछ ऐसा बदलें जैसे "Animated Landscape।"
+  - [स्टेप 3](#step-3) पर जाएं।
+- यदि आप शुरू से शुरू कर रहे हैं:
+  - [इस टेम्पलेट](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6) का उपयोग करें जिसमें कोड है जो कैनवास पर आकृतियों और टेक्स्ट को स्थित करने में मदद करता है:
+  - [टेम्पलेट](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6) को डुप्लिकेट करें और उसे एक नया नाम दें।
+    - इस [टेम्पलेट लिंक](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6) को खोलें, *File* पर क्लिक करें, फिर *Duplicate* पर।
+    - इसका नाम कुछ ऐसा बदलें जैसे "Animated Landscape।"
+  - आप टेम्पलेट के बिना भी एक नया p5.js प्रोजैक्ट खोल सकते हैं, उसे "Animated Landscape" नाम दें और सेव करें।
+    - यदि आप helper कोड का उपयोग करना चाहते हैं तो निम्नलिखित लाइनों को [`draw()`](/reference/p5/draw) कार्य में कॉपी करें:
+
+      ```js
+      //displays the x and y position of the mouse on the canvas
+      fill(255) //white text
+      text(`${mouseX}, ${mouseY}`, 20, 20);
+      ```
+
+<Callout title="सुझाव">
+[p5.js Web Editor](https://editor.p5js.org/) पर *Play* पर क्लिक करें और "Auto-refresh" के बगल वाले बॉक्स को चेक करें ताकि जैसे-जैसे आप अपने प्रोजैक्ट में और कोड जोड़ें, कैनवास लगातार अपडेट होता रहे। इस बॉक्स के चेक होने पर, आपको हर बार अपने स्केच में बदलाव करने पर *Play* बटन दबाने की ज़रूरत नहीं होगी।
+</Callout>
+
+यदि आपने [टेम्पलेट](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6) को डुप्लिकेट किया है, तो आपका कोड इस प्रकार दिखना चाहिए:
+
+<EditableSketch code={`
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+  //Place code here
+
+  // places the x and y position of the mouse on the canvas
+  fill(0)
+  text(\`\${mouseX}, \${mouseY}\`, 20, 20);
+}
+`} />
+
+कोड की लाइन ``text(`${mouseX}, ${mouseY}`, 20, 20);`` माउस पॉइंटर के x- और y-निर्देशांक को एक निर्देशांक जोड़ी x, y के रूप में प्रदर्शित करती है। पहली संख्या, चर [mouseX](/reference/p5/mouseX) में स्टोर की गई value, माउस पॉइंटर के x-निर्देशांक को दर्शाती है जब वह कैनवास पर चलता है। दूसरी संख्या, चर [mouseY](/reference/p5/mouseY) में स्टोर की गई value, माउस पॉइंटर के y-निर्देशांक को दर्शाती है।
+
+
+<Callout title="सुझाव">
+इस टेक्स्ट को दिखाते रहने के लिए, सुनिश्चित करें कि यह कोड [`draw()`](/reference/p5/draw) में अंतिम लाइनों पर दिखाई दे। यदि यह background में मिल जाता है तो आपको [`fill()`](/reference/p5/fill) में value बदलकर टेक्स्ट का रंग बदलना पड़ सकता है। जब आपको निर्देशांक की आवश्यकता न हो, तो [`fill()`](/reference/p5/fill) और [`text()`](/reference/p5/text) कार्य के पहले `//` टाइप करें। यह प्रोग्राम को बताता है कि उन लाइनों को टिप्पणी के रूप में छिपाकर छोड़ दिया जाए!
+
+**न भूलें:** आपके प्रोग्राम में कोड की अंतिम लाइन `}` (एक closing curly bracket) होनी चाहिए, जो [`draw()`](/reference/p5/draw) कार्य के ब्लॉक को बंद करती है।
+</Callout>
+
+टिप्पणी के बारे में अधिक जानने के लिए इस [reference](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript#comments) पर जाएं या [यह वीडियो](https://www.youtube.com/watch?v=xJcrPJuem5Q) देखें।
+
+
+### चर
+
+चर अपने अंदर values स्टोर करते हैं जिनका उपयोग हम अपने स्केच में कर सकते हैं। **चर बहुत उपयोगी होते हैं जब आपके स्केच में ऐसे तत्व जोड़ने हों जो समय के साथ बदलें।** इनका उपयोग गणनाओं, संदेशों, कार्य तर्क के रूप में, और बहुत कुछ में किया जा सकता है!
+
+[`mouseX`](/reference/p5/mouseX) और [`mouseY`](/reference/p5/mouseY) ऐसे चर हैं जो p5.js लाइब्रेरी में पहले से बने हैं। ये माउस पॉइंटर के x- और y-निर्देशांक को स्टोर करते हैं जब उसे कैनवास पर ड्रैग किया जाता है। [Get Started](/tutorials/get-started) ट्यूटोरियल में, आपने एक [interactive landscape](https://editor.p5js.org/p5Master718/sketches/aDwxcxCbV) बनाया था जहाँ [`mouseX`](/reference/p5/mouseX) और [`mouseY`](/reference/p5/mouseY) को एक ladybug या अन्य emoji के x- और y-निर्देशांक के रूप में उपयोग किया गया था। इससे emoji माउस पॉइंटर का अनुसरण करता था जब उसे कैनवास पर ड्रैग किया जाता था, जिससे आपकी कलाकृति इंटरैक्टिव बन गई!
+
+ऊपर दिए गए टेम्पलेट में, आप [`mouseX`](/reference/p5/mouseX) और [`mouseY`](/reference/p5/mouseY) का उपयोग करके [`text()`](/reference/p5/text) कार्य की मदद से माउस के x- और y-निर्देशांक को कैनवास पर प्रिंट करते हैं। चर को [`text()`](/reference/p5/text) कार्य और [string interpolation](https://www.geeksforgeeks.org/string-interpolation-in-javascript/) (उदाहरण 2) का उपयोग करके कैनवास पर टेक्स्ट के साथ प्रदर्शित किया जा सकता है।
+
+
+### स्ट्रिंग Interpolation
+
+[Get Started](/tutorials/get-started) में, आपने सीखा कि स्ट्रिंग [data types](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures) होते हैं जो हमेशा quotation marks (`""`) से घिरे होते हैं। चर और स्ट्रिंग को एक साथ उपयोग करने के लिए, हम [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) की मदद ले सकते हैं! Template literals backticks (`` ` ``) से शुरू और खत्म होते हैं, quotation marks (`""`) की जगह। आप backticks के बीच कोई भी character टाइप करके एक स्ट्रिंग बना सकते हैं जैसे [इस उदाहरण](https://editor.p5js.org/Msqcoding/sketches/pfSJLvxOB) में। आप `${}` placeholder का उपयोग करके और घुंघराले कोष्ठक के अंदर चर का नाम रखकर स्ट्रिंग में एक चर शामिल कर सकते हैं जैसे [इस उदाहरण](https://editor.p5js.org/Msqcoding/sketches/8sM-h5Hd9) में।
+
+[string interpolation](https://www.geeksforgeeks.org/string-interpolation-in-javascript/) (उदाहरण 2), [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals), या p5.js reference पेज [string](/reference/p5/String) पर जाकर अधिक जानें!
+
+<Callout title="नोट">
+[numbers](/reference/p5/number) वाले चर का उपयोग वहाँ तर्क के रूप में किया जा सकता है जहाँ numbers की आवश्यकता होती है। यदि कोई चर जिसमें [स्ट्रिंग](/reference/p5/String) स्टोर है, उसे वहाँ उपयोग किया जाता है जहाँ number होना चाहिए, तो कंसोल एक error message दिखाएगा जैसे `"...was expecting Number for the first parameter, received string instead."` कुछ सामान्य errors और उन्हें कैसे ठीक करें, इसके लिए [Field Guide to Debugging](/tutorials/field-guide-to-debugging) के Error Messages सेक्शन पर जाएं!
+</Callout>
+
+
+## स्टेप 2: एक background लैंडस्केप बनाएं<a id="step-2"></a>
+
+- Background को रंग दें।
+- लैंडस्केप आकृतियाँ जोड़ें और उन्हें रंग दें (सूरज या चंद्रमा, पहाड़, इमारतें, घर, पेड़ आदि)
+- कोड के प्रत्येक सेक्शन का वर्णन करने वाली टिप्पणी जोड़ें।
+
+कैनवास पर रंग और आकृतियों का उपयोग करने के बारे में अधिक जानकारी के लिए [Get Started के स्टेप 4 - 6](/tutorials/get-started) देखें।
+
+आपका कोड इस प्रकार दिख सकता है:
+
+<EditableSketch code={`
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlapping navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);  
+}
+`} />
+
+ऊपर दिया गया कोड लैंडस्केप में ऑब्जेक्ट बनाने के लिए [`circle()`](/reference/p5/circle) और [`triangle()`](/reference/p5/triangle) आकृतियों का, और आकृतियों और outlines को रंग देने के लिए [`fill()`](/reference/p5/fill) और [`stroke()`](/reference/p5/stroke) का उपयोग करता है।
+
+- [`background()`](/reference/p5/background) का उपयोग कैनवास के background का रंग बदलने के लिए किया जाता है।
+- [`draw()`](/reference/p5/draw) कोड को बार-बार चलाता है। इससे [`draw()`](/reference/p5/draw) में अंत में आने वाली आकृतियाँ पहले आने वाली आकृतियों को overlap कर सकती हैं यदि वे पास-पास रखी जाएं।
+  - अर्धचंद्र दो [`circle()`](/reference/p5/circle) आकृतियों को overlap करके बनाया गया था।
+    - [यह उदाहरण](https://editor.p5js.org/Msqcoding/sketches/eHkwP3yBC) दो circles का उपयोग करता है जो overlap होकर अर्धचंद्र बनाते हैं।
+  - पहाड़ दो overlapping [`triangle()`](/reference/p5/triangle) आकृतियों का उपयोग करके बनाए गए (नीचे दिया गया diagram देखें)।
+    - [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/CxuLJszOL) दिखाता है कि आप कैसे triangles को overlap करके अधिक विस्तृत पहाड़ बना सकते हैं।
+- [`triangle()`](/reference/p5/triangle) को कैनवास पर दिखने के लिए 3 बिंदुओं की स्थिति की आवश्यकता होती है। प्रत्येक बिंदु में एक x-निर्देशांक और एक y-निर्देशांक value होती है। पहली दो संख्याएँ पहले बिंदु के x- और y-निर्देशांक हैं (x<sub>1, </sub>y<sub>1</sub>), अगली दो संख्याएँ अगले बिंदु के निर्देशांक हैं (x<sub>2, </sub>y<sub>2</sub>), और अंतिम दो अंतिम बिंदु के निर्देशांक हैं (x<sub>3, </sub>y<sub>3</sub>)।
+
+![एक लेबल वाला diagram जो एक triangle को दर्शाता है जिसके तीन कोनों के निर्देशांक लेबल किए गए हैं: (x1, y1), (x2, y2), और (x3, y3)। diagram के ऊपर triangle कार्य का वाक्य - विन्यास प्रदर्शित है: "triangle(x1, y1, x2, y2, x3, y3);"](../images/introduction/triangle-diagram.png)
+
+आपका लैंडस्केप ऊपर दिए गए कोड नमूने से बहुत भिन्न दिख सकता है। अपने स्केच में निम्नलिखित में से किसी भी आकृति का उपयोग करने में स्वतंत्र महसूस करें (अधिक जानने के लिए लिंक पर क्लिक करें): [`rect()`](/reference/p5/rect)  |  [`triangle()`](/reference/p5/triangle)  |  [`ellipse()`](/reference/p5/ellipse)  |  [`circle()`](/reference/p5/circle)  |  [`line()`](/reference/p5/line)  |  [`square()`](/reference/p5/square)  |  [`quad()`](/reference/p5/quad)  |  [`point()`](/reference/p5/point)  |  [`arc()`](/reference/p5/arc)
+
+अपने प्रोजैक्ट में आकृतियों और रंगों का उपयोग करने के बारे में अधिक जानने के लिए निम्नलिखित resources पर जाएं: [`fill()`](/reference/p5/fill)  |  [`stroke()`](/reference/p5/stroke)  |  [`background()`](/reference/p5/background)  |  [`draw()`](/reference/p5/draw)
+
+[Field Guide to Debugging](/tutorials/field-guide-to-debugging) और The Coding Train के [इस वीडियो](https://www.youtube.com/watch?v=LuGsp5KeJMM\&list=PLRqwX-V7Uu6Zy51Q-x9tMWIv9cueOFTFA\&index=6) में हाइलाइट की गई सामान्य errors से बचना सुनिश्चित करें।
+
+
+## स्टेप 3: Custom चर का उपयोग करके आकृतियाँ बनाएं<a id="step-3"></a>
+
+- [`ellipse()`](/reference/p5/ellipse)` `method का उपयोग करके कैनवास पर आकाश में एक सफेद बादल रखें।
+  - घास के कोड के ठीक नीचे ये लाइनें जोड़ें:
+
+    ```js
+    //cloud
+    fill(255);
+    ellipse(50, 50, 80, 40);
+    ```
+
+- `cloudOneX` नाम का एक custom चर बनाएं और उसमें संख्या 50 स्टोर करें – यह चर पूरे प्रोग्राम में सफेद बादल के x-निर्देशांक की value को स्टोर करेगा।
+  - [`setup()`](/reference/p5/setup) से पहले ये लाइनें जोड़ें:
+
+    ```js
+    //custom variable for x coordinate of cloud
+    let cloudOneX = 50;
+    ```
+
+- `ellipse(50, 50, 80, 40);` में x-निर्देशांक को `cloudOneX` चर से बदलें।
+  - कोड की यह लाइन अब इस प्रकार दिखनी चाहिए:
+
+    ```js
+    ellipse(cloudOneX, 50, 80, 40);
+    ```
+
+आपका कोड इस प्रकार दिख सकता है:
+
+<EditableSketch code={`
+//custom variable for x coordinate of cloud
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlapping navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+  
+  //cloud
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
+} 
+`} />
+
+[`ellipse()`](/reference/p5/ellipse) को कैनवास पर दिखने के लिए 4 numbers की आवश्यकता होती है। पहली दो संख्याएँ (x, y) केंद्र बिंदु के x- और y-निर्देशांक हैं। अंतिम दो संख्याएँ ellipse की pixel चौड़ाई और ऊँचाई बताती हैं।
+
+![चौड़ाई, ऊँचाई और (x,y) पर केंद्र बिंदु के लेबल के साथ एक ellipse का diagram। diagram के ऊपर ellipse कार्य का वाक्य - विन्यास प्रदर्शित है: "ellipse(x, y, width, height);"।](../images/introduction/ellipse-diagram.png)
+
+ऊपर दिए गए कोड में, बादल को [`ellipse()`](/reference/p5/ellipse) का उपयोग करके बनाया गया है, जिसमें `cloudOneX` (जिसमें संख्या 50 स्टोर है) इसके x-निर्देशांक के रूप में, 50 y-निर्देशांक के रूप में, 80 pixels की चौड़ाई, और 40 pixels की ऊँचाई है।
+
+
+### Custom चर
+
+Custom चर ऐसी values स्टोर करते हैं, जैसे [numbers](/reference/p5/number) या [strings](/reference/p5/String), जो बाद में बदल सकती हैं। चूंकि custom चर ऐसी values स्टोर करते हैं जो बदल सकती हैं, हम इनका उपयोग कैनवास पर आकृतियों के x- या y-निर्देशांक और आकार बदलने के लिए कर सकते हैं। जब किसी आकृति का x- या y-निर्देशांक बदलता है, तो वह चलती हुई दिखती है। इस स्टेप में:
+
+- आपने [`ellipse()`](/reference/p5/ellipse) का उपयोग करके संख्या 50 को x-निर्देशांक के रूप में उपयोग करते हुए कैनवास पर एक सफेद बादल रखा;
+- आपने [`setup();`](/reference/p5/setup) से पहले `cloudOneX` नाम का एक custom चर *declare* किया
+  - जब आप अपने प्रोग्राम में उपयोग करने के लिए custom चर बनाना चाहते हैं, तो आपको उन्हें एक नाम देना होगा और keyword [`let`](/reference/p5/let) का उपयोग करके उन्हें *declare* करना होगा।
+  - आप किसी भी नाम का उपयोग करके चर *declare* कर सकते हैं; हालांकि, ऐसा नाम उपयोग करना सबसे अच्छा है जो आपको याद रखने में मदद करे कि चर किसलिए उपयोग हो रहा है!
+- आपने `cloudOneX` को संख्या 50 assign करके *initialize* किया।
+  - *assignment ऑपरेटर* (`=`) का उपयोग करके एक value को चर में स्टोर किया जा सकता है – यह एक विशिष्ट चर को value assign करता है।
+  - जब पहली बार किसी custom चर में value स्टोर की जाती है, तो इसे चर को *initialize* करना कहा जाता है।
+
+![JavaScript वाक्य - विन्यास के भागों को लेबल करने वाला एक diagram जिसमें चर को initialize और declare करना दिखाया गया है: "let" को "keyword that declares custom variables" के रूप में, "variable name" को "name" के रूप में, "=" को "assignment operator" के रूप में जो "assigns a value to the variable name", और "value" को "Any data type like a number or a string" के रूप में लेबल किया गया है।](../images/introduction/assignment-diagram.png)
+
+अंत में, आप चर का नाम `cloudOneX` [`ellipse()`](/reference/p5/ellipse) में x-निर्देशांक के तर्क के रूप में उपयोग कर सकते हैं। चूंकि चर `cloudOneX` में संख्या 50 स्टोर है, हम `cloudOneX` को किसी भी कार्य में तर्क के रूप में उपयोग कर सकते हैं जिसमें number की आवश्यकता हो। यहाँ, आपने इसे सफेद बादल के x-निर्देशांक के रूप में उपयोग किया, संख्या 50 को चर नाम `cloudOneX` से बदलकर: `ellipse(cloudOneX, 50, 80, 40);`।
+
+
+### चर का Scope
+
+एक *चर का scope* बताता है कि चर को प्रोग्राम में कहाँ-कहाँ उपयोग किया जा सकता है। Custom चर को [`setup()`](/reference/p5/setup) और [`draw()`](/reference/p5/draw) के बाहर declare करना अक्सर उपयोगी होता है क्योंकि इससे चर को *global scope* मिलता है। *global scope* वाले चर को प्रोग्राम में कहीं भी उपयोग किया जा सकता है। Global चर अक्सर कोड की सबसे पहली लाइनों में declare किए जाते हैं। इससे प्रोग्रामर्स को यह समझने में मदद मिलती है कि क्या बदल रहा है, कोड को maintain करना आसान होता है, और आगे कोड में भ्रम से बचा जा सकता है। Built-in चर जैसे [`mouseX`](/reference/p5/mouseX), [`mouseY`](/reference/p5/mouseY), [`width`](/reference/p5/width), और [`height`](/reference/p5/height) को declare करने की आवश्यकता नहीं होती क्योंकि वे p5.js लाइब्रेरी में पहले से बने हैं, और आप उन्हें अपने कोड में कहीं भी उपयोग कर सकते हैं क्योंकि उनका global scope है!
+
+[`draw()`](/reference/p5/draw) और [`setup()`](/reference/p5/setup) जैसे अन्य कार्य के अंदर declare किए गए चर का *local scope* होता है – जिसका अर्थ है कि उन्हें केवल उस block या कार्य में उपयोग किया जा सकता है जहाँ उन्हें declare किया गया है। [`setup()`](/reference/p5/setup) में declare किए गए चर को [`draw()`](/reference/p5/draw) या किसी अन्य कार्य में उपयोग नहीं किया जा सकता, और [`draw()`](/reference/p5/draw) में declare किए गए चर को [`setup()`](/reference/p5/setup) में उपयोग नहीं किया जा सकता। Global और local चर scope का [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/aa8bBwGHb) देखें।
+
+Custom चर को declare, initialize और उपयोग करने के बारे में अधिक जानने के लिए इन p5.js reference पेज पर जाएं: [`let`](/reference/p5/let), [numbers](/reference/p5/number), & [strings](/reference/p5/String)।
+
+
+### एनीमेशन के लिए चर का उपयोग
+
+कैनवास पर कोई आकृति तब चलती हुई दिखती है जब उसके x- या y-निर्देशांक बदलते हैं। हम कैनवास पर दिखने वाली किसी भी चीज़ के x- या y-निर्देशांक की जगह चर का उपयोग कर सकते हैं। उदाहरण में:
+
+- `cloudOneX` में स्टोर की गई value को बदलें, initialize की गई value को बदलकर, और कैनवास पर सफेद बादल में होने वाले बदलावों को देखें।
+  - यदि `cloudOneX` में value बढ़ती है, तो सफेद बादल दाईं ओर चलता हुआ दिखता है।
+  - यदि `cloudOneX` में value घटती है, तो सफेद बादल बाईं ओर चलता हुआ दिखता है।
+
+अगले स्टेप में, हम `cloudOneX` में value को बदलेंगे ताकि बादल कैनवास पर क्षैतिज रूप से चलता हुआ दिखे।
+
+
+## स्टेप 4: क्षैतिज मोशन जोड़ें<a id="step-4"></a>
+
+- सफेद बादल के नीचे की लाइन में, कोड की ये लाइनें जोड़ें:
+
+  ```js
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+  ```
+
+आपका कोड इस प्रकार दिख सकता है:
+
+<EditableSketch code={`
+//custom variable for x coordinate of cloud
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+  
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+  
+  //cloud
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);  
+}
+`} />
+
+
+ऊपर दिए गए स्टेप में, आपने `cloudOneX` को `frameCount % width` की value पर सेट किया। याद रखें कि [`draw()`](/reference/p5/draw) बार-बार, एक loop में चलता है:
+
+- [`frameCount`](/reference/p5/frameCount) एक built-in चर है जो [`draw()`](/reference/p5/draw) के चलने की संख्या को सेव करता है। यह value तब तक बढ़ती रहती है जब तक आपका प्रोग्राम चल रहा है।
+  - [`frameCount`](/reference/p5/frameCount) में स्टोर values देखने के लिए [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/hT1KJ-RF4) देखें।
+- [`width`](/reference/p5/width) एक built-in चर है जो [`createCanvas()`](/reference/p5/createCanvas) में define की गई कैनवास की चौड़ाई स्टोर करता है। हम देख सकते हैं कि इस उदाहरण में, [`width`](/reference/p5/width) 400 है और [`height`](/reference/p5/height) 400 है।
+- [`%`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) remainder ऑपरेटर है (जिसे modulo भी कहा जाता है) – यह बाईं ओर की संख्या ([`frameCount`](/reference/p5/frameCount)) को दाईं ओर की संख्या (400) से विभाजित करता है, और शेषफल लौटाता है। नीचे दी गई तालिका देखें, जो दिखाती है कि प्रोग्राम चलने के दौरान [`frameCount`](/reference/p5/frameCount) और `frameCount % width` कैसे बदलते हैं (**जब [`width`](/reference/p5/width) 400 है**):
+
+<table>
+
+<tr>
+
+<th>
+
+`frameCount`
+
+</th>
+
+<th>
+
+`frameCount % width`
+
+</th>
+
+</tr>
+
+<tr>
+
+<td>
+
+0
+
+</td>
+
+<td>
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+100
+
+</td>
+
+<td>
+
+100
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+300
+
+</td>
+
+<td>
+
+300
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+400
+
+</td>
+
+<td>
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+500
+
+</td>
+
+<td>
+
+100
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+700
+
+</td>
+
+<td>
+
+300
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+800
+
+</td>
+
+<td>
+
+0
+
+</td>
+
+</tr>
+
+</table>
+
+- `cloudOneX = frameCount % width` के लिए:
+  - यदि [`frameCount`](/reference/p5/frameCount) 400 से कम है, तो `frameCount % width` [`frameCount`](/reference/p5/frameCount) में value लौटाएगा।
+    - उदाहरण के लिए: जब [`frameCount`](/reference/p5/frameCount) 40 है, तो `frameCount % width` 40 लौटाएगा और इसे `cloudOneX` में स्टोर करेगा।` `यह सफेद बादल को x-निर्देशांक 40 पर ले जाता है।
+  - जैसे-जैसे [`frameCount`](/reference/p5/frameCount) बढ़ता है, `cloudOneX` में नई values स्टोर होंगी, और सफेद बादल दाईं ओर चलता हुआ दिखेगा (उच्चतर x-निर्देशांक)।
+  - जब [`frameCount`](/reference/p5/frameCount) [`width`](/reference/p5/width) के बराबर होता है, तो `frameCount % width` 0 लौटाएगा। यह बादल की स्थिति को वापस x-निर्देशांक 0 पर – कैनवास के बाएं किनारे पर – रीसेट कर देगा।
+  - जब [`frameCount`](/reference/p5/frameCount) [`width`](/reference/p5/width) से बड़ा होता है, तो `frameCount % width` फिर से [`frameCount`](/reference/p5/frameCount) की values लौटाएगा।
+    - उदाहरण के लिए: जब [`frameCount`](/reference/p5/frameCount) 440 है, तो `frameCount % width` 40 लौटाएगा और इसे `cloudOneX` में स्टोर करेगा।
+  - जब [`frameCount`](/reference/p5/frameCount) [`width`](/reference/p5/width) के किसी भी गुणक तक पहुँचता है, `frameCount % width` 0 होगा और ऐसा दिखेगा जैसे बादल ने अपनी स्थिति कैनवास के बाएं किनारे (जहाँ x-निर्देशांक 0 है) पर वापस रीसेट कर ली है।
+
+जब प्रोग्राम चलता है:
+
+- `cloudOneX` को 50 की value से declare और initialize किया जाता है।
+- [`setup()`](/reference/p5/setup) चलता है और 400 pixels की [`width`](/reference/p5/width) वाला एक कैनवास बनाता है।
+- पहली बार [`draw()`](/reference/p5/draw) चलता है:
+  - background और लैंडस्केप पर सभी आकृतियाँ कैनवास पर बनाई जाती हैं;
+  - बादल x-निर्देशांक `cloudOneX` (जिसमें संख्या 50 स्टोर है) के साथ बनाया जाता है;
+  - `cloudOneX` ऑपरेशन `frameCount % width` में शेषफल स्टोर करता है।
+- दूसरी बार [`draw()`](/reference/p5/draw) चलता है:
+  - जब background और लैंडस्केप फिर से कैनवास पर बनाए जाते हैं तो सभी आकृतियाँ ढक जाती हैं;
+  - `cloudOneX` की नई value के साथ ऊपर एक नया बादल बनाया जाता है, जिससे यह भ्रम पैदा होता है कि यह x-निर्देशांक 0 से 400 तक चला है, फिर रीसेट हो गया;
+  - यह pattern तब तक जारी रहता है जब तक [`draw()`](/reference/p5/draw) बंद नहीं किया जाता।
+
+[यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/wpAhQK9WN) देखें, जो [`frameCount`](/reference/p5/frameCount) और `frameCount % width` की values प्रदर्शित करता है जब आकृतियाँ कैनवास पर चलती हैं। अधिक जानने के लिए [MDN पर Remainder reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) पर जाएं!
+
+
+### एनीमेशन और draw()
+
+[`draw()`](/reference/p5/draw) कार्य कोड को बार-बार चलाता है और स्थिर चित्रों की एक श्रृंखला को एनीमेट करते समय एक flipbook की तरह काम करता है।
+
+- एक [flipbook animation](https://www.youtube.com/watch?v=J2xrN5WQuxw) का उदाहरण
+
+हर बार जब [`draw()`](/reference/p5/draw) background और लैंडस्केप आकृतियों के लिए कोड की लाइनें पढ़ता है, यह पिछली बार [`draw()`](/reference/p5/draw) द्वारा कैनवास पर बनाई गई किसी भी चीज़ को ढक देता है। इससे ऐसा दिखता है जैसे हमने अपनी flipbook में अगला पन्ना पलटा हो जब कैनवास पर चीज़ें हर बार [`draw()`](/reference/p5/draw) चलने पर बदलती हैं।
+
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/H3dfPaKaN) एक circle के x-निर्देशांक में बदलाव दिखाता है जब वह कैनवास पर क्षैतिज रूप से चलता है।
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/CHPMI1xBJ) एक circle के y-निर्देशांक में बदलाव दिखाता है जब वह कैनवास पर ऊर्ध्वाधर रूप से चलता है।
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/full/vEDfXfXBJ) प्रोग्राम चलने के दौरान एक circle के आकार में बदलाव दिखाता है।
+- ये उदाहरण दिखाते हैं कि हर बार [`draw()`](/reference/p5/draw) कार्य चलने पर नई आकृतियाँ एक नई स्थिति पर कैसे बनाई जाती हैं: [horizontal motion](https://editor.p5js.org/p5Master718/sketches/hSv6uLFvv) | [vertical motion](https://editor.p5js.org/p5Master718/sketches/Xk_MUZ9yT) | [random motion](https://editor.p5js.org/Msqcoding/sketches/yLtbuqPIG)
+  - इन उदाहरणों में, [`background()`](/reference/p5/background) को हटा दिया गया है ताकि [`draw()`](/reference/p5/draw) द्वारा प्रदान किए जाने वाले "flipbook" भ्रम को समाप्त किया जा सके। अब हम हर नई बनाई गई आकृति देख सकते हैं क्योंकि background उसे ढकने के लिए वहाँ नहीं है।
+
+अधिक जानकारी के लिए [`draw()`](/reference/p5/draw) के p5.js reference पर जाएं।
+
+
+### `frameRate()`, `frameCount` और `console.log()`
+
+[`draw()`](/reference/p5/draw) के चलने की संख्या चर [`frameCount`](/reference/p5/frameCount) में स्टोर होती है, और [`draw()`](/reference/p5/draw) 1 सेकंड में जितनी बार चलता है उसे *frame rate* कहा जाता है। डिफ़ॉल्ट रूप से, frame rate आपके कंप्यूटर द्वारा सेट की जाती है, जो अधिकांश कंप्यूटरों के लिए लगभग 60 होती है। इसका मतलब है कि [`draw()`](/reference/p5/draw) में दिखने वाला कोड एक सेकंड में लगभग 60 बार चलेगा।
+
+हम [`frameRate()`](/reference/p5/frameRate) कार्य का उपयोग करके [`draw()`](/reference/p5/draw) की *frame rate* की value सेट और प्रदर्शित कर सकते हैं। हम frame rate और [`frameCount`](/reference/p5/frameCount) की value देखने के लिए [`console.log()`](/reference/console/log) का उपयोग करके कंसोल में values और messages प्रदर्शित कर सकते हैं।
+
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/7j0u_pljk) एक random circle एनीमेशन दिखाता है और कंसोल में frame rate प्रिंट करता है।
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/CH2Nmbzwz) एक random circle एनीमेशन दिखाता है, frame rate को एक नई value पर सेट करता है, और इसे कंसोल में प्रदर्शित करता है।
+
+अधिक जानकारी के लिए, निम्नलिखित p5.js reference पेज पर जाएं: [`frameRate()`](/reference/p5/frameRate)  |  [`frameCount`](/reference/p5/frameCount)  |  [`console.log()`](/reference/console/log)
+
+
+## स्टेप 5: और चलते बादल जोड़ें और frame rate बदलें<a id="step-5"></a>
+
+- Frame rate को 15 पर सेट करके एनीमेशन को धीमा करें:
+  - [`background()`](/reference/p5/background) के नीचे की लाइन में यह जोड़ें: `frameRate(15); //set frame rate to 15`
+- अपने लैंडस्केप में अलग-अलग x और y values के साथ और बादल जोड़ने के लिए [स्टेप 4](#step-4) दोहराएं।
+  - आप पहले बादल के नीचे यह टेक्स्ट जोड़ सकते हैं:
+
+    ```js
+    ellipse(cloudOneX - 40, 100, 60, 20);
+    ellipse(cloudOneX + 20, 150, 40, 10);
+    ```
+
+आपका कोड इस प्रकार दिख सकता है:
+
+<EditableSketch code={`
+//custom variable for x coordinate of clouds
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  frameRate(15); //set frame rate to 15
+  
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //clouds
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+  ellipse(cloudOneX - 40, 100, 60, 20);
+  ellipse(cloudOneX + 20, 150, 40, 10);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
+}
+`} />
+
+ऊपर दिए गए स्टेप में, आपने जोड़ा:
+
+- x-निर्देशांक `cloudOneX - 40` और y-निर्देशांक `100` पर एक दूसरा बादल
+  - यह पहले बादल से 40 pixels बाईं ओर और 20 pixels नीचे एक दूसरा बादल बनाता है।
+- x-निर्देशांक `cloudOneX + 20` और y-निर्देशांक `150` पर एक तीसरा बादल
+  - यह पहले बादल से 20 pixels दाईं ओर और 70 pixels नीचे एक तीसरा बादल बनाता है।
+
+यहाँ, हमने `cloudOneX` को एक *reference point* के रूप में उपयोग किया – वह बिंदु जिसका उपयोग कैनवास पर एक साथ चलने वाली आकृतियों को रखते समय एक गाइड के रूप में किया जाता है।
+
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/FiePhOrbF) दिखाता है कि कैसे एक reference point (x, y) का उपयोग एक साथ कई आकृतियों की स्थिति बदलने के लिए किया जा सकता है।
+
+
+## स्टेप 6: ऊर्ध्वाधर मोशन जोड़ें
+
+लैंडस्केप में एक पेड़ (या कोई अन्य ऑब्जेक्ट) जोड़ें जो ऊर्ध्वाधर (ऊपर या नीचे) चलता हो।
+
+- कैनवास पर एक पेड़ बनाएं।
+  - बादलों के कोड और चर बढ़ाने वाले कोड के बीच यह टेक्स्ट जोड़ें:
+
+    ```js
+    //growing tree
+    //trunk
+    fill("rgb(118,80,72)");
+    rect(40, 270, 15, 50);
+    //leaves
+    fill("green");
+    triangle(25, 270, 45, 240, 70, 270);
+    ```
+
+- पत्तियां बनाने वाले triangle के शीर्ष कोण (240) से `frameCount % 290` घटाएं:
+  - ऊपर के triangle में y<sub>2</sub> की value को `frameCount % 290` से घटाकर modify करें:
+
+    ```js
+    //leaves
+    fill("green");
+    triangle(25, 270, 45, 240 - frameCount % 290, 70, 270);
+    ```
+
+- उसी तरह बढ़ने वाले और पेड़ जोड़ें।
+  - पहले पेड़ के नीचे यह टेक्स्ट जोड़ें:
+
+    ```js
+    //trunk
+    fill("rgb(118,80,72)");
+    rect(340, 330, 15, 50);
+    //leaves
+    fill("green");
+    triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
+    ```
+
+आपका कोड इस प्रकार दिख सकता है:
+
+<EditableSketch code={`
+//custom variable for x coordinate of clouds
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  frameRate(15); //set frame rate to 15
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //clouds
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+  ellipse(cloudOneX - 40, 100, 60, 20);
+  ellipse(cloudOneX + 20, 150, 40, 10);
+
+  //growing trees
+
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(40, 270, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(25, 270, 45, 240 - frameCount % 2900,70, 270);
+
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(340, 330, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+
+  cloudOneX = frameCount % width
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
+}
+`} />
+
+इस स्टेप में, आपने:
+
+- एक rectangle (पेड़ का तना) और एक triangle (पत्तियां) से बना पेड़ जोड़ा;
+- triangle के शीर्ष कोने के y-निर्देशांक (`y2`) की value को `frameCount % 290` से घटाकर modify किया (see [triangle()](/reference/p5/triangle) Diagram for a reminder of `y2`):
+  - चूंकि आप चाहते हैं कि पेड़ की पत्तियां बढ़ें, triangle के शीर्ष कोने को हर बार [`draw()`](/reference/p5/draw) चलने पर कैनवास पर ऊपर जाना होगा। जैसा कि [इस उदाहरण](https://editor.p5js.org/p5Master718/sketches/605MEWNxh) में दिखाया गया है, कैनवास पर ऊपर जाने वाले बिंदु का y-निर्देशांक (`y2`) घटता है।
+  - इस मोशन को प्राप्त करने के लिए, आपने `y2` की value को `240 - frameCount % 290` से modify किया। यह `y2` को शेषफल से घटाता है जब [`frameCount`](/reference/p5/frameCount) को 290 से विभाजित किया जाता है।
+  - जैसा कि आपने [स्टेप 5](#step-5) में देखा, हर बार [`draw()`](/reference/p5/draw) कार्य चलता है, `frameCount % 290` द्वारा लौटाई गई value `1` से बढ़ती है ताकि `y2` भी बदले।
+    - [`draw()`](/reference/p5/draw) चलने से पहले, `y2` `240` है।
+    - पहली बार [`draw()`](/reference/p5/draw) चलता है, `frameCount % 290` से value `1` है, और `y2` `239` हो जाता है।
+    - दूसरी बार [`draw()`](/reference/p5/draw) चलता है, `frameCount % 290` से value `2` है, और `y2` `238` हो जाता है।
+    - तीसरी बार [`draw()`](/reference/p5/draw) चलता है, `frameCount % 290` में value `3` है, और `y2` `237` हो जाता है।
+    - एक बार [`frameCount`](/reference/p5/frameCount) कोई ऐसी संख्या बन जाता है जो `290` का गुणक है, `frameCount % 290` में value `0` हो जाती है, और `y2` वापस अपनी मूल value `240` पर सेट हो जाता है।
+    - यह pattern तब तक जारी रहता है जब तक [`draw()`](/reference/p5/draw) बंद नहीं किया जाता।
+
+अधिक जानकारी के लिए निम्नलिखित p5.js reference पेज पर जाएं: [`frameRate()`](/reference/p5/frameRate)  |  [`frameCount`](/reference/p5/frameCount) | [`triangle()`](/reference/p5/triangle)
+
+
+## स्टेप 7: Random मोशन जोड़ें<a id="step-7"></a>
+
+- आकाश में random स्थानों पर दिखने वाले shooting stars जोड़ें।
+  - दो चर, `lineXone` और `lineYone`, declare करें और उन्हें `0` से initialize करें। [`setup()`](/reference/p5/setup) से पहले ये लाइनें जोड़ें:
+
+    ```js
+    //custom variable for shooting stars
+    let lineXone = 0;
+    let lineYone = 0;
+    ```
+
+- `frameRate(15)` के नीचे यह टेक्स्ट जोड़कर एक shooting star दर्शाने वाली line बनाएं:
+
+  ```js
+  //shooting star
+  stroke("yellow");
+  line(lineXone, lineYone, lineXone + 30, lineYone - 30);
+  ```
+
+- `cloudOneX` को `frameCount % width` assign करने वाली कोड लाइन के बाद यह टेक्स्ट जोड़कर `lineXone` और `lineYone` को random values पर सेट करें:
+
+  ```js
+  //set shooting star to random location
+  lineXone = random(0, width);
+  lineYone = random(0, height/2);
+  ```
+
+- अपना अंतिम प्रोजैक्ट देखने के लिए `draw()` के नीचे माउस पॉइंटर के x- और y-निर्देशांक दिखाने वाली कोड की लाइनें हटा दें।
+- अपने दोस्तों के साथ शेयर करें!
+
+आपका कोड इस प्रकार दिखना चाहिए:
+
+<EditableSketch code={`
+//custom variable for x coordinate of clouds
+let cloudOneX = 50;
+
+//custom variable for shooting stars
+let lineXone = 0;
+let lineYone = 0;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  frameRate(15); //set frame rate to 15
+
+  //shooting star
+  stroke("yellow");
+  line(lineXone, lineYone, lineXone + 30, lineYone - 30);
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //clouds
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+  ellipse(cloudOneX - 40, 100, 60, 20);
+  ellipse(cloudOneX + 20, 150, 40, 10);
+
+  //growing trees
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(40, 270, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(25, 270, 45, 240 - frameCount % 2900,70, 270);
+
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(340, 330, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+
+  //set shooting star to random location
+  lineXone = random(0, width);
+  lineYone = random(0, height/2); 
+}
+`} />
+
+ऊपर दिए गए स्टेप में, आपने दो नए चर, `lineXone` और `lineYone`, बनाए, जिनका उपयोग आकाश में एक shooting star दर्शाने वाली line बनाने के लिए किया जाता है। Line [`line()`](/reference/p5/line) कार्य का उपयोग करके बनाई जाती है (नीचे दिया गया diagram देखें)।
+
+![endpoints (x1,y1) और (x2, y2) वाली एक line का diagram। diagram के ऊपर line कार्य का वाक्य - विन्यास प्रदर्शित है: "line(x1, y1, x2, y2);"।](../images/introduction/line-diagram.png)
+
+[`line()`](/reference/p5/line) को कैनवास पर दिखने के लिए 4 numbers की आवश्यकता होती है। पहली दो संख्याएँ पहले बिंदु (x<sub>1</sub>,y<sub>1</sub>) के निर्देशांक हैं – x<sub>1 </sub>x-निर्देशांक है और y<sub>1 </sub>y-निर्देशांक है। अंतिम दो संख्याएँ दूसरे बिंदु (x<sub>2</sub>,y<sub>2</sub>) के निर्देशांक हैं, जहाँ x<sub>2 </sub>x-निर्देशांक है और y<sub>2</sub> y-निर्देशांक है।
+
+[`line()`](/reference/p5/line) के बारे में अधिक जानने के लिए p5.js reference पेज पर जाएं।
+
+इस प्रोजैक्ट में, आपने एक ऐसी line बनाई जो एक बिंदु (`lineXone`, `lineYone`) से शुरू होती है, जहाँ x<sub>1 </sub>`lineXone` में स्टोर value है और y<sub>1 </sub>`lineYone` में स्टोर value है। Line एक बिंदु (`30`, `lineXone + 30`) पर समाप्त होती है, जहाँ x<sub>2 </sub>x<sub>1</sub> से `30` pixels दाईं ओर है और y<sub>2</sub> y<sub>1</sub> से 30 pixels ऊपर है।
+
+x<sub>1</sub>,y<sub>1 </sub>का उपयोग x<sub>2</sub>,y<sub>2</sub> की values को modify करने के लिए करने से, line के दोनों सिरे एक ही तरह से चल सकते हैं। इससे line `lineXone` और `lineYone` बदलने पर अपना आकार बदले बिना कैनवास पर चल सकती है।
+
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/IqEQilUij) देखें कि x<sub>1</sub>,y<sub>1 </sub>बदलने पर line कैनवास पर कैसे चलती है।
+- [यह उदाहरण](https://editor.p5js.org/p5Master718/sketches/iBKcrJGwi) देखें कि बिंदुओं के बीच की दूरी बदलने पर line कैसे बदलती है।
+
+[`random()`](/reference/p5/random) का उपयोग एक न्यूनतम और अधिकतम value के बीच random numbers उत्पन्न करने के लिए किया जाता है। आपने इसका उपयोग `lineXone` और `lineYone` को random numbers पर reassign करने के लिए किया, उन्हें आपके लैंडस्केप के आकाश में random स्थितियों पर रखते हुए।
+
+[`random()`](/reference/p5/random) का उपयोग करने वाले उदाहरण:
+
+- [Random के साथ line की स्थिति बदलना](https://editor.p5js.org/Msqcoding/sketches/9OI5Y0uDk)
+- [Random के साथ रंग बदलना](https://editor.p5js.org/Msqcoding/sketches/mcfTlMLQX)
+
+Random numbers कैसे उत्पन्न होते हैं, इसके बारे में अधिक जानने के लिए [`random()`](/reference/p5/random) के p5.js reference पेज पर जाएं।
+
+जब [`draw()`](/reference/p5/draw) चलता है:
+
+- Background सेट किया जाता है।
+- Shooting star बाकी लैंडस्केप के साथ कैनवास पर रखा जाता है, और `cloudOneX` बदलता है।
+- `lineXone` `0` और [`width`](/reference/p5/width) के बीच एक random number में बदलता है (ताकि यह हमेशा कैनवास पर दिखे)।
+- `lineYone` `0` और [`height`](/reference/p5/height)`/2` के बीच एक random number में बदलता है।
+  - [`height`](/reference/p5/height)`/2` इंगित करता है कि shooting star केवल कैनवास के ऊपरी आधे हिस्से में दिख सकता है।
+
+जब [`draw()`](/reference/p5/draw) फिर से चलता है, वही प्रक्रिया होती है, और shooting star कैनवास के ऊपरी आधे हिस्से में एक नई random स्थिति पर रखा जाता है। यह तब तक जारी रहता है जब तक [`draw()`](/reference/p5/draw) बंद नहीं किया जाता।
+
+
+### Error Messages
+
+p5.js कंसोल का उपयोग प्रोग्रामर्स को उन कोड लाइनों के बारे में बताने के लिए करता है जो इसे समझ नहीं आते। इन्हें [error messages](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors) कहा जाता है। प्रोग्रामर्स इसका उपयोग अपने कोड में "*bugs*" को खोजने और ठीक करने के लिए करते हैं। अधिक जानने के लिए [Field Guide to Debugging](/tutorials/field-guide-to-debugging) पढ़ें या [यह वीडियो](https://www.youtube.com/watch?v=LuGsp5KeJMM\&list=PLRqwX-V7Uu6Zy51Q-x9tMWIv9cueOFTFA\&index=6) देखें!
+
+
+## अगला कदम
+
+- [Conditions and Interactivity](/tutorials/conditionals-and-interactivity)
+
+
+## पिछले कदम
+
+- [Get Started](/tutorials/get-started)
+- [Setting Up Your Environment](/tutorials/setting-up-your-environment)
+
+
+## संसाधन
+
+- [Coding Train Video Tutorials: ](https://thecodingtrain.com/tracks/code-programming-with-p5-js)
+  - [1.5 - Errors](https://www.youtube.com/watch?v=LuGsp5KeJMM)
+  - [1.6 - Comments](https://www.youtube.com/watch?v=xJcrPJuem5Q)
+  - [2.1 - mouseX & mouseY](https://youtu.be/7A5tKW9HGoM)
+  - [2.2 - Variables](https://www.youtube.com/watch?v=dRhXIIFp-ys)
+  - [2.4 - random()](https://www.youtube.com/watch?v=POn4cZ0jL-o)
+- [Grow Flipbook Video](https://www.youtube.com/watch?v=J2xrN5WQuxw)
+* [Guidelines for writing JavaScript code](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript#comments)
+* [Template Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
+* [Remainder (`%`)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder)
+* [String Interpolation in JavaScript](https://www.geeksforgeeks.org/string-interpolation-in-javascript/)
+
+
+## Bibliography
+
+- [Introduction to Computational Media Curriculum](https://cs4all-icm.gitbook.io/js-intro-to-computational-media-2.0), [NYCPS Computer Science Education team](https://sites.google.com/schools.nyc.gov/cs4allnyc/)
+- [Creative Web Curriculum](https://blueprint.cs4all.nyc/curriculum/creative-web/), [NYCPS Computer Science Education team](https://sites.google.com/schools.nyc.gov/cs4allnyc/)

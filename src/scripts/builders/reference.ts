@@ -470,7 +470,5 @@ export const testingExports = {
   addDocToModulePathTree,
   addMemberMethodPreviewsToClassDocs: addMethodAndPropertyPreviewsToClassDocs,
 };
+buildReference();
 
-if(import.meta.main){
-  buildReference();
-}
