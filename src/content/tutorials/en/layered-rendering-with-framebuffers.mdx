@@ -90,30 +90,30 @@ You may already be familiar with drawing to `p5.Graphics` objects. Here's a comp
 ```js
 let layer;
 function setup() {
-  createCanvas(200, 200, WEBGL);
-  layer = createGraphics(200, 200);
-  describe('a rotating red cube with yellow dots on each face');
+  createCanvas(200, 200, WEBGL);
+  layer = createGraphics(200, 200);
+  describe('a rotating red cube with yellow dots on each face');
 }
 function draw() {
-  let t = millis() * 0.001;
-  layer.background('red');
-  layer.noStroke();
-  layer.fill('yellow');
-  for (let i = 0; i < 30; i += 1) {
-    layer.circle(
-      map(noise(i*10, 0, t), 0, 1, 0, width),
-      map(noise(i*10, 100, t), 0, 1, 0, height),
-      20
-    );
-  }
+  let t = millis() * 0.001;
+  layer.background('red');
+  layer.noStroke();
+  layer.fill('yellow');
+  for (let i = 0; i < 30; i += 1) {
+    layer.circle(
+      map(noise(i*10, 0, t), 0, 1, 0, width),
+      map(noise(i*10, 100, t), 0, 1, 0, height),
+      20
+    );
+  }
  
-  background(255);
-  lights();
-  noStroke();
-  texture(layer);
-  rotateX(t);
-  rotateY(t);
-  box(100);
+  background(255);
+  lights();
+  noStroke();
+  texture(layer);
+  rotateX(t);
+  rotateY(t);
+  box(100);
 }
 ```
 </Column>
@@ -123,32 +123,32 @@ function draw() {
 ```js
 let layer;
 function setup() {
-  createCanvas(200, 200, WEBGL);
-  layer = createFramebuffer();
-  describe('a rotating red cube with yellow dots on each face');
+  createCanvas(200, 200, WEBGL);
+  layer = createFramebuffer();
+  describe('a rotating red cube with yellow dots on each face');
 }
 function draw() {
-  let t = millis() * 0.001;
-  layer.begin();
-  background('red');
-  noStroke();
-  fill('yellow');
-  for (let i = 0; i < 30; i += 1) {
-    circle(
-      map(noise(i*10, 0, t), 0, 1, -width/2, width/2),
-      map(noise(i*10, 100, t), 0, 1, -height/2, height/2),
-      20
-    );
-  }
-  layer.end();
+  let t = millis() * 0.001;
+  layer.begin();
+  background('red');
+  noStroke();
+  fill('yellow');
+  for (let i = 0; i < 30; i += 1) {
+    circle(
+      map(noise(i*10, 0, t), 0, 1, -width/2, width/2),
+      map(noise(i*10, 100, t), 0, 1, -height/2, height/2),
+      20
+    );
+  }
+  layer.end();
  
-  background(255);
-  lights();
-  noStroke();
-  texture(layer);
-  rotateX(t);
-  rotateY(t);
-  box(100);
+  background(255);
+  lights();
+  noStroke();
+  texture(layer);
+  rotateX(t);
+  rotateY(t);
+  box(100);
 }
 ```
 </Column>
@@ -156,86 +156,87 @@ function draw() {
 #### Result
 
 <SketchEmbed width="200" height="200" code={`
-  let layer;
-  function setup() {
-    createCanvas(200, 200, WEBGL);
-    layer = createFramebuffer();
-    describe('a rotating red cube with yellow dots on each face');
-  }
-  function draw() {
-    let t = millis() * 0.001;
-    layer.begin();
-    background('red');
-    noStroke();
-    fill('yellow');
-    for (let i = 0; i < 30; i += 1) {
-      circle(
-        map(noise(i*10, 0, t), 0, 1, -width/2, width/2),
-        map(noise(i*10, 100, t), 0, 1, -height/2, height/2),
-        20
-      );
-    }
-    layer.end();
-  
-    background(255);
-    lights();
-    noStroke();
-    texture(layer);
-    rotateX(t);
-    rotateY(t);
-    box(100);
-  }
+let layer;
+function setup() {
+  createCanvas(200, 200, WEBGL);
+  layer = createFramebuffer();
+  describe('a rotating red cube with yellow dots on each face');
+}
+function draw() {
+  let t = millis() * 0.001;
+  layer.begin();
+  background('red');
+  noStroke();
+  fill('yellow');
+  for (let i = 0; i < 30; i += 1) {
+    circle(
+      map(noise(i*10, 0, t), 0, 1, -width/2, width/2),
+      map(noise(i*10, 100, t), 0, 1, -height/2, height/2),
+      20
+    );
+  }
+  layer.end();
+ 
+  background(255);
+  lights();
+  noStroke();
+  texture(layer);
+  rotateX(t);
+  rotateY(t);
+  box(100);
+}
 `} />
 </Column>
 </Columns>
 
 By default, `p5.Framebuffer`s are not drawn to the screen. The main canvas is the only thing shown at the end of `draw()`. To make the contents of a `p5.Framebuffer` visible, it has to be stamped upon the main canvas. This is typically done with a call to `image(yourFramebuffer, x, y, width, height)`. Similar to the main canvas, a `p5.Framebuffer` only gets cleared when you ask it to be cleared, so you can stamp it on the main canvas as many times as you want, like in the example below.
 
-<AnnotatedCode lang="javascript" columns={true} code={({ begin, end }) => `
-  ${begin('header')}
+<AnnotatedCode lang="javascript" columns={true} code={({ begin, end }) =>
+`${begin('header')}
 
-  ${end('header')}
-  ${begin('setup')}
-  let layer;
-  function setup() {
-    createCanvas(windowWidth, windowHeight, WEBGL);
-    layer = createFramebuffer();
-  }
-  function draw() {
-  ${end('setup')}
-  ${begin('begin')}
-    // Start drawing to the framebuffer
-    layer.begin();
-  ${end('begin')}
-  ${begin('draw')}
-    clear();
-  
-    lights();
-    noStroke();
-    rotateX(millis() * 0.001);
-    rotateY(millis() * 0.001);
-    box(min(width/2, height/2));
-  ${end('draw')}
-  ${begin('stop')}
-    // Stop drawing to the framebuffer
-    layer.end();
-  ${end('stop')}
-  ${begin('grid')}
-    // Draw the layer to the main canvas
-    clear();
-    translate(-width/2, -height/2);
-    for (let x = 0; x < 4; x += 1) {
-      for (let y = 0; y < 4; y += 1) {
-        image(
-          layer,
-          x*width/4, y*height/4,
-          width/4, height/4
-        );
-      }
-    }
-  }
-  ${end('grid')}
-`}>
+${end('header')}
+${begin('setup')}
+let layer;
+function setup() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  layer = createFramebuffer();
+}
+function draw() {
+${end('setup')}
+${begin('begin')}
+  // Start drawing to the framebuffer
+  layer.begin();
+${end('begin')}
+${begin('draw')}
+  clear();
+ 
+  lights();
+  noStroke();
+  rotateX(millis() * 0.001);
+  rotateY(millis() * 0.001);
+  box(min(width/2, height/2));
+${end('draw')}
+${begin('stop')}
+  // Stop drawing to the framebuffer
+  layer.end();
+${end('stop')}
+${begin('grid')}
+  // Draw the layer to the main canvas
+  clear();
+  translate(-width/2, -height/2);
+  for (let x = 0; x < 4; x += 1) {
+    for (let y = 0; y < 4; y += 1) {
+      image(
+        layer,
+        x*width/4, y*height/4,
+        width/4, height/4
+      );
+    }
+  }
+}
+${end('grid')}
+`
+}>
   <Fragment slot="header">
     <th>
     </th>
@@ -332,36 +333,36 @@ To use feedback in a sketch, you typically draw to a `p5.Framebuffer` layer, so 
 The fastest way to do this is to keep **two layers** around, one for the previous frame and one for the next frame. At the start of `draw()`, swap the two layers: what used to be the next frame is now the previous frame, and you are free to clear the next frame and draw a new image to it. In computer graphics, this technique is called "ping-ponging."
 
 <EditableSketch code={`
-  let prev, next;
-  function setup() {
-    createCanvas(200, 200, WEBGL)
-    prev = createFramebuffer({ format: FLOAT });
-    next = createFramebuffer({ format: FLOAT });
-    imageMode(CENTER);
+let prev, next;
+function setup() {
+  createCanvas(200, 200, WEBGL)
+  prev = createFramebuffer({ format: FLOAT });
+  next = createFramebuffer({ format: FLOAT });
+  imageMode(CENTER);
 
-    describe('a rotating, multicolored circle drawing a drail fading away behind it');
-  }
-  function draw() {
-    // Swap prev and next
-    [prev, next] = [next, prev];
-    // Clear next and draw a new next frame
-    next.begin();
-    clear();
-    // Slightly rotate and scale the last frame
-    push();
-    rotate(0.01);
-    scale(0.99);
-    image(prev, 0, 0);
-    pop();
-    // Add a sphere on top
-    translate(sin(frameCount*0.1)*50, sin(frameCount*0.11)*50);
-    noStroke();
-    normalMaterial();
-    sphere(25);
-    next.end();
-    background(255);
-    image(next, 0, 0);
-  }
+  describe('a rotating, multicolored circle drawing a drail fading away behind it');
+}
+function draw() {
+  // Swap prev and next
+  [prev, next] = [next, prev];
+  // Clear next and draw a new next frame
+  next.begin();
+  clear();
+  // Slightly rotate and scale the last frame
+  push();
+  rotate(0.01);
+  scale(0.99);
+  image(prev, 0, 0);
+  pop();
+  // Add a sphere on top
+  translate(sin(frameCount*0.1)*50, sin(frameCount*0.11)*50);
+  noStroke();
+  normalMaterial();
+  sphere(25);
+  next.end();
+  background(255);
+  image(next, 0, 0);
+}
 `} />
 
 <Callout>
@@ -380,25 +381,24 @@ Here are some tips that will help as you create more advanced feedback effects.
 In the example above, we drew the previous frame into the next frame using `image(prev, 0, 0)`. This draws a rectangle on the screen, which takes up 3D space. If you then try to draw something further away from the camera, it will not show up, because the rectangle is blocking it.
 
 
-<AnnotatedCode code={({ begin, end }) => `
-  ${begin('transform')}
-  push();
-  translate(0, 0, -500);
-  // If the camera is z1 units away and
-  // you moved back z2 units, then to appear
-  // the same size as if you hadn't moved,
-  // scale by (z2 + z1) / z1
-  scale((500 + 800) / 800);
-  image(prev, 0, 0);
-  pop();
+<AnnotatedCode code={({ begin, end }) =>
+`${begin('transform')}
+push();
+translate(0, 0, -500);
+// If the camera is z1 units away and
+// you moved back z2 units, then to appear
+// the same size as if you hadn't moved,
+// scale by (z2 + z1) / z1
+scale((500 + 800) / 800);
+image(prev, 0, 0);
+pop();
 
 
-  ${end('transform')}
-  ${begin('clear')}
-  image(prev, 0, 0);
-  clearDepth();
-  ${end('clear')}
-`}>
+${end('transform')}
+${begin('clear')}
+image(prev, 0, 0);
+clearDepth();
+${end('clear')}`}>
   <Fragment slot="transform">
     One way to make sure everything else you draw goes in front of the rectangle is to draw the rectangle farther back but scaled up so that it appears the same size.
   </Fragment>
@@ -412,50 +412,50 @@ In the example above, we drew the previous frame into the next frame using `imag
 When you draw to a `p5.Framebuffer`, you can also record geometry depth in 3D space, stored as a number between 0 and 1. You can read this into a shader by using the `depth` property of a `p5.Framebuffer`. Depth information can also be used for debugging, as it gives a quick sense of how far away objects are. In the example below, try clicking and holding on the canvas to visualize the depth values.
 
 <EditableSketch code={`
-  let layer;
-  function setup() {
-    createCanvas(200, 200, WEBGL);
-    layer = createFramebuffer();
+let layer;
+function setup() {
+  createCanvas(200, 200, WEBGL);
+  layer = createFramebuffer();
 
-    describe('a line of spheres going off into the distance');
-  }
-  function draw() {
-    noStroke();
-  
-    // Draw a scene to a framebuffer
-    layer.begin();
-    background(255)
-    ambientLight(100);
-    directionalLight(255, 255, 255, -1, 1, -1);
-    ambientMaterial(52, 58, 235);
-    fill(255)
-    specularMaterial(255);
-    shininess(150);
-    // Draw some spheres receding into the distance
-    let n = 8;
-    for (let i = 0; i < n; i += 1) {
-      push();
-      translate(
-        map(i, 0, n-1, -100, 750),
-        20,
-        i * -800
-      );
-      sphere(100, 60, 30);
-      pop();
-    }
-    layer.end();
+  describe('a line of spheres going off into the distance');
+}
+function draw() {
+  noStroke();
+ 
+  // Draw a scene to a framebuffer
+  layer.begin();
+  background(255)
+  ambientLight(100);
+  directionalLight(255, 255, 255, -1, 1, -1);
+  ambientMaterial(52, 58, 235);
+  fill(255)
+  specularMaterial(255);
+  shininess(150);
+  // Draw some spheres receding into the distance
+  let n = 8;
+  for (let i = 0; i < n; i += 1) {
+    push();
+    translate(
+      map(i, 0, n-1, -100, 750),
+      20,
+      i * -800
+    );
+    sphere(100, 60, 30);
+    pop();
+  }
+  layer.end();
 
 
-    // Visualize either the color or the depth
-    push();
-    if (mouseIsPressed) {
-      texture(layer.depth);
-    } else {
-      texture(layer.color);
-    }
-    plane(width, height);
-    pop();
-  }
+  // Visualize either the color or the depth
+  push();
+  if (mouseIsPressed) {
+    texture(layer.depth);
+  } else {
+    texture(layer.color);
+  }
+  plane(width, height);
+  pop();
+}
 `} />
 
 Depth information can be useful if you want to change an image based on how far from the camera things are. One common effect that uses this is fog, where objects placed further away are tinted a fog color.
@@ -463,85 +463,85 @@ Depth information can be useful if you want to change an image based on how far 
 If you pass both the `color` and `depth` properties of a framebuffer into a shader, the original color can be read via `texture2D(color, vTexCoord)` as a `vec4`. Using the same coordinate, the depth of that pixel can be read using `texture2D(depth, vTexCoord).r`, reading just the red channel to get a single `float`.
 
 <EditableSketch code={`
-  let vert = \`
-  precision highp float;
+let vert = \`
+precision highp float;
 
-  attribute vec3 aPosition;
-  attribute vec2 aTexCoord;
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
 
-  uniform mat4 uModelViewMatrix;
-  uniform mat4 uProjectionMatrix;
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
 
-  varying vec2 vTexCoord;
+varying vec2 vTexCoord;
 
-  void main() {
-      // Apply the camera transform
-      vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+void main() {
+    // Apply the camera transform
+    vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
 
-      // Tell WebGL where the vertex goes
-      gl_Position = uProjectionMatrix * viewModelPosition;  
+    // Tell WebGL where the vertex goes
+    gl_Position = uProjectionMatrix * viewModelPosition;  
 
-      // Pass along data to the fragment shader
-      vTexCoord = aTexCoord;
+    // Pass along data to the fragment shader
+    vTexCoord = aTexCoord;
+}
+\`;
+
+let frag = \`
+precision highp float;
+
+varying vec2 vTexCoord;
+
+uniform sampler2D img;
+uniform sampler2D depth;
+uniform vec3 fog;
+
+void main() {
+  gl_FragColor = mix(
+    // Original color
+    texture2D(img, vTexCoord),
+    // Fog color
+    vec4(178.0/255.0, 189.0/255.0, 207.0/255.0, 1.0),
+    // Mix between them based on the depth.
+    // The pow() makes the light falloff a bit steeper.
+    pow(texture2D(depth, vTexCoord).r, 6.0)
+  );
+}
+\`;
+let layer, fogShader;
+function setup() {
+  createCanvas(200, 200, WEBGL);
+  fogShader = createShader(vert, frag);
+  layer = createFramebuffer();
+  noStroke();
+
+  describe('red spheres circling through fog');
+}
+function draw() {
+  // Draw a scene to a framebuffer
+  layer.begin();
+  clear();
+  lights();
+  fill('red');
+  for (let i = 0; i < 12; i++) {
+    push()
+    translate(
+      sin(frameCount*0.050 + i*1)*50,
+      sin(frameCount*0.051 + i*2)*50,
+      sin(frameCount*0.049 + i*3)*300
+    );
+    sphere(10);
+    pop();
   }
-  \`;
+  layer.end();
 
-  let frag = \`
-  precision highp float;
-
-  varying vec2 vTexCoord;
-
-  uniform sampler2D img;
-  uniform sampler2D depth;
-  uniform vec3 fog;
-
-  void main() {
-    gl_FragColor = mix(
-      // Original color
-      texture2D(img, vTexCoord),
-      // Fog color
-      vec4(178.0/255.0, 189.0/255.0, 207.0/255.0, 1.0),
-      // Mix between them based on the depth.
-      // The pow() makes the light falloff a bit steeper.
-      pow(texture2D(depth, vTexCoord).r, 6.0)
-    );
-  }
-  \`;
-  let layer, fogShader;
-  function setup() {
-    createCanvas(200, 200, WEBGL);
-    fogShader = createShader(vert, frag);
-    layer = createFramebuffer();
-    noStroke();
-
-    describe('red spheres circling through fog');
-  }
-  function draw() {
-    // Draw a scene to a framebuffer
-    layer.begin();
-    clear();
-    lights();
-    fill('red');
-    for (let i = 0; i < 12; i++) {
-      push()
-      translate(
-        sin(frameCount*0.050 + i*1)*50,
-        sin(frameCount*0.051 + i*2)*50,
-        sin(frameCount*0.049 + i*3)*300
-      );
-      sphere(10);
-      pop();
-    }
-    layer.end();
-
-    push();
-    // Apply fog to the scene
-    shader(fogShader);
-    fogShader.setUniform('img', layer.color);
-    fogShader.setUniform('depth', layer.depth);
-    plane(width, height);
-    pop();
-  }
+  push();
+  // Apply fog to the scene
+  shader(fogShader);
+  fogShader.setUniform('img', layer.color);
+  fogShader.setUniform('depth', layer.depth);
+  plane(width, height);
+  pop();
+}
 `} />
 
 If you want to customize how close to or far from the camera an object needs to be to get depth values of 0 or 1, specify near and far values in [`perspective()`](https://p5js.org/reference/p5/perspective).
