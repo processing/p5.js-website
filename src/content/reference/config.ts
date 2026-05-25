@@ -1,4 +1,6 @@
-import { z, defineCollection } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
+import { glob } from "astro/loaders";
 import { relatedContent } from "../shared";
 
 // Categories, ordered in a (rough) general-to-specific sequence for easier
@@ -78,8 +80,8 @@ export const referenceSchema = z.object({
   return: returnSchema.optional(),
   example: z.array(exampleSchema).optional(),
   relatedContent: relatedContent().optional(),
-  methods: z.record(methodSchema).optional(),
-  properties: z.record(propertySchema).optional(),
+  methods: z.record(z.string(), methodSchema).optional(),
+  properties: z.record(z.string(), propertySchema).optional(),
   isConstructor: z
     .boolean()
     .or(z.number().transform((n: number) => !!n))
@@ -91,6 +93,6 @@ export const referenceSchema = z.object({
 });
 
 export const referenceCollection = defineCollection({
-  type: "content",
+  loader: glob({ pattern: '**/*.mdx', base: "./src/content/reference" }),
   schema: referenceSchema,
 });

@@ -1,4 +1,5 @@
 ---
+import { render } from 'astro:content';
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Head from "@components/Head/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
@@ -13,14 +14,14 @@ import {
 } from "../pages/_utils";
 
 const { entry } = Astro.props;
-const { Content, components } = await entry.render();
+const { Content } = await render(entry);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
 const jumpToState = await generateJumpToState(
   "tutorials",
-  entry.slug,
+  entry,
   "Tutorials",
   t,
   currentLocale
@@ -33,7 +34,7 @@ const relatedReferences =
     ? await getRelatedEntriesinCollection(
         "reference",
         currentLocale,
-        entry.data.relatedContent.references.map((r: any) => r.slug)
+        entry.data.relatedContent.references.map((r: any) => r.id)
       )
     : [];
 const relatedExamples =
@@ -41,7 +42,7 @@ const relatedExamples =
     ? await getRelatedEntriesinCollection(
         "examples",
         currentLocale,
-        entry.data.relatedContent.examples.map((r: any) => r.slug)
+        entry.data.relatedContent.examples.map((r: any) => r.id)
       )
     : [];
 ---
@@ -66,7 +67,6 @@ const relatedExamples =
   <div class="rendered-markdown">
     <Content
       components={{
-        ...components,
         img: FreeRatioImage,
         pre: PreProxy,
         a: LinkWrapper,
