@@ -4,6 +4,7 @@ import {
   removeContentFileExt,
   removeLeadingSlash,
   removeLocaleAndExtension,
+  getFallbackRemixData,
 } from "@pages/_utils";
 
 suite("exampleContentSlugToLegacyWebsiteSlug", () => {
@@ -48,5 +49,17 @@ suite("removeLocaleAndExtensionFromId", () => {
     expect(removeLocaleAndExtension("en/p5.AudioIn/amp.mdx")).toBe(
       "p5.AudioIn/amp",
     );
+  });
+});
+
+suite("getFallbackRemixData", () => {
+  test("returns remix data for English example when current locale example has no remix data", () => {
+    expect(
+      getFallbackRemixData(
+        "zh-Hans/02_Animation_And_Variables/00_Drawing_Lines/description.mdx",
+        "zh-Hans",
+        undefined
+      )
+    ).toBeDefined();
   });
 });
