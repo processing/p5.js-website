@@ -12,6 +12,7 @@ import EditableSketch from "@components/EditableSketch/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import { checkTranslationBanner } from "../utils/translationBanner";
+import { getFallbackRemixData } from "../pages/_utils";
 
 interface Props {
   example: CollectionEntry<"examples">;
@@ -45,8 +46,15 @@ const relatedReferences =
 
 const { Content } = await example.render();
 
+// Use the fallback function to retrieve English remix data if the current locale doesn't have any
+let remixData = (await getFallbackRemixData(
+  example.id,
+  currentLocale,
+  example.data.remix
+)) as typeof example.data.remix;
+
 // Extract the collective attribution year. If multiple provided, uses last shown.
-const collectivelyAttributedSince = example.data.remix?.reduce(
+const collectivelyAttributedSince = remixData?.reduce(
   (acc: number | null, item) => {
     if (item.collectivelyAttributedSince) {
       return item.collectivelyAttributedSince;
@@ -57,7 +65,7 @@ const collectivelyAttributedSince = example.data.remix?.reduce(
 );
 
 // Boolean value on whether the remix history contains links to code
-const remixHistoryHasCodeLinks = example.data.remix?.some(
+const remixHistoryHasCodeLinks = remixData?.some(
   (item) => Array.isArray(item.code) && item.code.length > 0
 );
 
@@ -97,7 +105,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
 
       <a href={Astro.url.pathname}>{example.data.title}</a>:{" "}
 
-      {example.data.remix?.map((item, i) => {
+      {remixData?.map((item, i) => {
         const parts = [];
 
         // Each remix entry requires at least one attribution
@@ -146,7 +154,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
       {remixHistoryHasCodeLinks ? (
         <>
           {t("attribution", "You can find the code history of these examples here")}{": "}
-          {example.data.remix
+          {remixData
             .map(item => item?.code)
             .flat()
             .filter(codeItem => codeItem && codeItem.URL)
