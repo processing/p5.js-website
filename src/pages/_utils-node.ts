@@ -52,8 +52,8 @@ export const rewriteRelativeLink = (url: string): string => {
     return url;
   } else if (url.startsWith('#')||url.startsWith('/')) {
     // Skip rewriting for heading links and root-relative internal paths
-    updatedUrl = url;
-  } else {
+    return url;
+  } 
     // Convert relative paths to '../' (because pages that started as files in the same directory
     // get turned into directories themselves, we need to go up a directory in the link)
     if (url.startsWith('./')) {
@@ -65,20 +65,30 @@ export const rewriteRelativeLink = (url: string): string => {
     }
 
     // Relative links to md files should be turned into pages
-    if (updatedUrl.endsWith('.md')) {
-      updatedUrl = updatedUrl.replace(/\.md$/, '');
+    // Ensure we handle anchors/query strings by splitting suffix, removing .md from base, rejoining parts
+    const firstSpecialIdx = (() => {
+      const qi = updatedUrl.indexOf('?');
+      const hi = updatedUrl.indexOf('#');
+      if (qi === -1 && hi === -1) return -1;
+      if (qi === -1) return hi;
+      if (hi === -1) return qi;
+      return Math.min(qi, hi);
+    })();
+
+    const basePart = firstSpecialIdx === -1 ? updatedUrl : updatedUrl.slice(0, firstSpecialIdx);
+    const suffixPart = firstSpecialIdx === -1 ? "" : updatedUrl.slice(firstSpecialIdx); // includes ? or #
+
+    let normalizedBase = basePart;
+    if (normalizedBase.endsWith('.md')) {
+      normalizedBase = normalizedBase.replace(/\.md$/, '');
     }
-  }
 
-  // Add a trailing / if the link isn't to a file and does not have query params or a hash reference
-  if (
-    !updatedUrl.endsWith('/') &&
-    !/(\.\w+)$/.exec(updatedUrl) &&
-    !updatedUrl.includes('?') &&
-    !/#([\w-]+)$/.exec(updatedUrl)
-  ) {
-    updatedUrl += '/';
-  }
+    // Add trailing slash to the base if it is a directory
+    if (!normalizedBase.endsWith('/') && !/(\.\w+)$/.exec(normalizedBase)) {
+      normalizedBase += '/';
+    }
 
-  return updatedUrl;
-};
+    updatedUrl = normalizedBase + suffixPart;
+  
+    return updatedUrl;
+ };
