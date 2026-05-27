@@ -32,16 +32,17 @@ export const NavPanels = (props: NavPanelsProps) => {
     jumpToState,
   } = props;
 
-  const [isOpen, setIsOpen] = useState({ main: false, jump: false });
+  const [isOpen, setIsOpen] = useState({ main: true, jump: true });
   const [isMobile, setIsMobile] = useState(true);
 
-  // Defaults to closed on mobile, open on desktop
-  // Have to do this in a lifecycle method
-  // so that we can still server-side render
   useEffect(() => {
     const startsMobile = window.innerWidth < 768;
     setIsMobile(startsMobile);
     setIsOpen({ main: !startsMobile, jump: !startsMobile });
+    requestAnimationFrame(() => {
+      document.documentElement.setAttribute("data-nav-panels-ready", "true");
+    });
+
     // We use a resize observer to the user's window crosses the
     // threshhold between mobile and desktop
     const documentObserver = new ResizeObserver((entries) => {
