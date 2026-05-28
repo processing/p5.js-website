@@ -19,6 +19,27 @@ const mainLinks = [
   { url: "/about/", label: t("About") },
 ] as { url: string; label: string }[];
 
+// Define which paths should trigger an underline for a parent section
+const unmatchedPathMappings: Record<string, string> = {
+  "/events/": "/community/",
+  "/sketches/": "/community/",
+  "/libraries/": "/community/",
+  "/people/": "/about/",
+  "/code-of-conduct/": "/about/",
+  "/education-resources/": "/tutorials/",
+  "/donate/": "/contribute/"
+};
+
+// Check if the current URL matches the extra triggers
+const extraPathTriggers = Object.keys(unmatchedPathMappings).find(trigger => 
+  pathMinusLocale.startsWith(trigger)
+);
+
+// Set the active path: use the mapping if found, otherwise fall back to the main links logic
+const currentPath = extraPathTriggers 
+  ? unmatchedPathMappings[extraPathTriggers] 
+  : (mainLinks.find((link) => pathMinusLocale.startsWith(link.url))?.url ?? "");
+
 const editorButtonLabel = t("Start Coding");
 const donateButtonLabel = t("Donate");
 const mobileMenuLabel = t("Menu");
@@ -37,6 +58,7 @@ const jumpToLabel = t("Jump To");
     mobileMenuLabel={mobileMenuLabel as string}
     jumpToLabel={jumpToLabel as string}
     jumpToState={jumpToState}
+    currentPath={currentPath} 
     client:load
   />
 </nav>
