@@ -1,0 +1,191 @@
+---
+title: p5.StorageBuffer
+module: 3D
+submodule: p5.strands
+file: src/webgpu/p5.RendererWebGPU.js
+description: >
+  <p>A block of data that shaders can read from, and compute shaders can also
+
+  write to. This is only available in WebGPU mode.</p>
+
+  <p>Note: <a
+  href="/reference/p5/createStorage/"><code>createStorage()</code></a> is the
+  recommended
+
+  way to create an instance of this class.</p>
+line: 373
+isConstructor: true
+params: []
+example: []
+methods:
+  update:
+    description: >-
+      <p>Updates the data in the buffer with new values. The new data must be in
+
+      the same format as the data originally passed to
+
+      <a
+      href="/reference/p5/createStorage/"><code>createStorage()</code></a>.</p>
+
+      <pre><code class="language-js example">let particles;
+
+      let computeShader;
+
+      let displayShader;
+
+      let instance;
+
+      const numParticles = 100;
+
+
+      async function setup() {
+        await createCanvas(100, 100, WEBGPU);
+        particles = createStorage(makeParticles(width / 2, height / 2));
+        computeShader = buildComputeShader(simulate);
+        displayShader = buildMaterialShader(display);
+        instance = buildGeometry(drawParticle);
+        describe('100 orange particles shooting outward.');
+      }
+
+
+      function makeParticles(x, y) {
+        let data = [];
+        for (let i = 0; i < numParticles; i++) {
+          let angle = (i / numParticles) * TWO_PI;
+          let speed = random(0.5, 2);
+          data.push({
+            position: createVector(x, y),
+            velocity: createVector(cos(angle) * speed, sin(angle) * speed),
+          });
+        }
+        return data;
+      }
+
+
+      function drawParticle() {
+        sphere(2);
+      }
+
+
+      function simulate() {
+        let data = uniformStorage(particles);
+        let idx = index.x;
+        data[idx].position = data[idx].position + data[idx].velocity;
+      }
+
+
+      function display() {
+        let data = uniformStorage(particles);
+        worldInputs.begin();
+        let pos = data[instanceID()].position;
+        worldInputs.position.xy += pos - [width / 2, height / 2];
+        worldInputs.end();
+      }
+
+
+      function draw() {
+        background(30);
+        if (frameCount % 60 === 0) {
+          particles.update(makeParticles(random(width), random(height)));
+        }
+        compute(computeShader, numParticles);
+        noStroke();
+        fill(255, 200, 50);
+        shader(displayShader);
+        model(instance, numParticles);
+      }</code></pre>
+    path: p5.StorageBuffer/update
+  read:
+    description: |-
+      <p>Reads data from a storage buffer back into JavaScript.</p>
+      <p>Copies data from the GPU to the CPU using a temporary buffer,
+      so it must be awaited. Returns a <code>Float32Array</code> for number
+      buffers, or an array of plain objects for struct buffers.</p>
+      <p>Note: This is a GPU -> CPU read, so calling it often (like every frame)
+      can be slow.</p>
+      <pre><code class="language-js example">let data;
+      let computeShader;
+
+      async function setup() {
+        await createCanvas(100, 100, WEBGPU);
+
+        data = createStorage(new Float32Array([1, 2, 3, 4]));
+        computeShader = buildComputeShader(doubleValues);
+        compute(computeShader, 4);
+
+        let result = await data.read();
+        // result is Float32Array [2, 4, 6, 8]
+        for (let i = 0; i < result.length; i++) {
+          print(result[i]);
+        }
+        describe('Prints the values 2, 4, 6, 8 to the console.');
+      }
+
+      function doubleValues() {
+        let d = uniformStorage(data);
+        let idx = index.x;
+        d[idx] = d[idx] * 2;
+      }</code></pre>
+    path: p5.StorageBuffer/read
+  set:
+    description: >-
+      <p>Updates a single element in the buffer at a given index. Use this
+
+      when only a small number of elements need to change. If you need to
+
+      replace all the data at once, use
+
+      <a href="/reference/p5.StorageBuffer/update/"><code>update()</code></a>
+      instead.</p>
+
+      <pre><code class="language-js">let buf;
+
+
+      async function setup() {
+        await createCanvas(100, 100, WEBGPU);
+
+        // Float buffer: update one value by index
+        buf = createStorage(new Float32Array([1, 2, 3, 4]));
+        buf.set(2, 9.5); // only index 2 changes → [1, 2, 9.5, 4]
+
+        let result = await buf.read();
+        print(result[2]); // 9.5
+        describe('Prints 9.5 to the console.');
+      }</code></pre><pre><code class="language-js">let particles;
+
+      const numParticles = 100;
+
+
+      async function setup() {
+        await createCanvas(100, 100, WEBGPU);
+        particles = createStorage(makeParticles());
+
+        // Replace particle 42 without touching the others
+        particles.set(42, {
+          position: createVector(0, 0),
+          velocity: createVector(1, 0),
+        });
+
+        // Read back to confirm the update
+        let result = await particles.read();
+        print(result[42].position.x, result[42].position.y); // 0, 0
+        describe('Prints the position of particle 42 after updating it.');
+      }
+
+
+      function makeParticles() {
+        let data = [];
+        for (let i = 0; i < numParticles; i++) {
+          data.push({
+            position: createVector(random(width), random(height)),
+            velocity: createVector(random(-1, 1), random(-1, 1)),
+          });
+        }
+        return data;
+      }</code></pre>
+    path: p5.StorageBuffer/set
+chainable: false
+---
+
+
+# p5.StorageBuffer
