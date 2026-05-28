@@ -1,6 +1,6 @@
 // Default styles to apply to markdown generated content
 
-@import "variables.scss";
+@use "variables" as *;
 
 .rendered-markdown {
   & > *,
@@ -105,6 +105,44 @@
 
   section.footnotes {
     padding-bottom: 0;
+  }
+}
+
+.tutorials .rendered-markdown,
+.contribute .rendered-markdown {
+  .heading-permalink--enabled {
+    scroll-margin-top: var(--heading-scroll-margin-top, 100px);
+  }
+
+  .heading-permalink__link {
+    display: inline;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .heading-permalink__link::after {
+    content: "#";
+    margin-left: 0.22em;
+    opacity: 0;
+    color: #d14;
+    font-weight: normal;
+    transition:
+      opacity 0.15s ease-in-out,
+      color 0.15s ease-in-out;
+
+    .dark-theme & {
+      color: #ff5c8a;
+    }
+  }
+
+  .heading-permalink__link:hover,
+  .heading-permalink__link:focus-visible {
+    text-decoration: underline;
+  }
+
+  .heading-permalink:hover .heading-permalink__link::after,
+  .heading-permalink__link:focus-visible::after {
+    opacity: 1;
   }
 }
 
