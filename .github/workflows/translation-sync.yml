@@ -16,25 +16,25 @@ permissions:
 jobs:
   track-translation-changes:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2  # Fetch previous commit to compare changes
-          
+
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '22'
-          
+          node-version: 24
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Install translation tracker dependencies
         run: cd .github/actions/translation-tracker && npm install
-        
+
       - name: Run translation tracker
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node .github/actions/translation-tracker/index.js 
+        run: node .github/actions/translation-tracker/index.js
