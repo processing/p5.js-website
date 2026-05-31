@@ -12,16 +12,16 @@ export async function getStaticPaths() {
   const examples = await getCollectionInDefaultLocale("examples");
   const paths = await Promise.all(
     examples.map(async (example) => {
-      const unPrefixSlug = removeLocalePrefix(example.slug);
-      const code = await getExampleCode(example.id);
-      const category = getExampleCategory(example.id);
+      const unPrefixSlug = removeLocalePrefix(example.id);
+      const code = await getExampleCode(example);
+      const category = getExampleCategory(example);
       return {
         params: { slug: exampleContentSlugToLegacyWebsiteSlug(unPrefixSlug) },
         props: {
           example,
           code,
           relatedExamples: examples.filter(
-            (e) => getExampleCategory(e.id) === category
+            (e) => getExampleCategory(e) === category
           ),
         },
       };
