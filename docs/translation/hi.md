@@ -1,20 +1,144 @@
 # Hindi (हिन्दी) Translation Guide
 
-This document contains translation guidelines for Hindi contributors working on the p5.js website.
+This document contains translation guidelines and standardized 
+term translations for Hindi contributors working on the p5.js 
+website.
 
-For general localization architecture, see [localization.md](../localization.md).
+For general localization architecture, see 
+[localization.md](../localization.md).
 
 ## Glossary
 
-For the Hindi glossary of standardized technical and p5.js-specific terms, see [localization_hi.md](../localization_hi.md).
+### Programming-Specific Terms
+
+| English | Hindi (हिन्दी) |
+| --- | --- |
+| array | सरणी |
+| asynchronous | अतुल्यकालिक |
+| attribute | गुण |
+| blob tracking | बूँद ट्रैकिंग |
+| boolean | बूलियन |
+| byte | बाइट |
+| callback | कॉलबैक |
+| camera frustrum | कैमरा दृष्टिकोण |
+| changelog | परिवर्तन लॉग |
+| class | क्लास |
+| code editor | कोड संपादक |
+| color space | रंग स्थान |
+| command line | कमांड लाइन |
+| comment | टिप्पणी |
+| compile | संकलन |
+| component | अवयव |
+| conditionals | शर्तें |
+| console | कंसोल |
+| constant | स्थिरांक |
+| constructor function | कंस्ट्रक्टर फ़ंक्शन |
+| control statement | नियंत्रण कथन |
+| coordinate | निर्देशांक |
+| curly brace | घुंघराले कोष्ठक |
+| debug | डीबग |
+| default value | डिफ़ॉल्ट मान |
+| deprecated | पदावनत |
+| depth | गहराई |
+| error | गलती |
+| event | आयोजन |
+| fields | फील्ड |
+| file | दस्तावेज़ |
+| floating-point number | चल बिन्दु संख्या |
+| framework | रूपरेखा |
+| function | कार्य |
+| functional programming | कार्यात्मक कार्यरचना |
+| HTML | एचटीएमएल |
+| HTML tag | एचटीएमएल टैग |
+| indent | मांगपत्र |
+| index | अनुक्रमणिका |
+| iteration | पुनरावर्तन |
+| matrix | आव्यूह |
+| minify | छोटा करना |
+| modelview | मॉडलव्यू |
+| motion detection | गति का पता लगाना |
+| noise | शोर |
+| object | ऑब्जेक्ट |
+| object oriented programming | ऑब्जेक्ट ओरिएंटेड प्रोग्रामिंग |
+| operator | ऑपरेटर |
+| optimize | अनुकूलन |
+| optional argument | वैकल्पिक तर्क |
+| parameter/argument | पैरामीटर/तर्क |
+| parentheses | कोष्टक |
+| pixel | पिक्सेल |
+| programming library | प्रोग्रामिंग (कंप्यूटिंग) लाइब्रेरी |
+| radian | कांति |
+| raster | रेखापुंज |
+| recursion | प्रत्यावर्तन |
+| reference/documentation | संदर्भ/दस्तावेज़ीकरण |
+| render/rendering | प्रस्तुत करना/प्रतिपादन करना |
+| repository | कोष |
+| return | वापसी विवरण |
+| scope | दायरा |
+| screen | पर्दा |
+| server | सर्वर |
+| source code | स्रोत कोड |
+| square bracket | वर्गाकार ब्रैकेट |
+| string | स्ट्रिंग |
+| stylesheet | शैली पत्रक |
+| subclass | सब-क्लास |
+| superclass | सुपर-क्लास |
+| syntax | वाक्य - विन्यास |
+| test driven development | परीक्षण संचालित विकास |
+| transform | परिवर्तन |
+| unit testing | इकाई का परीक्षण |
+| variable | चर |
+| vector | वेक्टर |
+| vertex | शिखर |
+| video | वीडियो |
+
+### p5.js-Specific Terms
+
+| English | Hindi (हिन्दी) |
+| --- | --- |
+| access | पहुँच |
+| accessibility | उपलब्धता |
+| addon library | ऐडऑन लाइब्रेरी |
+| audio | आवाज़ |
+| bezier | बेइजेर |
+| brightness | चमक |
+| button | बटन |
+| canvas | कैनवास |
+| coding | कोडिंग (संकेतीकरण) |
+| community | समुदाय |
+| creative coding | रचनात्मक कोडिंग |
+| emulation | अनुकरण |
+| frame | फ्रेम |
+| gradient (color) | ग्रेडियेंट |
+| gradient (math) | क्रमिक |
+| graphics buffer | ग्राफ़िक्स बफ़र |
+| hue | रंग |
+| image | छवि |
+| input | इनपुट |
+| instance mode | उदाहरण मोड |
+| linear interpolation | रेखिक आंतरिक |
+| port | पोर्ट |
+| project | प्रोजैक्ट |
+| saturation | संतृप्ति |
+| sketch | स्केच |
+| sketchbook | स्केचबुक |
+| sound | आवाज़ |
+| stroke (outline) | रूपरेखा |
+| video | वीडियो |
+| webcam | वेबकैम |
 
 ## Technical Exceptions
 
 ### Punctuation Handling
 
-Hindi uses `।` (danda) and `॥` (double danda) as sentence ending punctuation instead of the Latin full stop `.`
+Hindi uses `।` (danda) and `॥` (double danda) as sentence 
+ending punctuation instead of the Latin full stop `.`
 
-The regex in `src/components/GridItem/Reference.astro` was updated in PR #1156 to include these characters. Without them the regex only recognised `.` and `。` as sentence endings, causing Hindi reference pages to display the entire description instead of just the first line.
+The regex in `src/components/GridItem/Reference.astro` was 
+updated in PR #1156 to include these characters. Without them 
+the regex only recognised `.` and `。` as sentence endings, 
+causing Hindi reference pages to display the entire description 
+instead of just the first line.
 
 See [PR #1156](https://github.com/processing/p5.js-website/pull/1156)
 and [issue #1154](https://github.com/processing/p5.js-website/issues/1154)
@@ -22,4 +146,6 @@ for full details.
 
 ## Additional Resources
 
-The p5.js repository contains the Hindi FES error message translations which may be useful for terminology consistency: [Hindi FES Translations](https://github.com/processing/p5.js/tree/main/translations/hi)
+The p5.js repository contains the Hindi FES error message 
+translations which may be useful for terminology consistency: 
+[Hindi FES Translations](https://github.com/processing/p5.js/tree/main/translations/hi)
