@@ -26,11 +26,21 @@ interface EntryWithId {
  */
 export const getCollectionInDefaultLocale = async <C extends CollectionKey>(
   collectionName: C,
-): Promise<CollectionEntry<C>[]> =>
-  await getCollection(collectionName, (entry: unknown) => {
+): Promise<CollectionEntry<C>[]> => {
+  const collection = await getCollection(collectionName, (entry: unknown) => {
     const { id } = entry as EntryWithId;
     return id.startsWith(`${defaultLocale}/`);
   });
+
+  if (collectionName === "reference") {
+    collection.forEach((entry) => {
+      if (entry.filePath) {
+        entry.id = entry.filePath.split("/").slice(3).join("/").replace(/\.mdx$/, "");
+      }
+    });
+  }
+  return collection;
+};
 
 /**
  * Retreives all the entries in the given collection for a given locale, and
