@@ -2,7 +2,7 @@
 
 ## About This Repository 
 
-Hi there! Welcome to p5.js contributing! Here are a few things to know:
+Hi there! Welcome to the p5.js-website repository! Here are a few things to know:
 
 This is the repository for the [p5js.org](https://p5js.org/) and the [beta.p5js.org](https://beta.p5js.org/) websites, including:
 
@@ -46,7 +46,7 @@ When an issue is first created, it may be labeled "Awaiting Maintainer Approval"
 When working on multiple issues, please create a separate branch for each one. This ensures each PR only contains the files related to that specific issue. Opening a PR from a branch that contains work from multiple issues makes it difficult to review and merge cleanly.
 
 When you are ready to open a PR, please keep the following in mind:
-- Link the issue your PR is addressing using "Resolves #" followed by the issue number in your PR description
+- Link the issue your PR fixes using "Fixes #" followed by the issue number in your PR description
 - Only include files related to the issue you are working on
 - Do not include `package-lock.json` unless your PR is specifically about updating dependencies
 - Test your changes locally before opening a PR
