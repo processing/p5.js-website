@@ -407,7 +407,7 @@ class GitHubCommitTracker {
       });
     }
 
-    // English diff (optional best-effort)
+    // English diff. It shows the actual content changes in the English file.
     if (englishDiff && (englishDiff.compareUrl || englishDiff.patchSnippet)) {
       body += `### 🧩 Recent English Diff\n\n`;
       if (englishDiff.compareUrl) {
@@ -421,7 +421,7 @@ class GitHubCommitTracker {
         }
         body += `</details>\n\n`;
       } else {
-        body += `_(No preview of the differences is available for this change. Use the compare link above.)_\n\n`;
+        body += `_(Could't generate preview of the differences for this change. Use the compare link above to see the full diff.)_\n\n`;
       }
     }
 
