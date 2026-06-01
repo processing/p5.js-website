@@ -1,6 +1,5 @@
 import { readFile, access } from "fs/promises";
 import { constants } from "fs";
-import { removeLocalePrefix } from "@i18n/utils";
 
 // THIS FILE OF UTILS IS FOR CODE THAT NEEDS NODEJS RUNTIME DEPS
 // IT CANNOT BE IMPORTED INTO A COMPONENT THAT RENDERS ON THE CLIENT
@@ -21,17 +20,14 @@ export async function checkFileExists(file: string): Promise<boolean> {
  * @param exampleId id for the entry (not the slug)
  * @returns
  */
-export const getExampleCode = async (exampleId: string): Promise<string> => {
-  let codePath = `src/content/examples/${exampleId.replace(
-    "description.mdx",
-    "code.js",
-  )}`;
+export const getExampleCode = async (example: any): Promise<string> => {
+  let codePath = example.filePath.replace("description.mdx", "code.js");
   if (!(await checkFileExists(codePath))) {
     // Fall back to the English version
-    codePath = `src/content/examples/en/${removeLocalePrefix(exampleId).replace(
-      "description.mdx",
-      "code.js",
-    )}`;
+    codePath = example.filePath.replace(
+      /src\/content\/examples\/.+?\/(.+?)\/description\.mdx/,
+      "src/content/examples/en/$1/code.js"
+    );
   }
   const code = await readFile(codePath, "utf-8");
   // Ensures that all examples use the correct path for assets which must be prefixed

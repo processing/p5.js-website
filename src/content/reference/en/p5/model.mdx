@@ -3,11 +3,11 @@ title: model
 module: Shape
 submodule: 3D Models
 file: src/webgl/loading.js
-description: >
+description: >-
   <p>Draws a <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object to the
   canvas.</p>
 
-  <p>The parameter, <code>model</code>, is the
+  <p>The first parameter, <code>model</code>, is the
 
   <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object to draw.
 
@@ -19,106 +19,164 @@ description: >
   a file with <a href="/reference/p5/loadGeometry/">loadGeometry()</a>.</p>
 
   <p>Note: <code>model()</code> can only be used in WebGL mode.</p>
-line: 1083
+
+  <pre><code class="language-js example">// Click and drag the mouse to view the
+  scene from different angles.
+
+
+  let shape;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+
+    // Create the p5.Geometry object.
+    shape = buildGeometry(createShape);
+
+    describe('A white cone drawn on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Enable orbiting with the mouse.
+    orbitControl();
+
+    // Draw the p5.Geometry object.
+    model(shape);
+  }
+
+
+  // Create p5.Geometry object from a single cone.
+
+  function createShape() {
+    cone();
+  }</code></pre><pre><code class="language-js example">// Click and drag the
+  mouse to view the scene from different angles.
+
+
+  let shape;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+
+    // Create the p5.Geometry object.
+    shape = buildGeometry(createArrow);
+
+    describe('Two white arrows drawn on a gray background. The arrow on the right rotates slowly.');
+  }
+
+
+  function draw() {
+    background(50);
+
+    // Enable orbiting with the mouse.
+    orbitControl();
+
+    // Turn on the lights.
+    lights();
+
+    // Style the arrows.
+    noStroke();
+
+    // Draw the p5.Geometry object.
+    model(shape);
+
+    // Translate and rotate the coordinate system.
+    translate(30, 0, 0);
+    rotateZ(frameCount * 0.01);
+
+    // Draw the p5.Geometry object again.
+    model(shape);
+  }
+
+
+  function createArrow() {
+    // Add shapes to the p5.Geometry object.
+    push();
+    rotateX(PI);
+    cone(10);
+    translate(0, -10, 0);
+    cylinder(3, 20);
+    pop();
+  }</code></pre><pre><code class="language-js example">// Click and drag the
+  mouse to view the scene from different angles.
+
+
+  let shape;
+
+
+  async function setup() {
+    shape = await loadModel('/assets/octahedron.obj');
+
+    createCanvas(100, 100, WEBGL);
+
+    describe('A white octahedron drawn against a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Enable orbiting with the mouse.
+    orbitControl();
+
+    // Draw the shape.
+    model(shape);
+  }</code></pre><p>Multiple instances can be drawn at once with
+  <code>model(geometry, count)</code>. On its own,
+
+  all the instances get drawn to the same spot, but you can use
+
+  <a href="/reference/p5/instanceID/"><code>instanceID()</code></a> inside of a
+  shader to handle each instance.
+
+  At large counts, this often runs faster than using a <code>for</code>
+  loop.</p>
+
+  <pre><code class="language-js example">let instancesShader;
+
+  let instance;
+
+  let count = 5;
+
+
+  function drawInstance() {
+    sphere(15);
+  }
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    instance = buildGeometry(drawInstance);
+    instancesShader = buildMaterialShader(drawSpaced);
+  }
+
+
+  function drawSpaced() {
+    worldInputs.begin();
+    // Spread spheres evenly across the canvas based on their index
+    let spacing = width / count;
+    worldInputs.position.x +=
+      (instanceID() - (count - 1) / 2) * spacing;
+    worldInputs.end();
+  }
+
+
+  function draw() {
+    background(220);
+    lights();
+    noStroke();
+    fill('red');
+    shader(instancesShader);
+    model(instance, count);
+  }</code></pre>
+line: 1124
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    // Click and drag the mouse to view the scene from different angles.
-
-    let shape;
-
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      // Create the p5.Geometry object.
-      shape = buildGeometry(createShape);
-
-      describe('A white cone drawn on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Enable orbiting with the mouse.
-      orbitControl();
-
-      // Draw the p5.Geometry object.
-      model(shape);
-    }
-
-    // Create p5.Geometry object from a single cone.
-    function createShape() {
-      cone();
-    }
-  - |-
-    // Click and drag the mouse to view the scene from different angles.
-
-    let shape;
-
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      // Create the p5.Geometry object.
-      shape = buildGeometry(createArrow);
-
-      describe('Two white arrows drawn on a gray background. The arrow on the right rotates slowly.');
-    }
-
-    function draw() {
-      background(50);
-
-      // Enable orbiting with the mouse.
-      orbitControl();
-
-      // Turn on the lights.
-      lights();
-
-      // Style the arrows.
-      noStroke();
-
-      // Draw the p5.Geometry object.
-      model(shape);
-
-      // Translate and rotate the coordinate system.
-      translate(30, 0, 0);
-      rotateZ(frameCount * 0.01);
-
-      // Draw the p5.Geometry object again.
-      model(shape);
-    }
-
-    function createArrow() {
-      // Add shapes to the p5.Geometry object.
-      push();
-      rotateX(PI);
-      cone(10);
-      translate(0, -10, 0);
-      cylinder(3, 20);
-      pop();
-    }
-  - |-
-    // Click and drag the mouse to view the scene from different angles.
-
-    let shape;
-
-    async function setup() {
-      shape = await loadModel('/assets/octahedron.obj');
-
-      createCanvas(100, 100, WEBGL);
-
-      describe('A white octahedron drawn against a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Enable orbiting with the mouse.
-      orbitControl();
-
-      // Draw the shape.
-      model(shape);
-    }
+example: []
 class: p5
 overloads:
   - params:

@@ -6,6 +6,13 @@ file: src/effects/Panner.js
 description: A panning effect.
 line: 11
 isConstructor: true
+params:
+  - name: panAmount
+    description: >-
+      defaults to 0, accepts values between -1 and 1 representing the pan
+      position of the sound source between the left and right speaker channels.
+    type: Number
+    optional: true
 example:
   - |-
 
@@ -18,24 +25,16 @@ example:
     }
 
     function setup() {
-      cnv = createCanvas(100, 100);
+      createCanvas(100, 100);
+      describe("a sketch that pans a sound source to the left speaker channel")
       background(220);
-      cnv.mousePressed(startSound);
-      
-      panner = new p5.Panner();
-      lfo = new p5.Oscillator(1);
-      //disconnect lfo from speakers because we don't want to hear it!
-      lfo.disconnect();
-      panner.pan(lfo);
-
+      panner = new p5.Panner(-1);
       soundfile.loop();
       soundfile.disconnect();
       soundfile.connect(panner);
-      
     }
 
-    function startSound() {
-      lfo.start();
+    function mousePressed() {
       soundfile.start();
     }
     </code>

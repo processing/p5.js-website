@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { render } from 'astro:content';
 import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import Image from "@components/Image/index.astro";
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const { entry, title } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 setJumpToState(null);
 
@@ -31,7 +32,7 @@ const relatedEvents =
     ? await getRelatedEntriesinCollection(
         "events",
         currentLocale,
-        entry.data.relatedPastEvents.map((r) => r.slug)
+        entry.data.relatedPastEvents.map((r: any) => r.id)
       )
     : [];
 ---
