@@ -4,7 +4,7 @@ let displaceColors;
 function setup() {
   createCanvas(700, 400, WEBGL);
   video = createVideo(
-    'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
+    '/assets/DiagonalCrosswalkYongeDundas.webm'
   );
   video.volume(0);
   video.hide();
