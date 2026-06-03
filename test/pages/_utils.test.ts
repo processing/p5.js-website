@@ -1,4 +1,4 @@
-import { expect, test, suite } from "vitest";
+import { expect, test, suite, vi} from "vitest";
 import {
   exampleContentSlugToLegacyWebsiteSlug,
   removeContentFileExt,
@@ -50,6 +50,44 @@ suite("removeLocaleAndExtensionFromId", () => {
       "p5.AudioIn/amp",
     );
   });
+});
+
+vi.mock("astro:content", async (importOriginal) => {
+  // 1. Fetch all original exports from astro:content (e.g., reference, z) to prevent schema validation failure
+  const actual = await importOriginal() as any;
+  
+  return {
+    ...actual, // 2. Preserve all original module functionalities
+    
+    // 3. Intercept and mock the getCollection method
+    getCollection: vi.fn(async (collectionName) => {
+      if (collectionName === "examples") {
+        return [
+          // English version data: contains remix data, which should be returned when fallback is triggered
+          {
+            id: "en/02_Animation_And_Variables/00_Drawing_Lines/description.mdx",
+            data: {
+              remix: [
+                {
+                  description: "Revised by",
+                  attribution: [],
+                  code: []
+                }
+              ]
+            }
+          },
+          // zh-Hans version data: remix data is empty, which should trigger fallback to English remix data
+          {
+            id: "zh-Hans/02_Animation_And_Variables/00_Drawing_Lines/description.mdx",
+            data: {
+              remix: [] 
+            }
+          }
+        ];
+      }
+      return [];
+    }),
+  };
 });
 
 suite("getFallbackRemixData", () => {
