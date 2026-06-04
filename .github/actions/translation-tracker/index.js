@@ -421,7 +421,7 @@ class GitHubCommitTracker {
         }
         body += `</details>\n\n`;
       } else {
-        body += `_(Could't generate preview of the differences for this change. Use the compare link above to see the full diff.)_\n\n`;
+        body += `_(Couldn't generate preview of the differences for this change. Use the compare link above to see the full diff.)_\n\n`;
       }
     }
 
