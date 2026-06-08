@@ -1,12 +1,16 @@
-import { z, defineCollection, reference } from "astro:content";
-
+import { defineCollection, reference } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 /**
  * Content collection for the Examples section of the site.
  * Each file represents a single example.
  */
 export const examplesCollection = defineCollection({
-  type: "content",
+  loader: glob({
+    pattern: '**/*.mdx',
+    base: "./src/content/examples"
+  }),
   schema: ({ image }) =>
     z.object({
       // Title of the example
