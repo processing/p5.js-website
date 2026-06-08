@@ -79,7 +79,7 @@ export const MainNavLinks = ({
           </li>
         ))}
       </ul>
-      <ul class="flex flex-col gap-[15px]">
+      <ul class={`flex flex-col gap-[15px] ${styles.buttonsList}`}>
         <li>
           <a className={styles.buttonlink} href="https://editor.p5js.org">
             <div class="mr-xxs">
