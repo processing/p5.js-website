@@ -618,29 +618,24 @@ You can see the complete list of uniforms that p5.js provides for you in the [p5
 For example, you may want to use a shape's texture coordinates in the fragment shader. These come in the form of a `vec2`, where coordinates go between 0 and 1. This initially comes in an `attribute` from p5.js, and those are only accessible in the vertex shader. Let's look at what our standard vertex shader does to pass that to fragment shaders:
 
 <AnnotatedCode lang="glsl" code={({ begin, end }) =>
-`
-  precision highp float;
+`precision highp float;
 
   attribute vec3 aPosition;
   ${begin('texcoord')}
   attribute vec2 aTexCoord;
   ${end('texcoord')}
-  attribute vec4 aVertexColor;
-
   uniform mat4 uModelViewMatrix;
   uniform mat4 uProjectionMatrix;
-
   ${begin('varying')}
   varying vec2 vTexCoord;
   ${end('varying')}
-  varying vec4 vVertexColor;
   void main() {
     // Apply the camera transform
     vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
     // Tell WebGL where the vertex goes
     gl_Position = uProjectionMatrix * viewModelPosition;
   ${begin('assign')}
-    vVertexColor = aVertexColor;
+  vTexCoord = aTexCoord;
   ${end('assign')}
   }
 `}>
