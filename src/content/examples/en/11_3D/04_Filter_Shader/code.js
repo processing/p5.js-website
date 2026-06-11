@@ -27,17 +27,15 @@ void main() {
 
 function setup() {
   createCanvas(700, 400, WEBGL);
-  video = createVideo(
-    '/assets/DiagonalCrosswalkYongeDundas.webm'
-  );
+  video = createVideo("/assets/DiagonalCrosswalkYongeDundas.mp4");
   video.volume(0);
   video.hide();
   video.loop();
-  
+
   displaceColors = createFilterShader(displaceColorsSrc);
-  
+
   describe(
-    'A video of a city crosswalk, with colors getting more offset the further from the center they are'
+    "A video of a city crosswalk, with colors getting more offset the further from the center they are",
   );
 }
 
@@ -45,12 +43,7 @@ function draw() {
   background(255);
   push();
   imageMode(CENTER);
-  image(
-    video,
-    0, 0, width, height,
-    0, 0, video.width, video.height,
-    COVER
-  );
+  image(video, 0, 0, width, height, 0, 0, video.width, video.height, COVER);
   pop();
   filter(displaceColors);
 }

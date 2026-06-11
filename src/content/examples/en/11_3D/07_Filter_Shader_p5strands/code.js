@@ -3,15 +3,13 @@ let displaceColors;
 
 function setup() {
   createCanvas(700, 400, WEBGL);
-  video = createVideo(
-    '/assets/DiagonalCrosswalkYongeDundas.webm'
-  );
+  video = createVideo("/assets/DiagonalCrosswalkYongeDundas.mp4");
   video.volume(0);
   video.hide();
   video.loop();
   displaceColors = buildFilterShader(displaceColorsCallback);
   describe(
-    'A video of a city crosswalk, with colors getting more offset the further from the center they are'
+    "A video of a city crosswalk, with colors getting more offset the further from the center they are",
   );
 }
 
