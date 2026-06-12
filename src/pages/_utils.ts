@@ -465,3 +465,37 @@ const getUrl = (
       return "";
   }
 };
+
+  /**
+   * Retrieves fallback remix (attribution/code history) data from the English example 
+   * if the current localized example is missing it.
+   *
+   * @param currentId The id of the current example
+   * @param currentLocale The current locale string
+   * @param currentRemixData The remix data from the current locale (if any)
+   * @returns An array of remix data
+   */
+  export const getFallbackRemixData = async (
+    currentId: string,
+    currentLocale: string,
+    currentRemixData: any[] | undefined,
+  ) => {
+    // Return early if data already exists or if we are already on the English page
+    if (currentRemixData && currentRemixData.length > 0) {
+      return currentRemixData;
+    }
+    if (currentLocale === "en") {
+      return currentRemixData;
+    }
+    // Main logic
+    // replace the core path with the English path to find the corresponding English example
+    // e.g., "zh-Hans/02_Animation_And_Variables/00_Drawing_Lines/description.mdx" 
+    // -> "en/02_Animation_And_Variables/00_Drawing_Lines/description.mdx"
+    const englishId = currentId.replace(`${currentLocale}/`, "en/");
+    const allExamples = await getCollection("examples");
+    const englishExample = allExamples.find((e) => e.id === englishId);
+    if (englishExample?.data.remix && englishExample.data.remix.length > 0) {
+      return englishExample.data.remix;
+    }
+    return currentRemixData;
+  }
