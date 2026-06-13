@@ -1,0 +1,22 @@
+---
+import ReferenceLayout from "@layouts/ReferenceLayout.astro";
+import { nonDefaultSupportedLocales } from "@i18n/const";
+import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
+
+export async function getStaticPaths() {
+  const paths = nonDefaultSupportedLocales.map(async (locale) => {
+    const entries = await getCollectionInLocaleWithFallbacks("reference", locale);
+    const soundEntries = entries.filter((e) => e.data.module === "p5.sound");
+    return {
+      params: { locale },
+      props: { soundEntries },
+    };
+  });
+
+  return await Promise.all(paths);
+}
+
+const { soundEntries } = Astro.props;
+---
+
+<ReferenceLayout title="p5.sound Reference" entries={soundEntries} categories={["p5.sound"]} />

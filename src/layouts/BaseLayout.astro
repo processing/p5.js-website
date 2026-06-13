@@ -9,7 +9,9 @@ import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
 import { type JumpToState } from "@src/globals/state";
 import "@styles/base.scss";
+import "@styles/global.css";
 import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
 
@@ -43,10 +45,10 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 
 const slug = title.toLowerCase().split(/\s+|\./).join('-');
 const pages = await getCollectionInLocaleWithFallbacks("pages", currentLocale);
-const headerPage = pages.find((page) => removeLocalePrefix(page.slug).slice(1) === slug);
+const headerPage = pages.find((page) => removeLocalePrefix(page.id).slice(1) === slug);
 let HeaderContent: any = undefined;
 if (headerPage) {
-  const { Content } = await headerPage.render();
+  const { Content } = await render(headerPage);
   HeaderContent = Content;
 }
 

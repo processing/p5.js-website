@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { render } from 'astro:content';
 import BaseLayout from "./BaseLayout.astro";
 import Head from "@components/Head/index.astro";
 import type { MarkdownHeading } from "astro";
@@ -14,7 +15,7 @@ const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
 const { entry } = Astro.props;
-const { Content, headings } = await entry.render();
+const { Content, headings } = await render(entry);
 
 const jumpToLinks = headings
   .filter((heading: MarkdownHeading) => heading.depth <= 3)

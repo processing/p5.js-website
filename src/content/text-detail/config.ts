@@ -1,7 +1,9 @@
-import { z, defineCollection } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
+import { glob } from "astro/loaders";
 
 export const textDetailCollection = defineCollection({
-  type: "content",
+  loader: glob({ pattern: '**/*.mdx', base: "./src/content/text-detail" }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { render } from 'astro:content';
 import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import Image from "@components/Image/index.astro";
@@ -16,7 +17,7 @@ interface Props {
 }
 
 const { entry, title } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -30,7 +31,7 @@ const relatedEvents =
     ? await getRelatedEntriesinCollection(
         "events",
         currentLocale,
-        entry.data.relatedPastEvents.map((r: any) => r.slug)
+        entry.data.relatedPastEvents.map((r: any) => r.id)
       )
     : [];
 
