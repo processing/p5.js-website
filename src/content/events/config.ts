@@ -1,14 +1,16 @@
-import { z, defineCollection, reference } from "astro:content";
+import { defineCollection, reference } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 export const eventsCollection = defineCollection({
-  type: "content",
+  loader: glob({ pattern: '**/*.mdx', base: "./src/content/events" }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       // Starting date
-      date: z.date({ coerce: true }),
+      date: z.coerce.date(),
       // Ending date, if multi-day
-      dateTo: z.date({ coerce: true }).optional(),
+      dateTo: z.coerce.date().optional(),
       // Where the event takes place
       location: z.string().optional(),
       description: z.string().optional(),

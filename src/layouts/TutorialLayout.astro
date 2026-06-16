@@ -1,11 +1,11 @@
 ---
+import { render } from 'astro:content';
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Head from "@components/Head/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { setJumpToState } from "../globals/state";
 import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
 import PreProxy from "@components/PreProxy/index.astro";
-import CodeBlockWrapper from "@components/CodeBlockWrapper/index.astro";
 import LinkWrapper from "@components/LinkWrapper/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
 import {
@@ -16,14 +16,14 @@ import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/ind
 import { checkTranslationBanner } from "../utils/translationBanner";
 
 const { entry } = Astro.props;
-const { Content, components } = await entry.render();
+const { Content } = await render(entry);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
 const jumpToState = await generateJumpToState(
   "tutorials",
-  entry.slug,
+  entry,
   "Tutorials",
   t,
   currentLocale
@@ -36,7 +36,7 @@ const relatedReferences =
     ? await getRelatedEntriesinCollection(
         "reference",
         currentLocale,
-        entry.data.relatedContent.references.map((r: any) => r.slug)
+        entry.data.relatedContent.references.map((r: any) => r.id)
       )
     : [];
 const relatedExamples =
@@ -44,7 +44,7 @@ const relatedExamples =
     ? await getRelatedEntriesinCollection(
         "examples",
         currentLocale,
-        entry.data.relatedContent.examples.map((r: any) => r.slug)
+        entry.data.relatedContent.examples.map((r: any) => r.id)
       )
     : [];
 
@@ -60,8 +60,8 @@ const { showBanner, englishUrl } = checkTranslationBanner(
 <Head
   title={entry.data.title}
   locale={currentLocale}
-  description={entry.data.authors.join(", ")}
-  featuredImageSrc={entry.data.featuredImage.src}
+  description={entry.data.authors?.join(", ")}
+  featuredImageSrc={entry.data.featuredImage?.src}
 />
 
 <BaseLayout
@@ -73,12 +73,11 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   className="tutorials"
 >
   {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
-  {entry.data.authors && <section role="group" aria-label="authors">By {entry.data.authors.join(", ")}</section>}
+  {entry.data.authors && <section role="group" aria-label="authors">By {entry.data.authors?.join(", ")}</section>}
   {entry.data.authorsNote && <h7>{entry.data.authorsNote}</h7>}
   <div class="rendered-markdown">
     <Content
       components={{
-        ...components,
         img: FreeRatioImage,
         pre: PreProxy,
         a: LinkWrapper,

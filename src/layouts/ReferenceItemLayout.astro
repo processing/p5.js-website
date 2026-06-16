@@ -19,8 +19,8 @@ import type {
 } from "@/types/parsers.interface";
 import { setJumpToState } from "../globals/state";
 import { p5Version } from "../globals/p5-version";
-import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
-import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
+import flask from "@src/content/ui/images/icons/flask.svg?raw";
+import warning from "@src/content/ui/images/icons/warning.svg?raw";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import { checkTranslationBanner } from "../utils/translationBanner";
 
@@ -90,6 +90,15 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   Astro.url.pathname,
   Astro.url.origin
 );
+// Normalizes malformed p5.* reference anchors (e.g. "#/p5.Element")
+// to proper reference routes ("/reference/p5/p5.Element/")
+function normalizeP5ReferenceLinks(html: string | undefined): string | undefined {
+  if (!html) return html;
+  return html.replace(
+    /href="#\/(p5\.[^"]+)"/g,
+    'href="/reference/p5/$1/"'
+  );
+}
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
@@ -159,7 +168,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
         examples && (
           <div class="mb-xl">
             <h2 class="text-h3">{t("Examples")}</h2>
-            {examples.map(({ src: exampleCode, classes }, i: number) => {
+            {examples.map(({ src: exampleCode, classes }) => {
               return (
                 <CodeEmbed
                   client:load
@@ -196,7 +205,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
                           class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                     >
                       {param.type && <span>{param.type}: </span>}
-                      <span set:html={param.description} />
+                      <span set:html={normalizeP5ReferenceLinks(param.description)} />
                     </div>
                   </div>
                 ))}
@@ -212,7 +221,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
                           class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                         >
                           {param.type && <span>{param.type}: </span>}
-                          <span set:html={param.description} />
+                          <span set:html={normalizeP5ReferenceLinks(param.description)} />
                         </div>
                       </div>
                     )
@@ -232,7 +241,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
                       class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                 >
                   {entry.data.return.type && <span>{entry.data.return.type}: </span>}
-                  <span set:html={entry.data.return.description} />
+                  <span set:html={normalizeP5ReferenceLinks(entry.data.return.description)} />
                 </div>
               </div>
             </div>
@@ -295,7 +304,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
            <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
             This page is generated from the comments in
             <a
-                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
+                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}
                   >
                   {entry.data.file}
                   </a>. Please feel free to edit it and submit a pull request!

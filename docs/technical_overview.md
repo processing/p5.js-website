@@ -4,7 +4,7 @@
 
 ### Setup
 
-1. Make sure you have [node and npm installed on your machine](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
+1. Make sure you have [node (at least version 22) and npm installed on your machine](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
 2. Clone this repo by typing git clone https://github.com/processing/p5.js-website/ in your terminal. (You can also use [GitHub Desktop](https://desktop.github.com/)).
 3. Then install the project's dependencies with:
 
@@ -35,7 +35,8 @@ The website code is divided into a few main folders:
 - `src/content/` this is where almost all content authoring happens in the repo. These files contain the content that is used to generate the website.
 - `src/components/` holds UI elements that are rendered on different pages of the website. Things like basic buttons, as well as more specialized things like the top navigation menus are here.
 - `src/layouts/` this contains the basic visual structure of each page. If you are looking to edit a specific page of the website, finding the layout for it in this folder is a great place to start.
-- `src/pages/` these files are primarily used to create the routes (the different URLs) for the pages of the website and pull content from `src/content/`. Note that every route basically exists twice: once in `src/pages/` and again in `src/[locale]/pages/` to support localized urls. Read more about this in [./localization-architecture.md]
+
+- `src/pages/` these files are primarily used to create the routes (the different URLs) for the pages of the website and pull content from `src/content/`. Note that every route basically exists twice: once in `src/pages/` and again in `src/pages/[locale]/` to support localized urls. Read more about this in `[./localization.md]`
 - `src/api/` holds the logic for fetching information from the OpenProcessing API, where all the gallery sketches for this website are stored
 - `src/i18n/` holds the utilities and configuration for working with translations
 - `src/scripts/` contains utility scripts that update the files in `src/content/` with changes in the p5.js repo

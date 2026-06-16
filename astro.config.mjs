@@ -1,7 +1,7 @@
 import { defineConfig, passthroughImageService } from "astro/config";
 import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import serviceWorker from "astrojs-service-worker";
 import fast from "./src/scripts/fast-compress";
 import mermaid from 'astro-mermaid';
@@ -26,7 +26,6 @@ export default defineConfig({
       compat: true,
     }),
     mdx(),
-    tailwind(),
     fast(),
     serviceWorker({
       workbox: {
@@ -71,6 +70,7 @@ export default defineConfig({
     rollupOptions: {
       external: ["/src/scripts/*"],
     },
+    plugins: [tailwindcss()]
   },
   image: {
     domains: ["openprocessing.org"],
@@ -78,7 +78,7 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      theme: 'github-light-high-contrast',
     },
   },
 });
