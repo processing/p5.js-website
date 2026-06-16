@@ -1,6 +1,7 @@
 import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { generateEntryId } from "../shared";
 
 /**
  * Content collection for the Examples section of the site.
@@ -9,7 +10,8 @@ import { z } from "astro/zod";
 export const examplesCollection = defineCollection({
   loader: glob({
     pattern: '**/*.mdx',
-    base: "./src/content/examples"
+    base: "./src/content/examples",
+    generateId: generateEntryId,
   }),
   schema: ({ image }) =>
     z.object({
