@@ -1,4 +1,5 @@
-import { reference, z } from "astro:content";
+import { reference } from "astro:content";
+import { z } from "astro/zod";
 
 /*
  * A zod type for an author.
@@ -7,7 +8,7 @@ import { reference, z } from "astro:content";
 export const author = () =>
   z.object({
     name: z.string(),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
   });
 
 /*

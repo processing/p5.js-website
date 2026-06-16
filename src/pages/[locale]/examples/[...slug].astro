@@ -18,10 +18,10 @@ export async function getStaticPaths() {
       );
       return await Promise.all(
         localeEntries.map(async (entry) => {
-          const category = getExampleCategory(entry.id);
-          const code = await getExampleCode(entry.id);
+          const category = getExampleCategory(entry);
+          const code = await getExampleCode(entry);
           const slug = exampleContentSlugToLegacyWebsiteSlug(
-            removeLocalePrefix(entry.slug)
+            removeLocalePrefix(entry.id)
           );
           return {
             params: {
@@ -32,7 +32,7 @@ export async function getStaticPaths() {
               entry,
               code,
               relatedEntries: localeEntries.filter(
-                (e) => getExampleCategory(e.id) === category
+                (e) => getExampleCategory(e) === category
               ),
             },
           };

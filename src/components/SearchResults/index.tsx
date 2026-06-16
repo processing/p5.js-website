@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Icon } from "../Icon";
 
 type SearchResult = {
@@ -23,8 +23,24 @@ const SearchResults = ({
   uiTranslations,
 }: SearchResultProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const clearButtonRef = useRef<HTMLButtonElement>(null);
   const [currentFilter, setCurrentFilter] = useState("");
   const [isInputEdited, setInputEdited] = useState(false);
+  const prevIsInputEdited = useRef(isInputEdited);
+
+   // Reset filter and input state when search term changes
+  useEffect(() => {
+    setCurrentFilter("");
+    setInputEdited(false);
+  }, [searchTerm]);
+
+  // Focus clear button when transitioning from edited to not edited
+  useEffect(() => {
+    if (prevIsInputEdited.current && !isInputEdited && clearButtonRef.current) {
+      clearButtonRef.current.focus();
+    }
+    prevIsInputEdited.current = isInputEdited;
+  }, [isInputEdited]);
 
   const allUniqueCategoriesForResults = useMemo(() => {
     const categories = results.map((result) => result.category);
@@ -140,6 +156,7 @@ const SearchResults = ({
           </button>
         ) : (
           <button
+            ref={clearButtonRef}
             type="reset"
             class="absolute right-0 top-0 px-[22px] py-[13px]"
             onClick={clearInput}

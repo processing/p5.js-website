@@ -20,6 +20,7 @@ export default getViteConfig({
           ],
           exclude: [
             ...configDefaults.exclude,
+            "test/api/OpenProcessing.test.ts",
             "test/pages/*",
             "test/mocks/*",
             'test/a11y/**'

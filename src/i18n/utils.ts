@@ -39,8 +39,9 @@ export const splitLocaleFromPath = (path: string): [string, string] => {
  * @param slug
  * @returns
  */
-export const removeLocalePrefix = (prefixedPath: string): string =>
-  splitLocaleFromPath(prefixedPath)[1];
+export const removeLocalePrefix = (prefixedPath: string): string => {
+  return splitLocaleFromPath(prefixedPath)[1];
+}
 
 /**
  * Turns a given url (of any locale) into a url within the given locale
