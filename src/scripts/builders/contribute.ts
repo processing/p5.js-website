@@ -1,5 +1,5 @@
-import { readdir, rm } from "fs/promises";
-import path from "path";
+import { readdir, rm } from "node:fs/promises";
+import path from "node:path";
 import {
   cloneLibraryRepo,
   copyDirectory,
@@ -10,7 +10,7 @@ import {
   rewriteRelativeMdLinks,
   writeFile,
 } from "../utils";
-import type { Dirent } from "fs";
+import type { Dirent } from "node:fs";
 import { remark } from "remark";
 import remarkMDX from "remark-mdx";
 import remarkGfm from "remark-gfm";
