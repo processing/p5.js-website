@@ -3,7 +3,6 @@ import { render } from 'astro:content';
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Head from "@components/Head/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
-import { setJumpToState } from "../globals/state";
 import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
 import PreProxy from "@components/PreProxy/index.astro";
 import LinkWrapper from "@components/LinkWrapper/index.astro";
@@ -28,8 +27,6 @@ const jumpToState = await generateJumpToState(
   t,
   currentLocale
 );
-
-setJumpToState(jumpToState);
 
 const relatedReferences =
   entry.data.relatedContent?.references !== undefined
@@ -71,6 +68,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   variant="item"
   topic="tutorials"
   className="tutorials"
+  jumpToState={jumpToState}
 >
   {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   {entry.data.authors && <section role="group" aria-label="authors">By {entry.data.authors?.join(", ")}</section>}
