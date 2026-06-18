@@ -6,7 +6,6 @@ import BaseLayout from "./BaseLayout.astro";
 import Image from "@components/Image/index.astro";
 import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
-import { setJumpToState } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getRelatedEntriesinCollection } from "../pages/_utils";
 
@@ -17,8 +16,6 @@ interface Props {
 
 const { entry, title } = Astro.props;
 const { Content } = await render(entry);
-
-setJumpToState(null);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -43,7 +40,7 @@ const relatedEvents =
   featuredImageSrc={entry.data.featuredImage.src}
 />
 
-<BaseLayout title={title} subtitle={dayString} variant="item" topic="community">
+<BaseLayout title={title} subtitle={dayString} variant="item" topic="community" jumpToState={null}>
   {
     entry.data.featuredImage && entry.data.featuredImageAlt && (
       <Image
