@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
 import Head from "@components/Head/index.astro";
-import { setJumpToState } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import {
   generateJumpToState,
@@ -24,24 +24,22 @@ const t = await getUiTranslator(currentLocale);
 
 const jumpToState = await generateJumpToState(
   "examples",
-  example.slug,
+  example,
   "Examples",
   t,
   currentLocale
 );
-
-setJumpToState(jumpToState);
 
 const relatedReferences =
   example.data.relatedReference !== undefined
     ? await getRelatedEntriesinCollection(
         "reference",
         currentLocale,
-        example.data.relatedReference.map((r: any) => r.slug)
+        example.data.relatedReference.map((r: any) => r.id)
       )
     : [];
 
-const { Content } = await example.render();
+const { Content } = await render(example);
 
 // Extract the collective attribution year. If multiple provided, uses last shown.
 const collectivelyAttributedSince = example.data.remix?.reduce(
@@ -75,6 +73,7 @@ const remixHistoryHasCodeLinks = example.data.remix?.some(
   variant="item"
   topic="examples"
   className="example"
+  jumpToState={jumpToState}
 >
   <div class="mt-xl mb-4xl lg:mb-3xl max-w-[770px]">
     <div class="rendered-markdown">

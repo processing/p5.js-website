@@ -4,9 +4,51 @@ module: p5.sound
 submodule: p5.sound
 file: src/core/p5soundSource.js
 description: Stops the p5 sound source.
-line: 28
+line: 66
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let osc, delay;
+    let cnv;
+    let isPlaying = false;
+
+    function setup() {
+      describe("a sketch that demonstrates how to stop and start an audio source node");
+      cnv = createCanvas(100, 100);
+      cnv.mousePressed(startSound);
+      textAlign(CENTER);
+      textWrap(WORD);
+      textSize(10);
+      
+      osc = new p5.Oscillator('sine', 800);
+      delay = new p5.Delay(0.120, 0.65);
+      //disconnect the oscillator from the speakers before connecting to the delay effect!
+      osc.disconnect();
+      //connect the oscillator to the delay effect.
+      osc.connect(delay);
+    }
+
+    function startSound() {
+      if (!isPlaying) {
+        osc.start();
+        isPlaying = true; 
+      }
+      else {
+        osc.stop();
+        isPlaying = false;
+      }
+    }
+
+    function draw(){
+      background(220);
+      text('click to stop and start the sound', 0, height/2 - 20, 100);
+    }
+    </code>
+    </div>
 class: p5.p5soundSource
 chainable: false
 ---

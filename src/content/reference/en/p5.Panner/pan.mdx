@@ -4,9 +4,43 @@ module: p5.sound
 submodule: p5.sound
 file: src/effects/Panner.js
 description: Pan a sound source left or right.
-line: 55
+line: 52
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let panner, lfo, soundfile, cnv;
+
+    function preload() {
+      soundfile = loadSound('/assets/beat.mp3');
+    }
+
+    function setup() {
+      createCanvas(100, 100);
+      describe("a sketch that pans a sound source between the left and right speaker channels");
+      background(220);
+      panner = new p5.Panner();
+      lfo = new p5.Oscillator(1);
+      //disconnect lfo from speakers because we don't want to hear it!
+      lfo.disconnect();
+
+      //connect the panner to an LFO to control the panning effect
+      panner.pan(lfo);
+
+      soundfile.loop();
+      soundfile.disconnect();
+      soundfile.connect(panner);
+    }
+
+    function mousePressed() {
+      lfo.start();
+      soundfile.start();
+    }
+    </code>
+    </div>
 class: p5.Panner
 params:
   - name: panAmount

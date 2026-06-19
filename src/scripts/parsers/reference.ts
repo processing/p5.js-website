@@ -1,8 +1,8 @@
 import { cloneLibraryRepo,cleanUpDirectory, p5RepoUrl, readFile } from "../utils";
-import fs from "fs/promises";
-import { exec, execSync } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs/promises";
+import { exec, execSync } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { ParsedLibraryReference } from "../../../types/parsers.interface";
 import { p5Version } from "@/src/globals/p5-version";
 
