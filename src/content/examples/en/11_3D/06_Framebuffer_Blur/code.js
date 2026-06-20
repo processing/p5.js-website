@@ -1,6 +1,7 @@
 // Vertex shader code
 let vertexShader = `
-uniform mat4 uModelViewMatrix;
+uniform mat4 uModelMatrix;
+uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 
 attribute vec3 aPosition;
@@ -16,7 +17,7 @@ void main() {
   // copy position with a fourth coordinate for projection (1.0 is normal)
   vec4 positionVec4 = vec4(aPosition, 1.0);
 
-  gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+  gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * positionVec4;
 }`;
 
 // Fragment shader code
