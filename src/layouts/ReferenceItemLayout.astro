@@ -22,6 +22,7 @@ import flask from "@src/content/ui/images/icons/flask.svg?raw";
 import warning from "@src/content/ui/images/icons/warning.svg?raw";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import { checkTranslationBanner } from "../utils/translationBanner";
+import { normalizeP5ReferenceLinks } from "./referenceLinkUtils";
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -87,15 +88,6 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   Astro.url.pathname,
   Astro.url.origin
 );
-// Normalizes malformed p5.* reference anchors (e.g. "#/p5.Element")
-// to proper reference routes ("/reference/p5/p5.Element/")
-function normalizeP5ReferenceLinks(html: string | undefined): string | undefined {
-  if (!html) return html;
-  return html.replace(
-    /href="#\/(p5\.[^"]+)"/g,
-    'href="/reference/p5/$1/"'
-  );
-}
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
