@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
-import { relatedContent } from "../shared";
+import { generateEntryId, relatedContent } from "../shared";
 
 // Categories, ordered in a (rough) general-to-specific sequence for easier
 // reading. Some bits that we haven't finished revising are moved lower down
@@ -90,6 +90,10 @@ export const referenceSchema = z.object({
 });
 
 export const referenceCollection = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: "./src/content/reference" }),
+  loader: glob({
+    pattern: '**/*.mdx',
+    base: "./src/content/reference",
+    generateId: generateEntryId,
+  }),
   schema: referenceSchema,
 });
