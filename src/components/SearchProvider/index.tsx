@@ -1,5 +1,5 @@
-import { useEffect, useState } from "preact/hooks";
-import Fuse, { type FuseResult } from "fuse.js";
+import { useEffect, useRef, useState } from "preact/hooks";
+import Fuse from "fuse.js";
 import SearchResults from "../SearchResults";
 import { defaultLocale } from "@/src/i18n/const";
 
@@ -16,6 +16,9 @@ type SearchResult = {
   description?: string;
 };
 
+type SearchIndexEntry = Omit<SearchResult, "id" | "category" | "title">;
+type SearchIndexData = Record<string, Record<string, SearchIndexEntry>>;
+
 /**
  * SearchProvider this component is responsible for handling client-side search.
  * It reads the search term from query params and fetches the search index for the current locale.
@@ -28,6 +31,8 @@ const SearchProvider = ({
 }: SearchProviderProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [searchIndexVersion, setSearchIndexVersion] = useState(0);
+  const fuseRef = useRef<Fuse<SearchResult> | null>(null);
 
   // Flattens the search index data
   
@@ -48,16 +53,14 @@ const SearchProvider = ({
     }
   }, [searchTerm]);
 
-  // Fetch the search index for the current locale and search for the search term
-  // This effect runs whenever the search term or the current locale changes
+  // Fetch the search index for the current locale
   useEffect(() => {
     if (!currentLocale) {
       console.warn("No locale provided to SearchProvider");
       return;
     }
 
-    if (!searchTerm) return;
-    const flattenData = (data: FuseResult<SearchResult>) => {
+    const flattenData = (data: SearchIndexData) => {
       const flatData: SearchResult[] = [];
       let flatId = 0;
       Object.entries(data).forEach(([category, entries]) => {
@@ -82,12 +85,11 @@ const SearchProvider = ({
       return flatData;
     };
 
-    let flatData;
-
-    fetch(`/search-indices/${currentLocale}.json`)
+    const controller = new AbortController();
+    fetch(`/search-indices/${currentLocale}.json`, { signal: controller.signal })
       .then((response) => response.json())
       .then((data) => {
-        flatData = flattenData(data);
+        const flatData = flattenData(data);
 
         const fuseOptions = {
           includeScore: true,
@@ -100,18 +102,37 @@ const SearchProvider = ({
           threshold: 0.3,
         };
 
-        const fuse = new Fuse(flatData, fuseOptions);
-
-        const searchResults = fuse
-          .search(searchTerm)
-          .map((result) => result.item);
-
-        setResults(searchResults);
+        fuseRef.current = new Fuse(flatData, fuseOptions);
+        setSearchIndexVersion((version) => version + 1);
       })
-      .catch((error) =>
-        console.error("Error fetching or indexing data:", error),
-      );
-  }, [searchTerm, currentLocale]);
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          console.error("Error fetching or indexing data:", error);
+        }
+      });
+
+    return () => controller.abort();
+  }, [currentLocale]);
+
+  // Search after search term updates
+  useEffect(() => {
+    if (!searchTerm) {
+      setResults([]);
+      return;
+    }
+
+    if (!fuseRef.current) return;
+
+    const timeoutId = window.setTimeout(() => {
+      const searchResults = fuseRef.current
+        ?.search(searchTerm)
+        .map((result) => result.item);
+
+      setResults(searchResults || []);
+    }, 250);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [searchTerm, searchIndexVersion]);
 
   const handleSearchTermChange = (term?: string) => {
     if (term !== undefined) {
