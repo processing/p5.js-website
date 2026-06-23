@@ -7,6 +7,7 @@ import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { categories } from "../content/tutorials/config";
 import LinkButton from "@components/LinkButton/index.astro";
 import GridItemTutorial from "@components/GridItem/Tutorial.astro";
+import { HeadingPermalink } from "@components/HeadingPermalink";
 
 type TutorialEntry = CollectionEntry<"tutorials">;
 
@@ -35,7 +36,7 @@ const pageJumpToLinks = categories
   .concat([
     {
       url: "#education-resources",
-      label: t("tutorialCategories", "education-resources"), // ✅ changed from tutorialsPage
+      label: t("tutorialCategories", "education-resources"), // changed from tutorialsPage
     },
   ]);
 
@@ -50,9 +51,13 @@ setJumpToState({
   {
     sections.map(({ slug, name, sectionEntries }) => (
       <section>
-        <h2 id={slug} class="mb-gutter-md mt-0">
+        <HeadingPermalink
+          as="h2"
+          id={slug}
+          class="mb-gutter-md mt-0"
+        >
           {name}
-        </h2>
+        </HeadingPermalink>
         <ul class="content-grid border-b border-sidebar-type-color last:border-0">
           {sectionEntries.map((entry: TutorialEntry, i: number) => (
             <li class="col-span-3">
@@ -65,9 +70,13 @@ setJumpToState({
   }
 
   <section>
-    <h2 class="mb-gutter-md mt-0">
-      {t("tutorialCategories", "education-resources")}<a id="education-resources"></a> <!-- ✅ changed from tutorialsPage -->
-    </h2>
+    <HeadingPermalink
+      as="h2"
+      id="education-resources"
+      class="mb-gutter-md mt-0"
+    >
+      {t("tutorialCategories", "education-resources")}
+    </HeadingPermalink>
     <p>{t("tutorialsPage", "education-resources-snippet")}</p>
     <LinkButton url="/education-resources" variant="link" class="mt-lg">
       {t("tutorialsPage", "view-education-resources")}

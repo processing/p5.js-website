@@ -1,6 +1,7 @@
 import type { ReferenceDocContentItem } from "@/src/content/types";
 import flask from "@src/content/ui/images/icons/flask.svg?raw";
 import warning from "@src/content/ui/images/icons/warning.svg?raw";
+import { HeadingPermalink } from "@components/HeadingPermalink";
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -112,9 +113,13 @@ export const ReferenceDirectoryWithFilter = ({
             <h3 className="m-0 py-gutter-md">{subcat.name}</h3>
           </a>
         ) : (
-          <h3 className="m-0 py-gutter-md" id={subcat.name}>
+          <HeadingPermalink
+            as="h3"
+            className="m-0 py-gutter-md"
+            id={subcat.name}
+          >
             {subcat.name}
-          </h3>
+          </HeadingPermalink>
         )}
       </>
     );
@@ -123,7 +128,8 @@ export const ReferenceDirectoryWithFilter = ({
   const renderCategoryData = () => {
     return categoryData.map((category) => (
       <section key={category.name}>
-        <h2
+        <HeadingPermalink
+          as="h2"
           class={
             subcatShouldHaveHeading(category.subcats[0], category)
               ? "mb-0"
@@ -132,7 +138,7 @@ export const ReferenceDirectoryWithFilter = ({
           id={category.name}
         >
           {category.name}
-        </h2>
+        </HeadingPermalink>
         {category.subcats.map((subcat) => (
           <div key={subcat.name}>
             {getSubcatHeading(subcat, category)}

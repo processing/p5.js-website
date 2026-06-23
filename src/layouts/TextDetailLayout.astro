@@ -6,13 +6,14 @@ import { setJumpToState } from "../globals/state";
 import { getCurrentLocale } from "../i18n/utils";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import { checkTranslationBanner } from "../utils/translationBanner";
+import { headingPermalinkComponents } from "@components/HeadingPermalink";
 
 interface Props {
   page: CollectionEntry<"text-detail">;
 }
 
 const { page } = Astro.props;
-const { Content } = await page.render();
+const { Content, components } = await page.render();
 
 const pageTopic = Astro.url.pathname.includes("donate")
   ? "contribute"
@@ -42,6 +43,6 @@ const { showBanner, englishUrl } = checkTranslationBanner(
 >
   {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   <div class="max-w-[770px] [&>*:first-child]:mt-0 rendered-markdown pb-[80px]">
-    <Content />
+    <Content components={{ ...components, ...headingPermalinkComponents }} />
   </div>
 </BaseLayout>

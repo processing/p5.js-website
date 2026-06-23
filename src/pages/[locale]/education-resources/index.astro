@@ -7,6 +7,7 @@ import { setJumpToState, type JumpToLink } from "@/src/globals/state";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import { categories } from "@/src/content/tutorials/config";
 import { removeLocalePrefix } from "@i18n/utils";
+import { headingPermalinkComponents } from "@components/HeadingPermalink";
 
 export async function getStaticPaths() {
   const pages = nonDefaultSupportedLocales.map(async (locale) => ({
@@ -25,7 +26,7 @@ export async function getStaticPaths() {
 const { pages, locale } = Astro.props;
 const page = pages.find((page) => removeLocalePrefix(page.slug).slice(1) === 'education-resources')!
 
-const { Content } = await page.render();
+const { Content, components } = await page.render();
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -54,5 +55,5 @@ setJumpToState({
   variant="item"
   topic="tutorials"
 >
-  <Content />
+  <Content components={{ ...components, ...headingPermalinkComponents }} />
 </BaseLayout>

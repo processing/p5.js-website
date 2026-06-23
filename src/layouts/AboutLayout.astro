@@ -7,13 +7,17 @@ import GridItemPerson from "@components/GridItem/Person.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getCollectionInLocaleWithFallbacks } from "../pages/_utils";
 import { setJumpToState } from "../globals/state";
+import {
+  HeadingPermalink,
+  headingPermalinkComponents,
+} from "@components/HeadingPermalink";
 
 interface Props {
   entry: CollectionEntry<"text-detail">;
 }
 
 const { entry } = Astro.props;
-const { headings, Content } = await entry.render();
+const { headings, Content, components } = await entry.render();
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -64,11 +68,11 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
 
 <BaseLayout title="About" variant="root">
   <section class="rendered-markdown">
-    <Content />
+    <Content components={{ ...components, ...headingPermalinkComponents }} />
   </section>
 
   <section>
-    <h2 id="people">{t("People")}</h2>
+    <HeadingPermalink as="h2" id="people">{t("People")}</HeadingPermalink>
     <ul class="content-grid">
       {
         displayedFeaturedPeople.map((fp) => (
@@ -84,7 +88,7 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
   </section>
 
   <section>
-    <h2 id="contact">{t("Contact")}</h2>
+    <HeadingPermalink as="h2" id="contact">{t("Contact")}</HeadingPermalink>
     <div
       class="text-2xl grid grid-cols-6 lg:grid-cols-9 gap-x-gutter-sm md:gap-x-gutter-md mt-xl"
     >
@@ -106,7 +110,7 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
     </div>
   </section>
   <section>
-    <h2 id="supporters">Supporters</h2>
+    <HeadingPermalink as="h2" id="supporters">Supporters</HeadingPermalink>
     <ul class="text-2xl mt-xl">
       <li>
         <a href="https://processingfoundation.org">Processing Foundation</a>
@@ -123,7 +127,9 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
     </ul>
   </section>
   <section>
-    <h2 id="processing-foundation">The Processing Ecosystem</h2>
+    <HeadingPermalink as="h2" id="processing-foundation">
+      The Processing Ecosystem
+    </HeadingPermalink>
     <ul class="text-2xl mt-xl">
       <li><a href="https://processing.org">Processing</a></li>
       <li><a href="https://py.processing.org/">Processing.py</a></li>

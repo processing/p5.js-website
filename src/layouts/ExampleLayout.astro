@@ -12,6 +12,7 @@ import EditableSketch from "@components/EditableSketch/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import { checkTranslationBanner } from "../utils/translationBanner";
+import { headingPermalinkComponents } from "@components/HeadingPermalink";
 
 interface Props {
   example: CollectionEntry<"examples">;
@@ -43,7 +44,7 @@ const relatedReferences =
       )
     : [];
 
-const { Content } = await example.render();
+const { Content, components } = await example.render();
 
 // Extract the collective attribution year. If multiple provided, uses last shown.
 const collectivelyAttributedSince = example.data.remix?.reduce(
@@ -88,7 +89,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   <div class="mt-xl mb-4xl lg:mb-3xl max-w-[770px]">
     <div class="rendered-markdown">
-      <Content />
+      <Content components={{ ...components, ...headingPermalinkComponents }} />
     </div>
     <div class="rendered-markdown">
       <img src="/images/by-nc-sa.svg" alt="Creative Commons BY-NC-SA license badge" />

@@ -11,6 +11,7 @@ import "@styles/base.scss";
 import type { CollectionEntry } from "astro:content";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
+import { headingPermalinkComponents } from "@components/HeadingPermalink";
 
 interface Props {
   title: string;
@@ -42,9 +43,11 @@ const slug = title.toLowerCase().split(/\s+|\./).join('-');
 const pages = await getCollectionInLocaleWithFallbacks("pages", currentLocale);
 const headerPage = pages.find((page) => removeLocalePrefix(page.slug).slice(1) === slug);
 let HeaderContent: any = undefined;
+let headerComponents: Record<string, any> = {};
 if (headerPage) {
-  const { Content } = await headerPage.render();
+  const { Content, components } = await headerPage.render();
   HeaderContent = Content;
+  headerComponents = components ?? {};
 }
 
 const t = await getUiTranslator(currentLocale);
@@ -117,7 +120,12 @@ const headerTopic = topic
           HeaderContent && (
             <div class="px-5 md:px-lg pt-sm pb-lg">
               <div class="rendered-markdown">
-                <HeaderContent />
+                <HeaderContent
+                  components={{
+                    ...headerComponents,
+                    ...headingPermalinkComponents,
+                  }}
+                />
               </div>
             </div>
         )}

@@ -10,6 +10,7 @@ import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getRelatedEntriesinCollection } from "../pages/_utils";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import { checkTranslationBanner } from "../utils/translationBanner";
+import { headingPermalinkComponents } from "@components/HeadingPermalink";
 
 interface Props {
   entry: CollectionEntry<"events">;
@@ -17,7 +18,7 @@ interface Props {
 }
 
 const { entry, title } = Astro.props;
-const { Content } = await entry.render();
+const { Content, components } = await entry.render();
 
 setJumpToState(null);
 
@@ -66,7 +67,9 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   <div class="rendered-markdown">
     <Content
       components={{
+        ...components,
         img: FreeRatioImage,
+        ...headingPermalinkComponents,
       }}
     />
   </div>
