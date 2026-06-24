@@ -5,7 +5,6 @@ import GridItemSketch from "@components/GridItem/Sketch.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getCurationSketches } from "../api/OpenProcessing";
 import BaseLayout from "./BaseLayout.astro";
-import { setJumpToState } from "../globals/state";
 import Head from "../components/Head/index.astro";
 
 interface Props {
@@ -14,28 +13,26 @@ interface Props {
 
 const {
   config,
-  config: { data },
+  // config: { data },
 } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
 
 const curationSketches = await getCurationSketches();
-const sketches = data.sketchIds.map(
+const sketches = config.data.sketchIds.map(
   (id, i) =>
     curationSketches.find((sk) => id === sk.visualID) ??
     curationSketches[i]
 );
-
-setJumpToState(null);
 ---
 
 <Head
   title={"p5.js"}
-  featuredImageSrc={data.heroImages[0].image.src}
+  featuredImageSrc={config.data.heroImages[0].image.src}
   locale={currentLocale}
 />
 
-<BaseLayout title="" variant="homepage" homepageConfig={config}>
+<BaseLayout title="" variant="homepage" homepageConfig={config} jumpToState={null}>
     
   <h1 class="text-5xl font-bold mb-xl col-span-full">{t("Welcome to p5.js")}</h1>
 
@@ -43,7 +40,7 @@ setJumpToState(null);
     <div
       class="col-span-2 lg:col-span-3 order-1 grid grid-cols-subgrid content-start"
     >
-      <h2 class="col-span-3">{data.referenceHeaderText}</h2>
+      <h2 class="col-span-3">{config.data.referenceHeaderText}</h2>
       <LinkButton class="col-span-1 w-full" variant="link" url="/reference/"
         >{t("Reference")}</LinkButton
       >
@@ -51,7 +48,7 @@ setJumpToState(null);
     <div
       class="col-span-2 lg:col-span-3 order-2 lg:order-4 grid grid-cols-subgrid content-start"
     >
-      <h2 class="col-span-full">{data.examplesHeaderText}</h2>
+      <h2 class="col-span-full">{config.data.examplesHeaderText}</h2>
       <LinkButton class="col-span-1 w-full" variant="link" url="/examples/"
         >{t("Examples")}</LinkButton
       >
@@ -66,7 +63,7 @@ setJumpToState(null);
 
   <div class="content-grid-simple mb-xl">
     <div class="col-span-2 lg:col-span-3 grid grid-cols-subgrid content-start">
-      <h2 class="col-span-3">{data.communityHeaderText}</h2>
+      <h2 class="col-span-3">{config.data.communityHeaderText}</h2>
       <LinkButton class="col-span-1 w-full" variant="link" url="/community/"
         >{t("Community")}</LinkButton
       >
@@ -104,10 +101,12 @@ setJumpToState(null);
 </BaseLayout>
 
 <style lang="scss">
-  @import "../../styles/variables.scss";
+  @use "../../styles/variables.scss";
+  @reference "../../styles/global.css";
+
   h2 {
     @apply mb-sm mt-0;
-    @media (min-width: $breakpoint-tablet) {
+    @media (min-width: variables.$breakpoint-tablet) {
       font-size: 3.5rem;
     }
   }

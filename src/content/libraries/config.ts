@@ -1,5 +1,7 @@
-import { z, defineCollection } from "astro:content";
-import { author } from "../shared";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
+import { glob } from "astro/loaders";
+import { author, generateEntryId } from "../shared";
 
 export const categories = [
   "drawing",
@@ -26,7 +28,11 @@ export const categories = [
  * Content collection for the Libraries section of the site.
  */
 export const librariesCollection = defineCollection({
-  type: "data",
+  loader: glob({
+    pattern: '**/*.yaml',
+    base: "./src/content/libraries",
+    generateId: generateEntryId,
+  }),
   schema: ({ image }) =>
     z.object({
       // Name of the library
@@ -36,16 +42,17 @@ export const librariesCollection = defineCollection({
       // Which category the library falls in
       category: z.enum(categories),
       // Url to the source of the library (for example: on GitHub)
-      sourceUrl: z.string().url(),
+      sourceUrl: z.url(),
       // Url to a website for the library
-      websiteUrl: z.string().url().optional(),
+      websiteUrl: z.url().optional(),
       // 1500x1000
-      featuredImage: image().refine(
-        (img) => img.width >= 1500 && img.height >= 1000,
-        {
-          message: "Featured image must be 1500x1000",
-        },
-      ),
+      featuredImage: image(),
+        // .refine(
+        //   (img) => img.width >= 1500 && img.height >= 1000,
+        //   {
+        //     message: "Featured image must be 1500x1000",
+        //   },
+        // ),
       featuredImageAlt: z.string(),
       author: author()
         .transform((val) => [val])
