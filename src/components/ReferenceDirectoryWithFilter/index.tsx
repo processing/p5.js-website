@@ -234,7 +234,7 @@ export const ReferenceDirectoryWithFilter = ({
               id="search"
               ref={inputRef}
               class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
-              placeholder={uiTranslations["Filter"]}
+              placeholder={uiTranslations["Filter by keyword"]}
               onKeyUp={(e) => {
                 const target = e.target as HTMLInputElement;
                 setSearchKeyword(target?.value);
