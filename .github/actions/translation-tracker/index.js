@@ -44,6 +44,129 @@ function getSlugFromEnglishPath(englishFilePath, contentType) {
   return relative;
 }
 
+function parseEnvList(envValue, defaultList) {
+  if (!envValue || envValue.trim() === '') {
+    return defaultList;
+  }
+  return envValue.split(',').map((item) => item.trim()).filter(Boolean);
+}
+
+/**
+ * Find English content files that have no translation file yet.
+ * Used for stub-file generation (Week 2).
+ */
+function findMissingTranslations(contentTypes, languages, options = {}) {
+  const { fullScan = false, testFiles = null } = options;
+  const missing = [];
+
+  for (const contentType of contentTypes) {
+    let englishFiles;
+    if (testFiles) {
+      englishFiles = testFiles.filter(
+        (file) =>
+          file.startsWith(`src/content/${contentType}/en/`) &&
+          (file.endsWith('.mdx') || file.endsWith('.yaml'))
+      );
+    } else if (fullScan) {
+      englishFiles = getAllEnglishContentFiles(contentType);
+    } else if (process.env.GITHUB_ACTIONS) {
+      englishFiles = getChangedFiles(null, contentType);
+    } else {
+      englishFiles = getAllEnglishContentFiles(contentType);
+    }
+
+    for (const englishFile of englishFiles) {
+      for (const language of languages) {
+        const translationPath = getTranslationPath(englishFile, language);
+        if (!fileExists(translationPath)) {
+          missing.push({ englishFile, language, translationPath, contentType });
+        }
+      }
+    }
+  }
+
+  missing.sort((a, b) => a.translationPath.localeCompare(b.translationPath));
+  return missing;
+}
+
+/** Frontmatter fields copied into stubs (English values). Avoids duplicating params/examples. */
+const STUB_FRONTMATTER_KEYS = {
+  reference: ['title', 'module', 'submodule', 'file', 'description'],
+  examples: ['title', 'oneLineDescription', 'featuredImage', 'featuredImageAlt'],
+  tutorials: ['title', 'description'],
+  'text-detail': ['title', 'description'],
+  events: ['title', 'description'],
+  libraries: ['title', 'description'],
+};
+
+function pickStubFrontmatter(frontmatter, contentType) {
+  const keys = STUB_FRONTMATTER_KEYS[contentType] || ['title', 'description'];
+  const picked = { needsTranslation: true };
+  for (const key of keys) {
+    if (frontmatter[key] !== undefined) {
+      picked[key] = frontmatter[key];
+    }
+  }
+  return picked;
+}
+
+function parseFrontmatter(raw, filePath) {
+  const frontmatterMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  if (!frontmatterMatch) {
+    throw new Error(`Could not find frontmatter in ${filePath}`);
+  }
+
+  return yaml.load(frontmatterMatch[1]) || {};
+}
+
+function stringifyMdx(frontmatter, body) {
+  const frontmatterText = yaml.dump(frontmatter, {
+    lineWidth: 100,
+    noRefs: true,
+    sortKeys: false,
+  });
+
+  return `---\n${frontmatterText}---\n${body}`;
+}
+
+/**
+ * Build a placeholder translation file from an English source.
+ * Copies essential frontmatter (in English), sets needsTranslation: true, minimal body.
+ */
+function generateStubFromEnglish(englishPath, language, contentType = 'reference') {
+  const raw = fs.readFileSync(englishPath, 'utf8');
+  const frontmatter = parseFrontmatter(raw, englishPath);
+  const translationPath = getTranslationPath(englishPath, language);
+
+  const stubFrontmatter = pickStubFrontmatter(frontmatter, contentType);
+
+  const stubComment = `<!--
+  Auto-generated translation stub (${language}).
+  Translate from the English source and remove needsTranslation when done.
+  English source: ${englishPath}
+-->`;
+
+  const stubBody = `${stubComment}
+
+<!-- Translation needed. Replace this placeholder with the translated content. -->
+`;
+
+  const content = stringifyMdx(stubFrontmatter, stubBody);
+
+  return { translationPath, content, englishPath };
+}
+
+/** Where dry-run stubs are written locally (never touches src/content by default). */
+function getStubWritePath(translationPath, dryRun) {
+  if (!dryRun) {
+    return translationPath;
+  }
+  const outputRoot =
+    process.env.STUB_OUTPUT_DIR ||
+    path.join(process.cwd(), '.github/actions/translation-tracker/stub-preview');
+  return path.join(outputRoot, translationPath);
+}
+
 async function loadStewardsConfig() {
   const STEWARDS_URL = 'https://raw.githubusercontent.com/processing/p5.js/main/stewards.yml';
   
@@ -410,8 +533,9 @@ class GitHubCommitTracker {
     // English diff. It shows the actual content changes in the English file.
     if (englishDiff && (englishDiff.compareUrl || englishDiff.patchSnippet)) {
       body += `### 🧩 Recent English Diff\n\n`;
-      body += `- [🔍 View full compare](${englishDiff.compareUrl})\n\n`; // provides url to compare the differences
-    
+      if (englishDiff.compareUrl) {
+        body += `- [🔍 View full compare](${englishDiff.compareUrl})\n\n`;
+      }
       if (englishDiff.patchSnippet) {
         body += `<details>\n<summary>Show patch snippet</summary>\n\n`;
         body += `\`\`\`diff\n${englishDiff.patchSnippet}\n\`\`\`\n\n`;
@@ -460,6 +584,121 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
       'zh-Hans': 'Chinese Simplified (简体中文)'
     };
     return languages[langCode] || langCode;
+  }
+
+  /**
+   * Create a branch with one commit containing multiple new files (for stub PRs).
+   */
+  async createBranchWithFiles(branchName, commitMessage, fileChanges) {
+    const baseBranch = this.currentBranch || 'main';
+
+    const { data: ref } = await this.octokit.rest.git.getRef({
+      owner: this.owner,
+      repo: this.repo,
+      ref: `heads/${baseBranch}`,
+    });
+    const baseSha = ref.object.sha;
+
+    const { data: baseCommit } = await this.octokit.rest.git.getCommit({
+      owner: this.owner,
+      repo: this.repo,
+      commit_sha: baseSha,
+    });
+
+    const treeItems = await Promise.all(
+      fileChanges.map(async ({ path: filePath, content }) => {
+        const { data: blob } = await this.octokit.rest.git.createBlob({
+          owner: this.owner,
+          repo: this.repo,
+          content: Buffer.from(content, 'utf8').toString('base64'),
+          encoding: 'base64',
+        });
+        return { path: filePath, mode: '100644', type: 'blob', sha: blob.sha };
+      })
+    );
+
+    const { data: tree } = await this.octokit.rest.git.createTree({
+      owner: this.owner,
+      repo: this.repo,
+      base_tree: baseCommit.tree.sha,
+      tree: treeItems,
+    });
+
+    const { data: commit } = await this.octokit.rest.git.createCommit({
+      owner: this.owner,
+      repo: this.repo,
+      message: commitMessage,
+      tree: tree.sha,
+      parents: [baseSha],
+    });
+
+    await this.octokit.rest.git.createRef({
+      owner: this.owner,
+      repo: this.repo,
+      ref: `refs/heads/${branchName}`,
+      sha: commit.sha,
+    });
+
+    return { branchName, commitSha: commit.sha };
+  }
+
+  /**
+   * Open one PR per language with all stub files for that language.
+   */
+  async createStubPullRequest(language, stubs) {
+    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const branchName = `translation-stubs/${language}-${dateStr}-${Date.now()}`;
+    const langName = this.getLanguageDisplayName(language);
+    const commitMessage = `chore(i18n): add ${language} translation stubs for ${stubs.length} page(s)`;
+
+    const fileChanges = stubs.map((stub) => ({
+      path: stub.translationPath,
+      content: stub.content,
+    }));
+
+    try {
+      await this.createBranchWithFiles(branchName, commitMessage, fileChanges);
+
+      const stewards = getStewardsForLanguage(this.stewardsConfig, language);
+      const stewardsText = stewards.length > 0 ? `\n\ncc ${stewards.join(' ')}` : '';
+      const fileList = stubs.map((stub) => `- \`${stub.translationPath}\` (from \`${stub.englishPath}\`)`).join('\n');
+
+      const { data: pr } = await this.octokit.rest.pulls.create({
+        owner: this.owner,
+        repo: this.repo,
+        title: `chore(i18n): add ${langName} translation stubs (${stubs.length})`,
+        head: branchName,
+        base: this.currentBranch || 'main',
+        body: `## Translation stub files
+
+This PR adds placeholder files for content that exists in English but has no ${langName} translation yet.
+
+Each stub:
+- copies English frontmatter
+- sets \`needsTranslation: true\`
+- includes a short placeholder body for translators to replace
+
+### Files (${stubs.length})
+
+${fileList}
+
+### Next steps for translators
+
+- [ ] Translate each file's body and frontmatter fields
+- [ ] Remove or set \`needsTranslation: false\` when complete
+- [ ] Keep code blocks, links, and structure aligned with the English source
+
+---
+🤖 *Auto-generated by the p5.js Translation Tracker*${stewardsText}`,
+      });
+
+      console.log(`\n🔀 Stub PR created for ${langName}: #${pr.number}`);
+      console.log(`   URL: ${pr.html_url}`);
+      return pr;
+    } catch (error) {
+      console.error(`❌ Failed to create stub PR for ${language}:`, error.message);
+      return null;
+    }
   }
 }
 
@@ -700,19 +939,118 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
   return translationStatus;
 }
 
+/**
+ * Week 2: generate stub files and open one PR per language.
+ */
+async function runStubGeneration(githubTracker, options = {}) {
+  const languages = parseEnvList(process.env.STUB_LANGUAGES, ['es']);
+  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, ['reference']);
+  const fullScan = options.fullScan ?? process.env.STUB_FULL_SCAN === 'true';
+  const dryRun = process.env.STUB_DRY_RUN === 'true';
+  const maxFiles = parseInt(process.env.STUB_MAX_FILES || '50', 10);
 
-// Removed verbose summary function
+  console.log(`\n📦 Stub generation mode`);
+  console.log(`   Languages: ${languages.join(', ')}`);
+  console.log(`   Content types: ${contentTypes.join(', ')}`);
+  console.log(`   Scan: ${fullScan ? 'all English files' : 'changed files only'}`);
 
+  const missing = findMissingTranslations(contentTypes, languages, {
+    fullScan,
+    testFiles: options.testFiles || null,
+  });
 
-// Remove verbose repository exploration
+  if (missing.length === 0) {
+    console.log('\n✅ No missing translation files found for stub generation.');
+    return { prsCreated: [], stubsWritten: 0 };
+  }
+
+  console.log(`\n❌ Found ${missing.length} missing translation file(s):`);
+  missing.forEach((item) => {
+    console.log(`   - ${item.englishFile} → ${item.language}`);
+    console.log(`     Expected: ${item.translationPath}`);
+  });
+
+  const limited = missing.slice(0, maxFiles);
+  if (limited.length < missing.length) {
+    console.log(`\n⚠️  Limiting to ${maxFiles} stub(s) (STUB_MAX_FILES). Re-run to process more.`);
+  }
+
+  const byLanguage = new Map();
+  for (const item of limited) {
+    if (!byLanguage.has(item.language)) {
+      byLanguage.set(item.language, []);
+    }
+    byLanguage.get(item.language).push(item);
+  }
+
+  const prsCreated = [];
+  let stubsWritten = 0;
+
+  for (const [language, items] of byLanguage) {
+    const langName = githubTracker
+      ? githubTracker.getLanguageDisplayName(language)
+      : language;
+
+    console.log(`\n📝 Generating ${items.length} stub(s) for ${langName}:`);
+
+    const stubs = items.map((item) => {
+      const stub = generateStubFromEnglish(item.englishFile, language, item.contentType);
+      console.log(`   📄 ${item.englishFile} → ${stub.translationPath}`);
+      return stub;
+    });
+
+    if (dryRun || !githubTracker) {
+      const previewRoot =
+        process.env.STUB_OUTPUT_DIR ||
+        path.join(process.cwd(), '.github/actions/translation-tracker/stub-preview');
+      for (const stub of stubs) {
+        const writePath = getStubWritePath(stub.translationPath, true);
+        const dir = path.dirname(writePath);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        fs.writeFileSync(writePath, stub.content, 'utf8');
+        stubsWritten += 1;
+      }
+      console.log(`\n🧪 Dry run: wrote ${stubs.length} stub file(s) under ${previewRoot}`);
+      continue;
+    }
+
+    const pr = await githubTracker.createStubPullRequest(language, stubs);
+    if (pr) {
+      prsCreated.push({
+        language,
+        prNumber: pr.number,
+        prUrl: pr.html_url,
+        fileCount: stubs.length,
+      });
+      stubsWritten += stubs.length;
+    }
+  }
+
+  if (prsCreated.length > 0) {
+    console.log(`\n🔀 Stub PRs created: ${prsCreated.length}`);
+    prsCreated.forEach((pr) => {
+      console.log(`   - ${pr.language}: PR #${pr.prNumber} (${pr.fileCount} file(s))`);
+      console.log(`     URL: ${pr.prUrl}`);
+    });
+  } else if (!dryRun && stubsWritten === 0 && limited.length > 0) {
+    console.log(`\n💡 Stubs were not written. Check GITHUB_TOKEN permissions (contents + pull-requests write).`);
+  }
+
+  return { prsCreated, stubsWritten };
+}
 
 
 async function main(testFiles = null, options = {}) {
   const hasToken = !!process.env.GITHUB_TOKEN;
   const isGitHubAction = !!process.env.GITHUB_ACTIONS; // Detect if running in GitHub Actions
   const isProduction = hasToken && !testFiles;
+  const generateStubsMode = process.env.GENERATE_STUBS === 'true';
   
-  if (testFiles) {
+  if (generateStubsMode) {
+    console.log(`📦 Stub generation: ${testFiles ? 'test files' : isGitHubAction ? 'changed files' : 'full scan'}`);
+  } else if (testFiles) {
     console.log(`🧪 Test mode: Checking ${testFiles.length} predefined files`);
   } else if (isGitHubAction) {
     console.log(`🚀 GitHub Actions: Checking changed files only`);
@@ -730,6 +1068,23 @@ async function main(testFiles = null, options = {}) {
     } catch (error) {
       console.error('❌ GitHub API failed, using file-based tracking');
     }
+  }
+
+  // Week 2: stub-file PR generation (separate mode from issue tracking)
+  if (generateStubsMode) {
+    const dryRun = process.env.STUB_DRY_RUN === 'true';
+    if (!githubTracker && !dryRun) {
+      console.error('❌ GENERATE_STUBS requires GITHUB_TOKEN, or set STUB_DRY_RUN=true for local preview');
+      process.exitCode = 1;
+      return;
+    }
+
+    const fullScan =
+      process.env.STUB_FULL_SCAN === 'true' ||
+      (!isGitHubAction && !testFiles);
+
+    await runStubGeneration(githubTracker, { fullScan, testFiles });
+    return;
   }
 
   const allTranslationStatus = [];
@@ -853,6 +1208,10 @@ module.exports = {
   getChangedFiles,
   getAllEnglishContentFiles,
   checkTranslationStatus,
+  findMissingTranslations,
+  generateStubFromEnglish,
+  pickStubFrontmatter,
+  runStubGeneration,
   GitHubCommitTracker,
   SUPPORTED_LANGUAGES,
   CONTENT_TYPES
