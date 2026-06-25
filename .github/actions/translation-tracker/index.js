@@ -410,9 +410,8 @@ class GitHubCommitTracker {
     // English diff. It shows the actual content changes in the English file.
     if (englishDiff && (englishDiff.compareUrl || englishDiff.patchSnippet)) {
       body += `### 🧩 Recent English Diff\n\n`;
-      if (englishDiff.compareUrl) {
-        body += `- [🔍 View full compare](${englishDiff.compareUrl})\n\n`;
-      }
+      body += `- [🔍 View full compare](${englishDiff.compareUrl})\n\n`; // provides url to compare the differences
+    
       if (englishDiff.patchSnippet) {
         body += `<details>\n<summary>Show patch snippet</summary>\n\n`;
         body += `\`\`\`diff\n${englishDiff.patchSnippet}\n\`\`\`\n\n`;
