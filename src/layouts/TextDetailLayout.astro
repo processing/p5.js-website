@@ -2,7 +2,7 @@
 import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
-import { setJumpToState } from "../globals/state";
+import { render } from "astro:content";
 import { getCurrentLocale } from "../i18n/utils";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { page } = Astro.props;
-const { Content } = await page.render();
+const { Content } = await render(page);
 
 const pageTopic = Astro.url.pathname.includes("donate")
   ? "contribute"
@@ -18,9 +18,7 @@ const pageTopic = Astro.url.pathname.includes("donate")
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
-setJumpToState(null);
 ---
-
 <Head title={page.data.title} locale={currentLocale} />
 
 <BaseLayout
@@ -29,6 +27,7 @@ setJumpToState(null);
   topic={pageTopic}
   className={pageTopic}
   subtitle={null}
+  jumpToState={null}
 >
   <div class="max-w-[770px] [&>*:first-child]:mt-0 rendered-markdown pb-[80px]">
     <Content />
