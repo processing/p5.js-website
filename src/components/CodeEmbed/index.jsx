@@ -29,6 +29,7 @@ import { Icon } from "../Icon";
 export const CodeEmbed = (props) => {
   const { ref: liveRegionRef, announce } = useLiveRegion();
   const [rendered, setRendered] = useState(false);
+ 
   const initialCode = props.initialValue ?? "";
   // Source code from Google Docs sometimes uses a unicode non-breaking space
   // instead of a normal one, but these break the code frame, so we replace them here.
@@ -55,6 +56,7 @@ export const CodeEmbed = (props) => {
 
   const codeFrameRef = useRef(null);
   const editorRef = useRef(null);
+  const isScrollable = props.scrollable ?? false;
   const [hasScrollbar, setHasScrollbar] = useState(false);
 
   const updateOrReRun = () => {
@@ -81,8 +83,9 @@ export const CodeEmbed = (props) => {
     }
   }, []);
 
+  // only observe scroll when scrollable
   useEffect(() => {
-    if (!rendered) return;
+    if (!rendered || !isScrollable) return;
     const scroller = editorRef.current?.querySelector(".cm-scroller");
     if (!scroller) return;
     const observer = new ResizeObserver(() => {
@@ -90,7 +93,7 @@ export const CodeEmbed = (props) => {
     });
     observer.observe(scroller);
     return () => observer.disconnect();
-  }, [rendered]);
+  }, [rendered, isScrollable]);
 
   if (!rendered) return <div className="code-placeholder" />;
 
@@ -143,7 +146,7 @@ export const CodeEmbed = (props) => {
           value={codeString}
           theme="light"
           width="100%"
-          height="300px"
+          height={isScrollable ? "300px" : undefined}
           minimalSetup={{
             highlightSpecialChars: false,
             history: false,
@@ -158,14 +161,22 @@ export const CodeEmbed = (props) => {
             autocompletion: false,
           }}
           indentWithTab={false}
-          extensions={[javascript(), EditorView.lineWrapping, EditorView.theme({ "&": { overflowY: "auto" } })]}
+          extensions={[javascript(), EditorView.lineWrapping, EditorView.theme({
+            ".cm-scroller": {
+              overflowY: isScrollable ? "auto" : "visible",
+            },
+          })]}
           onChange={(val) => setCodeString(val)}
           editable={props.editable}
           onCreateEditor={(editorView) =>
             (editorView.contentDOM.ariaLabel = "Code Editor")
           }
         />
-        <div className={`absolute top-0 flex flex-col gap-xs p-xs md:flex-row ${hasScrollbar ? "right-[25px]" : "right-0"}`}>
+        <div
+          className={`absolute top-0 flex flex-col gap-xs p-xs md:flex-row ${
+            isScrollable && hasScrollbar ? "right-[25px]" : "right-0"
+          }`}
+        >
           <CopyCodeButton textToCopy={codeString || initialCode} />
           <CircleButton
             onClick={() => {
