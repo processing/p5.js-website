@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
-import { author } from "../shared";
+import { author, generateEntryId } from "../shared";
 
 export const categories = [
   "drawing",
@@ -29,7 +29,11 @@ export const categories = [
  * Content collection for the Libraries section of the site.
  */
 export const librariesCollection = defineCollection({
-  loader: glob({ pattern: '**/*.yaml', base: "./src/content/libraries" }),
+  loader: glob({
+    pattern: '**/*.yaml',
+    base: "./src/content/libraries",
+    generateId: generateEntryId,
+  }),
   schema: ({ image }) =>
     z.object({
       // Name of the library
