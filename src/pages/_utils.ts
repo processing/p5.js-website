@@ -155,6 +155,18 @@ export const getExampleCategory = (slug: string): string =>
 export const normalizeReferenceRoute = (route: string): string =>
   removeNestedReferencePaths(removeLocaleAndExtension(route));
 
+/**
+ * Creates a context-aware anchor id for reference page headings.
+ * This keeps repeated subcategory names unique within the page.
+ */
+export const makeReferenceHeadingId = (...parts: string[]): string =>
+  parts
+    .filter(Boolean)
+    .join("-")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 export const removeLocaleAndExtension = (id: string): string =>
   removeContentFileExt(removeLeadingSlash(removeLocalePrefix(id)));
 

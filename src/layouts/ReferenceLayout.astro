@@ -6,6 +6,7 @@ import { ReferenceDirectoryWithFilter } from "@components/ReferenceDirectoryWith
 import { categories } from "../content/reference/config";
 import {
   getRefEntryTitleConcatWithParen,
+  makeReferenceHeadingId,
   normalizeReferenceRoute,
 } from "../pages/_utils";
 import {
@@ -134,16 +135,30 @@ const categoryData = (Astro.props.categories ?? categories).map((category) => {
   };
 });
 
-const jumpCategoryData = categoryData.length === 1
-  ? [...categoryData, ...categoryData[0].subcats]
-  : categoryData;
+const pageJumpToLinks: JumpToLink[] = categoryData.flatMap((category) => {
+  const links: JumpToLink[] = [];
+  const categoryName = category.name as string;
 
-const pageJumpToLinks: JumpToLink[] = jumpCategoryData
-  .filter((category) => !!category.name)  // REMOVE undefined ones
-  .map((category) => ({
-    label: category.name as string,
-    url: `#${category.name}`,
-  }));
+  if (categoryName) {
+    links.push({
+      label: categoryName,
+      url: `#${categoryName}`,
+    });
+  }
+
+  if (categoryData.length === 1) {
+    links.push(
+      ...category.subcats
+        .filter((subcat) => !!subcat.name)
+        .map((subcat) => ({
+          label: subcat.name as string,
+          url: `#${makeReferenceHeadingId(categoryName, subcat.name as string)}`,
+        })),
+    );
+  }
+
+  return links;
+});
 
 const pageJumpToState: JumpToState = {
   links: pageJumpToLinks,
