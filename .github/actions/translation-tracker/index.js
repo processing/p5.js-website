@@ -943,7 +943,7 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
  * Week 2: generate stub files and open one PR per language.
  */
 async function runStubGeneration(githubTracker, options = {}) {
-  const languages = parseEnvList(process.env.STUB_LANGUAGES, ['es']);
+  const languages = parseEnvList(process.env.STUB_LANGUAGES, SUPPORTED_LANGUAGES);
   const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, ['reference']);
   const fullScan = options.fullScan ?? process.env.STUB_FULL_SCAN === 'true';
   const dryRun = process.env.STUB_DRY_RUN === 'true';

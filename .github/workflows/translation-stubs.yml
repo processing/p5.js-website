@@ -17,9 +17,9 @@ on:
           - 'false'
           - 'true'
       languages:
-        description: 'Comma-separated language codes (default: es)'
+        description: 'Comma-separated language codes (default: all supported)'
         required: false
-        default: 'es'
+        default: 'es,hi,ko,zh-Hans'
 
 permissions:
   contents: write
@@ -47,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GENERATE_STUBS: 'true'
-          STUB_LANGUAGES: ${{ github.event.inputs.languages || 'es' }}
+          STUB_LANGUAGES: ${{ github.event.inputs.languages || 'es,hi,ko,zh-Hans' }}
           STUB_CONTENT_TYPES: reference
           STUB_FULL_SCAN: ${{ github.event.inputs.full_scan || 'false' }}
         run: node .github/actions/translation-tracker/index.js
