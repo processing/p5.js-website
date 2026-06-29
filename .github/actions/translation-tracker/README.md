@@ -54,7 +54,7 @@ GENERATE_STUBS=true \
   GITHUB_TOKEN=your_token GITHUB_REPOSITORY=youruser/p5.js-website \
   node .github/actions/translation-tracker/index.js
 
-# Single language or full scan (STUB_MAX_FILES is global across all languages)
+# Single language or full scan (STUB_MAX_FILES applies per language)
 GENERATE_STUBS=true STUB_FULL_SCAN=true STUB_MAX_FILES=10 STUB_LANGUAGES=es,hi \
   GITHUB_TOKEN=your_token GITHUB_REPOSITORY=youruser/p5.js-website \
   node .github/actions/translation-tracker/index.js
@@ -82,7 +82,7 @@ Manual stub run: Actions → **Translation Stub Generator** → Run workflow →
 | `STUB_CONTENT_TYPES` | Comma-separated (default: `reference`) |
 | `STUB_FULL_SCAN` | `true` = all English files, not just latest commit |
 | `STUB_DRY_RUN` | `true` = write to `stub-preview/`, no PR |
-| `STUB_MAX_FILES` | Max stubs per run, total across all languages (default: `50`) |
+| `STUB_MAX_FILES` | Max stubs per language per run (default: `50`) |
 | `STUB_OUTPUT_DIR` | Custom dry-run output directory |
 
 ## What stubs contain

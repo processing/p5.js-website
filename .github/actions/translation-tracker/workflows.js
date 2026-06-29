@@ -250,6 +250,7 @@ async function runStubGeneration(githubTracker, options = {}) {
   console.log(`   Languages: ${languages.join(', ')}`);
   console.log(`   Content types: ${contentTypes.join(', ')}`);
   console.log(`   Scan: ${fullScan ? 'all English files' : 'changed files only'}`);
+  console.log(`   Max stubs per language: ${maxFiles}`);
 
   const missing = findMissingTranslations(contentTypes, languages, {
     fullScan,
@@ -267,23 +268,34 @@ async function runStubGeneration(githubTracker, options = {}) {
     console.log(`     Expected: ${item.translationPath}`);
   });
 
-  const limited = missing.slice(0, maxFiles);
-  if (limited.length < missing.length) {
-    console.log(`\n⚠️  Limiting to ${maxFiles} stub(s) (STUB_MAX_FILES). Re-run to process more.`);
-  }
-
   const byLanguage = new Map();
-  for (const item of limited) {
+  for (const item of missing) {
     if (!byLanguage.has(item.language)) {
       byLanguage.set(item.language, []);
     }
     byLanguage.get(item.language).push(item);
   }
 
+  let wasLimited = false;
+  const limitedByLanguage = new Map();
+  for (const [language, items] of byLanguage) {
+    const capped = items.slice(0, maxFiles);
+    if (capped.length < items.length) {
+      wasLimited = true;
+    }
+    if (capped.length > 0) {
+      limitedByLanguage.set(language, capped);
+    }
+  }
+
+  if (wasLimited) {
+    console.log(`\n⚠️  Limiting to ${maxFiles} stub(s) per language (STUB_MAX_FILES). Re-run to process more.`);
+  }
+
   const prsCreated = [];
   let stubsWritten = 0;
 
-  for (const [language, items] of byLanguage) {
+  for (const [language, items] of limitedByLanguage) {
     const langName = githubTracker ? githubTracker.getLanguageDisplayName(language) : getLanguageDisplayName(language);
 
     console.log(`\n📝 Generating ${items.length} stub(s) for ${langName}:`);
@@ -329,7 +341,7 @@ async function runStubGeneration(githubTracker, options = {}) {
       console.log(`   - ${pr.language}: PR #${pr.prNumber} (${pr.fileCount} file(s))`);
       console.log(`     URL: ${pr.prUrl}`);
     });
-  } else if (!dryRun && stubsWritten === 0 && limited.length > 0) {
+  } else if (!dryRun && stubsWritten === 0 && limitedByLanguage.size > 0) {
     console.log(`\n💡 Stubs were not written. Check GITHUB_TOKEN permissions (contents + pull-requests write).`);
   }
 
