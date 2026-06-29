@@ -50,12 +50,12 @@ Preview path example:
 
 ```bash
 # From repository root — missing files from latest commit only (all languages by default)
-GENERATE_STUBS=true \
+  GENERATE_STUBS=true \
   GITHUB_TOKEN=your_token GITHUB_REPOSITORY=youruser/p5.js-website \
   node .github/actions/translation-tracker/index.js
 
 # Single language or full scan (STUB_MAX_FILES applies per language)
-GENERATE_STUBS=true STUB_FULL_SCAN=true STUB_MAX_FILES=10 STUB_LANGUAGES=es,hi \
+  GENERATE_STUBS=true STUB_FULL_SCAN=true STUB_MAX_FILES=10 STUB_LANGUAGES=es,hi \
   GITHUB_TOKEN=your_token GITHUB_REPOSITORY=youruser/p5.js-website \
   node .github/actions/translation-tracker/index.js
 ```
