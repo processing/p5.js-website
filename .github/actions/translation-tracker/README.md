@@ -6,7 +6,7 @@ Automatically tracks translation status, creates GitHub issues for outdated tran
 
 - Detects outdated/missing translations using Git commit comparison
 - Creates GitHub issues with diff snippets and action checklists
-- **Week 2:** Generates translation stub files and opens **one PR per language**
+- Generates translation stub files and opens **one PR per language**
 - Shows localized banners on outdated translation pages
 - Supports Spanish, Hindi, Korean, and Chinese Simplified
 
@@ -64,26 +64,30 @@ GENERATE_STUBS=true STUB_FULL_SCAN=true STUB_MAX_FILES=10 STUB_LANGUAGES=es,hi \
 
 ### GitHub Actions
 
-| Workflow | Trigger | What it does |
-|----------|---------|----------------|
-| `translation-sync.yml` | Push to `examples/en`, `tutorials/en` | Issues + manifests |
+
+| Workflow                | Trigger                                    | What it does                            |
+| ----------------------- | ------------------------------------------ | --------------------------------------- |
+| `translation-sync.yml`  | Push to `examples/en`, `tutorials/en`      | Issues + manifests                      |
 | `translation-stubs.yml` | Push to `reference/en`, or manual dispatch | Stub PRs (default: es, hi, ko, zh-Hans) |
+
 
 Manual stub run: Actions → **Translation Stub Generator** → Run workflow → optional full scan.
 
 ## Environment Variables
 
-| Variable | Purpose |
-|----------|---------|
-| `GITHUB_TOKEN` | API access (issues, PRs) |
-| `GITHUB_REPOSITORY` | `owner/repo` (default: `processing/p5.js-website`) |
-| `GENERATE_STUBS` | `true` = stub mode instead of issue tracking |
-| `STUB_LANGUAGES` | Comma-separated (default: `es`, `hi`, `ko`, `zh-Hans`) |
-| `STUB_CONTENT_TYPES` | Comma-separated (default: `reference`) |
-| `STUB_FULL_SCAN` | `true` = all English files, not just latest commit |
-| `STUB_DRY_RUN` | `true` = write to `stub-preview/`, no PR |
-| `STUB_MAX_FILES` | Max stubs per language per run (default: `50`) |
-| `STUB_OUTPUT_DIR` | Custom dry-run output directory |
+
+| Variable             | Purpose                                                |
+| -------------------- | ------------------------------------------------------ |
+| `GITHUB_TOKEN`       | API access (issues, PRs)                               |
+| `GITHUB_REPOSITORY`  | `owner/repo` (default: `processing/p5.js-website`)     |
+| `GENERATE_STUBS`     | `true` = stub mode instead of issue tracking           |
+| `STUB_LANGUAGES`     | Comma-separated (default: `es`, `hi`, `ko`, `zh-Hans`) |
+| `STUB_CONTENT_TYPES` | Comma-separated (default: `reference`)                 |
+| `STUB_FULL_SCAN`     | `true` = all English files, not just latest commit     |
+| `STUB_DRY_RUN`       | `true` = write to `stub-preview/`, no PR               |
+| `STUB_MAX_FILES`     | Max stubs per language per run (default: `50`)         |
+| `STUB_OUTPUT_DIR`    | Custom dry-run output directory                        |
+
 
 ## What stubs contain
 
@@ -98,3 +102,4 @@ For each English file with **no** translation yet:
 
 - `@octokit/rest`, `js-yaml`
 - Node.js built-ins: `fs`, `path`, `child_process`
+
