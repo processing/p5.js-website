@@ -19,6 +19,9 @@ export const examplesCollection = defineCollection({
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
 
+      // Optional list of scripts
+      scripts: z.array(z.enum(["p5.sound.js"])).optional(),
+      
       // Optional list of remixes to add to license
       remix: z
         .array(
