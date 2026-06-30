@@ -12,7 +12,7 @@ p5.js welcomes libraries contributed by others! <a href="https://github.com/proc
    - `sourceUrl`: A link to the library's source code (e.g. its repo on GitHub or GitLab)
    - (Optional) `websiteUrl`: A link to a website for the library
    - (Optional) `npm`: The package name for your library on <a href="https://www.npmjs.com/">npm</a>, for example `p5.sound` or `@scope/my-library`.
-   - (Optional) `npmFilePath`: Most libraries don't need this. First, open `https://cdn.jsdelivr.net/npm/packageName`. If it loads your library, you can leave this field empty. If it doesn't, browse your package at `https://www.jsdelivr.com/package/npm/packageName` and locate the JavaScript file that should be loaded (for example `dist/library.min.js`), and set `npmFilePath` to that relative path.
+   - (Optional) `npmFilePath`: Most libraries don't need this. First, open `https://cdn.jsdelivr.net/npm/packageName`. If it loads your library, you're all set. No need to set this field. If it doesn't load, browse your package at `https://www.jsdelivr.com/package/npm/packageName` and locate the JavaScript file that should be loaded (for example `dist/library.min.js`), and set `npmFilePath` to that relative path.
    - `featuredImage`: The relative path to the preview thumbnail for the library.
    - `featuredImageAlt`: a short description of the contents of the thumbnail for screen readers
    - (Optional) `license`: A <a href="https://docs.npmjs.com/cli/v10/configuring-npm/package-json#license">string describing the software license of the library.</a> This may be omitted if your package is on npm and has license info there
