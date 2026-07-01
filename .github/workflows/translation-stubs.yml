@@ -1,0 +1,53 @@
+name: Translation Stub Generator
+
+on:
+  push:
+    branches: 
+      - "feature/translation-tracker/stub-file-generation"
+    paths:
+      - 'src/content/reference/en/**'
+  workflow_dispatch:
+    inputs:
+      full_scan:
+        description: 'Scan all English reference files (not just latest commit)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      languages:
+        description: 'Comma-separated language codes (default: all supported)'
+        required: false
+        default: 'es,hi,ko,zh-Hans'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-translation-stubs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install translation tracker dependencies
+        run: cd .github/actions/translation-tracker && npm install
+
+      - name: Generate stub files and open PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GENERATE_STUBS: 'true'
+          STUB_LANGUAGES: ${{ github.event.inputs.languages || 'es,hi,ko,zh-Hans' }}
+          STUB_CONTENT_TYPES: reference
+          STUB_FULL_SCAN: ${{ github.event.inputs.full_scan || 'false' }}
+        run: node .github/actions/translation-tracker/index.js

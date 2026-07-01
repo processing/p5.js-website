@@ -1,11 +1,12 @@
 # p5.js Translation Tracker
 
-Automatically tracks translation status for p5.js website examples, creates GitHub issues for outdated translations, and shows banners on the website.
+Automatically tracks translation status, creates GitHub issues for outdated translations, generates stub files for missing translations, and powers outdated-translation banners on the website.
 
 ## Features
 
-- Detects outdated/missing translations using Git commit comparison (currently focused on Examples content)
+- Detects outdated/missing translations using Git commit comparison
 - Creates GitHub issues with diff snippets and action checklists
+- Generates translation stub files and opens **one PR per language**
 - Shows localized banners on outdated translation pages
 - Supports Spanish, Hindi, Korean, and Chinese Simplified
 
@@ -15,104 +16,90 @@ Automatically tracks translation status for p5.js website examples, creates GitH
 .github/actions/translation-tracker/
 ├── index.js           # Main tracker logic
 ├── package.json       # Dependencies
-├── test-local.js      # Local testing
+├── test-local.js      # Local issue-tracking test
+├── test-stubs.js      # Local stub dry-run (writes to stub-preview/)
+└── stub-preview/      # Dry-run output (gitignored)
 
-src/layouts/ExampleLayout.astro              # Banner integration
-src/components/OutdatedTranslationBanner/    # Banner component
-public/translation-status/examples.json      # Generated status (build artifact)
+.github/workflows/
+├── translation-sync.yml   # Issues + manifests on English changes
+└── translation-stubs.yml  # Stub PRs for missing reference pages
 ```
 
 ## Usage
 
-### Local Testing
+### Issue tracking (local)
+
 ```bash
 cd .github/actions/translation-tracker && npm install
 node test-local.js
 ```
 
-### Scan All Files (File-based)
+### Stub generation (local dry run — recommended)
+
+Writes stubs under `stub-preview/` only (does **not** modify `src/content/`):
+
 ```bash
-node .github/actions/translation-tracker/index.js
+cd .github/actions/translation-tracker && npm install
+npm run test:stubs
 ```
 
-### Scan All Files (GitHub API + Create Issues)
+Preview path example:
+`stub-preview/src/content/reference/es/p5/foo.mdx`
+
+### Stub generation (open PR on your fork)
+
 ```bash
-GITHUB_TOKEN=your_token GITHUB_REPOSITORY=owner/repo node .github/actions/translation-tracker/index.js
+# From repository root — missing files from latest commit only (all languages by default)
+  GENERATE_STUBS=true \
+  GITHUB_TOKEN=your_token GITHUB_REPOSITORY=youruser/p5.js-website \
+  node .github/actions/translation-tracker/index.js
+
+# Single language or full scan (STUB_MAX_FILES applies per language)
+  GENERATE_STUBS=true STUB_FULL_SCAN=true STUB_MAX_FILES=10 STUB_LANGUAGES=es,hi \
+  GITHUB_TOKEN=your_token GITHUB_REPOSITORY=youruser/p5.js-website \
+  node .github/actions/translation-tracker/index.js
 ```
 
-### GitHub Actions Workflow
-Create `.github/workflows/translation-sync.yml`:
+**Fork:** Settings → Actions → Workflow permissions → **Read and write**.
 
-```yaml
-name: Translation Sync Tracker
+### GitHub Actions
 
-on:
-  push:
-    branches: [main, week2]
-    paths: ['src/content/examples/en/**']
-  workflow_dispatch:
 
-jobs:
-  track-translation-changes:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Install translation tracker dependencies
-        run: cd .github/actions/translation-tracker && npm install
-        
-      - name: Run translation tracker
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node .github/actions/translation-tracker/index.js
-```
+| Workflow                | Trigger                                    | What it does                            |
+| ----------------------- | ------------------------------------------ | --------------------------------------- |
+| `translation-sync.yml`  | Push to `examples/en`, `tutorials/en`      | Issues + manifests                      |
+| `translation-stubs.yml` | Push to `reference/en`, or manual dispatch | Stub PRs (default: es, hi, ko, zh-Hans) |
+
+
+Manual stub run: Actions → **Translation Stub Generator** → Run workflow → optional full scan.
 
 ## Environment Variables
 
-- `GITHUB_TOKEN` - Required for GitHub API and issue creation
-- `GITHUB_REPOSITORY` - Format: `owner/repo` (auto-detected in Actions)
 
-## What It Does
+| Variable             | Purpose                                                |
+| -------------------- | ------------------------------------------------------ |
+| `GITHUB_TOKEN`       | API access (issues, PRs)                               |
+| `GITHUB_REPOSITORY`  | `owner/repo` (default: `processing/p5.js-website`)     |
+| `GENERATE_STUBS`     | `true` = stub mode instead of issue tracking           |
+| `STUB_LANGUAGES`     | Comma-separated (default: `es`, `hi`, `ko`, `zh-Hans`) |
+| `STUB_CONTENT_TYPES` | Comma-separated (default: `reference`)                 |
+| `STUB_FULL_SCAN`     | `true` = all English files, not just latest commit     |
+| `STUB_DRY_RUN`       | `true` = write to `stub-preview/`, no PR               |
+| `STUB_MAX_FILES`     | Max stubs per language per run (default: `50`)         |
+| `STUB_OUTPUT_DIR`    | Custom dry-run output directory                        |
 
-1. **Scans** English example files for changes
-2. **Compares** with translation files using Git commits
-3. **Creates** GitHub issues for outdated translations with:
-   - Diff snippets showing what changed
-   - Links to files and comparisons
-   - Action checklist for translators
-   - Proper labels (`needs translation`, `lang-es`, etc.)
-4. **Generates** manifest file for website banner system
-5. **Shows** localized banners on outdated translation pages
 
-## Sample Output
+## What stubs contain
 
-```
-📝 Checking 61 English example file(s)
+For each English file with **no** translation yet:
 
-📊 Translation Status Summary:
-   🔄 Outdated: 48
-   ❌ Missing: 0
-   ✅ Up-to-date: 196
-
-🎫 GitHub issues created: 12
-   - Issue #36: Spanish, Hindi, Korean, Chinese Simplified need updates
-   - URL: https://github.com/owner/repo/issues/36
-
-🗂️ Wrote translation manifest: public/translation-status/examples.json
-```
+1. Essential English frontmatter (`title`, `description`, etc. — not full API params)
+2. `needsTranslation: true`
+3. Short HTML comment + placeholder body
+4. One PR per language with all stubs grouped (never auto-merged)
 
 ## Dependencies
 
-- `@actions/core`, `@actions/github`, `@octokit/rest`
+- `@octokit/rest`, `js-yaml`
 - Node.js built-ins: `fs`, `path`, `child_process`
+
