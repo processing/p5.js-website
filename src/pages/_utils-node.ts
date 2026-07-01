@@ -78,3 +78,24 @@ export const rewriteRelativeLink = (url: string): string => {
 
   return updatedUrl;
 };
+
+/**
+ * Transforms an Astro content slug for an example into the legacy website slug.
+ *
+ * Astro automatically uses the directory structure for slug information.
+ * Historically the p5 website has used a different structure for example file
+ * vs. webpage routing. This function bridges the two.
+ *
+ * Note: This function lives in _utils-node.ts (rather than _utils.ts) so that
+ * it can be imported by Node-only scripts such as the search-index builder
+ * without pulling in Astro-specific virtual modules.
+ */
+export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
+  slug
+    // First transformation: Remove any locale prefix.
+    .replace(/^[\w-]+?\//, "") // Remove locale prefix
+    // Second transformation: Convert slugs built from local dev path to the legacy format.
+    // For example, "123_topicA/456_topicB/description" becomes "topicA-topicB.html".
+    .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2")
+    // Third transformation: Replace all remaining underscores in the slug with hyphens.
+    .replace(/_/g, "-");
