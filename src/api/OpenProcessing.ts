@@ -53,7 +53,7 @@ export type OpenProcessingSketchResponse = {
 };
 
 // Selected Sketches from the 2025 curation
-export const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405','2684408' , '2693274', '2693345', '2691712']
+export const priorityIds = ['2690038', '2484739', '2688829', '2689119', '2690571', '2690405', '2684408', '2693274', '2693345', '2691712']
 
 async function exists(p: string) {
   try {
@@ -90,14 +90,12 @@ export async function getCurationSketches(): Promise<OpenProcessingCurationRespo
     ...payload2024.map((sketch: OpenProcessingCurationResponse[number]) => ({ ...sketch, curation: '2024' })),
   ];
 
-  const availableSketches: OpenProcessingCurationResponse = [];
-  for (const sketch of allSketches) {
-    if (await exists(SKETCH_FILE(sketch.visualID))) availableSketches.push(sketch);
-  }
+  const existenceChecks = await Promise.all(
+    allSketches.map((sketch) => exists(SKETCH_FILE(sketch.visualID)))
+  );
+  const availableSketches = allSketches.filter((_, index) => existenceChecks[index]);
 
-  return [
-    ...availableSketches,
-  ] as OpenProcessingCurationResponse;
+  return availableSketches;
 };
 
 export async function getSketch(id: number): Promise<OpenProcessingSketchResponse> {
