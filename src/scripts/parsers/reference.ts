@@ -77,6 +77,13 @@ export const parseLibraryReference =
         );
       }
       await saveYuidocOutput('p5.sound.js', 'data-sound');
+      // Clone p5.sound.js
+      await cloneLibraryRepo(
+        localSoundPath,
+        'https://github.com/processing/p5.sound.js.git',
+        'main'
+      );
+      await saveYuidocOutput('p5.sound.js', 'data-sound', { inputPath: 'src' });
       const soundData = await getYuidocOutput('data-sound');
       if (!soundData) throw new Error('Error generating p5.sound reference data!');
 
@@ -163,7 +170,7 @@ const getYuidocOutput = async (outDirName: string): Promise<ParsedLibraryReferen
 };
 
 /**
- * Parses the p5.js library using YUIDoc and captures the output
+ * Parses the given library (e.g. p5.sound) using YUIDoc and captures the output
  */
 export const saveYuidocOutput = async (
   inDirName: string,
