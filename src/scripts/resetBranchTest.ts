@@ -17,7 +17,7 @@ async function main() {
       envFilePath,
       currentEnv
         .split('\n')
-        .filter((line: string) => !line.startsWith('P5_') && !line.startsWith('PUBLIC_P5_'))
+        .filter((line: string) => !line.startsWith('P5_') && !line.startsWith('PUBLIC_P5_') && !line.startsWith('LOCAL_P5_SOUND_PATH'))
         .join('\n')
     );
   }
