@@ -1,5 +1,3 @@
-// PromiseAllExample.js
-
 // Declare variables to hold the images we'll load
 let img1, img2, img3;
 
@@ -17,12 +15,14 @@ async function setup() {
   textAlign(CENTER, CENTER);
   textSize(18);
 
-  // Use async/await with Promise.all to load all three images at once
-  // This waits until ALL images are loaded before continuing
+  // Use async/await with Promise.all to load all
+  // three images at once. This waits until ALL
+  // images are loaded before continuing.
   [img1, img2, img3] = await Promise.all([
-    loadImage('https://picsum.photos/100/100?random=1'), // Replace the image links with user wanted images.
+    loadImage('https://picsum.photos/100/100?random=1'), 
     loadImage('https://picsum.photos/100/100?random=2'),
     loadImage('https://picsum.photos/100/100?random=3')
+    // Replace the image links with user wanted images.
   ]);
 
   // Once all images are ready, draw them on the canvas
