@@ -80,15 +80,20 @@ function stringifyMdx(frontmatter, body) {
   return `---\n${frontmatterText}---\n${body}`;
 }
 
+/** Root directory for dry-run stub output (never touches src/content by default). */
+function getStubOutputRoot() {
+  return (
+    process.env.STUB_OUTPUT_DIR ||
+    path.join(process.cwd(), '.github/actions/translation-tracker/stub-preview')
+  );
+}
+
 /** Where dry-run stubs are written locally (never touches src/content by default). */
 function getStubWritePath(translationPath, dryRun) {
   if (!dryRun) {
     return translationPath;
   }
-  const outputRoot =
-    process.env.STUB_OUTPUT_DIR ||
-    path.join(process.cwd(), '.github/actions/translation-tracker/stub-preview');
-  return path.join(outputRoot, translationPath);
+  return path.join(getStubOutputRoot(), translationPath);
 }
 
 function getChangedFiles(testFiles = null, contentType = 'examples') {
@@ -231,6 +236,7 @@ module.exports = {
   parseFrontmatter,
   stringifyMdx,
   getStubWritePath,
+  getStubOutputRoot,
   getChangedFiles,
   getAllEnglishContentFiles,
   loadStewardsConfig,

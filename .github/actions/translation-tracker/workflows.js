@@ -9,6 +9,7 @@ const {
   parseFrontmatter,
   stringifyMdx,
   getStubWritePath,
+  getStubOutputRoot,
   getChangedFiles,
   getAllEnglishContentFiles,
   getLanguageDisplayName,
@@ -241,10 +242,11 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
  */
 async function runStubGeneration(githubTracker, options = {}) {
   const languages = parseEnvList(process.env.STUB_LANGUAGES, SUPPORTED_LANGUAGES);
-  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, ['reference']);
+  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, ['reference']) || ['reference'];
   const fullScan = options.fullScan ?? process.env.STUB_FULL_SCAN === 'true';
   const dryRun = process.env.STUB_DRY_RUN === 'true';
-  const maxFiles = parseInt(process.env.STUB_MAX_FILES || '50', 10);
+  const parsedMaxFiles = parseInt(process.env.STUB_MAX_FILES || '50', 10);
+  const maxFiles = Number.isNaN(parsedMaxFiles) ? 50 : parsedMaxFiles;
 
   console.log(`\n📦 Stub generation mode`);
   console.log(`   Languages: ${languages.join(', ')}`);
@@ -307,9 +309,7 @@ async function runStubGeneration(githubTracker, options = {}) {
     });
 
     if (dryRun || !githubTracker) {
-      const previewRoot =
-        process.env.STUB_OUTPUT_DIR ||
-        path.join(process.cwd(), '.github/actions/translation-tracker/stub-preview');
+      const previewRoot = getStubOutputRoot();
       for (const stub of stubs) {
         const writePath = getStubWritePath(stub.translationPath, true);
         const dir = path.dirname(writePath);
