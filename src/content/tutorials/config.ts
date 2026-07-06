@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
-import { relatedContent } from "../shared";
+import { generateEntryId, relatedContent } from "../shared";
 
 export const categories = [
   "introduction",
@@ -17,7 +17,11 @@ export const categories = [
  * Content collection for the Sketches showcase section of the site.
  */
 export const tutorialsCollection = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: "./src/content/tutorials" }),
+  loader: glob({
+    pattern: '**/*.mdx',
+    base: "./src/content/tutorials",
+    generateId: generateEntryId,
+  }),
   schema: ({ image }) =>
     z
       .object({
