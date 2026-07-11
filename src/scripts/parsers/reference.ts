@@ -66,8 +66,11 @@ export const parseLibraryReference =
         console.log(`Copying local p5.sound.js from ${process.env.LOCAL_P5_SOUND_PATH}`);
         await fs.cp(process.env.LOCAL_P5_SOUND_PATH, localSoundPath, {
           recursive: true,
-          // Ignore node_modules and .git to speed up the copy
-          filter: (src) => !src.includes('node_modules') && !src.includes('.git')
+          // Ignore node_modules and hidden files/directories, except .github
+          filter: (src) =>
+            !src.includes("node_modules") &&
+            (path.basename(src) === ".github" ||
+              !path.basename(src).startsWith(".")),
         });
       } else {
         await cloneLibraryRepo(
