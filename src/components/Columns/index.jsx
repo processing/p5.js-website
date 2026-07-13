@@ -6,5 +6,5 @@ export const Columns = (props) => (
 );
 
 export const Column = (props) => (
-  <div class={`mb-md mr-md flex-1 max-w-[100%] ${props.class || ''} ${props.fixed ? 'grow-0' : 'min-w-[400px]'}`}>{props.children}</div>
+  <div class={`mb-md mr-md flex-1 max-w-[100%] ${props.class || ''} ${props.fixed ? 'grow-0' : 'w-full md:min-w-[400px]'}`}>{props.children}</div>
 );
