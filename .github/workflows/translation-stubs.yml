@@ -2,14 +2,18 @@ name: Translation Stub Generator
 
 on:
   push:
-    branches: 
-      - "feature/translation-tracker/stub-file-generation"
+    branches:
+      - v1
     paths:
-      - 'src/content/reference/en/**'
+      - 'src/content/examples/en/**'
+      - 'src/content/tutorials/en/**'
+      - 'src/content/text-detail/en/**'
+      - 'src/content/events/en/**'
+      - 'src/content/libraries/en/**'
   workflow_dispatch:
     inputs:
       full_scan:
-        description: 'Scan all English reference files (not just latest commit)'
+        description: 'Scan all English content files (not just latest commit)'
         required: false
         default: 'false'
         type: choice
@@ -48,6 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GENERATE_STUBS: 'true'
           STUB_LANGUAGES: ${{ github.event.inputs.languages || 'es,hi,ko,zh-Hans' }}
-          STUB_CONTENT_TYPES: reference
+          # All content types except reference
+          STUB_CONTENT_TYPES: examples,tutorials,text-detail,events,libraries
           STUB_FULL_SCAN: ${{ github.event.inputs.full_scan || 'false' }}
         run: node .github/actions/translation-tracker/index.js

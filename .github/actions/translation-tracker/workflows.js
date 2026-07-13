@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { SUPPORTED_LANGUAGES, STUB_FRONTMATTER_KEYS } = require('./constants');
+const { SUPPORTED_LANGUAGES, CONTENT_TYPES, STUB_FRONTMATTER_KEYS } = require('./constants');
 const {
   getTranslationPath,
   parseEnvList,
@@ -246,7 +246,9 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
  */
 async function runStubGeneration(githubTracker, options = {}) {
   const languages = parseEnvList(process.env.STUB_LANGUAGES, SUPPORTED_LANGUAGES);
-  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, ['reference']) || ['reference'];
+  // All tracked content types except reference (reference stubs were handled separately).
+  const defaultStubContentTypes = CONTENT_TYPES.filter((type) => type !== 'reference');
+  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, defaultStubContentTypes) || defaultStubContentTypes;
   const fullScan = options.fullScan ?? process.env.STUB_FULL_SCAN === 'true';
   const dryRun = process.env.STUB_DRY_RUN === 'true';
   const parsedMaxFiles = parseInt(process.env.STUB_MAX_FILES || '50', 10);
