@@ -378,7 +378,7 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
     return { branchName, commitSha: commit.sha };
   }
 
-  async createStubPullRequest(language, stubs) {
+  async createStubPullRequest(language, stubs, failures = []) {
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const branchName = `translation-stubs/${language}-${dateStr}-${Date.now()}`;
     const langName = this.getLanguageDisplayName(language);
@@ -398,6 +398,18 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
         .map((stub) => `- \`${stub.translationPath}\` (from \`${stub.englishPath}\`)`)
         .join('\n');
 
+      const failuresSection =
+        failures.length > 0
+          ? `
+
+### Generation failures (${failures.length})
+
+These English sources could not be turned into stubs and were skipped:
+
+${failures.map((f) => `- \`${f.englishFile}\`: ${f.error}`).join('\n')}
+`
+          : '';
+
       const { data: pr } = await this.octokit.rest.pulls.create({
         owner: this.owner,
         repo: this.repo,
@@ -416,7 +428,7 @@ Each stub:
 ### Files (${stubs.length})
 
 ${fileList}
-
+${failuresSection}
 ### Next steps for translators
 
 - [ ] Translate each file's body and frontmatter fields

@@ -91,12 +91,14 @@ Manual stub run: Actions → **Translation Stub Generator** → Run workflow →
 
 ## What stubs contain
 
-For each English file with **no** translation yet:
+For each English **`.mdx`** file with **no** translation yet (`.yaml` / `.yml` sources are skipped for now):
 
 1. Essential English frontmatter (`title`, `description`, etc. — not full API params)
 2. `needsTranslation: true`
 3. Short HTML comment + placeholder body
 4. One PR per language with all stubs grouped (never auto-merged)
+
+Per-file failures are logged and listed in the PR body so one bad source cannot abort the whole language batch.
 
 ## Dependencies
 

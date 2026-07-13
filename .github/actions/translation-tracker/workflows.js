@@ -69,6 +69,10 @@ function pickStubFrontmatter(frontmatter, contentType) {
  * Copies essential frontmatter (in English), sets needsTranslation: true, minimal body.
  */
 function generateStubFromEnglish(englishPath, language, contentType = 'reference') {
+  if (!englishPath.endsWith('.mdx')) {
+    throw new Error(`Stub generation only supports .mdx sources (got ${englishPath})`);
+  }
+
   const raw = fs.readFileSync(englishPath, 'utf8');
   const frontmatter = parseFrontmatter(raw, englishPath);
   const translationPath = getTranslationPath(englishPath, language);
@@ -261,17 +265,40 @@ async function runStubGeneration(githubTracker, options = {}) {
 
   if (missing.length === 0) {
     console.log('\n✅ No missing translation files found for stub generation.');
-    return { prsCreated: [], stubsWritten: 0 };
+    return { prsCreated: [], stubsWritten: 0, failures: [], skippedNonMdx: [] };
   }
 
-  console.log(`\n❌ Found ${missing.length} missing translation file(s):`);
-  missing.forEach((item) => {
+  // Stub generation currently only supports MDX. Skip other non-MDX sources with a notice
+  const skippedNonMdx = [];
+  const stubbable = [];
+  for (const item of missing) {
+    if (item.englishFile.endsWith('.mdx')) {
+      stubbable.push(item);
+    } else {
+      skippedNonMdx.push(item);
+    }
+  }
+
+  if (skippedNonMdx.length > 0) {
+    console.log(`\n⏭️  Skipping ${skippedNonMdx.length} non-MDX source(s) (stub generation is MDX-only for now):`);
+    skippedNonMdx.forEach((item) => {
+      console.log(`   - ${item.englishFile} → ${item.language}`);
+    });
+  }
+
+  if (stubbable.length === 0) {
+    console.log('\n✅ No MDX files need stubs.');
+    return { prsCreated: [], stubsWritten: 0, failures: [], skippedNonMdx };
+  }
+
+  console.log(`\n❌ Found ${stubbable.length} missing translation file(s):`);
+  stubbable.forEach((item) => {
     console.log(`   - ${item.englishFile} → ${item.language}`);
     console.log(`     Expected: ${item.translationPath}`);
   });
 
   const byLanguage = new Map();
-  for (const item of missing) {
+  for (const item of stubbable) {
     if (!byLanguage.has(item.language)) {
       byLanguage.set(item.language, []);
     }
@@ -295,6 +322,7 @@ async function runStubGeneration(githubTracker, options = {}) {
   }
 
   const prsCreated = [];
+  const failures = [];
   let stubsWritten = 0;
 
   for (const [language, items] of limitedByLanguage) {
@@ -302,11 +330,30 @@ async function runStubGeneration(githubTracker, options = {}) {
 
     console.log(`\n📝 Generating ${items.length} stub(s) for ${langName}:`);
 
-    const stubs = items.map((item) => {
-      const stub = generateStubFromEnglish(item.englishFile, language, item.contentType);
-      console.log(`   📄 ${item.englishFile} → ${stub.translationPath}`);
-      return stub;
-    });
+    const stubs = [];
+    const languageFailures = [];
+    for (const item of items) {
+      try {
+        const stub = generateStubFromEnglish(item.englishFile, language, item.contentType);
+        console.log(`   📄 ${item.englishFile} → ${stub.translationPath}`);
+        stubs.push(stub);
+      } catch (error) {
+        const failure = {
+          englishFile: item.englishFile,
+          language,
+          translationPath: item.translationPath,
+          error: error.message,
+        };
+        languageFailures.push(failure);
+        failures.push(failure);
+        console.error(`   ❌ Failed ${item.englishFile}: ${error.message}`);
+      }
+    }
+
+    if (stubs.length === 0) {
+      console.log(`\n⚠️  No stubs generated for ${langName} (${languageFailures.length} failure(s)). Skipping PR.`);
+      continue;
+    }
 
     if (dryRun || !githubTracker) {
       const previewRoot = getStubOutputRoot();
@@ -320,19 +367,30 @@ async function runStubGeneration(githubTracker, options = {}) {
         stubsWritten += 1;
       }
       console.log(`\n🧪 Dry run: wrote ${stubs.length} stub file(s) under ${previewRoot}`);
+      if (languageFailures.length > 0) {
+        console.log(`   (${languageFailures.length} file(s) failed and were skipped)`);
+      }
       continue;
     }
 
-    const pr = await githubTracker.createStubPullRequest(language, stubs);
+    const pr = await githubTracker.createStubPullRequest(language, stubs, languageFailures);
     if (pr) {
       prsCreated.push({
         language,
         prNumber: pr.number,
         prUrl: pr.html_url,
         fileCount: stubs.length,
+        failureCount: languageFailures.length,
       });
       stubsWritten += stubs.length;
     }
+  }
+
+  if (failures.length > 0) {
+    console.log(`\n⚠️  Stub generation failures: ${failures.length}`);
+    failures.forEach((failure) => {
+      console.log(`   - ${failure.englishFile} (${failure.language}): ${failure.error}`);
+    });
   }
 
   if (prsCreated.length > 0) {
@@ -345,7 +403,7 @@ async function runStubGeneration(githubTracker, options = {}) {
     console.log(`\n💡 Stubs were not written. Check GITHUB_TOKEN permissions (contents + pull-requests write).`);
   }
 
-  return { prsCreated, stubsWritten };
+  return { prsCreated, stubsWritten, failures, skippedNonMdx };
 }
 
 module.exports = {
