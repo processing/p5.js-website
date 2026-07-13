@@ -22,7 +22,7 @@ Automatically tracks translation status, creates GitHub issues for outdated tran
 
 .github/workflows/
 ├── translation-sync.yml   # Issues + manifests on English changes
-└── translation-stubs.yml  # Stub PRs for missing reference pages
+└── translation-stubs.yml  # Stub PRs for missing translations across content types
 ```
 
 ## Usage
@@ -44,7 +44,7 @@ npm run test:stubs
 ```
 
 Preview path example:
-`stub-preview/src/content/reference/es/p5/foo.mdx`
+`stub-preview/src/content/tutorials/es/get-started.mdx`
 
 ### Stub generation (open PR on your fork)
 
@@ -68,7 +68,7 @@ Preview path example:
 | Workflow                | Trigger                                    | What it does                            |
 | ----------------------- | ------------------------------------------ | --------------------------------------- |
 | `translation-sync.yml`  | Push to `examples/en`, `tutorials/en`      | Issues + manifests                      |
-| `translation-stubs.yml` | Push to `reference/en`, or manual dispatch | Stub PRs (default: es, hi, ko, zh-Hans) |
+| `translation-stubs.yml` | Push to English content under `src/content/*/en`, or manual dispatch | Stub PRs (default: es, hi, ko, zh-Hans) |
 
 
 Manual stub run: Actions → **Translation Stub Generator** → Run workflow → optional full scan.
@@ -82,7 +82,7 @@ Manual stub run: Actions → **Translation Stub Generator** → Run workflow →
 | `GITHUB_REPOSITORY`  | `owner/repo` (default: `processing/p5.js-website`)     |
 | `GENERATE_STUBS`     | `true` = stub mode instead of issue tracking           |
 | `STUB_LANGUAGES`     | Comma-separated (default: `es`, `hi`, `ko`, `zh-Hans`) |
-| `STUB_CONTENT_TYPES` | Comma-separated (default: `reference`)                 |
+| `STUB_CONTENT_TYPES` | Comma-separated (default: `examples`, `tutorials`, `text-detail`, `events`, `libraries` — excludes `reference`) |
 | `STUB_FULL_SCAN`     | `true` = all English files, not just latest commit     |
 | `STUB_DRY_RUN`       | `true` = write to `stub-preview/`, no PR               |
 | `STUB_MAX_FILES`     | Max stubs per language per run (default: `50`)         |
