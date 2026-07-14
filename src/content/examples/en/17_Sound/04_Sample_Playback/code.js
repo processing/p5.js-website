@@ -1,5 +1,5 @@
 async function setup() {
-  sample = await loadSound("assets/drums.mp3");
+  sample = await loadSound("assets/sounds/beat.mp3");
   sample.loop(true);
   createCanvas(100, 100);
   textAlign(CENTER);
