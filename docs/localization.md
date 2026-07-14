@@ -18,6 +18,9 @@ Each file within these collection folders corresponds to a real page on the rend
 
 The ["ui" content collection](src/content/ui/) is a little different than the others. It contains yaml files that cover strings that are used across different pages for things like the navigation bar.
 
+**Note on Translating Examples:**
+When translating Example pages (`.mdx`), you do not need to copy or include the `remix` metadata block in the frontmatter. The website will automatically fall back to the English version to fetch the remix data.
+
 ## Routes and Layouts
 
 Astro uses a file-based approach to generating routes. The filepath of each file in `src/pages` becomes the url of the page it renders. Because we need to support a url scheme where English translations of pages are served at a URL with no locale prefix (for example, the English version of the tutorials page is at https://p5.js/tutorials _not_ https://p5.js/en/tutorials), there are 2 sets of routing files and folders: one in `src/pages` and another `src/pages/[locale]`. The `[locale]` set are needed to build and serve the non-English pages (whose URLs are also prefixed by the language codes).
