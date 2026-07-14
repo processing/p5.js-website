@@ -61,6 +61,25 @@ export const parseLibraryReference =
     if (useExternalP5Sound) {
       console.log('Cloning separate p5.sound repo');
 
+      // Clone or copy p5.sound.js
+      if (process.env.LOCAL_P5_SOUND_PATH) {
+        console.log(`Copying local p5.sound.js from ${process.env.LOCAL_P5_SOUND_PATH}`);
+        await fs.cp(process.env.LOCAL_P5_SOUND_PATH, localSoundPath, {
+          recursive: true,
+          // Ignore node_modules and hidden files/directories, except .github
+          filter: (src) =>
+            !src.includes("node_modules") &&
+            (path.basename(src) === ".github" ||
+              !path.basename(src).startsWith(".")),
+        });
+      } else {
+        await cloneLibraryRepo(
+          localSoundPath,
+          'https://github.com/processing/p5.sound.js.git',
+          'main'
+        );
+      }
+      await saveYuidocOutput('p5.sound.js', 'data-sound');
       // Clone p5.sound.js
       await cloneLibraryRepo(
         localSoundPath,
