@@ -2,7 +2,7 @@
 import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import type { CollectionEntry } from "astro:content";
-import { setJumpToState } from "../globals/state";
+import { render } from "astro:content";
 import { getCurrentLocale } from "../i18n/utils";
 import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import { checkTranslationBanner } from "../utils/translationBanner";
@@ -12,15 +12,13 @@ interface Props {
 }
 
 const { page } = Astro.props;
-const { Content } = await page.render();
+const { Content } = await render(page);
 
 const pageTopic = Astro.url.pathname.includes("donate")
   ? "contribute"
   : undefined;
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
-
-setJumpToState(null);
 
 const { showBanner, englishUrl } = checkTranslationBanner(
   'text-detail',
@@ -39,6 +37,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   topic={pageTopic}
   className={pageTopic}
   subtitle={null}
+  jumpToState={null}
 >
   {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   <div class="max-w-[770px] [&>*:first-child]:mt-0 rendered-markdown pb-[80px]">

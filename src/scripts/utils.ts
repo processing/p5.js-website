@@ -1,8 +1,8 @@
 import simpleGit from "simple-git";
-import fs, { cp, readdir } from "fs/promises";
-import path from "path";
-import type { CopyOptions, Dirent } from "fs";
-import { fileURLToPath } from "url";
+import fs, { cp, readdir } from "node:fs/promises";
+import path from "node:path";
+import type { CopyOptions, Dirent } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { rewriteRelativeLink } from "../pages/_utils-node";
 import { p5Version } from "../globals/p5-version";
 

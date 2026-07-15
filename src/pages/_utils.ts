@@ -1,19 +1,18 @@
 import {
   getCollection,
   type CollectionEntry,
-  type AnyEntryMap,
-  type ContentEntryMap,
+  type CollectionKey,
 } from "astro:content";
 import { defaultLocale, supportedLocales } from "@i18n/const";
 import { removeLocalePrefix, startsWithSupportedLocale } from "@i18n/utils";
-import type { ReferenceDocContentItem } from "../content/types";
 import { load } from "cheerio";
 import he from "he";
 import { JSDOM } from "jsdom";
 import type { JumpToLink, JumpToState } from "../globals/state";
 import { categories as referenceCategories } from "../content/reference/config";
 import memoize from "lodash/memoize";
-import { removeNestedReferencePaths } from "./_utils-node";
+import { removeNestedReferencePaths, exampleContentSlugToLegacyWebsiteSlug } from "./_utils-node";
+export { exampleContentSlugToLegacyWebsiteSlug };
 
 interface EntryWithId {
   id: string;
@@ -26,13 +25,23 @@ interface EntryWithId {
  * @param collectionName
  * @returns
  */
-export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
+export const getCollectionInDefaultLocale = async <C extends CollectionKey>(
   collectionName: C,
-): Promise<CollectionEntry<C>[]> =>
-  await getCollection(collectionName, (entry: unknown) => {
+): Promise<CollectionEntry<C>[]> => {
+  const collection = await getCollection(collectionName, (entry: unknown) => {
     const { id } = entry as EntryWithId;
     return id.startsWith(`${defaultLocale}/`);
   });
+
+  if (collectionName === "reference") {
+    collection.forEach((entry) => {
+      if (entry.filePath) {
+        entry.id = entry.filePath.split("/").slice(3).join("/").replace(/\.mdx$/, "");
+      }
+    });
+  }
+  return collection;
+};
 
 /**
  * Retreives all the entries in the given collection for a given locale, and
@@ -43,7 +52,7 @@ export const getCollectionInDefaultLocale = async <C extends keyof AnyEntryMap>(
  * @returns
  */
 export const getCollectionInLocaleWithFallbacks = memoize(async <
-  C extends keyof AnyEntryMap,
+  C extends CollectionKey,
 >(
   collectionName: C,
   locale: string,
@@ -75,7 +84,7 @@ export const getCollectionInLocaleWithFallbacks = memoize(async <
  * @returns
  */
 export const getCollectionInNonDefaultLocales = async <
-  C extends keyof AnyEntryMap,
+  C extends CollectionKey,
 >(
   collectionName: C,
 ): Promise<CollectionEntry<C>[]> =>
@@ -92,7 +101,7 @@ export const getCollectionInNonDefaultLocales = async <
  * @param locale
  * @returns
  */
-export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
+export const getCollectionInLocale = async <C extends CollectionKey>(
   collectionName: C,
   locale: string,
 ): Promise<CollectionEntry<C>[]> =>
@@ -112,7 +121,7 @@ export const getCollectionInLocale = async <C extends keyof AnyEntryMap>(
  * @returns
  */
 export const getRelatedEntriesinCollection = async <
-  C extends keyof ContentEntryMap,
+  C extends CollectionKey,
 >(
   collectionName: C,
   locale: string,
@@ -125,7 +134,7 @@ export const getRelatedEntriesinCollection = async <
   const foundEntries = relatedSlugs.map((relatedSlug) =>
     collection.find(
       (collectionItem) =>
-        removeLocaleAndExtension(collectionItem.slug) ===
+        removeLocaleAndExtension(collectionItem.id) ===
         removeLocaleAndExtension(relatedSlug),
     ),
   );
@@ -133,24 +142,9 @@ export const getRelatedEntriesinCollection = async <
   return foundEntries.filter((el) => el !== undefined) as CollectionEntry<C>[];
 };
 
-/**
- * Astro automatically uses the directory structure for slug information
- * Historically the p5 website has used a different structure for example file vs. webpage routing
- * This function transforms the Astro slug to the appropriate webpage route to avoid breaking
- * Any inbound legacy links
- */
-export const exampleContentSlugToLegacyWebsiteSlug = (slug: string): string =>
-  slug
-    // First transformation: Remove any locale prefix.
-    .replace(/^[\w-]+?\//, "") // Remove locale prefix
-    // Second transformation: Convert slugs built from local dev path to the legacy format.
-    // For example, "123_topicA/456_topicB/description" becomes "topicA-topicB.html".
-    .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2")
-    // Third transformation: Replace all remaining underscores in the slug with hyphens.
-    .replace(/_/g, "-");
+export const getExampleCategory = (entry: any): string =>
+  entry.filePath.split("/")[4].split("_").splice(1).join(" ");
 
-export const getExampleCategory = (slug: string): string =>
-  slug.split("/")[1].split("_").splice(1).join(" ");
 
 export const normalizeReferenceRoute = (route: string): string =>
   removeNestedReferencePaths(removeLocaleAndExtension(route));
@@ -170,12 +164,12 @@ export const removeContentFileExt = (id: string): string =>
 /* We have to modify the Astro.js slug to match existing routing */
 /* This is done dynamically here instead of relying on example authors */
 /* to update their slugs in the MDX Content Entry */
-export const transformExampleSlugs = <C extends keyof ContentEntryMap>(
+export const transformExampleSlugs = <C extends CollectionKey>(
   exampleCollection: CollectionEntry<C>[],
 ): CollectionEntry<C>[] => {
   const transformedEntries = exampleCollection.map((entry) => ({
     ...entry,
-    slug: exampleContentSlugToLegacyWebsiteSlug(entry.slug),
+    slug: exampleContentSlugToLegacyWebsiteSlug(entry.id),
   }));
 
   return transformedEntries;
@@ -220,7 +214,7 @@ export const parseReferenceExamplesAndMetadata = (examples: string[]): { src: st
  * @returns The title concatenated with parentheses if the reference entry is a constructor or method
  */
 export const getRefEntryTitleConcatWithParen = (
-  referenceEntry: ReferenceDocContentItem,
+  referenceEntry: CollectionEntry<"reference">,
 ) =>
   `${referenceEntry.data.title}${referenceEntry.data.itemtype === "method" ? "()" : ""}`;
 
@@ -323,8 +317,8 @@ export const decodeHtml = (html: string) => {
  * @returns JumpToState object
  */
 export const generateJumpToState = async (
-  collectionType: keyof ContentEntryMap,
-  currentEntrySlug: string,
+  collectionType: CollectionKey,
+  currentEntry: CollectionEntry<CollectionKey>,
   jumpToHeading: string,
   t: (...args: string[]) => string | Record<string, any>,
   currentLocale: (typeof supportedLocales)[number],
@@ -351,7 +345,7 @@ export const generateJumpToState = async (
       break;
     case "examples":
       categories = new Set(
-        localeEntries.map((entry) => getExampleCategory(entry.id)),
+        localeEntries.map((entry) => getExampleCategory(entry)),
       );
       break;
     default:
@@ -383,22 +377,22 @@ export const generateJumpToState = async (
       url:
         collectionType === "examples"
           ? `/${collectionType}/#${categoryLabel.toLowerCase()}`
-          : `/${collectionType}/#${category}`,
+          : `/${String(collectionType)}/#${category}`,
       current: false,
     });
 
     // Examples are a special case where subentries are only shown if they are in the current category
     if (
       collectionType !== "examples" ||
-      category === getExampleCategory(currentEntrySlug) ||
-      category.toLowerCase() === getExampleCategory(currentEntrySlug)
+      category === getExampleCategory(currentEntry) ||
+      category.toLowerCase() === getExampleCategory(currentEntry)
     ) {
       // Get all entries in the current category
       let currentCategoryEntries = localeEntries.filter(
         (entry) =>
           category ===
           (collectionType === "examples"
-            ? getExampleCategory(entry.id)
+            ? getExampleCategory(entry)
             : // @ts-expect-error - We know that the category exists because of the collection type
               entry.data.category ?? ""),
       );
@@ -416,12 +410,12 @@ export const generateJumpToState = async (
         ...currentCategoryEntries.map(
           (entry) =>
             ({
-              label: entry.data.title,
+              label: (entry.data as any).title,
               url: getUrl(entry, collectionType),
               size: "small",
               current:
-                removeLocalePrefix(entry.slug) ===
-                removeLocalePrefix(currentEntrySlug),
+                removeLocalePrefix(entry.id) ===
+                removeLocalePrefix(currentEntry.id),
             }) as JumpToLink,
         ),
       );
@@ -443,16 +437,16 @@ export const generateJumpToState = async (
 };
 
 const getUrl = (
-  entry: CollectionEntry<keyof ContentEntryMap>,
-  collectionType: keyof ContentEntryMap,
+  entry: CollectionEntry<CollectionKey>,
+  collectionType: CollectionKey,
 ) => {
   switch (collectionType) {
     case "reference":
-      return `/reference/${entry.slug}`;
+      return `/reference/${entry.id}`;
     case "tutorials":
-      return `/tutorials/${removeLocalePrefix(entry.slug)}`;
+      return `/tutorials/${removeLocalePrefix(entry.id)}`;
     case "examples":
-      return `/examples${exampleContentSlugToLegacyWebsiteSlug(removeLocalePrefix(entry.slug))}`;
+      return `/examples${exampleContentSlugToLegacyWebsiteSlug(removeLocalePrefix(entry.id))}`;
     default:
       return "";
   }

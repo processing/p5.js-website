@@ -1,4 +1,14 @@
-import { reference, z } from "astro:content";
+import { reference } from "astro:content";
+import { z } from "astro/zod";
+
+/**
+ * Generates an entry ID that preserves the original file path casing.
+ * Astro's default glob() loader lowercases IDs via github-slugger, which
+ * breaks locale matching for codes like "zh-Hans". Using the raw path
+ * (without extension) keeps IDs consistent with the folder structure.
+ */
+export const generateEntryId = ({ entry }: { entry: string }): string =>
+  entry.replace(/\.(mdx|yaml)$/, "");
 
 /*
  * A zod type for an author.
@@ -7,7 +17,7 @@ import { reference, z } from "astro:content";
 export const author = () =>
   z.object({
     name: z.string(),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
   });
 
 /*

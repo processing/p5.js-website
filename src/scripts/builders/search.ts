@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { promises as fs } from "node:fs";
+import path from "node:path";
 import matter from "gray-matter";
 import type {
   ContentType,
@@ -10,7 +10,7 @@ import keywordExtractor from "keyword-extractor";
 import { contentTypes } from "../../globals/globals";
 import { supportedLocales as localesWithSearchSupport } from "../../i18n/const";
 import type { LanguageName } from "keyword-extractor/types/lib/keyword_extractor";
-import { removeNestedReferencePaths } from "../../pages/_utils-node";
+import { removeNestedReferencePaths, exampleContentSlugToLegacyWebsiteSlug } from "../../pages/_utils-node";
 
 interface SearchIndex {
   [title: string]: {
@@ -223,19 +223,19 @@ export const generateSearchIndex = async (
         title = data.title;
         description = getKeywordsFromContent(content, locale);
         break;
-      case "examples":
-        relativeUrl = file
+      case "examples": {
+        // The helper expects a slug with the locale prefix intact (e.g.
+        // "en/05_Transformation/01_Rotate/description") because its first
+        // regex strips ^[\w-]+?/ (the locale). contentRelativeUrl is already
+        // locale-stripped, so derive the slug from the content base path.
+        const exampleSlug = file
           .replace("src/content/examples/", "")
-          .replace(".mdx", "")
-          .toLowerCase()
-          // TODO: Separate Astro utils from the exampleContentSlugToLegacyWebsiteSlug
-          .replace(/^[\w-]+?\//, "")
-          .replace(/\d+_(.*?)\/\d+_(.*?)\/description$/, "$1-$2")
-          .replace(/_/g, "-");
-        relativeUrl = `/examples/${relativeUrl}`;
+          .replace(".mdx", "");
+        relativeUrl = `/examples/${exampleContentSlugToLegacyWebsiteSlug(exampleSlug)}`;
         title = data.title;
         description = getKeywordsFromContent(content, locale);
         break;
+      }
       case "reference":
         relativeUrl = removeNestedReferencePaths(relativeUrl);
         title = data.title;
