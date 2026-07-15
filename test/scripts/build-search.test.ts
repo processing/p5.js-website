@@ -64,3 +64,19 @@ describe("Search Index Example URL Generation", () => {
     );
   });
 });
+
+describe("Search Index Event Description Generation", () => {
+  test('does not append the literal "undefined" when an event has no description frontmatter', async () => {
+    mockedGetContentFilePaths.mockResolvedValue([
+      "src/content/events/en/contributors-conference-2015.mdx",
+    ]);
+
+    const result = await generateSearchIndex("events", "en");
+
+    const eventEntry = result?.["p5.js Contributors Conference 2015"];
+
+    expect(eventEntry).toBeDefined();
+    expect(eventEntry?.description).toBeTruthy();
+    expect(eventEntry?.description).not.toContain("undefined");
+  });
+});
