@@ -82,45 +82,42 @@ let img;
 
 // Load the image before the main program starts
 async function setup() {
-// Create a canvas that's at least the size of the image.
-createCanvas(400, 350);
+  // Create a canvas that's at least the size of the image.
+  createCanvas(400, 350);
 
-// Load Image
-img = await loadImage("/assets/hand.jpg");
+  // Load Image
+  img = await loadImage("/assets/hand.jpg");
 
-// Load the handPose model.
-// Since loading a machine learning model takes time,
-// we use await to wait until the model is ready before continuing.
-handPose = await ml5.handPose();
+  // Load the handPose model.
+  // Since loading a machine learning model takes time,
+  // we use await to wait until the model is ready before continuing.
+  handPose = await ml5.handPose();
 
-frameRate(1); // Set the frameRate to 1 since we don't need it to run quickly in this case.
-
-// Ask the model to find hands in the image.
-// When the model finishes detecting hands, it will run the callback function.
-handPose.detect(img, results => {
-predictions = results;
-});
+  // Ask the model to find hands in the image.
+  // When the model finishes detecting hands, it will run the callback function.
+  handPose.detect(img, results => {
+    predictions = results;
+    });
 }
 
 // draw() will not show anything until hands are detected
 function draw() {
-if (predictions.length > 0) {
-image(img, 0, 0, width, height);
-drawKeypoints();
+  if (predictions.length > 0) {
+    image(img, 0, 0, width, height);
+    drawKeypoints();
 
     // Print the first hand prediction to the console.
     console.log(predictions[0]);
 
     // Stop looping when the hands are detected.
     noLoop();
-
-}
+  }
 }
 
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
-for (let i = 0; i < predictions.length; i += 1) {
-const prediction = predictions[i];
+  for (let i = 0; i < predictions.length; i += 1) {
+  const prediction = predictions[i];
 
     for (let j = 0; j < prediction.keypoints.length; j += 1) {
       const keypoint = prediction.keypoints[j];
@@ -129,8 +126,7 @@ const prediction = predictions[i];
       noStroke();
       ellipse(keypoint.x, keypoint.y, 10, 10);
     }
-
-}
+  }
 }
 `}
 />
@@ -186,49 +182,46 @@ let predictions = [];
 let img;
 
 async function setup() {
-// Create a canvas
-createCanvas(400, 350);
+  // Create a canvas
+  createCanvas(400, 350);
 
-// Load the image and wait until it finishes loading
-img = await loadImage("/assets/hand.jpg");
+  // Load the image and wait until it finishes loading
+  img = await loadImage("/assets/hand.jpg");
 
-// Load the handPose model and wait until it finishes loading
-handPose = await ml5.handPose();
+  // Load the handPose model and wait until it finishes loading
+  handPose = await ml5.handPose();
 
-frameRate(1);
-
-// Ask the model to find hands in the image.
-// When detection is complete, store the results.
-handPose.detect(img, results => {
-predictions = results;
-});
+  // Ask the model to find hands in the image.
+  // When detection is complete, store the results.
+  handPose.detect(img, results => {
+    
+  });
 }
 
 // draw() will not show anything until hands are detected
 function draw() {
-if (predictions.length > 0) {
-image(img, 0, 0, width, height);
-drawKeypoints();
+  if (predictions.length > 0) {
+    image(img, 0, 0, width, height);
+    drawKeypoints();
 
     // Stop looping when the hands are detected.
     noLoop();
-
-}
+  }
 }
 
 // A function that creates a finger object
 function createFinger(name, points, color) {
-return {
-name: name,
-points: points,
-color: color,
-};
+  return {
+  name: name,
+  points: points,
+  color: color,
+  };
 }
 
 // Draw circles over the detected fingertips
 function drawKeypoints() {
-if (predictions.length > 0) {
-let prediction = predictions[0];
+  if (predictions.length > 0) {
+    let prediction = predictions[0];
 
     // Create finger objects with the labels, points and color
     let fingers = [
@@ -251,8 +244,7 @@ let prediction = predictions[0];
 
       ellipse(tip.x, tip.y, 10, 10);
     }
-
-}
+  }
 }
 `}
 />
@@ -292,54 +284,51 @@ let img;
 let hatImage;
 
 async function setup() {
-// Create a canvas
-createCanvas(400, 350);
+  // Create a canvas
+  createCanvas(400, 350);
 
-// Load the image and wait until it finishes loading
-img = await loadImage("/assets/hand.jpg");
+  // Load the image and wait until it finishes loading
+  img = await loadImage("/assets/hand.jpg");
 
-// Load the hat image
-hatImage = await loadImage("/assets/hat.jpg")
+  // Load the hat image
+  hatImage = await loadImage("/assets/hat.jpg")
 
-console.log(img);
+  console.log(img);
 
-// Load the handPose model and wait until it finishes loading
-handPose = await ml5.handPose();
+  // Load the handPose model and wait until it finishes loading
+  handPose = await ml5.handPose();
 
-frameRate(1);
-
-// Ask the model to find hands in the image.
-// When detection is complete, store the results.
-handPose.detect(img, results => {
-predictions = results;
-});
+  // Ask the model to find hands in the image.
+  // When detection is complete, store the results.
+  handPose.detect(img, results => {
+  predictions = results;
+  });
 }
 
 // draw() will not show anything until hands are detected
 function draw() {
-if (predictions.length > 0) {
-image(img, 0, 0, width, height);
-drawKeypoints();
+  if (predictions.length > 0) {
+    image(img, 0, 0, width, height);
+    drawKeypoints();
 
     // Stop looping when the hands are detected.
     noLoop();
-
-}
+  }
 }
 
 // Create a finger object
 function createFinger(name, points, color) {
-return {
-name: name,
-points: points,
-color: color,
-};
+  return {
+  name: name,
+  points: points,
+  color: color,
+  };
 }
 
 // Draw hat images over the detected fingertips
 function drawKeypoints() {
-if (predictions.length > 0) {
-let prediction = predictions[0];
+  if (predictions.length > 0) {
+    let prediction = predictions[0];
 
     let fingers = [
       createFinger("thumb", prediction.keypoints.slice(0, 4), "red"),
@@ -370,8 +359,7 @@ let prediction = predictions[0];
         hatSize
       );
     }
-
-}
+  }
 }
 `} />
 
@@ -404,27 +392,27 @@ let video;
 let hands = [];
 
 async function setup() {
-createCanvas(640, 480);
+  createCanvas(640, 480);
 
-// Create the webcam video and hide it
-video = createCapture(VIDEO);
-video.size(640, 480);
-video.hide();
+  // Create the webcam video and hide it
+  video = createCapture(VIDEO);
+  video.size(640, 480);
+  video.hide();
 
-// Load the HandPose model
-handPose = await ml5.handPose();
+  // Load the HandPose model
+  handPose = await ml5.handPose();
 
-// Start detecting hands from the webcam video
-handPose.detectStart(video, gotHands);
+  // Start detecting hands from the webcam video
+  handPose.detectStart(video, gotHands);
 }
 
 function draw() {
-// Draw the webcam video
-image(video, 0, 0, width, height);
+  // Draw the webcam video
+  image(video, 0, 0, width, height);
 
-// Draw all the tracked hand points
-for (let i = 0; i < hands.length; i++) {
-let hand = hands[i];
+  // Draw all the tracked hand points
+  for (let i = 0; i < hands.length; i++) {
+    let hand = hands[i];
 
     for (let j = 0; j < hand.keypoints.length; j++) {
       let keypoint = hand.keypoints[j];
@@ -433,13 +421,12 @@ let hand = hands[i];
       noStroke();
       circle(keypoint.x, keypoint.y, 10);
     }
-
-}
+  }
 }
 
 // Callback function for when HandPose outputs data
 function gotHands(results) {
-hands = results;
+  hands = results;
 }
 `}
 />
@@ -480,50 +467,50 @@ let predictions = [];
 let hatImage;
 
 async function setup() {
-// Create the canvas
-createCanvas(640, 480);
+  // Create the canvas
+  createCanvas(640, 480);
 
-// Create the webcam video
-video = createCapture(VIDEO);
-video.size(width, height);
-video.hide();
+  // Create the webcam video
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-// Load the hat image and wait until it finishes loading
-hatImage = await loadImage("/assets/hat.jpg");
+  // Load the hat image and wait until it finishes loading
+  hatImage = await loadImage("/assets/hat.jpg");
 
-console.log("Hat loaded!");
+  console.log("Hat loaded!");
 
-// Load the HandPose model
-console.log("Loading HandPose...");
-handPose = await ml5.handPose();
-console.log("HandPose loaded!");
+  // Load the HandPose model
+  console.log("Loading HandPose...");
+  handPose = await ml5.handPose();
+  console.log("HandPose loaded!");
 
-// Start detecting hands from the webcam
-handPose.detectStart(video, results => {
-predictions = results;
-});
+  // Start detecting hands from the webcam
+  handPose.detectStart(video, results => {
+  predictions = results;
+  });
 }
 
 function draw() {
-// Draw the webcam feed
-image(video, 0, 0, width, height);
+  // Draw the webcam feed
+  image(video, 0, 0, width, height);
 
-drawKeypoints();
+  drawKeypoints();
 }
 
 // A function to create the finger object
 function createFinger(name, points, color) {
-return {
-name: name,
-points: points,
-color: color,
-};
+  return {
+  name: name,
+  points: points,
+  color: color,
+  };
 }
 
 // Draw hats over the detected fingertips
 function drawKeypoints() {
-if (predictions.length > 0 && hatImage) {
-let prediction = predictions[0];
+  if (predictions.length > 0 && hatImage) {
+    let prediction = predictions[0];
 
     let fingers = [
       createFinger("thumb", prediction.keypoints.slice(1, 5), "red"),
@@ -555,8 +542,7 @@ let prediction = predictions[0];
         hatSize
       );
     }
-
-}
+  }
 }
 `}
 />
@@ -604,45 +590,44 @@ let video;
 let predictions = [];
 
 async function setup() {
-// Create the canvas
-createCanvas(640, 480);
+  // Create the canvas
+  createCanvas(640, 480);
 
-// Create the webcam video and match it to the canvas size
-video = createCapture(VIDEO);
-video.size(width, height);
-video.hide();
+  // Create the webcam video and match it to the canvas size
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-// Load the HandPose model
-print("Loading HandPose...");
-handPose = await ml5.handPose();
-console.log("HandPose loaded!");
+  // Load the HandPose model
+  print("Loading HandPose...");
+  handPose = await ml5.handPose();
+  console.log("HandPose loaded!");
 
-// Start detecting hands from the webcam
-handPose.detectStart(video, results => {
-predictions = results;
-});
+  // Start detecting hands from the webcam
+  handPose.detectStart(video, results => {
+  predictions = results;
+  });
 }
 
 function draw() {
-// Draw the webcam feed
-image(video, 0, 0, width, height);
+  // Draw the webcam feed
+  image(video, 0, 0, width, height);
 
-// Draw the circle at the fingertip
-drawObject();
+  // Draw the circle at the fingertip
+  drawObject();
 }
 
 // Draw a circle at the tip of the index finger
 function drawObject() {
-if (predictions.length > 0) {
-let prediction = predictions[0];
+  if (predictions.length > 0) {
+    let prediction = predictions[0];
 
     // The fourth point (index 3) is the fingertip
     let tip = prediction.keypoints.slice(4, 8)[3];
 
     noStroke();
     ellipse(round(tip.x), round(tip.y), 33, 33);
-
-}
+  }
 }
 `}
 />
@@ -680,37 +665,37 @@ let video;
 let predictions = [];
 
 async function setup() {
-// Create the canvas
-createCanvas(640, 480);
+  // Create the canvas
+  createCanvas(640, 480);
 
-// Create the webcam video and match it to the canvas size
-video = createCapture(VIDEO);
-video.size(width, height);
-video.hide();
+  // Create the webcam video and match it to the canvas size
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-// Load the HandPose model
-print("Loading HandPose...");
-handPose = await ml5.handPose();
-console.log("HandPose loaded!");
+  // Load the HandPose model
+  print("Loading HandPose...");
+  handPose = await ml5.handPose();
+  console.log("HandPose loaded!");
 
-// Start detecting hands from the webcam
-handPose.detectStart(video, results => {
-predictions = results;
-});
+  // Start detecting hands from the webcam
+  handPose.detectStart(video, results => {
+  predictions = results;
+  });
 }
 
 function draw() {
-// Draw the webcam feed
-image(video, 0, 0, width, height);
+  // Draw the webcam feed
+  image(video, 0, 0, width, height);
 
-// Draw the circles
-drawObject();
+  // Draw the circles
+  drawObject();
 }
 
 // Draw circles at the tips of the index, middle, and ring fingers
 function drawObject() {
-if (predictions.length > 0) {
-let prediction = predictions[0];
+  if (predictions.length > 0) {
+    let prediction = predictions[0];
 
     let indexTip = prediction.keypoints.slice(4, 8)[3];
     let middleTip = prediction.keypoints.slice(8, 12)[3];
@@ -721,8 +706,7 @@ let prediction = predictions[0];
     ellipse(round(indexTip.x), round(indexTip.y), 33, 33);
     ellipse(round(middleTip.x), round(middleTip.y), 33, 33);
     ellipse(round(ringTip.x), round(ringTip.y), 33, 33);
-
-}
+  }
 }
 `}
 />
@@ -762,37 +746,37 @@ let video;
 let predictions = [];
 
 async function setup() {
-// Create the canvas
-createCanvas(640, 480);
+  // Create the canvas
+  createCanvas(640, 480);
 
-// Create the webcam video and match it to the canvas size
-video = createCapture(VIDEO);
-video.size(width, height);
-video.hide();
+  // Create the webcam video and match it to the canvas size
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-// Load the HandPose model
-print("Loading HandPose...");
-handPose = await ml5.handPose();
-console.log("HandPose loaded!");
+  // Load the HandPose model
+  print("Loading HandPose...");
+  handPose = await ml5.handPose();
+  console.log("HandPose loaded!");
 
-// Start detecting hands from the webcam
-handPose.detectStart(video, results => {
-predictions = results;
-});
+  // Start detecting hands from the webcam
+  handPose.detectStart(video, results => {
+  predictions = results;
+  });
 }
 
 function draw() {
-// Draw the webcam feed
-image(video, 0, 0, width, height);
+  // Draw the webcam feed
+  image(video, 0, 0, width, height);
 
-// Draw the rectangle based on finger position
-drawObject();
+  // Draw the rectangle based on finger position
+  drawObject();
 }
 
 // Draw a rectangle on the side of the screen where the finger is pointing
 function drawObject() {
-if (predictions.length > 0) {
-let prediction = predictions[0];
+  if (predictions.length > 0) {
+    let prediction = predictions[0];
 
     // Get the tip of the index finger
     let tip = prediction.keypoints.slice(4, 8)[3];
@@ -811,8 +795,7 @@ let prediction = predictions[0];
     } else {
       rect(width / 2, 0, width / 2, height);
     }
-
-}
+  }
 }
 `}
 />
@@ -856,37 +839,37 @@ let video;
 let predictions = [];
 
 async function setup() {
-// Create the canvas
-createCanvas(600, 480);
+  // Create the canvas
+  createCanvas(600, 480);
 
-// Create the webcam video and match it to the canvas size
-video = createCapture(VIDEO);
-video.size(width, height);
-video.hide();
+  // Create the webcam video and match it to the canvas size
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-// Load the HandPose model
-print("Loading HandPose...");
-handPose = await ml5.handPose();
-console.log("HandPose loaded!");
+  // Load the HandPose model
+  print("Loading HandPose...");
+  handPose = await ml5.handPose();
+  console.log("HandPose loaded!");
 
-// Start detecting hands from the webcam
-handPose.detectStart(video, results => {
-predictions = results;
-});
+  // Start detecting hands from the webcam
+  handPose.detectStart(video, results => {
+  predictions = results;
+  });
 }
 
 function draw() {
-// Draw a gray background instead of the video feed
-background(220);
+  // Draw a gray background instead of the video feed
+  background(220);
 
-// Draw the interactive rectangle
-drawObject();
+  // Draw the interactive rectangle
+  drawObject();
 }
 
 // Draw a rectangle that changes color when the finger points at it
 function drawObject() {
-if (predictions.length > 0) {
-let prediction = predictions[0];
+  if (predictions.length > 0) {
+    let prediction = predictions[0];
 
     // Get the tip of the index finger
     let tip = prediction.keypoints.slice(4, 8)[3];
@@ -905,11 +888,10 @@ let prediction = predictions[0];
     } else {
       fill(51);
     }
+  }
 
-}
-
-// Draw the rectangle
-rect(150, 150, 100, 200);
+  // Draw the rectangle
+  rect(150, 150, 100, 200);
 }
 `}
 />
@@ -964,73 +946,72 @@ let bloomSize = 0;
 let threshold = 100;
 
 async function setup() {
-// Create the canvas
-createCanvas(1000, 800);
+  // Create the canvas
+  createCanvas(1000, 800);
 
-// Capture video
-video = createCapture(VIDEO);
-video.size(width, height);
-video.hide();
+  // Capture video
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
 
-// Measure angles in degrees
-angleMode(DEGREES);
+  // Measure angles in degrees
+  angleMode(DEGREES);
 
-// Load the HandPose model
-print("Loading HandPose...");
-handPose = await ml5.handPose();
-console.log("HandPose loaded!");
+  // Load the HandPose model
+  print("Loading HandPose...");
+  handPose = await ml5.handPose();
+  console.log("HandPose loaded!");
 
-// Start detecting hands from the webcam
-handPose.detectStart(video, results => {
-predictions = results;
-});
+  // Start detecting hands from the webcam
+  handPose.detectStart(video, results => {
+  predictions = results;
+  });
 }
 
 function draw() {
-background(255);
-drawObject();
+  background(255);
+  drawObject();
 }
 
 // Draw a flower that blooms when the hand opens
 function drawObject() {
-let targetSize = 0;
+  let targetSize = 0;
 
-if (predictions.length > 0) {
-let prediction = predictions[0];
+  if (predictions.length > 0) {
+  let prediction = predictions[0];
 
-    // Find the thumb and pinky fingertips
-    let thumbTip = prediction.keypoints[4];
-    let pinkyTip = prediction.keypoints[20];
+      // Find the thumb and pinky fingertips
+      let thumbTip = prediction.keypoints[4];
+      let pinkyTip = prediction.keypoints[20];
 
-    // Calculate the distance between the thumb and pinky
-    let distance = dist(
-      thumbTip.x,
-      thumbTip.y,
-      pinkyTip.x,
-      pinkyTip.y
-    );
+      // Calculate the distance between the thumb and pinky
+      let distance = dist(
+        thumbTip.x,
+        thumbTip.y,
+        pinkyTip.x,
+        pinkyTip.y
+      );
 
-    // If the hand is open, bloom the flower
-    if (distance > threshold) {
-      targetSize = 200;
-    }
+      // If the hand is open, bloom the flower
+      if (distance > threshold) {
+        targetSize = 200;
+      }
+  }
 
-}
+  // Move the origin to the center of the canvas
+  translate(width / 2, height / 2);
 
-// Move the origin to the center of the canvas
-translate(width / 2, height / 2);
+  noStroke();
+  fill(220, 20, 60, 50);
 
-noStroke();
-fill(220, 20, 60, 50);
+  // Smoothly change the flower size
+  bloomSize = lerp(bloomSize, targetSize, 0.1);
 
-// Smoothly change the flower size
-bloomSize = lerp(bloomSize, targetSize, 0.1);
-
-// Draw each petal around the flower
-for (let i = 0; i < numPetals; i += 1) {
-ellipse(bloomSize, 0, petalSize, petalSize);
-rotate(angle);
-}
+  // Draw each petal around the flower
+  for (let i = 0; i < numPetals; i += 1) {
+    ellipse(bloomSize, 0, petalSize, petalSize);
+    rotate(angle);
+  }
 }
 `}
 />
