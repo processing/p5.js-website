@@ -122,7 +122,7 @@ function drawKeypoints() {
 
       fill(0, 255, 0);
       noStroke();
-      ellipse(keypoint.x, keypoint.y, 10, 10);
+      circle(keypoint.x, keypoint.y, 10);
     }
   }
 }
@@ -238,7 +238,7 @@ function drawKeypoints() {
       // Access the fingertip (last point in each finger)
       let tip = finger.points[3];
 
-      ellipse(tip.x, tip.y, 10, 10);
+      circle(tip.x, tip.y, 10);
     }
   }
 }
@@ -567,9 +567,9 @@ In this example, we'll control a circle on the screen using the tip of our index
 Starting from the previous webcam example, we make a few changes:
 
 - Replace the `drawKeypoints()` function with a new `drawObject()` function.
-- In `drawObject()`, access the index fingertip by selecting the last point of the index finger:
+- In `drawObject()`, access the index fingertip by selecting the index finger:
   ```js
-  let tip = prediction.keypoints.slice(4, 8)[3];
+  let tip = prediction.index_finger_tip;
   ```
 - Draw a larger ellipse (33 × 33 pixels) at the fingertip using `tip.x` and `tip.y`.
 - Replace the call to `drawKeypoints()` with `drawObject()` inside the `draw()` function.
@@ -619,7 +619,6 @@ function drawObject() {
   if (predictions.length > 0) {
     let prediction = predictions[0];
 
-    // The fourth point (index 3) is the fingertip
     let tip = prediction.index_finger_tip;
 
     noStroke();
@@ -643,9 +642,9 @@ Starting from the previous example, we only need to update the `drawObject()` fu
 
 - Instead of getting only the index fingertip, also get the middle and ring fingertips:
   ```js
-  let indexTip = prediction.keypoints.slice(4, 8)[3];
-  let middleTip = prediction.keypoints.slice(8, 12)[3];
-  let ringTip = prediction.keypoints.slice(12, 16)[3];
+  let indexTip = prediction.index_finger_tip;
+  let middleTip = prediction.middle_finger_tip;
+  let ringTip = prediction.ring_finger_tip;
   ```
 - Draw an ellipse at each fingertip using the `x` and `y` coordinates of each point.
 
@@ -697,9 +696,9 @@ function drawObject() {
   if (predictions.length > 0) {
     let prediction = predictions[0];
 
-    let indexTip = prediction.keypoints.slice(4, 8)[3];
-    let middleTip = prediction.keypoints.slice(8, 12)[3];
-    let ringTip = prediction.keypoints.slice(12, 16)[3];
+    let indexTip = prediction.index_finger_tip;
+    let middleTip = prediction.middle_finger_tip;
+    let ringTip = prediction.ring_finger_tip;
 
     noStroke();
 
@@ -878,7 +877,7 @@ function drawObject() {
     let prediction = predictions[0];
 
     // Get the tip of the index finger
-    let tip = prediction.keypoints.slice(4, 8)[3];
+    let tip = prediction.index_finger_tip;
 
     let x = tip.x;
     let y = tip.y;
