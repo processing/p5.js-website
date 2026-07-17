@@ -112,7 +112,7 @@ function draw() {
   }
 }
 
-// A function to draw ellipses over the detected keypoints
+// A function to draw circles over the detected keypoints
 function drawKeypoints() {
   for (let i = 0; i < predictions.length; i += 1) {
   const prediction = predictions[i];
@@ -170,7 +170,7 @@ When we run the program, it gives us array of objects that help us understand wh
 
 ### Example 2: Annotations
 
-In the following example we draw the tip of each finger in a different color. Using the `annotations`, we get the array that contains the points for each finger. We already know that the tip of each finger is the last point in each array, and this point has x-y-z coordinates. Using the first two numbers for that point (the x-y coordinates), we can draw an ellipse right where the fingertip is. [Full Sketch](https://editor.p5js.org/colemanliyah/sketches/pU7lsTFNG)
+In the following example we draw the tip of each finger in a different color. Using the `annotations`, we get the array that contains the points for each finger. We already know that the tip of each finger is the last point in each array, and this point has x-y-z coordinates. Using the first two numbers for that point (the x-y coordinates), we can draw a circle right where the fingertip is. [Full Sketch](https://editor.p5js.org/colemanliyah/sketches/pU7lsTFNG)
 
 <EditableSketch
 scripts={["https://unpkg.com/ml5@1/dist/ml5.js"]}
@@ -258,13 +258,13 @@ Then we move to the `drawKeypoints() `function. Here's what happens in that func
 - Then, we call the `createFinger()` function in a loop for each finger to a list of finger objects. This creates a array of objects containing info about each of the fingers
   - Each finger object contains three properties: a name, its points, and a color (as seen in the `createFinger()` function definition)
 - Next, we have another loop to go through the fingers list and get the color for each finger. We then place that color in fill(). This makes sure that everything drawn after that line is drawn in that color
-- Now we draw an ellipse using then x- and y-coordinates found in `finger.points[3]`, which is the tip of the finger
+- Now we draw an circle using then x- and y-coordinates found in `finger.points[3]`, which is the tip of the finger
   - `tip.x` corresponds to the x-coordinate of the point 
   - `tip.y` corresponds to the y-coordinate of the point 
 
 #### Example 3: Hats
 
-In this example we make our fingers wear hats. To do this, all we need to do is replace the ellipse at the tip of each finger with the picture of a hat. [Full Sketch](https://editor.p5js.org/colemanliyah/sketches/rXRTdmkpw)
+In this example we make our fingers wear hats. To do this, all we need to do is replace the circle at the tip of each finger with the picture of a hat. [Full Sketch](https://editor.p5js.org/colemanliyah/sketches/rXRTdmkpw)
 
 <Columns>
 <Column>
@@ -340,7 +340,7 @@ function drawKeypoints() {
       fill(finger.color);
       noStroke();
 
-      ellipse(tip.x, tip.y, 10, 10);
+      circle(tip.x, tip.y, 10);
 
       // Render the hat image at the fingertip
       let hatSize = 50;
@@ -367,7 +367,7 @@ Let's understand the code in this example:
 
 - First, we create a new variable to store the image we want to place on the fingertips. We load this image in `setup()` using `loadImage()`.
 - Next, we find the fingertip positions from the hand predictions, just like in the previous example.
-- Then, instead of only drawing an ellipse, we place the image at each fingertip location.
+- Then, instead of only drawing a circle, we place the image at each fingertip location.
 - We resize the image using `hatSize` so that the original 980x980 image does not cover the whole canvas.
 - Finally, we adjust the image position by subtracting half of the image size from the x and y coordinates. This centers the image on the fingertip point instead of placing the top-left corner of the image there.
 
@@ -526,7 +526,7 @@ function drawKeypoints() {
       noStroke();
 
       // Draw a circle at the fingertip
-      ellipse(tip.x, tip.y, 10, 10);
+      circle(tip.x, tip.y, 10);
 
       // Resize and draw the hat image
       let hatSize = 50;
@@ -717,7 +717,7 @@ function drawObject() {
 </Columns>
 
 <Callout>
-  Change the size of the ellipse based on the finger pointing to it. The pinky
+  Change the size of the circle based on the finger pointing to it. The pinky
   can create a small circle, and the thumb can create the largest. 
 </Callout>
 
@@ -727,7 +727,7 @@ In this example, we draw a rectangle on the left or right side of the screen dep
 
 Starting from the “Move a ball with your index finger” example, we modify the `drawObject()` function:
 
-- First, we make the ellipse smaller (20 pixels) so it acts as a tracker for the fingertip position.
+- First, we make the circle smaller (20 pixels) so it acts as a tracker for the fingertip position.
 - Next, we use a conditional statement to check the x-coordinate of the index fingertip.
   - If the fingertip is on the left half of the canvas (`x < width / 2`), we draw a rectangle on the left side.
   - Otherwise, we draw a rectangle on the right side.
@@ -789,7 +789,7 @@ function drawObject() {
     // Small circle to track the fingertip
     fill(51);
     noStroke();
-    ellipse(round(x), round(y), 20, 20);
+    circle(round(x), round(y), 20);
 
     // Draw rectangle on the left or right side of the screen
     if (x < width / 2) {
@@ -885,7 +885,7 @@ function drawObject() {
     // Small circle to track the fingertip
     fill(51);
     noStroke();
-    ellipse(round(x), round(y), 20, 20);
+    circle(round(x), round(y), 20);
 
     // Change rectangle color when finger is inside it
     if (x > 150 && x < 250 && y > 150 && y < 350) {
@@ -930,7 +930,7 @@ In the `drawObject()` function:
   - If the distance is larger than our threshold, we know the hand is open and set `targetSize` to `200`.
   - If the hand is closed, the target size stays `0`, causing the flower to close.
 - We move the drawing origin to the center of the canvas and use `lerp()` to smoothly animate the flower between closed and open states.
-- Finally, we draw each petal in a circle by drawing an ellipse and rotating the canvas before drawing the next petal.
+- Finally, we draw each petal in a circle by drawing a circle and rotating the canvas before drawing the next petal.
 
 Run the code and try making a fist, then opening your hand. Watch the flower bloom as your hand opens!
 
@@ -1017,7 +1017,7 @@ function drawObject() {
 
   // Draw each petal around the flower
   for (let i = 0; i < numPetals; i += 1) {
-    ellipse(bloomSize, 0, petalSize, petalSize);
+    circle(bloomSize, 0, petalSize);
     rotate(angle);
   }
 }
@@ -1033,7 +1033,7 @@ function drawObject() {
 
 <Callout>
 
-- Create a sketch with many seeds (you can represent these with ellipses). Point to one and then use your fingers to make it bloom. 
+- Create a sketch with many seeds (you can represent these with circles). Point to one and then use your fingers to make it bloom. 
 - In your collection of p5.js sketches, find one that uses the mouse to interact with the sketch. Use your hands instead. 
 
 </Callout>
