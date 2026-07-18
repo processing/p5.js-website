@@ -283,17 +283,17 @@ export type PageTopic =
 export const getTopicInfo = (topic?: PageTopic) => {
   switch (topic) {
     case "community":
-      return { name: "Community", url: "/community" };
+      return { name: "Community", url: "/community/" };
     case "reference":
-      return { name: "Reference", url: "/reference" };
+      return { name: "Reference", url: "/reference/" };
     case "contribute":
-      return { name: "Contribute", url: "/contribute" };
+      return { name: "Contribute", url: "/contribute/" };
     case "about":
-      return { name: "About", url: "/about" };
+      return { name: "About", url: "/about/" };
     case "examples":
-      return { name: "Examples", url: "/examples" };
+      return { name: "Examples", url: "/examples/" };
     case "tutorials":
-      return { name: "Tutorials", url: "/tutorials" };
+      return { name: "Tutorials", url: "/tutorials/" };
     default:
       return { name: "p5.js", url: "/" };
   }

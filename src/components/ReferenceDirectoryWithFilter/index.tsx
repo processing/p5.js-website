@@ -1,3 +1,4 @@
+import { useMemo, useState } from "preact/hooks";
 import type { ReferenceDocContentItem } from "@/src/content/types";
 import flask from "@src/content/ui/images/icons/flask.svg?raw";
 import warning from "@src/content/ui/images/icons/warning.svg?raw";
@@ -10,16 +11,23 @@ type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   };
 };
 
-type ReferenceDirectoryProps = {
-  categoryData: {
-    name: string;
-    subcats: {
-      name: string;
-      entry?: ReferenceDirectoryEntry;
-      entries: ReferenceDirectoryEntry[];
-    }[];
-  }[];
+type ReferenceDirectorySubcategory = {
+  name: string;
+  entry?: ReferenceDirectoryEntry;
+  entries: ReferenceDirectoryEntry[];
 };
+
+type ReferenceDirectoryCategory = {
+  name: string;
+  subcats: ReferenceDirectorySubcategory[];
+};
+
+type ReferenceDirectoryProps = {
+  categoryData: ReferenceDirectoryCategory[];
+};
+
+const normalizeSearchText = (value: string): string =>
+  value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
 
 /**
  * Convert Reference description to one-line description
@@ -51,6 +59,34 @@ const getOneLineDescription = (description: string): string => {
 export const ReferenceDirectoryWithFilter = ({
   categoryData,
 }: ReferenceDirectoryProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredCategoryData = useMemo<ReferenceDirectoryCategory[]>(() => {
+    const normalizedQuery = normalizeSearchText(searchTerm);
+
+    if (!normalizedQuery) {
+      return categoryData;
+    }
+
+    return categoryData
+      .map((category) => ({
+        ...category,
+        subcats: category.subcats
+          .map((subcat) => ({
+            ...subcat,
+            entries: subcat.entries.filter((entry) => {
+              const searchableText = `${entry.data.title} ${entry.data.description}`;
+
+              return normalizeSearchText(searchableText).includes(
+                normalizedQuery,
+              );
+            }),
+          }))
+          .filter((subcat) => subcat.entries.length > 0),
+      }))
+      .filter((category) => category.subcats.length > 0);
+  }, [categoryData, searchTerm]);
+
   const renderEntries = (entries: ReferenceDirectoryEntry[]) =>
     entries.length === 0 ? null : (
       <div class="content-grid">
@@ -95,8 +131,8 @@ export const ReferenceDirectoryWithFilter = ({
   };
 
   const getSubcatHeading = (
-    subcat: { name: string; entry?: any },
-    category: { name: string },
+    subcat: ReferenceDirectorySubcategory,
+    category: ReferenceDirectoryCategory,
   ) => {
     if (!subcatShouldHaveHeading(subcat, category)) {
       return null;
@@ -121,7 +157,15 @@ export const ReferenceDirectoryWithFilter = ({
   };
 
   const renderCategoryData = () => {
-    return categoryData.map((category) => (
+    if (filteredCategoryData.length === 0) {
+      return (
+        <p class="text-body-large mt-[var(--gutter-lg)]">
+          No matching references found.
+        </p>
+      );
+    }
+
+    return filteredCategoryData.map((category) => (
       <section key={category.name}>
         <h2
           class={
@@ -145,6 +189,22 @@ export const ReferenceDirectoryWithFilter = ({
 
   return (
     <div class="-top-[75px] mx-5 min-h-[50vh] md:mx-lg">
+      <div class="mb-[var(--gutter-lg)] max-w-[32rem]">
+        <label class="sr-only" for="reference-directory-filter">
+          Search references
+        </label>
+        <input
+          id="reference-directory-filter"
+          type="search"
+          value={searchTerm}
+          onInput={(event) => {
+            setSearchTerm(event.currentTarget.value);
+          }}
+          placeholder="Search references"
+          aria-label="Search references"
+          class="w-full rounded-[20px] border border-sidebar-type-color bg-body-color px-md py-3 text-body-large placeholder-sidebar-type-color focus:outline-0"
+        />
+      </div>
       {renderCategoryData()}
     </div>
   );
