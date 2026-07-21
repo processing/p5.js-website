@@ -4,8 +4,6 @@ const path = require('path');
 const https = require('https');
 const yaml = require('js-yaml');
 
-const { SUPPORTED_LANGUAGES } = require('./constants');
-
 function getTranslationPath(englishFilePath, language) {
   if (!englishFilePath.includes('/en/')) {
     throw new Error(`Invalid English file path: ${englishFilePath}. Must contain '/en/'`);
@@ -22,58 +20,6 @@ function getTranslationPath(englishFilePath, language) {
   translationParts[enIndex] = language;
 
   return translationParts.join('/');
-}
-
-/**
- * Parse a merged-PR translation file path into language, content type, and English source path.
- * Returns null for English paths, non-content paths, or unsupported languages.
- *
- * @param {string} filePath - Repo-relative path (e.g. src/content/reference/es/p5/createCanvas.mdx)
- * @returns {{ language: string, englishPath: string, contentType: string, originalPath: string } | null}
- */
-function parseTranslationPath(filePath) {
-  if (!filePath || typeof filePath !== 'string') {
-    return null;
-  }
-
-  const normalized = filePath.replace(/\\/g, '/');
-
-  if (!normalized.startsWith('src/content/')) {
-    return null;
-  }
-
-  const parts = normalized.split('/');
-  // src / content / <contentType> / <lang> / ...
-  if (parts.length < 5) {
-    return null;
-  }
-
-  const contentType = parts[2];
-  const language = parts[3];
-
-  if (language === 'en') {
-    return null;
-  }
-
-  if (!SUPPORTED_LANGUAGES.includes(language)) {
-    return null;
-  }
-
-  const basename = parts[parts.length - 1];
-  if (!basename.endsWith('.mdx') && !basename.endsWith('.yaml') && !basename.endsWith('.yml')) {
-    return null;
-  }
-
-  const englishParts = [...parts];
-  englishParts[3] = 'en';
-  const englishPath = englishParts.join('/');
-
-  return {
-    language,
-    englishPath,
-    contentType,
-    originalPath: normalized,
-  };
 }
 
 function getSlugFromEnglishPath(englishFilePath, contentType) {
@@ -297,7 +243,6 @@ function getLanguageDisplayName(langCode) {
 
 module.exports = {
   getTranslationPath,
-  parseTranslationPath,
   getSlugFromEnglishPath,
   parseEnvList,
   fileExists,
