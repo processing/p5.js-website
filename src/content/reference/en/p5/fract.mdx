@@ -3,34 +3,79 @@ title: fract
 module: Math
 submodule: Calculation
 file: src/math/calculation.js
-description: |
+description: >-
   <p>Calculates the fractional part of a number.</p>
+
   <p>A number's fractional part includes its decimal values. For example,
+
   <code>fract(12.34)</code> returns 0.34.</p>
-line: 993
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Style the text.
+    textAlign(CENTER);
+    textSize(16);
+
+    // Original number.
+    let n = 56.78;
+    text(n, 50, 33);
+
+    // Fractional part.
+    let f = fract(n);
+    text(f, 50, 67);
+
+    describe('The number 56.78 written above the number 0.78.');
+  }</code></pre><p><code>fract()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>fract()</code> to create repeating patterns in a shader.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere with a repeating gradient pattern.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // Multiply by 0.5 to slow the animation to half speed.
+    // fract(t * 0.5) extracts only the decimal part of the number.
+    // This creates a smooth sawtooth wave that repeats every 2 seconds.
+    let value = fract(t * 0.5);
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let cyan = [0, 0.5, 1, 1];
+    let orange = [1, 0.5, 0, 1];
+
+    finalColor.begin();
+
+    // mix() blends between cyan (when value = 0) and orange (when value = 1).
+    // Because fract() resets to 0 each cycle, the color loops smoothly.
+    finalColor.set(mix(cyan, orange, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 1578
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Style the text.
-      textAlign(CENTER);
-      textSize(16);
-
-      // Original number.
-      let n = 56.78;
-      text(n, 50, 33);
-
-      // Fractional part.
-      let f = fract(n);
-      text(f, 50, 67);
-
-      describe('The number 56.78 written above the number 0.78.');
-    }
+example: []
 class: p5
 return:
   description: fractional part of n.

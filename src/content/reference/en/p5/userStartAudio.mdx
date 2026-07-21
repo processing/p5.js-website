@@ -7,9 +7,44 @@ description: >-
   starts audio processing in the window when called from a user interaction
   (such as mousePressed()). Only necessary when not starting p5.sound nodes with
   the start() method.
-line: 39
+line: 100
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let started = false;
+
+    function setup() {
+      createCanvas(400, 400)
+      sound = new p5.Oscillator();
+      noiseSrc = new p5.Noise('pink');
+      //"starts" sound sources though they will not be audible because they weren't started from a user interaction,
+      noiseSrc.start();
+      sound.start();
+    }
+
+    function draw() {
+      background(220)
+      text("click to start and stop audio with ge", width/2, height/2)
+    }
+
+    function mousePressed() {
+      if (!started) {
+        //resumes playback of all previously 'started' nodes
+        userStartAudio();
+        started = true;
+      }
+      else {
+        //pauses audio processing, sort of like a global mute 
+        userStopAudio();
+        started = false;
+      }
+    }
+    </code>
+    </div>
 class: p5
 chainable: false
 ---

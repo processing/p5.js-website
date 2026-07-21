@@ -4,9 +4,41 @@ module: p5.sound
 submodule: p5.sound
 file: src/sources/Oscillator.js
 description: Sets the type of the oscillator.
-line: 116
+line: 145
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let waveShapes = ['sine', 'sawtooth', 'square', 'triangle'];
+    let currentWaveShape;
+     
+    function setup() {
+      createCanvas(100, 100);
+      textAlign(CENTER);
+      currentWaveShape = random(waveShapes)
+      osc = new p5.Oscillator(currentWaveShape);
+      //create an envelope to stop the oscillator after a second or so. 
+      env = new p5.Envelope(0.01, 0.1, 0.45, 0.5);
+      osc.disconnect();
+      osc.connect(env);
+    }
+     
+    function mousePressed() {
+      osc.start();
+      env.play();
+      currentWaveShape = random(waveShapes);
+      osc.setType(currentWaveShape);
+    }
+     
+    function draw() {
+      background(220);
+      text('tap to play', width/2, 20);
+      let txt = 'type: ' + currentWaveShape;
+      text(txt, width/2, 40);
+    }
 class: p5.Oscillator
 params:
   - name: type
