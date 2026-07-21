@@ -4,9 +4,43 @@ module: p5.sound
 submodule: SoundFile
 file: src/sources/SoundFile.js
 description: Move the playhead of a soundfile that is currently playing to a new position.
-line: 323
+line: 540
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    async function setup() {
+     sample = await loadSound("/assets/drums.mp3");
+     duration = sample.duration();
+     sample.loop(true);
+     createCanvas(100, 100);
+     textAlign(CENTER);
+     textWrap(WORD);
+     textSize(10);
+     describe("a sketch that jumps to a specific point in a soundfile");
+    }
+
+    function draw() {
+     background(220);
+     text("Duration: " + duration + " s", 0, 20, width);
+     if (sample.isPlaying()) {
+       text("jump to: " + (mouseX / width * duration).toFixed(2) + " s on next click", 0, 40, width);
+     }
+    }
+
+    function mousePressed() {
+     if(!sample.isPlaying()) {
+       sample.play();
+     }
+     else {
+       sample.jump(mouseX / width * duration);
+     }
+    }
+    </code>
+    </div>
 class: p5.SoundFile
 params:
   - name: timePoint

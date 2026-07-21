@@ -3,7 +3,7 @@ title: abs
 module: Math
 submodule: Calculation
 file: src/math/calculation.js
-description: >
+description: >-
   <p>Calculates the absolute value of a number.</p>
 
   <p>A number's absolute value is its distance from zero on the number line.
@@ -13,30 +13,75 @@ description: >
 
   <code>abs(5)</code> both return 5. The absolute value of a number is always
   positive.</p>
-line: 40
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('A gray square with a vertical black line that divides it in half. A white rectangle gets taller when the user moves the mouse away from the line.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Divide the canvas.
+    line(50, 0, 50, 100);
+
+    // Calculate the mouse's distance from the middle.
+    let h = abs(mouseX - 50);
+
+    // Draw a rectangle based on the mouse's distance
+    // from the middle.
+    rect(0, 100 - h, 100, h);
+  }</code></pre><p><code>abs()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>abs()</code> to create a mirror effect on the color of a shape.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere with colors that fold back like a mirror.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // sin(t) goes between -1 and 1 over time.
+    let sinVal = sin(t);
+
+    // abs() folds the negative values to positive.
+    // Now value goes between 0 and 1, creating a mirror effect.
+    let value = abs(sinVal);
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let navy = [0.2, 0.2, 0.8, 1];
+    let coral = [0.8, 0.2, 0.2, 1];
+
+    finalColor.begin();
+
+    // mix() blends between navy (when value = 0) and coral (when value = 1).
+    finalColor.set(mix(navy, coral, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 85
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('A gray square with a vertical black line that divides it in half. A white rectangle gets taller when the user moves the mouse away from the line.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Divide the canvas.
-      line(50, 0, 50, 100);
-
-      // Calculate the mouse's distance from the middle.
-      let h = abs(mouseX - 50);
-
-      // Draw a rectangle based on the mouse's distance
-      // from the middle.
-      rect(0, 100 - h, 100, h);
-    }
+example: []
 class: p5
 return:
   description: absolute value of given number.

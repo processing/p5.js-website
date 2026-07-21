@@ -4,7 +4,7 @@ module: p5.sound
 submodule: SoundFile
 file: src/sources/SoundFile.js
 description: Pause the soundfile.
-line: 162
+line: 236
 isConstructor: false
 itemtype: method
 example:
@@ -12,37 +12,32 @@ example:
 
     <div>
     <code>
-    let player;
-
-    function preload() {
-      player = loadSound('/assets/Damscray_DancingTiger.mp3');
+    async function setup() {
+     sample = await loadSound("/assets/chime.mp3");
+     createCanvas(100, 100);
+     textAlign(CENTER);
+     textWrap(WORD);
+     textSize(8);
+     describe("a sketch that pauses and resumes a soundfile");
     }
 
-    function setup() {
-      describe('A sketch that pauses and resumes sound file playback.');
-      let cnv = createCanvas(100, 100);
-      cnv.mousePressed(playSound);
-      background(220);
-      textAlign(CENTER);
-      textWrap(WORD);
-      textSize(10);
-      background(220);
-      text('click to play', 0, 20, 100);
-      
-      player.loop();
+    function draw() {
+     background(220);
+     if (!sample.playing) {
+       text("click to play the sound, demonstrating the start() method", 0, 20, width);
+     }
+     else {
+       text("click to pause the sound, demonstrating the pause() method", 0, 20, width);
+     }
     }
 
-    function playSound() {
-      if (!player.isPlaying()) {
-        player.play();
-        background(220);
-        text('click to pause', 0, 20, 100);
-      }
-      else {
-        player.pause();
-        background(220);
-        text('click to play', 0, 20, 100);
-      }
+    function mousePressed() {
+     if (!sample.playing) {
+       sample.start();
+     }
+     else {
+       sample.pause();
+     }
     }
     </code>
     </div>

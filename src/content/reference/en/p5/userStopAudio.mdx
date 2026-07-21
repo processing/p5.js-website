@@ -4,9 +4,44 @@ module: p5.sound
 submodule: p5.sound
 file: src/core/Utils.js
 description: stops audio processing in the browser window.
-line: 47
+line: 141
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let started = false;
+
+    function setup() {
+      createCanvas(400, 400)
+      sound = new p5.Oscillator();
+      noiseSrc = new p5.Noise('pink');
+      //"starts" sound sources though they will not be audible because they weren't started from a user interaction,
+      noiseSrc.start();
+      sound.start();
+    }
+
+    function draw() {
+      background(220)
+      text("click to start and stop audio with ge", width/2, height/2)
+    }
+
+    function mousePressed() {
+      if (!started) {
+        //resumes playback of all previously 'started' nodes
+        userStartAudio();
+        started = true;
+      }
+      else {
+        //pauses audio processing, sort of like a global mute 
+        userStopAudio();
+        started = false;
+      }
+    }
+    </code>
+    </div>
 class: p5
 chainable: false
 ---

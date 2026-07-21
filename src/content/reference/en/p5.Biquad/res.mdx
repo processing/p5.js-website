@@ -3,10 +3,71 @@ title: res
 module: p5.sound
 submodule: p5.sound
 file: src/effects/Biquad.js
-description: The filter's resonance factor.
-line: 85
+description: >-
+  Controls either width of a bandpass frequency, or the resonance of a
+  low/highpass cutoff frequency.
+line: 90
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let fft, noise, filterEffect;
+
+     function setup() {
+       let cnv = createCanvas(100,100);
+       textAlign(CENTER);
+       textWrap(WORD);
+       textSize(10);
+       describe('a sketch to help to visualize and study the effects of different filter types.');
+       cnv.mousePressed(makeNoise);
+       fill(255, 0, 255);
+     
+       filterEffect = new p5.BandPass(8000);
+       noise = new p5.Noise();
+       noise.disconnect();
+       noise.connect(filterEffect);
+       
+       fft = new p5.FFT(128);
+       filterEffect.connect(fft);
+     }
+     
+     function draw() {
+       background(220);
+     
+       // set the BandPass resonance based on mouseX
+       let resAmt = map(mouseX, 0, width, 0, 99);
+       filterEffect.res(resAmt);
+     
+       // draw filtered spectrum
+       let spectrum = fft.analyze();
+       
+       noStroke();
+       fill(0, 0, 0);
+       for (let i = 0; i < spectrum.length; i++) {
+         let x = map(i, 0, spectrum.length, 0, width);     
+         let h = -height + map(spectrum[i], 0, 0.02, height, 0);
+         rect(x, height, width / spectrum.length, h )
+       }
+       if (!noise.started) {
+         text('click and drag the mouse to change filter\'s resonance',0, 20, width);
+       } else {
+         text('Resonance: ' + round(resAmt), width/2, height/2);
+       }
+     }
+     
+     function makeNoise() {
+       noise.start();
+       noise.amp(0.9, 0.1);
+     }
+     
+     function mouseReleased() {
+       noise.amp(0, 0.1);
+     }
+    </code>
+    </div>
 class: p5.Biquad
 params:
   - name: resonance

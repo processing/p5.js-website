@@ -3,7 +3,7 @@ title: sqrt
 module: Math
 submodule: Calculation
 file: src/math/calculation.js
-description: >
+description: >-
   <p>Calculates the square root of a number.</p>
 
   <p>A number's square root can be multiplied by itself to produce the original
@@ -15,47 +15,101 @@ description: >
   negative arguments
 
   such as <code>sqrt(-9)</code>.</p>
-line: 960
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Top-left.
+    let d = sqrt(16);
+    circle(33, 33, d);
+
+    // Bottom-right.
+    d = sqrt(1600);
+    circle(67, 67, d);
+
+    describe('Two white circles. The circle at the top-left is small. The circle at the bottom-right is ten times larger.');
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    describe('A series of black dots that get higher slowly from left to right.');
+  }
+
+
+  function draw() {
+    // Invert the y-axis.
+    scale(1, -1);
+    translate(0, -100);
+
+    // Calculate the coordinates.
+    let x = frameCount;
+    let y = 5 * sqrt(x);
+
+    // Draw the point.
+    point(x, y);
+  }</code></pre><p><code>sqrt()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>sqrt()</code> to create a smooth ease-out curve on color and
+  size.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere that grows and shifts from navy to orange with an ease-out curve.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // sin(t) goes between -1 and 1.
+    // 0.5 + 0.5 * sin(t) remaps this to the 0 to 1 range.
+    let sinVal = 0.5 + 0.5 * sin(t);
+
+    // sqrt(sinVal) creates an ease-out curve: fast start, slow finish.
+    // Since sinVal is in [0,1], sqrt() stays in [0,1].
+    let value = sqrt(sinVal);
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let navy = [0, 0.1, 0.4, 1];
+    let brightOrange = [1, 0.6, 0, 1];
+
+    finalColor.begin();
+
+    // mix() blends between navy (when value = 0) and brightOrange (when value = 1).
+    // The sqrt() ease-out makes the color change fast at first, then slow down.
+    finalColor.set(mix(navy, brightOrange, value));
+
+    finalColor.end();
+  }
+
+
+  function drawShape() {
+    let t = millis() * 0.001;
+    let sinVal = 0.5 + 0.5 * sin(t);
+    let size = 10 + sqrt(sinVal) * 30;
+    sphere(size);
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    drawShape();
+  }</code></pre>
+line: 1502
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Top-left.
-      let d = sqrt(16);
-      circle(33, 33, d);
-
-      // Bottom-right.
-      d = sqrt(1600);
-      circle(67, 67, d);
-
-      describe('Two white circles. The circle at the top-left is small. The circle at the bottom-right is ten times larger.');
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      describe('A series of black dots that get higher slowly from left to right.');
-    }
-
-    function draw() {
-      // Invert the y-axis.
-      scale(1, -1);
-      translate(0, -100);
-
-      // Calculate the coordinates.
-      let x = frameCount;
-      let y = 5 * sqrt(x);
-
-      // Draw the point.
-      point(x, y);
-    }
+example: []
 class: p5
 return:
   description: square root of number.
