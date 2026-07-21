@@ -1,0 +1,42 @@
+name: Translation Auto-Close
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - v1
+    paths:
+      - 'src/content/**/es/**'
+      - 'src/content/**/hi/**'
+      - 'src/content/**/ko/**'
+      - 'src/content/**/zh-Hans/**'
+
+permissions:
+  issues: write
+  pull-requests: read
+  contents: read
+
+jobs:
+  auto-close-translation-issues:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install translation tracker dependencies
+        run: cd .github/actions/translation-tracker && npm install
+
+      - name: Auto-close matching translation tracker issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node .github/actions/translation-tracker/auto-close.js
