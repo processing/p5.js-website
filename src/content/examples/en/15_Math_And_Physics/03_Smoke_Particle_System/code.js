@@ -47,10 +47,10 @@ function drawVector(v, loc, scale) {
   strokeWeight(3);
   rotate(v.heading());
 
-  let len = v.mag() * scale;
-  line(0, 0, len, 0);
-  line(len, 0, len - arrowSize, +arrowSize / 2);
-  line(len, 0, len - arrowSize, -arrowSize / 2);
+  let length = v.mag() * scale;
+  line(0, 0, length, 0);
+  line(length, 0, length - arrowSize, +arrowSize / 2);
+  line(length, 0, length - arrowSize, -arrowSize / 2);
   pop();
 }
 
