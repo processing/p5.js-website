@@ -4,9 +4,54 @@ module: p5.sound
 submodule: SoundFile
 file: src/sources/SoundFile.js
 description: Loop the soundfile.
-line: 211
+line: 280
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    async function setup() {
+     sample = await loadSound("/assets/drums.mp3");
+
+     //set the sample to loop
+     sample.loop(true);
+     //call a function when the sound ends
+     sample.onended(stopSound);
+     createCanvas(100, 100);
+     textAlign(CENTER);
+     textWrap(WORD);
+     textSize(8);
+     describe("a sketch that plays and pauses a soundfile");
+    }
+
+    function draw() {
+     background(220);
+     if (!sample.playing) {
+       text("click to play the sound and it will loop", 0, 20, width);
+     }
+     else {
+       text("click to stop the looping", 0, 20, width);
+     }
+    }
+
+    function mousePressed() {
+     if (!sample.playing) {
+       sample.start();
+     }
+     else {
+       //stop the sample by disabling looping
+       sample.loop(false);
+     }
+    }
+
+    function stopSound() {
+     //stop the sound when the loop ends
+     sample.stop();
+    }
+    </code>
+    </div>
 class: p5.SoundFile
 params:
   - name: loopState

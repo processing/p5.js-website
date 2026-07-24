@@ -274,7 +274,7 @@ export const generateSearchIndex = async (
       case "events":
         title = data.title;
         description = getKeywordsFromContent(
-          content + data.description,
+          content + (data.description ?? ""),
           locale,
         );
         break;

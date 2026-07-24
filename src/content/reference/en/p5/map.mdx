@@ -3,7 +3,7 @@ title: map
 module: Math
 submodule: Calculation
 file: src/math/calculation.js
-description: >
+description: >-
   <p>Re-maps a number from one range to another.</p>
 
   <p>For example, calling <code>map(2, 0, 10, 0, 100)</code> returns 20. The
@@ -28,48 +28,91 @@ description: >
   constrains the remapped value to the target range. For example,
 
   <code>map(11, 0, 10, 0, 100, true)</code> returns 100.</p>
-line: 550
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('Two horizontal lines. The top line grows horizontally as the mouse moves to the right. The bottom line also grows horizontally but is scaled to stay on the left half of the canvas.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Draw the top line.
+    line(0, 25, mouseX, 25);
+
+    // Remap mouseX from [0, 100] to [0, 50].
+    let x = map(mouseX, 0, 100, 0, 50);
+
+    // Draw the bottom line.
+    line(0, 75, 0, x);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('A circle changes color from black to white as the mouse moves from left to right.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Remap mouseX from [0, 100] to [0, 255]
+    let c = map(mouseX, 0, 100, 0, 255);
+
+    // Style the circle.
+    fill(c);
+
+    // Draw the circle.
+    circle(50, 50, 20);
+  }</code></pre><p><code>map()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>map()</code> to remap time values to color in a shader.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere that shifts between cyan and orange over time.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // sin(t) goes between -1 and 1 over time.
+    let sinVal = sin(t);
+
+    // map() remaps this from the range [-1, 1] to the range [0, 1].
+    let value = map(sinVal, -1, 1, 0, 1);
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let cyan = [0, 0.5, 1, 1];
+    let orange = [1, 0.5, 0, 1];
+
+    finalColor.begin();
+
+    // mix() blends between cyan (when value = 0) and orange (when value = 1).
+    finalColor.set(mix(cyan, orange, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 864
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('Two horizontal lines. The top line grows horizontally as the mouse moves to the right. The bottom line also grows horizontally but is scaled to stay on the left half of the canvas.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Draw the top line.
-      line(0, 25, mouseX, 25);
-
-      // Remap mouseX from [0, 100] to [0, 50].
-      let x = map(mouseX, 0, 100, 0, 50);
-
-      // Draw the bottom line.
-      line(0, 75, 0, x);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('A circle changes color from black to white as the mouse moves from left to right.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Remap mouseX from [0, 100] to [0, 255]
-      let c = map(mouseX, 0, 100, 0, 255);
-
-      // Style the circle.
-      fill(c);
-
-      // Draw the circle.
-      circle(50, 50, 20);
-    }
+example: []
 class: p5
 return:
   description: remapped number.
