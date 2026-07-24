@@ -101,11 +101,20 @@ const SearchProvider = ({
         };
 
         const fuse = new Fuse(flatData, fuseOptions);
+        const fuseResults = fuse.search(searchTerm);
 
-        const searchResults = fuse
-          .search(searchTerm)
-          .map((result) => result.item);
+        const hasExactMatch = fuseResults.some(r => (r.score ?? 0) < 0.1);
+        if (fuseResults.length > 0 && window.fathom) {
+          if (hasExactMatch) {
+            // Only track search term if there is an exact match
+            window.fathom.trackEvent(`Search ${fuseResults.length} ${searchTerm}`);
+          } else {
+            // Otherwise, that a search occurred but without a match
+            window.fathom.trackEvent(`Search ${fuseResults.length} [FUZZY]`);
+          }
+        }
 
+        const searchResults = fuseResults.map((result) => result.item);
         setResults(searchResults);
       })
       .catch((error) =>
