@@ -4,9 +4,46 @@ module: p5.sound
 submodule: SoundFile
 file: src/sources/SoundFile.js
 description: Set the playback rate of the soundfile.
-line: 288
+line: 433
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    async function setup() {
+     sample = await loadSound("/assets/drums.mp3");
+     sample.loop(true);
+     createCanvas(100, 100);
+     textAlign(CENTER);
+     textWrap(WORD);
+     textSize(10);
+     describe("a sketch that changes the playback rate of a soundfile");
+    }
+
+    function draw() {
+     background(220);
+     rate = map(mouseX, 0, width, 0.5, 2);
+     sample.rate(rate);
+     if (!sample.isPlaying()) {
+       text("click to play the sound, move your mouse to change the playback rate", 0, 20, width);
+     }
+     else {
+       text("Playback Rate: " + rate.toFixed(2), 0, 20, width);
+     }
+    }
+
+    function mousePressed() {
+     if(!sample.isPlaying()) {
+       sample.play();
+     }
+     else {
+       sample.stop();
+     }
+    }
+    </code>
+    </div>
 class: p5.SoundFile
 params:
   - name: rate

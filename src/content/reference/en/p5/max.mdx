@@ -3,7 +3,7 @@ title: max
 module: Math
 submodule: Calculation
 file: src/math/calculation.js
-description: >
+description: >-
   <p>Returns the largest value in a sequence of numbers.</p>
 
   <p>The version of <code>max()</code> with one parameter interprets it as an
@@ -15,49 +15,89 @@ description: >
   them as
 
   individual numbers and returns the largest number.</p>
-line: 623
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Calculate the maximum of 10, 5, and 20.
+    let m = max(10, 5, 20);
+
+    // Style the text.
+    textAlign(CENTER);
+    textSize(16);
+
+    // Display the max.
+    text(m, 50, 50);
+
+    describe('The number 20 written in the middle of a gray square.');
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Create an array of numbers.
+    let numbers = [10, 5, 20];
+
+    // Calculate the maximum of the array.
+    let m = max(numbers);
+
+    // Style the text.
+    textAlign(CENTER);
+    textSize(16);
+
+    // Display the max.
+    text(m, 50, 50);
+
+    describe('The number 20 written in the middle of a gray square.');
+  }</code></pre><p><code>max()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>max()</code> to clamp values in a shader.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere that shifts from rose to steelBlue and stops.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // 1 - t * 0.2 decreases steadily over time.
+    // max(..., 0) ensures the value never goes below 0.
+    let value = max(1 - t * 0.2, 0);
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let steelBlue = [0, 0.3, 0.8, 1];
+    let rose = [1, 0.3, 0.8, 1];
+
+    finalColor.begin();
+
+    // mix() blends between steelBlue (when value = 0) and rose (when value = 1).
+    // max() clamps the blend so the color stops changing once it reaches steelBlue.
+    finalColor.set(mix(steelBlue, rose, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 980
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Calculate the maximum of 10, 5, and 20.
-      let m = max(10, 5, 20);
-
-      // Style the text.
-      textAlign(CENTER);
-      textSize(16);
-
-      // Display the max.
-      text(m, 50, 50);
-
-      describe('The number 20 written in the middle of a gray square.');
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Create an array of numbers.
-      let numbers = [10, 5, 20];
-
-      // Calculate the maximum of the array.
-      let m = max(numbers);
-
-      // Style the text.
-      textAlign(CENTER);
-      textSize(16);
-
-      // Display the max.
-      text(m, 50, 50);
-
-      describe('The number 20 written in the middle of a gray square.');
-    }
+example: []
 class: p5
 return:
   description: maximum number.

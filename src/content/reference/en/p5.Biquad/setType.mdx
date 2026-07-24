@@ -4,9 +4,67 @@ module: p5.sound
 submodule: p5.sound
 file: src/effects/Biquad.js
 description: Set the type of the filter.
-line: 105
+line: 228
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let types = ['lowpass', 'bandpass', 'highpass', 'allpass'];
+    let currentType = 'lowpass';
+    let typeIndex = 0;
+    let filterText = 'Filter Type: ' + currentType;;
+
+    function setup(){
+      createCanvas(400,400);
+      textAlign(CENTER);
+      textWrap(WORD);
+      textSize(10);
+      describe('a sketch to help to visualize and study the effects of different filter types.');
+      //for analyzing the sound 
+      fft = new p5.FFT(256);
+
+      noiseSrc = new p5.Noise('white');
+      //filter type defaults to 'lowpass'
+      audioFilter = new p5.Biquad();
+      noiseSrc.disconnect();
+      noiseSrc.connect(audioFilter);
+      audioFilter.connect(fft);
+    }
+
+    function draw(){
+      background(220);
+      let spectrum = fft.analyze();
+      
+      noStroke();
+      fill(0, 0, 0);
+      for (let i = 0; i < spectrum.length; i++) {
+        let x = map(i, 0, spectrum.length, 0, width);     
+        let h = -height + map(spectrum[i], 0, 0.025, height, 0);
+        rect(x, height, width / spectrum.length, h )
+      }
+
+      //change the center frequency of the filter
+      centerFreq = map(mouseX, 0, width, 0, 18000)
+      audioFilter.freq(centerFreq);
+      
+      text('click to play', 0, 20, width, 20);
+      text('Frequency: ' + centerFreq.toFixed(0), 0, 30, width, 20);
+      text(filterText, 0, 40, width, 20);
+    }
+
+    function mousePressed() {
+      noiseSrc.start();
+      typeIndex = (typeIndex + 1) % types.length;
+      currentType = types[typeIndex];
+      //change the type of the filter
+      audioFilter.setType(currentType);
+      filterText = 'Filter Type: ' + currentType;
+    }
+    </code>
+    </div>
 class: p5.Biquad
 params:
   - name: type

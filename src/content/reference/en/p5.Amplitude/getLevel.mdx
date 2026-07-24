@@ -4,9 +4,52 @@ module: p5.sound
 submodule: p5.sound
 file: src/analysis/Amplitude.js
 description: Get the current amplitude value of a sound.
-line: 70
+line: 114
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let amplitude = 0;
+
+    async function setup() {
+      sample = await loadSound("/assets/drums.mp3");
+      sample.loop(true);
+
+      createCanvas(100, 100);
+      textAlign(CENTER);
+      textWrap(WORD);
+      textSize(8);
+      describe("a sketch that visualizes the loudness of a soundfile");
+
+      analyze = new p5.Amplitude();
+      sample.connect(analyze);
+    }
+
+    function draw() {
+      background(amplitude * 512, 0, 0);
+      amplitude = analyze.getLevel();
+      fill(255);
+      if (!sample.isPlaying()) {
+        text("click to play the sound", 0, 20, width);
+      }
+      else {
+        text("Amplitude: " + amplitude.toFixed(2), 0, 20, width);
+      }
+    }
+
+    function mousePressed() {
+      if(!sample.isPlaying()) {
+        sample.play();
+      }
+      else {
+        sample.stop();
+      }
+    }
+    </code>
+    </div>
 class: p5.Amplitude
 return:
   description: Amplitude level (volume) of a sound.
