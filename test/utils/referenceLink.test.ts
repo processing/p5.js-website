@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { normalizeP5ReferenceLinks } from "@layouts/referenceLinkUtils";
+import { normalizeP5ReferenceLinks } from "../../src/utils/referenceLink";
 
 describe("normalizeP5ReferenceLinks", () => {
   test("normalizes slash notation references without duplicating p5", () => {
