@@ -2,7 +2,6 @@
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import Head from "@components/Head/index.astro";
-import { setJumpToState } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import {
   generateJumpToState,
@@ -33,8 +32,6 @@ const jumpToState = await generateJumpToState(
   t,
   currentLocale
 );
-
-setJumpToState(jumpToState);
 
 const relatedReferences =
   example.data.relatedReference !== undefined
@@ -93,6 +90,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   variant="item"
   topic="examples"
   className="example"
+  jumpToState={jumpToState}
 >
   {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   <div class="mt-xl mb-4xl lg:mb-3xl max-w-[770px]">

@@ -1,6 +1,7 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
+import { generateEntryId } from "../shared";
 
 const peopleCategories = ["lead", "mentor", "alumni", "contributor"] as const;
 
@@ -9,7 +10,11 @@ const peopleCategories = ["lead", "mentor", "alumni", "contributor"] as const;
  *
  */
 export const peopleCollection = defineCollection({
-  loader: glob({ pattern: '**/*.yaml', base: "./src/content/people" }),
+  loader: glob({
+    pattern: '**/*.yaml',
+    base: "./src/content/people",
+    generateId: generateEntryId,
+  }),
   schema: ({ image }) =>
     z
       .object({

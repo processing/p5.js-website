@@ -4,11 +4,7 @@ import { render } from 'astro:content';
 import BaseLayout from "./BaseLayout.astro";
 import Head from "@components/Head/index.astro";
 import type { MarkdownHeading } from "astro";
-import {
-  setJumpToState,
-  type JumpToLink,
-  type JumpToState,
-} from "../globals/state";
+import { type JumpToLink, type JumpToState } from "../globals/state";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 
 interface Props {
@@ -32,8 +28,6 @@ const jumpToState = {
   links: jumpToLinks as JumpToLink[],
   heading: t("Contributor Docs"),
 } as JumpToState;
-
-setJumpToState(jumpToState);
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
@@ -44,6 +38,7 @@ setJumpToState(jumpToState);
   subtitle={null}
   topic="contribute"
   className="contribute"
+  jumpToState={jumpToState}
 >
   <section class="rendered-markdown">
     <Content />

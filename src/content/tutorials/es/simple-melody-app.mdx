@@ -1,0 +1,1547 @@
+---
+title: "Aplicación simple de melodías"
+description: Usa objetos p5.Oscillator para generar notas musicales en una app donde las personas pueden escribir y reproducir las melodías que crean al interactuar con el lienzo.
+category: advanced
+categoryIndex: 3
+featuredImage: ../images/featured/simple-melody-app.jpg
+featuredImageAlt: Teclas de piano
+relatedContent:
+  referencias:
+   - en/p5sound/p5oscillator
+   - en/p5/createbutton
+authors:
+  - Portia Morrell
+  - Kate Maschmeyer
+  - Layla Quiñones
+---
+
+import Callout from "../../../components/Callout/index.astro";
+
+## Introducción
+
+La [música](https://www.britannica.com/art/music) es utilizada por culturas de todo el mundo como una forma de comunicar sus historias, emociones y experiencias combinando [sonidos](https://www.britannica.com/science/sound-physics) vocales o instrumentales. Uno de los elementos básicos de la música es la [*melodía:*](https://www.masterclass.com/articles/music-101-what-is-melody) un grupo de notas musicales que forma composiciones de sonidos agradables al oído. En este tutorial explorarás cómo usar objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) para generar notas musicales y desarrollar una aplicación web en la que las personas creen melodías y luego las reproduzcan.
+
+Este tutorial es la primera parte de una serie de 3 tutoriales que te guían para crear distintas versiones de una app de melodías.
+
+- Parte 1: En este tutorial desarrollarás una [aplicación simple de melodías](https://editor.p5js.org/Msqcoding/sketches/w_4t5bFYe) en la que las personas pueden componer melodías a partir de una escala musical y reproducirlas.
+- Parte 2: En [Comenzar con Node.js](/tutorials/getting-started-with-nodejs), aprenderás a usar [Node.js](https://nodejs.org/en/about) y [Express.js](https://expressjs.com/) para enrutar solicitudes [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) que recuperan y reproducen melodías guardadas en tu computadora.
+- Parte 3: En Aplicación de melodías con Node.js (¡próximamente!), aprenderás a integrar tu [aplicación simple de melodías](https://editor.p5js.org/Msqcoding/sketches/w_4t5bFYe) con [Node.js](https://nodejs.org/en/about) y [Express.js](https://expressjs.com/). Desarrollarás una aplicación de melodías más compleja en la que las personas puedan guardar melodías en sus computadoras y recuperarlas para reproducirlas después.
+
+
+## Requisitos previos
+
+Este tutorial requiere:
+
+- Una computadora con conexión a internet y bocinas o audífonos
+- El [Editor Web de p5](https://editor.p5js.org/) (o un IDE y la versión más reciente de la [biblioteca p5.js descargada](https://p5js.org/download/))
+- Comprensión de conceptos básicos de programación de los [tutoriales de introducción a p5.js](/tutorials/#introduction), como:
+  - variables
+  - carga de archivos
+  - condicionales
+  - arreglos
+  - for loop
+  - objetos JSON
+- Comprensión de principios básicos de diseño web presentados en los [tutoriales de diseño web](/tutorials/#web-design)
+  - [objetos DOM de p5.js](/reference/#DOM)
+
+**Nota:** Las secciones 1.1 a 1.5 presentan conceptos de otras disciplinas, como física y teoría musical. Estas secciones sirven como conocimientos de fondo recomendados para entender cómo los objetos `p5.Oscillator` pueden usarse para crear melodías. Aunque es muy recomendable revisarlas, no es necesario hacerlo para terminar la [aplicación simple de melodías](https://editor.p5js.org/Msqcoding/sketches/w_4t5bFYe).
+
+Si ya estás familiarizado con:
+
+- los [objetos `p5.Oscillator`](#p5-oscillator-objects)
+- las [ondas sonoras](#sound-waves)
+- las [ondas de presión](#pressure-waves)
+- las [ondas periódicas y sus características](#periodic-wave-characteristics)
+- las [notas musicales (frecuencia, altura y amplitud)](#musical-notes)
+
+Puedes ir a [Toca notas musicales con osciladores](#play-musical-notes-with-oscillators) para omitir la parte de conocimientos de fondo.
+
+
+## Información de contexto: osciladores, ciencia y música
+
+### Objetos p5.Oscillator<a id="p5-oscillator-objects"></a>
+
+Los objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) contienen información para generar señales eléctricas llamadas [osciladores](https://www.techtarget.com/whatis/definition/oscillator) que pueden reproducir [notas musicales](https://www.simplifyingtheory.com/music-note/). Estas señales cambian entre un valor mínimo y uno máximo siguiendo un patrón que se repite a una velocidad específica. Cuando la señal se reproduce a través de tus bocinas, podemos escuchar que genera un sonido.
+
+Para entender cómo los osciladores generan notas musicales, podemos profundizar un poco en la ciencia del [sonido](https://www.britannica.com/science/sound-physics).
+
+
+##### Nota
+
+En la siguiente sección, [Ciencia del sonido y la música](#science-of-sound--music), se presentan los siguientes conceptos:
+
+- [El sonido como una onda de presión](https://www.physicsclassroom.com/class/sound/u11l1c.cfm)
+- [Características de las ondas periódicas](#periodic-wave-characteristics)
+- [Ondas sonoras](https://www.open.edu/openlearn/science-maths-technology/engineering-technology/sound-music-technology-an-introduction/content-section-2.3) en relación con las notas musicales
+  - [Altura y frecuencia](https://www.physicsclassroom.com/class/sound/Lesson-2/Pitch-and-Frequency)
+- Conceptos de teoría musical como [melodías](https://www.masterclass.com/articles/music-101-what-is-melody) y [notas musicales y frecuencia](https://www.idrumtune.com/ultimate-guide-to-musical-frequencies/)
+
+
+##### Ir más adelante
+
+Si ya estás familiarizado con los conceptos de fondo anteriores, pasa directamente a la sección [Construye una aplicación simple de melodías](#build-simple-app) para comenzar tu proyecto.
+
+
+## Ciencia del sonido y la música<a id="science-of-sound--music"></a>
+
+Las [melodías](https://www.masterclass.com/articles/music-101-what-is-melody) son una colección de [notas musicales](https://www.simplifyingtheory.com/music-note/) que forman [sonidos](https://www.britannica.com/science/sound-physics) agradables al oído. Los [sonidos](https://www.britannica.com/science/sound-physics) se describen como **ondas de presión**, y pueden ser generados por **osciladores**.
+
+
+### 1.1 - Sonido y ondas de presión<a id="sound-waves"></a>
+
+¿Alguna vez te has preguntado si se puede escuchar un sonido en el espacio exterior? ¿O por qué los sonidos se oyen más graves cuando estás bajo el agua?
+
+En ciencias físicas, el sonido es energía creada por la vibración de [moléculas y partículas](https://letstalkscience.ca/educational-resources/backgrounders/introduction-particle-theory-matter) del aire o de cualquier otra forma de [materia](https://letstalkscience.ca/educational-resources/backgrounders/introduction-particle-theory-matter). La materia que transporta el sonido de un lugar a otro se llama **medio**, y puede ser un líquido (como el agua), un gas (como el aire) o un sólido (como una pared o una puerta). Estas partículas vibrantes de materia crean una **onda de presión** que transporta el sonido de un lugar a otro a través del medio.
+
+Una **onda de presión** es cualquier perturbación que transporta energía cuando las partículas del medio se acercan unas a otras y crean zonas de mayor presión. Observa el siguiente GIF de un diapasón produciendo un sonido:
+
+![Un diapasón hace vibrar las partículas de materia a su alrededor, creando una onda de presión de energía sonora ilustrada por un patrón repetido de partículas comprimidas y partículas más separadas. Las partículas de materia transportan la onda sonora de izquierda a derecha al chocar unas con otras.](../images/advanced/pressurewave.gif)
+
+[*Fuente: The Physics Classroom: Sound Waves and Music - Lesson 1 - The Nature of a Sound Wave*](https://www.physicsclassroom.com/class/sound/u11l1c.cfm)
+
+Podemos ver en el GIF anterior que el diapasón hace vibrar las [partículas de materia](https://letstalkscience.ca/educational-resources/backgrounders/introduction-particle-theory-matter) a su alrededor, creando una onda de presión que transporta energía sonora. Cuando esa onda de presión llega a tu oído, percibes esas vibraciones como sonido. La razón por la que no escucharías ningún sonido en el espacio exterior es que allí no hay un medio que transporte la energía sonora.
+
+Para tener una mejor idea de cómo viaja el sonido a través de la materia, mira [este video](https://www.youtube.com/watch?v=px3oVGXr4mo), que demuestra ondas de presión formadas por el sonido de una palmada.
+
+Aprende más sobre la ciencia detrás de las ondas de presión y el sonido visitando estos recursos: [Teoría de partículas de la materia](https://letstalkscience.ca/educational-resources/backgrounders/introduction-particle-theory-matter), [El sonido como onda de presión](https://www.physicsclassroom.com/class/sound/u11l1c.cfm) y [Las ondas y el tímpano](https://www.physicsclassroom.com/mmedia/waves/edl.cfm).
+
+
+### 1.2 - Ondas periódicas y sonido<a id="pressure-waves"></a>
+
+Las ondas de presión pueden describirse mediante patrones repetidos de partículas comprimidas en un medio. Las **compresiones** se caracterizan por áreas de alta presión donde las partículas están muy juntas. Las **rarefacciones** se caracterizan por áreas de baja presión donde las partículas están más separadas. La imagen de abajo ilustra las zonas de alta y baja presión del aire causadas por una onda sonora generada por un diapasón. Observa cómo la alta presión del aire corresponde a zonas donde las partículas de aire están juntas, y la baja presión corresponde a zonas donde están más separadas.
+
+![Un sonido generado por un diapasón produce un patrón periódico de zonas de alta y baja presión en un medio. Las áreas donde las partículas están juntas se etiquetan como “alta presión”, y las áreas donde están más separadas se etiquetan como “baja presión”.](../images/advanced/pressurewave-labels.jpg)
+
+[*Fuente: Sound for Music Technology - The Open University*](https://www.open.edu/openlearn/science-maths-technology/engineering-technology/sound-music-technology-an-introduction/content-section-2.3)
+
+Las ondas de presión que crean sonido son simplemente una secuencia de ciclos repetidos de compresiones y rarefacciones en un medio. Un ciclo de la onda, una **oscilación**, incluye una zona de alta presión (compresión) y una de baja presión (rarefacción). Las oscilaciones que se repiten a intervalos fijos de tiempo forman **ondas periódicas** que escuchamos como notas musicales y otros sonidos.
+
+Por ejemplo, las bocinas producen ondas sonoras moviendo su superficie hacia arriba y hacia abajo con un patrón periódico generado por circuitos eléctricos. El GIF de abajo ilustra cómo las ondas sonoras producidas por una bocina viajan a través de las partículas del aire:
+
+![Una línea negra del lado izquierdo se mueve con un patrón periódico para imitar la superficie de una bocina mientras produce sonido. Columnas de puntos negros a la derecha de la superficie representan las partículas de aire alrededor de la bocina. Cuando la superficie se mueve hacia la derecha, empuja las partículas de aire cercanas y hace que choquen con otras. Cuando la superficie se mueve hacia la izquierda, crea espacio para que las partículas vuelvan a separarse. Líneas rojas que marcan las zonas donde las partículas chocan parecen desplazarse hacia la derecha a través del aire. Debajo de la onda sonora se dibuja una curva seno periódica que representa la presión del aire, y cada pico se alinea con una línea roja. La curva seno parece desplazarse hacia la derecha a medida que las líneas rojas avanzan entre las partículas de aire.](../images/advanced/pressurewave-animated.gif)
+
+[*Fuente: Flipping Physics*](https://www.flippingphysics.com/uploads/2/1/1/0/21103672/0327-animated-gif-6_2.gif)
+
+La línea negra de la izquierda representa la superficie de la bocina, y las columnas de puntos negros representan partículas de aire.
+
+La bocina produce sonido moviendo su superficie de derecha a izquierda en un patrón periódico. Cuando la superficie de la bocina se mueve hacia la derecha, empuja las partículas de aire hacia la derecha y hace que se acerquen unas a otras (se compriman). Cuando las partículas se comprimen, crean zonas de alta presión del aire y transfieren energía sonora a lo largo del medio.
+
+En el GIF anterior, las líneas rojas marcan áreas del aire donde las partículas se comprimen y transfieren energía sonora. Una línea azul, con forma de [curva seno periódica](https://www.investopedia.com/terms/s/sinewave.asp#:~:text=A%20sine%20wave%20is%20a,oscillates%20above%20and%20below%20zero.), muestra los cambios de presión a medida que el sonido viaja por el aire. Las zonas donde las partículas de aire se comprimen se alinean con los puntos más altos de la línea azul (alta presión). Las zonas donde las partículas están más separadas se alinean con los puntos más bajos de la línea azul (baja presión).
+
+¿Notaste cómo las partículas de un medio oscilan de un lado a otro para transportar energía sonora, pero en realidad no viajan a ninguna parte? Las líneas rojas ilustran cómo la energía sonora es transportada por el medio mediante la transferencia de energía entre sus partículas. Observa también cómo el sonido viaja en la misma dirección en la que vibran las partículas. Eso significa que el sonido es una **onda longitudinal**. Visita este recurso para aprender más sobre [ondas longitudinales](https://www.physicsclassroom.com/class/waves/Lesson-1/Categories-of-Waves).
+
+Las ondas sonoras suelen ilustrarse mediante una [curva seno periódica](https://www.investopedia.com/terms/s/sinewave.asp#:~:text=A%20sine%20wave%20is%20a,oscillates%20above%20and%20below%20zero.) que representa cambios de presión mientras el sonido viaja a través de un medio (como la línea azul del GIF anterior).
+
+
+#### Características de las ondas periódicas<a id="periodic-wave-characteristics"></a>
+
+Las ondas periódicas se describen usando las características ilustradas en el diagrama de abajo:
+
+![Un diagrama de una curva seno periódica dibujada sobre una línea horizontal en el medio. Flechas etiquetan las características de la onda: “longitud de onda (distancia por ciclo)”, “frecuencia (ciclos por tiempo)”, “amplitud” y “equilibrio”. Flechas horizontales que van de un pico al siguiente muestran que la longitud de onda mide la longitud de un ciclo de la onda, y que la frecuencia mide cuántos ciclos ocurren durante un periodo de tiempo específico. La línea en medio de la onda se etiqueta como “equilibrio”. Flechas verticales que van del punto más alto de la línea al equilibrio, o del punto más bajo al equilibrio, muestran que la amplitud mide la distancia desde el equilibrio.](../images/advanced/wave-diagram.png)
+
+Descripción de las etiquetas:
+
+- **Equilibrio**: representa la *posición de reposo* de una oscilación y suele representarse con una línea horizontal plana en medio de una onda.
+  - Para una onda de presión, el equilibrio describe la presión en un medio cuando no hay sonido.
+- **Longitud de onda**: la distancia entre dos puntos idénticos de la onda, o la longitud de una oscilación.
+  - En una onda sonora, la longitud de onda es la distancia entre dos compresiones consecutivas o dos rarefacciones consecutivas.
+- **Amplitud:** la distancia entre la línea de equilibrio y el punto más alto o más bajo de la onda.
+  - En una onda sonora, la amplitud describe la intensidad o el volumen del sonido.
+- **Frecuencia:** el número de oscilaciones que ocurren en un periodo de tiempo específico.
+  - La frecuencia suele medirse en **Hertz (Hz)**, que mide el número de ciclos por segundo. **1 Hz = ciclo/segundo**
+  - La frecuencia de una onda de presión, medida en **Hz**, es el número de veces que una compresión o una rarefacción pasa por un punto en un segundo.
+
+
+### 1.3 - Notas musicales y características de las ondas<a id="musical-notes"></a>
+
+Como las [notas musicales](https://www.simplifyingtheory.com/music-note/) son [sonidos](https://www.britannica.com/science/sound-physics) transportados por ondas de presión periódicas, también podemos describirlas usando las características de las ondas.
+
+La **amplitud** de una onda sonora es una medida de la intensidad del sonido, que percibimos a través de su volumen. Las [notas musicales](https://www.simplifyingtheory.com/music-note/) tocadas a gran volumen tienen amplitudes altas, mientras que las notas tocadas a bajo volumen tienen amplitudes bajas. Para aprender más sobre amplitud y música, [visita este recurso](https://www.howmusicworks.org/103/Sound-and-Music/Amplitude-and-Frequency).
+
+El **equilibrio** de una onda sonora describe la energía que transfieren las partículas del medio cuando ningún sonido está viajando a través de él. Podemos imaginar que, en equilibrio, el volumen del sonido es 0 y la presión del medio se encuentra en un valor de reposo.
+
+La **frecuencia** de las ondas sonoras puede percibirse a través de sus tonos o su altura, que van de graves a agudos. Las [notas musicales](https://www.simplifyingtheory.com/music-note/) son ondas sonoras reproducidas a frecuencias específicas durante un periodo corto de tiempo. Las notas tocadas a frecuencias bajas corresponden a tonos graves, como las notas musicales tocadas en un bajo. Las notas tocadas a frecuencias altas corresponden a tonos agudos, como las notas musicales tocadas en una flauta. Para aprender más sobre cómo las notas musicales corresponden a frecuencias específicas de onda, [visita este recurso](https://www.idrumtune.com/ultimate-guide-to-musical-frequencies/).
+
+Visita el [tutorial de síntesis de sonido de The Coding Train](https://www.youtube.com/watch?app=desktop\&v=Bk8rLzzSink) para una breve introducción a los objetos `p5.Oscillator` y las ondas.
+
+
+## Toca notas musicales con osciladores<a id="play-musical-notes-with-oscillators"></a>
+
+Adentrémonos en el maravilloso mundo del sonido, la música y los osciladores para crear una [aplicación simple de melodías](https://editor.p5js.org/Msqcoding/sketches/w_4t5bFYe).
+
+
+### Paso 1 – Crea un objeto p5.Oscillator que pueda reproducir una nota musical
+
+Abre un nuevo proyecto de p5.js, llámalo “Toca una nota” y guarda el proyecto.
+
+- Asegúrate de tener la [biblioteca de sonido de p5.js](https://p5js.org/libraries/) enlazada en tu archivo `index.html`.
+
+Identifica una frecuencia que corresponda a una nota musical y almacénala en una variable global llamada `myFreq`.
+
+- Para la nota [Do central](https://www.sciencedirect.com/topics/mathematics/middle-c), inicializa `myFreq` con `262` añadiendo este código antes de `setup():`
+
+  ```js
+  // Variable for frequency (middle C).
+  let myFreq = 262;
+  ```
+
+Visita [este recurso](https://www.idrumtune.com/ultimate-guide-to-musical-frequencies/) para ver una lista de notas musicales y sus frecuencias correspondientes. El [do central](https://www.sciencedirect.com/topics/mathematics/middle-c) tiene una frecuencia de 262 Hz.
+
+Declara una variable global que almacenará el objeto [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/).
+
+- Agrega este código arriba de `setup():`
+
+  ```js
+  // Variable para el oscilador.
+  let osc;
+  ```
+
+Inicializa `osc` con un objeto [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) usando `myFreq` como argumento.
+
+- Agrega este código en `setup():`
+
+  ```js
+  /* Crea un objeto Oscillator con una
+  frecuencia definida por la variable myFreq */
+  osc = new p5.Oscillator(myFreq);
+  ```
+
+
+<Callout title="Consejo">
+Asegúrate de que el objeto oscilador se haya inicializado correctamente agregando `console.log(osc)` en la línea siguiente. Deberías ver un objeto parecido a este:
+
+```
+r {started: false, phaseAmount: undefined, oscillator: OscillatorNode, f: 262, output: GainNode…}
+```
+</Callout>
+
+Puedes confirmar que creaste un objeto oscilador con la frecuencia correcta revisando la propiedad “`f`” en la consola o imprimiéndola con `console.log(osc.f)`. La frecuencia de `osc.f` debe coincidir con la frecuencia que identificaste para tu nota.
+
+Visita la referencia de [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) para aprender más sobre las propiedades de los objetos `p5.Oscillator`. [Consulta este recurso](https://mixbutton.com/mixing-articles/music-note-to-frequency-chart/) para ver una tabla con las frecuencias de notas musicales específicas.
+
+Tu archivo `sketch.js` debería verse así:
+
+```js
+// Variable para la frecuencia (do central).
+let myFreq = 262;
+
+// Variable para el oscilador.
+let osc;
+
+function setup() {
+  createCanvas(400, 400);
+
+  /* Crea un objeto Oscillator con una
+  frecuencia definida por la variable myFreq */
+
+  osc = new p5.Oscillator(myFreq);
+  console.log(osc.f);
+}
+
+function draw() {
+  background(220);
+}
+```
+
+
+### Paso 2 – Reproduce una nota
+
+La mayoría de los navegadores requieren permiso de la persona usuaria para reproducir o recuperar sonidos, imágenes y video. Para evitar ese problema, podemos añadir una función que le dé control a la persona sobre cuándo se reproduce un sonido.
+
+A continuación, permitiremos que la persona usuaria inicie el oscilador al hacer clic en el lienzo definiendo una función `mousePressed()` que llame a `osc.start()`.
+
+- Agrega las siguientes líneas de código debajo de `draw():`
+
+  ```js
+  // Inicia el oscilador cuando se presiona el mouse.
+  function mousePressed() {
+    osc.start();
+  }
+  ```
+
+- Ejecuta tu código. Deberías escuchar el do central después de hacer clic sobre el lienzo.
+
+Si no escuchas ningún sonido después de hacer clic en el lienzo, revisa que tu código se vea [así](https://editor.p5js.org/Msqcoding/sketches/ObN4r-VJo). Si el sonido no se reproduce, verifica que la configuración de tu navegador permita reproducir contenido multimedia. Puedes usar los siguientes recursos para ayudarte:
+
+- [Configuración de Chrome](https://support.google.com/chrome/answer/9692215?hl=en)
+- [Configuración de Safari](https://testgenius.com/help/safari-enable-auto-play-settings.pdf)
+- [Configuración de Edge](https://answers.microsoft.com/en-us/windows/forum/all/no-sound-on-edge/d78ee7a0-ee77-4d16-b406-919579b4397e)
+
+Ya hemos creado una nota musical que se reproduce para siempre, o hasta que detengas la ejecución del código.
+
+Ahora permitiremos que la persona usuaria inicie y detenga el sonido al hacer clic en el lienzo.
+
+- Reemplaza el código de la función `mousePressed()` con esta sentencia condicional:
+
+  ```js
+  // Alterna la nota que se está reproduciendo.
+  if (osc.started) {
+    osc.stop();
+  } else {
+    osc.start();
+  }
+  ```
+
+- Ejecuta tu proyecto. Deberías poder escuchar la nota do central cuando haces clic en el lienzo y detenerla cuando vuelves a hacer clic.
+
+Tu archivo `sketch.js` debería verse parecido a esto:
+
+```js
+// Variable para el oscilador.
+let osc;
+
+// Frecuencia del do central.
+let myFreq = 262;
+function setup() {
+  createCanvas(400, 400);
+  // Crea el objeto Oscillator.
+  osc = new p5.Oscillator(myFreq);
+  // console.log(osc.f);
+}
+
+function draw() {
+  background(220);
+}
+
+function mousePressed() {
+  // Alterna la nota que se está reproduciendo.
+  if (osc.started) {
+    osc.stop();
+  } else {
+    osc.start();
+  }
+}
+```
+
+En el código anterior, se inicializa un nuevo objeto `p5.Oscillator` con una frecuencia de 262 Hz y se guarda en la variable `osc`. La persona usuaria puede iniciar y detener el oscilador haciendo clic en el lienzo. Para añadir esta interactividad, agregaste una sentencia condicional en `mousePress()` que usa la propiedad `.started` del oscilador para comprobar si ya comenzó a sonar. `osc.started` es `true` si el oscilador ya inició y `false` en caso contrario. Si el oscilador ya comenzó, la condicional indica al programa que lo detenga usando la función `.stop()`; en caso contrario, lo inicia usando la función `.start()`.
+
+Visita la referencia de p5.js para [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) para aprender más sobre sus funciones y propiedades.
+
+[Proyecto de ejemplo](https://editor.p5js.org/KM_Playground/sketches/Ccjew0snE)
+
+<Callout>
+- Muestra en el lienzo la frecuencia del oscilador en Hz. ([ejemplo](https://editor.p5js.org/KM_Playground/sketches/3Ul83pu93))
+- Reproduce distintas frecuencias consultando esta [tabla](https://mixbutton.com/mixing-articles/music-note-to-frequency-chart/) y cambiando el valor de la variable de frecuencia. Redondea las frecuencias al entero más cercano. ([ejemplo](https://editor.p5js.org/KM_Playground/sketches/2ChPeL9r6))
+</Callout>
+
+<Callout title="Nota">
+En la siguiente sección, Escalas musicales y osciladores, presentaremos la teoría detrás de las escalas musicales y la composición melódica introduciendo [escalas musicales](https://piano-music-theory.com/2016/05/31/major-scales/), [composición de melodías](https://pulse.berklee.edu/?id=4\&lesson=73), [octavas](https://www.masterclass.com/articles/music-101-what-is-an-octave) y [escalas musicales y frecuencias](https://www.swarthmore.edu/NatSci/ceverba1/Class/e5_2006/MusicalScales.html).
+
+
+Si ya estás familiarizado con los conceptos de fondo anteriores, pasa directamente a la sección [Construye una aplicación simple de melodías](#build-simple-app).
+</Callout>
+
+
+## Escalas musicales y osciladores
+
+Las personas que componen y producen música suelen crear melodías simples eligiendo notas de una ***escala musical*** específica para asegurar que suenen agradables a quienes las escuchan. En la cultura occidental, las **escalas musicales** son una colección de notas organizadas según frecuencias ascendentes o descendentes. Las escalas ascendentes aumentan en frecuencia (de una altura grave a una más aguda), y las descendentes disminuyen en frecuencia (de una altura aguda a una más grave). Una **octava** es una escala ascendente compuesta por ocho notas musicales espaciadas uniformemente, donde la frecuencia de la última nota es el doble de la frecuencia de la primera.
+
+En el ejemplo de este tutorial elegimos una de las escalas más fundamentales de la música occidental: [Do mayor](https://pulse.berklee.edu/scales/c-major-scale.html). La primera nota de la escala de [Do mayor](https://pulse.berklee.edu/scales/c-major-scale.html) es el [do central](https://www.skoove.com/blog/middle-c-on-piano/#:~:text=Middle%20C%20is%20a%20basic,the%20middle%20of%20the%20piano.), con una frecuencia de 264 Hz. La última nota de la escala tendrá una frecuencia que es el [doble de la frecuencia](https://www.swarthmore.edu/NatSci/ceverba1/Class/e5_2006/MusicalScales.html) del do central. Esto significa que la última nota de la escala es [do sostenido](https://peabody.sapp.org/class/st2/lab/notehz/) con una frecuencia de 524 Hz. Consulta la siguiente tabla para ver una lista de frecuencias y notas musicales correspondientes:
+
+Notas musicales y frecuencias en Do mayor
+
+<table id="note-frequencies">
+
+<tr>
+
+<th>
+
+**Nota**
+
+(4.ª octava)
+
+</th>
+
+<th>
+
+**Frecuencia**
+
+(Hz)
+
+</th>
+
+<th>
+
+**Expresión**
+
+(`myFreq` = 242 Hz)
+
+</th>
+
+</tr>
+
+<tr>
+
+<td>
+
+C
+
+</td>
+
+<td>
+
+264
+
+</td>
+
+<td>
+
+`myFreq * 1`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+D
+
+</td>
+
+<td>
+
+294.75
+
+</td>
+
+<td>
+
+`myFreq * 9/8`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+E
+
+</td>
+
+<td>
+
+327.5
+
+</td>
+
+<td>
+
+`myFreq * 5/4`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+F
+
+</td>
+
+<td>
+
+349.33
+
+</td>
+
+<td>
+
+`myFreq * 4/3`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+G
+
+</td>
+
+<td>
+
+393
+
+</td>
+
+<td>
+
+`myFreq * 3/2`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+A
+
+</td>
+
+<td>
+
+436
+
+</td>
+
+<td>
+
+`myFreq * 5/3`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+B
+
+</td>
+
+<td>
+
+491.25
+
+</td>
+
+<td>
+
+`myFreq * 15/8`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+C#
+
+(5.ª octava)
+
+</td>
+
+<td>
+
+524
+
+</td>
+
+<td>
+
+`myFreq * 2`
+
+</td>
+
+</tr>
+
+</table>
+
+Visita estos recursos para explorar más sobre [otras escalas musicales](https://piano-music-theory.com/2016/05/31/major-scales/), [octavas](https://www.masterclass.com/articles/music-101-what-is-an-octave), [composición de melodías y escalas](https://pulse.berklee.edu/?id=4\&lesson=73) y [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm).
+
+Este proyecto usa objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) para generar las notas musicales que sonarán durante una melodía. En el Paso 1 aprendimos a inicializar un nuevo objeto [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) en una variable con una frecuencia específica. Para generar osciladores para una escala musical, podemos inicializar múltiples objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) con distintas frecuencias dentro de un arreglo.
+
+Para aprender más sobre arreglos, visita el recurso de MDN sobre [arreglos en JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array).
+
+
+## Construye una aplicación simple de melodías<a id="build-simple-app"></a>
+
+En el proyecto de aplicación simple de melodías, permitiremos que las personas usuarias elijan cualquier nota de [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm) para componer melodías. Las frecuencias y los objetos oscilador se almacenan en arreglos para que estén listos para reproducirse cuando la persona los seleccione. Cada nota de [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm) tiene una frecuencia específica, así que cada nota tendrá un objeto oscilador específico que la reproducirá.
+
+
+### Paso 1 – Crea objetos p5.Oscillator para una escala musical
+
+Abre un nuevo proyecto en el [Editor Web de p5.js](https://editor.p5js.org/), llámalo “Aplicación simple de melodías” y guárdalo.
+
+- Asegúrate de tener la [biblioteca de sonido de p5.js](https://p5js.org/libraries/) enlazada en tu archivo `index.html`.
+
+Elige una escala musical para usar en tu app.
+
+- Este tutorial usa la escala de [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm) (4.ª octava), donde la primera nota es el [do central](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/x_12.16.jpg), la misma nota cuya frecuencia se guarda en la variable `myFreq`.
+- Calcula las 8 frecuencias que representan las notas musicales de una escala, comenzando con la frecuencia de una variable `myFreq`.
+
+Consulta [esta tabla](#note-frequencies) de la sección anterior para obtener más información sobre cómo calcular las frecuencias de las notas en [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm).
+
+Declara una variable global `myFreq` e inicialízala con la frecuencia de la primera nota de la escala. Declara también otra variable global llamada `frequencies` e inicialízala con un arreglo de las frecuencias que calculaste y que coinciden con las 8 notas de la escala.
+
+- Agrega este código antes de `setup():`
+
+  ```js
+  // Variable para la frecuencia (do central).
+  let myFreq = 262;
+  
+  // Arreglo de frecuencias en Do mayor.
+  let frequencies = [
+    myFreq,
+    myFreq * 9/8,
+    myFreq * 5/4,
+    myFreq * 4/3,
+    myFreq * 3/2,
+    myFreq * 5/3,
+    myFreq * 15/8,
+    myFreq * 2
+  ];
+  ```
+
+Accede a los elementos del arreglo `frequencies` para inicializar objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) para cada nota de [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm).
+
+- Crea una variable global llamada `oscillators` e inicialízala con un arreglo vacío. Este arreglo almacenará los objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) para cada nota.
+  - Agrega este código arriba de `setup():`
+
+    ```js
+    // Arreglo vacío para objetos oscilador.
+    let oscillators = [];
+    ```
+
+- Inicializa osciladores para las notas que correspondan al arreglo `frequencies` y agrégalos al arreglo `oscillators` llamando a [`.push()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push) con cada nuevo oscilador.
+  - Agrega este código en `setup():`
+
+    ```js
+    // Inicializa osciladores y colócalos en el arreglo oscillators.
+    for (let freq of frequencies) {
+      osc = new p5.Oscillator(freq);
+      oscillators.push(osc);
+    }
+    ```
+
+Aquí usas un bucle `for` para acceder a cada frecuencia del arreglo `frequencies` e inicializar nuevos objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) para cada nota. Cada objeto oscilador se almacena en el arreglo `oscillators`.
+
+<Callout title="Nota">
+El índice de frecuencias específicas en el arreglo `frequencies` coincide con el índice de los objetos oscilador en el arreglo `oscillators`.
+</Callout>
+
+Verifica que los osciladores se hayan creado correctamente imprimiendo en la consola la frecuencia de cada uno.
+
+- Agrega esta línea de código en `setup():`
+
+  ```js
+  // verifica que cada oscilador tenga la frecuencia correcta
+  for (let freq of frequencies) {
+    console.log(osc.f);
+  }
+  ```
+
+Tu archivo `sketch.js` debería verse parecido a esto:
+
+```js
+// Frecuencia del do central.
+let myFreq = 262;
+
+// Arreglo de frecuencias en Do mayor.
+let frequencies = [
+  myFreq,
+  myFreq * 9/8,
+  myFreq * 5/4,
+  myFreq * 4/3,
+  myFreq * 3/2,
+  myFreq * 5/3,
+  myFreq * 15/8,
+  myFreq * 2
+];
+
+// Arreglo vacío para objetos oscilador.
+let oscillators = [];
+
+function setup() {
+  createCanvas(400, 400);
+
+  // Inicializa osciladores y colócalos en el arreglo oscillators.
+  for (let freq of frequencies) {
+    osc = new p5.Oscillator(freq);
+    oscillators.push(osc);
+  }
+
+  // verifica que cada oscilador tenga la frecuencia correcta
+  for (let freq of frequencies) {
+    console.log(osc.f);
+  }
+}
+function draw() {
+  background(220);
+}
+```
+
+Los objetos [`p5.Oscillator`](/reference/p5.sound/p5.Oscillator/) tienen métodos como `.start()`, `.stop()` y `.amp()` que ayudan a controlar la intensidad del sonido que producen. También tienen propiedades como `.f` y `.started`, que almacenan, respectivamente, su frecuencia en Hz y un valor booleano que es `true` cuando el oscilador ha iniciado y `false` en caso contrario. Usaremos todo esto para añadir más elementos interactivos al sketch más adelante.
+
+
+<Callout title="Nota">
+En la siguiente sección, Melodías y tempo, presentaremos cómo el [tempo](https://www.hoffmanacademy.com/blog/what-is-tempo-in-music/) y la [duración de las notas](https://classicalguitarshed.com/theory-note-duration/) intervienen en la creación de [melodías](https://www.masterclass.com/articles/music-101-what-is-melody).
+
+Si ya estás familiarizado con los conceptos de fondo anteriores, pasa directamente al [Paso 2](#create-melody-object).
+</Callout>
+
+
+## Melodías y tempo
+
+Las **melodías** se crean cuando se reproducen varias [notas musicales](https://www.simplifyingtheory.com/music-note/) una después de otra. Una melodía simple puede consistir en notas musicales, ritmo y tempo. El **ritmo** describe cuánto tiempo se reproduce cada nota individual y suele medirse en **pulsos**. El **tempo** describe la cantidad de **pulsos por minuto (bpm)** de una melodía. Por ejemplo, la melodía pop promedio se interpreta a 120 pulsos por minuto, lo que significa que cada pulso dura medio segundo. Los **pulsos** describen el pulso de una melodía, mientras que el tempo describe qué tan rápido avanza cada pulso en el tiempo.
+
+La cantidad de tiempo que se reproduce cada nota, conocida como **duración de la nota**, se mide en pulsos y afecta directamente el ritmo de una melodía. Las notas suelen tocarse con duraciones de 4 pulsos, 2 pulsos, 1 pulso y medio pulso. En una melodía simple, cada nota se toca durante la misma cantidad de tiempo. Una melodía simple tocada a 120 bpm tendrá notas que se reproducen cada medio segundo y duran medio segundo. Para aprender más sobre duración de notas, ritmo y tempo, [visita este recurso](https://classicalguitarshed.com/theory-note-duration/).
+
+Visita la referencia de MDN para repasar [objetos JSON de JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON): almacenaremos nuestras melodías como objetos JSON que luego podremos reproducir.
+
+
+Usaremos [objetos JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON) para almacenar melodías y sus características, como nombre, notas musicales y tempo. Llamaremos a estos objetos ***objetos de melodía***.
+
+
+### Paso 2 – Crea un objeto de melodía<a id="create-melody-object"></a>
+
+Podemos crear un objeto de melodía que represente las notas de [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm) agregando este código antes de `setup():`
+
+```
+// Objeto melody para Do mayor
+let melody = {
+  name: 'Escala de Do mayor',
+  notesIndex: [0, 1, 2, 3, 4, 5, 6, 7],
+  tempo: 120
+};
+```
+
+Los objetos de melodía tienen las siguientes propiedades:
+
+- `name`: el nombre de la melodía
+- `notesIndex`: un arreglo de números que especifica el índice en el arreglo `oscillators` que corresponde a cada nota. `notesIndex` define el orden en que se reproducirá cada nota.
+- `tempo`: la cantidad de pulsos por minuto utilizada para calcular la duración de cada nota en la melodía.
+
+Visita la referencia de MDN sobre [objetos JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON) para aprender más sobre cómo acceder a los valores de sus propiedades.
+
+
+### Paso 3: Reproduce una nota dentro de un objeto de melodía
+
+Antes de reproducir una melodía completa, primero debemos darle al programa instrucciones sobre cómo reproducir una nota individual.
+
+Define una función `playNote()` con un parámetro `n`, donde `n` coincida con el índice en `melody.noteIndex`. `n` también coincide con los índices de las notas en el arreglo `oscillators` y con sus frecuencias en el arreglo `frequencies`.
+
+- Agrega la siguiente declaración de función debajo de `draw():`
+
+  ```js
+  // Comienza a reproducir la nota.
+  function playNote(n) {
+  }
+  ```
+
+Usa una sentencia condicional que reproduzca una nota si esa nota todavía no se está reproduciendo.
+
+- Agrega el siguiente código dentro de `playNote(n)`:
+
+  ```js
+  // Inicia el oscilador si es necesario.
+  if (oscillators[n].started === false) {
+    oscillators[n].start();
+  }
+  ```
+
+Agrega un pequeño fundido de entrada mientras la nota se reproduce usando [`.amp()`](/reference/p5.Oscillator/amp) para una experiencia de escucha más natural. Este método cambia la amplitud del oscilador, aumentando gradualmente el volumen al inicio.
+
+- Agrega la siguiente línea de código dentro de `playNote(n)`:
+
+  ```js
+  // Comienza a reproducir la nota aumentando el volumen con un fade-in de 0.01 s.
+  oscillators[n].amp(1, 0.01);
+  ```
+
+La función `playNote()` debería verse así:
+
+```js
+function playNote(n) {
+  // Inicia el oscilador si es necesario.
+  if (oscillators[n].started === false) {
+    oscillators[n].start();
+
+    // Comienza a reproducir la nota aumentando el volumen con un fade-in de 0.01 s.
+    oscillators[n].amp(1, 0.01);
+  }
+}
+```
+
+La función `playNote()`:
+
+- Recibe un número `n` que indica el valor del índice de una nota a partir de la propiedad `notesIndex` del objeto `melody`.
+- Inicia el oscilador en `oscillators[n]`, siempre que no haya empezado ya.
+  - Para comprobar si el oscilador se está reproduciendo, usa su propiedad `.started` en una sentencia condicional.
+  - Usa el método [`.start()`](/reference/p5.Oscillator/start) para iniciar el oscilador si aún no ha comenzado.
+- Usando el método [`.amp()`](/reference/p5.Oscillator/amp) del oscilador, establece el volumen en 1 con un fade-in de 0.01 segundos.
+
+Para detener la nota, podemos añadir un fundido de salida usando [`.amp()`](/reference/p5.Oscillator/amp) para disminuir el volumen a 0, y detener el oscilador usando [`.stop()`](/reference/p5.Oscillator/stop).
+
+- Define una función llamada `stopNote()` con un parámetro `n` agregando este código debajo de `playNote():`
+
+  ```js
+  // Deja de reproducir la nota.
+  function stopNote(n) {
+    // Baja el volumen del oscilador a 0.
+    oscillators[n].amp(0, 0.01);
+    
+    // Detiene el oscilador.
+    oscillators[n].stop();
+  }
+  ```
+
+La función `stopNote()`:
+
+- Recibe un número `n` que indica el índice del objeto oscilador que se está reproduciendo.
+- Establece el volumen en 0 con un fade-out de 0.01 segundos usando el método [`amp()`](/reference/p5.Oscillator/amp) del oscilador.
+- Usa el método [`stop()`](/reference/p5.Oscillator/stop) para detener el oscilador.
+
+Podemos llamar a `stopNote()` dentro de la función `playNote()` y controlar cuánto tiempo se reproduce cada nota. Primero define una variable global `noteDuration` que use la propiedad `melody.tempo` para calcular la [cantidad de tiempo que debe sonar cada nota](https://classicalguitarshed.com/theory-note-duration/).
+
+- Agrega el siguiente código antes de `setup():`
+
+  ```js
+  // Calcula la duración de cada nota en segundos.
+  let noteDuration = 60 / melody.tempo;
+  ```
+
+En la sección Melodías y tempo aprendimos que la [duración de una nota](https://classicalguitarshed.com/theory-note-duration/) puede calcularse a partir del tempo porque cada nota de nuestra melodía simple se reproduce durante la misma cantidad de tiempo. Como el tempo se mide en pulsos por minuto, podemos dividir 60 segundos por minuto entre el tempo (`60 / melody.tempo`) para determinar cuántos segundos debe sonar cada nota.
+
+Modifica `playNote()` usando [`setTimeout()`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) para programar cuándo debe dejar de sonar una nota específica de `melody.notesIndex`. [`setTimeout()`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) requiere 3 argumentos: la función que se llamará después del tiempo establecido, el tiempo de espera hasta que se llame esa función (en milisegundos) y el argumento que se usará en la función cuando se ejecute.
+
+- Activa `stopNote()` después de `noteDuration * 1000` milisegundos usando `n` como tercer parámetro con [`setTimeout()`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout):
+- Agrega esta línea de código al final de `playNote():`
+
+  ```js
+  // Deja de reproducir la nota después del número de segundos almacenado en noteDuration
+  setTimeout(stopNote, noteDuration * 1000, n);
+  ```
+
+[`setTimeout()`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) llama a `stopNote` después de un periodo medido en milisegundos:
+
+- `noteDuration` puede convertirse de segundos a milisegundos usando la expresión `noteDuration * 1000`.
+- El tercer argumento, `n`, indica el valor que se pasará a la función `stopNote()` cuando se ejecute. Ese es el valor del índice en el arreglo `melody.notesIndex` que coincide con el índice del `oscillator` en el arreglo `oscillators` que se está reproduciendo.
+- Retrasar `stopNote()` con base en `noteDuration` hace que la nota suene durante 1/2 pulso.
+
+Para obtener más información sobre la función [`setTimeout()`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout), visita la referencia de MDN.
+
+Tus funciones `playNote()` y `stopNote()` deberían verse así:
+
+```js
+// Comienza a reproducir la nota.
+function playNote(n) {
+  // Inicia el oscilador si es necesario.
+  if (oscillators[n].started === false) {
+    oscillators[n].start();
+  }
+
+  // Comienza a reproducir la nota aumentando el volumen con un fade-in de 0.01 s.
+  oscillators[n].amp(1, 0.01);
+
+  // Deja de reproducir la nota después del número de segundos almacenado en noteDuration
+  setTimeout(stopNote, noteDuration * 1000, n);
+}
+
+// Deja de reproducir la nota.
+function stopNote(n) {
+  // Baja el volumen del oscilador a 0.
+  oscillators[n].amp(0, 0.01);
+
+  // Detiene el oscilador.
+  oscillators[n].stop();
+}
+```
+
+- Prueba `playNote()` llamándola al final de `setup()` con una nota específica del objeto de melodía. Por ejemplo, puedes agregar esta línea al final de `setup()` y cambiar el argumento para probar cada una:
+
+  ```js
+  // prueba playNote
+  playNote(0);
+  ```
+
+
+### Paso 4: Reproduce un objeto de melodía
+
+Define la función `play()` para programar cuándo se reproduce cada nota del arreglo `oscillators` según el orden en que aparece su índice en el arreglo `melody.notesIndex` y según la `noteDuration` de la melodía. Los elementos de `melody.notesIndex` incluyen todos los índices de las notas de la melodía, en el orden en que deben reproducirse.
+
+El valor de `melody.notesIndex[0]` es el índice del arreglo `oscillators` que reproduce la primera nota de la melodía. El último elemento de `melody.notesIndex` es el índice del arreglo `oscillators` correspondiente a la última nota. Cada nota puede reproducirse en un momento específico después de que empiece la melodía usando `setTimeout()` para activar `playNote()` dentro de un bucle `for`.
+
+- Agrega la declaración de la función `play()` al final de `sketch.js`:
+
+  ```js
+  // Reproduce las notas de una melodía.
+  function play() {
+    // Lee cada [índice, nota] de melody.notesIndex
+    for (let [index, note] of melody.notesIndex.entries()) {
+      // Reproduce cada nota en el momento programado
+      setTimeout(playNote, noteDuration * 1000 * index, note);
+    }
+  }
+  ```
+
+- Prueba la función `play()` llamándola desde `mousePressed()`.
+
+Tu código debería verse así:
+
+```js
+// Variable para la frecuencia (do central).
+let myFreq = 262;
+
+// Arreglo de frecuencias en Do mayor.
+let frequencies = [
+  myFreq,
+  myFreq * 9/8,
+  myFreq * 5/4,
+  myFreq * 4/3,
+  myFreq * 3/2,
+  myFreq * 5/3,
+  myFreq * 15/8,
+  myFreq * 2
+];
+
+// Objeto melody para Do mayor
+let melody = {
+  name: 'Escala de Do mayor',
+  notesIndex: [0, 1, 2, 3, 4, 5, 6, 7],
+  tempo: 120
+};
+
+// Arreglo vacío para objetos oscilador.
+let oscillators = [];
+
+// Calcula la duración de cada nota en segundos.
+let noteDuration = 60 / melody.tempo;
+
+function setup() {
+  createCanvas(400, 400);
+
+  // Inicializa osciladores y colócalos en el arreglo oscillators.
+  for (let freq of frequencies) {
+    osc = new p5.Oscillator(freq);
+    oscillators.push(osc);
+  }
+
+  // establece el modo de color en HSB (mejor para colorear teclas con notas)
+  colorMode(HSB);
+}
+
+function draw() {
+  background(220);
+  drawMelody();
+}
+
+// Comienza a reproducir la nota.
+function playNote(n) {
+  // Inicia el oscilador si es necesario.
+  if (oscillators[n].started === false) {
+    oscillators[n].start();
+
+    // Comienza a reproducir la nota aumentando el volumen con un fade-in de 0.01 s.
+    oscillators[n].amp(1, 0.01);
+  }
+
+  // Deja de reproducir la nota después del número de segundos almacenado en noteDuration * 1000
+  setTimeout(stopNote, noteDuration * 1000, n);
+}
+
+// Deja de reproducir la nota.
+function stopNote(n) {
+  // Baja el volumen del oscilador a 0.
+  oscillators[n].amp(0, 0.01);
+
+  // Detiene el oscilador.
+  oscillators[n].stop();
+}
+
+// Reproduce las notas de una melodía.
+function play() {
+  // Lee cada [índice, nota] de melody.notesIndex
+  for (let [index, note] of melody.notesIndex.entries()) {
+    // Reproduce cada nota en el momento programado
+    setTimeout(playNote, noteDuration * 1000 * index, note);
+  }
+}
+
+// reproduce la melodía con clic del mouse
+function mousePressed() {
+  play();
+}
+```
+
+La función `play()`:
+
+- Usa un bucle [for](/reference/p5/for) para iterar por todos los elementos del arreglo `melody.notesIndex`, y guarda el índice del elemento en la variable `index` y su valor en la variable `note`.
+  - `index` indica el orden en que debe reproducirse la nota.
+  - `note` indica el índice del arreglo `oscillators` que reproducirá la nota.
+- Programa la reproducción de cada nota de `melody.notesIndex` usando `setTimeout()`.
+  - Llama a `playNote(note)` después de un tiempo, en milisegundos, calculado con `noteDuration * 1000 * index`.
+
+`setTimeout()` programa cuándo debe reproducirse cada nota y acepta dos o más argumentos: la función que se ejecutará (`playNote`), el retraso antes de ejecutarla (en milisegundos) y cualquier argumento que deba pasarse a esa función. En este caso, queremos pasar una nota a la función `playNote`. El retraso se calcula con `noteDuration * 1000 * index`, donde `index` es el índice de la nota actual dentro del arreglo `melody.noteIndex`, que corresponde al índice del `oscillator` en el arreglo `oscillators`.
+
+Esa temporización permite el siguiente calendario de reproducción para las notas de una melodía:
+
+- La primera nota de `melody.noteIndex` se reproduce inmediatamente cuando empieza la melodía (a los 0 milisegundos).
+- La segunda nota se reproduce después de `noteDuration * 1000 * 1` milisegundos. Esto ocurre 1/2 pulso después de que empieza a sonar la primera nota.
+- La tercera nota se reproduce después de la segunda, con un retraso de `noteDuration * 1000 * 2` milisegundos.
+- Este proceso se repite hasta que se usa cada elemento del arreglo `melody.notesIndex`.
+
+El momento de reproducción de cada nota queda escalonado según la duración y la posición de una sola nota dentro de la melodía. Esto permite una progresión suave de notas a lo largo de la melodía y crea un ritmo en el que cada nota se reproduce a un intervalo constante, alineado con el tempo de la melodía.
+
+[Código de ejemplo](https://editor.p5js.org/Msqcoding/sketches/hQbNZKWhJ)
+
+<Callout>
+- Cambia los valores de los elementos en `melody.notesIndex` y observa cómo cambia la melodía.
+- Cambia el valor de `melody.tempo` y observa cómo cambia la melodía.
+- Crea nuevos objetos de melodía y reprodúcelos.
+</Callout>
+
+
+<Callout title="Nota">
+En la siguiente sección, Interfaz y experiencia de usuario, presentaremos cómo pensar en la [interfaz de usuario (UI)](https://clearbridgemobile.com/mobile-app-design-fundamentals-user-experience-user-interface/), la [experiencia de usuario (UX)](https://www.interaction-design.org/literature/topics/ux-design) y la importancia de la [retroalimentación visual](https://uxplanet.org/the-details-that-matter-8b962ca58b49) al usar una app.
+
+
+Si ya estás familiarizado con los conceptos de fondo anteriores, pasa directamente al [Paso 7](#user-input).
+</Callout>
+
+
+## Interfaz y experiencia de usuario
+
+Ya programamos nuestros proyectos para reproducir las notas de un objeto de melodía. Ahora podemos agregar una [interfaz de usuario (UI)](https://clearbridgemobile.com/mobile-app-design-fundamentals-user-experience-user-interface/) que permita a las personas seleccionar notas de la escala de [Do mayor](https://pulse.berklee.edu/scales/c-major-scale.html) y componer sus propias melodías. Una [interfaz de usuario (UI)](https://clearbridgemobile.com/mobile-app-design-fundamentals-user-experience-user-interface/) puede ofrecer todo lo que consideres necesario para que una persona use tu app con éxito y la disfrute. También puede proporcionar una [experiencia de usuario (UX)](https://www.interaction-design.org/literature/topics/ux-design) divertida y agradable.
+
+La [retroalimentación visual](https://uxplanet.org/the-details-that-matter-8b962ca58b49) durante la experiencia de uso es una parte importante para mantener el interés de las personas en tu app. Dar retroalimentación visual a las personas usuarias cada vez que se reproduce una nota puede hacer que componer y reproducir melodías sea una experiencia más satisfactoria y que invite a seguir creando.
+
+Visita estos recursos para aprender más sobre [interfaces de usuario (UI)](https://clearbridgemobile.com/mobile-app-design-fundamentals-user-experience-user-interface/), [experiencias de usuario (UX)](https://www.interaction-design.org/literature/topics/ux-design) y [retroalimentación visual](https://uxplanet.org/the-details-that-matter-8b962ca58b49).
+
+
+En este paso puedes diseñar la interfaz de usuario que quieras. Como ejemplo, dibujaremos una fila de botones que se parezcan a las teclas de un piano. Para facilitar una experiencia intuitiva, cada nota de la escala de Do mayor corresponderá a un botón en el lienzo, organizado en orden de frecuencia decreciente. Cuando se reproduzca la nota asociada a una tecla específica, esa tecla se iluminará con un color brillante para añadir una retroalimentación visual agradable durante la reproducción de la melodía.
+
+
+### Paso 5 – Crea una interfaz de usuario
+
+En este paso definirás una función `drawMelody()` que dibuja botones parecidos a teclas de piano a lo largo del lienzo. Cada botón corresponde a una nota musical específica representada por un objeto [p5.Oscillator](/reference/p5.Oscillator) en el arreglo `oscillators`. Como hay 8 objetos oscilador en el arreglo `oscillators` y 8 frecuencias de notas musicales en el arreglo `frequencies`, se dibujarán 8 botones a lo largo del lienzo.
+
+- Define variables globales que almacenen la cantidad de notas disponibles para las personas usuarias en `numNotes`, y el ancho del lienzo en `cWidth`. Agrega el siguiente código arriba de `setup():`
+
+  ```js
+  // número de notas que se pueden reproducir (igual al número de frecuencias/osciladores)
+  let numNotes = frequencies.length;
+  
+  // ancho del lienzo
+  let cWidth = 400;
+  ```
+
+- Reemplaza la dimensión de ancho en `createCanvas()` por `cWidth` y establece el modo de color en [HSB](https://www.learnui.design/blog/the-hsb-color-system-practicioners-primer.html).
+
+Tus variables globales y `setup()`:
+
+```js
+// ...otras variables
+
+// número de notas que se pueden reproducir (igual al número de frecuencias/osciladores)
+let numNotes = frequencies.length;
+
+// ancho del lienzo
+let cWidth = 400;
+
+function setup() {
+  createCanvas(cWidth, 400);
+
+  // Inicializa osciladores y colócalos en el arreglo oscillators.
+  for (let freq of frequencies) {
+    osc = new p5.Oscillator(freq);
+    oscillators.push(osc);
+  }
+
+  // establece el modo de color en HSB (mejor para colorear teclas con notas)
+  colorMode(HSB);
+}
+```
+
+`cWidth` y `numNotes` se usarán para calcular la coordenada `x` de cada botón en el lienzo. Cada botón cambiará de color, usando el [modo de color HSB](https://www.learnui.design/blog/the-hsb-color-system-practicioners-primer.html), mientras una nota se esté reproduciendo, y volverá a un color predeterminado cuando la nota no se esté reproduciendo.
+
+En este ejemplo, dibujarás una fila de botones rectangulares en el lienzo que se comportan como teclas de piano. Cada tecla corresponde a una nota de la escala de Do mayor. Las teclas cambian de color cuando se reproduce la nota que coincide con una tecla específica. Cada botón (tecla) representa una nota de Do mayor y aparece en el lienzo ordenado por altura ascendente.
+
+- Define una función llamada `drawMelody()` que dibuje botones para cada nota en una fila sobre el lienzo.
+- Define una variable local llamada `keyWidth` e inicialízala con `cWidth/numNotes`, que representa el ancho de cada tecla.
+- Define variables locales para las coordenadas `x` y `y` de cada botón usando un bucle `for`:
+  - `y` es un valor fijo
+  - `x` depende de la variable de índice `i` y de `keyWidth`
+  - Usa `x`, `y` y `keyWidth` para dibujar teclas rectangulares redondeadas a lo largo del lienzo.
+
+Tu función `drawMelody()` debería verse así:
+
+```js
+// Interfaz de usuario
+function drawMelody() {
+  // ancho de cada tecla
+  let keyWidth = cWidth/numNotes;
+
+  // Bucle para la cantidad de notas disponibles
+  for (let i = 0; i < numNotes; i++) {
+    // establece x para cada elemento
+    let x = i * keyWidth;
+    let y = keyWidth * 3; // y = 3 veces el ancho
+    
+    // Dibuja una tecla redondeada.
+    rect(x, y, keyWidth, keyWidth * 2, 10);
+  }
+}
+```
+
+- Agrega `drawMelody()` a la función `draw()` y haz clic con el mouse en el lienzo. Observa que los colores todavía no cambian.
+
+### Paso 6: Agrega retroalimentación visual
+
+`drawMelody()` genera un color para cada botón que representa una nota. Cada vez que se reproduce una nota, la tecla correspondiente cambiará de color. Esto añade un elemento visual agradable a la experiencia. La función [`map()`](/reference/p5/map) puede usarse para definir el color de cada botón en [modo de color HSB](https://www.learnui.design/blog/the-hsb-color-system-practicioners-primer.html) mientras se está reproduciendo, usando el índice de cada nota dentro del arreglo `oscillators`.
+
+- Agrega el siguiente código a `drawMelody()` antes de `rect():`
+
+  ```js
+  // Comprueba si oscillator[i] ya comenzó a reproducirse
+  if (oscillators[i].started) {
+    // true: define una variable local h usando map(), numNotes e i
+    // Establece el color de la tecla usando map()
+    let h = map(i, 0, numNotes, 0, 360);
+    
+    // usa h en fill
+    fill(h, 100, 100);
+  } else {
+    fill("white");
+  }
+  ```
+
+Tu función `drawMelody()` debería verse así:
+
+```js
+// Interfaz de usuario
+function drawMelody() {
+  // dibuja botones rectangulares
+  let keyWidth = cWidth/numNotes;
+
+  // Bucle para la cantidad de notas disponibles
+  for (let i = 0; i < numNotes; i++) {
+    // establece x para cada elemento
+    let x = i * keyWidth;
+    let y = keyWidth * 3; // altura = 3 veces el ancho
+
+    // Comprueba si oscillator[i] ya comenzó a reproducirse
+    if (oscillators[i].started) {
+      // true: define una variable local h usando map() y numNotes
+      // Establece el color de la tecla usando map()
+      let h = map(i, 0, numNotes, 0, 360);
+
+      // usa h en fill
+      fill(h, 100, 100);
+    } else {
+      fill("white");
+    }
+
+    // Dibuja una tecla redondeada con altura doble del ancho.
+    rect(x, y, keyWidth, keyWidth * 2, 10);
+  }
+}
+```
+
+- Prueba tu código haciendo clic en el lienzo. Deberías ver una fila de teclas que se vuelven coloridas mientras suenan las notas.
+
+Tu código debería verse [así](https://editor.p5js.org/Msqcoding/sketches/Qo-_4zCyE)
+
+<Callout>
+Cambia el rango en la función `map()`. Puedes modificar el rango de `0, 360` a otro distinto en la línea `map(n, 0, numNotes, 0, 360)` dentro de `drawMelody()`. Esto cambiará el espectro de tonos al que se asignan las notas.
+
+Por ejemplo, mapear a `50, 250` en lugar de `0, 360` usará un segmento diferente del espectro de color.
+
+</Callout>
+
+Para prepararte para el siguiente paso, considera repasar [p5.Element](/reference/p5/p5.Element/) como [createP()](/reference/p5/createP), [createSelect()](/reference/p5/createSelect), [createInput()](/reference/p5/createInput) y [createButton()](/reference/p5/createButton). También conviene revisar la referencia de MDN sobre [elementos del DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) y [elementos HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Element).
+
+También puedes repasar cómo usar y modificar [objetos DOM](/reference/#DOM) visitando el tutorial [Crear y dar estilo a HTML](/tutorials/creating-styling-html).
+
+
+### Paso 7 – Agrega entradas de usuario para personalizar melodías<a id="user-input"></a>
+
+Ahora que tenemos un sketch que reproducirá una melodía y mostrará elementos visuales mientras suenan los sonidos, podemos agregar [elementos DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) e interactividad en el lienzo para ayudar a las personas usuarias a personalizar sus objetos de melodía. Los [elementos DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) son [elementos HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) que podemos incluir en aplicaciones web hechas con p5.js.
+
+Los objetos de melodía tienen 3 propiedades que pueden personalizarse: `name`, `notesIndex` y `tempo`. Las personas usuarias también pueden interactuar con un botón para reproducir la melodía. Empecemos añadiendo un botón de reproducción.
+
+
+#### Paso 7.1 - Agrega un botón de reproducción
+
+Elimina la función `mousePressed()` de tu código y llama a `createButton()` para crear un botón que reproduzca la melodía. Podemos agregar [objetos DOM](/reference/#DOM), como botones, a nuestro proyecto dentro de `setup():`
+
+- Llama a `.position(x, y)` para colocar el botón en tu app.
+- Llama a `.mouseClicked(play)` para llamar a la función `play()` cuando la persona haga clic en el botón.
+- Agrega este código a `setup():`
+
+  ```js
+  // Botón de reproducción.
+  let playButton = createButton('🎵 ¡Reproduce tu canción cuando termines! 🎶');
+  playButton.position(cWidth * 0.2, 540);
+  playButton.mouseClicked(play);
+  ```
+
+Tu función `setup()` podría verse así:
+
+```js
+function setup() {
+  createCanvas(cWidth, 400);
+
+  // Inicializa osciladores y colócalos en el arreglo oscillators.
+  for (let freq of frequencies) {
+    osc = new p5.Oscillator(freq);
+    oscillators.push(osc);
+  }
+
+  // establece el modo de color en HSB (mejor para colorear teclas con notas)
+  colorMode(HSB);
+
+  // Botón de reproducción.
+  let playButton = createButton('🎵 ¡Reproduce tu canción cuando termines! 🎶');
+  playButton.position(cWidth * 0.2, 540);
+  playButton.mouseClicked(play);
+}
+```
+
+- Prueba tu botón para ver si funciona.
+
+[Ejemplo](https://editor.p5js.org/Msqcoding/sketches/Hym5KUSH8)
+
+
+#### Paso 7.2 - Personaliza el tempo
+
+Agreguemos un menú desplegable con una lista de tempos para que la persona usuaria pueda elegir. El valor que seleccione actualizará el objeto `melody` que está reproduciendo. Comencemos colocando instrucciones en la app para explicar qué hacer con el menú desplegable.
+
+- Usa `createP()` para crear un párrafo que invite a las personas usuarias a establecer su tempo. Usa `.style()` y `.position()` para dar estilo y colocar el párrafo.
+  - Agrega este código en `setup():`
+
+    ```js
+    // Texto para pedir a las personas usuarias que establezcan el tempo
+    let p = createP('Paso 1: ¡Selecciona el tempo!');
+    p.style("color", "magenta");
+    p.position(10, 415);
+    ```
+
+Para agregar un menú desplegable con opciones de tempo, necesitaremos un arreglo `tempoList` con los valores entre los que podrán elegir (medidos en bpm). También necesitaremos una variable que almacene el elemento DOM del menú desplegable.
+
+- Agrega este código antes de `setup():`
+
+  ```js
+  // Lista de selección de tempo (en pulsos por minuto).
+  let tempoList = [
+    "100","110","120",
+    "130", "140", "150",
+    "160","170","180",
+    "190", "200", "210",
+    "220","230", "240",
+    "250", "260","270",
+    "280", "290", "300"
+  ];
+  
+  // Variable para el menú desplegable de tempo.
+  let tempoSelect;
+  ```
+
+Podemos agregar [objetos DOM](/reference#DOM), como menús desplegables, a nuestro proyecto en `setup():`
+
+- Usa `createSelect()` para crear un menú desplegable y guardarlo en una variable llamada `tempoSelect`. Establece su posición con `.position()`. Establece la primera opción con el índice `0` usando `.option()`.
+  - Agrega este código en `setup():`
+
+    ```js
+    // Menú desplegable de tempo.
+    tempoSelect = createSelect();
+    tempoSelect.position(10, 455);
+    tempoSelect.option(0);
+    ```
+
+- Usa un bucle `for` para llenar las opciones del menú agregando este código en `setup():`
+
+  ```js
+  // Agrega tempos a las opciones del menú.
+  for (let tempo of tempoList) {
+    tempoSelect.option(tempo);
+  }
+  ```
+
+- Prueba el menú desplegable para asegurarte de que la lista de tempos se haya cargado correctamente.
+- Declara una función personalizada `setTempo()` que establezca `melody.tempo` y `noteDuration` de un objeto de melodía según la elección de la persona usuaria en el menú desplegable.
+  - Primero, comprueba que el tempo seleccionado no sea 0 (el valor predeterminado).
+  - Si no es 0, entonces actualiza `melody.tempo` y `noteDuration`.
+  - Hazlo agregando este código fuera de `setup():`
+
+    ```js
+    // Establece el tempo del objeto melody
+    function setTempo() {
+      // Comprueba que la opción de tempo no sea 0
+      if (tempoSelect.selected() !== 0) {
+        melody.tempo = tempoSelect.selected();
+        noteDuration = 60 / melody.tempo;
+      }
+    }
+    ```
+
+- Usa `.changed()` para llamar a `setTempo()` cuando la persona seleccione un tempo agregando este código en `setup():`
+
+  ```js
+  // Llama a setTempo() cuando haya una selección.
+  tempoSelect.changed(setTempo);
+  ```
+
+- Muestra el tempo de la melodía en el lienzo.
+  - Agrega este código en `draw():`
+
+    ```js
+    // Muestra el tempo de la melodía
+    fill("magenta")
+    textSize(20)
+    text(`Tempo: ${melody.tempo}`, 300, 50);
+    ```
+
+- Confirma que `setTempo()` funcione cambiando el tempo con el menú desplegable y luego presionando el botón de reproducción.
+
+Tu código podría verse como [este ejemplo](https://editor.p5js.org/Msqcoding/sketches/wRg-W6WZI).
+
+
+#### Paso 7.3 - Personaliza los nombres
+
+Agregaremos instrucciones para que las personas usuarias nombren sus melodías, junto con un cuadro de texto para escribir ese nombre y un botón para actualizar la propiedad `name` del objeto `melody`.
+
+- Usa `createP()` para crear un párrafo que invite a las personas usuarias a definir el nombre de su melodía, luego usa `.style()` y `.position()` para darle estilo y colocarlo.
+- Agrega el siguiente código en `setup():`
+
+  ```js
+  // Instrucciones para introducir texto.
+  let p2 = createP('Paso 2: Escribe un nombre para tu melodía y haz clic en "Asignar nombre"');
+  p2.style("color", "magenta");
+  p2.position(10, 455);
+  ```
+
+- Usa `createInput()` para crear una caja de texto donde las personas puedan escribir un nombre para la melodía, luego usa `.position()` y `.size()` para ubicarla y cambiar su tamaño.
+  - Agrega el siguiente código en `setup():`
+
+    ```js
+    // Entrada para el nombre de la canción
+    nameInput = createInput("Escribe un nombre y asígnalo");
+    nameInput.position(10, 490);
+    nameInput.size(200);
+    ```
+
+- Usa `createButton()` para crear un botón que permita establecer el nombre de la melodía. Usa `.position()` para colocarlo en la app. Usa `.mouseClicked()` para llamar a `setName()` cuando se haga clic en el botón.
+  - Agrega el siguiente código en `setup():`
+
+    ```js
+    // Botón para el nombre.
+    let nameButton = createButton('Asignar nombre');
+    nameButton.position(250, 490);
+    nameButton.mouseClicked(setName);
+    ```
+
+- Define una función llamada `setName()` para actualizar la propiedad `melody.name` con el valor del campo de texto.
+  - Agrega este código fuera de `setup():`
+
+    ```js
+    // Establece el nombre de la melodía
+    function setName() {
+      melody.name = nameInput.value();
+    }
+    ```
+
+- Muestra el nombre de la melodía en el lienzo.
+  - Agrega este código en `draw():`
+
+    ```js
+    // Muestra el nombre de la melodía
+    fill("magenta")
+    textSize(20)
+    text(`Nombre de la melodía: ${melody.name}`, 50, 50);
+    ```
+
+Tu proyecto debería verse parecido a [este ejemplo](https://editor.p5js.org/Msqcoding/sketches/JoLAcmGcb).
+
+
+#### Paso 7.4 - Agrega un botón de reinicio
+
+Crea un botón que reinicie el objeto `melody` para que la persona usuaria pueda llenar un nuevo objeto de melodía. Reiniciar el objeto de melodía permite comenzar a componer una nueva melodía limpiando todas sus propiedades. Como resultado, las personas pueden iniciar su melodía con un objeto vacío. Un objeto de melodía vacío se ve así:
+
+```js
+// Objeto de melodía vacío
+let melody = {
+  name: "",
+  notesIndex: [],
+  tempo: 0,
+  duration: 0
+};
+```
+
+- Declara una función que reinicie el objeto de melodía llamada `resetMelody()` agregando el siguiente código fuera de todas las demás funciones:
+
+```js
+// Reinicia el objeto de melodía
+function resetMelody() {
+  // Reinicia las propiedades del objeto de melodía
+  melody.name = "";
+  melody.notesIndex = [];
+  melody.tempo = 0;
+
+  // Reinicia el menú desplegable de tempo
+  tempoSelect.selected(0);
+}
+```
+
+- Usa `createButton()` para crear un botón que permita reiniciar el objeto de melodía. Usa `.position()` para colocarlo en la app. Usa `.mouseClicked()` para llamar a `setName()` cuando se haga clic en el botón.
+  - Agrega el siguiente código en `setup():`
+
+    ```js
+    // Botón de reinicio
+    let resetButton = createButton('Reiniciar melodía');
+    resetButton.position(150, 580);
+    resetButton.mouseClicked(resetMelody);
+    ```
+
+Tu proyecto debería verse parecido a [este ejemplo](https://editor.p5js.org/Msqcoding/sketches/JoLAcmGcb).
+
+
+### Paso 8: Agrega teclas interactivas
+
+Agrega interacciones de clic del mouse a cada tecla del lienzo declarando una función llamada `updateMelody()`. Esta función reproduce las notas que corresponden a la tecla presionada en el lienzo y las agrega a `melody.notesIndex`. En `updateMelody()`:
+
+- Define una variable local `keyWidth` para las coordenadas `x` y `y` de cada botón usando un bucle `for`. Usaremos el mismo código que utilizamos para generar cada tecla en la interfaz de usuario durante el Paso 5.
+  - `updateMelody()` debería verse así:
+
+    ```js
+    // guarda notas según los rectángulos en la pantalla
+    function updateMelody() {
+      // ancho de las teclas
+      let keyWidth = width / numNotes;
+      
+      // Recorre cada tecla
+      for (let i = 0; i < numNotes; i++) {
+        // establece x y y para cada elemento
+        let x = i * keyWidth;
+        let y = keyWidth * 3;
+      }
+    }
+    ```
+
+- Agrega una sentencia condicional que compruebe si el mouse está sobre los límites de cada tecla, guarde la nota específica en la variable local `notes`, use el método de arreglo `.push()` para agregar la nota a `melody.notesIndex` y reproduzca la nota.
+  - Agrega el siguiente código dentro de `updateMelody():`
+
+    ```js
+    // Comprueba si el mouse está sobre la tecla
+    if (mouseX > x &&
+        mouseX < x + keyWidth &&
+        mouseY > y &&
+        mouseY < y + keyWidth * 2) {
+
+      // guarda el arreglo de índices de notas
+      let notes = melody.notesIndex;
+      
+      // agrega el índice de la nueva nota al arreglo
+      notes.push(i);
+      
+      // reasigna al objeto melody
+      melody.notesIndex = notes;
+      
+      // reproduce la nota en ese índice
+      playNote(i);
+    }
+    ```
+
+- Reemplaza la llamada de función en `mousePressed()` por una llamada a la función `updateMelody()`.
+
+`updateMelody()` y `mousePressed()` deberían verse así:
+
+```js
+// actualiza el objeto melody cuando se hace clic en el lienzo
+function mousePressed() {
+  updateMelody();
+}
+
+// guarda notas según los rectángulos en la pantalla
+function updateMelody() {
+  // ancho de las teclas
+  let keyWidth = width / numNotes;
+
+  // Bucle para la cantidad de notas disponibles
+  for (let i = 0; i < numNotes; i++) {
+    // establece x y y para cada elemento
+    let x = i * keyWidth;
+    let y = keyWidth * 3;
+
+    // Comprueba si el mouse está sobre la tecla
+    if (mouseX > x &&
+        mouseX < x + keyWidth &&
+        mouseY > y &&
+        mouseY < y + keyWidth * 2) {
+
+      // guarda el arreglo de índices de notas
+      let notes = melody.notesIndex;
+
+      // agrega el índice de la nueva nota al arreglo
+      notes.push(i);
+
+      // reasigna al objeto melody
+      melody.notesIndex = notes;
+
+      // reproduce la nota en ese índice
+      playNote(i);
+    }
+  }
+}
+```
+
+Para una experiencia de usuario más fluida, reemplaza el objeto de melodía de la escala de Do mayor por un objeto de melodía vacío. Así, tu Aplicación simple de melodías comenzará con un objeto `melody` vacío y las personas usuarias podrán empezar a componer sus propias melodías desde cero.
+
+[Ejemplo final de Aplicación simple de melodías](https://editor.p5js.org/Msqcoding/sketches/w_4t5bFYe)
+
+
+## Siguientes pasos
+
+- Sigue [Comenzar con Node.js](/tutorials/getting-started-with-nodejs) para permitir que las personas usuarias guarden y vuelvan a reproducir melodías desde sus computadoras.
+
+
+## Recursos
+
+Coding Train: [Tutorial de síntesis de sonido con p5.js](https://www.youtube.com/watch?app=desktop\&v=Bk8rLzzSink)
+
+Recursos de ciencia
+
+- [Sonido - definición](https://www.britannica.com/science/sound-physics)
+- [Teoría de partículas de la materia](https://letstalkscience.ca/educational-resources/backgrounders/introduction-particle-theory-matter)
+- [¿Cómo se ve el sonido?](https://www.youtube.com/watch?v=px3oVGXr4mo) - video
+- [El sonido es una onda de presión](https://www.physicsclassroom.com/class/sound/u11l1c.cfm)
+- [Ondas de presión y ciclos](https://www.open.edu/openlearn/science-maths-technology/engineering-technology/sound-music-technology-an-introduction/content-section-2.3)
+- [Ondas sonoras y el tímpano](https://www.physicsclassroom.com/mmedia/waves/edl.cfm)
+- [Ondas sinusoidales](https://www.investopedia.com/terms/s/sinewave.asp#:~:text=A%20sine%20wave%20is%20a,oscillates%20above%20and%20below%20zero.)
+- [Categorías de ondas](https://www.physicsclassroom.com/class/waves/Lesson-1/Categories-of-Waves)
+- [Altura y frecuencia](https://www.physicsclassroom.com/class/sound/Lesson-2/Pitch-and-Frequency)
+
+Recursos de música
+
+- [Música - definición](https://www.britannica.com/art/music)
+- [¿Qué es una melodía?](https://www.masterclass.com/articles/music-101-what-is-melody)
+- [Nota musical](https://www.simplifyingtheory.com/music-note/)
+- [¿Qué es un oscilador?](https://www.techtarget.com/whatis/definition/oscillator)
+- [Amplitud y frecuencia](https://www.howmusicworks.org/103/Sound-and-Music/Amplitude-and-Frequency)
+- [Comprender las frecuencias de las notas](https://producelikeapro.com/blog/note-frequency-chart/)
+- [¿Qué son la síntesis y el diseño sonoro?](https://www.youtube.com/watch?v=qV10Gb-Dvao) - video
+- [¿Qué son las frecuencias musicales?](https://www.idrumtune.com/ultimate-guide-to-musical-frequencies/)
+- [Tabla de frecuencias de notas musicales](https://mixbutton.com/mixing-articles/music-note-to-frequency-chart/)
+- [Do central](https://www.sciencedirect.com/topics/mathematics/middle-c)
+- [Do mayor](https://ux1.eiu.edu/~cfadd/3050/Adventures/chapter_12/ch12_4.htm)
+- [Duración de la nota](https://classicalguitarshed.com/theory-note-duration/)
+- [¿Qué es el tempo?](https://www.hoffmanacademy.com/blog/what-is-tempo-in-music/)
+- [Lista de escalas musicales](https://piano-music-theory.com/2016/05/31/major-scales/)
+- [Escalas musicales y frecuencias](https://www.swarthmore.edu/NatSci/ceverba1/Class/e5_2006/MusicalScales.html)
+- [¿Qué es una octava?](https://www.masterclass.com/articles/music-101-what-is-an-octave)
+- [Comprender el ritmo](https://www.masterclass.com/articles/understanding-rhythm-in-music#RmoSLdJ8MF39r27j2PKur)
+
+Recursos de programación
+
+- [Node.js](https://nodejs.org/en/about)
+- [Express.js](https://expressjs.com/)
+- [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)
+- [Arreglos de JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+  - [.push()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
+- [Objetos JSON de JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON)
+- [setTimeout()](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout)
+- [Experiencia de usuario (UX) vs interfaz de usuario (UI)](https://clearbridgemobile.com/mobile-app-design-fundamentals-user-experience-user-interface/)
+- [El sistema de color HSB](https://www.learnui.design/blog/the-hsb-color-system-practicioners-primer.html)
