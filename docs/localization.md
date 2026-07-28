@@ -19,7 +19,7 @@ Each file within these collection folders corresponds to a real page on the rend
 The ["ui" content collection](src/content/ui/) is a little different than the others. It contains yaml files that cover strings that are used across different pages for things like the navigation bar.
 
 **Note on Translating Examples:**
-When translating Example pages (`.mdx`), you do not need to copy or include the `remix` metadata block in the frontmatter. The website will automatically fall back to the English version to fetch the remix data.
+When translating Example pages (`.mdx`), you do not need to copy or include the `remix` metadata block in the frontmatter. The website will automatically fall back to the English version to fetch the remix data. This allows the copyright notice and attribution to be consistent.
 
 ## Routes and Layouts
 
