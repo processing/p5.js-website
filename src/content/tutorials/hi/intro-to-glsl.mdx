@@ -1,0 +1,697 @@
+---
+title: "GLSL परिचय"
+description: यह जानें कि कंप्यूटर के GPU की मदद से दिलचस्प विज़ुअल इफ़ेक्ट बनाने के लिए GLSL का उपयोग करने के अलग-अलग तरीके क्या हैं।
+category: webgl
+categoryIndex: 3
+featuredImage: ../images/featured/intro-to-shaders.jpg
+featuredImageAlt: एक मुड़ी हुई, लहरदार शहरी सड़क
+relatedContent:
+  examples:
+    - en/11_3d/04_filter_shader/description
+    - en/11_3d/05_adjusting_positions_with_a_shader/description
+    - en/11_3d/06_framebuffer_blur/description
+  references:
+    - en/p5/createfiltershader
+    - en/p5/loadshader
+    - en/p5/p5shader
+authors:
+  - Dave Pagurek
+  - Austin Lee Slominski
+  - Adam Ferriss
+---
+
+import EditableSketch from "../../../components/EditableSketch/index.astro";
+import Callout from "../../../components/Callout/index.astro";
+import AnnotatedCode from "../../../components/AnnotatedCode/index.astro";
+import { Image } from "astro:assets";
+import uv from "../images/webgl/uv_example.png";
+
+आजकल के कंप्यूटरों में एक विशेष हार्डवेयर होता है जिसे ग्राफ़िक्स प्रोसेसिंग यूनिट (Graphics Processing Unit, GPU) कहते हैं। शेडर (shader) GPU पर चलने वाले विशेष प्रोग्राम होते हैं, जो कई शानदार इफ़ेक्ट बना सकते हैं। शेडर, GPU की मदद से एक साथ बहुत सारे पिक्सल्स को समानांतर रूप से प्रोसेस करते हैं, इसलिए ये बहुत तेज़ होते हैं और कंप्यूटर ग्राफ़िक्स के कुछ खास कामों — जैसे नॉइज़ बनाना, ब्लर जैसे फ़िल्टर लगाना, या पॉलीगॉन को रंगना — के लिए बेहद उपयुक्त हैं।
+
+शेडर प्रोग्रामिंग शुरुआत में डरावनी लग सकती है, क्योंकि इसके लिए p5.js की द्वि-आयामी ड्रॉइंग से बिल्कुल अलग तरीके से सोचना पड़ता है। यह ट्यूटोरियल शेडर प्रोग्रामिंग की बुनियादी बातें बताएगा और आगे सीखने के लिए कुछ संसाधन भी सुझाएगा।
+
+## तैयारी
+
+ब्राउज़र में GPU को प्रोग्राम करने के लिए [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) नाम के API का इस्तेमाल करना पड़ता है। p5.js शेडर लिखने के लिए बहुत उपयुक्त है, क्योंकि यह ज़्यादातर दोहराए जाने वाले WebGL सेटअप कामों को खुद संभाल लेता है, जिससे आप सिर्फ़ शेडर कोड पर ध्यान दे सकते हैं।
+
+शेडर का इस्तेमाल शुरू करने से पहले, हमें p5.js कैनवस को WebGL मोड में सेट करना होगा। इसके लिए `createCanvas()` के तीसरे पैरामीटर के रूप में `WEBGL` कॉन्स्टेंट दें।
+
+```javascript
+...
+function setup() {
+  createCanvas(200, 200, WEBGL);
+}
+...
+```
+
+एक शेडर प्रोग्राम दो हिस्सों से बना होता है: **वर्टेक्स शेडर** (vertex shader) और **फ़्रैगमेंट शेडर** (fragment shader)। वर्टेक्स शेडर, ज्यामिति (geometry) के हर वर्टेक्स के लिए एक बार चलता है और यह तय करता है कि वह वर्टेक्स स्क्रीन पर कहाँ बनेगा। फ़्रैगमेंट शेडर, ज्यामिति के हर पिक्सल के लिए एक बार चलता है और यह तय करता है कि उस पिक्सल का रंग क्या होगा।
+
+<table>
+
+<tr>
+
+<td>
+
+![एक लाल गोला](../images/webgl/sphere.png)</td><td>![एक लाल गोला जो समय के साथ हिलता और विकृत होता है](../images/webgl/vertshader.gif)
+
+</td>
+
+<td>
+
+![एक हिलते हुए गोले की रूपरेखा, जिसके अंदर लाल-नीली धारियाँ भरी हैं](../images/webgl/fragshader.gif)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+*मूल आकृति*</td><td>*कस्टम वर्टेक्स शेडर आकृति के वर्टेक्स की स्थिति को समायोजित कर सकता है*
+
+</td>
+
+<td>
+
+*कस्टम फ़्रैगमेंट शेडर आकृति के अंदर के रंग को समायोजित कर सकता है*
+
+</td>
+
+</tr>
+
+</table>
+
+{/* योगदानकर्ता नोट: छवियाँ और GIF https://editor.p5js.org/davepagurek/sketches/gs-DbLzqV से बनाई गई हैं */}
+
+ये दोनों शेडर अलग-अलग फ़ाइलों में रखे जाते हैं और `loadShader()` फ़ंक्शन के ज़रिए p5.js में लोड किए जाते हैं। शेडर लोड होने के बाद, इन्हें `setup()` या `draw()` में इस्तेमाल किया जा सकता है। नीचे दिया गया उदाहरण दिखाता है कि p5.js में एक बुनियादी शेडर कैसे सेट किया जाता है:
+
+```javascript
+let myShader;
+async function setup() {
+  // हर शेडर फ़ाइल को लोड करें
+  // (चिंता न करें, हम बाद में फिर इन फ़ाइलों पर लौटेंगे!)
+  myShader = await loadShader('shader.vert', 'shader.frag');
+  // कैनवस ज़रूर WEBGL मोड में बनाया जाना चाहिए
+  createCanvas(windowWidth, windowHeight, WEBGL);
+}
+
+function draw() {
+  // shader() वर्तमान में इस्तेमाल होने वाला शेडर सेट करता है,
+  // जो इसके बाद बनाई जाने वाली चीज़ों पर लागू होगा
+  shader(myShader);
+  // शेडर को एक ऐसे आयत पर लागू करें
+  // जो पूरे कैनवस को ढक ले
+  plane(width, height);
+}
+```
+
+एक `createShader()` नाम का फ़ंक्शन भी है, जिसका उपयोग स्केच में परिभाषित स्ट्रिंग से सीधे शेडर लोड करने के लिए किया जा सकता है।
+
+## शेडर लिखना
+
+अब देखते हैं कि `loadShader()` जिन वर्टेक्स शेडर और फ़्रैगमेंट शेडर फ़ाइलों को संदर्भित करता है, उनमें क्या होना चाहिए।
+
+### शेडिंग भाषा (GLSL)
+
+शेडर फ़ाइलें ग्राफ़िक्स लाइब्रेरी शेडिंग लैंग्वेज (Graphics Library Shading Language, GLSL) में लिखी जाती हैं (जो OpenGL 2.0 और GLSL ES 1.00 पर आधारित है), और इसका सिंटैक्स व स्ट्रक्चर हमारी परिचित भाषाओं से काफ़ी अलग है। GLSL का सिंटैक्स C भाषा जैसा है, इसलिए इसमें कुछ ऐसी अवधारणाएँ हैं जो JavaScript में नहीं मिलतीं।
+
+सबसे पहले, शेडिंग भाषा में टाइप को लेकर कहीं ज़्यादा सख़्ती है। हर वैरिएबल बनाते समय, यह बताना ज़रूरी है कि वह किस तरह का डेटा रखेगा। नीचे कुछ सामान्य टाइप दिए गए हैं:
+
+```glsl
+vec2(x,y)     // दो फ़्लोट संख्याओं से बना वेक्टर
+vec3(x,y,z)   // तीन फ़्लोट संख्याओं से बना वेक्टर
+              // (r,g,b के रूप में भी दर्शाया जा सकता है)
+vec4(x,y,z,w) // चार फ़्लोट संख्याओं से बना वेक्टर
+              // (r,g,b,a के रूप में भी दर्शाया जा सकता है)
+float         // दशमलव बिंदु वाली संख्या
+int           // बिना दशमलव बिंदु वाली संख्या (पूर्णांक)
+sampler2D     // किसी टेक्सचर का संदर्भ
+mat2          // 2x2 मैट्रिक्स
+mat3          // 3x3 मैट्रिक्स
+mat4          // 4x4 मैट्रिक्स
+bool          // true या false
+```
+
+कुल मिलाकर, शेडिंग भाषा JavaScript से कहीं ज़्यादा सख़्त है। सेमीकोलन छोड़ना अनुमति नहीं है और इससे एरर मैसेज आता है। फ़्लोट और इंट जैसे अलग-अलग न्यूमेरिक टाइप को मिलाया नहीं जा सकता। यदि किसी `float` को दशमलव के रूप में नहीं लिखा गया, तो GLSL एरर देगा, इसलिए आप अक्सर `0.0` या `1.0` जैसे मान लिखते हुए दिखेंगे।
+
+नीचे GLSL की कुछ खासियतें दी गई हैं:
+
+<table class="full-width">
+<tr><td></td><th>JavaScript</th><th>GLSL</th></tr>
+<tr><td>सभी वैरिएबल्स के लिए टाइप बताना ज़रूरी है।</td><td>
+
+```javascript
+let a = 1;
+let b = 0.5;
+```
+</td><td>
+
+```glsl
+int a = 1;
+float b = 0.5;
+```
+</td></tr>
+<tr><td>फ़ंक्शन्स में पैरामीटर और रिटर्न वैल्यू का टाइप बताना ज़रूरी है।</td><td>
+
+```javascript
+function isBetween(val, start, end) {
+  return val >= start && val <= end;
+}
+```
+</td><td>
+
+```glsl
+bool isBetween(float val, float start, float end) {
+  return val >= start && val <= end;
+}
+```
+</td></tr>
+<tr><td>इंट और फ़्लोट के बीच कन्वर्ज़न खुद करना पड़ता है।</td><td>
+
+```javascript
+let a = 1;
+let b = 0.5;
+let c = b + 2;
+let d = a + b;
+```
+</td><td>
+
+```glsl
+int a = 1;
+float b = 0.5;
+float c = b + 2.0;
+float d = float(a) + b;
+```
+</td></tr>
+<tr><td>GLSL में लूप को एक कॉन्स्टेंट वैल्यू पर रुकना चाहिए। अगर किसी शर्त के आधार पर लूप ख़त्म करना हो, तो `break` का उपयोग करके लूप से बाहर निकला जा सकता है।</td><td>
+
+```javascript
+let maxVal = 10;
+if (something) {
+  maxVal = 20;
+}
+for (let i = 0; i < maxVal; i++) {
+  // कुछ करें
+}
+```
+</td><td>
+
+```glsl
+int maxVal = 10;
+if (something) {
+  maxVal = 20;
+}
+for (int i = 0; i < 20; i++) {
+  if (i == maxVal) {
+    break;
+  }
+  // कुछ करें
+}
+```
+</td></tr>
+</table>
+
+इतनी सारी सीमाओं के बावजूद, कुछ मामलों में GLSL इस्तेमाल करना ज़्यादा आसान है! वेक्टर के साथ काम करते समय, GLSL कई सुविधाजनक शॉर्टहैंड देता है:
+
+<table class="full-width">
+<tr><td>किसी `vec4` के लिए, आप उसमें मौजूद डेटा को रंग या कोऑर्डिनेट की तरह एक्सेस कर सकते हैं। दोनों तरह से लिखना पूरी तरह बराबर है, इसलिए जो तरीका कोड को ज़्यादा पढ़ने में आसान बनाए, उसे चुनें।</td><td>
+
+```glsl
+// हर जोड़ा बराबर है:
+myVec.x
+myVec.r
+
+myVec.y
+myVec.g
+
+myVec.z
+myVec.b
+
+myVec.w
+myVec.a
+```
+</td></tr>
+<tr><td>अगर आपको ऐसा वेक्टर बनाना है जिसके सभी घटक एक जैसे हों, तो एक ही वैल्यू बार-बार लिखने की ज़रूरत नहीं है, इसे सिर्फ़ एक बार लिखें।</td><td>
+
+```glsl
+// नीचे दोनों तरीके बराबर हैं
+myVec = vec3(0.5, 0.5, 0.5);
+myVec = vec3(0.5);
+```
+</td></tr>
+<tr><td>आप "स्वज़लिंग" (swizzling) नाम की तकनीक से किसी बड़े वेक्टर से छोटा वेक्टर निकाल सकते हैं: `.` के बाद नए वेक्टर में चाहिए क्रम में कई घटकों के नाम जोड़ें।</td><td>
+
+```glsl
+vec4 bigVec = vec4(1.0, 2.0, 3.0, 4.0);
+// vec2(bigVec.z, bigVec.y) के बराबर
+vec2 smallVec = bigVec.zy;
+```
+</td></tr>
+</table>
+
+### वर्टेक्स शेडर
+
+नीचे एक साधारण वर्टेक्स शेडर दिया गया है, जो p5.js द्वारा दिए गए ट्रांसफ़ॉर्मेशन और कैमरा पर्सपेक्टिव को लागू करता है:
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`  ${begin('precision')}
+  precision highp float;
+  ${end('precision')}
+  ${begin('attributes')}
+  attribute vec3 aPosition;
+  ${end('attributes')}
+  ${begin('uniforms')}
+  // बनाई जा रही ऑब्जेक्ट का ट्रांसफ़ॉर्मेशन
+  uniform mat4 uModelViewMatrix;
+  // त्रि-आयामी कोऑर्डिनेट को
+  // द्वि-आयामी स्क्रीन कोऑर्डिनेट में बदलने के लिए
+  uniform mat4 uProjectionMatrix;
+  ${end('uniforms')}
+  ${begin('main')}
+  void main() {
+    // कैमरा ट्रांसफ़ॉर्मेशन लागू करें
+    vec4 viewModelPosition =
+      uModelViewMatrix * vec4(aPosition, 1.0);
+    // WebGL को बताएं कि वर्टेक्स कहाँ रखना है
+    gl_Position =
+      uProjectionMatrix * viewModelPosition;
+  }
+  ${end('main')}`}
+>
+  <Fragment slot="precision">
+   शेडर की शुरुआत एक `precision` घोषणा से होती है। यह `lowp`, `mediump`, या `highp` में से कोई एक हो सकती है। सबसे ऊँची precision से शुरू करना एक अच्छा विकल्प है, ताकि शेडर हर जगह एक जैसा दिखे। डेस्कटॉप और लैपटॉप कंप्यूटरों पर, आप जो भी लिखें, GPU संभवतः सबसे ऊँची precision का ही इस्तेमाल करेगा। मोबाइल फ़ोन पर, कम precision इस्तेमाल करना तेज़ हो सकता है, लेकिन इससे शेडर अलग दिख सकता है।
+  </Fragment>
+  <Fragment slot="attributes">
+    शेडर के *attribute वैरिएबल्स* में ऐसे मान होते हैं जो हर वर्टेक्स के लिए अलग-अलग होते हैं; p5.js इनका उपयोग हर वर्टेक्स की पोज़िशन जैसी जानकारी भेजने के लिए करता है। इस शेडर में attribute वैरिएबल एक `vec3` है, यानी इसमें x, y, और z — तीन मान होते हैं। attribute एक ख़ास तरह का वैरिएबल है जो सिर्फ़ वर्टेक्स शेडर में इस्तेमाल होता है, और आमतौर पर p5.js द्वारा दिया जाता है। जब आप `rect()` या `vertex()` जैसे p5.js मेथड इस्तेमाल करते हैं, तो p5.js ख़ुद-ब-ख़ुद वर्टेक्स की जानकारी शेडर को भेज देता है।
+  </Fragment>
+  <Fragment slot="uniforms">
+    शेडर के *uniform वैरिएबल्स* वे मान होते हैं जो पूरी आकृति बनने के दौरान नहीं बदलते। इस शेडर में हर uniform ठीक एक `mat4` है, जिसका उपयोग आमतौर पर ट्रांसलेशन, स्केलिंग और रोटेशन जैसे ट्रांसफ़ॉर्मेशन दिखाने के लिए किया जाता है। किसी बिंदु को `mat4` से गुणा करने पर, उस मैट्रिक्स द्वारा दर्शाया गया ट्रांसफ़ॉर्मेशन उस बिंदु पर लागू हो जाता है। यहाँ के uniform p5.js द्वारा ख़ुद-ब-ख़ुद दिए जाते हैं, लेकिन आगे हम यह भी सीखेंगे कि अपने कस्टम uniform कैसे दिए जाएँ। ध्यान दें कि मैट्रिक्स गुणन का क्रम मायने रखता है। ज़्यादातर मामलों में, पहले मैट्रिक्स लिखें, फिर उससे गुणा होने वाला मान।
+  </Fragment>
+  <Fragment slot="main">
+    सभी वर्टेक्स शेडर को एक `main()` फ़ंक्शन चाहिए होता है, जिसमें हम `gl_Position` को मान देकर वर्टेक्स की पोज़िशन तय करते हैं। यह मान *क्लिप स्पेस* (clip space) में होता है, जहाँ एक तरफ़ से दूसरी तरफ़ जाने पर x, y, और z के मान -1 से 1 के बीच होते हैं। p5.js के कैमरा सेटअप का इस्तेमाल करते हुए, त्रि-आयामी बिंदु को `uProjectionMatrix` से गुणा करने पर यह रूपांतरण हमारे लिए हो जाता है। इससे पहले, यह शेडर `uModelViewMatrix` से भी गुणा करता है, ताकि आकृति बनाने से पहले सेट किए गए सभी संचित ट्रांसफ़ॉर्मेशन लागू हो जाएँ।
+  </Fragment>
+</AnnotatedCode>
+
+अगर अभी यह पूरी तरह समझ में न आए, तो चिंता न करें। वर्टेक्स शेडर की भूमिका ज़रूर महत्वपूर्ण है, लेकिन यह ज़्यादातर सिर्फ़ यह सुनिश्चित करता है कि हम फ़्रैगमेंट शेडर में जो कुछ बनाएँ, वह ज्यामिति पर सही तरीके से दिखे। कई प्रोजेक्ट्स में, आप शायद बार-बार एक जैसे वर्टेक्स शेडर का ही इस्तेमाल करेंगे। नीचे एक स्टैंडर्ड वर्टेक्स शेडर दिया गया है जिसका उपयोग किया जा सकता है, जो हर वर्टेक्स के रंग और टेक्सचर कोऑर्डिनेट जैसी जानकारी को भी संभालता है।
+
+```glsl
+precision highp float;
+
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
+attribute vec4 aVertexColor;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+varying vec2 vTexCoord;
+varying vec4 vVertexColor;
+
+void main() {
+  // कैमरा ट्रांसफ़ॉर्मेशन लागू करें
+  vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+
+  // WebGL को बताएं कि वर्टेक्स कहाँ रखना है
+  gl_Position = uProjectionMatrix * viewModelPosition;
+
+  // डेटा को फ़्रैगमेंट शेडर तक पहुँचाएँ
+  vTexCoord = aTexCoord;
+  vVertexColor = aVertexColor;
+}
+```
+
+### फ़्रैगमेंट शेडर
+
+फ़्रैगमेंट शेडर शेडर के रंग आउटपुट के लिए ज़िम्मेदार होता है, और यहीं पर हम काफ़ी शेडर प्रोग्रामिंग करते हैं। नीचे एक बहुत ही साधारण फ़्रैगमेंट शेडर दिया गया है, जो सिर्फ़ लाल रंग दिखाता है:
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`  ${begin('precision')}
+  precision highp float;
+  ${end('precision')}
+  ${begin('main')}
+  void main() {
+    vec4 myColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = myColor;
+  }
+  ${end('main')}`}
+>
+<Fragment slot="precision">
+  फ़्रैगमेंट शेडर भी उसी तरह एक फ़्लोट `precision` घोषणा से शुरू होता है। यहाँ की `precision` वर्टेक्स शेडर वाली ही होनी चाहिए।
+</Fragment>
+<Fragment slot="main">
+वर्टेक्स शेडर की तरह, फ़्रैगमेंट शेडर को भी एक `main()` फ़ंक्शन चाहिए; लेकिन हम `gl_Position` सेट नहीं करते, बल्कि GLSL द्वारा परिभाषित ख़ास वैरिएबल `gl_FragColor` को एक रंग देते हैं। `myColor` नाम का वैरिएबल `vec4` के रूप में परिभाषित है, यानी इसमें चार मान संचित होते हैं। चूँकि यहाँ रंग की बात हो रही है, इसलिए ये चार मान क्रमशः लाल, हरा, नीला, और अल्फ़ा (पारदर्शिता) दर्शाते हैं। शेडर, p5.js स्केच की तरह डिफ़ॉल्ट रूप से 0–255 के रंग मान इस्तेमाल नहीं करते, बल्कि 0.0 से 1.0 के बीच के मान इस्तेमाल करते हैं।
+</Fragment>
+</AnnotatedCode>
+
+अब हमारे पास एक वर्टेक्स शेडर और एक फ़्रैगमेंट शेडर तैयार है, जिन्हें हम अलग-अलग फ़ाइलों (`shader.vert` और `shader.frag`) में सेव करके `loadShader()` की मदद से स्केच में लोड कर सकते हैं।
+
+## Uniform: स्केच से शेडर को डेटा भेजना
+
+इस तरह के साधारण शेडर अपने आप में उपयोगी होते हैं, लेकिन कभी-कभी p5.js स्केच से शेडर को वैरिएबल भेजने की ज़रूरत भी पड़ती है। इसके लिए uniform का इस्तेमाल होता है।
+
+uniform एक ऐसा वैरिएबल है जिसे स्केच से शेडर को भेजा जा सकता है, जिससे हम JavaScript के ज़रिए शेडर को और बारीकी से नियंत्रित कर पाते हैं। uniform को फ़ाइल के ऊपर, `main()` के बाहर परिभाषित किया जाता है। आप इन्हें वर्टेक्स शेडर और फ़्रैगमेंट शेडर, दोनों में एक्सेस कर सकते हैं।
+
+नीचे दिए उदाहरण में, p5.js मेथड `millis()` से मिलने वाला मान `time` नाम के uniform वैरिएबल को भेजा जाता है, जिससे वर्टेक्स शेडर में गति (movement) पैदा होती है।
+
+<EditableSketch code={`
+  let myShader;
+
+  // वर्टेक्स शेडर सोर्स कोड, स्ट्रिंग के रूप में सेव किया गया
+  let vert = \`
+  precision highp float;
+
+  attribute vec3 aPosition;
+
+  // बनाई जा रही ऑब्जेक्ट का ट्रांसफ़ॉर्मेशन
+  uniform mat4 uModelViewMatrix;
+  // त्रि-आयामी कोऑर्डिनेट को द्वि-आयामी स्क्रीन कोऑर्डिनेट में बदलने के लिए
+  uniform mat4 uProjectionMatrix;
+  // समय को मिलीसेकंड में दर्शाने वाला कस्टम uniform
+  uniform float time;
+
+  void main() {
+    // कैमरा ट्रांसफ़ॉर्मेशन लागू करें
+    vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+
+    // समय का उपयोग करके वर्टेक्स की पोज़िशन समायोजित करें
+    viewModelPosition.x += 10.0 * sin(time * 0.01 + viewModelPosition.y * 0.1);
+
+    // WebGL को बताएं कि वर्टेक्स कहाँ रखना है
+    gl_Position = uProjectionMatrix * viewModelPosition;
+  }
+  \`;
+
+  let frag = \`
+  precision highp float;
+  void main() {
+    vec4 myColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = myColor;
+  }
+  \`
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = createShader(vert, frag);
+  }
+
+  function draw() {
+    background(255);
+    noStroke();
+
+    // कस्टम शेडर इस्तेमाल करें
+    shader(myShader);
+    // p5 का समय शेडर को भेजें
+    myShader.setUniform('time', millis());
+
+    // शेडर का इस्तेमाल करके आकृति बनाएँ
+    circle(0, 0, 100);
+  }
+`} />
+
+uniform फ़्रैगमेंट शेडर में भी उतने ही असरदार तरीके से काम करता है। नीचे दिए उदाहरण में, हमने `myColor` नाम का एक रंग uniform बनाया है, ताकि स्केच के JavaScript हिस्से से रंग बदला जा सके। याद रखें, शेडर में रंग चैनल का मान 0–255 नहीं बल्कि 0–1 के बीच होता है।
+
+<EditableSketch code={`
+  let myShader;
+
+  // वर्टेक्स शेडर सोर्स कोड, स्ट्रिंग के रूप में सेव किया गया
+  let vert = \`
+  precision highp float;
+
+  attribute vec3 aPosition;
+
+  // बनाई जा रही ऑब्जेक्ट का ट्रांसफ़ॉर्मेशन
+  uniform mat4 uModelViewMatrix;
+  // त्रि-आयामी कोऑर्डिनेट को द्वि-आयामी स्क्रीन कोऑर्डिनेट में बदलने के लिए
+  uniform mat4 uProjectionMatrix;
+
+  void main() {
+    // कैमरा ट्रांसफ़ॉर्मेशन लागू करें
+    vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+
+    // WebGL को बताएं कि वर्टेक्स कहाँ रखना है
+    gl_Position = uProjectionMatrix * viewModelPosition;
+  }
+  \`;
+
+  let frag = \`
+  precision highp float;
+
+  // रंग को नियंत्रित करने के लिए कस्टम uniform
+  uniform vec4 myColor;
+
+  void main() {
+    gl_FragColor = myColor;
+  }
+  \`
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = createShader(vert, frag);
+  }
+
+  function draw() {
+    background(255);
+    noStroke();
+
+    // कस्टम शेडर इस्तेमाल करें
+    shader(myShader);
+    // माउस की x पोज़िशन को लाल चैनल, y पोज़िशन को हरे चैनल के रूप में
+    // इस्तेमाल करके रंग बनाएँ और उसे शेडर को भेजें
+    myShader.setUniform('myColor', [
+      map(mouseX, 0, width, 0, 1, true), // लाल
+      map(mouseY, 0, width, 0, 1, true), // हरा
+      0, // नीला
+      1 // अल्फ़ा (पारदर्शिता)
+    ]);
+
+    // शेडर का इस्तेमाल करके आकृति बनाएँ
+    circle(0, 0, 100);
+  }
+`} />
+
+आप p5.js द्वारा दिए गए uniform की पूरी सूची [p5.js WebGL मोड आर्किटेक्चर](https://github.com/processing/p5.js/blob/main/contributor_docs/webgl_mode_architecture.md) दस्तावेज़ में देख सकते हैं।
+
+## Varying: वर्टेक्स शेडर से फ़्रैगमेंट शेडर को डेटा भेजना
+
+*Varying* वैरिएबल वर्टेक्स शेडर और फ़्रैगमेंट शेडर के बीच डेटा साझा करते हैं, जिससे हम फ़्रैगमेंट शेडर में पोज़िशन या दूसरा ज्यामितीय डेटा इस्तेमाल कर पाते हैं। उदाहरण के लिए, हो सकता है आप फ़्रैगमेंट शेडर में आकृति के टेक्सचर कोऑर्डिनेट इस्तेमाल करना चाहें।
+
+टेक्सचर कोऑर्डिनेट `vec2` के रूप में दर्शाए जाते हैं, और हर कोऑर्डिनेट मान 0 से 1 के बीच होता है। यह शुरुआत में p5.js द्वारा `attribute` के रूप में भेजा जाता है, और attribute सिर्फ़ वर्टेक्स शेडर में ही एक्सेस किया जा सकता है। आइए देखते हैं कि स्टैंडर्ड वर्टेक्स शेडर टेक्सचर कोऑर्डिनेट को फ़्रैगमेंट शेडर तक कैसे पहुँचाता है:
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`precision highp float;
+
+  attribute vec3 aPosition;
+  ${begin('texcoord')}
+  attribute vec2 aTexCoord;
+  ${end('texcoord')}
+
+  uniform mat4 uModelViewMatrix;
+  uniform mat4 uProjectionMatrix;
+
+  ${begin('varying')}
+  varying vec2 vTexCoord;
+  ${end('varying')}
+
+  void main() {
+    // कैमरा ट्रांसफ़ॉर्मेशन लागू करें
+    vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+
+    // WebGL को बताएं कि वर्टेक्स कहाँ रखना है
+    gl_Position = uProjectionMatrix * viewModelPosition;
+
+  ${begin('assign')}
+    vTexCoord = aTexCoord;
+  ${end('assign')}
+  }`}
+>
+  <Fragment slot="texcoord">
+    टेक्सचर कोऑर्डिनेट शुरुआत में `aTexCoord` नाम के `attribute` के रूप में भेजे जाते हैं। p5.js ख़ुद-ब-ख़ुद इसमें मान भर देता है।
+  </Fragment>
+  <Fragment slot="varying">
+    यहाँ हम एक `varying` वैरिएबल घोषित करते हैं। वर्टेक्स शेडर में घोषित किसी भी varying को फ़्रैगमेंट शेडर में फिर से घोषित किया जा सकता है; इसके बाद फ़्रैगमेंट शेडर में उस मान को एक्सेस किया जा सकता है जो वर्टेक्स शेडर ने उसे दिया था।
+  </Fragment>
+  <Fragment slot="assign">
+    *attribute* का मान *varying* वैरिएबल को देने का मतलब है डेटा को उस जगह कॉपी करना, जहाँ से फ़्रैगमेंट शेडर उसे पढ़ सके।
+  </Fragment>
+</AnnotatedCode>
+
+चूँकि हमने वर्टेक्स शेडर में `vTexCoord` नाम का `varying` परिभाषित किया है, अब हम इसे फ़्रैगमेंट शेडर में भी इस्तेमाल कर सकते हैं। नीचे दिया गया साधारण फ़्रैगमेंट शेडर x मान को लाल चैनल पर और y मान को हरे चैनल पर मैप करता है। ध्यान दें, हालाँकि `vTexCoord` वर्टेक्स शेडर में *प्रति-वर्टेक्स* परिभाषित होता है, फ़्रैगमेंट शेडर में यह *प्रति-पिक्सल* परिभाषित होता है। हर पिक्सल का मान पाने के लिए, WebGL हर फ़ेस पर मौजूद वर्टेक्स मानों के बीच स्मूद इंटरपोलेशन करता है।
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`  ${begin('shader')}
+  precision highp float;
+
+  varying vec2 vTexCoord;
+
+  void main() {
+    // कोऑर्डिनेट को शेडर के रंग आउटपुट को दें
+    gl_FragColor = vec4(vTexCoord.x, vTexCoord.y, 1.0, 1.0);
+  }
+  ${end('shader')}`}
+>
+  <Fragment slot="shader">
+    `plane(width, height)` पर इस शेडर के इस्तेमाल का परिणाम:
+    <Image alt="एक आयताकार ग्रेडिएंट: ऊपर बाईं ओर काला, ऊपर दाईं ओर मैजेंटा, नीचे दाईं ओर सफ़ेद, और नीचे बाईं ओर सियान।" width="100" src={uv} />
+  </Fragment>
+</AnnotatedCode>
+
+## फ़िल्टर शेडर
+
+p5.js में, फ़िल्टर कैनवस के हर पिक्सल को देखता है और उन्हें किसी और चीज़ से बदल देता है। p5.js में पहले से कई फ़िल्टर मौजूद हैं, जैसे कैनवस के रंगों को उलटना या कैनवस की सामग्री पर ब्लर इफ़ेक्ट लागू करना। आप फ़्रैगमेंट शेडर लिखकर अपना ख़ुद का फ़िल्टर भी बना सकते हैं।
+
+फ़िल्टर शेडर के लिए सिर्फ़ फ़्रैगमेंट शेडर की ज़रूरत होती है। वर्टेक्स शेडर मुख्य रूप से आकृति की पोज़िशन तय करने के लिए ज़िम्मेदार होता है, जबकि फ़िल्टर हमेशा पूरे कैनवस पर लागू होता है, इसलिए p5.js आपके लिए डिफ़ॉल्ट वर्टेक्स शेडर उपलब्ध कराता है। यहाँ `loadShader` का इस्तेमाल नहीं होता, बल्कि `createFilterShader(src)` का इस्तेमाल होता है, जिसमें शेडर सोर्स कोड स्ट्रिंग के रूप में भेजा जाता है।
+
+फ़िल्टर शेडर में इस्तेमाल के लिए कई `uniform` उपलब्ध हैं, आप इनका पूरा विवरण [`createFilterShader` दस्तावेज़](https://p5js.org/reference/p5/createFilterShader) में पढ़ सकते हैं। शुरुआत में, मुख्य रूप से इन दो को समझना ज़रूरी है:
+
+- `uniform sampler2D tex0` एक टेक्सचर है जिसमें कैनवस की सामग्री होती है।
+- `varying vec2 vTexCoord` में वर्तमान पिक्सल का कैनवस पर कोऑर्डिनेट होता है, जिसका मान 0 से 1 के बीच होता है।
+
+इन दोनों को मिलाकर, `texture2D(tex0, vTexCoord)` कैनवस पर मौजूदा पिक्सल का रंग लौटाता है, जिसे आप बाद में बदल सकते हैं। इस उदाहरण में, हम लाल और हरे चैनल को नीले चैनल से बदल देते हैं, ताकि एक कस्टम ब्लैक-एंड-व्हाइट फ़िल्टर बनाया जा सके:
+
+<EditableSketch code={`
+  let video;
+  let bw;
+
+  let bwSrc = \`
+  precision highp float;
+
+  uniform sampler2D tex0;
+  varying vec2 vTexCoord;
+
+  void main() {
+    // वर्तमान पिक्सल का मूल रंग लें
+    vec4 color = texture2D(tex0, vTexCoord);
+
+    // सभी चैनल को नीले चैनल से बदलें, ताकि यह ब्लैक-एंड-व्हाइट हो जाए
+    color.r = color.b;
+    color.g = color.b;
+
+    // नया रंग सेट करें
+    gl_FragColor = color;
+  }
+  \`;
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    video = createVideo(
+      'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
+    );
+    video.volume(0);
+    video.hide();
+    video.loop();
+    bw = createFilterShader(bwSrc);
+
+    describe('एक शहरी पैदल यात्री क्रॉसिंग का ब्लैक-एंड-व्हाइट वीडियो');
+  }
+
+  function draw() {
+    background(255);
+    push();
+    imageMode(CENTER);
+    image(video, 0, 0, width, height, 0, 0, video.width, video.height, COVER);
+    pop();
+    filter(bw);
+  }
+`} />
+
+आप `texture2D` के *इनपुट* को बदलने की भी कोशिश कर सकते हैं, न कि सिर्फ़ इसके आउटपुट को। इस्तेमाल हो रहे टेक्सचर कोऑर्डिनेट को समायोजित करने से मूल छवि के सापेक्ष तस्वीर में शिफ़्ट आ सकता है; और अगर हर पिक्सल का शिफ़्ट अलग-अलग हो, तो एक विकृति (warp) इफ़ेक्ट भी बन सकता है:
+
+<EditableSketch code={`
+  let video;
+  let warp;
+
+  let warpSrc = \`
+  precision highp float;
+
+  uniform sampler2D tex0;
+  varying vec2 vTexCoord;
+
+  void main() {
+    // इनपुट कोऑर्डिनेट में शिफ़्ट करें
+    vec2 warpedCoord = vTexCoord;
+    warpedCoord.x += 0.05 * sin(vTexCoord.y * 10.0);
+    warpedCoord.y += 0.05 * sin(vTexCoord.x * 10.0);
+
+    // विकृत कोऑर्डिनेट को क्वेरी करें और नया रंग सेट करें
+    gl_FragColor = texture2D(tex0, warpedCoord);
+  }
+  \`;
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    video = createVideo(
+      'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
+    );
+    video.volume(0);
+    video.hide();
+    video.loop();
+    warp = createFilterShader(warpSrc);
+
+    describe('एक शहरी पैदल यात्री क्रॉसिंग का विकृत वीडियो');
+  }
+
+  function draw() {
+    background(255);
+    push();
+    imageMode(CENTER);
+    image(video, 0, 0, width, height, 0, 0, video.width, video.height, COVER);
+    pop();
+    filter(warp);
+  }
+`} />
+
+## निष्कर्ष
+
+इन बातों को समझने के बाद, अब आप कुछ बुनियादी शेडर बना सकते हैं। लेकिन शेडर प्रोग्रामिंग की दुनिया इससे कहीं आगे जाती है, और कई विषय इस ट्यूटोरियल के दायरे से बाहर हैं। p5.js में, शेडर विज़ुअल, इफ़ेक्ट और टेक्सचर बनाने का एक शक्तिशाली उपकरण हैं, और इन्हें त्रि-आयामी ज्यामिति पर भी लागू किया जा सकता है।
+
+शेडर के बारे में और सीखना चाहते हैं? इन वेबसाइट्स को देखें!
+
+- [The Book of Shaders](https://thebookofshaders.com/): Patricio Gonzalez Vivo और Jen Lowe द्वारा लिखी शेडर गाइड।
+- [p5.js shaders](https://itp-xstory.github.io/p5js-shaders/#/): Casey Conchinha और Louise Lessél द्वारा लिखी शेडर गाइड।
+- [Shadertoy](https://www.shadertoy.com/): शेडर की एक विशाल ऑनलाइन लाइब्रेरी, जहाँ शेडर ब्राउज़र एडिटर के ज़रिए लिखे जाते हैं।
+- [p5js Shader Examples](https://github.com/aferriss/p5jsShaderExamples): Adam Ferriss द्वारा संकलित संसाधनों का संग्रह।
+- [OpenGL ES 2.0 विनिर्देश](https://registry.khronos.org/OpenGL/specs/es/2.0/es_cm_spec_2.0.pdf): एक बेहद तकनीकी GLSL विनिर्देश।
+- [WebGL त्वरित संदर्भ कार्ड](https://www.khronos.org/files/webgl/webgl-reference-card-1_0.pdf): एक और तकनीकी संदर्भ सामग्री, जिसमें GLSL फ़ंक्शन्स से जुड़ी बहुत सी उपयोगी जानकारी है।
+- [Shaderific GLSL ES संदर्भ](https://shaderific.com/glsl.html): GLSL के अंतर्निहित फ़ंक्शन्स और डेटा टाइप्स का अपेक्षाकृत संक्षिप्त संदर्भ।
+
+## शब्दावली
+
+#### शेडर (Shader)
+ग्राफ़िक्स कार्ड पर चलने वाला एक ख़ास प्रोग्राम, जो कई तरह के विज़ुअल इफ़ेक्ट और फ़िल्टर बड़ी कुशलता से बना सकता है।
+
+#### GLSL
+ग्राफ़िक्स लाइब्रेरी शेडर लैंग्वेज (Graphics Library Shader Language, GLSL), शेडर लिखने के लिए इस्तेमाल होने वाली एक प्रोग्रामिंग भाषा है।
+
+#### Uniform
+स्केच से शेडर को भेजा जाने वाला वैरिएबल।
+
+#### Varying
+वर्टेक्स शेडर से फ़्रैगमेंट शेडर को भेजा जाने वाला वैरिएबल।
+
+#### वेक्टर (Vector, `vec2` / `vec3` / `vec4`)
+एक ऐसा डेटा टाइप जो संख्याओं का समूह संचित करता है, आमतौर पर दो, तीन, या चार संख्याएँ, जिनका उपयोग रंग, पोज़िशन आदि दर्शाने के लिए होता है।
+
+#### फ़्लोट (Float)
+एक डेटा टाइप जो दशमलव संख्याएँ संचित करता है, जिनमें दशमलव बिंदु शामिल हो सकता है।
+
+#### इंट (Int)
+एक डेटा टाइप जो पूर्णांक संचित करता है, यानी वे संख्याएँ जिनमें दशमलव हिस्सा नहीं होता।
+
+#### सैंपलर (Sampler)
+एक डेटा टाइप जो शेडर को भेजे गए टेक्सचर को दर्शाता है, और GLSL में आमतौर पर `sampler2D` के रूप में लिखा जाता है।
+
+#### Attribute
+एक GLSL वैरिएबल जो p5.js स्केच में जनरेट होकर वर्टेक्स शेडर को दिया जाता है। ज़्यादातर मामलों में, ये वैरिएबल p5.js द्वारा दिए जाते हैं।
+
+#### टेक्सचर (Texture)
+शेडर प्रोग्राम को भेजी गई एक छवि, जिसे `texture2D()` फ़ंक्शन के ज़रिए सैंपल किया जा सकता है।
+
+#### टाइप (Type)
+किसी डेटा के फ़ॉर्मेट को दर्शाने वाला लेबल, जैसे इंट, फ़्लोट, या वेक्टर आदि।
+
+#### वर्टेक्स शेडर (Vertex Shader)
+शेडर प्रोग्राम का वह हिस्सा जो त्रि-आयामी स्पेस में ज्यामिति की पोज़िशन तय करने के लिए ज़िम्मेदार होता है।
+
+#### फ़्रैगमेंट शेडर (Fragment Shader)
+शेडर प्रोग्राम का वह हिस्सा जो हर आउटपुट पिक्सल के रंग और स्वरूप के लिए ज़िम्मेदार होता है।
