@@ -1,6 +1,6 @@
 ---
 title: "GLSL 入门"
-description: 介绍如何使用 GLSL 借助计算机的 GPU 创作有趣视觉效果的不同方式。
+description: 介绍如何借助计算机的 GPU，使用 GLSL 创作出有趣视觉效果的各种方式。
 category: webgl
 categoryIndex: 3
 featuredImage: ../images/featured/intro-to-shaders.jpg
@@ -33,7 +33,7 @@ import uv from "../images/webgl/uv_example.png";
 
 ## 准备工作
 
-在浏览器中对 GPU 进行编程需要使用名为 [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) 的 API。p5.js 非常适合用来编写着色器，因为它处理了许多重复的 WebGL 设置工作，让你可以专注于着色器代码本身。开始使用着色器前，我们需要先将 p5.js 画布设置为 WebGL 模式。为此，请把 `WEBGL` 常量作为第三个参数传给 `createCanvas()`。
+在浏览器中对 GPU 进行编程需要使用名为 [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) 的 API。p5.js 非常适合用来编写着色器，因为它处理了繁琐的 WebGL 样板设置工作，让你可以专注于着色器代码本身。开始使用着色器前，我们需要先将 p5.js 画布设置为 WebGL 模式。为此，请把 `WEBGL` 常量作为第三个参数传给 `createCanvas()`。
 
 ```javascript
 ...
@@ -118,7 +118,7 @@ function draw() {
 }
 ```
 
-还有一个名为 `createShader()` 的函数，可用于直接从草图中定义的字符串加载着色器。
+还有一个名为 `createShader()` 的函数，可用于直接使用草图中定义的字符串来加载着色器。
 
 
 ## 编写着色器
@@ -128,7 +128,7 @@ function draw() {
 
 ### 着色语言（GLSL）
 
-着色器文件使用图形库着色语言（Graphics Library Shading Language，GLSL）编写（基于 OpenGL 2.0 和 GLSL ES 1.00），它的语法和结构与我们熟悉的语言很不一样。GLSL 的语法类似 C 语言，因此包含一些 JavaScript 中没有的概念。
+着色器文件使用图形库着色语言（Graphics Library Shading Language，GLSL，基于 OpenGL 2.0 和 GLSL ES 1.00）编写，它的语法和结构与我们熟悉的语言很不一样。GLSL 的语法类似 C 语言，因此包含一些 JavaScript 中没有的概念。
 
 首先，着色语言对类型的要求严格得多。创建每个变量时，都必须标明它所存储的数据类型。下面列出了一些常见类型：
 
@@ -147,7 +147,7 @@ mat4          // 4x4 矩阵
 bool          // true 或 false
 ```
 
-总的来说，着色语言比 JavaScript 严格得多。缺少分号是不允许的，并且会产生错误消息。浮点数和整数等不同数值类型不能混用。如果一个 `float` 没有以小数形式书写，GLSL 也会报错，因此你会经常写出 `0.0` 或 `1.0` 这样的数值。
+总的来说，着色语言比 JavaScript 严格得多。少写一个分号就会直接报错。浮点数和整数等不同数值类型不能混用。如果一个 `float` 没有以小数形式书写，GLSL 也会报错，因此你会经常写出 `0.0` 或 `1.0` 这样的数值。
 
 以下是 GLSL 中的一些不同之处：
 
@@ -267,7 +267,7 @@ float d = float(a) + b;
 
 <td>
 
-GLSL 中的循环必须在一个常量值处停止。如果希望根据条件结束循环，可以使用 `break` 跳出循环。
+GLSL 中，循环必须以常量作为终止边界。如果希望根据条件提前结束循环，可以使用 `break` 跳出循环。
 
 </td>
 
@@ -413,7 +413,7 @@ vec2 smallVec = bigVec.zy;
   ${end('main')}
 `}>
   <Fragment slot="precision">
-   着色器首先用一行 `precision` 语句声明浮点数精度。精度可以是 `lowp`、`mediump` 或 `highp`。从最高精度开始是个不错的选择，可以确保着色器在各处看起来一致。在台式机和笔记本电脑上，无论你写什么，GPU 很可能都会使用最高精度。在手机上，使用较低精度可能更快，但也可能让着色器呈现出不同的效果。
+   着色器首先用一行 `precision` 语句声明浮点数精度。精度可以是 `lowp`、`mediump` 或 `highp`。从最高精度开始是个不错的选择，可以确保着色器在任何设备上的显示效果都一致。在台式机和笔记本电脑上，无论你写什么，GPU 很可能都会使用最高精度。在手机上，使用较低精度可能更快，但也可能让着色器呈现出不同的效果。
   </Fragment>
   <Fragment slot="attributes">
     着色器的 *attribute 变量* 包含每个顶点各不相同的值，p5.js 使用它们来传递每个顶点的位置等信息。这个着色器中的 attribute 变量是 `vec3`，表示它包含 x、y 和 z 三个值。attribute 是一种特殊的变量类型，只在顶点着色器中使用，通常由 p5.js 提供。当你使用 `rect()` 或 `vertex()` 等 p5.js 方法时，p5.js 会自动把顶点信息传给着色器。
@@ -450,7 +450,7 @@ void main() {
 
 ### 片元着色器
 
-片元着色器负责着色器的颜色输出，也是我们进行大量着色器编程的地方。下面是一个非常简单的片元着色器，它只会显示红色：
+片元着色器负责着色器的颜色输出，我们大部分的着色器编程工作都将在这里完成。下面是一个非常简单的片元着色器，它只会显示红色：
 
 <AnnotatedCode lang="glsl" code={({ begin, end }) =>
 `
@@ -481,7 +481,7 @@ void main() {
 
 ## Uniform：从草图向着色器传递数据
 
-像这样的简单着色器本身就很实用，但有时还需要把变量从 p5.js 草图传递给着色器。这时就要用到 uniform。uniform 是一种可以从草图发送给着色器的变量，让我们能够通过 JavaScript 更细致地控制着色器。
+像这样的简单着色器本身就很实用，但有时还需要把变量从 p5.js 草图传递给着色器。这时就要用到 uniform。uniform 是一种可以从草图传递给着色器的变量，使我们能够通过 JavaScript 更充分地控制着色器。
 
 uniform 在文件顶部、`main()` 外部定义。你可以在顶点着色器和片元着色器中访问它们。在下面的示例中，p5.js 方法 `millis()` 返回的值会传给 uniform 变量 `time`，从而在顶点着色器中产生运动。
 
@@ -544,7 +544,7 @@ uniform 在文件顶部、`main()` 外部定义。你可以在顶点着色器和
   }
 `} />
 
-uniform 在片元着色器中也同样有效。在下面的示例中，我们创建了一个颜色 uniform `myColor`，以便通过草图的 JavaScript 部分更改颜色。请记住，在着色器中，颜色通道的取值范围是 0–1，而不是 0–255。
+同样，我们也可以通过 uniform 向片元着色器传递数据。在下面的示例中，我们创建了一个颜色 uniform `myColor`，以便通过草图中的 JavaScript 代码改变颜色。请记住，在着色器中，颜色通道的取值范围是 0–1，而不是 0–255。
 
 
 <EditableSketch code={`
@@ -643,7 +643,7 @@ uniform 在片元着色器中也同样有效。在下面的示例中，我们创
     纹理坐标最初以名为 `aTexCoord` 的 `attribute` 形式传入。p5.js 会自动填入这个值。
   </Fragment>
   <Fragment slot="varying">
-    我们在这里声明一个 `varying` 变量。在顶点着色器中声明的任何 varying，都可以在片元着色器中再次声明；随后就能在片元着色器中访问顶点着色器赋给它的值。
+    我们在这里声明一个 `varying` 变量。在顶点着色器中声明的任何 varying，都可以在片元着色器中再次声明，并在那里访问顶点着色器赋给它的值。
   </Fragment>
   <Fragment slot="assign">
     把 *attribute* 的值赋给 *varying* 变量，就是将数据复制到片元着色器能够读取的位置。
@@ -675,7 +675,7 @@ uniform 在片元着色器中也同样有效。在下面的示例中，我们创
 
 ## 滤镜着色器
 
-在 p5.js 中，滤镜会查看画布上的所有像素，然后将它们替换为其他内容。p5.js 内置了许多滤镜，例如反转画布颜色或对画布内容应用模糊效果。你也可以通过编写片元着色器来创建自己的滤镜。
+在 p5.js 中，滤镜会读取画布上的所有像素，并将它们替换成别的内容。p5.js 内置了许多滤镜，例如反转画布颜色或对画布内容应用模糊效果。你也可以通过编写片元着色器来创建自己的滤镜。
 
 滤镜着色器只需要片元着色器。顶点着色器主要负责确定形状的位置，而滤镜始终应用于整个画布，因此 p5.js 会为你提供默认的顶点着色器。此时不使用 `loadShader`，而是使用 `createFilterShader(src)`，并以字符串形式传入着色器源代码。
 
@@ -782,7 +782,7 @@ uniform 在片元着色器中也同样有效。在下面的示例中，我们创
 
 ## 总结
 
-掌握这些知识后，你就可以创建一些基本的着色器了。不过，着色器编程的世界远不止于此，许多主题也超出了本教程的范围。在 p5.js 中，着色器是创建视觉画面、效果和纹理的强大工具，这些内容还可以映射到三维几何体上。
+掌握这些知识后，你就可以创建一些基本的着色器了。不过，着色器编程的世界远不止于此，许多相关主题也超出了本教程的范围。在 p5.js 中，着色器是一种强大的工具，可用于创作视觉画面和效果，以及能够映射到三维几何体上的纹理。
 
 想继续学习更多着色器知识吗？不妨看看以下网站！
 
@@ -791,7 +791,7 @@ uniform 在片元着色器中也同样有效。在下面的示例中，我们创
 - [Shadertoy](https://www.shadertoy.com/)：一个庞大的在线着色器作品库，其中的着色器通过浏览器编辑器编写。
 - [p5js Shader Examples](https://github.com/aferriss/p5jsShaderExamples)：Adam Ferriss 整理的资源合集。
 - [OpenGL ES 2.0 规范](https://registry.khronos.org/OpenGL/specs/es/2.0/es_cm_spec_2.0.pdf)：非常技术性的 GLSL 规范。
-- [WebGL 快速参考卡](https://www.khronos.org/files/webgl/webgl-reference-card-1_0.pdf)：另一份技术性稍强的参考资料，但其中包含大量有关 GLSL 函数的实用信息。
+- [WebGL 快速参考卡](https://www.khronos.org/files/webgl/webgl-reference-card-1_0.pdf)：另一份略显艰深的技术参考资料，但其中包含许多有关 GLSL 函数的干货。
 - [Shaderific GLSL ES 参考](https://shaderific.com/glsl.html)：一份相对精简的 GLSL 内置函数和数据类型参考。
 
 
@@ -824,12 +824,12 @@ uniform 在片元着色器中也同样有效。在下面的示例中，我们创
 
 #### 浮点数（Float）
 
-一种存储浮点数的数据类型，数值中可以包含小数点。
+一种数据类型，用于存储可含小数部分的数值。
 
 
 #### 整数（Int）
 
-一种存储整数的数据类型，即不含小数部分的数。
+一种数据类型，用于存储不含小数部分的数值，。
 
 
 #### 采样器（Sampler）
