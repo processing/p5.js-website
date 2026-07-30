@@ -4,9 +4,44 @@ module: p5.sound
 submodule: SoundFile
 file: src/sources/SoundFile.js
 description: Set a loop region. The loop() method must be set to true for this to work.
-line: 221
+line: 333
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    async function setup() {
+     sample = await loadSound("/assets/drums.mp3");
+
+     //set the sample to loop, must be on for loopPoints to work
+     sample.loop(true);
+
+     createCanvas(100, 100);
+     textAlign(CENTER);
+     textWrap(WORD);
+     textSize(8);
+     describe("a sketch that loops short segments of a soundfile");
+    }
+
+    function draw() {
+     background(220);
+     if (!sample.playing) {
+       text("click to play the sound and it will loop", 0, 20, width);
+     }
+     else {
+       text("click to stop the looping", 0, 20, width);
+     }
+    }
+
+    function mousePressed() {
+     sample.start();
+     //set the loop points to a random range in the soundfile, making sure not to choose looppoints that exceed the duration fo the soundfile.
+     sample.loopPoints(random(0, sample.duration() - 0.3), random(0, 0.3))
+    }
+    </code>
+    </div>
 class: p5.SoundFile
 params:
   - name: startTime

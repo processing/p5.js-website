@@ -256,6 +256,7 @@ export const generateSearchIndex = async (
         if (!data.description) {
           continue;
         }
+        description = data.description;
         break;
       case "libraries":
         title = data.name;
@@ -274,7 +275,7 @@ export const generateSearchIndex = async (
       case "events":
         title = data.title;
         description = getKeywordsFromContent(
-          content + data.description,
+          content + (data.description ?? ""),
           locale,
         );
         break;

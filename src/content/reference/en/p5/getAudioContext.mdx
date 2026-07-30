@@ -3,10 +3,42 @@ title: getAudioContext
 module: p5.sound
 submodule: p5.sound
 file: src/core/Utils.js
-description: Get the window's audio context.
-line: 16
+description: >-
+  Get the window's audio context. For patching p5.sound.js into other JavaScript
+  sound libraries.
+line: 21
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let synth, ctx
+
+    function setup() {
+      createCanvas(400, 400);
+      //get the p5.sound.js Audio Context
+      ctx = getAudioContext()
+      //set the Tone.js Audio Context to match the p5.sound.js context
+      Tone.setContext(ctx)
+      //create a new MembraneSynth from the Tone.js library
+      synth = new Tone.MembraneSynth();
+      //create a new p5.sound.js Reverb effect
+      rev = new p5.Reverb(3)
+      //connect the MembraneSynth to the Reverb
+      rev.setInput(synth)
+    }
+
+    function draw() {
+      background(220);
+    }
+
+    function mousePressed() {
+      synth.triggerAttackRelease("C2", "8n");
+    }
+    </code>
+    </div>
 class: p5
 return:
   description: the audio context

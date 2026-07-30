@@ -3,7 +3,7 @@ title: hue
 module: Color
 submodule: Creating & Reading
 file: src/color/creating_reading.js
-description: >
+description: >-
   <p>Gets the hue value of a color.</p>
 
   <p><code>hue()</code> extracts the hue value from a
@@ -22,94 +22,120 @@ description: >
   returns the hue
 
   value in the given mode.</p>
-line: 937
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Use HSL color.
+    colorMode(HSL);
+
+    // Create a p5.Color object.
+    let c = color(0, 50, 100);
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(c);
+    rect(15, 20, 35, 60);
+
+    // Set 'hueValue' to 0.
+    let hueValue = hue(c);
+
+    // Draw the right rectangle.
+    fill(hueValue);
+    rect(50, 20, 35, 60);
+
+    describe(
+      'Two rectangles. The rectangle on the left is salmon pink and the one on the right is black.'
+    );
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Use HSL color.
+    colorMode(HSL);
+
+    // Create a color array.
+    let c = [0, 50, 100];
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(c);
+    rect(15, 20, 35, 60);
+
+    // Set 'hueValue' to 0.
+    let hueValue = hue(c);
+
+    // Draw the right rectangle.
+    fill(hueValue);
+    rect(50, 20, 35, 60);
+
+    describe(
+      'Two rectangles. The rectangle on the left is salmon pink and the one on the right is black.'
+    );
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Use HSL color.
+    colorMode(HSL);
+
+    // Create a CSS color string.
+    let c = 'rgb(255, 128, 128)';
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(c);
+    rect(15, 20, 35, 60);
+
+    // Set 'hueValue' to 0.
+    let hueValue = hue(c);
+
+    // Draw the right rectangle.
+    fill(hueValue);
+    rect(50, 20, 35, 60);
+
+    describe(
+      'Two rectangles. The rectangle on the left is salmon pink and the one on the right is black.'
+    );
+  }</code></pre><p>In p5.strands shader callbacks, <code>hue()</code> operates
+  on <code>vec4</code> values and
+
+  returns the hue as a normalized value in the 0–1 range.
+
+  <code>colorMode()</code> has no effect inside shader callbacks.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildMaterialShader(myShaderBuilder);
+  }
+
+
+  function myShaderBuilder() {
+    finalColor.begin();
+    let c = color(0, 255, 128);
+    let h = hue(c);
+    finalColor.set(vec4(h, h, h, 1.0));
+    finalColor.end();
+  }
+
+
+  function draw() {
+    shader(myShader);
+    noStroke();
+    sphere(40);
+
+    describe('A sphere shaded in grayscale based on hue.');
+  }</code></pre>
+line: 1137
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Use HSL color.
-      colorMode(HSL);
-
-      // Create a p5.Color object.
-      let c = color(0, 50, 100);
-
-      // Draw the left rectangle.
-      noStroke();
-      fill(c);
-      rect(15, 20, 35, 60);
-
-      // Set 'hueValue' to 0.
-      let hueValue = hue(c);
-
-      // Draw the right rectangle.
-      fill(hueValue);
-      rect(50, 20, 35, 60);
-
-      describe(
-        'Two rectangles. The rectangle on the left is salmon pink and the one on the right is black.'
-      );
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Use HSL color.
-      colorMode(HSL);
-
-      // Create a color array.
-      let c = [0, 50, 100];
-
-      // Draw the left rectangle.
-      noStroke();
-      fill(c);
-      rect(15, 20, 35, 60);
-
-      // Set 'hueValue' to 0.
-      let hueValue = hue(c);
-
-      // Draw the right rectangle.
-      fill(hueValue);
-      rect(50, 20, 35, 60);
-
-      describe(
-        'Two rectangles. The rectangle on the left is salmon pink and the one on the right is black.'
-      );
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Use HSL color.
-      colorMode(HSL);
-
-      // Create a CSS color string.
-      let c = 'rgb(255, 128, 128)';
-
-      // Draw the left rectangle.
-      noStroke();
-      fill(c);
-      rect(15, 20, 35, 60);
-
-      // Set 'hueValue' to 0.
-      let hueValue = hue(c);
-
-      // Draw the right rectangle.
-      fill(hueValue);
-      rect(50, 20, 35, 60);
-
-      describe(
-        'Two rectangles. The rectangle on the left is salmon pink and the one on the right is black.'
-      );
-    }
+example: []
 class: p5
 return:
   description: the hue value.
