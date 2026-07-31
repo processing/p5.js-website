@@ -3,36 +3,84 @@ title: floor
 module: Math
 submodule: Calculation
 file: src/math/calculation.js
-description: |-
-  Calculates the closest integer value that is less than or equal to the
-  value of a number.
-line: 300
+description: >-
+  <p>Calculates the closest integer value that is less than or equal to the
+
+  value of a number.</p>
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    // Use RGB color with values from 0 to 1.
+    colorMode(RGB, 1);
+
+    noStroke();
+
+    // Draw the left rectangle.
+    let r = 0.8;
+    fill(r, 0, 0);
+    rect(0, 0, 50, 100);
+
+    // Round r down to 0.
+    r = floor(r);
+
+    // Draw the right rectangle.
+    fill(r, 0, 0);
+    rect(50, 0, 50, 100);
+
+    describe('Two rectangles. The one on the left is bright red and the one on the right is black.');
+  }</code></pre><p><code>floor()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>floor()</code> to create banding effects on a shape.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere with posterized color bands.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // sin(t) goes between -1 and 1.
+    // 0.5 + 0.5 * sin(t) remaps this to the 0 to 1 range.
+    let sinVal = 0.5 + 0.5 * sin(t);
+
+    // Multiply by 4 then floor to get the next whole number down.
+    // Divide by 4 to bring the result back to the 0 to 1 range.
+    // This creates 5 distinct stepped color levels: 0, 0.25, 0.5, 0.75, 1.
+    let value = floor(sinVal * 4) / 4;
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let darkPurple = [0.2, 0, 0.8, 1];
+    let brightTeal = [0.2, 1, 0.8, 1];
+
+    finalColor.begin();
+
+    // mix() blends between darkPurple (when value = 0) and brightTeal (when value = 1).
+    // The floor() creates visible banding/posterization in the color.
+    finalColor.set(mix(darkPurple, brightTeal, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 483
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      // Use RGB color with values from 0 to 1.
-      colorMode(RGB, 1);
-
-      noStroke();
-
-      // Draw the left rectangle.
-      let r = 0.8;
-      fill(r, 0, 0);
-      rect(0, 0, 50, 100);
-
-      // Round r down to 0.
-      r = floor(r);
-
-      // Draw the right rectangle.
-      fill(r, 0, 0);
-      rect(50, 0, 50, 100);
-
-      describe('Two rectangles. The one on the left is bright red and the one on the right is black.');
-    }
+example: []
 class: p5
 return:
   description: rounded down number.

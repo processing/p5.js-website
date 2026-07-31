@@ -3,7 +3,7 @@ title: min
 module: Math
 submodule: Calculation
 file: src/math/calculation.js
-description: >
+description: >-
   <p>Returns the smallest value in a sequence of numbers.</p>
 
   <p>The version of <code>min()</code> with one parameter interprets it as an
@@ -15,49 +15,89 @@ description: >
   them as
 
   individual numbers and returns the smallest number.</p>
-line: 699
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Calculate the minimum of 10, 5, and 20.
+    let m = min(10, 5, 20);
+
+    // Style the text.
+    textAlign(CENTER);
+    textSize(16);
+
+    // Display the min.
+    text(m, 50, 50);
+
+    describe('The number 5 written in the middle of a gray square.');
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Create an array of numbers.
+    let numbers = [10, 5, 20];
+
+    // Calculate the minimum of the array.
+    let m = min(numbers);
+
+    // Style the text.
+    textAlign(CENTER);
+    textSize(16);
+
+    // Display the min.
+    text(m, 50, 50);
+
+    describe('The number 5 written in the middle of a gray square.');
+  }</code></pre><p><code>min()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>min()</code> to clamp values in a shader.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere that shifts from red to green and stops.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // t * 0.2 grows steadily over time.
+    // min(..., 1) caps the value at 1 so it doesn't go past the target color.
+    let value = min(t * 0.2, 1);
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let deepRed = [0.8, 0, 0.2, 1];
+    let yellowGreen = [0.8, 1, 0.2, 1];
+
+    finalColor.begin();
+
+    // mix() blends between deepRed (when value = 0) and yellowGreen (when value = 1).
+    // min() clamps the blend so the color stops changing once it reaches yellowGreen.
+    finalColor.set(mix(deepRed, yellowGreen, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 1099
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Calculate the minimum of 10, 5, and 20.
-      let m = min(10, 5, 20);
-
-      // Style the text.
-      textAlign(CENTER);
-      textSize(16);
-
-      // Display the min.
-      text(m, 50, 50);
-
-      describe('The number 5 written in the middle of a gray square.');
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Create an array of numbers.
-      let numbers = [10, 5, 20];
-
-      // Calculate the minimum of the array.
-      let m = min(numbers);
-
-      // Style the text.
-      textAlign(CENTER);
-      textSize(16);
-
-      // Display the min.
-      text(m, 50, 50);
-
-      describe('The number 5 written in the middle of a gray square.');
-    }
+example: []
 class: p5
 return:
   description: minimum number.

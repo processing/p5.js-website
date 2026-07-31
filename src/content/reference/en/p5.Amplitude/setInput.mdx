@@ -7,6 +7,52 @@ description: Connect an audio source to the amplitude object.
 line: 60
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let amplitude = 0;
+
+    async function setup() {
+      sample = await loadSound("/assets/drums.mp3");
+      sample.loop(true);
+
+      createCanvas(100, 100);
+      textAlign(CENTER);
+      textWrap(WORD);
+      textSize(8);
+      describe("a sketch that demonstrates setting the input for amplitude analysis");
+
+      analyze = new p5.Amplitude();
+      //sample.connect(analyze);
+      analyze.setInput(sample);
+    }
+
+    function draw() {
+      background(amplitude * 512, 0, 0);
+      
+      amplitude = analyze.getLevel();
+      
+      fill(255);
+      if (!sample.isPlaying()) {
+        text("click to play the sound, move your mouse to adjust smoothing", 0, 20, width);
+      }
+      else {
+        text("Amplitude: " + amplitude.toFixed(2), 0, 20, width);
+      }
+    }
+
+    function mousePressed() {
+      if(!sample.isPlaying()) {
+        sample.play();
+      }
+      else {
+        sample.stop();
+      }
+    }
+    </code>
+    </div>
 class: p5.Amplitude
 params:
   - name: input

@@ -3,32 +3,82 @@ title: degrees
 module: Math
 submodule: Trigonometry
 file: src/math/trigonometry.js
-description: |
+description: >-
   <p>Converts an angle measured in radians to its value in degrees.</p>
+
   <p>Degrees and radians are both units for measuring angles. There are 360˚ in
+
   one full rotation. A full rotation is 2 × π (about 6.28) radians.</p>
+
   <p>The same angle can be expressed in with either unit. For example, 90° is a
+
   quarter of a full rotation. The same angle is 2 × π ÷ 4
+
   (about 1.57) radians.</p>
-line: 537
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Calculate the angle conversion.
+    let rad = QUARTER_PI;
+    let deg = degrees(rad);
+
+    // Display the conversion.
+    text(`${round(rad, 2)} rad = ${deg}˚`, 10, 50);
+
+    describe('The text "0.79 rad = 45˚".');
+  }</code></pre><p><code>degrees()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>degrees()</code> to convert a radian value to degrees inside a
+  shader.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere that cycles through warm colors.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // degrees() converts the radian value t to degrees.
+    // (deg % 360) wraps the degrees into a 0-360 range.
+    // Dividing by 360 normalizes to the 0 to 1 range.
+    let deg = degrees(t);
+    let value = (deg % 360) / 360;
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let red = [1, 0, 0, 1];
+    let yellow = [1, 1, 0, 1];
+
+    finalColor.begin();
+
+    // mix() blends between red (when value = 0) and yellow (when value = 1).
+    // degrees() creates a cycling sawtooth pattern as time increases.
+    finalColor.set(mix(red, yellow, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 842
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      // Calculate the angle conversion.
-      let rad = QUARTER_PI;
-      let deg = degrees(rad);
-
-      // Display the conversion.
-      text(`${round(rad, 2)} rad = ${deg}˚`, 10, 50);
-
-      describe('The text "0.79 rad = 45˚".');
-    }
+example: []
 class: p5
 return:
   description: converted angle.
