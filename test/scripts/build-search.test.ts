@@ -64,3 +64,36 @@ describe("Search Index Example URL Generation", () => {
     );
   });
 });
+
+describe("Search Index Event Description Generation", () => {
+  test('does not append the literal "undefined" when an event has no description frontmatter', async () => {
+    mockedGetContentFilePaths.mockResolvedValue([
+      "src/content/events/en/contributors-conference-2015.mdx",
+    ]);
+
+    const result = await generateSearchIndex("events", "en");
+
+    const eventEntry = result?.["p5.js Contributors Conference 2015"];
+
+    expect(eventEntry).toBeDefined();
+    expect(eventEntry?.description).toBeTruthy();
+    expect(eventEntry?.description).not.toContain("undefined");
+  });
+});
+
+describe("Search Index Reference Description Generation", () => {
+  test("includes the expected description in reference search index entries", async () => {
+    mockedGetContentFilePaths.mockResolvedValue([
+      "src/content/reference/en/p5/mouseX.mdx",
+    ]);
+
+    const result = await generateSearchIndex("reference", "en");
+
+    expect(result).toBeDefined();
+    expect(result?.["mouseX"]).toBeDefined();
+    expect(result?.["mouseX"].description).toContain(
+      "A <code>Number</code> system variable that tracks the mouse's horizontal position.",
+    );
+  });
+});
+
