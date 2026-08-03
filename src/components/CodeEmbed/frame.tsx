@@ -165,9 +165,8 @@ export const CodeFrame = (props: CodeFrameProps) => {
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
         title="Code Preview"
-        height={props.height}
-        width={props.width}
         loading={props.lazyLoad ? "lazy" : "eager"}
+        style={{width: "100%", height: "100%"}}
       />
     </div>
   );
