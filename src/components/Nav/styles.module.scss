@@ -87,9 +87,14 @@
 
     &:global(.open),
     &:global(.noJumpTo) {
-      grid-template-rows: min-content 2fr;
+      grid-template-rows: min-content 1fr min-content;
       min-height: 350px;
-      height: 100%;
+      height: auto;
+      max-height: none;
+    }
+
+    &:global(.noJumpTo) {
+      flex-grow: 1;
     }
   }
 
@@ -125,6 +130,12 @@
         display: none;
       }
     }
+  }
+}
+
+@media (min-width: variables.$breakpoint-tablet) {
+  .container:has(.jumpto:not(:global(.open))) .mainlinks:global(.open) {
+    flex-grow: 1;
   }
 }
 
@@ -176,11 +187,13 @@
 
   @media (min-width: variables.$breakpoint-tablet) {
     height: fit-content;
+    flex-grow: 0;
     border-top-width: 1px;
-    margin-top: auto;
 
     &:global(.open) {
-      height: 100%;
+      height: auto;
+      min-height: 0;
+      flex-grow: 1;
       overflow-y: scroll;
     }
 
@@ -270,7 +283,8 @@
   height: unset;
 
   @media (min-width: variables.$breakpoint-tablet) {
-    height: 100%;
+    height: auto;
+    min-height: 0;
     overflow-y: scroll;
 
     ul {
