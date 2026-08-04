@@ -9,6 +9,7 @@ import { contributorDocsCollection } from "./content/contributor-docs/config";
 import { homepageCollection } from "./content/homepage/config";
 import { pagesCollection } from "./content/pages/config";
 import { bannerCollection } from "./content/banner/config";
+import { arenaResourcesCollection } from "./content/arena-resources/config";
 
 /**
  * All content collections defined in subfolders of /src/content/
@@ -28,4 +29,5 @@ export const collections = {
   homepage: homepageCollection,
   pages: pagesCollection,
   banner: bannerCollection,
+  "arena-resources": arenaResourcesCollection,
 };

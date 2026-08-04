@@ -73,7 +73,7 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
   image: {
-    domains: ["openprocessing.org"],
+    domains: ["openprocessing.org", "images.are.na"],
     service: passthroughImageService()
   },
   markdown: {
