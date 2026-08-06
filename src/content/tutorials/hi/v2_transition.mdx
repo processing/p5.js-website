@@ -1,0 +1,436 @@
+---
+title: "p5.js v2 के लिए शिक्षकों का मार्गदर्शन"
+description: मध्य विद्यालय और उच्च विद्यालय के शिक्षकों के लिए पिछले संस्करणों के उपयोग से p5.js संस्करण 2 में परिवर्तन के लिए एक मार्गदर्शन।
+category: "2.0"
+featuredImage: ../images/featured/v2-transition.gif
+featuredImageAlt: TODO BETTER IMAGE
+relatedContent:
+  references:
+    - en/p5/mousebutton
+    - en/p5/keyispressed
+    - en/p5/loadimage
+    - en/p5/keyisdown
+  examples:
+    - en/16_parallel_loading_promise/01_async_image_loader
+authors:
+  - Adrienne Gifford
+---
+import Callout from "../../../components/Callout/index.astro";
+
+## मध्य विद्यालय और उच्च विद्यालय के शिक्षकों के लिए p5.js v2 ट्रांजिशन गाइड
+
+एक मध्य विद्यालय के शिक्षक के रूप में, मैं जानता हूँ कि जिस उपकरण पर आप भरोसा करते हैं उसका संस्करण अपडेट होना एक बड़ा समायोजन महसूस हो सकता है, विशेष रूप से तब जब आपके पास पहले से ही पाठों और गतिविधियों का एक सेट हो जिसे आप जानते और पसंद करते हैं।
+
+यदि आप p5.js v2 में परिवर्तन को लेकर कुछ घबराहट महसूस कर रहे हैं, तो यह मार्गदर्शिका आपको आश्वस्त करने के लिए है। आपके छात्र जो पहले से करते हैं, उसमें से अधिकांश बिल्कुल पहले की तरह ही काम करता है।
+
+कई मध्य विद्यालय और उच्च विद्यालय p5.js पाठ्यक्रमों ([CS4All Creative Web](https://blueprint.cs4all.nyc/curriculum/creative-web/), [CS4All Introduction to Computational Media](https://blueprint.cs4all.nyc/curriculum/intro-to-computational-media/), [CodeHS Digital Art with p5.js](https://codehs.com/course/p5-js/overview), [CSinSF Creative Computing](https://sites.google.com/sfusd.edu/csinsfcreativecomputing/home?authuser=0), [Processing Foundation Art + Code](https://processing.github.io/art-plus-code/codeAsCreativeMedium-intro/)) की समीक्षा करने के बाद p5.js v1 से v2 में जाने पर केवल दो क्षेत्रों में लगातार अपडेट की आवश्यकता होती है:
+
+* इनपुट आयोजन (Input Events)
+* एसेट लोड करना (Asset Loading)
+
+यद्यपि [अन्य v2 अपडेट](https://github.com/processing/p5.js-compatibility) हैं (जैसे घुमावदार आकृतियों, टेक्स्ट माप और उपयोगिता कार्यों (utility functions) में परिवर्तन), ये आमतौर पर मध्य विद्यालय या उच्च विद्यालय के पाठ्यक्रमों में दिखाई नहीं देते हैं और छात्रों के साथ आपके काम को प्रभावित करने की संभावना नहीं है।
+
+यह मार्गदर्शिका आपको केवल उन परिवर्तनों के बारे में बताती है जिनका सामना आपको मध्य विद्यालय (MS) या उच्च विद्यालय (HS) की कक्षा में होने की संभावना है। आप सीखेंगे कि p5.js v2 के लिए अपने कोड को कैसे अपडेट किया जाए, और पुराने रेखाचित्रों (sketches) के लिए संगतता ऐड-ऑन (compatibility add-ons) कब मददगार हो सकते हैं।
+
+मैंने वह सब कुछ शामिल करने का प्रयास किया है जिसकी आपको आवश्यकता है और वह कुछ भी नहीं जिसकी आपको आवश्यकता नहीं है, ताकि आप आसानी से गति प्राप्त कर सकें और p5.js v2 के साथ शिक्षण में आश्वस्त महसूस कर सकें।
+
+## वेब संपादक (Web Editor) में संस्करण
+
+अधिकांश समय, आप और आपके छात्र बिना कुछ बदले p5.js v2 का उपयोग कर सकते हैं।
+
+हालाँकि, यदि आप कोई पुराना स्केच खोलते हैं (उदाहरण के लिए, पिछले वर्ष किसी छात्र द्वारा बनाया गया कुछ या p5.js v1 के लिए डिज़ाइन किए गए पाठ्यक्रम का एक उदाहरण), और यह बिल्कुल वैसा व्यवहार नहीं करता है, तो आपके पास विकल्प हैं:
+
+* आप इस मार्गदर्शिका में दिए गए उदाहरणों का उपयोग करके **स्केच को अपडेट** कर सकते हैं
+* आप **एक [संगतता ऐड-ऑन चालू कर सकते हैं](https://docs.google.com/document/d/1Dk5nqLYL_ryw_7xjADhgPHOi5N6xkC9v_FM2vOz_Hc8/edit?tab=t.ocxorofdcw24)**
+* आप संपादक में **स्केच को वापस p5.js v1 पर स्विच** कर सकते हैं
+
+![संकरणों की एक सूची दिखाते हुए p5.js वेब संपादक संस्करण पिकर का स्क्रीनशॉट।](../images/2.0/v2-libman.png)
+
+## इनपुट आयोजन (Input Events)
+
+इनपुट आयोजन (Input events) वह पहला स्थान होने की संभावना है जहाँ आप p5.js v2 में अंतर देखेंगे। छात्र इनपुट आयोजनों का उपयोग निम्न कार्यों के लिए कर सकते हैं:
+
+* बटन का चयन या टॉगल करना
+* माउस दबाए जाने पर चित्र बनाना
+* कुंजी (key) दबाए जाने पर चर (variables) बदलना
+* कैनवास को साफ़ करना या सहेजना
+* तीर कुंजियों के साथ किसी गेम कैरेक्टर को घुमाना
+
+यह अनुभाग उस इनपुट आयोजन (input event) कोड को कवर करता है जिसे आप MS/HS कक्षाओं में देखने की सबसे अधिक संभावना रखते हैं और p5.js v2 में पेश किए गए परिवर्तन।
+
+### माउस क्लिक (Mouse Clicks)
+
+p5.js v1 में, किसी विशिष्ट माउस बटन की जाँच करना इस तरह दिखता था:
+
+```js
+if (mouseButton === RIGHT) {
+  // do a thing (p5.js v1)
+}
+```
+
+p5.js v2 में, यह इस तरह दिखता है:
+
+```js
+if (mouseButton.right) {
+  // do a thing (p5.js v2)
+}
+```
+
+**संदर्भ:** [mouseButton](/reference/p5/mouseButton/)
+
+<Callout title="शिक्षक नोट">
+v2 में, mouseButton अब बूलियन (boolean) गुणों (left, right, center) के साथ एक ऑब्जेक्ट (object) है। यह एक साथ कई बटनों का पता लगाना संभव बनाता है। यह विशेष रूप से ड्राइंग ऐप या पेंट टूल के लिए उपयोगी है, जहाँ छात्र विभिन्न माउस बटन के लिए अलग-अलग व्यवहार चाह सकते हैं।
+</Callout>
+
+### कीबोर्ड इनपुट (Keyboard Input)
+
+p5.js v1 में, अधिकांश MS/HS पाठ्यक्रमों ने कोड का उपयोग करके कुंजियों (keys) की जाँच की जैसे:
+
+```js
+if (keyIsPressed) {
+  if (key === UP_ARROW){
+    // do a thing (p5.js v1)
+  }
+}
+```
+
+`keyIsPressed` को अक्सर एक सरल बूलियन (Boolean) चर के रूप में जल्दी पेश किया जाता है और `key ===` उन तुलना संरचनाओं में फिट बैठता है जिनका छात्र पहले से उपयोग कर रहे हैं।
+
+p5.js v2 में, कुंजियों (keys) की जाँच करने का अनुशंसित तरीका है:
+
+```js
+if (keyIsDown(UP_ARROW)) {
+  // do a thing (p5.js v2)
+}
+```
+
+`keyIsDown()` अब अनुशंसित दृष्टिकोण है क्योंकि यह v1 और v2 दोनों में लगातार काम करता है और एक साथ कई कुंजियों की जाँच करने का समर्थन करता है।
+
+**संदर्भ:** [keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+### इनपुट आयोजन त्वरित संदर्भ (Input Events Quick Reference)
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+<th>
+
+संदर्भ
+
+</th>
+
+</tr>
+
+<tr>
+
+<td>
+
+`mouseButton === RIGHT`
+
+
+</td>
+
+<td>
+
+`mouseButton.right`
+
+</td>
+
+<td>
+
+[mouseButton](https://beta.p5js.org/reference/p5/mouseButton/)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+`keyIsPressed` <br /> `key === UP_ARROW`
+
+</td>
+
+<td>
+
+`keyIsDown(UP_ARROW)`
+
+</td>
+
+<td>
+
+[keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+</td>
+
+</tr>
+
+</table>
+
+### संगतता ऐड-ऑन (वैकल्पिक) (Compatibility Add-On)
+
+नए शिक्षण के लिए, ऊपर दिखाए गए v2 कोड का पालन करें।
+
+यदि आपके पास पुराने रेखाचित्र (sketches) हैं जिन्हें आप कोड अपडेट किए बिना काम करते रहना चाहते हैं, तो **Data & Events** संगतता ऐड-ऑन v1 व्यवहार को पुनर्स्थापित करता है।
+
+अधिक जानकारी के लिए नीचे *संगतता ऐड-ऑन* अनुभाग देखें।
+
+## एसेट लोड करना (Loading Assets)
+
+जैसे-जैसे छात्र पाठ्यक्रम में आगे बढ़ते हैं, वे चित्र, ध्वनियाँ, फ़ॉन्ट या अन्य संपत्तियाँ (assets) जोड़कर अपने रेखाचित्रों (sketches) को निजीकृत करना चाह सकते हैं।
+
+p5.js v1 में, यह `preload()` का उपयोग करके किया गया था।
+p5.js v2 में, हम `setup()` के अंदर `async` और `await` का उपयोग करते हैं।
+
+### p5.js v1 में `preload()`
+
+p5.js v1 में, `preload()` स्केच को तब तक चलने से रोकता था जब तक कि उसके अंदर सब कुछ लोड होना समाप्त नहीं हो जाता:
+
+```js
+let img;
+
+function preload(){
+  // used in p5.js v1, but not in v2
+  img = loadImage("cat.jpg");
+}
+
+function setup(){
+  createCanvas(100, 100);
+  image(img, 0, 0);
+}
+```
+
+### p5.js v2 में `async` और `await`
+
+p5.js v2 में, `preload()` का उपयोग अब नहीं किया जाता है, और एसेट्स को `async setup()` के अंदर `await` का उपयोग करके लोड किया जाता है। यह छवियों (images), ध्वनियों (sounds), फ़ॉन्ट (fonts) और अन्य दस्तावेज़ों (files) के लिए काम करता है:
+
+```js
+let img;
+
+async function setup() {
+  createCanvas(100, 100);
+  
+  // waits for asset to load
+  img = await loadImage("cat.jpg");
+  
+  image (img, 0, 0);
+}
+```
+
+### एसेट लोडिंग त्वरित संदर्भ (Asset Loading Quick Reference)
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+
+</tr>
+
+<tr>
+
+<td>
+
+```js
+function preload(){   
+  img = loadImage(
+    "cat.jpg"
+  );
+}
+```
+
+</td>
+
+<td>
+
+```js
+async function setup() {
+  createCanvas(100, 100);
+  img = await loadImage(
+    "cat.jpg"
+  ); 
+}
+```
+
+</td>
+
+
+</tr>
+</table>
+
+**संदर्भ:** [async_await](https://beta.p5js.org/reference/p5/async_await/)
+
+### संगतता ऐड-ऑन (वैकल्पिक) (Compatibility Add-Ons)
+
+नए शिक्षण के लिए, ऊपर दिए गए v2 कोड का पालन करें।
+
+यदि आपके पास पुराने रेखाचित्र (sketches) हैं जिन्हें आप कोड अपडेट किए बिना काम करते रहना चाहते हैं, तो **Preload** संगतता ऐड-ऑन v1 व्यवहार को पुनर्स्थापित करता है।
+
+अधिक जानकारी के लिए नीचे *संगतता ऐड-ऑन* अनुभाग देखें।
+
+## संगतता ऐड-ऑन (Compatibility Add-Ons)
+
+संगतता ऐड-ऑन वैकल्पिक सहायक दस्तावेज़ (helper files) हैं जिन्हें आप p5.js वेब संपादक में चालू कर सकते हैं ताकि पुराने p5.js v1 रेखाचित्रों (sketches) को p5.js v2 में कोड अपडेट किए बिना उसी तरह व्यवहार किया जा सके।
+
+इन ऐड-ऑन की आवश्यकता केवल तभी होती है जब आप या आपके छात्र ऑनलाइन या पुराने पाठ्यक्रम सामग्री से पुराने रेखाचित्र खोलते हैं जो p5.js v1 पैटर्न का उपयोग करते हैं और आप अभी तक कोड को v2 पैटर्न में अपडेट करने के लिए तैयार नहीं हैं।
+
+नए शिक्षण के लिए, कोड लिखने के v2 तरीकों का उपयोग करना बेहतर है ताकि छात्र उस संस्करण को सीखें जिसे आगे बढ़ाते हुए समर्थित किया जाएगा।
+
+* इनपुट आयोजनों (Input Events) के लिए, **Data & Events** संगतता ऐड-ऑन का उपयोग करें।
+* एसेट लोड (Asset Loading) करने के लिए, **Preload** संगतता ऐड-ऑन का उपयोग करें।
+
+![p5.js संपादक में लाइब्रेरी प्रबंधन टैब का एक स्क्रीनशॉट, जहाँ एक उपयोगकर्ता 1.x संगतता के लिए ऐड-ऑन लाइब्रेरी टॉगल कर सकता है।](../images/2.0/v2-addons.png)
+
+*आपको एक **Shapes** संगतता ऐड-ऑन भी दिखाई देगा - Shapes API परिवर्तन केवल अधिक उन्नत कस्टम आकृतियों को प्रभावित करते हैं जो आमतौर पर MS/HS पाठ्यक्रम में दिखाई नहीं देते हैं, इसलिए अधिकांश MS/HS शिक्षकों को Shapes संगतता ऐड-ऑन की आवश्यकता नहीं होगी।*
+
+## शिक्षक त्वरित संदर्भ (Teacher Quick Reference)
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+<th>
+
+संदर्भ
+
+</th>
+
+<tr>
+<th colspan="3">
+इनपुट आयोजन (Input Events)
+</th>
+</tr>
+
+</tr>
+
+<tr>
+
+<td>
+
+`mouseButton === RIGHT`
+
+
+</td>
+
+<td>
+
+`mouseButton.right`
+
+</td>
+
+<td>
+
+[mouseButton](https://beta.p5js.org/reference/p5/mouseButton/)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+`keyIsPressed` <br />
+`key === UP_ARROW`
+
+</td>
+
+<td>
+
+`keyIsDown(UP_ARROW)`
+
+</td>
+
+<td>
+
+[keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+</td>
+
+</tr>
+
+
+<tr>
+<th colspan="3">
+एसेट लोड करना (Asset Loading)
+</th>
+</tr>
+
+
+<tr>
+
+
+</tr>
+
+<tr>
+
+<td>
+
+```js
+function preload(){   
+  img = loadImage("cat.jpg");
+}
+```
+
+</td>
+
+<td>
+
+```js
+async function setup() {
+  createCanvas(100, 100);
+  img = await loadImage("cat.jpg"); 
+}
+```
+
+</td>
+
+<td>
+
+[async_await](https://beta.p5js.org/reference/p5/async_await/)
+
+</td>
+
+</tr>
+</table>
+
+<Callout title="शिक्षक नोट">
+इस त्वरित संदर्भ (quick reference) में केवल p5.js v2 परिवर्तन शामिल हैं जो आमतौर पर MS और HS पाठ्यक्रम (इनपुट आयोजन (input events) और एसेट लोडिंग (asset loading)) को प्रभावित करते हैं। अन्य v2 अपडेट (जैसे घुमावदार आकृतियों, टेक्स्ट माप और उपयोगिता कार्यों (utility functions) में परिवर्तन) समीक्षा किए गए पाठ्यक्रमों में दिखाई नहीं देते हैं। v2 परिवर्तनों की पूरी सूची के लिए, [Technical Transition Guide](https://github.com/processing/p5.js-compatibility) देखें।
+</Callout>
