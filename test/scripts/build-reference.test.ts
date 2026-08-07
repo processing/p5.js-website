@@ -6,6 +6,7 @@ const {
   modulePathTree,
   addMemberMethodPreviewsToClassDocs,
   memberMethodPreviews,
+  correctRelativeLinksInDescription,
 } = testingExports;
 
 const defaultDoc = {
@@ -104,5 +105,14 @@ describe("modulePathTree with method previews", () => {
       memberMethodPreviews["p5.TestClass"].properties?.["exampleClassProperty"]
         .path,
     ).toBe(expectedPath);
+  });
+});
+
+describe("correctRelativeLinksInDescription", () => {
+  test("should not add trailing slash to external URLs in descriptions", () => {
+    const input =
+      '<p><a href="https://en.wikipedia.org/wiki/Animation">Animation</a></p>';
+
+    expect(correctRelativeLinksInDescription(input)).toEqual(input);
   });
 });
