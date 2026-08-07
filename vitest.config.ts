@@ -21,7 +21,8 @@ export default getViteConfig({
           exclude: [
             "test/api/OpenProcessing.test.ts",
             "test/pages/*",
-            "test/mocks/*"
+            "test/mocks/*",
+            "test/a11y/**"
           ]
         }
       },
