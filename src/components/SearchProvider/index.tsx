@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import Fuse, { type FuseResult } from "fuse.js";
 import SearchResults from "../SearchResults";
 import { defaultLocale } from "@/src/i18n/const";
@@ -28,6 +28,7 @@ const SearchProvider = ({
 }: SearchProviderProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const hasTrackedSearchUse = useRef(false);
 
   // Flattens the search index data
   
@@ -39,12 +40,22 @@ const SearchProvider = ({
     if (query) setSearchTerm(query);
   }, []);
 
-  // Update query param on search term update
+  // Update query param on search term update; track first non-empty use once
   useEffect(() => {
     if (searchTerm) {
       const params = new URLSearchParams(window.location.search);
       params.set("term", searchTerm);
       history.replaceState(null, "", `${window.location.pathname}?${params}`);
+
+      if (
+        !hasTrackedSearchUse.current &&
+        searchTerm.trim().length > 0 &&
+        typeof window !== "undefined" &&
+        window.fathom
+      ) {
+        hasTrackedSearchUse.current = true;
+        window.fathom.trackEvent("Global Search Used");
+      }
     }
   }, [searchTerm]);
 

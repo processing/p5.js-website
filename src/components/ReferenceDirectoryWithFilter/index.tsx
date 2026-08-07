@@ -186,6 +186,7 @@ export const ReferenceDirectoryWithFilter = ({
 }: ReferenceDirectoryWithFilterProps) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasTrackedFilterUse = useRef(false);
 
   const filteredEntries = useMemo(
     () => filterCategoryData(categoryData, searchKeyword),
@@ -307,7 +308,17 @@ export const ReferenceDirectoryWithFilter = ({
               placeholder={uiTranslations["Filter by keyword"]}
               onKeyUp={(e) => {
                 const target = e.target as HTMLInputElement;
-                setSearchKeyword(target?.value);
+                const value = target?.value ?? "";
+                setSearchKeyword(value);
+                if (
+                  !hasTrackedFilterUse.current &&
+                  value.trim().length > 0 &&
+                  typeof window !== "undefined" &&
+                  window.fathom
+                ) {
+                  hasTrackedFilterUse.current = true;
+                  window.fathom.trackEvent("Reference Filter Used");
+                }
               }}
             />
             {searchKeyword.length > 0 && (
