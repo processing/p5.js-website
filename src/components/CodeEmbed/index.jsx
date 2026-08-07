@@ -29,6 +29,7 @@ import { Icon } from "../Icon";
 export const CodeEmbed = (props) => {
   const { ref: liveRegionRef, announce } = useLiveRegion();
   const [rendered, setRendered] = useState(false);
+ 
   const initialCode = props.initialValue ?? "";
   // Source code from Google Docs sometimes uses a unicode non-breaking space
   // instead of a normal one, but these break the code frame, so we replace them here.
@@ -54,6 +55,9 @@ export const CodeEmbed = (props) => {
   }
 
   const codeFrameRef = useRef(null);
+  const editorRef = useRef(null);
+  const isScrollable = props.scrollable ?? false;
+  const [hasScrollbar, setHasScrollbar] = useState(false);
 
   const updateOrReRun = () => {
     if (codeString === previewCodeString) {
@@ -78,6 +82,18 @@ export const CodeEmbed = (props) => {
       document.head.appendChild(p5ScriptElement);
     }
   }, []);
+
+  // only observe scroll when scrollable
+  useEffect(() => {
+    if (!rendered || !isScrollable) return;
+    const scroller = editorRef.current?.querySelector(".cm-scroller");
+    if (!scroller) return;
+    const observer = new ResizeObserver(() => {
+      setHasScrollbar(scroller.scrollHeight > scroller.clientHeight);
+    });
+    observer.observe(scroller);
+    return () => observer.disconnect();
+  }, [rendered, isScrollable]);
 
   if (!rendered) return <div className="code-placeholder" />;
 
@@ -125,11 +141,12 @@ export const CodeEmbed = (props) => {
           </div>
         </div>
       ) : null}
-      <div className="code-editor-container relative w-full">
+      <div ref={editorRef} className="code-editor-container relative w-full">
         <CodeMirror
           value={codeString}
           theme="light"
           width="100%"
+          height={isScrollable ? "300px" : undefined}
           minimalSetup={{
             highlightSpecialChars: false,
             history: false,
@@ -139,19 +156,27 @@ export const CodeEmbed = (props) => {
             historyKeymap: true,
           }}
           basicSetup={{
-            lineNumbers: false,
-            foldGutter: false,
+            lineNumbers: hasScrollbar,
+            foldGutter: true,
             autocompletion: false,
           }}
           indentWithTab={false}
-          extensions={[javascript(), EditorView.lineWrapping]}
+          extensions={[javascript(), EditorView.lineWrapping, EditorView.theme({
+            ".cm-scroller": {
+              overflowY: isScrollable ? "auto" : "visible",
+            },
+          })]}
           onChange={(val) => setCodeString(val)}
           editable={props.editable}
           onCreateEditor={(editorView) =>
             (editorView.contentDOM.ariaLabel = "Code Editor")
           }
         />
-        <div className="absolute right-0 top-0 flex flex-col gap-xs p-xs md:flex-row">
+        <div
+          className={`absolute top-0 flex flex-col gap-xs p-xs md:flex-row ${
+            isScrollable && hasScrollbar ? "right-[25px]" : "right-0"
+          }`}
+        >
           <CopyCodeButton textToCopy={codeString || initialCode} />
           <CircleButton
             onClick={() => {

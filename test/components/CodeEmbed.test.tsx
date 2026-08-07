@@ -11,6 +11,13 @@ import { render, screen, act, cleanup, within } from "@testing-library/preact";
 import { server } from "../mocks/server";
 import { CodeEmbed } from "@/src/components/CodeEmbed";
 
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+(globalThis as any).ResizeObserver = ResizeObserverMock;
+
 suite("CodeEmbed", () => {
   // Start a mock server to intercept network requests
   beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
