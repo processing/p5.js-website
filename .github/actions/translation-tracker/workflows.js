@@ -242,11 +242,11 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
 
 async function runStubGeneration(githubTracker, options = {}) {
   const languages = parseEnvList(process.env.STUB_LANGUAGES, SUPPORTED_LANGUAGES);
-  
+
   // All tracked content types except reference (reference stubs isn't in the scope as per my discussion with mentor. Will add later if needed.
   const defaultStubContentTypes = CONTENT_TYPES.filter((type) => type !== 'reference');
   const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, defaultStubContentTypes) || defaultStubContentTypes; // It's kinda redundant but still keeping it for the fallback
-  
+
   const fullScan = options.fullScan ?? process.env.STUB_FULL_SCAN === 'true';
   const dryRun = process.env.STUB_DRY_RUN === 'true';
   const parsedMaxFiles = parseInt(process.env.STUB_MAX_FILES || '50', 10);
@@ -325,13 +325,19 @@ async function runStubGeneration(githubTracker, options = {}) {
   const failures = [];
   let stubsWritten = 0;
 
+  // Sequential stubs generations per language 
+  const languageBatches = [];
+
   for (const [language, items] of limitedByLanguage) {
-    const langName = githubTracker ? githubTracker.getLanguageDisplayName(language) : getLanguageDisplayName(language);
+    const langName = githubTracker
+      ? githubTracker.getLanguageDisplayName(language)
+      : getLanguageDisplayName(language);
 
     console.log(`\n📝 Generating ${items.length} stub(s) for ${langName}:`);
 
     const stubs = [];
     const languageFailures = [];
+
     for (const item of items) {
       try {
         const stub = generateStubFromEnglish(item.englishFile, language, item.contentType);
@@ -344,14 +350,17 @@ async function runStubGeneration(githubTracker, options = {}) {
           translationPath: item.translationPath,
           error: error.message,
         };
-        languageFailures.push(failure);
-        failures.push(failure);
+        languageFailures.push(failure); // we collect the failures during stub file creation
+
+        failures.push(failure); // we collect the failues during the whole process
         console.error(`   ❌ Failed ${item.englishFile}: ${error.message}`);
       }
     }
 
     if (stubs.length === 0) {
-      console.log(`\n⚠️  No stubs generated for ${langName} (${languageFailures.length} failure(s)). Skipping PR.`);
+      console.log(
+        `\n⚠️  No stubs generated for ${langName} (${languageFailures.length} failure(s)). Skipping PR.`
+      );
       continue;
     }
 
@@ -373,16 +382,38 @@ async function runStubGeneration(githubTracker, options = {}) {
       continue;
     }
 
-    const pr = await githubTracker.createStubPullRequest(language, stubs, languageFailures);
-    if (pr) {
-      prsCreated.push({
-        language,
-        prNumber: pr.number,
-        prUrl: pr.html_url,
-        fileCount: stubs.length,
-        failureCount: languageFailures.length,
-      });
-      stubsWritten += stubs.length;
+    languageBatches.push({ language, stubs, languageFailures });
+  }
+
+  if (languageBatches.length > 0) {
+
+    // create the promises
+    const promises = languageBatches.map(({ language, stubs, languageFailures }) =>
+      githubTracker
+        .createStubPullRequest(language, stubs, languageFailures)
+        .then((pr) => ({ language, pr, stubs, languageFailures }))
+    );
+
+    // open PRs in parallel, putting all promised into one new promise
+    const settled = await Promise.allSettled(promises);
+
+    for (const result of settled) {
+      if (result.status === 'rejected') {
+        console.error(`   ❌ PR creation failed: ${result.reason?.message || result.reason}`);
+        continue;
+      }
+
+      const { language, pr, stubs, languageFailures } = result.value;
+      if (pr) {
+        prsCreated.push({
+          language,
+          prNumber: pr.number,
+          prUrl: pr.html_url,
+          fileCount: stubs.length,
+          failureCount: languageFailures.length,
+        });
+        stubsWritten += stubs.length;
+      }
     }
   }
 
