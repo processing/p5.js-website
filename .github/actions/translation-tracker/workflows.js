@@ -245,7 +245,7 @@ async function runStubGeneration(githubTracker, options = {}) {
 
   // All tracked content types except reference (reference stubs isn't in the scope as per my discussion with mentor. Will add later if needed.
   const defaultStubContentTypes = CONTENT_TYPES.filter((type) => type !== 'reference');
-  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, defaultStubContentTypes) || defaultStubContentTypes; // It's kinda redundant but still keeping it for the fallback
+  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, defaultStubContentTypes);
 
   const fullScan = options.fullScan ?? process.env.STUB_FULL_SCAN === 'true';
   const dryRun = process.env.STUB_DRY_RUN === 'true';

@@ -8,7 +8,9 @@ process.chdir(path.join(__dirname, '../../..'));
 process.env.GENERATE_STUBS = 'true';
 process.env.STUB_DRY_RUN = 'true';
 process.env.STUB_LANGUAGES = 'es';
-// Omit STUB_CONTENT_TYPES to use the same defaults as issue tracking (all CONTENT_TYPES).
+
+// Stub defaults: all CONTENT_TYPES except reference.
+process.env.STUB_CONTENT_TYPES = 'examples,tutorials,text-detail,events,libraries';
 process.env.STUB_FULL_SCAN = 'true';
 process.env.STUB_MAX_FILES = '3';
 
