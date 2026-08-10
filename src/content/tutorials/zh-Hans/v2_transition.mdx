@@ -1,0 +1,459 @@
+---
+title: " p5.js v2教师指南"
+description: 面向初中和高中教育工作者从先前版本过渡到 p5.js 版本 2 的指南。
+category: "2.0"
+featuredImage: ../images/featured/v2-transition.gif
+featuredImageAlt: 待优化图片
+relatedContent:
+  references:
+    - en/p5/mousebutton
+    - en/p5/keyispressed
+    - en/p5/loadimage
+    - en/p5/keyisdown
+  examples:
+    - en/16_parallel_loading_promise/01_async_image_loader
+authors:
+  - Adrienne Gifford
+---
+import Callout from "../../../components/Callout/index.astro";
+
+## 面向初中和高中教育工作者的 p5.js v2  过渡指南
+
+作为一名初中教师，我知道你所依赖的工具进行版本更新会让人感觉需要很大的调整，尤其是当你已经拥有了一套自己熟悉和喜爱的课程与活动时。
+
+如果你对过渡到 p5.js v2  感到一些不安，本指南旨在让你放心。你的学生已经在做的大部分内容与之前完全相同。
+
+在回顾了多个初中和高中的 p5.js 课程([CS4All Creative Web](https://blueprint.cs4all.nyc/curriculum/creative-web/), [CS4All Introduction to Computational Media](https://blueprint.cs4all.nyc/curriculum/intro-to-computational-media/), [CodeHS Digital Art with p5.js](https://codehs.com/course/p5-js/overview), [CSinSF Creative Computing](https://sites.google.com/sfusd.edu/csinsfcreativecomputing/home?authuser=0), [Processing Foundation Art + Code](https://processing.github.io/art-plus-code/codeAsCreativeMedium-intro/)) 后，从 p5.js v1 迁移到  v2 时，只有两个方面始终需要更新：
+
+
+* 输入事件
+* 资源加载
+
+尽管存在 [其他 v2 更新](https://github.com/processing/p5.js-compatibility) (例如对曲线形状、文本测量和工具函数的更改)，但这些通常不会出现在初中或高中课程中，也不太可能影响你与学生的教学工作。
+
+本指南只带你了解你在中学 (MS)  或高中 (HS)  课堂上可能。遇到的更改。你将学习如何为 p5.js v2  更新迭代码，以及兼容性附加组件可能对旧草图有所帮助。
+
+我已经尽量包含了你所需要的内容，没有多余的东西，这样你就能轻松上手，并自信地使用 p5.js v2 进行教学。
+
+## Web 编辑器中的版本
+
+大多数情况下，你和你的学生无需更改任何内容即可使用  p5.js v2 。
+
+但是，如果你打开一个较旧的草图 （例如，学生前一年创建的内容，或者对 p5.js v1 设计的课程示例），并且它的行为不完全相同，你有以下选择：
+
+* 你可以使用本指南中的示例 **更新草图** 
+* 你可以**开启兼容性附加组件**
+* 你可以在编辑器中的 **将草图切换回  p5.js v1** 
+
+![p5.js Web 编辑器版本选择器截图，显示版本列表](https://images/2.0/v2-libman.png)
+
+
+## 输入事件
+
+输入事件很可能是你在  p5.js v2 中首先注意到差异的地方。学生可能会使用输入事件来：
+
+* 选择或切换按钮 
+* 按住鼠标时绘图
+* 按下按键时更改变量
+* 清空或保存画布
+* 使用方向键移动游戏角色
+
+本部分涵盖了你在中学或高中课堂上最可能遇到的输入事件代码，以及  p5.js v2 中引入的更改。
+
+
+### 鼠标点击
+
+
+在 p5.js v1 中，检查特定鼠标按钮的代码如下：
+```js
+if (mouseButton === RIGHT) {
+  // do a thing (p5.js v1)
+}
+```
+
+在 p5.js v2 中，代码如下：
+
+```js
+if (mouseButton.right) {
+  // do a thing (p5.js v2)
+}
+```
+
+**参考:** [mouseButton](/reference/p5/mouseButton/)
+
+<Callout title="教师备注">
+在 v2中，mouseButton 现在是一个具有布尔属性 (left, right, center)的对象。这使得可以同时检测多个按钮。这对于绘图应用或绘画工具尤其有用，因为学生可能希望不同的鼠标按钮具有不同的行为。
+</Callout>
+
+### 键盘输入
+
+在 p5.js v1 中，大多数中学/高中课程使用如下代码来检测按键：
+
+```js
+if (keyIsPressed) {
+  if (key === UP_ARROW){
+    // do a thing (p5.js v1)
+  }
+}
+```
+
+`keyIsPressed` 通常作为简单的布尔变量很早就被介绍，而 `key ===` 则适合学生已经在使用的比较结构。
+在 p5.js v2 中，推荐的按键检测方式是：
+
+```js
+if (keyIsDown(UP_ARROW)) {
+  // do a thing (p5.js v2)
+}
+```
+
+`keyIsDown()`是现在最推荐的方法，因为它在 v1 和 v2 中都能一致地工作，并且支持同时检测多个按键。
+
+**参考:** [keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+### 输入事件快速参考
+
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+<th>
+
+参考
+
+</th>
+
+</tr>
+
+<tr>
+
+<td>
+
+`mouseButton === RIGHT`
+
+
+</td>
+
+<td>
+
+`mouseButton.right`
+
+</td>
+
+<td>
+
+[mouseButton](https://beta.p5js.org/reference/p5/mouseButton/)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+`keyIsPressed` <br /> `key === UP_ARROW`
+
+</td>
+
+<td>
+
+`keyIsDown(UP_ARROW)`
+
+</td>
+
+<td>
+
+[keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+</td>
+
+</tr>
+
+</table>
+
+
+### 兼容性加组件 （可选）
+
+对于新教学，请遵循上面所示的 v2 代码。
+
+如果你有旧的草图，希望在不更新代码的情况下继续工作， **Data & Events** 兼容性附加组件可以恢复 v1 的行为。
+
+有关更多详细信息，请参见下方的 *兼容性附加组件* 部分。 
+
+
+## 加载资源
+
+随着学生在课程中的深入学习，他们可能希望通过添加图像、声音、字体或其他资源来个性化他们的草图。 
+
+在 p5.js v1 中， 这是通过使用 `preload()` 来完成的。
+在 p5.js v2 中，我们在 `setup()` 内部使用 `async` 和 `await`。
+
+### p5.js v1中的`preload’
+
+在 p5.js v1中，preload()` 会阻止草图运行，直到其内部的所有内容加载完成：
+
+```js
+let img;
+
+function preload(){
+  // used in p5.js v1, but not in v2
+  img = loadImage("cat.jpg");
+}
+
+function setup(){
+  createCanvas(100, 100);
+  image(img, 0, 0);
+}
+```
+
+
+### p5.js v2 中的 `async` 和 `await` 
+
+在  p5.js v2 中，不再使用  `preload()`，而是使用  `async setup()` 内部的 `async`  来加载资源。这适用于图像、声音、字体和其他文件： 
+```js
+let img;
+
+async function setup() {
+  createCanvas(100, 100);
+  
+  // waits for asset to load
+  img = await loadImage("cat.jpg");
+  
+  image (img, 0, 0);
+}
+```
+
+
+
+### 资源加载快速参考
+
+
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+
+</tr>
+
+<tr>
+
+<td>
+
+```js
+function preload(){   
+  img = loadImage(
+    "cat.jpg"
+  );
+}
+```
+
+</td>
+
+<td>
+
+```js
+async function setup() {
+  createCanvas(100, 100);
+  img = await loadImage(
+    "cat.jpg"
+  ); 
+}
+```
+
+</td>
+
+
+</tr>
+</table>
+
+
+**参考:** [async_await](https://beta.p5js.org/reference/p5/async_await/)
+
+
+
+### 兼容性附加组件 (可选)
+
+对于新教学，请遵循上面的 v2 代码。
+
+如果你有旧的草图，希望在不更新代码的情况下继续工作，**Preload** 兼容性附加组件可以恢复 v1 的行为。
+ 
+
+有关更多详细信息，请参见下方的 *兼容性附加组件* 部分。 
+
+## 兼容性附加组件
+
+ 兼容性附加组件是可选的辅助文件，你可以在 p5.js Web 编辑器中开启它们，使旧的 p5.js v1 草图在 p5.js v2 中以相同的方式运行，而无需更新代码。
+
+仅当你或你的学生打开来自在线或旧课程材料中使用 p5.js v1 模式的旧草图，并且你尚未准备好将代码更新为 v2 模式时，才需要这些附加组件。
+
+对于新教学，最好使用 v2 的代码编写方式，以便学生学习将来会得到支持的版本。
+
+* 对于输入事件，请使用 **Data & Events** 兼容性附加组件。
+* 对于资源加载，请使用 **Preload** 兼容性附加组件。
+
+
+![p5.js 编辑器中库管理选项卡的截图，用户可以在其中切换用于 1.x 兼容性的附加库。](../images/2.0/v2-addons.png)
+
+*你还会看到一个 **Shapes** 兼容性附加组件——Shapes API 的更改仅影响更高级的自定义形状，这些形状通常不会出现在中学/高中课程中，因此大多数中学/高中教师不需要 Shapes 兼容性附加组件。*
+
+
+## 教师快速参考
+
+
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+<th>
+
+参考
+
+</th>
+
+<tr>
+<th colspan="3">
+输入事件
+</th>
+</tr>
+
+</tr>
+
+<tr>
+
+<td>
+
+`mouseButton === RIGHT`
+
+
+</td>
+
+<td>
+
+`mouseButton.right`
+
+</td>
+
+<td>
+
+[mouseButton](https://beta.p5js.org/reference/p5/mouseButton/)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+`keyIsPressed` <br />
+`key === UP_ARROW`
+
+</td>
+
+<td>
+
+`keyIsDown(UP_ARROW)`
+
+</td>
+
+<td>
+
+[keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+</td>
+
+</tr>
+
+
+<tr>
+<th colspan="3">
+资源加载
+</th>
+</tr>
+
+
+<tr>
+
+
+</tr>
+
+<tr>
+
+<td>
+
+```js
+function preload(){   
+  img = loadImage("cat.jpg");
+}
+```
+
+</td>
+
+<td>
+
+```js
+async function setup() {
+  createCanvas(100, 100);
+  img = await loadImage("cat.jpg"); 
+}
+```
+
+</td>
+
+<td>
+
+[async_await](https://beta.p5js.org/reference/p5/async_await/)
+
+</td>
+
+</tr>
+</table>
+
+
+
+
+
+
+<Callout title="教师备注">
+此快速参考仅包含通常影响中学和高中课程的 p5.js v2 更改（输入事件和资源加载）。其他 v2 更新（例如曲线形状、文本测量和实用函数的更改）并未出现在所审查的课程中。如需查看完整的 v2 更改列表，请参阅[技术过渡指南](https://github.com/processing/p5.js-compatibility). 
+</Callout>
+
