@@ -15,10 +15,8 @@ const {
   getLanguageDisplayName,
 } = require('./utils');
 
-/**
- * Find English content files that have no translation file yet.
- * Used for stub-file generation (Week 2).
- */
+// Find English content files that have no translation file yet.
+
 function findMissingTranslations(contentTypes, languages, options = {}) {
   const { fullScan = false, testFiles = null } = options;
   const missing = [];
@@ -64,10 +62,9 @@ function pickStubFrontmatter(frontmatter, contentType) {
   return picked;
 }
 
-/**
- * Build a placeholder translation file from an English source.
- * Copies essential frontmatter (in English), sets needsTranslation: true, minimal body.
- */
+// Build a placeholder translation file from an English source.
+// Copies essential frontmatter (in English), sets needsTranslation: true, minimal body.
+
 function generateStubFromEnglish(englishPath, language, contentType = 'reference') {
   if (!englishPath.endsWith('.mdx')) {
     throw new Error(`Stub generation only supports .mdx sources (got ${englishPath})`);
@@ -241,14 +238,15 @@ async function checkTranslationStatus(changedFiles, githubTracker = null, create
   return translationStatus;
 }
 
-/**
- * Week 2: generate stub files and open one PR per language.
- */
+// generate stub files and open one PR per language.
+
 async function runStubGeneration(githubTracker, options = {}) {
   const languages = parseEnvList(process.env.STUB_LANGUAGES, SUPPORTED_LANGUAGES);
-  // All tracked content types except reference (reference stubs were handled separately).
+  
+  // All tracked content types except reference (reference stubs isn't in the scope as per my discussion with mentor. Will add later if needed.
   const defaultStubContentTypes = CONTENT_TYPES.filter((type) => type !== 'reference');
-  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, defaultStubContentTypes) || defaultStubContentTypes;
+  const contentTypes = parseEnvList(process.env.STUB_CONTENT_TYPES, defaultStubContentTypes) || defaultStubContentTypes; // It's kinda redundant but still keeping it for the fallback
+  
   const fullScan = options.fullScan ?? process.env.STUB_FULL_SCAN === 'true';
   const dryRun = process.env.STUB_DRY_RUN === 'true';
   const parsedMaxFiles = parseInt(process.env.STUB_MAX_FILES || '50', 10);

@@ -15,15 +15,18 @@ on:
       full_scan:
         description: 'Scan all English content files (not just latest commit)'
         required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'false'
-          - 'true'
+        default: false
+        type: boolean
       languages:
         description: 'Comma-separated language codes (default: all supported)'
         required: false
         default: 'es,hi,ko,zh-Hans'
+        type: string
+      content_types:
+        description: "Comma-separated names of folders. (Eg. examples, tutorials)"
+        required: false
+        default: 'examples,tutorials,text-detail,events,libraries'
+        type: string
 
 permissions:
   contents: write
@@ -51,8 +54,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GENERATE_STUBS: 'true'
+
+          # The languages selection for the run (can type it on UI)
           STUB_LANGUAGES: ${{ github.event.inputs.languages || 'es,hi,ko,zh-Hans' }}
-          # All content types except reference
-          STUB_CONTENT_TYPES: examples,tutorials,text-detail,events,libraries
+
+          # The content types selection for the run (can type it on UI)
+          STUB_CONTENT_TYPES: ${{ github.event.inputs.content_types || 'examples,tutorials,text-detail,events,libraries' }} # All content types except reference
+          
+          # Full scan or not? (can choose on UI)
           STUB_FULL_SCAN: ${{ github.event.inputs.full_scan || 'false' }}
+
         run: node .github/actions/translation-tracker/index.js

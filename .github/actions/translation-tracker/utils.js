@@ -24,6 +24,7 @@ function getTranslationPath(englishFilePath, language) {
 
 function getSlugFromEnglishPath(englishFilePath, contentType) {
   const prefix = `src/content/${contentType}/en/`;
+
   if (!englishFilePath.startsWith(prefix)) return null;
   let relative = englishFilePath.substring(prefix.length);
 
@@ -41,7 +42,9 @@ function parseEnvList(envValue, defaultList) {
   if (!envValue || envValue.trim() === '') {
     return defaultList;
   }
-  return envValue.split(',').map((item) => item.trim()).filter(Boolean);
+
+  const parsed = envValue.split(',').map((item) => item.trim()).filter(Boolean);
+  return parsed.length > 0 ? parsed : defaultList; // handle the truthy values like []
 }
 
 function fileExists(filePath) {
@@ -63,6 +66,7 @@ function getFileModTime(filePath) {
 
 function parseFrontmatter(raw, filePath) {
   const frontmatterMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+
   if (!frontmatterMatch) {
     throw new Error(`Could not find frontmatter in ${filePath}`);
   }
@@ -80,7 +84,7 @@ function stringifyMdx(frontmatter, body) {
   return `---\n${frontmatterText}---\n${body}`;
 }
 
-/** Root directory for dry-run stub output (never touches src/content by default). */
+// Root directory for dry-run stub output (never touches src/content by default).
 function getStubOutputRoot() {
   return (
     process.env.STUB_OUTPUT_DIR ||
@@ -88,7 +92,7 @@ function getStubOutputRoot() {
   );
 }
 
-/** Where dry-run stubs are written locally (never touches src/content by default). */
+// Where dry-run stubs are written locally (never touches src/content by default).
 function getStubWritePath(translationPath, dryRun) {
   if (!dryRun) {
     return translationPath;
