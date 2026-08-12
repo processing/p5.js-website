@@ -25,10 +25,9 @@ precision highp float;
 varying vec2 vTexCoord;
 uniform sampler2D img;
 uniform sampler2D depth;
-float getBlurriness(float d) {
-  // Blur more the farther away we go from the
-  // focal point at depth=0.82
-  return abs(d - 0.82) * 150.;
+float getBlurriness(float d, float focalDepth) {
+  // Blur more the farther away we go from the focal point
+  return abs(d - focalDepth) * 200.;
 }
 float maxBlurDistance(float blurriness) {
   // Cap the blur radius so far-away pixels don't smear
@@ -38,8 +37,11 @@ float maxBlurDistance(float blurriness) {
 void main() {
   vec4 color = texture2D(img, vTexCoord);
   float samples = 1.;
+  // Use the depth at the center of the canvas as the focal point,
+  // where the middle sphere sits, so it stays in focus
+  float focalDepth = texture2D(depth, vec2(0.5, 0.5)).r;
   float centerDepth = texture2D(depth, vTexCoord).r;
-  float blurriness = getBlurriness(centerDepth);
+  float blurriness = getBlurriness(centerDepth, focalDepth);
   for (int sample = 0; sample < 20; sample++) {
     // Sample nearby pixels in a spiral going out from the
     // current pixel
@@ -53,7 +55,7 @@ void main() {
 
     // How far should its blur reach?
     float sampleBlurDistance =
-      maxBlurDistance(getBlurriness(sampleDepth));
+      maxBlurDistance(getBlurriness(sampleDepth, focalDepth));
 
     // If it's in front of the current pixel, or its blur overlaps
     // with the current pixel, add its color to the average
