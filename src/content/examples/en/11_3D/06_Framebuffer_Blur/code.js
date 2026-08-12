@@ -98,9 +98,7 @@ function draw() {
   // Rotate 1° per frame
   rotateY(frameCount);
 
-  // Place 5 spheres across the canvas at equal distance,
-  // arcing slightly in depth so each one sits at a
-  // different distance from the camera
+  // Place 5 spheres across canvas at equal distance
   let sphereSize = min(width / 8, 35);
   for (let i = 0; i < 5; i++) {
     const x = map(i, 0, 4, -width / 2, width / 2);
@@ -119,9 +117,7 @@ function draw() {
   blur.setUniform('img', layer.color);
   blur.setUniform('depth', layer.depth);
 
-  // Render the scene captured by framebuffer with depth of field blur.
-  // push()/pop() scopes the shader so it doesn't carry into
-  // the next frame's drawing.
+  // Render the scene captured by framebuffer with depth of field blur
   push();
   shader(blur);
   plane(width, height);
