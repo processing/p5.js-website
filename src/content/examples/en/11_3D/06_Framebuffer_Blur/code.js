@@ -31,7 +31,9 @@ float getBlurriness(float d) {
   return abs(d - 0.82) * 150.;
 }
 float maxBlurDistance(float blurriness) {
-  return blurriness * 0.01;
+  // Cap the blur radius so far-away pixels don't smear
+  // across the whole screen
+  return min(blurriness * 0.01, 0.05);
 }
 void main() {
   vec4 color = texture2D(img, vTexCoord);
