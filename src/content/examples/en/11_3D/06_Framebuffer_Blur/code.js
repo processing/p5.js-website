@@ -25,9 +25,10 @@ precision highp float;
 varying vec2 vTexCoord;
 uniform sampler2D img;
 uniform sampler2D depth;
-float getBlurriness(float d, float focalDepth) {
-  // Blur more the farther away we go from the focal point
-  return abs(d - focalDepth) * 200.;
+float getBlurriness(float d) {
+  // Blur more the farther away we go from the
+  // focal point at depth=0.9
+  return abs(d - 0.9) * 80.;
 }
 float maxBlurDistance(float blurriness) {
   // Cap the blur radius so far-away pixels don't smear
@@ -37,11 +38,8 @@ float maxBlurDistance(float blurriness) {
 void main() {
   vec4 color = texture2D(img, vTexCoord);
   float samples = 1.;
-  // Use the depth at the center of the canvas as the focal point,
-  // where the middle sphere sits, so it stays in focus
-  float focalDepth = texture2D(depth, vec2(0.5, 0.5)).r;
   float centerDepth = texture2D(depth, vTexCoord).r;
-  float blurriness = getBlurriness(centerDepth, focalDepth);
+  float blurriness = getBlurriness(centerDepth);
   for (int sample = 0; sample < 20; sample++) {
     // Sample nearby pixels in a spiral going out from the
     // current pixel
@@ -55,7 +53,7 @@ void main() {
 
     // How far should its blur reach?
     float sampleBlurDistance =
-      maxBlurDistance(getBlurriness(sampleDepth, focalDepth));
+      maxBlurDistance(getBlurriness(sampleDepth));
 
     // If it's in front of the current pixel, or its blur overlaps
     // with the current pixel, add its color to the average
@@ -75,7 +73,7 @@ let layer;
 let blur;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
+  createCanvas(710, 400, WEBGL);
   angleMode(DEGREES);
   noStroke();
 
@@ -102,13 +100,11 @@ function draw() {
   // Rotate 1° per frame
   rotateY(frameCount);
 
-  // Place 5 spheres across canvas at equal distance
+  // Place 5 spheres across the canvas
   let sphereSize = min(width / 8, 35);
-  for (let i = 0; i < 5; i++) {
-    const x = map(i, 0, 4, -width / 2, width / 2);
-    const z = sin(map(i, 0, 4, -90, 90)) * 70;
+  for (let x = -width * 0.4; x <= width * 0.4; x += width * 0.2) {
     push();
-    translate(x, 0, z);
+    translate(x, 0, 0);
     sphere(sphereSize);
     pop();
   }
