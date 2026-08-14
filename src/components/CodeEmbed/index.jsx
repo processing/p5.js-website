@@ -95,7 +95,7 @@ export const CodeEmbed = (props) => {
     >
       {props.previewable ? (
         <div
-          className={`sticky top-0 right-0 ml-0 flex w-fit gap-[20px] self-start ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
+          className={`sticky top-20 right-0 ml-0 flex w-fit gap-[20px] self-start ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
         >
           <div>
             <CodeFrame
