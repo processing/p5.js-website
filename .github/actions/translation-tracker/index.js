@@ -269,7 +269,7 @@ class GitHubCommitTracker {
       let isTruncated = false;
       if (patch) {
         const lines = patch.split('\n');
-        const maxLines = 80;
+        const maxLines = 50;
         if (lines.length > maxLines) {
           patchSnippet = lines.slice(0, maxLines).join('\n');
           isTruncated = true;
@@ -405,6 +405,23 @@ class GitHubCommitTracker {
         body += `- **${this.getLanguageDisplayName(lang.language)}**: Translation file does not exist${stewardsText}\n`;
         body += `  - Expected location: \`${translationPath}\`\n\n`;
       });
+    }
+
+    // English diff. It shows the actual content changes in the English file.
+    if (englishDiff && (englishDiff.compareUrl || englishDiff.patchSnippet)) {
+      body += `### 🧩 Recent English Diff\n\n`;
+      body += `- [🔍 View full compare](${englishDiff.compareUrl})\n\n`; // provides url to compare the differences
+    
+      if (englishDiff.patchSnippet) {
+        body += `<details>\n<summary>Show patch snippet</summary>\n\n`;
+        body += `\`\`\`diff\n${englishDiff.patchSnippet}\n\`\`\`\n\n`;
+        if (englishDiff.isTruncated) {
+          body += `_(Patch snippet truncated. Use the compare link above for the full diff.)_\n\n`;
+        }
+        body += `</details>\n\n`;
+      } else {
+        body += `_(Couldn't generate preview of the differences for this change. Use the compare link above to see the full diff.)_\n\n`;
+      }
     }
 
     body += `### 🔗 Quick Links

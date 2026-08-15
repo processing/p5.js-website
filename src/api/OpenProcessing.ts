@@ -1,4 +1,4 @@
-import type { AnyEntryMap, CollectionEntry } from "astro:content";
+import type { CollectionKey, CollectionEntry } from "astro:content";
 import { readFile, access } from "node:fs/promises";
 import { constants as FS } from "node:fs";
 import path from "node:path";
@@ -129,7 +129,7 @@ export const getSketchThumbnailSource = async (id: number) => {
  */
 export const thumbnailDimensions = 400;
 
-export function isCurationResponse<C extends keyof AnyEntryMap>(
+export function isCurationResponse<C extends CollectionKey>(
   item: OpenProcessingCurationResponse[number] | CollectionEntry<C>,
 ): item is OpenProcessingCurationResponse[number] {
   return "visualID" in (item as any);

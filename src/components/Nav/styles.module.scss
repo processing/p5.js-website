@@ -1,10 +1,10 @@
-@import "/styles/variables.scss";
-@import "/styles/global.scss";
+@use "/styles/variables.scss";
+@use "/styles/global.scss";
 
 .container {
   height: fit-content;
 
-  @media (min-width: $breakpoint-tablet) {
+  @media (min-width: variables.$breakpoint-tablet) {
     position: fixed;
     border-right-width: 1px;
     border-color: var(--sidebar-type-color);
@@ -46,10 +46,9 @@
     font-size: 1.5rem;
     line-height: 1.167;
     -webkit-text-stroke-width: 0.15px;
-    margin-bottom: var(--spacing-xs);
   }
 
-  @media (min-width: $breakpoint-tablet) {
+  @media (min-width: variables.$breakpoint-tablet) {
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: 1fr;
@@ -66,11 +65,12 @@
     .logo {
       height: 50px;
       display: flex;
+      align-items: center;
       gap: var(--spacing-xs);
       padding: 0;
       margin-bottom: 10px;
       a {
-        height: unset;
+        height: 100%;
       }
     }
 
@@ -87,9 +87,14 @@
 
     &:global(.open),
     &:global(.noJumpTo) {
-      grid-template-rows: min-content 2fr;
+      grid-template-rows: min-content 1fr min-content;
       min-height: 350px;
-      height: 100%;
+      height: auto;
+      max-height: none;
+    }
+
+    &:global(.noJumpTo) {
+      flex-grow: 1;
     }
   }
 
@@ -104,16 +109,15 @@
       height: 1rem;
       width: 1.25rem;
     }
-    @media (min-width: $breakpoint-tablet) {
+    @media (min-width: variables.$breakpoint-tablet) {
       display: none !important;
     }
   }
 
   .desktopMenuLabel {
     display: none;
-    @media (min-width: $breakpoint-tablet) {
+    @media (min-width: variables.$breakpoint-tablet) {
       display: block;
-      margin-top: 7.5px;
     }
   }
 
@@ -122,10 +126,16 @@
       display: flex;
     }
     .desktopMenuLabel {
-      @media (min-width: $breakpoint-tablet) {
+      @media (min-width: variables.$breakpoint-tablet) {
         display: none;
       }
     }
+  }
+}
+
+@media (min-width: variables.$breakpoint-tablet) {
+  .container:has(.jumpto:not(:global(.open))) .mainlinks:global(.open) {
+    flex-grow: 1;
   }
 }
 
@@ -175,13 +185,15 @@
     padding: var(--spacing-xs) 1.25rem;
   }
 
-  @media (min-width: $breakpoint-tablet) {
+  @media (min-width: variables.$breakpoint-tablet) {
     height: fit-content;
+    flex-grow: 0;
     border-top-width: 1px;
-    margin-top: auto;
 
     &:global(.open) {
-      height: 100%;
+      height: auto;
+      min-height: 0;
+      flex-grow: 1;
       overflow-y: scroll;
     }
 
@@ -217,7 +229,7 @@
   line-height: 1.167;
   -webkit-text-stroke-width: 0.15px;
 
-  @media (min-width: $breakpoint-tablet) {
+  @media (min-width: variables.$breakpoint-tablet) {
     font-size: 1.25rem;
     line-height: 1.2;
     -webkit-text-stroke-width: 0.15px;
@@ -244,7 +256,7 @@
     -webkit-text-stroke-width: 0.05px;
   }
 
-  @media (min-width: $breakpoint-tablet) {
+  @media (min-width: variables.$breakpoint-tablet) {
     &:global(.small) {
       // text-body-caption
       font-size: 0.875rem;
@@ -270,8 +282,9 @@
   flex-grow: 1;
   height: unset;
 
-  @media (min-width: $breakpoint-tablet) {
-    height: 100%;
+  @media (min-width: variables.$breakpoint-tablet) {
+    height: auto;
+    min-height: 0;
     overflow-y: scroll;
 
     ul {
@@ -288,4 +301,3 @@
 .jumpto ul li.linklabel:not(:global(.small), :first-child) {
   margin-top: 10px;
 }
-
