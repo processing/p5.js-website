@@ -42,6 +42,11 @@ canvas {
 }
 ${code.css || ""}
 </style>
+<script>
+window.addEventListener("keydown", (e) => {
+  if (["ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault();
+}, { passive: false });
+</script>
 <!-- If we need an addon script, load p5 the usual way with no caching to make sure
 the import order doesn't get messed up. -->
 ${((code.scripts?.length ?? 0) > 0 ? [(code.scripts ?? [])] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
