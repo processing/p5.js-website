@@ -1,9 +1,10 @@
 import { defineConfig, passthroughImageService } from "astro/config";
 import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import serviceWorker from "astrojs-service-worker";
 import fast from "./src/scripts/fast-compress";
+import mermaid from 'astro-mermaid';
 
 // Allow skipping compression step for faster test build times
 // DO NOT SKIP COMPRESSION FOR DEPLOYMENT!
@@ -15,16 +16,21 @@ if (shouldSkipCompress) {
   console.log("WILL SKIP COMPRESS BUILD STEP");
 }
 
+const isA11yTest = Boolean(process.env.A11Y_TEST);
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://p5js.org',
   compressHTML: false,
+  devToolbar: {
+    enabled: !isA11yTest,
+  },
   integrations: [
+    mermaid({autoTheme: true}),
     preact({
       compat: true,
     }),
     mdx(),
-    tailwind(),
     fast(),
     serviceWorker({
       workbox: {
@@ -69,6 +75,7 @@ export default defineConfig({
     rollupOptions: {
       external: ["/src/scripts/*"],
     },
+    plugins: [tailwindcss()]
   },
   image: {
     domains: ["openprocessing.org"],
@@ -76,7 +83,7 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      theme: 'github-light-high-contrast',
     },
   },
 });

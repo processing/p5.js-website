@@ -1,0 +1,20 @@
+---
+// Conditionally process pre blocks with CodeBlockWrapper or leave untouched.
+// Not all pre blocks should be rendered by the CodeBlockWrapper.
+// For example, mermaid diagram declarations should be left alone so that mermaid can process them.  
+//   In those cases, the diagram source isn't intended for the user.
+
+import CodeBlockWrapper from '../CodeBlockWrapper/index.astro';
+
+const props = Astro.props;
+
+// Check if this is a mermaid block
+// The 'data-language' or 'class' usually contains the language name
+const isMermaid = props.class?.includes('mermaid') || props['data-language'] === 'mermaid';
+---
+
+{isMermaid ? (
+  <pre {...props}><slot /></pre>
+) : (
+  <CodeBlockWrapper {...props}><slot /></CodeBlockWrapper>
+)}

@@ -17,14 +17,21 @@ import type {
   ReferenceOverload,
   ReferenceParam,
 } from "@/types/parsers.interface";
-import { setJumpToState } from "../globals/state";
 import { p5Version } from "../globals/p5-version";
-import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
-import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
+import flask from "@src/content/ui/images/icons/flask.svg?raw";
+import warning from "@src/content/ui/images/icons/warning.svg?raw";
 import _ from 'lodash';
+import { Code } from 'astro:components';
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
+const isSound = entry.data.module === "p5.sound";
+const githubRepo = isSound
+  ? "processing/p5.sound.js"
+  : "processing/p5.js";
+const githubRef = isSound
+  ? "main"
+  : `v${p5Version}`;
 
 const examples = parseReferenceExamplesAndMetadata(entry.data.example)
   // Remove empty lines at the beginning and end of the examples
@@ -58,8 +65,6 @@ relatedEntriesLinks.unshift({
 // Put related links at top of the list
 jumpToState.links?.unshift(...relatedEntriesLinks);
 
-setJumpToState(jumpToState);
-
 // get whatever related entries might be specified in the collection entry data
 const relatedReferencesFromEntryData =
   entry.data.relatedContent?.references !== undefined
@@ -79,9 +84,18 @@ const relatedReferences = [
 const seenParams: Record<string, true> = {};
 
 const descriptionParts = description.split(
-  /(<pre><code class="language-js example">[\s\S]+?<\/code><\/pre>)/gm
+  /(<pre><code class="language-js(?: example)?">[\s\S]+?<\/code><\/pre>)/gm
 );
 
+// Normalizes malformed p5.* reference anchors (e.g. "#/p5.Element")
+// to proper reference routes ("/reference/p5/p5.Element/")
+function normalizeP5ReferenceLinks(html: string | undefined): string | undefined {
+  if (!html) return html;
+  return html.replace(
+    /href="#\/(p5\.[^"]+)"/g,
+    'href="/reference/p5/$1/"'
+  );
+}
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
@@ -93,9 +107,21 @@ const descriptionParts = description.split(
   variant="item"
   topic="reference"
   className="reference-item"
+  jumpToState={jumpToState}
 >
   <div class="content-grid mt-0 max-w-[770px]">
     <div class="col-span-9 xl:min-w-[1000px]">
+      {entry.data.webgpuOnly && (
+        <div class="experimental">
+          <h5>
+            <div
+              class="inline-block mr-2 w-[20px] h-[20px] mb-[-2px]"
+              set:html={warning}
+            />
+            {t('webgpuAddon')}
+          </h5>
+        </div>
+      )}
       {entry.data.beta && (
         <div class="experimental">
           <h5>
@@ -121,7 +147,7 @@ const descriptionParts = description.split(
         </div>
       )}
       {descriptionParts.map((part) => {
-        if (part.startsWith('<pre')) {
+        if (part.startsWith('<pre><code class="language-js example">')) {
           const exampleCode = _.unescape(part
             .replace(/<pre><code class="language-js example">/, '')
             .replace(/<\/code><\/pre>/, ''));
@@ -135,13 +161,23 @@ const descriptionParts = description.split(
               lazyLoad={false}
               allowSideBySide={true}
               includeSound={entry.data.module === 'p5.sound'}
+              includeWebGPU={entry.data.webgpu || entry.data.webgpuOnly}
             />
           )
+        } else if (part.startsWith('<pre>')) {
+          const code = _.unescape(part
+            .replace(/<pre><code( class="[^+]*")?>/, '')
+            .replace(/<\/code><\/pre>/, ''));
+          const langMatch = /<code class="language-(\w+)[^"]*">/.exec(part);
+          const lang = langMatch ? langMatch[1] : undefined;
+          return (
+            <Code code={code} lang={lang as any} theme="github-light" />
+          );
         } else {
           return (
             <div
               set:html={part}
-              class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
+              class="mb-xl reference-item rendered-markdown"
             />
           );
         }
@@ -150,16 +186,18 @@ const descriptionParts = description.split(
         examples && (
           <div class="mb-xl">
             <h2 class="text-h3">{t("Examples")}</h2>
-            {examples.map(({ src: exampleCode, classes }, i: number) => {
+            {examples.map(({ src: exampleCode, classes, meta }) => {
+              const previewable = !classes.norender && !meta.includes('norender');
               return (
                 <CodeEmbed
                   client:load
                   initialValue={exampleCode}
-                  previewable={!classes.norender}
+                  previewable={previewable}
                   editable
                   lazyLoad={false}
                   allowSideBySide={true}
                   includeSound={entry.data.module === 'p5.sound'}
+                  includeWebGPU={entry.data.webgpu || entry.data.webgpuOnly}
                 />
               );
             })}
@@ -190,7 +228,7 @@ const descriptionParts = description.split(
                           class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                     >
                       {param.type && <span>{param.type}: </span>}
-                      <span set:html={param.description} />
+                      <span set:html={normalizeP5ReferenceLinks(param.description)} />
                     </div>
                   </div>
                 ))}
@@ -208,7 +246,7 @@ const descriptionParts = description.split(
                           class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                         >
                           {param.type && <span>{param.type}: </span>}
-                          <span set:html={param.description} />
+                          <span set:html={normalizeP5ReferenceLinks(param.description)} />
                         </div>
                       </div>
                     )
@@ -228,7 +266,7 @@ const descriptionParts = description.split(
                       class="col-span-5 [&_p]:m-0 [&_p]:inline [&_a]:underline"
                 >
                   {entry.data.return.type && <span>{entry.data.return.type}: </span>}
-                  <span set:html={entry.data.return.description} />
+                  <span set:html={normalizeP5ReferenceLinks(entry.data.return.description)} />
                 </div>
               </div>
             </div>
@@ -288,11 +326,11 @@ const descriptionParts = description.split(
       {
         entry.data.file && entry.data.line &&(
           <div class="my-xl">
-           <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
-            Notice any errors or typos? <a href ="https://github.com/processing/p5.js/issues">Please let us know</a>. Please feel free to edit 
+           <div class="text-body text-link my-lg">
+            Notice any errors or typos? <a href={`https://github.com/${githubRepo}/issues`}>Please let us know</a>. Please feel free to edit
             <a
-                href={`https://github.com/processing/p5.js/blob/v${p5Version}/${entry.data.file}#L${entry.data.line}`}     
-                  >
+                href={`https://github.com/${githubRepo}/blob/${githubRef}/${entry.data.file}#L${entry.data.line}`}
+            >
                   {entry.data.file}
                   </a>
                 and open a pull request!

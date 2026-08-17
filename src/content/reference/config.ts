@@ -1,5 +1,7 @@
-import { z, defineCollection } from "astro:content";
-import { relatedContent } from "../shared";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
+import { glob } from "astro/loaders";
+import { generateEntryId, relatedContent } from "../shared";
 
 // Categories, ordered in a (rough) general-to-specific sequence for easier
 // reading. Some bits that we haven't finished revising are moved lower down
@@ -78,17 +80,23 @@ export const referenceSchema = z.object({
   return: returnSchema.optional(),
   example: z.array(exampleSchema).optional(),
   relatedContent: relatedContent().optional(),
-  methods: z.record(methodSchema).optional(),
-  properties: z.record(propertySchema).optional(),
+  methods: z.record(z.string(), methodSchema).optional(),
+  properties: z.record(z.string(), propertySchema).optional(),
   isConstructor: z
     .boolean()
     .or(z.number().transform((n: number) => !!n))
     .or(z.literal("true").transform(() => true))
     .or(z.literal("false").transform(() => false))
     .optional(),
+  webgpu: z.coerce.boolean().optional(),
+  webgpuOnly: z.coerce.boolean().optional(),
 });
 
 export const referenceCollection = defineCollection({
-  type: "content",
+  loader: glob({
+    pattern: '**/*.mdx',
+    base: "./src/content/reference",
+    generateId: generateEntryId,
+  }),
   schema: referenceSchema,
 });

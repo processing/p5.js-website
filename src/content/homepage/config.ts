@@ -1,7 +1,14 @@
-import { z, defineCollection } from "astro:content";
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+import { generateEntryId } from "../shared";
 
 export const homepageCollection = defineCollection({
-  type: "data",
+  loader: glob({
+    pattern: '**/*.yaml',
+    base: "./src/content/homepage",
+    generateId: generateEntryId,
+  }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),

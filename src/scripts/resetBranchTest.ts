@@ -17,7 +17,7 @@ async function main() {
       envFilePath,
       currentEnv
         .split('\n')
-        .filter((line: string) => !line.startsWith('P5_') && !line.startsWith('PUBLIC_P5_'))
+        .filter((line: string) => !line.startsWith('P5_') && !line.startsWith('PUBLIC_P5_') && !line.startsWith('LOCAL_P5_SOUND_PATH'))
         .join('\n')
     );
   }
@@ -28,6 +28,11 @@ async function main() {
   const p5BuildPath = path.join(__dirname, '../../public/p5.min.js');
   if (existsSync(p5BuildPath)) {
     rmSync(p5BuildPath);
+  }
+
+  const p5WebGPUBuildPath = path.join(__dirname, '../../public/p5.webgpu.js');
+  if (existsSync(p5WebGPUBuildPath)) {
+    rmSync(p5WebGPUBuildPath);
   }
 }
 

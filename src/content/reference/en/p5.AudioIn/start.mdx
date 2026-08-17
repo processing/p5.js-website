@@ -4,9 +4,47 @@ module: p5.sound
 submodule: p5.sound
 file: src/sources/AudioIn.js
 description: Start the audio input.
-line: 57
+line: 58
 isConstructor: false
 itemtype: method
+example:
+  - |-
+
+    <div>
+    <code>
+    let mic, amp;
+    let micStarted = false;
+
+    function setup() {
+      let cnv = createCanvas(100, 100);
+      cnv.mousePressed(toggleMic);
+      mic = new p5.AudioIn();
+      amp = new p5.Amplitude();
+      mic.connect(amp);
+      textAlign(CENTER);
+      textSize(10);
+      describe('Click to toggle microphone on and off. Background turns red with louder sound.');
+    }
+
+    function toggleMic() {
+      if (!micStarted) {
+        mic.start();
+        micStarted = true;
+      } else {
+        mic.stop();
+        micStarted = false;
+      }
+    }
+
+    function draw() {
+      let level = amp.getLevel();
+      let r = map(level, 0, 0.2, 0, 255);
+      background(r, 0, 0);
+      fill(255);
+      text(micStarted ? 'click to stop' : 'click to start', width/2, height/2);
+    }
+    </code>
+    </div>
 class: p5.AudioIn
 chainable: false
 ---

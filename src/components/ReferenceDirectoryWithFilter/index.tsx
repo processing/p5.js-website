@@ -1,9 +1,8 @@
 import type { ReferenceDocContentItem } from "@/src/content/types";
 import { useMemo, useRef, useState } from "preact/hooks";
-import { type JSX } from "preact";
 import { Icon } from "../Icon";
-import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
-import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
+import flask from "@src/content/ui/images/icons/flask.svg?raw";
+import warning from "@src/content/ui/images/icons/warning.svg?raw";
 
 type ReferenceDirectoryEntry = ReferenceDocContentItem & {
   data: {
@@ -41,14 +40,14 @@ type ReferenceDirectoryWithFilterProps = {
 const getOneLineDescription = (description: string): string => {
   // Matches first paragraph tag, remove HTML tags, then trim to first fullstop
   const firstParagraphRegex = /^<p>(.*?)<\/p>/;
-  let [oneLineDescription] = description.replace(/\n/g, " ").trim()
-    .match(firstParagraphRegex) ?? [];
+  let [oneLineDescription] =
+    description.replace(/\n/g, " ").trim().match(firstParagraphRegex) ?? [];
 
   if (!oneLineDescription && description) {
     oneLineDescription = description;
   }
 
-  if(oneLineDescription){
+  if (oneLineDescription) {
     oneLineDescription = oneLineDescription
       .replace(/^<p>|<\/p>$/g, "")
       .replace(/<\/?code>/g, "")
@@ -60,6 +59,127 @@ const getOneLineDescription = (description: string): string => {
   return oneLineDescription ?? "";
 };
 
+// Trim, lowercase, and strip surrounding punctuation so "sin." matches sin()
+export const normalizeKeyword = (keyword: string): string =>
+  keyword.trim().toLowerCase().replace(/^\W+|\W+$/g, "");
+
+type MatchMode = "strict" | "loose";
+
+// Bare name for exact comparison: drop HTML and the trailing "()" of methods
+const canonicalName = (name: string | undefined | null): string =>
+  (name ?? "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\(\)$/, "")
+    .trim()
+    .toLowerCase();
+
+// strict: name must equal the keyword (so "sin" != "asin")
+// loose: keyword may appear anywhere ("typog" -> "Typography")
+const nameMatches = (
+  name: string | undefined | null,
+  keyword: string,
+  mode: MatchMode,
+): boolean => {
+  if (!name) return false;
+  if (mode === "strict") return canonicalName(name) === keyword;
+  return name.replace(/<[^>]*>/g, "").toLowerCase().includes(keyword);
+};
+
+// Whole-word match: "sin" hits "the sin of an angle" but not "using"/"single"
+const wordMatches = (text: string, keyword: string): boolean => {
+  if (!text || !keyword) return false;
+  return text
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .some((token) => token === keyword);
+};
+
+// strict: whole-word description match; loose: substring match
+const descriptionMatches = (
+  description: string | undefined | null,
+  keyword: string,
+  mode: MatchMode,
+): boolean => {
+  const text = getOneLineDescription(description ?? "").replace(
+    /<[^>]*>/g,
+    "",
+  );
+  if (!text) return false;
+  if (mode === "strict") return wordMatches(text, keyword);
+  return text.toLowerCase().includes(keyword);
+};
+
+const entryMatchesKeyword = (
+  entry: ReferenceDirectoryEntry,
+  keyword: string,
+  mode: MatchMode,
+): boolean =>
+  nameMatches(entry.data.title, keyword, mode) ||
+  descriptionMatches(entry.data.description, keyword, mode);
+
+// Walk the tree once at a fixed strictness: a category/subcategory name match
+// pulls in the whole section, otherwise entries match by title or description.
+const filterTree = (
+  categoryData: ReferenceDirectoryWithFilterProps["categoryData"],
+  keyword: string,
+  mode: MatchMode,
+): FilteredCategoryData[] =>
+  categoryData.reduce((acc: FilteredCategoryData[], category) => {
+    // If the category name matches, include the whole category.
+    if (nameMatches(category.name, keyword, mode)) {
+      acc.push(category);
+      return acc;
+    }
+
+    const filteredSubcats = category.subcats.reduce(
+      (subAcc: typeof category.subcats, subcat) => {
+        // If the subcategory name matches, include all its entries.
+        if (nameMatches(subcat.name, keyword, mode)) {
+          subAcc.push(subcat);
+          return subAcc;
+        }
+
+        const matchingEntries = subcat.entries.filter((entry) =>
+          entryMatchesKeyword(entry, keyword, mode),
+        );
+
+        // A subcategory that represents a class (e.g. p5.Vector) carries its
+        // own entry; match it too.
+        if (subcat.entry && entryMatchesKeyword(subcat.entry, keyword, mode)) {
+          matchingEntries.push(subcat.entry);
+        }
+
+        if (matchingEntries.length > 0) {
+          subAcc.push({ ...subcat, entries: matchingEntries });
+        }
+        return subAcc;
+      },
+      [],
+    );
+
+    if (filteredSubcats.length > 0) {
+      acc.push({ ...category, subcats: filteredSubcats });
+    }
+    return acc;
+  }, []);
+
+// Two passes: prefer exact-name / whole-word matches, and only fall back to
+// substring matching when nothing precise is found. This keeps partial hits
+// like "using"/"since"/"single"/"asin" out of a "sin" search, while still
+// letting prefixes like "typog" or "circ" work when there's no exact match.
+export const filterCategoryData = (
+  categoryData: ReferenceDirectoryWithFilterProps["categoryData"],
+  rawKeyword: string,
+): FilteredCategoryData[] => {
+  const keyword = normalizeKeyword(rawKeyword);
+  if (!keyword) return categoryData;
+
+  const strictMatches = filterTree(categoryData, keyword, "strict");
+  return strictMatches.length > 0
+    ? strictMatches
+    : filterTree(categoryData, keyword, "loose");
+};
+
 export const ReferenceDirectoryWithFilter = ({
   categoryData,
   uiTranslations,
@@ -67,38 +187,10 @@ export const ReferenceDirectoryWithFilter = ({
   const [searchKeyword, setSearchKeyword] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredEntries = useMemo(() => {
-    if (!searchKeyword) return categoryData;
-
-    return categoryData.reduce((acc: FilteredCategoryData[], category) => {
-      const filteredSubcats = category.subcats.reduce(
-        (subAcc: typeof category.subcats, subcat) => {
-          const filteredEntries = subcat.entries.filter((entry) =>
-            entry.data.title
-              .toLowerCase()
-              .includes(searchKeyword.toLowerCase()),
-          );
-          if (
-            subcat.entry &&
-            subcat.entry.data.title.toLowerCase().includes(searchKeyword.toLowerCase())
-          ) {
-            filteredEntries.push(subcat.entry);
-          }
-          
-          if (filteredEntries.length > 0) {
-            subAcc.push({ ...subcat, entries: filteredEntries });
-          }
-          return subAcc;
-        },
-        [],
-      );
-
-      if (filteredSubcats.length > 0) {
-        acc.push({ ...category, subcats: filteredSubcats });
-      }
-      return acc;
-    }, []);
-  }, [categoryData, searchKeyword]);
+  const filteredEntries = useMemo(
+    () => filterCategoryData(categoryData, searchKeyword),
+    [categoryData, searchKeyword],
+  );
 
   const renderEntries = (entries: ReferenceDirectoryEntry[]) =>
     entries.length === 0 ? null : (
@@ -111,18 +203,16 @@ export const ReferenceDirectoryWithFilter = ({
               aria-label={entry.data.title}
               aria-describedby={`${entry.data.title}-description`}
             >
-              <span
-                class="text-body-mono group-hover:underline"
-              >
+              <span class="text-body-mono group-hover:underline">
                 {entry.data.beta && (
                   <div
-                    className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
+                    className="mb-[-2px] mr-2 inline-block h-[16px] w-[16px]"
                     dangerouslySetInnerHTML={{ __html: flask }}
                   />
                 )}
                 {entry.data.deprecated && (
                   <div
-                    className="inline-block mr-2 w-[16px] h-[16px] mb-[-2px]"
+                    className="mb-[-2px] mr-2 inline-block h-[16px] w-[16px]"
                     dangerouslySetInnerHTML={{ __html: warning }}
                   />
                 )}
@@ -143,7 +233,7 @@ export const ReferenceDirectoryWithFilter = ({
     category: { name: string },
   ) => {
     return !(!subcat.name || !category.name);
-  }
+  };
 
   const getSubcatHeading = (
     subcat: { name: string; entry?: any },
@@ -207,7 +297,7 @@ export const ReferenceDirectoryWithFilter = ({
   return (
     <div>
       <div class="h-0 overflow-visible">
-        <div class="content-grid-simple absolute -top-[75px] -left-0 -right-0 h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
+        <div class="content-grid-simple absolute -left-0 -right-0 -top-[60px] h-[75px] border-b border-sidebar-type-color bg-accent-color px-5 pb-lg md:px-lg ">
           <div class="text-body col-span-2 flex w-full max-w-[750px] border-b border-accent-type-color text-accent-type-color">
             <input
               type="text"
@@ -215,16 +305,20 @@ export const ReferenceDirectoryWithFilter = ({
               ref={inputRef}
               class="w-full bg-transparent py-xs text-accent-type-color placeholder:text-accent-type-color focus:outline-0"
               placeholder={uiTranslations["Filter by keyword"]}
-              onKeyUp={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+              onKeyUp={(e) => {
                 const target = e.target as HTMLInputElement;
                 setSearchKeyword(target?.value);
               }}
             />
             {searchKeyword.length > 0 && (
-            <button type="reset" class="" onClick={clearInput} aria-label="Clear search input">
-          <Icon kind="close" className="h-4 w-4" />
-        </button>
-
+              <button
+                type="reset"
+                class=""
+                onClick={clearInput}
+                aria-label="Clear search input"
+              >
+                <Icon kind="close" className="h-4 w-4" />
+              </button>
             )}
           </div>
         </div>

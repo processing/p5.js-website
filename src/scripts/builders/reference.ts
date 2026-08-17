@@ -161,8 +161,8 @@ const correctRelativeLinksToExampleAssets = (
     return content;
   }
   return Array.isArray(content)
-    ? content.map((ex) => ex.replaceAll("assets/", "/assets/").replaceAll(/\n$/g, ""))
-    : content.replaceAll("assets/", "/assets/");
+  ? content.map((ex) => ex.replaceAll(/(?<!\/)assets\//g, "/assets/").replaceAll(/\n$/g, ""))
+  : content.replaceAll(/(?<!\/)assets\//g, "/assets/");
 };
 
 /**
@@ -314,6 +314,8 @@ const getMethodFrontmatter = (doc: ReferenceClassItemMethod) => {
     itemtype,
     chainable: doc.chainable === 1,
     beta: doc.beta ? !!doc.beta : undefined,
+    webgpu: doc.webgpu ? !!doc.webgpu : undefined,
+    webgpuOnly: doc.webgpuOnly ? !!doc.webgpuOnly : undefined,
   };
 };
 
@@ -325,6 +327,9 @@ const getClassItemFrontmatter = (doc: ReferenceClassItem) => {
     alt,
     example,
     class: doc.class,
+    beta: doc.beta ? !!doc.beta : undefined,
+    webgpu: doc.webgpu ? !!doc.webgpu : undefined,
+    webgpuOnly: doc.webgpuOnly ? !!doc.webgpuOnly : undefined,
   };
 };
 
@@ -461,11 +466,13 @@ const saveMDX = async (mdxDocs: ReferenceMDXDoc[]) => {
   }
 };
 
-buildReference();
-
 export const testingExports = {
   modulePathTree,
   memberMethodPreviews: classMethodAndPropertyPreviews,
   addDocToModulePathTree,
   addMemberMethodPreviewsToClassDocs: addMethodAndPropertyPreviewsToClassDocs,
 };
+
+if(import.meta.main){
+  buildReference();
+}
