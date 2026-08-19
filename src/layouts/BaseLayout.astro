@@ -7,8 +7,11 @@ import ItemPageHeader from "@/src/components/PageHeader/ItemPage.astro";
 import HomePageHeader from "@/src/components/PageHeader/HomePage.astro";
 import { getCurrentLocale, getUiTranslator } from "@i18n/utils";
 import { capitalize, getTopicInfo, type PageTopic } from "../pages/_utils";
+import { type JumpToState } from "@src/globals/state";
 import "@styles/base.scss";
+import "@styles/global.css";
 import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
 import { getCollectionInLocaleWithFallbacks } from "@pages/_utils";
 import { removeLocalePrefix } from "@i18n/utils";
 
@@ -21,6 +24,7 @@ interface Props {
   variant?: "root" | "item" | "search" | "homepage";
   topic?: PageTopic;
   mainContentParentClass?: string;
+  jumpToState?: JumpToState | null;
   /* Only needed for the homepage */
   homepageConfig?: CollectionEntry<"homepage">;
 }
@@ -34,16 +38,17 @@ const {
   variant = "root",
   mainContentParentClass = "mx-5 md:mx-lg mt-md",
   homepageConfig,
+  jumpToState
 } = Astro.props;
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 
 const slug = title.toLowerCase().split(/\s+|\./).join('-');
 const pages = await getCollectionInLocaleWithFallbacks("pages", currentLocale);
-const headerPage = pages.find((page) => removeLocalePrefix(page.slug).slice(1) === slug);
+const headerPage = pages.find((page) => removeLocalePrefix(page.id).slice(1) === slug);
 let HeaderContent: any = undefined;
 if (headerPage) {
-  const { Content } = await headerPage.render();
+  const { Content } = await render(headerPage);
   HeaderContent = Content;
 }
 
@@ -87,7 +92,7 @@ const headerTopic = topic
   </head>
   <body>
     <div class="top-layout-grid">
-      <Nav />
+      <Nav jumpToState={jumpToState} />
       <Settings hideSearch={variant === "search"} />
       <header class={homepageConfig && "h-[100vh] md:min-h-[calc(378px+50vh)]"}>
         {

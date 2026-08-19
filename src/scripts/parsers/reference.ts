@@ -1,8 +1,8 @@
 import { cloneLibraryRepo,cleanUpDirectory, p5RepoUrl, readFile } from "../utils";
-import fs from "fs/promises";
-import { exec, execSync } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs/promises";
+import { exec, execSync } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { ParsedLibraryReference } from "../../../types/parsers.interface";
 import { p5Version } from "@/src/globals/p5-version";
 
@@ -44,7 +44,13 @@ export const parseLibraryReference =
     // If we're using a custom build of p5 instead of a public release, create
     // a build and copy it to the specified path
     if (process.env.PUBLIC_P5_LIBRARY_PATH) {
-      await createP5Build('p5.js', `../../../public${  process.env.PUBLIC_P5_LIBRARY_PATH}`);
+      await createP5Build('p5.js', `../../../public${process.env.PUBLIC_P5_LIBRARY_PATH}`);
+    }
+    if (process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH) {
+      await fs.cp(
+        path.join(__dirname, 'in', 'p5.js', 'lib', 'p5.webgpu.js'),
+        path.join(__dirname, `../../../public${process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH}`),
+      );
     }
 
     // Copy the reference output so we can process it
@@ -55,28 +61,64 @@ export const parseLibraryReference =
     if (useExternalP5Sound) {
       console.log('Cloning separate p5.sound repo');
 
+      // Clone or copy p5.sound.js
+      if (process.env.LOCAL_P5_SOUND_PATH) {
+        console.log(`Copying local p5.sound.js from ${process.env.LOCAL_P5_SOUND_PATH}`);
+        await fs.cp(process.env.LOCAL_P5_SOUND_PATH, localSoundPath, {
+          recursive: true,
+          // Ignore node_modules and hidden files/directories, except .github
+          filter: (src) =>
+            !src.includes("node_modules") &&
+            (path.basename(src) === ".github" ||
+              !path.basename(src).startsWith(".")),
+        });
+      } else {
+        await cloneLibraryRepo(
+          localSoundPath,
+          'https://github.com/processing/p5.sound.js.git',
+          'main'
+        );
+      }
+      await saveYuidocOutput('p5.sound.js', 'data-sound');
       // Clone p5.sound.js
       await cloneLibraryRepo(
         localSoundPath,
         'https://github.com/processing/p5.sound.js.git',
         'main'
       );
-      await saveYuidocOutput('p5.sound.js', 'data-sound');
+      await saveYuidocOutput('p5.sound.js', 'data-sound', { inputPath: 'src' });
       const soundData = await getYuidocOutput('data-sound');
       if (!soundData) throw new Error('Error generating p5.sound reference data!');
 
-      // Fix p5.sound classes
-      for (const key in soundData.classes) {
-        const newName = `p5.${  soundData.classes[key].name}`;
-        const updated = {
-          ...soundData.classes[key],
-          name: newName,
-        };
-        soundData.classes[newName] = updated;
-        delete soundData.classes[key];
+      // Fix p5.sound classes and map global methods to the 'p5' class
+      const P5_SOUND_CLASS = 'p5.sound';
+      const P5_CLASS = 'p5';
+      const P5_PREFIX = 'p5.';
+
+      const classKeys = Object.keys(soundData.classes);
+      for (const key of classKeys) {
+        let newName = soundData.classes[key].name;
+        if (newName === P5_SOUND_CLASS) {
+          newName = P5_CLASS;
+        } else if (!newName.startsWith(P5_PREFIX)) {
+          newName = `${P5_PREFIX}${newName}`;
+        }
+
+        if (newName !== soundData.classes[key].name) {
+          const updated = {
+            ...soundData.classes[key],
+            name: newName,
+          };
+          soundData.classes[newName] = updated;
+          delete soundData.classes[key];
+        }
       }
       for (const item of soundData.classitems) {
-        item.class = `p5.${  item.class}`;
+        if (item.class === P5_SOUND_CLASS) {
+          item.class = P5_CLASS;
+        } else if (!item.class.startsWith(P5_PREFIX)) {
+          item.class = `${P5_PREFIX}${item.class}`;
+        }
       }
 
       result = await combineYuidocData(
@@ -131,7 +173,7 @@ const getYuidocOutput = async (outDirName: string): Promise<ParsedLibraryReferen
 };
 
 /**
- * Parses the p5.js library using YUIDoc and captures the output
+ * Parses the given library (e.g. p5.sound) using YUIDoc and captures the output
  */
 export const saveYuidocOutput = async (
   inDirName: string,

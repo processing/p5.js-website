@@ -11,7 +11,6 @@ import {
 } from "@/src/api/OpenProcessing";
 import LinkButton from "@components/LinkButton/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
-import { setJumpToState } from "../globals/state";
 import { ScalingIframe } from "@components/ScalingIframe";
 
 interface Props {
@@ -37,7 +36,6 @@ const dateString = new Date(createdOn).toLocaleDateString(currentLocale, {
   day: "numeric",
 });
 
-setJumpToState(null);
 const moreSketches = await getRandomCurationSketches(4);
 const featuredImageURL = makeThumbnailUrl(sketchIdNumber);
 
@@ -65,6 +63,7 @@ const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
   subtitle={dateString}
   variant="item"
   topic={"community"}
+  jumpToState={null}
 >
   <div class="max-w-[770px]">
     <div
@@ -115,13 +114,9 @@ const iframeTitle = `OpenProcessing Sketch: ${title} by ${authorName}`;
 
     {instructions && <p class="text-md my-sm md:my-lg">{instructions}</p>}
 
-    <p class="text-xs md:text-base mb-3xl">
-      This <a class="text-type-magenta" href={makeSketchLinkUrl(sketchIdNumber)}
-        >sketch</a
-      > is ported from the <a
-        class="text-type-magenta"
-        href="https://openprocessing.org">OpenProcessing</a
-      >
+    <p class="text-xs md:text-base mb-3xl text-link">
+      This <a href={makeSketchLinkUrl(sketchIdNumber)}>sketch</a> is ported from
+      the <a href="https://openprocessing.org">OpenProcessing</a>
       sketch archive.
     </p>
   </div>

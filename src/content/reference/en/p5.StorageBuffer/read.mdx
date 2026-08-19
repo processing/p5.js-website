@@ -1,0 +1,56 @@
+---
+title: read
+module: 3D
+submodule: p5.strands
+file: src/webgpu/p5.RendererWebGPU.js
+description: |-
+  <p>Reads data from a storage buffer back into JavaScript.</p>
+  <p>Copies data from the GPU to the CPU using a temporary buffer,
+  so it must be awaited. Returns a <code>Float32Array</code> for number
+  buffers, or an array of plain objects for struct buffers.</p>
+  <p>Note: This is a GPU -> CPU read, so calling it often (like every frame)
+  can be slow.</p>
+  <pre><code class="language-js example">let data;
+  let computeShader;
+
+  async function setup() {
+    await createCanvas(100, 100, WEBGPU);
+
+    data = createStorage(new Float32Array([1, 2, 3, 4]));
+    computeShader = buildComputeShader(doubleValues);
+    compute(computeShader, 4);
+
+    let result = await data.read();
+    // result is Float32Array [2, 4, 6, 8]
+    for (let i = 0; i < result.length; i++) {
+      print(result[i]);
+    }
+    describe('Prints the values 2, 4, 6, 8 to the console.');
+  }
+
+  function doubleValues() {
+    let d = uniformStorage(data);
+    let idx = index.x;
+    d[idx] = d[idx] * 2;
+  }</code></pre>
+line: 221
+isConstructor: false
+itemtype: method
+example: []
+class: p5.StorageBuffer
+beta: true
+webgpu: true
+webgpuOnly: true
+return:
+  description: ''
+  type: 'Promise<Float32Array|Object[]>'
+overloads:
+  - params: []
+    return:
+      description: ''
+      type: 'Promise<Float32Array|Object[]>'
+chainable: false
+---
+
+
+# read

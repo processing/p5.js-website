@@ -1,18 +1,56 @@
 # p5.js Website
 
+## About This Repository 
+
+Hi there! Welcome to the p5.js-website repository! Here are a few things to know:
+
+This is the repository for the [p5js.org](https://p5js.org/) and the [beta.p5js.org](https://beta.p5js.org/) websites, including:
+
+- Reference pages and documentation
+- Examples and embedded sketches used on the site
+- Website-specific UI, layout, and accessibility improvements
+
+If you have a general question or bug programming with p5.js please post it in the [p5.js forum](https://discourse.processing.org/c/p5js) or ask in our [Discord server](https://discord.p5js.org) (check the #contribute-to-p5 channel).
+
+Please make sure you are posting to the correct repository. See [this section](https://github.com/processing/p5.js/blob/main/README.md#issues) for a list of all p5.js repositories.
+
+Please be sure to review our [community statement](https://p5js.org/about/#community-statement) and [code of conduct](https://github.com/processing/p5.js/blob/main/CODE_OF_CONDUCT.md). These things are very important to us. Check out the [contributor docs](https://p5js.org/contribute/) for more in-depth details about contributing code, bug fixes, and documentation.
+
+### p5.js-website and p5.js
+If you are seeing an issue about unclear wording, missing explanations, outdated examples, or reference structure, please open an issue in this repository. If the issue appears to be a bug or behavior change in the p5.js library itself, please open an issue in the [core p5.js repository](https://github.com/processing/p5.js). If you’re unsure where an issue belongs, feel free to open it here with as much context as possible, and a maintainer can help route it.
+
 ## How To Contribute
 Known bugs and intended new features are tracked using [GitHub issues](https://github.com/processing/p5.js-website/issues). If you'd like to start working on an existing issue, comment on the issue that you plan to work on it so other contributors know it's being handled and can offer help. Once you have completed your work on this issue, [submit a pull request (PR)](https://github.com/processing/p5.js/blob/main/contributor_docs/contributor_guidelines.md#pull-requests) to the p5.js main branch. In the description field of the PR, include "resolves #XXXX" tagging the issue you are fixing. If the PR addresses the issue but doesn't completely resolve it (ie the issue should remain open after your PR is merged), write "addresses #XXXX".
 
 If you discover a bug or have an idea for a new feature you'd like to add, begin by submitting an issue. Please do not simply submit a pull request containing the fix or new feature without making an issue first, we will probably not be able to accept it. Once you have gotten some feedback on the issue and a go ahead to address it, you can follow the process above to add the fix or feature.
 
+If you’ve been assigned to an issue and are working on it, the p5.js stewards or maintainers (you can check who this is in the [p5.js stewards table](https://github.com/processing/p5.js/blob/main/README.md#stewards)) might comment and tag you in that comment to check in. Please reply within 1 week with any questions or updates; if you don’t respond in a week, stewards or maintainers may reassign the issue. This doesn’t mean you need to finish the work in 1 week: only to confirm you’re still on it.
+
 ### Content Changes
 If you are here to edit or translate content, please do so inside [the `src/content/` folder](/src/content).
+The English reference files in `src/content/reference/en/` are auto-generated from JSDoc comments in the p5.js library source code and should not be edited directly in this repository. Any changes made here will be overwritten the next time the reference is generated.
+To fix or improve English reference content, make your changes in the p5.js library repository instead. [See the Contributing to the p5.js Reference guide](https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/).
+Exception: Translation files such as `src/content/reference/es/`  are stored directly in this repository and can be edited here directly.
 
 ### Code Changes
 For making code changes, please check out the [technical overview](./docs/technical_overview.md) to get started.
 
 ### Adding Libraries
 Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your library to the collection!
+
+### Get Assigned Before Working on an Issue
+Please read the [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/) before contributing.
+
+When an issue is first created, it may be labeled "Awaiting Maintainer Approval", which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues. Once an issue has been reviewed and approved, it will be labeled "Help wanted". Only issues with this label should be requested for assignment. When a contributor is set as "Assignee", they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
+
+When working on multiple issues, please create a separate branch for each one. This ensures each PR only contains the files related to that specific issue. Opening a PR from a branch that contains work from multiple issues makes it difficult to review and merge cleanly.
+
+When you are ready to open a PR, please keep the following in mind:
+- Link the issue your PR fixes using "Fixes #" followed by the issue number in your PR description
+- Only include files related to the issue you are working on
+- Do not include `package-lock.json` unless your PR is specifically about updating dependencies
+- Test your changes locally before opening a PR
+- Test against the correct branch, either `main`, `2.0`, or both depending on the issue
 
 ## Add Yourself to p5.js Contributors
 We recognize all types of contributions. This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Add yourself to the [p5.js repository readme](https://github.com/processing/p5.js/blob/main/README.md#contributors) by following the [instructions here](https://github.com/processing/p5.js/issues/2309)!

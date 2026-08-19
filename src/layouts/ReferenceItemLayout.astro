@@ -17,10 +17,9 @@ import type {
   ReferenceOverload,
   ReferenceParam,
 } from "@/types/parsers.interface";
-import { setJumpToState } from "../globals/state";
 import { p5Version } from "../globals/p5-version";
-import flask from "@src/content/ui/images/icons/flask.svg?raw"; 
-import warning from "@src/content/ui/images/icons/warning.svg?raw"; 
+import flask from "@src/content/ui/images/icons/flask.svg?raw";
+import warning from "@src/content/ui/images/icons/warning.svg?raw";
 import _ from 'lodash';
 import { Code } from 'astro:components';
 
@@ -66,8 +65,6 @@ relatedEntriesLinks.unshift({
 // Put related links at top of the list
 jumpToState.links?.unshift(...relatedEntriesLinks);
 
-setJumpToState(jumpToState);
-
 // get whatever related entries might be specified in the collection entry data
 const relatedReferencesFromEntryData =
   entry.data.relatedContent?.references !== undefined
@@ -110,9 +107,21 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
   variant="item"
   topic="reference"
   className="reference-item"
+  jumpToState={jumpToState}
 >
   <div class="content-grid mt-0 max-w-[770px]">
     <div class="col-span-9 xl:min-w-[1000px]">
+      {entry.data.webgpuOnly && (
+        <div class="experimental">
+          <h5>
+            <div
+              class="inline-block mr-2 w-[20px] h-[20px] mb-[-2px]"
+              set:html={warning}
+            />
+            {t('webgpuAddon')}
+          </h5>
+        </div>
+      )}
       {entry.data.beta && (
         <div class="experimental">
           <h5>
@@ -137,7 +146,7 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
           <p set:html={entry.data.deprecated} />
         </div>
       )}
-      {descriptionParts.map((part, i) => {
+      {descriptionParts.map((part) => {
         if (part.startsWith('<pre><code class="language-js example">')) {
           const exampleCode = _.unescape(part
             .replace(/<pre><code class="language-js example">/, '')
@@ -152,6 +161,7 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
               lazyLoad={false}
               allowSideBySide={true}
               includeSound={entry.data.module === 'p5.sound'}
+              includeWebGPU={entry.data.webgpu || entry.data.webgpuOnly}
             />
           )
         } else if (part.startsWith('<pre>')) {
@@ -167,7 +177,7 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
           return (
             <div
               set:html={part}
-              class="[&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark mb-xl reference-item rendered-markdown"
+              class="mb-xl reference-item rendered-markdown"
             />
           );
         }
@@ -176,7 +186,7 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
         examples && (
           <div class="mb-xl">
             <h2 class="text-h3">{t("Examples")}</h2>
-            {examples.map(({ src: exampleCode, classes, meta }, i: number) => {
+            {examples.map(({ src: exampleCode, classes, meta }) => {
               const previewable = !classes.norender && !meta.includes('norender');
               return (
                 <CodeEmbed
@@ -187,6 +197,7 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
                   lazyLoad={false}
                   allowSideBySide={true}
                   includeSound={entry.data.module === 'p5.sound'}
+                  includeWebGPU={entry.data.webgpu || entry.data.webgpuOnly}
                 />
               );
             })}
@@ -315,11 +326,11 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
       {
         entry.data.file && entry.data.line &&(
           <div class="my-xl">
-           <div class="text-body [&_a]:text-type-magenta-dark [&_a]:!decoration-type-magenta-dark my-lg">
-            Notice any errors or typos? <a href={`https://github.com/${githubRepo}/issues`}>Please let us know</a>. Please feel free to edit 
+           <div class="text-body text-link my-lg">
+            Notice any errors or typos? <a href={`https://github.com/${githubRepo}/issues`}>Please let us know</a>. Please feel free to edit
             <a
-                href={`https://github.com/${githubRepo}/blob/${githubRef}/${entry.data.file}#L${entry.data.line}`}    
-                  >
+                href={`https://github.com/${githubRepo}/blob/${githubRef}/${entry.data.file}#L${entry.data.line}`}
+            >
                   {entry.data.file}
                   </a>
                 and open a pull request!

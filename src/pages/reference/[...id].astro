@@ -1,4 +1,5 @@
 ---
+import type { GetStaticPathsResult } from "astro";
 import ReferenceItemLayout from "@/src/layouts/ReferenceItemLayout.astro";
 import {
   getCollectionInDefaultLocale,
@@ -21,7 +22,16 @@ export async function getStaticPaths() {
           return relatedEntry.data.submodule === entry.data.submodule;
         }),
       },
-    }));
+    }))
+    .reduce<GetStaticPathsResult>((acc, entry) => {
+      acc.push(entry);
+      acc.push(Object.assign({}, entry, {
+        params: {
+          id: entry.params.id.toLowerCase()
+        }
+      }));
+      return acc;
+    }, []);
 }
 
 const { entry, relatedEntries } = Astro.props;

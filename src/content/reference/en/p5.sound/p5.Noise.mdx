@@ -3,12 +3,19 @@ title: p5.Noise
 module: p5.sound
 submodule: p5.sound
 file: src/sources/Noise.js
-description: Generate a buffer with random values.
+description: >-
+  Generate a static noise source.
+
+
+  Noise is a useful tool in sound synthesis. It can emulate ocean or wind
+  sounds. It can also be used to create percussive or other musical sounds when
+  connected to other sound effects like filters and envelopes. There are several
+  types of noise which differ in perceived "brightness."
 line: 10
 isConstructor: true
 params:
   - name: type
-    description: '- the type of noise (white, pink, brown)'
+    description: 'the type of noise (white, pink, brown)'
     type: String
     optional: true
 example:
@@ -16,38 +23,37 @@ example:
 
     <div>
     <code>
-    let noise, env, cnv;
-    let types = ['white', 'pink', 'brown'];
-    let noiseType = 'brown';
+    let noise, filt, cnv;
 
     function setup() {
       cnv = createCanvas(100, 100);
       textAlign(CENTER);
-      cnv.mousePressed(start);
-      noise = new p5.Noise(noiseType);
-      env = new p5.Envelope(0.01, 0.1, 0.15, 0.5);
+      textWrap(WORD)
+      cnv.mousePressed(startNoise);
+      noise = new p5.Noise('white');
+      filt = new p5.Biquad(900, 'lowpass');
       noise.disconnect();
-      noise.connect(env);
+      noise.connect(filt);
+    }
+     
+    function startNoise() {
       noise.start();
     }
 
-    function start() {
-      noiseType = random(types);
-      noise.type(noiseType);
-      env.play();
-    }
-
     function draw() {
-      background(noiseType);
-      text('tap to play', width/2, 20);
-      let txt = 'type: ' + noiseType;
-      text(txt, width/2, 40);
+      background('cyan');
+      text('click to hear the ocean', 0, 20, 100);
     }
     </code>
     </div>
 methods:
   type:
-    description: ''
+    description: >-
+      Changes the type of noise function.
+
+
+      White noise is brighter and more "full spectrum" while 'pink' and 'brown'
+      noise is a bit darker.
     path: p5.Noise/type
 chainable: false
 ---
