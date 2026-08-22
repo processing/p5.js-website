@@ -76,16 +76,15 @@ function generateStubFromEnglish(englishPath, language, contentType = 'reference
 
   const stubFrontmatter = pickStubFrontmatter(frontmatter, contentType);
 
-  const stubComment = `<!--
+  const stubComment = `{/*
   Auto-generated translation stub (${language}).
   Translate from the English source and remove needsTranslation when done.
   English source: ${englishPath}
--->`;
+*/}`;
 
   const stubBody = `${stubComment}
 
-<!-- Translation needed. Replace this placeholder with the translated content. -->
-`;
+{/* Translation needed. Replace this placeholder with the translated content. */}`;
 
   const content = stringifyMdx(stubFrontmatter, stubBody);
 
