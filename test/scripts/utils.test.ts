@@ -38,3 +38,29 @@ test("rewriteRelativeMdLinks", () => {
   - [external](https://p5js.org/)
   `);
 });
+
+test("rewriteRelativeMdLinks with reference links", () => {
+  expect(
+    rewriteRelativeMdLinks(`
+# Documentation
+
+See [our guide][guide] and [access statement][access].
+
+You can also check [external link][external].
+
+[guide]: ./contributing_guide.md
+[access]: ./access.md#intro
+[external]: https://p5js.org/
+    `),
+  ).toEqual(`
+# Documentation
+
+See [our guide][guide] and [access statement][access].
+
+You can also check [external link][external].
+
+[guide]: ../contributing_guide/
+[access]: ../access/#intro
+[external]: https://p5js.org/
+    `);
+});
