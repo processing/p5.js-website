@@ -78,7 +78,7 @@ function generateStubFromEnglish(englishPath, language, contentType = 'reference
 
   const stubComment = `{/*
   Auto-generated translation stub (${language}).
-  Translate from the English source and remove needsTranslation when done.
+  Translate from the English source, then remove the 'needsTranslation: true' line entirely.
   English source: ${englishPath}
 */}`;
 

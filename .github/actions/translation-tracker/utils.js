@@ -74,12 +74,22 @@ function parseFrontmatter(raw, filePath) {
   return yaml.load(frontmatterMatch[1]) || {};
 }
 
+const NEEDS_TRANSLATION_LINE_HINT =
+  '# IMP: Remove this entire line after translation is complete';
+
 function stringifyMdx(frontmatter, body) {
-  const frontmatterText = yaml.dump(frontmatter, {
+  let frontmatterText = yaml.dump(frontmatter, {
     lineWidth: 100,
     noRefs: true,
     sortKeys: false,
   });
+
+  if (frontmatter.needsTranslation === true) {
+    frontmatterText = frontmatterText.replace(
+      /^needsTranslation:\s*true\s*$/m,
+      `needsTranslation: true  ${NEEDS_TRANSLATION_LINE_HINT}`
+    );
+  }
 
   return `---\n${frontmatterText}---\n${body}`;
 }
