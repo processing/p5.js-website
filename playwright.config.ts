@@ -42,10 +42,11 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: isCI ? "npm run build && npm run preview" : "npm run dev",
+    // CI serves the dist/ built by an earlier step; see .github/workflows/test.yml.
+    command: isCI ? "npm run preview" : "npm run dev",
     url: BASE_URL,
     reuseExistingServer: !isCI,
-    timeout: isCI ? 900_000 : 180_000,
+    timeout: 180_000,
     stdout: isCI ? "pipe" : "ignore",
     env: {
       A11Y_TEST: "1",
