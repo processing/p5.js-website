@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
-import { author, generateEntryId } from "../shared";
+import { author, generateEntryId, needsTranslation } from "../shared";
 
 export const categories = [
   "drawing",
@@ -62,5 +62,6 @@ export const librariesCollection = defineCollection({
       npm: z.string().optional(),
       npmFilePath: z.string().optional(),
       featured: z.boolean().optional(),
+      needsTranslation: needsTranslation(),
     }),
 });

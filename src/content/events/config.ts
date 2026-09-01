@@ -1,7 +1,7 @@
 import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
-import { generateEntryId } from "../shared";
+import { needsTranslation, generateEntryId } from "../shared";
 
 export const eventsCollection = defineCollection({
   loader: glob({
@@ -22,5 +22,6 @@ export const eventsCollection = defineCollection({
       featuredImage: image(),
       featuredImageAlt: z.string(),
       relatedPastEvents: z.array(reference("events")).optional(),
+      needsTranslation: needsTranslation(),
     }),
 });

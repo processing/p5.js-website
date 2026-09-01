@@ -21,6 +21,16 @@ export const author = () =>
   });
 
 /*
+ * A zod type for the flag carried by auto-generated translation stubs.
+ *
+ * Generally, a stub file satisfies its collection schema but it contains no translated body, so the locale fallback in
+ * `getCollectionInLocaleWithFallbacks` treats entries marked `needsTranslation: true` as if the file did not exist and serves English.
+ * 
+ * Translators remove the flag once the page has real content (that's the assumption, we should verify this while approving and merging)
+ */
+export const needsTranslation = () => z.boolean().optional();
+
+/*
  * A zod type for related pages
  */
 export const relatedContent = () =>

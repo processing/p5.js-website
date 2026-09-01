@@ -19,6 +19,20 @@ interface EntryWithId {
 }
 
 /**
+ * Our goal is to detect auto-generated translation stubs, which carry `needsTranslation: true`
+ * in their frontmatter.
+ *
+ * A stub is like template so callers must treat it as absent so the reader gets the English
+ * page instead of a blank one. Just like if the file was absent in the first place
+ *
+ * @param entry A collection entry, or anything shaped like one
+ * @returns true when the entry exists but has no translated content yet
+ */
+export const isUntranslatedEntry = (entry: unknown): boolean =>
+  (entry as { data?: { needsTranslation?: boolean } })?.data
+    ?.needsTranslation === true;
+
+/**
  * Retreives all the entries in the given collection, filtered to only include
  * those in the default locale (language).
  *
@@ -47,6 +61,9 @@ export const getCollectionInDefaultLocale = async <C extends CollectionKey>(
  * Retreives all the entries in the given collection for a given locale, and
  * includes entries in the default locale for entries that aren't localized
  *
+ * Translation stubs are skipped as though they were never written, so a
+ * scaffolded page falls back to English rather than rendering an empty body.
+ *
  * @param collectionName
  * @param locale
  * @returns
@@ -57,7 +74,9 @@ export const getCollectionInLocaleWithFallbacks = memoize(async <
   collectionName: C,
   locale: string,
 ): Promise<CollectionEntry<C>[]> => {
-  const localizedEntries = await getCollectionInLocale(collectionName, locale);
+  const localizedEntries = (
+    await getCollectionInLocale(collectionName, locale)
+  ).filter((entry) => !isUntranslatedEntry(entry));
   const defaultLocaleCollection =
     await getCollectionInDefaultLocale(collectionName);
   const filteredDefaultEntries = defaultLocaleCollection.filter(

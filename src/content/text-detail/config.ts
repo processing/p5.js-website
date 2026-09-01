@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
-import { generateEntryId } from "../shared";
+import { generateEntryId, needsTranslation } from "../shared";
 
 export const textDetailCollection = defineCollection({
   loader: glob({
@@ -14,5 +14,6 @@ export const textDetailCollection = defineCollection({
       title: z.string(),
       featuredImage: image().optional(),
       featuredImageAlt: z.string().optional(),
+      needsTranslation: needsTranslation(),
     }),
 });
