@@ -1,0 +1,452 @@
+---
+title: "Hello Color World: p5.strands"
+description: An introduction to fragment shaders using p5.strands
+category: "2.0"
+categoryIndex: 0
+featuredImage: ../images/featured/intro-to-p5-strands.png
+featuredImageAlt: " "
+relatedContent:
+  references:
+    - en/p5/p5shader
+authors:
+  - ilithya
+---
+
+import { Columns, Column } from "../../../components/Columns";
+import EditableSketch from "../../../components/EditableSketch/index.astro";
+import Callout from "../../../components/Callout/index.astro";
+
+## X Ways To Work With Color In Shaders
+
+Let's discover a few techniques for manipulating color using p5.strands, and learn a bit of fragment shader fundamentals in the process. 
+
+We'll explore color in shaders to enhance our p5.js sketches with more sophisticated effects that pure JavaScript wouldn't let us do. 
+
+<Callout title="What is p5.strands?">
+p5.strands is a new way of writing shaders using JavaScript in p5.js. 
+- [Writing shaders in JavaScript](https://www.davepagurek.com/blog/writing-shaders-in-js/), Dave Pagurek's blog
+- [Introduction to shaders](/tutorials/intro-to-p5-strands)
+</ Callout>
+
+To understand the advantages that p5.strands brings to us when dealing with shaders, we'll look at each technique through examples with variations of creating a p5 sketch together with p5.strands vs. GLSL (shader language).
+
+Let's start from simple to complex, like having a x-course meal, by first dipping our toes into an appetizer.
+
+<div class="mt-18"></div>
+
+### 01. Solid Colors
+
+We'll begin by simply painting the canvas of our sketch and one 3D primitive.
+
+<Callout title="What is a fragment shader?">  
+A shader in charge of outputing the color of each pixel. They output a color using RGBA values from 0.0 to 1.0.
+- [RGBA color](https://hughsk.io/fragment-foundry/chapters/03-rgb.html), self-guided workshop on fragment shaders by Hugh Kennedy
+- [RGB color model](https://courses.ilithya.rocks/p/courses/intro-to-shaders/3486602-module-02-color/11410544-07-rgb-color-model), fragment shader course by ilithya
+</ Callout>
+
+With p5.strands we can modify the color of a shader and have the benefit of using several color notations and models that we already know from p5.js, since it translates them for us into the GLSL specific one with hooks (e.g. `finalColor`).
+
+<Callout>  
+We can use p5.js functions like [`color()`](/reference/p5/color) for a:
+- named color, `color("blue")`
+- hex color value, `color("#0000ff")`
+- hsl values, `color("hsl(40, 100%, 50%)")`
+- RGB 8-bit values, `color(0, 255, 0)` 
+</ Callout>
+
+<Columns>
+<Column>
+
+#### sketch with p5.strands
+<EditableSketch code={`
+  let shaderCanvas;
+  let shaderPrimitive;
+
+  function colorCanvas() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    finalColor.begin();
+
+    const solidColor = color("blue");
+    finalColor.set(solidColor);
+
+    finalColor.end();
+  } 
+
+  function colorPrimitive() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    finalColor.begin();
+
+    const solidColor = color("#ff0000");
+    finalColor.set(solidColor);
+
+    finalColor.end();
+  } 
+
+  function setup() {
+    createCanvas(300, 300, WEBGL);
+    pixelDensity(1);
+
+    shaderCanvas = buildColorShader(colorCanvas);
+    shaderPrimitive = buildMaterialShader(colorPrimitive);
+  }
+
+  function draw() {
+    // Apply color shader in canvas
+    filter(shaderCanvas);
+
+    // Apply color shader in 3D primitive
+    shader(shaderPrimitive);
+
+    // Rotate 3D primitive
+    const anim = millis() * 0.00025;
+    rotateY(anim);
+
+    box(120);
+  }
+`} />
+
+</Column>
+
+<Column>
+
+#### sketch with GLSL
+<EditableSketch code={`
+  let shaderCanvas;
+  let shaderPrimitive;
+
+  // GLSL
+  let vertex = \`
+precision highp float;
+
+attribute vec3 aPosition;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+void main() {
+  gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+}
+\`;
+
+  let fragmentCanvas = \`
+precision highp float;
+
+void main() {
+  // Blue color as RGB(0%, 0%, 100%)
+  vec3 color = vec3(0.0, 0.0, 1.0);
+
+  gl_FragColor = vec4(color, 1.0);
+}
+\`;
+
+  let fragmentPrimitive = \`
+precision highp float;
+
+void main() {
+  // Red color as RGB(100%, 0%, 0%)
+  vec3 color = vec3(1.0, 0.0, 0.0);
+
+  gl_FragColor = vec4(color, 1.0);
+}
+\`;
+
+  function setup() {
+    createCanvas(300, 300, WEBGL);
+    pixelDensity(1);
+
+    shaderCanvas = createShader(vertex, fragmentCanvas);
+    shaderPrimitive = createShader(vertex, fragmentPrimitive);
+  }
+
+  function draw() {
+    // Apply color shader in canvas
+    filter(shaderCanvas);
+
+    // Apply color shader in 3D primitive
+    shader(shaderPrimitive);
+
+    // Rotate 3D primitive
+    const anim = millis() * 0.00025;
+    rotateY(anim);
+
+    box(120);
+  }
+`} />
+
+</Column>
+</Columns>
+
+### 02. Textured Colors
+We'll continue evolving our canvas and 3D primitive sketch as we learn more techniques to color with our fragment shaders. 
+
+<Callout title="What is a shader?">
+A set of code implementing algorithms to get the pixels of a mesh rendered on the screen. In WebGL shaders are written in GLSL, and there are two types: vertex and fragment.
+- [Introduction to GLSL](https://p5js.org/tutorials/intro-to-glsl/)
+</ Callout>
+
+p5.strands hooks (e.g. `pixelInputs`) allow us to speak GLSL with familiar p5.js language. In the following table, we can see how some of the p5.strands syntax we're learning translates into GLSL.
+
+<table class="border-collapse border border-gray-400 full-width">
+  <thead>
+    <tr>
+      <th class="border border-gray-400 bg-(--bg-blue)">p5.strands</th>
+      <th class="border border-gray-400 bg-(--bg-blue)">GLSL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="border border-gray-400"><code>hook.texCoord </code></td>
+      <td class="border border-gray-400"><code>vec2 uv = gl_FragCoord.xy / u_resolution</code></td>
+    </tr>
+    <tr>
+      <td class="border border-gray-400"><code>hook.color</code></td>
+      <td class="border border-gray-400"><code>gl_FragColor</code></td>
+    </tr>
+    <tr>
+      <td class="border border-gray-400"><code>hook.set(val)</code></td>
+      <td class="border border-gray-400"><code>gl_FragColor = val</code></td>
+    </tr>
+    <tr>
+      <td class="border border-gray-400"><code>getTexture(img, uv)</code></td>
+      <td class="border border-gray-400"><code>texture(u_texture, uv)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<Callout>
+Let's add a colored texture to our shaders by using the [`noise()`](/reference/p5/noise) p5.js function.
+ 
+Applying randomness to a color equation, can create visually smooth organic textures such as clouds, as well as rougher textures found in crystals.
+
+We can also add the time elapsed with [`millis()`](/reference/p5/millis) to our textures, for a natural-looking movement.
+</ Callout>
+
+<Columns>
+<Column>
+
+#### sketch with p5.strands
+<EditableSketch code={`
+  let shaderCanvas;
+  let shaderPrimitive;
+
+  function colorCanvas() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    pixelInputs.begin();
+
+    // Coordinates of our rendered space 
+    // (X and Y)
+	  const uv = pixelInputs.texCoord;
+
+    const time = millis() * 0.00015;
+
+    const cloudTexture = noise(uv + time);
+
+    const r = mouseX / width;
+    const g = 0;
+    const b = cloudTexture * 1.5;
+
+    const cloudColor = [r, g, b, 1];
+
+    pixelInputs.color = cloudColor;
+
+    pixelInputs.end();
+  } 
+
+  function colorPrimitive() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    pixelInputs.begin();
+
+    // Coordinates of our rendered space 
+    // (X and Y)
+	  const uv = pixelInputs.texCoord;
+
+    const grainTexture = noise(uv * 50.0);
+    pixelInputs.color = grainTexture;
+
+    pixelInputs.end();
+  } 
+
+  async function setup() {
+    createCanvas(300, 300, WEBGL);
+    pixelDensity(1);
+
+    shaderCanvas = buildMaterialShader(colorCanvas);
+    shaderPrimitive = buildMaterialShader(colorPrimitive);
+  }
+
+  function draw() {
+    // Apply color shader in canvas
+    filter(shaderCanvas);
+
+    // Apply color shader in 3D primitive
+    shader(shaderPrimitive);
+
+    // Rotate 3D primitive
+    const anim = millis() * 0.00015;
+    rotateY(anim);
+
+    stroke(120);
+    box(120);
+  }
+`} />
+
+</Column>
+
+<Column>
+
+#### sketch with GLSL
+<EditableSketch code={`
+  let shaderCanvas;
+  let shaderPrimitive;
+
+  // GLSL
+  let vertex = \`
+precision highp float;
+
+attribute vec2 aTexCoord;
+attribute vec3 aPosition;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+varying vec2 vUv;
+
+void main() {
+  vUv = aTexCoord;
+
+  gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+}
+\`;
+
+  let fragmentCanvas = \`
+precision highp float;
+
+uniform vec2 uResolution;
+uniform float uMouseX;
+uniform float uTime;
+
+varying vec2 vUv;
+
+// GLSL Noise Algorithms by Patricio Gonzalez Vivo
+// https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+float rand(vec2 n) { 
+	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
+float noise(vec2 p){
+	vec2 ip = floor(p);
+	vec2 u = fract(p);
+	u = u*u*(3.0-2.0*u);
+	
+	float res = mix(
+		mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
+		mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
+    u.y);
+	return res*res;
+}
+
+// GLSL Noise Algorithm by Inigo Quilez
+// https://www.shadertoy.com/view/MdX3Rr
+const mat2 m2 = mat2(0.8,-0.6,0.6,0.8);
+float fbm( in vec2 p ){
+    float f = 0.0;
+    f += 0.5000*noise( p ); p = m2*p*2.02;
+    f += 0.2500*noise( p ); p = m2*p*2.03;
+    f += 0.1250*noise( p ); p = m2*p*2.01;
+    f += 0.0625*noise( p );
+
+    return f/0.9375;
+}
+
+void main() {
+  // Coordinates of our rendered space 
+  // (X and Y)
+	vec2 uv = vUv;
+		
+	float cloudTexture = fbm(uv * 2.5 + uTime * 0.15);
+
+  float r = uMouseX / uResolution.x;
+  float g = 0.0;
+  float b = cloudTexture * 1.5;
+
+  vec3 color = vec3(r, g, b + 0.16);
+
+	gl_FragColor = vec4(color, 1.0);
+}
+\`;
+
+  let fragmentPrimitive = \`
+precision highp float;
+
+varying vec2 vUv;
+
+// GLSL Noise Algorithms by Patricio Gonzalez Vivo
+// https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+float rand(vec2 n) { 
+	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
+float noise(vec2 p){
+	vec2 ip = floor(p);
+	vec2 u = fract(p);
+	u = u*u*(3.0-2.0*u);
+	
+	float res = mix(
+		mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
+		mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
+    u.y);
+	return res*res;
+}
+
+void main() {
+  // Coordinates of our rendered space 
+  // (X and Y)
+	vec2 uv = vUv;
+
+  float grainTexture = noise(uv * 200.0);
+  grainTexture -= 0.05;
+
+  vec3 color = vec3(grainTexture);
+
+	gl_FragColor = vec4(color, 0.3);
+}
+\`;
+
+  async function setup() {
+    createCanvas(300, 300, WEBGL);
+    pixelDensity(1);
+
+    shaderCanvas = createShader(vertex, fragmentCanvas);
+    shaderPrimitive = createShader(vertex, fragmentPrimitive);
+  }
+
+  function draw() {
+    // Setup uniforms for fragment shader
+    const time = millis() / 1000;
+    shaderCanvas.setUniform("uTime", time);
+    shaderCanvas.setUniform("uMouseX", mouseX);
+    shaderCanvas.setUniform("uResolution", [width, height]);
+
+    // Apply color shader in canvas
+    filter(shaderCanvas);
+
+    // Apply color shader in 3D primitive
+    shader(shaderPrimitive);
+
+    // Rotate 3D primitive
+    const anim = millis() * 0.00015;
+    rotateY(anim);
+
+    stroke(120);
+    box(120);
+  }
+`} />
+
+</Column>
+</Columns>
+
+### 03. Image Filter Colors
