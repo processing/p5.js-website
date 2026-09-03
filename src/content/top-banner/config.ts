@@ -3,18 +3,18 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { generateEntryId } from "../shared";
 
-export const bannerCollection = defineCollection({
+export const topBannerCollection = defineCollection({
   loader: glob({
     pattern: '**/*.mdx',
-    base: "./src/content/banner",
+    base: "./src/content/top-banner",
     generateId: generateEntryId,
   }),
   schema: () =>
     z.object({
       title: z.string(),
-      // Accessible name for the banner landmark, announced by screen readers.
-      label: z.string(),
       link: z.string(),
       hidden: z.boolean().optional(),
+      backgroundColor: z.string().optional(),
+      color: z.string().optional(),
     }),
 });
