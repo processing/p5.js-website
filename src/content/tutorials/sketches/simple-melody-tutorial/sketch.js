@@ -29,7 +29,6 @@ let noteDuration = 60 / melody.tempo;
 /* number of notes that can be played (equal to the number of frequencies/oscillators) */
 let numNotes = frequencies.length;
 
-
 // Tempo selection list (in beats per min).
 let tempoList = [
   "100",
@@ -71,17 +70,19 @@ function setup() {
 
   // Play button.
   let playButton = createButton("🎵 Play your song when you are done! 🎶");
-  playButton.position(width * 0.2, 540);
+  playButton.position(10, 385);
+  playButton.size(300, AUTO);
   playButton.mouseClicked(play);
+  
 
   // Text to prompt users to set tempo
   let p = createP("Step 1: Select a tempo");
   p.style("color", "magenta");
-  p.position(10, 415);
+  p.position(10, 200);
 
   // Tempo dropdown menu.
   tempoSelect = createSelect();
-  tempoSelect.position(10, 455);
+  tempoSelect.position(10, 240);
   tempoSelect.option(0);
 
   // Add tempos to dropdown options.
@@ -92,21 +93,32 @@ function setup() {
   // Directions to input text.
 let p2 = createP('Step 2: Type a name for your melody and click "Set name"');
 p2.style("color", "magenta");
-p2.position(10, 465);
+p2.position(10, 255);
 
   // Name of song input.
-    nameInput = createInput("Type a name and set");
-  	nameInput.position(10, 500);
-  	nameInput.size(200);
+    nameInput = createInput();
+    nameInput.attribute('placeholder', 'Type a name for your melody');
+  	nameInput.position(10, 295);
+  	nameInput.size(200, 25);
   
   // Name button.
 let nameButton = createButton('Set name');
-nameButton.position(250, 500);
+nameButton.position(230, 295);
+nameButton.size(100, AUTO);
 nameButton.mouseClicked(setName);
+
+let p3 = createP('Step 3: Click on the keys above to create a melody.');
+p3.style("color", "magenta");
+p3.position(10, 320);
+
+let p4 = createP('Step 4: Click below to play your melody.');
+p4.style("color", "magenta");
+p4.position(10, 345);
 
   // Reset button.
 let resetButton = createButton('Reset Melody');
-resetButton.position(150, 580);
+resetButton.position(10, 430);
+resetButton.size(100, AUTO);
 resetButton.mouseClicked(resetMelody);
 
 }
@@ -123,14 +135,12 @@ function draw() {
   // Display melody name
   fill("magenta")
   textSize(20)
-  text(`Melody Name: 
-${melody.name}`, 50, 50);
+  text(`Melody Name: ${melody.name}`, 10, 20);
   
   // Display melody name
   fill("magenta")
   textSize(20)
-  text(`Tempo: 
-${tempoSelect.selected()}`, 300, 50);
+  text(`Tempo: ${tempoSelect.selected()}`, 280, 20);
 }
 
 
@@ -142,12 +152,12 @@ function mousePressed() {
 //save notes based on keys on the screen
 function updateMelody() {
   //width of keys
-  let keyWidth = width / numNotes;
+  let keyWidth = (width / numNotes);
     //Loop for the number of notes available
   for (let i = 0; i < numNotes; i++) {
     //set x and y for each element
     let x = i * keyWidth;
-    let y = keyWidth * 3;
+    let y = keyWidth;
   
         /* Check if the mouse is 
         over the key */
@@ -213,7 +223,7 @@ function drawMelody() {
   for (let i = 0; i < numNotes; i++) {
     //set x for each element
     let x = i * keyWidth;
-    let y = keyWidth * 3; // height 3x width
+    let y = keyWidth; // height 3x width
 
     /*  
     Check if the oscillator[i] has started playing and
@@ -259,3 +269,4 @@ function resetMelody(){
   // Reset tempo dropdown
   tempoSelect.selected(0);
 }
+

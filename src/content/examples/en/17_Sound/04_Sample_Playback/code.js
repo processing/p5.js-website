@@ -1,7 +1,9 @@
+
+
 async function setup() {
-  sample = await loadSound("assets/sounds/beat.mp3");
+  sample = await loadSound("/assets/beat.mp3");
   sample.loop(true);
-  createCanvas(100, 100);
+  createCanvas(400, 400);
   textAlign(CENTER);
   textWrap(WORD);
   textSize(10);
@@ -10,13 +12,13 @@ async function setup() {
 
 function draw() {
   background(220);
-  rate = map(mouseX, 0, width, 0.5, 2);
+  rate = map(mouseX, 0, width, 0, 4);
   sample.rate(rate);
   if (!sample.isPlaying()) {
-    text("click to play the sound, move your mouse to change the playback rate", 0, 20, width);
+    text("click to play the sound, move your mouse to change the playback rate", 0, height/2, width);
   }
   else {
-    text("Playback Rate: " + rate.toFixed(2), 0, 20, width);
+    text("Playback Rate: " + rate.toFixed(2), 0, height/2, width);
   }
 }
 

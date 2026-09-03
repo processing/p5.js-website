@@ -9,7 +9,7 @@ function setup() {
   //initiallize the oscillator
   beep = new p5.Oscillator();
   
-  describe('A grey sketch that demonstrates how to use the Oscillator class in p5.sound.');
+  describe('A grey sketch that demonstrates how to use the Oscillator class in p5.sound.js');
 }
 
 function mousePressed() {
