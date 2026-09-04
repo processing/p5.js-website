@@ -329,7 +329,7 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
    * Fetch an issue and normalize labels for auto-close processing.
    *
    * @param {number} issueNumber
-   * @returns {Promise<{ number: number, open: boolean, body: string, labels: string[], htmlUrl: string }>}
+   * @returns {Promise<{ number: number, open: boolean, isPullRequest: boolean, body: string, labels: string[], htmlUrl: string }>}
    */
   async getIssue(issueNumber) {
     const { data } = await this.octokit.rest.issues.get({
@@ -341,6 +341,7 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
     return {
       number: data.number,
       open: data.state === 'open',
+      isPullRequest: Boolean(data.pull_request), // Issues and PRs share one number space; turns out only PRs carry this field.
       body: data.body || '',
       labels: data.labels.map((label) => (typeof label === 'string' ? label : label.name)),
       htmlUrl: data.html_url,
@@ -348,14 +349,15 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
   }
 
   /**
-   * Remove lang-* labels for languages resolved by a PR. Update body, comment, and
-   * close the issue when no lang-* labels remain.
+   * Remove lang-* labels for languages resolved by a PR, then update the body and comment.
+   * Closes the issue when no lang-* labels remain, and reopens it when some do
+   * - GitHub's native "Fixes #N" handling may have closed it early on merge (true for /p5.js-website repo).
    *
    * @param {object} issue - Normalized issue from getIssue()
    * @param {string[]} languages - Language codes from changed PR files
    * @param {number} prNumber
    * @param {{ body?: string }} [edits]
-   * @returns {Promise<{ closed: boolean, remainingLanguages: string[], removedLanguages: string[] }>}
+   * @returns {Promise<{ closed: boolean, reopened: boolean, remainingLanguages: string[], removedLanguages: string[] }>}
    */
   async applyLanguageProgress(issue, languages, prNumber, edits = {}) {
     const issueNumber = issue.number;
@@ -389,6 +391,14 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
       .filter((name) => name.startsWith('lang-') && !removedLanguages.includes(name.replace(/^lang-/, '')))
       .map((name) => name.replace(/^lang-/, ''));
 
+    // This PR touched nothing the issue tracks, so leave its state and body alone.
+    if (removedLanguages.length === 0) {
+      return { closed: false, reopened: false, remainingLanguages, removedLanguages };
+    }
+
+    const allLanguagesDone = remainingLanguages.length === 0;
+    const desiredState = allLanguagesDone ? 'closed' : 'open';
+
     const updatePayload = {
       owner: this.owner,
       repo: this.repo,
@@ -399,9 +409,11 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
       updatePayload.body = edits.body;
     }
 
-    if (remainingLanguages.length === 0) {
-      updatePayload.state = 'closed';
+    if (desiredState !== (issue.open ? 'open' : 'closed')) {
+      updatePayload.state = desiredState;
     }
+
+    const reopened = updatePayload.state === 'open';
 
     if (updatePayload.body || updatePayload.state) {
       await this.octokit.rest.issues.update(updatePayload);
@@ -409,29 +421,32 @@ ${outdatedLanguages.length > 0 || missingLanguages.length > 0 ? `**Change Type**
 
     const removedDisplay = removedLanguages.map((code) => this.getLanguageDisplayName(code)).join(', ');
 
-    if (remainingLanguages.length === 0) {
+    if (allLanguagesDone) {
       await this.octokit.rest.issues.createComment({
         owner: this.owner,
         repo: this.repo,
         issue_number: issueNumber,
-        body: `All tracked languages are now up to date (${removedDisplay || 'via PR'}). Closing automatically via PR #${prNumber}.`,
+        body: `All tracked languages are now up to date (${removedDisplay}). Closing automatically via PR #${prNumber}.
+       *By auto-close issue workflow*
+        `,
       });
-      return { closed: true, remainingLanguages: [], removedLanguages };
+      return { closed: true, reopened: false, remainingLanguages: [], removedLanguages };
     }
 
-    if (removedLanguages.length > 0) {
-      const remainingDisplay = remainingLanguages
-        .map((code) => this.getLanguageDisplayName(code))
-        .join(', ');
-      await this.octokit.rest.issues.createComment({
-        owner: this.owner,
-        repo: this.repo,
-        issue_number: issueNumber,
-        body: `${removedDisplay} translation updated via PR #${prNumber}. Remaining languages: ${remainingDisplay}.`,
-      });
-    }
+    const remainingDisplay = remainingLanguages
+      .map((code) => this.getLanguageDisplayName(code))
+      .join(', ');
 
-    return { closed: false, remainingLanguages, removedLanguages };
+    await this.octokit.rest.issues.createComment({
+      owner: this.owner,
+      repo: this.repo,
+      issue_number: issueNumber,
+      body: reopened
+        ? `Reopening: ${removedDisplay} translation was updated via PR #${prNumber}, but this issue still tracks ${remainingDisplay}.`
+        : `${removedDisplay} translation updated via PR #${prNumber}. Remaining languages: ${remainingDisplay}.`,
+    });
+
+    return { closed: false, reopened, remainingLanguages, removedLanguages };
   }
 
   async createBranchWithFiles(branchName, commitMessage, fileChanges) {

@@ -1,25 +1,8 @@
 const core = require('@actions/core');
 const { GitHubCommitTracker } = require('./github-tracker');
+const { collectReferencedIssues } = require('./pr-references');
 const { SUPPORTED_LANGUAGES } = require('./constants');
 const { getLanguageDisplayName } = require('./utils');
-
-// Check for linking keywords (ref: https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
-const RESOLVES_REGEX = /(?:resolves|resolve|resolved|close|closes|closed|fixes|fix|fixed)\s+#(\d+)/gi;
-
-/// Extract unique issue numbers from PR body (Resolves / Closes / Fixes #N).
-function parseReferencedIssues(prBody) {
-  if (!prBody) {
-    return [];
-  }
-
-  const numbers = new Set();
-  let match;
-  const regex = new RegExp(RESOLVES_REGEX.source, RESOLVES_REGEX.flags);
-  while ((match = regex.exec(prBody)) !== null) {
-    numbers.add(parseInt(match[1], 10));
-  }
-  return [...numbers];
-}
 
 // List all files changed in a merged PR (paginated).
 async function listPullRequestFiles(octokit, owner, repo, pullNumber) {
@@ -90,7 +73,6 @@ async function main() {
   const token = process.env.GITHUB_TOKEN;
   const repository = process.env.GITHUB_REPOSITORY || 'processing/p5.js-website';
   const prNumber = parseInt(process.env.PR_NUMBER || '', 10);
-  const prBody = process.env.PR_BODY || '';
 
   if (!token) {
     core.setFailed('GITHUB_TOKEN is required');
@@ -107,16 +89,21 @@ async function main() {
 
   const summary = {
     updated: [],
+    reopened: [],
     closed: [],
     skipped: [],
     errors: [],
   };
 
-  const referencedIssues = parseReferencedIssues(prBody);
-  if (referencedIssues.length === 0) {
-    core.info(
-      `No Resolves/Closes/Fixes #N references found in PR #${prNumber} body. Nothing to close or edit.`
-    );
+  const references = await collectReferencedIssues({
+    octokit: tracker.octokit,
+    owner,
+    repo,
+    prNumber,
+  });
+
+  if (references.size === 0) {
+    core.info(`No #N references found anywhere on PR #${prNumber}. Nothing to close or edit.`);
     return;
   }
 
@@ -130,16 +117,36 @@ async function main() {
     return;
   }
 
-  core.info(`Found ${referencedIssues.length} referenced issue(s) in PR body`);
+  core.info(`Found ${references.size} referenced issue(s) on PR #${prNumber}:`);
+  for (const [issueNumber, sources] of references) {
+    core.info(`  #${issueNumber} (from ${[...sources].join(', ')})`);
+  }
   core.info(`Languages from changed files: ${languages.join(', ')}`);
 
-  for (const issueNumber of referencedIssues) {
-    try {
-      const issue = await tracker.getIssue(issueNumber);
+  for (const issueNumber of references.keys()) {
+    if (issueNumber === prNumber) {
+      summary.skipped.push({ issueNumber, reason: 'self-reference' });
+      core.info(`Skipped #${issueNumber}: self-reference`);
+      continue;
+    }
 
-      if (!issue.open) {
-        summary.skipped.push({ issueNumber, reason: 'not open' });
-        core.info(`Skipped #${issueNumber}: not open`);
+    try {
+      let issue;
+      try {
+        issue = await tracker.getIssue(issueNumber);
+      } catch (error) {
+        // A stray number (a hex color, a version string) is noise, not a failure.
+        if (error.status === 404) {
+          summary.skipped.push({ issueNumber, reason: 'not found' });
+          core.info(`Skipped #${issueNumber}: no such issue`);
+          continue;
+        }
+        throw error;
+      }
+
+      if (issue.isPullRequest) {
+        summary.skipped.push({ issueNumber, reason: 'is a pull request' });
+        core.info(`Skipped #${issueNumber}: is a pull request, not an issue`);
         continue;
       }
 
@@ -159,16 +166,23 @@ async function main() {
         summary.closed.push(issueNumber);
         core.info(`Closed issue #${issueNumber} (no remaining lang-* labels)`);
       } else if (result.removedLanguages.length > 0) {
+        const removed = result.removedLanguages.map((l) => `lang-${l}`).join(', ');
+        const remaining = result.remainingLanguages.join(', ') || 'none';
+
         summary.updated.push({
           issueNumber,
           removedLanguages: result.removedLanguages,
           remainingLanguages: result.remainingLanguages,
         });
-        core.info(
-          `Updated issue #${issueNumber}: removed ${result.removedLanguages
-            .map((l) => `lang-${l}`)
-            .join(', ')}; remaining: ${result.remainingLanguages.join(', ') || 'none'}`
-        );
+
+        if (result.reopened) {
+          summary.reopened.push(issueNumber);
+          core.info(
+            `Reopened issue #${issueNumber}: removed ${removed}; still needs ${remaining}`
+          );
+        } else {
+          core.info(`Updated issue #${issueNumber}: removed ${removed}; remaining: ${remaining}`);
+        }
       } else {
         summary.skipped.push({
           issueNumber,
@@ -183,10 +197,18 @@ async function main() {
   }
 
   core.info(
-    `Auto-close summary: ${summary.updated.length} updated, ${summary.closed.length} closed, ${summary.skipped.length} skipped, ${summary.errors.length} error(s)`
+    `Auto-close summary: ${summary.updated.length} updated (${summary.reopened.length} reopened), ${summary.closed.length} closed, ${summary.skipped.length} skipped, ${summary.errors.length} error(s)`
   );
 }
 
-main().catch((error) => {
-  core.setFailed(error.message);
-});
+if (require.main === module) {
+  main().catch((error) => {
+    core.setFailed(error.message);
+  });
+}
+
+module.exports = {
+  main,
+  identifyLanguagesFromFiles,
+  strikeLanguagesInBody,
+};
