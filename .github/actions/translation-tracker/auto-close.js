@@ -96,20 +96,30 @@ function extractExpectedPaths(body) {
   return result;
 }
 
-// Strike language required lines in the tracker issue body for resolved languages.
+/**
+ * Strike language lines in the tracker issue body for languages whose translations have been added.
+ *
+ * Returns both the modified body and the list of languages that were actually
+ * struck, so callers can gate label removal on the same condition.
+ */
 function strikeLanguagesInBody(body, languages) {
   let result = body || '';
+  const struck = [];
 
   for (const language of languages) {
     const displayName = getLanguageDisplayName(language);
     const escaped = displayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    // Match a list item that starts with the language display name and is not already struck.
-    const lineRegex = new RegExp(`^(- (?!~~)\\*\\*${escaped}\\*\\*:.*)$`, 'gm');
+    const lineRegex = new RegExp(`^(\\s*-?\\s*(?!~~)\\*\\*${escaped}\\*\\*:.*)$`, 'gm');
+    const before = result;
+    
     result = result.replace(lineRegex, '~~$1~~');
+    if (result !== before) {
+      struck.push(language);
+    }
   }
 
-  return result;
+  return { body: result, struck };
 }
 
 async function main() {
@@ -224,8 +234,17 @@ async function main() {
         continue;
       }
 
-      const editedBody = strikeLanguagesInBody(issue.body, verifiedLanguages);
-      const result = await tracker.applyLanguageProgress(issue, verifiedLanguages, prNumber, {
+      const { body: editedBody, struck } = strikeLanguagesInBody(issue.body, verifiedLanguages);
+
+      if (struck.length === 0) {
+        summary.skipped.push({ issueNumber, reason: 'could not match language lines in issue body' });
+        core.info(
+          `Skipped #${issueNumber}: verified languages [${verifiedLanguages.join(', ')}] could not be matched in body`
+        );
+        continue;
+      }
+
+      const result = await tracker.applyLanguageProgress(issue, struck, prNumber, {
         body: editedBody,
       });
 
