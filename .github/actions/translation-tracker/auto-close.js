@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const { GitHubCommitTracker } = require('./github-tracker');
 const { collectReferencedIssues } = require('./pr-references');
 const { SUPPORTED_LANGUAGES } = require('./constants');
-const { getLanguageDisplayName } = require('./utils');
+const { getLanguageDisplayName, getTranslationPath } = require('./utils');
 
 // List all files changed in a merged PR (paginated).
 async function listPullRequestFiles(octokit, owner, repo, pullNumber) {
@@ -76,9 +76,18 @@ function extractExpectedPaths(body) {
     if (match) {
       const lang = match[1];
       if (!result.has(lang)) result.set(lang, []);
-      result.get(lang).push(filePath);
+      if (!result.get(lang).includes(filePath)) result.get(lang).push(filePath);
     }
   };
+
+  // The English source is the canonical path in tracker-generated issues.
+  // Deriving translation paths avoids ambiguity when branch names contain slashes.
+  const englishFileMatch = body.match(/\*\*File\*\*:\s*`(src\/content\/[^`]+\/en\/[^`]+)`/);
+  if (englishFileMatch) {
+    for (const language of SUPPORTED_LANGUAGES) {
+      addPath(getTranslationPath(englishFileMatch[1], language));
+    }
+  }
 
   // Missing translations: Expected location: `src/content/...`
   const expectedLocationRegex = /Expected location:\s*`([^`]+)`/g;
@@ -87,8 +96,8 @@ function extractExpectedPaths(body) {
     addPath(m[1]);
   }
 
-  // Outdated translations: [📝 View file](https://github.com/.../blob/<branch>/src/content/...)
-  const viewFileRegex = /\[.*?View file.*?\]\(https?:\/\/github\.com\/[^)]*\/blob\/[^/]+\/([^)]+)\)/g;
+  // Match from src/content
+  const viewFileRegex = /\[.*?View file.*?\]\([^)]*?(src\/content\/[^)]+)\)/g;
   while ((m = viewFileRegex.exec(body)) !== null) {
     addPath(m[1]);
   }
@@ -110,10 +119,10 @@ function strikeLanguagesInBody(body, languages) {
     const displayName = getLanguageDisplayName(language);
     const escaped = displayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    const lineRegex = new RegExp(`^(\\s*-?\\s*(?!~~)\\*\\*${escaped}\\*\\*:.*)$`, 'gm');
+    const lineRegex = new RegExp(`^([ \\t]*)(-?[ \\t]*\\*\\*${escaped}\\*\\*:.*)$`, 'gm');
     const before = result;
     
-    result = result.replace(lineRegex, '~~$1~~');
+    result = result.replace(lineRegex, '$1~~$2~~');
     if (result !== before) {
       struck.push(language);
     }
@@ -216,7 +225,7 @@ async function main() {
 
       const verifiedLanguages = languages.filter((lang) => {
         const paths = expectedPaths.get(lang);
-        if (!paths || paths.length === 0) return true; // no path info means we fall back to label match
+        if (!paths || paths.length === 0) return false;
         return paths.some((p) => changedFileNames.includes(p));
       });
 
