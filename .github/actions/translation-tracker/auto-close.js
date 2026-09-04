@@ -53,6 +53,49 @@ function identifyLanguagesFromFiles(changedFiles) {
   return [...languages];
 }
 
+/**
+ * Parse expected translation file paths from a tracker issue body.
+ *
+ * The issue body produced by github-tracker.js contains paths in two forms:
+ *   Outdated:  `[📝 View file](https://github.com/.../blob/main/src/content/...)`
+ *   Missing:   `Expected location: \`src/content/...\``
+ *
+ * @param {string} body - The issue body text.
+ * @returns {Map<string, string[]>} Language code → expected file paths.
+ */
+function extractExpectedPaths(body) {
+  const result = new Map();
+
+  if (!body) return result;
+
+  const langPattern = [...SUPPORTED_LANGUAGES].sort((a, b) => b.length - a.length).join('|');
+  const langFromPath = new RegExp(`^src/content/[^/]+/(${langPattern})/`);
+
+  const addPath = (filePath) => {
+    const match = filePath.match(langFromPath);
+    if (match) {
+      const lang = match[1];
+      if (!result.has(lang)) result.set(lang, []);
+      result.get(lang).push(filePath);
+    }
+  };
+
+  // Missing translations: Expected location: `src/content/...`
+  const expectedLocationRegex = /Expected location:\s*`([^`]+)`/g;
+  let m;
+  while ((m = expectedLocationRegex.exec(body)) !== null) {
+    addPath(m[1]);
+  }
+
+  // Outdated translations: [📝 View file](https://github.com/.../blob/<branch>/src/content/...)
+  const viewFileRegex = /\[.*?View file.*?\]\(https?:\/\/github\.com\/[^)]*\/blob\/[^/]+\/([^)]+)\)/g;
+  while ((m = viewFileRegex.exec(body)) !== null) {
+    addPath(m[1]);
+  }
+
+  return result;
+}
+
 // Strike language required lines in the tracker issue body for resolved languages.
 function strikeLanguagesInBody(body, languages) {
   let result = body || '';
@@ -157,8 +200,32 @@ async function main() {
         continue;
       }
 
-      const editedBody = strikeLanguagesInBody(issue.body, languages);
-      const result = await tracker.applyLanguageProgress(issue, languages, prNumber, {
+      // Narrow languages to those whose expected file actually appears in this PR.
+      const expectedPaths = extractExpectedPaths(issue.body);
+      const changedFileNames = changedFiles.map((f) => f.filename || f);
+
+      const verifiedLanguages = languages.filter((lang) => {
+        const paths = expectedPaths.get(lang);
+        if (!paths || paths.length === 0) return true; // no path info means we fall back to label match
+        return paths.some((p) => changedFileNames.includes(p));
+      });
+
+      const skippedLangs = languages.filter((lang) => !verifiedLanguages.includes(lang));
+      for (const lang of skippedLangs) {
+        const paths = expectedPaths.get(lang) || [];
+        core.info(
+          `Skipped lang-${lang} for #${issueNumber}: expected file(s) [${paths.join(', ')}] not in PR`
+        );
+      }
+
+      if (verifiedLanguages.length === 0) {
+        summary.skipped.push({ issueNumber, reason: 'expected file(s) not in PR' });
+        core.info(`Skipped #${issueNumber}: none of the expected translation files were changed`);
+        continue;
+      }
+
+      const editedBody = strikeLanguagesInBody(issue.body, verifiedLanguages);
+      const result = await tracker.applyLanguageProgress(issue, verifiedLanguages, prNumber, {
         body: editedBody,
       });
 
@@ -211,4 +278,5 @@ module.exports = {
   main,
   identifyLanguagesFromFiles,
   strikeLanguagesInBody,
+  extractExpectedPaths,
 };
