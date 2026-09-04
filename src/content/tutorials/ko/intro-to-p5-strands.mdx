@@ -1,0 +1,859 @@
+---
+title: "p5.strands: 셰이더 입문"
+description: p5.strands를 사용한 셰이더 입문
+category: "2.0"
+categoryIndex: 0
+featuredImage: ../images/featured/intro-to-p5-strands.png
+featuredImageAlt: 입자들이 떠다니는 추상적이고 우주를 연상시키는 장면
+relatedContent:
+  references:
+    - en/p5/p5shader
+    - en/p5shader/modify
+    - en/p5shader/inspecthooks
+    - en/p5/buildcolorshader
+    - en/p5/buildmaterialshader
+    - en/p5/buildstrokeshader
+    - en/p5/buildnormalshader
+    - en/p5/buildfiltershader
+authors:
+  - Luke Plowden
+---
+
+import EditableSketch from "../../../components/EditableSketch/index.astro";
+import Callout from "../../../components/Callout/index.astro";
+
+## 소개
+
+**p5.strands**는 p5.js에서 JavaScript로 셰이더를 작성하는 새로운 방식입니다. p5.js의 2D 렌더러로도 다양한 셰이더 효과를 만들 수는 있지만, 셰이더를 사용하면 많은 객체에 복잡한 효과를 적용할 때 특히 강력합니다. 셰이더를 사용해서 창의적인 가능성을 탐험해보세요!
+
+p5.js 2.0 이전에도 [GLSL](https://beta.p5js.org/tutorials/intro-to-glsl/)을 사용해 셰이더를 작성할 수 있었습니다. 셰이더는 GPU에서 병렬로 실행되어 시각 효과를 만들어 냅니다. GPU는 비슷한 연산을 매우 많이 동시 처리할 수 있기 때문에 CPU보다 훨씬 빠릅니다.
+
+p5.js 스케치에 작성된 코드는 CPU가 수행할 일련의 명령이 되어 순차적으로 전달됩니다. 반면 p5.strands나 GLSL을 사용해 셰이더를 추가하면, 작성된 코드는 GPU에서 수많은 명령을 동시에 처리하는 방식으로 작동합니다. 예를 들어 프래그먼트 셰이더에서는 각 픽셀마다 많은 계산이 동시에 이루어집니다.
+
+화면에 무언가를 그리는 일(렌더링)은 이러한 병렬 연산의 이점을 크게 활용할 수 있습니다. 셰이더를 사용하면 사실적인 조명 시뮬레이션, 후처리 효과, 복잡한 기하 구조의 렌더링처럼, 기존 방식으로는 너무 느리거나 만들기 어려운 시각 효과를 구현할 수 있습니다. 셰이더를 배우는 것은 그래픽 프로그래밍에 관심 있는 누구에게나 가치가 있습니다. 게임 개발, 영화 VFX, 디지털 아트 등 여러 분야에 활용할 수 있기 때문입니다. 게다가 셰이더는 컴퓨터로 사고하는 아주 독특하고 재미있는 방식이기도 합니다.
+
+**p5.strands**가 어떻게 동작하는지 이해하기 위해, 이 튜토리얼에서는 서로 다른 개념을 보여 주는 4개의 셰이더를 사용해 하나의 3D 스케치를 만들어 보겠습니다. 코드는 튜토리얼 전반에 걸쳐 단계적으로 완성되며, 마지막에는 전체 코드도 제공됩니다.
+
+## 셰이더란?
+
+셰이더란 GPU 전용 프로그램으로, WebGL 환경에서 쓰이는 GLSL과 같은 특수 언어들로 작성됩니다. 크게 두 종류가 있습니다:
+- **정점 셰이더:** 도형의 꼭짓점을 변형합니다 (*어디에* 그릴지)
+- **프래그먼트 셰이더:** 각 픽셀의 색을 결정합니다 (*어떻게* 그릴지)
+
+<Callout title="Info">
+  프래그먼트 셰이더는 픽셀 셰이더라고 불리기도 합니다.
+</Callout>
+
+WebGL 모드에서 무언가를 렌더링하려면 정점 셰이더와 프래그먼트 셰이더 둘 다 필요합니다. 다행히 p5.js는 기본 셰이더들을 제공하므로 직접 작성할 필요는 없습니다. 다음 스케치를 살펴봅시다:
+
+<EditableSketch code={`
+  let myShader;
+
+  function lightingSetup() {
+    ambientLight(80, 80, 140);
+    const pointX = cos(millis() / 750) * 100;
+    const pointZ = sin(millis() / 750) * 100;
+    pointLight(80, 80, 255, pointX, -60, pointZ);
+  }
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    pixelDensity(1);
+  }
+
+  function draw() {
+    background(100);
+    // shader(baseColorShader());
+    lightingSetup();
+    sphere(80);
+  }
+`} />
+
+직접 셰이더를 지정하지 않아도, 구의 채우기(조명과 음영 계산)와 윤곽선을 처리하는 기본 셰이더가 자동으로 사용됩니다.
+ 
+<Callout title="Tip">
+`draw` 안의 두 번째 줄 주석을 해제해서 `baseColorShader()`를 대신 사용해 보세요.
+</Callout>
+
+`baseColorShader`를 사용하면 구의 채우기 색은 조명의 영향을 받지 않는 단색 흰색이 됩니다.
+
+또한 `filter()`를 호출할 때 사용할 수 있는 필터들 역시 p5.js가 제공하는 셰이더입니다.
+
+WebGL의 재미 중 하나는 직접 셰이더를 작성할 수 있다는 점입니다. 이를 통해 p5의 기본 2D 렌더러로는 구현하기 어려운 수많은 표현이 가능해지고, 실행이 더 빨라집니다. 다음 섹션에서는 본격적으로 튜토리얼을 시작하면서 새로운 p5.js 셰이딩 언어를 사용하는 법을 배워 보겠습니다.
+
+## p5.strands란?
+
+p5.strands라는 이름은 여러 가닥의 실이 동시에 뻗어나가듯, 셰이더가 정보를 병렬로 처리하는 방식에서 따왔습니다.
+
+p5.js의 다른 부분에서는 보통 명령을 하나씩 순서대로 작성합니다. 예를 들어 `circle(10, 10)`을 호출해 "스케치 좌표의 `(10, 10)` 지점에 흰 원을 그려라"라고 캔버스에 지시할 수 있습니다. 그런 다음 계속해서 명령을 더하며, 레이어를 쌓듯이, 이전 도형 위에 새로운 도형을 겹쳐 그립니다.
+
+반대로 셰이더는 모든 정점이나 픽셀에 동시에 하나의 명령 집합을 적용합니다. 각 정점과 픽셀은 동일한 규칙을 따르지만, 자신의 위치에 따라 고유한 결과를 만들어 냅니다. 원을 직접 그리는 대신, 각 픽셀에게 개별적으로 "너는 `(10, 10)`을 중심으로 한 원 안에 있니? 그렇다면 색을 바꿔라."라고 묻는 셈입니다.
+
+"strands"라는 말은 셰이더 파이프라인 안에서 특정 렌더링 동작을 수정할 수 있는 접근 지점을 가리키기도 합니다. 덕분에 셰이더 전체를 처음부터 만들지 않고도 특정 부분만 바꿀 수 있습니다.
+
+정리하자면, p5.strands는 GLSL 위에서 동작하는 JavaScript 기반 셰이딩 언어입니다. 문자열 리터럴 안에 GLSL 코드를 작성하지 않고도 일반적인 `.js` 파일에서 셰이더를 작성할 수 있습니다. 또한 setup 코드를 줄여 주고, p5.js의 다른 기능들과도 잘 통합되므로 셰이더를 배우고 사용하는 일을 p5.js의 핵심 흐름에 더 가깝게 만들어 줍니다.
+
+## p5.strands 시작하기
+### 준비
+p5.strands의 핵심 개념을 소개하기 위해 아주 간단한 셰이더 예제를 만들어 봅시다. p5.strands에서는 완성된 셰이더의 일부 구간(strands 라고 부름)을 JavaScript로 수정할 수 있습니다.
+
+<EditableSketch code={`
+  let firstShader;
+  
+  // p5.strands를 사용하는 콜백 함수입니다.
+  // 기본 셰이더를 어떻게 수정할지 결정합니다.
+
+  function firstShaderCallback() {
+    finalColor.begin();
+
+    // RGBA의 노란색(0-1 범위)
+    const myColor = [1, 1, 0, 1];
+    finalColor.set(myColor);
+
+    finalColor.end();
+  } 
+
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    pixelDensity(1);
+    // p5.strands는 build*Shader 함수로 만듭니다.
+    firstShader = buildColorShader(firstShaderCallback);
+  }
+
+  function draw() {
+    background(0);
+    shader(firstShader);
+    sphere(80);
+  }
+`}/>
+
+이 스케치에서는 노란 구가 표시됩니다.
+
+### 여기서 무슨 일이 일어나고 있을까요?
+1. 셰이더: p5.js는 WebGL 모드에서 이미 내부적으로 셰이더를 사용합니다. p5.strands는 그 셰이더의 일부를 바꿀 수 있도록 열어 줍니다.
+2. strand: strand는 수정 가능한 셰이더의 특정 부분입니다. 이 예제에서 `getFinalColor`는 객체의 최종 색을 바꿀 수 있게 해 주는 strand입니다.
+3. 셰이더 수정하기: 패턴은 다음과 같습니다:
+- `buildColorShader()`, `buildMaterialShader()`, `buildFilterShader()`, `buildStrokeShader()` 같은 빌드 함수를 고릅니다.
+- 그 함수에 콜백 함수를 전달합니다.
+- 콜백 함수 안에서 `finalColor` 같은 strand 블록을 사용해 기본 셰이더 동작의 일부를 덮어씁니다.
+4. 벡터: 셰이더는 색, 위치 등을 표현하는 숫자 묶음인 벡터를 사용합니다. p5.strands에서는 `[x, y, z, w]` 같은 배열 문법이나 `vec4()` 함수를 사용해 벡터를 만들 수 있습니다.
+  - 예를 들어 `[1, 1, 0, 1]`은 색을 나타내는 4요소 벡터입니다. 각 요소는 Red, Green, Blue, Alpha이며 모두 0과 1 사이 값을 가집니다.
+
+### 사용 가능한 셰이더
+p5.strands는 다음과 같은 builder 함수를 제공합니다. 아래 링크를 클릭하면 어떤 함수를 재정의할 수 있는지 알려 주는 레퍼런스를 볼 수 있습니다.
+- [`buildColorShader`](/reference/p5/buildColorShader): WebGL 모드의 기본 셰이더 타입을 만듭니다.
+- [`buildMaterialShader`](/reference/p5/buildMaterialShader): 장면에 조명이 있을 때 자동으로 적용되는 셰이더 타입을 만듭니다.
+- [`buildNormalShader`](/reference/p5/buildNormalShader): 보통 `normalMaterial()` 호출 시 적용되는 기본 셰이더를 만듭니다. 기하학적 객체를 시각적으로 디버깅할 때 자주 사용합니다.
+- [`buildStrokeShader`](/reference/p5/buildStrokeShader): 3D 모드에서 선의 기하학적 객체를 셰이딩하는 셰이더 타입을 만듭니다.
+- [`buildFilterShader`](/reference/p5/buildFilterShader): `filter(BLUR)` 같은 p5.js 후처리 효과를 위한 셰이더 타입을 만듭니다.
+
+처음으로 p5.strands를 사용해 셰이더를 수정해 보았으니, 이제 더 복잡한 장면을 만들어 봅시다! `buildColorShader`와 `buildStrokeShader`로 3D 객체를 만들고, `buildFilterShader`를 이용한 후처리로 최종 결과를 더 풍부하게 만들어 보겠습니다.
+
+## 장면 만들기
+### 파티클 인스턴싱
+GPU는 병렬 계산에 매우 강하기 때문에 수천 개, 심지어 수백만 개의 파티클도 동시에 그릴 수 있습니다. 이를 위해 **GPU 인스턴싱**이라는 기법을 사용할 수 있습니다.
+
+GPU 인스턴싱에서는 GPU에게 같은 객체를 여러 개 복사해서 그리도록 요청하고, 각 복사본에는 고유한 ID(0부터 n-1까지)를 부여합니다. 그런 다음 각 인스턴스의 위치를 이 ID를 기반으로 정할 수 있습니다. 예를 들어 객체를 `[ID, 0, 0]` 좌표에 놓으면 x축을 따라 인스턴스들이 줄지어 배치됩니다.
+
+p5.js에서는 `endShape`과 `model` 함수의 선택적 매개변수들을 사용해서 인스턴싱을 사용할 수 있습니다. 그리고 인스턴싱을 사용하려면 커스텀 셰이더도 필요합니다. 여기서는 `model`을 사용하여 구 형태를 만들어 보겠습니다.
+
+```js
+function setup(){
+  particleModel = 
+      buildGeometry(createSphere);
+}
+
+function createSphere(){
+    sphere(10, 4, 2);
+}
+
+function draw(){
+  shader(instancingShader);
+  // 모델의 인스턴스를 10개 만듭니다.
+  model(particleModel, 10); 
+}
+```
+
+먼저 `baseColorShader()`를 사용해 x축 방향으로 오프셋을 주어 인스턴스들을 배치해 보겠습니다
+
+<EditableSketch code={`
+  let instancingShader;
+  let instancingStrokeShader;
+  let particleModel;
+
+  function instancingCallback() {
+    worldInputs.begin();
+    
+    // 각 인스턴스에 자신의 ID만큼 오프셋 적용합니다.
+    worldInputs.position.x += instanceID() * 20;
+    // 파티클을 화면 왼쪽으로 옮깁니다.
+    worldInputs.position.x -= 150;
+    
+    worldInputs.end();
+  }
+
+  async function setup() {
+    createCanvas(300, 300, WEBGL);
+    pixelDensity(1);
+    particleModel = 
+      buildGeometry(createSphere);
+    instancingShader = 
+      buildColorShader(instancingCallback);
+    instancingStrokeShader = 
+      buildStrokeShader(instancingCallback);
+  }
+
+  function draw() {
+    background(0);
+    orbitControl();
+    shader(instancingShader);
+    strokeShader(instancingStrokeShader);
+    model(particleModel, 16);
+  }
+
+  function createSphere(){
+    sphere(10, 10, 2);
+  }
+`} />
+
+`worldInputs` 블록에는 현재 정점에 대한 다음 데이터가 들어 있습니다: `position`, `normal`, `texCoord`, `color`. 여기서 “world”는 `translate()`나 `scale()` 같은 JavaScript 변환이 적용된 뒤에 이 단계가 실행된다는 뜻입니다.
+{/* TODO: have a pipeline diagram early that we repeatedly reference. */}
+
+<Callout title='월드 공간 vs. 오브젝트 공간'>
+월드 공간에서 움직인다는 것은 장면 전체를 기준으로 이동하는 것이고, 오브젝트 변환은 객체 중심을 기준으로 이루어집니다.
+</Callout>
+
+이제 파티클을 좀 더 흥미로운 패턴으로 배치해 봅시다. 구의 표면 위에 무작위로 배치해 보겠습니다:
+
+<EditableSketch code={`
+  let instancingShader;
+  let instancingStrokeShader;
+  let particleModel;
+
+  function instancingCallback() {
+    function randomPositionOnSphere() {
+      let id = instanceID();
+      let theta = noise([id, 0.1234])  * TWO_PI;
+      let phi = noise([id, 3.321]) * PI;
+      let r = 180;
+      let x = r * sin(phi) * cos(theta);
+      let y = r * cos(phi);
+      let z = r * sin(phi) * sin(theta);
+      return [x, y, z];
+    }
+    worldInputs.begin();
+    worldInputs.position += 
+      randomPositionOnSphere();
+    worldInputs.end();  
+  }
+
+  async function setup() {
+    createCanvas(400, 400, WEBGL);
+    pixelDensity(1);
+    particleModel = buildGeometry(createSphere);
+    instancingShader = 
+      buildColorShader(instancingCallback);
+    instancingStrokeShader = 
+      buildStrokeShader(instancingCallback);
+  }
+
+  function draw() {
+    background(0);
+    orbitControl();
+    shader(instancingShader)
+    fill(255, 100, 150)
+    strokeShader(instancingStrokeShader)
+    model(particleModel, 1000);
+  }
+
+  function createSphere(){
+    sphere(10, 4, 2);
+  }
+`} />
+
+`noise()` 함수는 인스턴스 ID를 기반으로 무작위처럼 보이는 값을 만들어 냅니다.
+
+#### 파티클에 움직임 추가하기
+Strands는 스케치가 실행되기 시작한 뒤 경과한 밀리초 수를 반환하는 `millis()` 함수를 제공합니다. 이 값은 [표준 p5.js `millis()` 함수](/reference/p5/millis/)와 동일합니다. 이를 사용하면 시간 흐름에 따라 각 파티클의 위치를 바꿀 수 있습니다.
+
+<EditableSketch code={`
+  let instancingShader;
+  let instancingStrokeShader;
+  let particleModel;
+  
+  function instancingCallback() {
+  
+    function getAnimatedSpherePosition() {
+      let id = instanceID();
+      let theta = noise([id, 0.1234]) * TWO_PI;
+      // 시간 흐름에 따라 파티클의 위치를 바꿉니다:
+      let phi = noise([id, 3.321]) * PI + 
+                millis() / 10000;
+  
+      // 더 흥미로운 형태를 만들기 위해 반지름을 바꿉니다:
+      let r = 200 * sin(phi);
+      let x = r * sin(phi) * cos(theta);
+      // y축 방향을 조금 늘립니다.
+      let y = r * 1.5 * cos(phi);
+      let z = r * sin(phi) * sin(theta);
+      return [x, y, z];
+    }
+    
+    worldInputs.begin();
+    worldInputs.position += 
+      getAnimatedSpherePosition();
+    worldInputs.end();
+  }
+  
+  async function setup() {
+    createCanvas(400, 400, WEBGL);
+    pixelDensity(1);
+    particleModel = buildGeometry(createSphere);
+    instancingShader = 
+      buildColorShader(instancingCallback);
+    instancingStrokeShader = 
+      buildStrokeShader(instancingCallback);
+  }
+  
+  function draw() {
+    background(0);
+    orbitControl();
+    shader(instancingShader)
+    fill(255, 100, 150)
+    strokeShader(instancingStrokeShader)
+    model(particleModel, 1000);
+  }
+
+  function createSphere(){
+    sphere(10, 4, 2);
+  }
+`} />
+
+phi 각도에 `millis() / 10000`을 더하고 `sin()`으로 반지름을 조정함으로써, 늘어난 구 표면을 따라 흘러가는 파티클 애니메이션을 만들었습니다. 여러 값을 바꿔 가며 다른 형태도 만들어 보세요.
+
+<Callout title='실험해보세요!'>
+`sin()` 대신 `tan()`, `acosh()`, 혹은 여러 함수의 조합을 사용해 보세요. 셰이더 코드의 작은 변화가 극적으로 다른 시각 효과를 만들 때가 많기 때문에, 실험은 큰 도움이 됩니다.
+</Callout>
+
+#### 사용할 수 있는 표준 p5.js 변수
+
+익숙한 p5.js 전역 변수들 중 일부를 p5.strands 셰이더 안에서 그대로 사용할 수 있습니다.
+
+strands 콜백 함수 안에서는 다음 값들을 직접 사용할 수 있습니다:
+
+* 크기 관련: [width](/reference/p5/width),
+[height](/reference/p5/height),
+[displayWidth](/reference/p5/displayWidth),
+[displayHeight](/reference/p5/displayHeight),
+[windowWidth](/reference/p5/windowWidth),
+[windowHeight](/reference/p5/windowHeight).
+
+* 시간과 프레임 수: [deltaTime](/reference/p5/deltaTime),
+[frameCount](/reference/p5/frameCount).
+
+* 포인터(마우스, 터치 등): [mouseIsPressed](/reference/p5/mouseIsPressed),
+[mouseX](/reference/p5/mouseX),
+[mouseY](/reference/p5/mouseY),
+[pmouseX](/reference/p5/pmouseX),
+[pmouseY](/reference/p5/pmouseY),
+[pwinMouseX](/reference/p5/pwinMouseX),
+[pwinMouseY](/reference/p5/pwinMouseY),
+[winMouseX](/reference/p5/winMouseX),
+[winMouseY](/reference/p5/winMouseY).
+
+이들 중 `mouseIsPressed`를 제외한 모든 값은 숫자입니다. `mouseIsPressed`는 불리언(boolean)입니다.
+
+이 값들은 편의를 위해 p5.js가 내부적으로 유니폼 변수(`uniform variable`, 줄여서 유니폼)를 사용해 셰이더에 자동으로 전달합니다. 지금 당장은 이 정보 전달 방식의 세부 사항을 이해할 필요는 없지만, 나중에 다시 만나게 될 것입니다.
+
+### 프레넬 효과
+3D 렌더링에서 가장자리가 빛나는 것처럼 보이는 머티리얼을 본 적이 있거나, 시점을 움직일 때 가상의 물 표면 위 빛 반사가 달라지는 것을 본 적이 있다면, 바로 프레넬 효과를 본 것입니다. 이 효과는 머티리얼이 비스듬한 각도에서 어떻게 보이는지를 바꿔 줍니다.
+
+프레넬 효과는 물체 표면의 어느 부분이 카메라에서 멀어지는 방향을 향하고 있는지 확인합니다. 그래서 카메라 공간에서 작업하는 것이 유용합니다. 카메라 공간는 뷰 공간이라고도 부르며, 다음과 같은 특징이 있습니다:
+- 카메라는 원점 `(0, 0, 0)`에 위치합니다.
+- 카메라는 음의 Z축 방향을 바라봅니다.
+- 모든 3D 위치는 카메라 관점을 기준으로 표현됩니다.
+
+<Callout title='카메라 공간'>
+오브젝트 공간과 월드 공간처럼, 카메라 공간 역시 가상 세계를 보는 또 하나의 상대적 관점입니다. 카메라 공간에서는 현재 카메라가 `(0, 0, 0)`에 놓여 있으므로 나머지 모든 것은 그에 상대적인 위치로 표현됩니다.
+</Callout>
+
+이 시점에서는 표면이 관찰자에게 어떻게 보이는지 더 쉽게 판단할 수 있습니다:
+
+```js
+function fresnelCallback() {
+  
+  cameraInputs.begin();
+  // 구 표면 위의 법선 벡터
+  let normalVector = normalize(
+                       cameraInputs.normal);
+  // 표면에서 카메라를 향하는 벡터를 만듭니다.
+  let viewVector = normalize(
+                     cameraInputs.position);
+  // ...
+  cameraInputs.end();
+}
+```
+
+`let viewVector = normalize(-cameraInputs.position)`이 코드가 어떤 역할을 하는지 차근차근 살펴보겠습니다:
+
+1. 카메라 공간에서 카메라는 `(0, 0, 0)`에 있습니다.
+2. `cameraInputs.position`은 현재 처리 중인 버텍스의 위치를 카메라 공간에서 나타냅니다.
+3. 이 값에 음수를 취하면(`-cameraInputs.position`) 버텍스에서 카메라를 향하는 벡터가 됩니다.
+4. `normalize()`는 이를 “단위 벡터”(길이가 1인 벡터)로 바꾸어, 거리와 무관한 방향 계산에 유용하게 만듭니다.
+
+#### 프레넬 계수 계산하기
+
+프레넬 효과의 핵심은 두 방향을 비교하는 것입니다:
+1. 표면 법선(표면이 향하는 방향)
+2. 시선 방향(표면 기준에서 카메라가 위치한 방향)
+
+```js
+let base = 1 - dot(normalVector, viewVector);
+let fresnel = pow(base, 2);
+```
+이 두 방향의 내적(dot product)은 각 점의 표면이 카메라를 얼마나 정면으로 향하고 있는지 측정합니다. 기술적으로 말하면 두 벡터 사이 각도의 코사인 값을 반환합니다. 즉, 두 벡터의 내적이
+- **1이면** 두 벡터가 같은 방향을 가리키고,
+- **0이면** 두 벡터가 서로 수직이며,
+- **-1이면** 두 벡터가 정반대 방향을 가리킵니다.
+
+표면이 카메라를 정면으로 향하는 점에서는 법선 벡터와 시선 벡터가 거의 평행하므로 내적은 1에 가깝습니다. 반대로 구의 윗부분처럼 비스듬한 각도에서는 내적이 0에 더 가까워집니다.
+
+`1 - dot(normalVector, viewVector)`를 계산하면 이 관계를 뒤집어서, 가장자리 쪽 면의 값이 1에 가까워지게 됩니다. 그러면 객체 가장자리 주변에 하이라이트를 만들기 쉬워집니다.
+
+이 값을 `pow(base, 2)`처럼 거듭제곱하면 전이가 더 극적으로 바뀝니다. 중심부는 더 빠르게 어두워지고, 가장자리의 빛은 더 날카롭게 강조됩니다.
+
+#### 색에 효과 적용하기
+```js
+let col = mix([0, 0, 0], 
+              [1, 0.5, 0.7], 
+              fresnel);
+cameraInputs.color = [col, 1];
+```
+
+GLSL의 `mix()` 함수는 p5.js의 lerp 함수와 비슷합니다. 이제 객체가 카메라를 정면으로 향하고 `fresnel` 값이 0에 가까울 때는 `[0, 0, 0]`(검정)으로, 가장자리에서 `fresnel`이 1에 가까워질수록 `[1, 0.5, 0.7]`의 분홍빛 색으로 점점 변합니다.
+
+참고로 `cameraInputs`는 **정점 셰이더** 내부에서 값을 바꾸는 수단입니다. 정점 위치에 의존하는 계산은 보통 여기서 수행합니다. 따라서 이 단계에서는 **정점 색**을 설정하고 있는 것입니다. 프래그먼트 셰이더는 정점 사이를 보간해서 중간 픽셀도 자연스럽게 이어지도록 합니다.
+
+위에서 반환한 `[col, 1]`도 눈여겨볼 만합니다. p5.strands를 포함한 셰이더 언어에서는 벡터가 핵심 데이터 타입임을 잘 보여 줍니다. 3요소 벡터(`RGB`)와 float 하나(alpha)를 결합해 4요소 벡터(`RGBA`)를 만들 수 있는데, 이는 셰이더 언어의 전형적인 특징입니다.
+
+<EditableSketch code={`
+  let fresnelShader;
+
+  function fresnelCallback() {
+    const fresnelPower = 2;
+    const fresnelBias = -0.1;
+    const fresnelScale = 4;
+  
+    cameraInputs.begin();
+    
+    let n = normalize(cameraInputs.normal);
+    let v = normalize(-cameraInputs.position);
+    let base = 1.0 - dot(n, v);
+    let fresnel = fresnelScale * 
+        pow(base, fresnelPower) + fresnelBias;
+    let col = mix([0, 0, 0], 
+                  [1, 0.5, 0.7], 
+                  fresnel);
+    cameraInputs.color = [col, 1];
+    
+    cameraInputs.end();
+  }
+  
+  async function setup() {
+    createCanvas(400, 400, WEBGL);
+    pixelDensity(1);
+    fresnelShader = buildColorShader(fresnelCallback);
+  }
+  
+  function draw() {
+    background(0);
+    noStroke();
+    orbitControl();
+    shader(fresnelShader);
+    sphere(80);
+  }
+  
+`} />
+
+
+<Callout title="Tip">
+고정된 분홍색 대신 `mouseX`와 `mouseY`를 사용해 상호작용하는 색 변화 효과를 만들어 보세요. 각각을 `width`, `height`로 나누어 0~1 범위 값으로 바꾸어 보면 어떨까요?
+</Callout>
+
+#### 미세 조정
+
+다음 변수들은 최종 결과를 조절하는 데 도움이 됩니다.
+- `fresnelPower`: 값이 클수록 중심에서 가장자리로의 전환이 더 날카로워집니다.
+- `fresnelBias`: 효과의 기준값을 조절해 중심 부분의 밝기(또는 지름)를 조정합니다.
+- `fresnelScale`: 효과의 전체 강도를 키웁니다.
+
+<Callout title="Tip">
+프레넬 변수들을 하드코딩된 값으로 두는 대신, 다음 요소들을 섞어서 시간에 따라 바뀌게 하거나 마우스 위치에 반응하게 만들어 보세요:
+* `sin()`, `cos()`
+* `millis()`
+* `mouseX`, `mouseY`
+* `width`, `height`
+</Callout>
+
+## 후처리
+필터 셰이더는 p5.strands의 다른 셰이더와 거의 같은 방식으로 만들어집니다. 차이점은 필터에서는 화면의 색을 결정하는 프래그먼트 셰이더에만 관심이 있다는 점입니다. 필터 셰이더는 매 프레임마다 스케치의 스냅샷을 찍어 프래그먼트 셰이더로 보내고, 그 안에서 색을 조작합니다. 어떤 효과들은 이런 식의 후처리를 통해서만 구현할 수 있습니다. 
+
+`buildFilterShader()`로 만든 필터 셰이더에서는 `filterColor`라는 하나의 훅(hook) 블록만 사용할 수 있습니다. 여기에는 `texCoord`, `canvasSize`, `texelSize`, 그리고 앞서 말한 스케치의 스냅샷인 `canvasContent`가 제공됩니다. 그리고 `set()` 메서드를 사용해 현재 준비 중인 픽셀의 색을 설정할 수 있습니다.
+
+### 픽셀화 효과
+화면의 모든 픽셀을 각각 계산하는 대신, 일부 지점에서만 색을 샘플링하면 픽셀화 효과를 만들 수 있습니다. 텍스처 좌표(또는 UV 좌표)에 익숙하지 않다면 `filterColor.set([filterColor.texCoord, 0, 1])`을 먼저 설정해 보세요. 2D `texCoord`의 x와 y를 각각 빨강과 초록 값으로 사용하고, 파랑은 0, 알파(불투명도)는 1로 설정한 4요소 벡터로 확장됩니다.
+
+<EditableSketch code={`
+  let pixelateShader;
+
+  function pixelateCallback() {
+    filterColor.begin();  
+    let coord = filterColor.texCoord;
+                   //r, g,  b, a
+    filterColor.set([coord, 0, 1]);
+    filterColor.end();
+  }
+  
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    pixelDensity(1);
+    pixelateShader = buildFilterShader(pixelateCallback);
+  }
+  
+  function draw() {
+    filter(pixelateShader);
+  }
+  
+`}/>
+
+이제 화면의 왼쪽 위는 텍스처 좌표가 `(0, 0)`이므로 검은색이 됩니다. 왼쪽 아래는 `(0, 1)`이라 초록색이 되고, 오른쪽 위는 `(1, 0)`이라 빨간색이 나타납니다.
+
+이를 바탕으로 텍스처 좌표를 조작해 봅시다. 더 많은 픽셀들이 원본 텍스처의 같은 위치에서 색상을 샘플링하여 하나의 큰 픽셀처럼 보이도록 만들어 보겠습니다. 정사각형 픽셀이 되도록 `filterColor.canvasSize`에 비례해 계산합니다.
+
+<EditableSketch code={`
+  let pixelateShader;
+
+  function pixelateCallback() {
+    const pixelCountX = 50;
+    filterColor.begin();
+    const aspectRatio = filterColor.canvasSize.x /
+                        filterColor.canvasSize.y;
+    const pixelSize = [pixelCountX, pixelCountX / aspectRatio];
+    // 수정한 texCoord로 canvasContent 텍스처를 샘플링합니다.
+    const coord = filterColor.texCoord;
+    const modifiedCoord = floor(coord * pixelSize) / 
+                          pixelSize;
+    const col = getTexture(filterColor.canvasContent,
+                           modifiedCoord);
+    filterColor.set(col);
+    filterColor.end();
+  }
+
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    pixelDensity(1);
+    pixelateShader = buildFilterShader(pixelateCallback)
+  }
+
+  function draw() {
+    background(0);
+    rotateY(millis()/2000)
+    sphere(90);
+    filter(pixelateShader);
+  }
+`}/>
+픽셀화 셰이더의 전체 코드입니다. `draw` 함수 맨 아래에서 `filter(pixelShader)`를 호출하면 장면 전체를 픽셀화할 수 있습니다. 이전과 마찬가지로 셰이더를 만들 때는 `buildFilterShader(pixelateCallback)`를 사용해야 합니다.
+
+### 블룸
+후처리에서 “블룸”은 이미지의 가장 밝은 부분이 퍼지면서 주변 픽셀까지 밝아지게 만드는 효과입니다. 복잡한 조명 계산 없이도 장면 일부가 스스로 빛을 내는 듯한 느낌을 줄 수 있습니다. 
+
+블룸은 이미지를 블러(blur) 처리한 버전을 기준으로 임곗값을 정한 다음, 그 임곗값보다 밝은 부분(즉, 이미지의 가장 밝은 영역)을 원본 이미지에 더하는 방식으로 동작합니다. 그러면 원래 객체 주변에 밝은 빛 번짐이 생깁니다.
+
+물론 직접 블러 셰이더를 작성할 수도 있지만, p5.js는 이미 `filter(BLUR)`를 제공합니다. 여기서는 이를 약간 다르게 활용하겠습니다. 먼저, 블러를 적용하기 전에 캔버스 내용을 저장할 `p5.Framebuffer` 객체가 필요합니다.
+
+```js
+let originalImage;
+async function setup() {
+  // 이전 코드...
+  originalImage = createFramebuffer();
+}
+function draw() {
+  // 이전 코드를 프레임버퍼에 그려서 블러를 적용하기 전에 저장해 둡니다.
+  originalImage.begin();
+  // 이전 코드...
+  originalImage.end(); 
+
+  imageMode(CENTER);
+  image(originalImage, 0, 0);
+
+  // 이 값은 블룸이 퍼지는 정도에 영향을 줍니다.
+  filter(BLUR, 15);
+}
+```
+
+아직 스케치가 이전과 똑같이 보일 것입니다. 하지만 이제 블룸 셰이더 안에서 이 프레임버퍼를 사용할 수 있게 되었습니다. 해당 텍스처 데이터를 유니폼 변수로 셰이더에 전달해 봅시다.
+
+`buildFilterShader()`에 넘기는 함수 안에서 다음과 같이 호출합니다:
+
+```js
+const ogImage = uniformTexture(originalImage)
+```
+
+이 한 줄은 스케치와 셰이더를 이어주는 다리의 양쪽 역할을 동시에 해낸다고 볼 수 있습니다:
+
+1. 셰이더 안에 외부 값을 받을 유니폼 변수 `ogImage`를 선언합니다.
+2. 스케치 쪽에서 매 프레임 [setUniform()](https://beta.p5js.org/reference/p5.Shader/setUniform/)을 사용해 이 uniform 변수에 `originalImage` 값을 넣도록 만듭니다.
+
+다음은 이렇게 전달된 원본 캔버스 이미지를 셰이더에서 받아 샘플링하는 `bloomCallback` 함수입니다: 
+
+```js
+function bloomCallback() {  
+  // 셰이더 안에서 사용하기 위해 원본 이미지를 받습니다.
+  const ogImage = uniformTexture(originalImage)
+
+  filterColor.begin();
+  // 텍스처를 벡터 값으로 가져옵니다.
+  const blurred = 
+    getTexture(filterColor.canvasContent, 
+               filterColor.texCoord);
+  const original = 
+    getTexture(ogImage, 
+               filterColor.texCoord);
+
+  const intensity = max(original, 0.3) *
+                        1.5;
+  // 흐린 이미지를 덧씌웁니다.
+  const bloom = original + 
+                blurred * intensity;
+  filterColor.set([bloom.rgb, 1]);
+  filterColor.end();
+}
+```
+
+<EditableSketch code={`
+  let bloomShader;
+  let originalImage;
+
+  function bloomCallback() {
+    // 셰이더 안에서 사용하기 위해 원본 이미지를 받습니다.
+    const preBlur = uniformTexture(originalImage);
+  
+    filterColor.begin();
+    const blurred = getTexture(filterColor.canvasContent,
+                               filterColor.texCoord);
+    const original = getTexture(preBlur, 
+                                filterColor.texCoord);
+    
+    const intensity = max(original, 0.2) * 8;
+      
+    const bloom = original + blurred * intensity;
+    filterColor.set([bloom.rgb, 1]);
+    filterColor.end();
+  }
+
+
+  async function setup() {
+    createCanvas(200, 200, WEBGL);
+    pixelDensity(1);
+    originalImage = createFramebuffer();
+    bloomShader = buildFilterShader(bloomCallback);
+  }
+
+  function draw() {
+    // 이전 코드를 프레임버퍼에 그려서 블러 전에 저장해 둡니다.
+    originalImage.begin();
+    background(0);
+    rotateY(millis()/1000);
+    fill(40, 120, 255);
+    box(80);
+    originalImage.end();
+
+    imageMode(CENTER);
+    image(originalImage, 0, 0);
+
+    // 이 값은 블룸의 퍼짐 정도에 영향을 줍니다.
+    filter(BLUR, 20);
+    filter(bloomShader);
+  }
+`} />
+
+`intensity` 변수를 계산하는 코드에는 두 개의 매직 넘버가 있습니다:
+```js
+const intensity = max(original, 0.2) * 8;
+```
+* `max` 안의 `0.2`는 일종의 임곗값 역할을 합니다. 흐려진 이미지에서 완전히 검은 영역은 결국 0과 곱해지므로 블룸의 영향을 받지 않습니다. 
+* `8`은 효과 전체의 강도를 키우는 값입니다.  
+
+원하는 결과가 나올 때까지 값을 자유롭게 조정해 보세요. 마우스나 시간 입력으로 제어해도 좋습니다!
+
+블룸 값에서는 `.rgb` 성분만 선택합니다. 그렇지 않으면 알파 값이 1보다 커져 예상치 못한 결과가 생기기 때문입니다. 그리고 일부 성분만 선택했으니, 여기서 '스위즐링(swizzling)'도 시도해 볼 수 있습니다. 스위즐링은 GLSL과 다른 셰이더 언어에 있는 기능으로, 벡터의 원하는 성분만 골라 새 벡터를 만들 수 있게 해 줍니다.
+
+`.rgba`, `.xyzw`, `.stpq`(텍스처 좌표용) 중 어떤 조합이든 읽거나 설정할 수 있습니다. 이 표기들은 서로 별칭일 뿐이며 결국 `[0, 1, 2, 3]` 값을 선택하는 동일한 의미입니다. 즉 `col.xyzw`라고 쓰는 것은 `col.rgba`라고 쓰는 것과 같습니다.
+
+마지막 색 조정을 위해 `.ggr`처럼 다른 조합도 시도해 보세요. 그러면 `[col.g, col.g, col.r, 1]` 같은 새 벡터가 만들어집니다. 예를 들어 `[col.yyy, 1]`은 회색조 출력을 만듭니다. `rgb` 값이 모두 같기 때문입니다.
+
+<Callout title="Hint">
+'스위즐링'으로 반환값을 바꿔서 다음과 같이 작성해 보세요.
+`filterColor.set([col.ggr, 1])`. 
+</Callout>
+
+## 정리
+우리는 p5.strands에서 4개의 셰이더를 작성했고, 정점 셰이더와 프래그먼트 셰이더를 다루는 법을 배웠습니다.
+
+- **기본 컬러 셰이더** - 기본 컬러 셰이더를 간단히 수정하면서 객체의 최종 색에 접근하고 이를 바꾸는 법을 배웠습니다. 이 작업은 *프래그먼트 셰이더*에서 이루어졌습니다.
+- **인스턴싱된 파티클** - GPU 인스턴싱을 시도해 수백 개의 파티클을 렌더링했습니다. 객체를 월드 공간에서 이동시켰고, 이 작업은 *정점 셰이더*에서 이루어졌습니다.
+- **프레넬 가장자리 하이라이팅** - 3D 객체 가장자리가 빛나는 보다 심화된 효과를 만들었습니다. 각 버텍스의 색을 위치에 따라 정했기 때문에, 이 작업은 *카메라 공간*의 *정점 셰이더*에서 수행되었습니다.
+- **후처리** - 두 개의 필터 셰이더를 사용해 장면을 하나로 묶었습니다. *프래그먼트 셰이더*만 수정하면 되었습니다.
+
+이 프로젝트의 완성 코드는 아래 예제 스케치와 함께 제공됩니다.
+
+### 다음에는?
+많은 GLSL 예제를 p5.strands로 옮길 수 있습니다. 언어 기능의 상당 부분이 지원되기 때문입니다. `vec4(1.0)`처럼 GLSL 타입을 만드는 함수도 제공되므로, 앞에서 사용한 랜덤 함수처럼 일부 헬퍼 함수도 그대로 가져올 수 있습니다. 만들어 보고 싶은 효과를 찾아서, strand를 하나씩 쌓아 가며 코드를 작성해 보세요.
+
+셰이더를 더 공부하고 싶다면 다음 자료를 참고해 보세요:
+- [p5.js](/tutorials/intro-to-shaders), GLSL을 사용하는 유사한 p5.js 튜토리얼
+- [p5.js shaders](https://itp-xstory.github.io/p5js-shaders/#/), Casey Conchinha와 Louise Lessél이 만든 셰이더 가이드
+- [Shadertoy](https://www.shadertoy.com/), 브라우저 편집기에서 작성된 셰이더를 모아 둔 대형 온라인 컬렉션
+- [The Book of Shaders](http://www.thebookofshaders.com/), Patricio Gonzalez Vivo와 Jen Lowe의 셰이더 가이드
+
+## 최종 코드
+<EditableSketch code={`
+  let instancedShader;
+  let instancedStrokeShader;
+  let stars;
+  let originalImage;
+  let pixelateShader;
+  let fresnelShader;
+  let bloomShader;
+
+  function fresnelShaderCallback() {
+    const fresnelPower = 2;
+    const fresnelBias = -0.1;
+    const fresnelScale = 2;
+    
+    cameraInputs.begin();
+    
+    let n = normalize(cameraInputs.normal);
+    let v = normalize(-cameraInputs.position);
+    let base = 1.0 - dot(n, v);
+    let fresnel = fresnelScale * pow(base, fresnelPower) + fresnelBias;
+    let col = mix([0, 0, 0], [1, .5, .7], fresnel);
+    cameraInputs.color = [col, 1];
+    cameraInputs.end(); 
+    
+  }
+
+  function starShaderCallback() {
+    const skyRadius = 250;
+    function semiSphere() {
+      let id = instanceID();
+      let theta = noise([id, 0.1234])  * TWO_PI + millis() / 100000;
+      let phi = noise([id, 3.321]) * PI + millis() / 50000;
+
+      let r = skyRadius;
+      r *= sin(phi);
+      let x = r * sin(phi) * cos(theta);
+      let y = r * 1.5 * cos(phi);
+      let z = r * sin(phi) * sin(theta);
+      return [x, y, z];
+    }
+  
+    worldInputs.begin();
+    worldInputs.position += semiSphere();
+    worldInputs.end();
+  
+    objectInputs.begin();
+    let size = 1 + 0.5 * sin(millis() * 0.002 + instanceID());
+    objectInputs.position *= size;
+    objectInputs.end();
+  }
+
+  function pixelateShaderCallback() {
+    const pixelCountX = 280;
+
+    filterColor.begin();
+    const aspectRatio = filterColor.canvasSize.x 
+                        / filterColor.canvasSize.y;
+    const pixelSize = [pixelCountX, pixelCountX 
+                                    / aspectRatio];
+
+    let coord = filterColor.texCoord;
+    coord = floor(coord * pixelSize) / pixelSize;
+
+    let col = getTexture(filterColor.canvasContent, 
+                         coord);      
+    filterColor.set(col) //[coord, 0, 1];
+    filterColor.end();
+  }
+
+  function bloomShaderCallback() {
+    const preBlur = uniformTexture(originalImage);
+
+    filterColor.begin();
+    const blurredCol = getTexture(
+        filterColor.canvasContent, 
+        filterColor.texCoord);
+    const originalCol = getTexture(
+        preBlur, filterColor.texCoord);
+
+    const intensity = max(originalCol, 0.1) * 12.2;
+
+    const bloom = 
+      originalCol + blurredCol * intensity;
+    filterColor.set([bloom.rgb, 1]);
+    filterColor.end();
+  }
+
+  async function setup(){
+    createCanvas(800, 600, WEBGL);
+    pixelDensity(1);
+    stars = buildGeometry(createSphere);
+    originalImage = createFramebuffer();
+  
+    starShader = 
+      buildMaterialShader(starShaderCallback); 
+    starStrokeShader = 
+      buildStrokeShader(starShaderCallback)
+    fresnelShader = 
+      buildColorShader(fresnelShaderCallback);
+    bloomShader = 
+      buildFilterShader(bloomShaderCallback);
+    pixelateShader = 
+      buildFilterShader(pixelateShaderCallback);
+  }
+
+  function draw(){
+    originalImage.begin();
+    background(0);
+    orbitControl();
+  
+    push()
+    strokeWeight(2)
+    stroke(255,0,0)
+    rotateX(PI/2 + millis() * 0.0005);
+    fill(255,100, 150)
+    strokeShader(starStrokeShader)
+    shader(starShader);
+    model(stars, 1000);
+    pop()
+  
+    push()
+    shader(fresnelShader)
+    noStroke()
+    sphere(90);
+    filter(pixelateShader);
+    pop()
+  
+    originalImage.end();
+    
+    imageMode(CENTER)
+    image(originalImage, 0, 0)
+    
+    filter(BLUR, 15)
+    filter(bloomShader);
+  }
+
+  function createSphere(){
+    sphere(8, 4, 2);
+  }
+`} />
