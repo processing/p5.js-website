@@ -63,6 +63,9 @@ export const CodeEmbed = (props) => {
       setPreviewCodeString(codeString);
     }
     announce("Sketch is running");
+
+    // Analytics for per-user (anonymized, no-cookie) conversion: did they run a sketch?
+    window.fathom.trackEvent(`Run Sketch`);
   };
 
   const [previewCodeString, setPreviewCodeString] = useState(codeString);
