@@ -9,6 +9,7 @@ import { contributorDocsCollection } from "./contributor-docs/config";
 import { homepageCollection } from "./homepage/config";
 import { pagesCollection } from "./pages/config";
 import { bannerCollection } from "./banner/config";
+import { topBannerCollection } from "./top-banner/config";
 
 /**
  * All content collections defined in subfolders of /src/content/
@@ -28,4 +29,5 @@ export const collections = {
   homepage: homepageCollection,
   pages: pagesCollection,
   banner: bannerCollection,
+  "top-banner": topBannerCollection,
 };

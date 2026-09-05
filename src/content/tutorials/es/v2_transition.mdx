@@ -1,0 +1,460 @@
+---
+title: "Guía para docentes sobre la versión 2 de p5.js"
+description: Una guía para profesores de secundaria y preparatoria sobre la transición desde versiones anteriores a la versión 2 de p5.js.
+category: "2.0"
+featuredImage: ../images/featured/v2-transition.gif
+featuredImageAlt: Diagrama animado de los cambios en la API entre la versión 1 y la versión 2 de p5.js
+relatedContent:
+  references:
+    - en/p5/mousebutton
+    - en/p5/keyispressed
+    - en/p5/loadimage
+    - en/p5/keyisdown
+  examples:
+    - en/16_parallel_loading_promise/01_async_image_loader
+authors:
+  - Adrienne Gifford
+---
+import Callout from "../../../components/Callout/index.astro";
+
+## p5.js v2 Guía de Transición para Educadores de Secundaria y Preparatoria
+
+Siendo profesor de secundaria, entiendo que una nueva versión de una herramienta en la que confías se puede sentir como un gran ajuste, sobre todo cuando tienes una serie de clases y actividades que conoces y disfrutas.
+
+Si sientes cierta incomodidad sobre lo que implica la transición hacia la versión 2 de p5.js, esta guía va a servir para que puedas entender las diferencias con mayor tranquilidad. La mayoría de las acciones que tus estudiantes realizan funcionan de la misma manera que en versiones anteriores.
+
+Después de revisar múltiples programas de escuelas secundarias y escuelas preparatorias ([CS4All Creative Web](https://blueprint.cs4all.nyc/curriculum/creative-web/), [CS4All Introduction to Computational Media](https://blueprint.cs4all.nyc/curriculum/intro-to-computational-media/), [CodeHS Digital Art with p5.js](https://codehs.com/course/p5-js/overview), [CSinSF Creative Computing](https://sites.google.com/sfusd.edu/csinsfcreativecomputing/home?authuser=0), [Processing Foundation Art + Code](https://processing.github.io/art-plus-code/codeAsCreativeMedium-intro/)) solamente dos áreas requieren actualizarse al ir de p5.js v1 hacia v2.
+
+* Eventos de Input
+* Carga de Recursos
+
+Aunque existen [otras actualizaciones en v2](https://github.com/processing/p5.js-compatibility) (así como cambios a formas curvas, medición de texto, y funciones utilitarias), éstas no aparecen generalmente en los programas de las escuelas secundarias y preparatorias, y es poco probable que impacten en tu trabajo con estudiantes. 
+
+Esta guía te explica los cambios más comunes que encontrarás en un aula de secundaria o preparatoria. Aprenderás cómo actualizar tu código para la versión 2 de p5.js, y cuándo los complementos de compatibilidad puedan ser útiles para sketches antiguos. 
+
+He tratado de incluir solo lo que necesitas y nada más, para que puedas ponerte al día fácilmente y estar seguro de enseñar con la versión 2 de p5.js. 
+
+## Versiones en el Editor Web
+
+La mayoría del tiempo, tus estudiantes y tú pueden usar la versión 2 de p5.js sin hacer cambios.
+
+Sin embargo, si abres un sketch viejo (por ejemplo, algo que un estudiante creó en años anteriores o un ejemplo desde un curriculum diseñado para la versión 1 de p5.js), y su comportamiento no es el mismo, tienes estas opciones:
+
+* **Actualizar el sketch** usando el ejemplo de esta guía
+* Activar el **complemento de compatibilidad** 
+* Volver al sketch para la versión 1 de p5.js en el Editor Web 
+
+![Pantallazo de la selección de versiones de p5.js en el Editor Web.](../images/2.0/v2-libman.png)
+
+
+## Eventos de Input
+
+Es probable que los eventos de Input sean el primer lugar donde notes diferencias en la versión 2 de p5.js. Los estudiantes pueden usar eventos de input para:
+
+* Seleccionar o alternar botones
+* Dibujar con el ratón mientras se mantiene pulsado
+* Cambiar variables al pulsar una tecla
+* Borrar o guardar el lienzo
+* Mover un personaje de un juego con las teclas de flecha
+
+Esta sección abarca el código de eventos de input que probablemente verás en las aulas de secundaria o preparatoria y los cambios introducidos en la versión 2 de p5.js.
+
+### Clicks del Mouse
+
+
+En la versión 1 de p5.js, verificar por un botón específico del mouse se veía así:
+
+```js
+if (mouseButton === RIGHT) {
+  // haz algo (p5.js v1)
+}
+```
+
+En la versión 2 de p5.js, se ve así:
+
+```js
+if (mouseButton.right) {
+  // haz algo (p5.js v2)
+}
+```
+
+**Referencia:** [mouseButton](/reference/p5/mouseButton/)
+
+<Callout title="Nota del Educador">
+En v2, mouseButton es ahora un objeto con propiedades booleanas (izquierda, derecha, centro). Esto hace posible detectar múltiples botones de una vez. Esto es especialmente útil para aplicaciones de dibujo o herramientas para pintar, donde tus estudiantes quieran diferentes comportamientos para los diferentes botones del mouse.
+</Callout>
+
+### Entrada de Teclado
+
+En la versión 1 de p5.js, la mayoría del curriculum de secundaria y preparatoria verificaban el uso de teclas en código como:
+
+```js
+if (keyIsPressed) {
+  if (key === UP_ARROW){
+    // haz algo (p5.js v1)
+  }
+}
+```
+
+A menudo `keyIsPressed` se enseñá inicialmente como una variable simple de tipo booleano y `key ===` encaja con la estructura de comparación que los estudiantes ya están usando.
+
+En la versión 2 de p5.js, la manera recomendada de verificar por teclas es:
+
+```js
+if (keyIsDown(UP_ARROW)) {
+  // haz algo (p5.js v2)
+}
+```
+
+`keyIsDown()` es el enfoque recomendado actual ya que funciona consistentemente a través de ambas versiones v1 y v2, y soporta verificaciones de múltiples teclas a la vez.
+
+
+**Referencia:** [keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+### Referencia Rápida de Eventos de Entrada
+
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+<th>
+
+Referencia
+
+</th>
+
+</tr>
+
+<tr>
+
+<td>
+
+`mouseButton === RIGHT`
+
+
+</td>
+
+<td>
+
+`mouseButton.right`
+
+</td>
+
+<td>
+
+[mouseButton](https://beta.p5js.org/reference/p5/mouseButton/)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+`keyIsPressed` <br /> `key === UP_ARROW`
+
+</td>
+
+<td>
+
+`keyIsDown(UP_ARROW)`
+
+</td>
+
+<td>
+
+[keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+</td>
+
+</tr>
+
+</table>
+
+
+### Complementos de Compatibilidad (Opcional)
+
+Para la nueva enseñanza, sigue el código de versión 2 que se muestra arriba. 
+
+Si tienes sketches antiguos que quieres seguir usando sin actualizar el código, el complemento de compatibilidad **Datos y Eventos** restaura el comportamiento de la versión 1.
+
+Consulta la sección *Complementos de compatibilidad* a continuación para obtener más detalles.
+
+
+## Carga de Recursos
+
+A medida que los estudiantes avanzan en el curriculum, podrían querer personalizar sus sketches añadiendo imágenes, sonidos, fuentes tipográficas, u otros recursos.
+
+En la versión 1 de p5.js, esto se hacía usando `preload()`.
+En la versión 2 de p5.js, usamos `async` y `await` dentro de `setup()`.
+
+### `preload()` en p5.js v1
+
+En la versión 1 de p5.js, `preload()` detenía el sketch de ejecutarse hasta que todo lo que contenía terminara de cargarse:
+
+```js
+let img;
+
+function preload(){
+  // usada en p5.js v1, pero no en v2
+  img = loadImage("cat.jpg");
+}
+
+function setup(){
+  createCanvas(100, 100);
+  image(img, 0, 0);
+}
+```
+
+
+### `async` y `await` en p5.js v2
+
+En la versión 2 de p5.js, `preload()` ya no se usa, y los recursos son cargados usando `await` dentro de `async setup()`. Esto funciona para imágenes, sonidos, fuentes tipográficas, y otros archivos:
+
+```js
+let img;
+
+async function setup() {
+  createCanvas(100, 100);
+  
+  // espera a que los recursos se carguen
+  img = await loadImage("cat.jpg");
+  
+  image (img, 0, 0);
+}
+```
+
+
+
+### Referencia Rápida de Carga de Recursos
+
+
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+
+</tr>
+
+<tr>
+
+<td>
+
+```js
+function preload(){   
+  img = loadImage(
+    "cat.jpg"
+  );
+}
+```
+
+</td>
+
+<td>
+
+```js
+async function setup() {
+  createCanvas(100, 100);
+  img = await loadImage(
+    "cat.jpg"
+  ); 
+}
+```
+
+</td>
+
+
+</tr>
+</table>
+
+
+**Referencia:** [async_await](https://beta.p5js.org/reference/p5/async_await/)
+
+
+
+### Complementos de Compatibilidad (Opcional)
+
+Para la nueva enseñanza, sigue el código de versión 2 que se muestra arriba. 
+
+Si tienes sketches antiguos que quieres seguir usando sin actualizar el código, el complemento de compatibilidad **Preload** restaura el comportamiento de la versión 1.
+
+Consulta la sección *Complementos de compatibilidad* a continuación para obtener más detalles.
+
+## Complementos de Compatibilidad
+
+Los complementos de compatibilidad son archivos auxiliares opcionales que puedes activar en el editor de p5.js para que los sketches antiguos de la versión 1 de p5.js se comporten de la misma manera en la versión 2 de p5.js, sin actualizar el código. 
+
+Estos complementos son necesarios si tú o tus estudiantes abren sketches antiguos desde la web o de material didáctico que usen patrones de la versión 1 de p5.js y aún no estás listo para actualizar el código a la versión 2 de p5.js.
+
+Al generar nuevos ejercicios, es mejor usar la sintaxis de la versión 2 para escribir código, de esta manera los estudiantes aprenden con la versión que tendrá soporte de aquí en adelante. 
+
+* Para Eventos de Inputs, usa los Complementos de Compatibilidad **Datos y Eventos**
+* Para Carga de Recursos, usa los Complementos de Compatibilidad **Preload**
+
+
+![Captura de pantalla de la pestaña de administración de librerías en el Editor p5.js, donde el usuario puede activar o desactivar librerías complementarias compatibles con las versiones 1.x ](../images/2.0/v2-addons.png)
+
+*También verás un Complemento de Compatibilidad para **Formas** - los cambios en la API de Formas afecta solamente a formas personalizadas más avanzadas que no suelen aparecer en el curriculum de secundaria y preparatoria, así que la mayoría de estos educadores no necesitarán este complemento de compatibilidad*
+
+
+## Referencia Rápida para Educadores
+
+
+
+<table>
+
+<tr>
+
+<th>
+
+p5.js v1
+
+</th>
+
+<th>
+
+p5.js v2
+
+</th>
+
+<th>
+
+Referencia
+
+</th>
+
+<tr>
+<th colspan="3">
+Eventos de Input
+</th>
+</tr>
+
+</tr>
+
+<tr>
+
+<td>
+
+`mouseButton === RIGHT`
+
+
+</td>
+
+<td>
+
+`mouseButton.right`
+
+</td>
+
+<td>
+
+[mouseButton](https://beta.p5js.org/reference/p5/mouseButton/)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+`keyIsPressed` <br />
+`key === UP_ARROW`
+
+</td>
+
+<td>
+
+`keyIsDown(UP_ARROW)`
+
+</td>
+
+<td>
+
+[keyIsDown](https://beta.p5js.org/reference/p5/keyIsDown/)
+
+</td>
+
+</tr>
+
+
+<tr>
+<th colspan="3">
+Carga de Recursos
+</th>
+</tr>
+
+
+<tr>
+
+
+</tr>
+
+<tr>
+
+<td>
+
+```js
+function preload(){   
+  img = loadImage("cat.jpg");
+}
+```
+
+</td>
+
+<td>
+
+```js
+async function setup() {
+  createCanvas(100, 100);
+  img = await loadImage("cat.jpg"); 
+}
+```
+
+</td>
+
+<td>
+
+[async_await](https://beta.p5js.org/reference/p5/async_await/)
+
+</td>
+
+</tr>
+</table>
+
+
+
+
+
+
+<Callout title="Nota del Educador">
+Esta referencia rápida incluye solamente los cambios en la versión 2 de p5.js que a menudo afectan al curriculum de secundaria y preparatoria (eventos de input y carga de recursos). Otras actualizaciones de la versión 2 (como cambios en formas curvas, medición de texto, y funciones de utilidad) no aparecen en el curriculum revisado. Para ver la lista completa de cambios en la versión 2, consulta la [Guía Técnica de Transición](https://github.com/processing/p5.js-compatibility). 
+</Callout>
+
