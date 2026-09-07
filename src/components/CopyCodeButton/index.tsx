@@ -44,7 +44,7 @@ export const CopyCodeButton = ({
           copyTextToClipboard();
         }}
         ariaLabel="Copy code to clipboard"
-        className={`bg-white ${isCopied ? 'text-green-600' : 'text-black'} transition-colors duration-200`}
+        class={`bg-white ${isCopied ? 'text-green-600' : 'text-black'} transition-colors duration-200`}
       >
         {isCopied ? (
           <svg 
