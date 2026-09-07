@@ -16,10 +16,15 @@ if (shouldSkipCompress) {
   console.log("WILL SKIP COMPRESS BUILD STEP");
 }
 
+const isA11yTest = Boolean(process.env.A11Y_TEST);
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://p5js.org',
   compressHTML: false,
+  devToolbar: {
+    enabled: !isA11yTest,
+  },
   integrations: [
     mermaid({autoTheme: true}),
     preact({

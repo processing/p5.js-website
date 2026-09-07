@@ -4,138 +4,27 @@ module: 3D
 submodule: p5.strands
 file: src/strands/p5.strands.js
 description: >
+  <p>A function alias for <a
+  href="/reference/p5/instanceIndex/"><code>instanceIndex</code></a>, kept for
+  compatibility.
+
+  Prefer using <a
+  href="/reference/p5/instanceIndex/"><code>instanceIndex</code></a> directly as
+  a value instead.</p>
+
   <p>Returns the index of the current instance when drawing multiple copies of a
 
-  shape with <a href="/reference/p5/model/"><code>model(count)</code></a>. The
-  first instance has an
-
-  ID of <code>0</code>, the second has <code>1</code>, and so on.</p>
-
-  <p>This lets each copy of a shape behave differently. For example, you can use
-
-  the ID to place instances at different positions, give them different colors,
-
-  or animate them at different speeds.</p>
+  shape with <a href="/reference/p5/model/"><code>model(count)</code></a>.</p>
 
   <p><code>instanceID()</code> can only be used inside a p5.strands shader
   callback.</p>
-
-  <pre><code class="language-js example">let instancesShader;
-
-  let instance;
-
-  let count = 5;
-
-
-  function drawInstance() {
-    sphere(15);
-  }
-
-
-  function setup() {
-    createCanvas(200, 200, WEBGL);
-    instance = buildGeometry(drawInstance);
-    instancesShader = buildMaterialShader(drawSpaced);
-    describe('Five red spheres arranged in a horizontal line.');
-  }
-
-
-  function drawSpaced() {
-    worldInputs.begin();
-    // Spread spheres evenly across the canvas based on their index
-    let spacing = width / count;
-    worldInputs.position.x +=
-      (instanceID() - (count - 1) / 2) * spacing;
-    worldInputs.end();
-  }
-
-
-  function draw() {
-    background(220);
-    lights();
-    noStroke();
-    fill('red');
-    shader(instancesShader);
-    model(instance, count);
-  }</code></pre><p>If you are using WebGPU mode, a common pattern is to use
-  <code>instanceID()</code> to look up data made with
-
-  <a href="/reference/p5/createStorage/"><code>createStorage()</code></a>.
-
-  This lets you give each instance different properties.</p>
-
-  <pre><code class="language-js example">let instanceData;
-
-  let instancesShader;
-
-  let instance;
-
-  let count = 5;
-
-
-  async function setup() {
-    await createCanvas(200, 200, WEBGPU);
-
-    let data = [];
-    for (let i = 0; i < count; i++) {
-      data.push({
-        position: createVector(
-          random(-1, 1) * width / 2,
-          random(-1, 1) * height / 2,
-          0,
-        ),
-        color: color(
-          random(255),
-          random(255),
-          random(255)
-        )
-      });
-    }
-    instanceData = createStorage(data);
-    instance = buildGeometry(drawInstance);
-    instancesShader = buildMaterialShader(drawInstances);
-    describe('Five spheres at random positions, each a different random color.');
-  }
-
-
-  function drawInstance() {
-    sphere(15);
-  }
-
-
-  function drawInstances() {
-    let data = uniformStorage(instanceData);
-    let itemColor = sharedVec4();
-
-    worldInputs.begin();
-    let item = data[instanceID()];
-    itemColor = item.color;
-    worldInputs.position += item.position;
-    worldInputs.end();
-
-    finalColor.begin();
-    finalColor.set(itemColor);
-    finalColor.end();
-  }
-
-
-  function draw() {
-    background(220);
-    lights();
-    noStroke();
-    shader(instancesShader);
-    model(instance, count);
-  }</code></pre><p>This can be paired with <a
-  href="/reference/p5/buildComputeShader/"><code>buildComputeShader</code></a>
-
-  to update the data being read.</p>
 line: 212
+deprecated: Use <a href="#/p5/instanceIndex"><code>instanceIndex</code></a> instead.
 isConstructor: false
 itemtype: method
 example: []
 class: p5
 beta: true
-webgpu: true
 return:
   description: The index of the current instance.
 overloads:

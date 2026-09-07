@@ -11,35 +11,24 @@ example:
 
     <div>
     <code>
-     let cnv, soundFile, pitchShifter;
+    let cnv, pitchShifter;
      
-    function preload() {
-      soundFile = loadSound('/assets/beatbox.mp3');
-    }
-     
-    function setup() {
-      cnv = createCanvas(100, 100);
-      cnv.mousePressed(startSound);
+    async function setup() {
+      describe('a sketch that pitches the microphone input up an octave');
+      createCanvas(100, 100);
       background(220);
       textAlign(CENTER);
       textSize(9);
+      textWrap(WORD)
       text('click to play sound', width/2, height/2);
-      pitchShifter = new p5.PitchShifter();
-      
-      soundFile.disconnect();
-      soundFile.connect(pitchShifter);
-      //change the pitch and retrigger sample when done playing
-      soundFile.onended(changePitch);
+      mic = new p5.AudioIn();
+      pitchShifter = new p5.PitchShifter(12);
+      mic.disconnect();
+      mic.connect(pitchShifter);
     }
 
-    function startSound () {
-      soundFile.play();
-    }
-     
-    function changePitch () {
-      let pitchValue = random(-12, 12);
-      pitchShifter.shift(pitchValue);
-      soundFile.play();
+    function mousePressed () {
+      mic.start();
     }
     </code>
     </div>

@@ -3,7 +3,7 @@ title: sin
 module: Math
 submodule: Trigonometry
 file: src/math/trigonometry.js
-description: >
+description: >-
   <p>Calculates the sine of an angle.</p>
 
   <p><code>sin()</code> is useful for many geometric tasks in creative coding.
@@ -16,62 +16,102 @@ description: >
 
   if <a href="/reference/p5/angleMode/">angleMode()</a> setting (RADIANS or
   DEGREES).</p>
-line: 468
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('A white ball on a string oscillates up and down.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Calculate the coordinates.
+    let x = 50;
+    let y = 30 * sin(frameCount * 0.05) + 50;
+
+    // Draw the oscillator.
+    line(50, y, x, y);
+    circle(x, y, 20);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    describe('A series of black dots form a wave pattern.');
+  }
+
+
+  function draw() {
+    // Calculate the coordinates.
+    let x = frameCount;
+    let y = 30 * sin(x * 0.1) + 50;
+
+    // Draw the point.
+    point(x, y);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    describe('A series of black dots form an infinity symbol.');
+  }
+
+
+  function draw() {
+    // Calculate the coordinates.
+    let x = 30 * cos(frameCount * 0.1) + 50;
+    let y = 10 * sin(frameCount * 0.2) + 50;
+
+    // Draw the point.
+    point(x, y);
+  }</code></pre><p><code>sin()</code> can also be used in shaders with
+  p5.strands. The following example
+
+  uses <code>sin()</code> to oscillate the color of a shape over time.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildColorShader(shaderCallback);
+    describe('A sphere that pulses between cyan and magenta.');
+  }
+
+
+  function shaderCallback() {
+    // shaderCallback runs on the GPU. millis() gives ms since start; multiply by 0.001 for seconds.
+    let t = millis() * 0.001;
+
+    // sin(t) oscillates between -1 and 1.
+    // 0.5 + 0.5 * sin(t) remaps this to the 0 to 1 range.
+    let value = 0.5 + 0.5 * sin(t);
+
+    // Each color is [R, G, B, A] with values from 0 to 1.
+    let cyan = [0, 1, 1, 1];
+    let magenta = [1, 0, 1, 1];
+
+    finalColor.begin();
+
+    // mix() blends between cyan (when value = 0) and magenta (when value = 1).
+    finalColor.set(mix(cyan, magenta, value));
+
+    finalColor.end();
+  }
+
+
+  function draw() {
+    background(220);
+    shader(myShader);
+    noStroke();
+    sphere(30);
+  }</code></pre>
+line: 686
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('A white ball on a string oscillates up and down.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Calculate the coordinates.
-      let x = 50;
-      let y = 30 * sin(frameCount * 0.05) + 50;
-
-      // Draw the oscillator.
-      line(50, y, x, y);
-      circle(x, y, 20);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      describe('A series of black dots form a wave pattern.');
-    }
-
-    function draw() {
-      // Calculate the coordinates.
-      let x = frameCount;
-      let y = 30 * sin(x * 0.1) + 50;
-
-      // Draw the point.
-      point(x, y);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(200);
-
-      describe('A series of black dots form an infinity symbol.');
-    }
-
-    function draw() {
-      // Calculate the coordinates.
-      let x = 30 * cos(frameCount * 0.1) + 50;
-      let y = 10 * sin(frameCount * 0.2) + 50;
-
-      // Draw the point.
-      point(x, y);
-    }
+example: []
 class: p5
 return:
   description: sine of the angle.

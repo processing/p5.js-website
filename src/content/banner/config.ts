@@ -12,6 +12,8 @@ export const bannerCollection = defineCollection({
   schema: () =>
     z.object({
       title: z.string(),
+      // Accessible name for the banner landmark, announced by screen readers.
+      label: z.string(),
       link: z.string(),
       hidden: z.boolean().optional(),
     }),
