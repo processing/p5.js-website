@@ -13,9 +13,9 @@ export const CircleButton = ({
   ariaLabel,
   children,
   href,
-  class: customClass = "",
+  class: className = "",
 }: CircleButtonProps) => {
-  const sharedClass = `circle-button grid place-items-center w-[40px] h-[40px] rounded-full p-xs hover:border-type-white text-black hover:!bg-bg-black hover:text-type-white ${customClass}`;
+  const sharedClass = `circle-button grid place-items-center w-[40px] h-[40px] rounded-full p-xs hover:border-type-white text-black hover:!bg-bg-black hover:text-type-white ${className}`;
   if (href) {
     return (
       <a
