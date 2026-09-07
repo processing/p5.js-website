@@ -111,20 +111,17 @@ description: >
   <a
   href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Catmull%E2%80%93Rom_spline/">Catmull-Rom
   splines</a></p>
-line: 2284
+line: 2706
 isConstructor: false
 itemtype: method
 example:
   - |-
-    <div>
-    <code>
     // Move the mouse left and right to see the curve change.
 
     let t;
 
     function setup() {
       createCanvas(100, 100);
-
     }
 
     function draw() {
@@ -159,122 +156,63 @@ example:
       text(`tightness: ${round(t, 1)}`, 15, 90);
       describe('A black spline forms a sideways U shape through four points. The spline passes through the points more loosely as the mouse moves left of center (negative tightness), and more tightly as it moves right of center (positive tightness). The tightness is displayed at the bottom.');
     }
-    </code>
-    </div>
-  - >-
-    <div>
-
-    <code>
-
-    function setup() {
-
-    createCanvas(360, 140);
-
-    background(240);
-
-    noFill();
-
-
-    // Right panel: ends = INCLUDE (all spans).
-
-    push();
-
-    translate(10, 10);
-
-    stroke(220);
-
-    rect(0, 0, 160, 120);
-
-    fill(30);
-
-    textSize(11);
-
-    text('ends: INCLUDE (all spans)', 8, 16);
-
-    noFill();
-
-
-    splineProperty('ends', INCLUDE);
-
-    stroke(0);
-
-    strokeWeight(2);
-
-    spline(25, 46, 93, 44, 93, 81, 35, 85);
-
-
-    // vertices
-
-    strokeWeight(5);
-
-    stroke(0);
-
-    point(25, 46);
-
-    point(93, 44);
-
-    point(93, 81);
-
-    point(35, 85);
-
-    pop();
-
-
-    // Right panel: ends = EXCLUDE (middle only).
-
-    push();
-
-    translate(190, 10);
-
-    stroke(220);
-
-    rect(0, 0, 160, 120);
-
-    noStroke();
-
-    fill(30);
-
-    text('ends: EXCLUDE ', 18, 16);
-
-    noFill();
-
-
-    splineProperty('ends', EXCLUDE);
-
-    stroke(0);
-
-    strokeWeight(2);
-
-    spline(25, 46, 93, 44, 93, 81, 35, 85);
-
-
-    // vertices
-
-    strokeWeight(5);
-
-    stroke(0);
-
-    point(25, 46);
-
-    point(93, 44);
-
-    point(93, 81);
-
-    point(35, 85);
-     pop();
-
-    describe('Left panel shows spline with ends INCLUDE (three spans). Right
-    panel shows EXCLUDE (only the middle span). Four black points mark the
-    vertices.');
-
-    }
-
-    </code>
-
-    </div>
   - |-
-    <div>
-    <code>
+    function setup() {
+      createCanvas(360, 140);
+      background(240);
+      noFill();
+
+      // Right panel: ends = INCLUDE (all spans).
+      push();
+      translate(10, 10);
+      stroke(220);
+      rect(0, 0, 160, 120);
+      fill(30);
+      textSize(11);
+      text('ends: INCLUDE (all spans)', 8, 16);
+      noFill();
+
+      splineProperty('ends', INCLUDE);
+      stroke(0);
+      strokeWeight(2);
+      spline(25, 46, 93, 44, 93, 81, 35, 85);
+
+      // vertices
+      strokeWeight(5);
+      stroke(0);
+      point(25, 46);
+      point(93, 44);
+      point(93, 81);
+      point(35, 85);
+      pop();
+
+      // Right panel: ends = EXCLUDE (middle only).
+      push();
+      translate(190, 10);
+      stroke(220);
+      rect(0, 0, 160, 120);
+      noStroke();
+      fill(30);
+      text('ends: EXCLUDE ', 18, 16);
+      noFill();
+
+      splineProperty('ends', EXCLUDE);
+      stroke(0);
+      strokeWeight(2);
+      spline(25, 46, 93, 44, 93, 81, 35, 85);
+
+      // vertices
+      strokeWeight(5);
+      stroke(0);
+      point(25, 46);
+      point(93, 44);
+      point(93, 81);
+      point(35, 85);
+      pop();
+
+      describe('Left panel shows spline with ends INCLUDE (three spans). Right panel shows EXCLUDE (only the middle span). Four black points mark the vertices.');
+    }
+  - |-
     let vertexA;
     let vertexB;
     let vertexC;
@@ -292,33 +230,33 @@ example:
 
     function setup() {
       createCanvas(100, 100);
-      
+
       // Initialize variables
       // Adjusting vertices A and F affects the slopes at B and E
-      
+
       vertexA = createVector(35, 85);
       vertexB = createVector(25, 70);
       vertexC = createVector(30, 30);
       vertexD = createVector(70, 30);
       vertexE = createVector(75, 70);
       vertexF = createVector(65, 85);
-      
+
       markerRadius = 4;
-      
+
       vectorAB = p5.Vector.sub(vertexB, vertexA);
       vectorFE = p5.Vector.sub(vertexE, vertexF);
-      
+
       endOfTangentB = p5.Vector.add(vertexC, vectorAB);
       endOfTangentE = p5.Vector.add(vertexD, vectorFE);
-      
+
       splineProperty(`ends`, EXCLUDE);
-      
+
       // Draw figure
-      
+
       background(220);
-      
+
       noFill();
-      
+
       beginShape();
       splineVertex(vertexA.x, vertexA.y);
       splineVertex(vertexB.x, vertexB.y);
@@ -327,15 +265,15 @@ example:
       splineVertex(vertexE.x, vertexE.y);
       splineVertex(vertexF.x, vertexF.y);
       endShape();
-      
+
       stroke('red');
       line(vertexA.x, vertexA.y, vertexC.x, vertexC.y);
       line(vertexB.x, vertexB.y, endOfTangentB.x, endOfTangentB.y);
-      
+
       stroke('blue');
       line(vertexD.x, vertexD.y, vertexF.x, vertexF.y);
       line(vertexE.x, vertexE.y, endOfTangentE.x, endOfTangentE.y);
-        
+
       fill('white');
       stroke('black');
       circle(vertexA.x, vertexA.y, markerRadius);
@@ -344,7 +282,7 @@ example:
       circle(vertexD.x, vertexD.y, markerRadius);
       circle(vertexE.x, vertexE.y, markerRadius);
       circle(vertexF.x, vertexF.y, markerRadius);
-      
+
       fill('black');
       noStroke();
       text('A', vertexA.x - 15, vertexA.y + 5);
@@ -353,11 +291,9 @@ example:
       text('D', vertexD.x - 5, vertexD.y - 5);
       text('E', vertexE.x + 5, vertexE.y + 5);
       text('F', vertexF.x + 5, vertexF.y + 5);
-      
+
       describe('On a gray background, a black spline passes through vertices A, B, C, D, E, and F, shown as white circles. A red line segment joining vertices A and C has the same slope as the red tangent segment at B. Similarly, the blue line segment joining vertices D and F has the same slope as the blue tangent at E.');
     }
-    </code>
-    </div>
 class: p5
 return:
   description: The current value for the given property.

@@ -1,6 +1,7 @@
 import styles from "./styles.module.scss";
 import { Logo } from "../Logo";
 import { Icon } from "../Icon";
+import { p5Version } from "@/src/globals/p5-version";
 
 type MainNavLinksProps = {
   links: {
@@ -14,6 +15,7 @@ type MainNavLinksProps = {
   hasJumpTo: boolean;
   handleToggle: () => void;
   isOpen: boolean;
+  currentPath: string;
 };
 
 export const MainNavLinks = ({
@@ -25,6 +27,7 @@ export const MainNavLinks = ({
   handleToggle,
   isOpen,
   hasJumpTo,
+  currentPath,
 }: MainNavLinksProps) => {
   if (!links || links?.length <= 0) return null;
 
@@ -74,14 +77,16 @@ export const MainNavLinks = ({
       {renderLogo()}
       <ul>
         {links.map((link) => (
-          <li key={link.label}>
-            <a href={link.url}>{link.label}</a>
+          <li key={link.label} class={styles.linklabel}>
+            <a href={link.url} class={currentPath === link.url ? "current" : ""}>
+              {link.label}
+            </a>
           </li>
         ))}
       </ul>
       <ul class="flex flex-col gap-[15px]">
         <li>
-          <a className={styles.buttonlink} href="https://editor.p5js.org">
+          <a className={styles.buttonlink} href={`https://editor.p5js.org?version=${p5Version}`}>
             <div class="mr-xxs">
               <Icon kind="code-brackets" />
             </div>

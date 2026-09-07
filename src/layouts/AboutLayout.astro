@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { render } from 'astro:content';
 import Head from "@components/Head/index.astro";
 import BaseLayout from "./BaseLayout.astro";
 import LinkButton from "@components/LinkButton/index.astro";
@@ -13,7 +14,7 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { headings, Content } = await entry.render();
+const { headings, Content } = await render(entry);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -83,7 +84,7 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
     >
   </section>
 
-  <section>
+  <section class="text-link">
     <h2 id="contact">{t("Contact")}</h2>
     <div
       class="text-2xl grid grid-cols-6 lg:grid-cols-9 gap-x-gutter-sm md:gap-x-gutter-md mt-xl"
@@ -99,13 +100,13 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
         <a href="https://github.com/processing/p5.js">GitHub</a>,{` `}
         <a href="https://www.instagram.com/p5xjs/">Instagram</a>,{` `}
         <a href="https://twitter.com/p5xjs">X</a>,{` `}
-        <a href="https://www.youtube.com/@ProcessingFoundation">YouTube</a>,{` `}    
-        <a href="https://discord.gg/SHQ8dH25r9">Discord</a>,{` `}
+        <a href="https://www.youtube.com/@ProcessingFoundation">YouTube</a>,{` `}
+        <a href="https://discord.p5js.org">Discord</a>,{` `}
         <a href="https://discourse.processing.org/c/p5js">{t("Forum")}</a>{` `}
       </div>
     </div>
   </section>
-  <section>
+  <section class="text-link">
     <h2 id="supporters">Supporters</h2>
     <ul class="text-2xl mt-xl">
       <li>
@@ -122,7 +123,7 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
       <li><a href="https://www.usebutter.com/">Butter</a></li>
     </ul>
   </section>
-  <section>
+  <section class="text-link">
     <h2 id="processing-foundation">The Processing Ecosystem</h2>
     <ul class="text-2xl mt-xl">
       <li><a href="https://processing.org">Processing</a></li>
@@ -134,9 +135,3 @@ const displayedFeaturedPeople = sortedFeaturedPeople.slice(0, 6);
     </ul>
   </section>
 </BaseLayout>
-
-<style lang="scss">
-  a {
-    @apply text-type-magenta-dark;
-  }
-</style>

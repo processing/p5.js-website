@@ -43,7 +43,8 @@ description: >
   is passed, as in <code>createCanvas(900, 500, myCanvas)</code>, then it will
   be used
 
-  by the sketch.</p>
+  by the sketch. To use <code>WEBGPU</code> mode, make sure you have the WebGPU
+  mode addon included.</p>
 
   <p>The fourth parameter is also optional. If an existing
 
@@ -63,13 +64,13 @@ description: >
   system variable to check what version is being used, or call
 
   <code>setAttributes({ version: 1 })</code> to create a WebGL1 context.</p>
+
+  <p>Note: In WebGPU mode, you must <code>await</code> this function.</p>
 line: 126
 isConstructor: false
 itemtype: method
 example:
   - |-
-    <div>
-    <code>
     function setup() {
       createCanvas(100, 100);
 
@@ -80,11 +81,7 @@ example:
 
       describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
     }
-    </code>
-    </div>
-
-    <div>
-    <code>
+  - |-
     function setup() {
       createCanvas(100, 50);
 
@@ -95,11 +92,7 @@ example:
 
       describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
     }
-    </code>
-    </div>
-
-    <div>
-    <code>
+  - |-
     // Use WebGL mode.
 
     function setup() {
@@ -112,11 +105,7 @@ example:
 
       describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
     }
-    </code>
-    </div>
-
-    <div>
-    <code>
+  - |-
     function setup() {
       // Create a p5.Render object.
       let cnv = createCanvas(50, 50);
@@ -131,8 +120,6 @@ example:
 
       describe('A diagonal line drawn from top-left to bottom-right on a gray background.');
     }
-    </code>
-    </div>
 class: p5
 return:
   description: new <code>p5.Renderer</code> that holds the canvas.
@@ -150,7 +137,7 @@ overloads:
       - name: renderer
         description: either P2D or WEBGL. Defaults to <code>P2D</code>.
         optional: 1
-        type: P2D|WEBGL|P2DHDR
+        type: P2D|WEBGL|P2DP3
       - name: canvas
         description: existing canvas element that should be used for the sketch.
         optional: 1
@@ -158,6 +145,23 @@ overloads:
     return:
       description: new <code>p5.Renderer</code> that holds the canvas.
       type: p5.Renderer
+  - params:
+      - name: width
+        description: ''
+        type: Number
+      - name: height
+        description: ''
+        type: Number
+      - name: renderer
+        description: ''
+        type: WEBGPU
+      - name: canvas
+        description: ''
+        optional: 1
+        type: HTMLCanvasElement
+    return:
+      description: ''
+      type: Promise<p5.Renderer>
   - params:
       - name: width
         description: ''

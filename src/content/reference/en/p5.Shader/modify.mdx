@@ -59,7 +59,7 @@ description: >-
   used to pass data from p5.js into the shader. They can be created by calling
   <code>uniform</code> + the
 
-  type of the data, such as <code>uniformFloat</code> for a number of
+  type of the data, such as <code>uniformFloat</code> for a number or
   <code>uniformVector2</code> for a two-component vector.
 
   They take in a function that returns the data for the variable. You can then
@@ -69,24 +69,36 @@ description: >-
 
   the shader with the result of your function.</p>
 
+  <p>Move the mouse over this sketch to increase the moveCounter which will be
+  passed to the shader as a uniform.</p>
+
   <pre><code class="language-js example">let myShader;
+
+  //count of frames in which mouse has been moved
+
+  let moveCounter = 0;
 
 
   function setup() {
     createCanvas(200, 200, WEBGL);
     myShader = baseMaterialShader().modify(() => {
-      // Get the current time from p5.js
-      let t = uniformFloat(() => millis());
+      // Get the move counter from our sketch
+      let count = uniformFloat(() => moveCounter);
 
       getPixelInputs((inputs) => {
         inputs.color = [
           inputs.texCoord,
-          sin(t * 0.01) / 2 + 0.5,
+          sin(count/100) / 2 + 0.5,
           1,
         ];
         return inputs;
       });
     });
+  }
+
+
+  function mouseDragged(){
+    moveCounter += 1;
   }
 
 
@@ -105,18 +117,29 @@ description: >-
   local variables, you
 
   can pass them into <code>modify</code> with an optional second parameter,
-  <code>variables</code>. If you are
+  <code>variables</code>. These will
+
+  then be passed into your function as an argument. If you are
 
   using instance mode, you will need to pass your sketch object in this way.</p>
+
+  <p>If you are also using a build system for your sketch, variable names may be
+  changed as
+
+  part of minification. When creating a uniform, you can pass the name of the
+  uniform in
+
+  as a first parameter to ensure it doesn't get changed.</p>
 
   <pre><code class="language-js example">new p5((sketch) => {
     let myShader;
 
     sketch.setup = function() {
       sketch.createCanvas(200, 200, sketch.WEBGL);
-      myShader = sketch.baseMaterialShader().modify(() => {
+      myShader = sketch.baseMaterialShader().modify(({ sketch }) => {
+        let b = sketch.uniformFloat('b');
         sketch.getPixelInputs((inputs) => {
-          inputs.color = [inputs.texCoord, 0, 1];
+          inputs.color = [inputs.texCoord, b, 1];
           return inputs;
         });
       }, { sketch });
@@ -125,6 +148,7 @@ description: >-
     sketch.draw = function() {
       sketch.background(255);
       sketch.noStroke();
+      myShader.setUniform('b', 0.5);
       sketch.shader(myShader); // Apply the custom shader
       sketch.plane(sketch.width, sketch.height); // Draw a plane with the shader applied
     }
@@ -215,11 +239,12 @@ description: >-
     fill('red');
     sphere(50);
   }</code></pre>
-line: 460
+line: 414
 isConstructor: false
 itemtype: method
 example: []
 class: p5.Shader
+beta: true
 return:
   description: ''
   type: p5.Shader

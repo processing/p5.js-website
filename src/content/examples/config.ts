@@ -1,12 +1,18 @@
-import { z, defineCollection, reference } from "astro:content";
-
+import { defineCollection, reference } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+import { generateEntryId } from "../shared";
 
 /**
  * Content collection for the Examples section of the site.
  * Each file represents a single example.
  */
 export const examplesCollection = defineCollection({
-  type: "content",
+  loader: glob({
+    pattern: '**/*.mdx',
+    base: "./src/content/examples",
+    generateId: generateEntryId,
+  }),
   schema: ({ image }) =>
     z.object({
       // Title of the example
@@ -41,10 +47,10 @@ export const examplesCollection = defineCollection({
               )
               .optional(),
             // Collective attribution message either does not specify a year,
-            // or specifies 2024. To add a new possible value, update:
+            // or specifies a year from 2024 onwards. To add a new possible value, update:
             // 1) content/examples/config.ts to include new permitted values;
             // 2) and content/ui/*.yaml strings for attribution to include the text
-            collectivelyAttributedSince: z.literal(2024).optional(),
+            collectivelyAttributedSince: z.union([z.literal(2024), z.literal(2026)]).optional(),
           })
         )
         .optional()
