@@ -37,10 +37,7 @@ const sourceAssetsSubFolder = "images";
 /* Name of the folder within `outputDirectory` folder where static assets will be copied to */
 const outputAssetsSubFolder = "images";
 /* Base URL to refer to assets from final mdx docs */
-const assetsOutputBaseUrl = path.join(
-  "src/content/contributor-docs/",
-  outputAssetsSubFolder,
-);
+const assetsOutputBaseUrl = "../images";
 /* Where the image assets will be output for the website */
 const assetsOutputDirectory = path.join(outputDirectory, "images");
 /* Directories that are translations */
