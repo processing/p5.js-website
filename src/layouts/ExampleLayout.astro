@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import Head from "@components/Head/index.astro";
+import { p5SoundVersion } from "../globals/p5-version";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import {
   generateJumpToState,
@@ -49,6 +50,17 @@ let remixData = (await getFallbackRemixData(
   currentLocale,
   example.data.remix
 )) as typeof example.data.remix;
+
+// Interpret the scripts that need to be included
+const editableSketchScripts = Array.isArray(example.data.scripts)
+  ? example.data.scripts.flatMap((script) =>
+      script === "p5.sound.js"
+        ? [`https://cdn.jsdelivr.net/npm/p5.sound@${p5SoundVersion}/dist/p5.sound.js`]
+        : script === "Tone.js"
+          ? ["https://unpkg.com/tone@15.1.22/build/Tone.js"]
+          : []
+    )
+  : [];
 
 // Extract the collective attribution year. If multiple provided, uses last shown.
 const collectivelyAttributedSince = remixData?.reduce(
@@ -166,7 +178,7 @@ const remixHistoryHasCodeLinks = remixData?.some(
 
   </div>
 
-  <EditableSketch code={code} />
+  <EditableSketch scripts={editableSketchScripts} code={code} />
   <p>{example.data.arialabel}</p>
 
   </div>
