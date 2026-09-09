@@ -7,6 +7,7 @@ interface CodeBundle {
   js?: string;
   base?: string;
   scripts?: string[];
+  parentOrigin?: string;
 }
 
 /*
@@ -51,6 +52,8 @@ ${(code.scripts?.length ?? 0) > 0 ? '' : `
 <script type="text/javascript">
   // Listen for p5.min.js text content and include in iframe's head as script
   window.addEventListener("message", event => {
+    if (event.origin !== '${code.parentOrigin}') return;
+    if (event.source !== window.parent) return;
     // Include check to prevent p5.min.js from being loaded twice
     const scriptExists = !!document.getElementById("p5ScriptTagInIframe");
     if (!scriptExists && event.data?.sender === '${cdnLibraryUrl}') {
@@ -139,7 +142,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
             sender: cdnLibraryUrl,
             message: p5ScriptText,
           },
-          "*",
+          window.location.origin,
         );
       } catch (e) {
         console.error(`Error loading ${p5ScriptTag.src}`);
@@ -161,6 +164,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
           htmlBody: props.htmlBodyCode,
           base: props.base,
           scripts: props.scripts,
+          parentOrigin: window.location.origin,
         }) : ""}
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
