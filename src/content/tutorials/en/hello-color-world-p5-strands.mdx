@@ -16,7 +16,7 @@ import { Columns, Column } from "../../../components/Columns";
 import EditableSketch from "../../../components/EditableSketch/index.astro";
 import Callout from "../../../components/Callout/index.astro";
 
-## X Ways To Work With Color In Shaders
+## 3 Ways To Work With Color In Shaders
 
 Let's discover a few techniques for manipulating color using p5.strands, and learn a bit of fragment shader fundamentals in the process. 
 
@@ -24,29 +24,31 @@ We'll explore color in shaders to enhance our p5.js sketches with more sophistic
 
 <Callout title="What is p5.strands?">
 It's a new way of writing shaders using JavaScript in p5.js. 
-- [p5.strands: Writing shaders in JavaScript](https://www.davepagurek.com/blog/writing-shaders-in-js/), Dave Pagurek's blog
-- [p5.strands: Introduction to shaders](/tutorials/intro-to-p5-strands)
+- [p5.strands: Writing shaders in JavaScript](https://www.davepagurek.com/blog/writing-shaders-in-js/), blog post by Dave Pagurek
+- [p5.strands: Introduction to shaders](/tutorials/intro-to-p5-strands), tutorial by Luke Plowden
 </ Callout>
 
-To understand the advantages that p5.strands brings to us when dealing with shaders, we'll look at each technique through examples with variations of creating a p5 sketch together with p5.strands vs. GLSL (shader language).
+To understand what advantages using p5.strands brings to us when dealing with shaders, we'll look at each technique through examples with variations of creating a p5 sketch together with p5.strands and comparing them to GLSL.
 
 Each technique will present a few ideas for using p5.js syntax that you can try in the sketches with p5.strands. This can help you learn how to combine them.
 
 <Callout title="What is a shader?">
 A set of instructions implementing algorithms that control how a mesh is rendered into pixels on the screen. In WebGL shaders are written in GLSL, and there are two types: vertex and fragment.
-- [Introduction to GLSL](https://p5js.org/tutorials/intro-to-glsl/)
+- [Introduction to GLSL](https://p5js.org/tutorials/intro-to-glsl/), tutorial by Dave Pagurek, Austin Lee Slominski, Adam Ferriss
 </ Callout>
 
-Let's start from simple to complex, like having a x-course meal, by first dipping our toes into an appetizer.
+Although GLSL can be used alongside JavaScript in a p5.js sketch, it is a separate shader language that shaders require. With p5.strands you can focus only in JavaScript, given that GLSL is managed by p5.js.
 
-<div class="mt-18"></div>
+Let's start from simple to complex, like having a three-course meal, by first dipping our toes into an appetizer.
 
-### 01. Solid Colors
+<div class="mt-12"></div>
+
+### 1. Solid Colors
 
 We'll begin by simply painting the canvas of our sketch and one 3D primitive.
 
 <Callout title="What is a fragment shader?">  
-A shader in charge of outputting the color of each pixel on the screen, using RGBA values from 0.0 to 1.0.
+A shader that sets the color of each pixel on the screen, using RGBA values from 0.0 to 1.0.
 - [RGBA color](https://hughsk.io/fragment-foundry/chapters/03-rgb.html), self-guided workshop on fragment shaders by Hugh Kennedy
 - [RGB color model](https://courses.ilithya.rocks/p/courses/intro-to-shaders/3486602-module-02-color/11410544-07-rgb-color-model), fragment shader course by ilithya
 </ Callout>
@@ -215,7 +217,7 @@ void main() {
 </Column>
 </Columns>
 
-### 02. Textured Colors
+### 2. Textured Colors
 We'll continue evolving our canvas and 3D primitive sketch as we learn more techniques to color with our fragment shaders. Let's add a colored texture to them.
 
 <Callout title="What is a p5.strands hook?">
@@ -497,17 +499,19 @@ void main() {
 </Column>
 </Columns>
 
-### 03. Image Color Filters
+### 3. Image Color Filters
 Let's add an image to our canvas and 3D primitive to learn how we can create a color filter with adjustments in the fragment shader. To simplify things, we’ll use the same image for both.
 
 <Callout title="What is chromatic aberration?">
 It's a color distortion that occurs when the colors of light don't focus on the same point. The RGB channels appear to be separated, making the colors of an image appear shifted.
 - [Chromatic aberration](https://en.wikipedia.org/wiki/Chromatic_aberration), wikipedia
+- [Filter Shader (p5.strands)](/examples/3D-Filter-Shader-p5strands/), example by Dave Pagurek
+- [Filter Shader (GLSL)](/examples/3D-Filter-Shader/), example by Dave Pagurek
 </ Callout>
 
 With p5.strands we can customize an image filter to our liking, and create a chromatic aberration effect with hooks (e.g. [`filterColor`](/reference/p5/filterColor/)). We can displace the image colors vertically and horizontally, using the p5.js variables [`mouseX`](/reference/p5/mouseX) and [`mouseY`](/reference/p5/mouseY), which are translated into GLSL uniforms to control the shader.
 
-We'll add this p5.strands vs. GLSL translation to our knowledge base:
+We'll add these p5.strands vs. GLSL translations to our knowledge base:
 
 <table class="border-collapse border border-gray-400 full-width">
   <thead>
@@ -644,7 +648,13 @@ let shaderPrimitive;
 
   function draw() {
     // Add image to canvas
-    image(img, width/-2, height/-2, width, height);
+    image(
+      img, 
+      width/-2, 
+      height/-2, 
+      width, 
+      height
+    );
 
     // Apply color shader in canvas
     filter(shaderCanvas);
@@ -797,7 +807,13 @@ void main() {
     const time = millis() * 0.00015;
 
     // Add image to canvas
-    image(img, width/-2, height/-2, width, height);
+    image(
+      img, 
+      width/-2, 
+      height/-2, 
+      width, 
+      height
+    );
 
     // Apply color shader in canvas
     filter(shaderCanvas);
