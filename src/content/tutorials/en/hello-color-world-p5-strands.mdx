@@ -278,6 +278,8 @@ Experiment with different inputs for the cloud texture:
   }
 
   function colorCanvas() {
+    const time = millis() * 0.00015;
+
     // p5.strands hook 
     // connects p5.js with GLSL
     pixelInputs.begin();
@@ -285,8 +287,6 @@ Experiment with different inputs for the cloud texture:
     // Coordinates of rendered space 
     // (X and Y)
 	  const uv = pixelInputs.texCoord;
-
-    const time = millis() * 0.00015;
 
     const cloudTexture = noise(uv + time);
 
@@ -468,7 +468,8 @@ void main() {
   function draw() {
     const time = millis() * 0.00015;
 
-    // Setup uniforms for fragment shader
+    // Setup uniforms for
+    // canvas fragment shader
     shaderCanvas.setUniform(
       'u_time', time
     );
@@ -498,8 +499,6 @@ void main() {
 
 ### 03. Image Color Filters
 Let's add an image to our canvas and 3D primitive to learn how we can create a color filter with adjustments in the fragment shader. To simplify things, we’ll use the same image for both.
-{/* We'll add the same image to our 3D primitive without any effect to see the difference. */}
- {/* using the p5.js [`filter()`](/reference/p5/filter/) function. */}
 
 <Callout title="What is chromatic aberration?">
 It's a color distortion that occurs when the colors of light don't focus on the same point. The RGB channels appear to be separated, making the colors of an image appear shifted.
@@ -519,6 +518,14 @@ We'll add this p5.strands vs. GLSL translation to our knowledge base:
   </thead>
   <tbody>
     <tr>
+      <td class="border border-gray-400"><code>hook.canvasContent</code></td>
+      <td class="border border-gray-400"><code>uniform sampler2D u_texture</code></td>
+    </tr>
+    <tr>
+      <td class="border border-gray-400"><code>uniformTexture(texture)</code></td>
+      <td class="border border-gray-400"><code>uniform sampler2D u_texture</code></td>
+    </tr>
+    <tr>
       <td class="border border-gray-400"><code>getTexture(texture, uv)</code></td>
       <td class="border border-gray-400"><code>texture2D(u_texture, uv)</code></td>
     </tr>
@@ -527,23 +534,11 @@ We'll add this p5.strands vs. GLSL translation to our knowledge base:
 
 <Callout>  
 Explore different offsets, in both axes (X, Y), for the image displacement:
+- animated, `noise(uv + millis() * 0.00025)` 
+- linear animation, `sin(millis() * 0.001) * 0.5`
 - centered horizontal mouse movement, `(0.5 - mouseX / width) * 0.5`
 - centered vertical mouse movement, `(0.5 - mouseY / height) * 0.5`
-- linear animation, `sin(millis() * 0.001) * 0.5`
-- animated, `noise(uv + millis() * 0.00025)` 
 </ Callout>
-
- {/* It always starts with a `begin()` */}
-{/* It's a color distortion that occurs when the colors in an image don't focus on the same point. The RGB channels appear to be separated. */}
-
-{/* We'll add a tinted filter to an image placed in the canvas. */}
-
-{/* In p5.strands we can modify the color of a shader and have the benefit of using several color notations and models that we already know from p5.js, since it translates them for us into the GLSL specific one with hooks (e.g. `finalColor`). */}
-
-{/* p5.strands hooks (e.g. pixelInputs) allow us to speak GLSL with familiar p5.js language. In the following table, we can see how some of the p5.strands syntax we’re learning translates into GLSL. */}
-
- {/* It's possible to also write GLSL-like-JavaScript. */}
-{/* - [p5.strands GLSL built-in functions](https://github.com/processing/p5.js/blob/main/src/strands/strands_builtins.js) */}
 
 <Columns>
 <Column>
@@ -551,7 +546,8 @@ Explore different offsets, in both axes (X, Y), for the image displacement:
 #### sketch with p5.strands
 <EditableSketch code={`
   let img;
-  let colorShader;
+let shaderCanvas;
+let shaderPrimitive;
   
   async function setup() {
     createCanvas(300, 300, WEBGL);
@@ -563,13 +559,16 @@ Explore different offsets, in both axes (X, Y), for the image displacement:
       'mont-photo-low.jpg'
     );
 
-    // Custom shader using p5.strands
-    colorShader = buildFilterShader(
-      fragmentShader
+    // Custom shaders using p5.strands
+    shaderCanvas = buildFilterShader(
+      colorCanvas
+    );
+    shaderPrimitive = buildMaterialShader(
+      colorPrimitive
     );
   }
 
-  function fragmentShader() {
+  function colorCanvas() {
     // p5.strands hook 
     // connects p5.js with GLSL
     filterColor.begin();
@@ -578,23 +577,23 @@ Explore different offsets, in both axes (X, Y), for the image displacement:
     // (X and Y)
     const uv = filterColor.texCoord;
 
-    // Image texture
-	  const texture = filterColor.canvasContent;
+    // Canvas texture
+	  const canvasTexture = filterColor.canvasContent;
 	  
     // Amount of color displacement
     const offsetX = (0.5 - mouseX / width) * 0.5;
 	  const offsetY = (0.5 - mouseY / height) * 0.5;
 
     const r = getTexture(
-      texture, 
+      canvasTexture, 
       uv + [offsetX, 0]
     ).r;
     const g = getTexture(
-      texture, 
+      canvasTexture, 
       uv
     ).g;
     const b = getTexture(
-      texture, 
+      canvasTexture, 
       uv + [offsetX, offsetY]
     ).b + 0.2;
 
@@ -605,17 +604,55 @@ Explore different offsets, in both axes (X, Y), for the image displacement:
     filterColor.end();
   } 
 
+  function colorPrimitive() {
+    const time = millis() * 0.001;
+
+    // Image texture
+    const imgTexture = uniformTexture(img);
+
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    pixelInputs.begin();
+
+    // Coordinates of rendered space 
+    // (X and Y)
+    const uv = pixelInputs.texCoord;
+    
+    // Amount of color displacement
+    const offsetX = sin(time) * 0.5;
+    const offsetY = cos(time) * 0.5;
+
+    const r = getTexture(
+      imgTexture, 
+      uv + [offsetX, 0]
+    ).r;
+    const g = getTexture(
+      imgTexture, 
+      uv
+    ).g;
+    const b = getTexture(
+      imgTexture, 
+      uv + [offsetX, offsetY]
+    ).b;
+
+    const imgEffect = [r, g, b, 1];
+
+    pixelInputs.color = imgEffect;
+
+    pixelInputs.end();
+  }
+
   function draw() {
     // Add image to canvas
     image(img, width/-2, height/-2, width, height);
 
     // Apply color shader in canvas
-    filter(colorShader);
+    filter(shaderCanvas);
 
     push();
 
     // Apply color shader in 3D primitive
-    shader(colorShader);
+    shader(shaderPrimitive);
 
     // Rotate 3D primitive
     const anim = millis() * 0.00015;
@@ -635,7 +672,8 @@ Explore different offsets, in both axes (X, Y), for the image displacement:
 #### sketch with GLSL
 <EditableSketch code={`
   let img;
-  let colorShader;
+  let shaderCanvas;
+  let shaderPrimitive;
 
   async function setup() {
     createCanvas(300, 300, WEBGL);
@@ -647,9 +685,12 @@ Explore different offsets, in both axes (X, Y), for the image displacement:
       'mont-photo-low.jpg'
     );
 
-    // Custom shader using GLSL
-    colorShader = createShader(
-      vertex, fragment
+    // Custom shaders using GLSL
+    shaderCanvas = createShader(
+      vertex, fragmentCanvas
+    );
+    shaderPrimitive = createShader(
+      vertex, fragmentPrimitive
     );
   }
 
@@ -672,14 +713,15 @@ void main() {
 }
 \`;
 
-  let fragment = \`
+  let fragmentCanvas = \`
 // GLSL
 precision highp float;
 
-uniform float u_time;
 uniform float u_mouseX;
 uniform float u_mouseY;
 uniform vec2 u_resolution;
+
+// Canvas texture
 uniform sampler2D u_texture;
 
 // Coordinates of rendered space 
@@ -712,34 +754,80 @@ void main() {
 }
 \`;
 
+  let fragmentPrimitive = \`
+// GLSL
+precision highp float;
+
+uniform float u_time;
+
+// Image texture
+uniform sampler2D u_texture;
+
+// Coordinates of rendered space 
+// (X and Y)
+varying vec2 uv;
+
+void main() {
+  // Amount of color displacement
+  float offsetX = sin(u_time * 6.5) * 0.5;
+  float offsetY = cos(u_time * 6.5) * 0.5;
+
+  float r = texture2D(
+    u_texture,
+    uv + vec2(offsetX, 0.0)
+  ).r;
+
+  float g = texture2D(
+    u_texture,
+    uv
+  ).g;
+
+  float b = texture2D(
+    u_texture,
+    uv + vec2(offsetX, offsetY)
+  ).b;
+
+  vec3 color = vec3(r, g, b);
+
+  gl_FragColor = vec4(color, 1.0);
+}
+\`;
+
   function draw() {
+    const time = millis() * 0.00015;
+
     // Add image to canvas
     image(img, width/-2, height/-2, width, height);
 
     // Apply color shader in canvas
-    filter(colorShader);
+    filter(shaderCanvas);
 
-    const time = millis() * 0.00015;
-
-    // Setup uniforms for fragment shader
-    colorShader.setUniform(
-      'u_time', time
-    );
-    colorShader.setUniform(
+    // Setup uniforms for
+    // canvas fragment shader
+    shaderCanvas.setUniform(
       'u_mouseX', mouseX
     );
-    colorShader.setUniform(
+    shaderCanvas.setUniform(
       'u_mouseY', mouseY
     );
-    colorShader.setUniform(
+    shaderCanvas.setUniform(
       'u_resolution', [width, height]
     );
-    colorShader.setUniform(
+    shaderCanvas.setUniform(
+      'u_texture', img
+    );
+
+    // Setup uniforms for
+    // primitive fragment shader
+    shaderPrimitive.setUniform(
+      'u_time', time
+    );
+    shaderPrimitive.setUniform(
       'u_texture', img
     );
 
     // Apply color shader in 3D primitive
-    shader(colorShader);
+    shader(shaderPrimitive);
 
     // Rotate 3D primitive
     rotateY(time);
