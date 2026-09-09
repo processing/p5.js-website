@@ -1,4 +1,6 @@
 # p5.js Website
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website?ref=badge_shield)
+
 
 ## About This Repository 
 
@@ -56,3 +58,7 @@ When you are ready to open a PR, please keep the following in mind:
 We recognize all types of contributions. This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Add yourself to the [p5.js repository readme](https://github.com/processing/p5.js/blob/main/README.md#contributors) by following the [instructions here](https://github.com/processing/p5.js/issues/2309)!
 
 If you've contributed to this website (or any other part of the p5.js project), add yourself [here](https://github.com/processing/p5.js#contributors). Instructions to do this can be found at the bottom of the section.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fprocessing%2Fp5.js-website?ref=badge_large)
