@@ -2,16 +2,24 @@ import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 4321;
 const BASE_URL = `http://localhost:${PORT}`;
+const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
   testDir: "./test/a11y",
   testMatch: "**/*.spec.ts",
   outputDir: "./test-results",
   fullyParallel: true,
-  reporter: [
-    ["list"],
-    ['html', { outputFolder: 'playwright-report', open: 'never' }]
-  ],
+  forbidOnly: isCI,
+  reporter: isCI
+    ? [
+        ["github"],
+        ["list"],
+        ["html", { outputFolder: "playwright-report", open: "never" }],
+      ]
+    : [
+        ["list"],
+        ['html', { outputFolder: 'playwright-report', open: 'never' }]
+      ],
 
   use: {
     baseURL: BASE_URL,
@@ -34,10 +42,12 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "npm run dev",
+    // CI serves the dist/ built by an earlier step; see .github/workflows/test.yml.
+    command: isCI ? "npm run preview" : "npm run dev",
     url: BASE_URL,
-    reuseExistingServer: true,
+    reuseExistingServer: !isCI,
     timeout: 180_000,
+    stdout: isCI ? "pipe" : "ignore",
     env: {
       A11Y_TEST: "1",
     },
