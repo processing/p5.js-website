@@ -29,7 +29,10 @@ test.describe("a11y", () => {
       page,
     }) => {
       await page.goto(path);
-      const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+      // Skips iframe contents we cannot control, while keeping the iframe element itself in scope.
+      const accessibilityScanResults = await new AxeBuilder({ page })
+        .exclude(["iframe", "body"])
+        .analyze();
       expect(accessibilityScanResults.violations).toEqual([]);
     });
   }
