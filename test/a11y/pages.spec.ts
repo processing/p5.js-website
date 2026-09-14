@@ -29,7 +29,11 @@ test.describe("a11y", () => {
       page,
     }) => {
       await page.goto(path);
-      const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+      // Skips p5-generated preview contents (duplicate landmarks we don't
+      // author) while keeping the iframe element itself in scope.
+      const accessibilityScanResults = await new AxeBuilder({ page })
+        .exclude(["iframe", "body"])
+        .analyze();
       expect(accessibilityScanResults.violations).toEqual([]);
     });
   }
