@@ -33,7 +33,7 @@ export const JumpToLinks = ({
 
       {isOpen && (
         <ul>
-          {links?.map((link) => (
+          {links?.filter((link) => link.label).map((link) => (
             <li
               key={link.label}
               class={`${styles.linklabel} ${link.size ?? ""}`}
