@@ -16,28 +16,35 @@ import { Columns, Column } from "../../../components/Columns";
 import EditableSketch from "../../../components/EditableSketch/index.astro";
 import Callout from "../../../components/Callout/index.astro";
 
-## 3 Ways To Work With Color In Shaders
+## 3 Ways to Work with Color in Shaders
 
-Let's discover a few techniques for manipulating color using p5.strands, and learn a bit of fragment shader fundamentals in the process. 
+Let's discover a few techniques for manipulating color using p5.strands, and learn a bit of fragment shader fundamentals in the process.
 
-We'll explore color in shaders to enhance our p5.js sketches with more sophisticated effects that pure JavaScript wouldn't let us do. 
+We'll explore color in shaders to enhance our p5.js sketches with more sophisticated effects that pure JavaScript wouldn't let us do.
 
 <Callout title="What is p5.strands?">
 It's a new way of writing shaders using JavaScript in p5.js. 
-- [p5.strands: Writing shaders in JavaScript](https://www.davepagurek.com/blog/writing-shaders-in-js/), blog post by Dave Pagurek
-- [p5.strands: Introduction to shaders](/tutorials/intro-to-p5-strands), tutorial by Luke Plowden
+- [p5.strands: Writing Shaders in JavaScript](https://www.davepagurek.com/blog/writing-shaders-in-js/), blog post by Dave Pagurek
+- [p5.strands: Introduction to Shaders](/tutorials/intro-to-p5-strands), tutorial by Luke Plowden
 </ Callout>
 
-To understand what advantages using p5.strands brings to us when dealing with shaders, we'll look at each technique through examples with variations of creating a p5 sketch together with p5.strands and comparing them to GLSL.
+To understand what advantages p5.strands brings to us when dealing with shaders, we'll look at each technique through examples with variations of creating a p5 sketch together with p5.strands and comparing them to GLSL.
 
-Each technique will present a few ideas for using p5.js syntax that you can try in the sketches with p5.strands. This can help you learn how to combine them.
+Each technique will present a few ideas for working with p5.js syntax that you can try in the p5.strands sketches. This can help you learn how to combine them.
+
+Here's an overview with a skip link to every technique will cover:
+1. [Solid colors](#1-solid-colors) 
+2. [Textured colors](#2-textured-colors)
+3. [Image color filters](#3-image-color-filters)
+
+You can skip to the [conclusion](#wrapping-up) as well, if you prefer to read from end to beginning.
 
 <Callout title="What is a shader?">
-A set of instructions implementing algorithms that control how a mesh is rendered into pixels on the screen. In WebGL shaders are written in GLSL, and there are two types: vertex and fragment.
+A set of instructions implementing algorithms that control how a mesh is rendered into pixels on the screen. It runs on the GPU. In the browser, it works through WebGL and is written in GLSL. There are two types: vertex and fragment.
 - [Introduction to GLSL](https://p5js.org/tutorials/intro-to-glsl/), tutorial by Dave Pagurek, Austin Lee Slominski, Adam Ferriss
 </ Callout>
 
-Although GLSL can be used alongside JavaScript in a p5.js sketch, it is a separate shader language that shaders require. With p5.strands you can focus only in JavaScript, given that GLSL is managed by p5.js.
+Although GLSL can be used alongside JavaScript in a p5.js sketch, it is a separate shader language that shaders require. With p5.strands you can focus only on JavaScript, given that the GLSL is handled by p5.js.
 
 Let's start from simple to complex, like having a three-course meal, by first dipping our toes into an appetizer.
 
@@ -47,15 +54,22 @@ Let's start from simple to complex, like having a three-course meal, by first di
 
 We'll begin by simply painting the canvas of our sketch and one 3D primitive.
 
-<Callout title="What is a fragment shader?">  
-A shader that sets the color of each pixel on the screen, using RGBA values from 0.0 to 1.0.
-- [RGBA color](https://hughsk.io/fragment-foundry/chapters/03-rgb.html), self-guided workshop on fragment shaders by Hugh Kennedy
-- [RGB color model](https://courses.ilithya.rocks/p/courses/intro-to-shaders/3486602-module-02-color/11410544-07-rgb-color-model), fragment shader course by ilithya
+<Callout title="What is pixel density?"> 
+The number of pixels packed into a given area of a computer display. Screens with smaller pixels (e.g. Retina displays) have a higher pixel density and create sharper images.
+- [pixelDensity()](/reference/p5/pixelDensity/), p5.js reference
 </ Callout>
 
-With p5.strands we can modify the color of a shader and have the benefit of using several color notations and models that we already know from p5.js, since it translates them for us into the GLSL specific one with hooks (e.g. [`finalColor`](/reference/p5/finalColor/)).
+Because all of our sketches will be running shaders, the p5.js built-in function `pixelDensity(1)` is always implemented inside the [`setup()`](/reference/p5/setup/). We set the pixel density to `1`, making the shaders run faster by reducing the number of pixels they need to process, since the default is often `2` on high-density displays.
 
-These hooks allow us to speak GLSL when we use them with familiar p5.js language:
+<Callout title="What is a fragment shader?">  
+A shader that sets the color of each pixel on the screen by outputting RGBA values, each ranging from 0.0 to 1.0.
+- [RGBA Color](https://hughsk.io/fragment-foundry/chapters/03-rgb.html), self-guided workshop on fragment shaders by Hugh Kennedy
+- [RGB Color Model](https://courses.ilithya.rocks/p/courses/intro-to-shaders/3486602-module-02-color/11410544-07-rgb-color-model), fragment shader course by ilithya
+</ Callout>
+
+With p5.strands we can modify the color of a shader while benefiting from several color notations and models that we already know from p5.js, since it translates them for us into the RGB representation used by GLSL with hooks (e.g. [`finalColor`](/reference/p5/finalColor/)).
+
+These hooks allow us to speak GLSL when we use them with familiar p5.js syntax. The following table shows a p5.strands equivalent:
 
 <table class="border-collapse border border-gray-400 full-width">
   <thead>
@@ -72,9 +86,8 @@ These hooks allow us to speak GLSL when we use them with familiar p5.js language
   </tbody>
 </table>
 
-
 <Callout>  
-We can use p5.js functions like [`color()`](/reference/p5/color) to paint with the shader:
+We can use p5.js built-in functions like [`color()`](/reference/p5/color) to paint with the shader:
 - named color, `color('blue')`
 - hex color value, `color('#0000ff')`
 - hsl values, `color('hsl(40, 100%, 50%)')`
@@ -91,6 +104,8 @@ We can use p5.js functions like [`color()`](/reference/p5/color) to paint with t
 
   function setup() {
     createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
     pixelDensity(1);
 
     // Custom shaders using p5.strands
@@ -150,6 +165,8 @@ We can use p5.js functions like [`color()`](/reference/p5/color) to paint with t
 
   function setup() {
     createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
     pixelDensity(1);
 
     // Custom shaders using GLSL
@@ -171,7 +188,7 @@ uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
 
 void main() {
-  gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+    gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
 }
 \`;
 
@@ -180,10 +197,10 @@ void main() {
 precision highp float;
 
 void main() {
-  // Blue color as RGB(0%, 0%, 100%)
-  vec3 color = vec3(0.0, 0.0, 1.0);
+    // Blue color as RGB(0%, 0%, 100%)
+    vec3 color = vec3(0.0, 0.0, 1.0);
 
-  gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, 1.0);
 }
 \`;
 
@@ -192,10 +209,10 @@ void main() {
 precision highp float;
 
 void main() {
-  // Red color as RGB(100%, 0%, 0%)
-  vec3 color = vec3(1.0, 0.0, 0.0);
+    // Red color as RGB(100%, 0%, 0%)
+    vec3 color = vec3(1.0, 0.0, 0.0);
 
-  gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, 1.0);
 }
 \`;
 
@@ -225,11 +242,19 @@ An access point into a shader that connects p5.js with GLSL to modify its behavi
 - `Cheat sheet link?`
 </ Callout>
 
-With p5.strands we can apply randomness to a color equation, creating visually smooth organic textures such as clouds, as well as rougher textures found in crystals, by using the [`noise()`](/reference/p5/noise) p5.js function with a hook (e.g. [`pixelInputs`](/reference/p5/pixelInputs/)) instead of implementing GLSL algorithms from scratch.
+With p5.strands we can apply randomness to a color equation, creating visually smooth organic textures like clouds, as well as rougher textures found in crystals, by using the [`noise()`](/reference/p5/noise) p5.js built-in function with a hook (e.g. [`pixelInputs`](/reference/p5/pixelInputs/)) instead of implementing GLSL algorithms from scratch.
 
 We can also add the time elapsed with [`millis()`](/reference/p5/millis) to our textures to simulate natural-looking movements. This value becomes a GLSL uniform, useful to adjust the shader.
 
-Here are other p5.strands syntax examples we'll use, and their GLSL translations.
+<Callout title="What is a GLSL uniform?">  
+A global variable that allows the CPU (JavaScript) and GPU (GLSL) to communicate. The shader cannot change it, only read its value to control a specific feature, such as size or motion. It's set and updated in JavaScript. 
+- [Uniforms Chapter](https://thebookofshaders.com/03/), The Book of Shaders by Patricio Gonzalez Vivo, Jen Lowe
+- [setUniform()](/reference/p5.Shader/setUniform/), p5.js reference
+</ Callout>
+
+p5.strands lets us set shader uniforms with p5.js elements we know, providing a bridge between JavaScript and GLSL.
+
+Here are other p5.strands syntax examples we'll use, and their GLSL translations:
 
 <table class="border-collapse border border-gray-400 full-width">
   <thead>
@@ -268,6 +293,8 @@ Experiment with different inputs for the cloud texture:
 
   function setup() {
     createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
     pixelDensity(1);
 
     // Custom shaders using p5.strands
@@ -345,6 +372,8 @@ Experiment with different inputs for the cloud texture:
 
   function setup() {
     createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
     pixelDensity(1);
 
     // Custom shaders using GLSL
@@ -369,9 +398,9 @@ uniform mat4 uProjectionMatrix;
 varying vec2 uv;
 
 void main() {
-  uv = aTexCoord;
+    uv = aTexCoord;
 
-  gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+    gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
 }
 \`;
 
@@ -390,19 +419,19 @@ varying vec2 uv;
 // GLSL Noise Algorithms by Patricio Gonzalez Vivo
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 float rand(vec2 n) { 
-	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+	  return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
 float noise(vec2 p){
-	vec2 ip = floor(p);
-	vec2 u = fract(p);
-	u = u*u*(3.0-2.0*u);
-	
-	float res = mix(
-		mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
-		mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
-    u.y);
-	return res*res;
+    vec2 ip = floor(p);
+    vec2 u = fract(p);
+    u = u*u*(3.0-2.0*u);
+    
+    float res = mix(
+      mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
+      mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
+      u.y);
+    return res*res;
 }
 
 // GLSL Noise Algorithm by Inigo Quilez
@@ -419,15 +448,15 @@ float fbm( in vec2 p ){
 }
 
 void main() {
-	float cloudTexture = fbm(uv * 2.5 + u_time);
+    float cloudTexture = fbm(uv * 2.5 + u_time);
 
-  float r = u_mouseX / u_resolution.x;
-  float g = 0.0;
-  float b = cloudTexture * 1.5;
+    float r = u_mouseX / u_resolution.x;
+    float g = 0.0;
+    float b = cloudTexture * 1.5;
 
-  vec3 color = vec3(r, g, b + 0.16);
+    vec3 color = vec3(r, g, b + 0.16);
 
-	gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, 1.0);
 }
 \`;
 
@@ -442,28 +471,28 @@ varying vec2 uv;
 // GLSL Noise Algorithms by Patricio Gonzalez Vivo
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 float rand(vec2 n) { 
-	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+	  return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
 float noise(vec2 p){
-	vec2 ip = floor(p);
-	vec2 u = fract(p);
-	u = u*u*(3.0-2.0*u);
-	
-	float res = mix(
-		mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
-		mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
-    u.y);
-	return res*res;
+    vec2 ip = floor(p);
+    vec2 u = fract(p);
+    u = u*u*(3.0-2.0*u);
+    
+    float res = mix(
+      mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
+      mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
+      u.y);
+    return res*res;
 }
 
 void main() {
-  float grainTexture = noise(uv * 200.0);
-  grainTexture -= 0.05;
+    float grainTexture = noise(uv * 200.0);
+    grainTexture -= 0.05;
 
-  vec3 color = vec3(grainTexture);
+    vec3 color = vec3(grainTexture);
 
-	gl_FragColor = vec4(color, 0.3);
+    gl_FragColor = vec4(color, 0.3);
 }
 \`;
 
@@ -500,7 +529,7 @@ void main() {
 </Columns>
 
 ### 3. Image Color Filters
-Let's add an image to our canvas and 3D primitive to learn how we can create a color filter with adjustments in the fragment shader. To simplify things, we’ll use the same image for both.
+Let's add an image to our canvas and 3D primitive and learn how we can create a color filter with adjustments in the fragment shader. To simplify things, we’ll use the same image for both.
 
 <Callout title="What is chromatic aberration?">
 It's a color distortion that occurs when the colors of light don't focus on the same point. The RGB channels appear to be separated, making the colors of an image appear shifted.
@@ -509,7 +538,7 @@ It's a color distortion that occurs when the colors of light don't focus on the 
 - [Filter Shader (GLSL)](/examples/3D-Filter-Shader/), example by Dave Pagurek
 </ Callout>
 
-With p5.strands we can customize an image filter to our liking, and create a chromatic aberration effect with hooks (e.g. [`filterColor`](/reference/p5/filterColor/)). We can displace the image colors vertically and horizontally, using the p5.js variables [`mouseX`](/reference/p5/mouseX) and [`mouseY`](/reference/p5/mouseY), which are translated into GLSL uniforms to control the shader.
+With p5.strands we can customize an image filter to our liking and create a chromatic aberration effect by using p5.js elements with a hook (e.g. [`filterColor`](/reference/p5/filterColor/)). We can displace the image colors vertically and horizontally with the p5.js built-in variables [`mouseX`](/reference/p5/mouseX) and [`mouseY`](/reference/p5/mouseY), which are translated into GLSL uniforms to control the shader.
 
 We'll add these p5.strands vs. GLSL translations to our knowledge base:
 
@@ -537,7 +566,7 @@ We'll add these p5.strands vs. GLSL translations to our knowledge base:
 </table>
 
 <Callout>  
-Explore different offsets, in both axes (X, Y), for the image displacement:
+Explore different offsets in both axes `(x, y)` for the image displacement:
 - animated, `noise(uv + millis() * 0.00025)` 
 - linear animation, `sin(millis() * 0.001) * 0.5`
 - centered horizontal mouse movement, `(0.5 - mouseX / width) * 0.5`
@@ -555,6 +584,8 @@ let shaderPrimitive;
   
   async function setup() {
     createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
     pixelDensity(1);
 
     // Image by Mont fotografias
@@ -687,6 +718,8 @@ let shaderPrimitive;
 
   async function setup() {
     createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
     pixelDensity(1);
 
     // Image by Mont fotografias
@@ -717,9 +750,9 @@ uniform mat4 uProjectionMatrix;
 varying vec2 uv;
 
 void main() {
-  uv = aTexCoord;
+    uv = aTexCoord;
 
-  gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+    gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
 }
 \`;
 
@@ -739,28 +772,28 @@ uniform sampler2D u_texture;
 varying vec2 uv;
 
 void main() {
-  // Amount of color displacement
-  float offsetX = (0.5 - u_mouseX / u_resolution.x) * 0.5;
-  float offsetY = (0.5 - u_mouseY / u_resolution.y) * 0.5;
+    // Amount of color displacement
+    float offsetX = (0.5 - u_mouseX / u_resolution.x) * 0.5;
+    float offsetY = (0.5 - u_mouseY / u_resolution.y) * 0.5;
 
-  float r = texture2D(
-    u_texture,
-    uv + vec2(offsetX, 0.0)
-  ).r;
+    float r = texture2D(
+      u_texture,
+      uv + vec2(offsetX, 0.0)
+    ).r;
 
-  float g = texture2D(
-    u_texture,
-    uv
-  ).g;
+    float g = texture2D(
+      u_texture,
+      uv
+    ).g;
 
-  float b = texture2D(
-    u_texture,
-    uv + vec2(offsetX, offsetY)
-  ).b + 0.2;
+    float b = texture2D(
+      u_texture,
+      uv + vec2(offsetX, offsetY)
+    ).b + 0.2;
 
-  vec3 color = vec3(r, g, b);
+    vec3 color = vec3(r, g, b);
 
-  gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, 1.0);
 }
 \`;
 
@@ -778,28 +811,28 @@ uniform sampler2D u_texture;
 varying vec2 uv;
 
 void main() {
-  // Amount of color displacement
-  float offsetX = sin(u_time * 6.5) * 0.5;
-  float offsetY = cos(u_time * 6.5) * 0.5;
+    // Amount of color displacement
+    float offsetX = sin(u_time * 6.5) * 0.5;
+    float offsetY = cos(u_time * 6.5) * 0.5;
 
-  float r = texture2D(
-    u_texture,
-    uv + vec2(offsetX, 0.0)
-  ).r;
+    float r = texture2D(
+      u_texture,
+      uv + vec2(offsetX, 0.0)
+    ).r;
 
-  float g = texture2D(
-    u_texture,
-    uv
-  ).g;
+    float g = texture2D(
+      u_texture,
+      uv
+    ).g;
 
-  float b = texture2D(
-    u_texture,
-    uv + vec2(offsetX, offsetY)
-  ).b;
+    float b = texture2D(
+      u_texture,
+      uv + vec2(offsetX, offsetY)
+    ).b;
 
-  vec3 color = vec3(r, g, b);
+    vec3 color = vec3(r, g, b);
 
-  gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, 1.0);
 }
 \`;
 
@@ -855,3 +888,73 @@ void main() {
 
 </Column>
 </Columns>
+
+### Wrapping Up
+We learned three ways to work with color in fragment shaders with p5.strands, which can be practical in your p5.js sketches, as you can keep on writing JavaScript using familiar p5.js syntax and type less code.
+
+<Columns>
+<Column>
+We can do this:
+```js
+// Sketch with p5.strands
+function fragmentColor() {
+  finalColor.begin();
+
+  finalColor.set(color('blue'));
+
+  finalColor.end();
+} 
+```
+
+</Column>
+
+<Column>
+
+Instead of this:
+```js
+// Sketch with GLSL
+let vertex = `
+precision highp float;
+
+attribute vec3 aPosition;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+void main() {
+  gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+}
+`;
+
+let fragment = `
+precision highp float;
+
+void main() {
+  vec3 color = vec3(0.0, 0.0, 1.0);
+
+  gl_FragColor = vec4(color, 1.0);
+}
+`;
+```
+
+</Column>
+</Columns>
+
+<Callout title="Why should I use p5.strands?">
+Because it takes care of writing the GLSL you might need from scratch for certain shader techniques or features, with hooks that can be used together with p5.js built-in functions and variables.
+- [p5.strands Overview](/contribute/p5.strands/), technical contributor documentation
+- [p5.js Reference](/reference/), easy explanations for every piece of p5.js code
+</ Callout>
+
+If instead of being comfortable with p5.js, you come from GLSL, p5.strands also enables you to use GLSL built-in functions, as for example `step()` and `mix()`. Check out our list of supported [GLSL built-in functions](https://github.com/processing/p5.js/blob/main/src/strands/strands_builtins.js).
+
+Even when we're in the p5.js ecosystem, learning some GLSL fundamentals might unlock future possibilities to additionally work with other web-based creative coding tools that offer more advanced shader capabilities with equally friendly communities, including [Three.js](https://threejs.org) and [shadertoy](https://www.shadertoy.com).
+
+You can continue exploring p5.strands with more p5.js elements we didn't cover in our examples, such as [`random()`](/reference/p5/random/).
+
+<Callout>  
+Feel free to submit your p5.strands explorations here:
+- [p5.strands Community Workshop](https://openprocessing.org/curation/90883), OpenProcessing Curation
+</ Callout>
+
+p5.strands is continuously in [active development](https://processingfoundation.org/blog/p5js-21-and-22-expanding-graphics-avenues-with-p5strands-improvements-and-webgpu/) by the community. If you want to get involve, join our [discord server](https://discord.com/invite/gH3VcRKhen), we'll be happy to meet you!
