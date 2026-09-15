@@ -13,7 +13,7 @@ type DropdownProps = {
   initialSelected: string | string[];
   onChange: (option: DropdownOption) => void;
   iconKind: IconKind;
-  variant?: "dropdown" | "radio";
+  variant?: "dropdown" | "radio" | "checkbox";
   dropdownLabel?: string;
 };
 
@@ -23,7 +23,7 @@ export const Dropdown = ({
   dropdownLabel,
   onChange,
   iconKind,
-  variant?: "dropdown" | "radio" | "checkbox";,
+  variant = "dropdown",
 }: DropdownProps) => {
   const [selected, setSelected] = useState(initialSelected);
   const [isOpen, setIsOpen] = useState(false);
@@ -63,15 +63,17 @@ export const Dropdown = ({
     }
 
     // With a radio or checkbox variant, multiple options can be selected
-if (
-  (variant === "radio" || variant === "checkbox") &&
-  Array.isArray(selected)
-) {
-  const newSelected = selected.includes(option.value)
-    ? selected.filter((value) => value !== option.value)
-    : [...selected, option.value];
-  setSelected(newSelected);
-}
+    if (
+      (variant === "radio" || variant === "checkbox") &&
+      Array.isArray(selected)
+    ) {
+      const newSelected = selected.includes(option.value)
+        ? selected.filter((value) => value !== option.value)
+        : [...selected, option.value];
+      setSelected(newSelected);
+    }
+    onChange(option);
+  };
 
   // Handle keyboard navigation
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -138,40 +140,41 @@ if (
   const renderExpandedDropdown = () => (
     <ul className={styles.options} role="listbox" tabIndex={-1}>
       {options.map((option, index) => (
-  <li
-    key={option.value}
-    className={styles.option}
-    role="option"
-    aria-selected={isSelected(option)}
-  >
-    <button
-      onClick={() => handleOptionClick(option)}
-      ref={(el) => {
-        optionRefs.current[index] = el as HTMLButtonElement;
-      }}
-      onBlur={handleBlur}
-    >
-      <div className={styles.icon}>
-        <Icon
-          kind={
-            isSelected(option) ? "option-selected" : "option-unselected"
-          }
-        />
-      </div>
-      <span>{option.label}</span>
-    </button>
-  </li>
-))}
-
+        <li
+          key={option.value}
+          className={styles.option}
+          role="option"
+          aria-selected={isSelected(option)}
+        >
+          <button
+            onClick={() => handleOptionClick(option)}
+            ref={(el) => {
+              optionRefs.current[index] = el as HTMLButtonElement;
+            }}
+            onBlur={handleBlur}
+          >
+            <div className={styles.icon}>
+              <Icon
+                kind={
+                  isSelected(option) ? "option-selected" : "option-unselected"
+                }
+              />
+            </div>
+            <span>{option.label}</span>
+          </button>
+        </li>
+      ))}
       {variant === "radio" || variant === "checkbox" ? (
-  <button onClick={() => setIsOpen(false)} className={styles.chevron}>
-    <Icon kind="chevron-up" />
-  </button>
-) : (
-  <div className={styles.chevron}>
-    <Icon kind="chevron-up" />
-  </div>
-)}
+        <button onClick={() => setIsOpen(false)} className={styles.chevron}>
+          <Icon kind="chevron-up" />
+        </button>
+      ) : (
+        <div className={styles.chevron}>
+          <Icon kind="chevron-up" />
+        </div>
+      )}
+    </ul>
+  );
 
   return (
     <div
