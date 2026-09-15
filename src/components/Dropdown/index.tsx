@@ -13,7 +13,7 @@ type DropdownProps = {
   initialSelected: string | string[];
   onChange: (option: DropdownOption) => void;
   iconKind: IconKind;
-  variant?: "dropdown" | "radio";
+  variant?: "dropdown" | "radio" | "checkbox";
   dropdownLabel?: string;
 };
 
@@ -62,8 +62,11 @@ export const Dropdown = ({
       setIsOpen(false);
     }
 
-    // With a radio variant, multiple options can be selected
-    if (variant === "radio" && Array.isArray(selected)) {
+    // With a radio or checkbox variant, multiple options can be selected
+    if (
+      (variant === "radio" || variant === "checkbox") &&
+      Array.isArray(selected)
+    ) {
       const newSelected = selected.includes(option.value)
         ? selected.filter((value) => value !== option.value)
         : [...selected, option.value];
@@ -143,25 +146,25 @@ export const Dropdown = ({
           role="option"
           aria-selected={isSelected(option)}
         >
-          <div className={styles.icon}>
-            <Icon
-              kind={
-                isSelected(option) ? "option-selected" : "option-unselected"
-              }
-            />
-          </div>
           <button
             onClick={() => handleOptionClick(option)}
-            ref={el => {
-              optionRefs.current[index] = el as HTMLButtonElement
+            ref={(el) => {
+              optionRefs.current[index] = el as HTMLButtonElement;
             }}
             onBlur={handleBlur}
           >
+            <div className={styles.icon}>
+              <Icon
+                kind={
+                  isSelected(option) ? "option-selected" : "option-unselected"
+                }
+              />
+            </div>
             <span>{option.label}</span>
           </button>
         </li>
       ))}
-      {variant === "radio" ? (
+      {variant === "radio" || variant === "checkbox" ? (
         <button onClick={() => setIsOpen(false)} className={styles.chevron}>
           <Icon kind="chevron-up" />
         </button>
