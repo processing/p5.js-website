@@ -179,41 +179,41 @@ We can use p5.js built-in functions like [`color()`](/reference/p5/color) to pai
   }
 
   let vertex = \`
-// GLSL
-precision highp float;
+  // GLSL
+  precision highp float;
 
-attribute vec3 aPosition;
+  attribute vec3 aPosition;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+  uniform mat4 uModelViewMatrix;
+  uniform mat4 uProjectionMatrix;
 
-void main() {
+  void main() {
     gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
-}
-\`;
+  }
+  \`;
 
-let fragmentCanvas = \`
-// GLSL
-precision highp float;
+  let fragmentCanvas = \`
+  // GLSL
+  precision highp float;
 
-void main() {
+  void main() {
     // Blue color as RGB(0%, 0%, 100%)
     vec3 color = vec3(0.0, 0.0, 1.0);
 
     gl_FragColor = vec4(color, 1.0);
-}
+  }
   \`;
 
   let fragmentPrimitive = \`
-// GLSL
-precision highp float;
+  // GLSL
+  precision highp float;
 
-void main() {
+  void main() {
     // Red color as RGB(100%, 0%, 0%)
     vec3 color = vec3(1.0, 0.0, 0.0);
 
     gl_FragColor = vec4(color, 1.0);
-}
+  }
   \`;
 
   function draw() {
@@ -394,47 +394,47 @@ Experiment with different inputs for the cloud texture:
   }
 
   let vertex = \`
-// GLSL
-precision highp float;
+  // GLSL
+  precision highp float;
 
-attribute vec2 aTexCoord;
-attribute vec3 aPosition;
+  attribute vec2 aTexCoord;
+  attribute vec3 aPosition;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+  uniform mat4 uModelViewMatrix;
+  uniform mat4 uProjectionMatrix;
 
-varying vec2 uv;
+  varying vec2 uv;
 
-void main() {
+  void main() {
     uv = aTexCoord;
 
     gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
-}
+  }
   \`;
 
   let fragmentCanvas = \`
-// GLSL
-precision highp float;
+  // GLSL
+  precision highp float;
 
-uniform vec2 u_resolution;
-uniform float u_mouseX;
-uniform float u_time;
+  uniform vec2 u_resolution;
+  uniform float u_mouseX;
+  uniform float u_time;
 
-// Coordinates of rendered space
-// (X and Y)
-varying vec2 uv;
+  // Coordinates of rendered space
+  // (X and Y)
+  varying vec2 uv;
 
-// Noise Algorithms by Patricio Gonzalez Vivo
-// https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
-float rand(vec2 n) { 
+  // Noise Algorithms by Patricio Gonzalez Vivo
+  // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+  float rand(vec2 n) { 
     return fract(
       sin(
         dot(n, vec2(12.9898, 4.1414))
       ) * 43758.5453
     );
-}
+  }
 
-float noise(vec2 p){
+  float noise(vec2 p){
     vec2 ip = floor(p);
     vec2 u = fract(p);
     u = u*u*(3.0-2.0*u);
@@ -453,12 +453,12 @@ float noise(vec2 p){
       u.y
     );
     return res*res;
-}
+  }
 
-// Noise Algorithm by Inigo Quilez
-// https://www.shadertoy.com/view/MdX3Rr
-const mat2 m2 = mat2(0.8,-0.6,0.6,0.8);
-float fbm( in vec2 p ){
+  // Noise Algorithm by Inigo Quilez
+  // https://www.shadertoy.com/view/MdX3Rr
+  const mat2 m2 = mat2(0.8,-0.6,0.6,0.8);
+  float fbm( in vec2 p ){
     float f = 0.0;
     f += 0.5000*noise( p ); p = m2*p*2.02;
     f += 0.2500*noise( p ); p = m2*p*2.03;
@@ -466,9 +466,9 @@ float fbm( in vec2 p ){
     f += 0.0625*noise( p );
 
     return f/0.9375;
-}
+  }
 
-void main() {
+  void main() {
     float cloudTexture = fbm(uv * 2.5 + u_time);
 
     float r = u_mouseX / u_resolution.x;
@@ -478,28 +478,28 @@ void main() {
     vec3 color = vec3(r, g, b + 0.16);
 
     gl_FragColor = vec4(color, 1.0);
-}
-\`;
+  }
+  \`;
 
-let fragmentPrimitive = \`
-// GLSL
-precision highp float;
+  let fragmentPrimitive = \`
+  // GLSL
+  precision highp float;
 
-// Coordinates of rendered space
-// (X and Y)
-varying vec2 uv;
+  // Coordinates of rendered space
+  // (X and Y)
+  varying vec2 uv;
 
-// Noise Algorithms by Patricio Gonzalez Vivo
-// https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
-float rand(vec2 n) { 
+  // Noise Algorithms by Patricio Gonzalez Vivo
+  // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+  float rand(vec2 n) { 
     return fract(
       sin(
         dot(n, vec2(12.9898, 4.1414))
       ) * 43758.5453
     );
-}
+  }
 
-float noise(vec2 p){
+  float noise(vec2 p){
     vec2 ip = floor(p);
     vec2 u = fract(p);
     u = u*u*(3.0-2.0*u);
@@ -518,15 +518,15 @@ float noise(vec2 p){
       u.y
     );
     return res*res;
-}
+  }
 
-void main() {
+  void main() {
     float grainTexture = noise(uv * 200.0);
 
     vec3 color = vec3(grainTexture - 0.06);
 
     gl_FragColor = vec4(color, grainTexture);
-}
+  }
   \`;
 
   function draw() {
@@ -774,41 +774,41 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
     );
   }
 
-let vertex = \`
-// GLSL
-precision highp float;
+  let vertex = \`
+  // GLSL
+  precision highp float;
 
-attribute vec2 aTexCoord;
-attribute vec3 aPosition;
+  attribute vec2 aTexCoord;
+  attribute vec3 aPosition;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+  uniform mat4 uModelViewMatrix;
+  uniform mat4 uProjectionMatrix;
 
-varying vec2 uv;
+  varying vec2 uv;
 
-void main() {
+  void main() {
     uv = aTexCoord;
 
     gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
-}
-\`;
+  }
+  \`;
 
-let fragmentCanvas = \`
-// GLSL
-precision highp float;
+  let fragmentCanvas = \`
+  // GLSL
+  precision highp float;
 
-uniform float u_mouseX;
-uniform float u_mouseY;
-uniform vec2 u_resolution;
+  uniform float u_mouseX;
+  uniform float u_mouseY;
+  uniform vec2 u_resolution;
 
-// Canvas texture
-uniform sampler2D u_texture;
+  // Canvas texture
+  uniform sampler2D u_texture;
 
-// Coordinates of rendered space 
-// (X and Y)
-varying vec2 uv;
+  // Coordinates of rendered space 
+  // (X and Y)
+  varying vec2 uv;
 
-void main() {
+  void main() {
     // Amount of color displacement
     float offsetX = (
       0.5 - u_mouseX / u_resolution.x
@@ -835,23 +835,23 @@ void main() {
     vec3 color = vec3(r, g, b);
 
     gl_FragColor = vec4(color, 1.0);
-}
-\`;
+  }
+  \`;
 
-let fragmentPrimitive = \`
-// GLSL
-precision highp float;
+  let fragmentPrimitive = \`
+  // GLSL
+  precision highp float;
 
-uniform float u_time;
+  uniform float u_time;
 
-// Image texture
-uniform sampler2D u_texture;
+  // Image texture
+  uniform sampler2D u_texture;
 
-// Coordinates of rendered space 
-// (X and Y)
-varying vec2 uv;
+  // Coordinates of rendered space 
+  // (X and Y)
+  varying vec2 uv;
 
-void main() {
+  void main() {
     // Amount of color displacement
     float offsetX = sin(u_time * 6.5) * 0.5;
     float offsetY = cos(u_time * 6.5) * 0.5;
@@ -874,8 +874,8 @@ void main() {
     vec3 color = vec3(r, g, b);
 
     gl_FragColor = vec4(color, 1.0);
-}
-\`;
+  }
+  \`;
 
   function draw() {
     const time = millis() * 0.00015;
