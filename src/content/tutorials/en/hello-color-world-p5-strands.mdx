@@ -192,7 +192,7 @@ void main() {
 }
 \`;
 
-  let fragmentCanvas = \`
+let fragmentCanvas = \`
 // GLSL
 precision highp float;
 
@@ -202,7 +202,7 @@ void main() {
 
     gl_FragColor = vec4(color, 1.0);
 }
-\`;
+  \`;
 
   let fragmentPrimitive = \`
 // GLSL
@@ -214,7 +214,7 @@ void main() {
 
     gl_FragColor = vec4(color, 1.0);
 }
-\`;
+  \`;
 
   function draw() {
     // Apply color shader in canvas
@@ -315,7 +315,7 @@ Experiment with different inputs for the cloud texture:
 
     // Coordinates of rendered space 
     // (X and Y)
-	  const uv = pixelInputs.texCoord;
+    const uv = pixelInputs.texCoord;
 
     const cloudTexture = noise(uv + time);
 
@@ -337,10 +337,18 @@ Experiment with different inputs for the cloud texture:
 
     // Coordinates of rendered space 
     // (X and Y)
-	  const uv = pixelInputs.texCoord;
+    const uv = pixelInputs.texCoord;
 
     const grainTexture = noise(uv * 50.0);
-    pixelInputs.color = grainTexture;
+    
+    const crystalColor = [
+      grainTexture, 
+      grainTexture, 
+      grainTexture, 
+      grainTexture
+    ];
+
+    pixelInputs.color = crystalColor;
 
     pixelInputs.end();
   } 
@@ -402,7 +410,7 @@ void main() {
 
     gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
 }
-\`;
+  \`;
 
   let fragmentCanvas = \`
 // GLSL
@@ -416,25 +424,38 @@ uniform float u_time;
 // (X and Y)
 varying vec2 uv;
 
-// GLSL Noise Algorithms by Patricio Gonzalez Vivo
+// Noise Algorithms by Patricio Gonzalez Vivo
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 float rand(vec2 n) { 
-	  return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+    return fract(
+      sin(
+        dot(n, vec2(12.9898, 4.1414))
+      ) * 43758.5453
+    );
 }
 
 float noise(vec2 p){
     vec2 ip = floor(p);
     vec2 u = fract(p);
     u = u*u*(3.0-2.0*u);
-    
+
     float res = mix(
-      mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
-      mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
-      u.y);
+      mix(
+        rand(ip),
+        rand(ip+vec2(1.0,0.0)),
+        u.x
+      ),
+      mix(
+        rand(ip+vec2(0.0,1.0)),
+        rand(ip+vec2(1.0,1.0)),
+        u.x
+      ),
+      u.y
+    );
     return res*res;
 }
 
-// GLSL Noise Algorithm by Inigo Quilez
+// Noise Algorithm by Inigo Quilez
 // https://www.shadertoy.com/view/MdX3Rr
 const mat2 m2 = mat2(0.8,-0.6,0.6,0.8);
 float fbm( in vec2 p ){
@@ -460,7 +481,7 @@ void main() {
 }
 \`;
 
-  let fragmentPrimitive = \`
+let fragmentPrimitive = \`
 // GLSL
 precision highp float;
 
@@ -468,33 +489,45 @@ precision highp float;
 // (X and Y)
 varying vec2 uv;
 
-// GLSL Noise Algorithms by Patricio Gonzalez Vivo
+// Noise Algorithms by Patricio Gonzalez Vivo
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 float rand(vec2 n) { 
-	  return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+    return fract(
+      sin(
+        dot(n, vec2(12.9898, 4.1414))
+      ) * 43758.5453
+    );
 }
 
 float noise(vec2 p){
     vec2 ip = floor(p);
     vec2 u = fract(p);
     u = u*u*(3.0-2.0*u);
-    
+
     float res = mix(
-      mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
-      mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),
-      u.y);
+      mix(
+        rand(ip),
+        rand(ip+vec2(1.0,0.0)),
+        u.x
+      ),
+      mix(
+        rand(ip+vec2(0.0,1.0)),
+        rand(ip+vec2(1.0,1.0)),
+        u.x
+      ),
+      u.y
+    );
     return res*res;
 }
 
 void main() {
     float grainTexture = noise(uv * 200.0);
-    grainTexture -= 0.05;
 
-    vec3 color = vec3(grainTexture);
+    vec3 color = vec3(grainTexture - 0.06);
 
-    gl_FragColor = vec4(color, 0.3);
+    gl_FragColor = vec4(color, grainTexture);
 }
-\`;
+  \`;
 
   function draw() {
     const time = millis() * 0.00015;
@@ -579,9 +612,9 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
 #### sketch with p5.strands
 <EditableSketch code={`
   let img;
-let shaderCanvas;
-let shaderPrimitive;
-  
+  let shaderCanvas;
+  let shaderPrimitive;
+
   async function setup() {
     createCanvas(300, 300, WEBGL);
     // Make the shader run faster 
@@ -607,28 +640,32 @@ let shaderPrimitive;
     // p5.strands hook 
     // connects p5.js with GLSL
     filterColor.begin();
-      
+
     // Coordinates of rendered space 
     // (X and Y)
     const uv = filterColor.texCoord;
 
     // Canvas texture
-	  const canvasTexture = filterColor.canvasContent;
-	  
+    const imgTexture = filterColor.canvasContent;
+
     // Amount of color displacement
-    const offsetX = (0.5 - mouseX / width) * 0.5;
-	  const offsetY = (0.5 - mouseY / height) * 0.5;
+    const offsetX = (
+      0.5 - mouseX / width
+    ) * 0.5;
+    const offsetY = (
+      0.5 - mouseY / height
+    ) * 0.5;
 
     const r = getTexture(
-      canvasTexture, 
+      imgTexture, 
       uv + [offsetX, 0]
     ).r;
     const g = getTexture(
-      canvasTexture, 
+      imgTexture, 
       uv
     ).g;
     const b = getTexture(
-      canvasTexture, 
+      imgTexture, 
       uv + [offsetX, offsetY]
     ).b + 0.2;
 
@@ -652,7 +689,7 @@ let shaderPrimitive;
     // Coordinates of rendered space 
     // (X and Y)
     const uv = pixelInputs.texCoord;
-    
+
     // Amount of color displacement
     const offsetX = sin(time) * 0.5;
     const offsetY = cos(time) * 0.5;
@@ -737,7 +774,7 @@ let shaderPrimitive;
     );
   }
 
-  let vertex = \`
+let vertex = \`
 // GLSL
 precision highp float;
 
@@ -756,7 +793,7 @@ void main() {
 }
 \`;
 
-  let fragmentCanvas = \`
+let fragmentCanvas = \`
 // GLSL
 precision highp float;
 
@@ -773,8 +810,12 @@ varying vec2 uv;
 
 void main() {
     // Amount of color displacement
-    float offsetX = (0.5 - u_mouseX / u_resolution.x) * 0.5;
-    float offsetY = (0.5 - u_mouseY / u_resolution.y) * 0.5;
+    float offsetX = (
+      0.5 - u_mouseX / u_resolution.x
+    ) * 0.5;
+    float offsetY = (
+      0.5 - u_mouseY / u_resolution.y
+    ) * 0.5;
 
     float r = texture2D(
       u_texture,
@@ -797,7 +838,7 @@ void main() {
 }
 \`;
 
-  let fragmentPrimitive = \`
+let fragmentPrimitive = \`
 // GLSL
 precision highp float;
 
@@ -894,6 +935,7 @@ We learned three ways to work with color in fragment shaders with p5.strands, wh
 
 <Columns>
 <Column>
+
 We can do this:
 ```js
 // Sketch with p5.strands
