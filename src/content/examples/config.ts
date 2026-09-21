@@ -1,7 +1,7 @@
 import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
-import { generateEntryId } from "../shared";
+import { generateEntryId, needsTranslation } from "../shared";
 
 /**
  * Content collection for the Examples section of the site.
@@ -24,6 +24,7 @@ export const examplesCollection = defineCollection({
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
+      needsTranslation: needsTranslation(),
 
       // Optional list of remixes to add to license
       remix: z

@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
-import { generateEntryId, relatedContent } from "../shared";
+import { generateEntryId, relatedContent, needsTranslation } from "../shared";
 
 export const categories = [
   "introduction",
@@ -38,6 +38,7 @@ export const tutorialsCollection = defineCollection({
         featuredImage: image().optional(),
         featuredImageAlt: z.string().optional(),
         relatedContent: relatedContent().optional(),
+        needsTranslation: needsTranslation(),
       })
       .refine(
         (data) => {

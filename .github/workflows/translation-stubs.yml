@@ -1,0 +1,74 @@
+name: Translation Stub Generator
+
+on:
+  push:
+    branches:
+      - v1
+    paths:
+      - 'src/content/examples/en/**'
+      - 'src/content/tutorials/en/**'
+      - 'src/content/text-detail/en/**'
+      - 'src/content/events/en/**'
+      - 'src/content/libraries/en/**'
+  workflow_dispatch:
+    inputs:
+      full_scan:
+        description: 'Scan all English content files (not just latest commit)'
+        required: false
+        default: false
+        type: boolean
+      languages:
+        description: 'Comma-separated language codes (default: all supported)'
+        required: false
+        default: 'es,hi,ko,zh-Hans'
+        type: string
+      content_types:
+        description: "Comma-separated names of folders. (Eg. examples, tutorials)"
+        required: false
+        default: 'examples,tutorials,text-detail,events,libraries'
+        type: string
+      generate_stubs:
+        description: 'Generate stub files and open PRs'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-translation-stubs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install translation tracker dependencies
+        run: cd .github/actions/translation-tracker && npm install
+
+      - name: Generate stub files and open PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # Whether to generate stub files and open PRs (can choose on UI)
+          GENERATE_STUBS: ${{ github.event.inputs.generate_stubs || 'true' }}
+
+          # The languages selection for the run (can type it on UI)
+          STUB_LANGUAGES: ${{ github.event.inputs.languages || 'es,hi,ko,zh-Hans' }}
+
+          # The content types selection for the run (can type it on UI)
+          STUB_CONTENT_TYPES: ${{ github.event.inputs.content_types || 'examples,tutorials,text-detail,events,libraries' }} # All content types except reference
+          
+          # Full scan or not? (can choose on UI)
+          STUB_FULL_SCAN: ${{ github.event.inputs.full_scan || 'false' }}
+
+        run: node .github/actions/translation-tracker/index.js
