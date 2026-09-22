@@ -206,6 +206,8 @@ const correctRelativeLinksInDescription = (description: string | undefined) => {
     // Add a trailing / if the link isn't to a file and does not have query params or a hash reference
     if (
       !href.startsWith('#') &&
+      !href.startsWith('http://') &&
+      !href.startsWith('https://') &&
       !href.endsWith('/') &&
       !/(\.\w+)$/.exec(href) &&
       !href.includes('?') &&
@@ -469,6 +471,7 @@ export const testingExports = {
   memberMethodPreviews: classMethodAndPropertyPreviews,
   addDocToModulePathTree,
   addMemberMethodPreviewsToClassDocs: addMethodAndPropertyPreviewsToClassDocs,
+  correctRelativeLinksInDescription,
 };
 buildReference();
 
