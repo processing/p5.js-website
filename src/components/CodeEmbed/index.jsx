@@ -108,6 +108,8 @@ export const CodeEmbed = (props) => {
           <div>
             <CodeFrame
               jsCode={previewCodeString}
+              cssCode={props.cssCode}
+              htmlBodyCode={props.htmlBodyCode}
               width={previewWidth}
               height={previewHeight}
               base={props.base}
@@ -157,7 +159,7 @@ export const CodeEmbed = (props) => {
           }}
           basicSetup={{
             lineNumbers: hasScrollbar,
-            foldGutter: true,
+            foldGutter: isScrollable,
             autocompletion: false,
           }}
           indentWithTab={false}
