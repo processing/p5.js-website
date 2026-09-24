@@ -8,6 +8,7 @@ interface CodeBundle {
   base?: string;
   scripts?: string[];
   instanceMode?: boolean;
+  parentOrigin: string;
 }
 
 /*
@@ -27,7 +28,7 @@ const wrapSketch = (sketchCode?: string) => {
 
 /*
  * Wraps the given code in a html document for display.
- * Single object argument, all properties optional:
+ * Single object argument:
  */
 const wrapInMarkup = (code: CodeBundle) =>
   `<!DOCTYPE html>
@@ -45,13 +46,18 @@ ${code.css || ""}
 </style>
 <!-- If we need an addon script, load p5 the usual way with no caching to make sure
 the import order doesn't get messed up. -->
-${(code.instanceMode || (code.scripts?.length ?? 0) > 0 ? [cdnLibraryUrl, ...(code.scripts ?? [])] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join('\n')}
+${(code.instanceMode || (code.scripts?.length ?? 0) > 0 ? [cdnLibraryUrl, ...(code.scripts ?? [])] : []).map((src) => `<script type="text/javascript" src="${src}"></script>`).join("\n")}
 <body>${code.htmlBody || ""}</body>
 <script id="code" type="text/javascript">${wrapSketch(code.js) || ""}</script>
-${(code.scripts?.length ?? 0) > 0 ? '' : `
+${
+  (code.scripts?.length ?? 0) > 0
+    ? ""
+    : `
 <script type="text/javascript">
   // Listen for p5.min.js text content and include in iframe's head as script
   window.addEventListener("message", event => {
+    if (event.origin !== '${code.parentOrigin}') return;
+    if (event.source !== window.parent) return;
     // Include check to prevent p5.min.js from being loaded twice
     const scriptExists = !!document.getElementById("p5ScriptTagInIframe");
     if (!scriptExists && event.data?.sender === '${cdnLibraryUrl}') {
@@ -63,7 +69,8 @@ ${(code.scripts?.length ?? 0) > 0 ? '' : `
     }
   })
 </script>
-`}
+`
+}
 `.replace(/\u00A0/g, " ");
 
 export interface CodeFrameProps {
@@ -140,14 +147,14 @@ export const CodeFrame = (props: CodeFrameProps) => {
             sender: cdnLibraryUrl,
             message: p5ScriptText,
           },
-          "*",
+          window.location.origin,
         );
       } catch (e) {
         console.error(`Error loading ${p5ScriptTag.src}`);
         return;
       }
     })();
-  }, [props.jsCode, mounted,p5ScriptTag]);
+  }, [props.jsCode, mounted, p5ScriptTag]);
 
   return (
     <div
@@ -156,19 +163,24 @@ export const CodeFrame = (props: CodeFrameProps) => {
     >
       <iframe
         ref={iframeRef}
-        srcDoc={mounted ? wrapInMarkup({
-          js: props.jsCode,
-          css: props.cssCode,
-          htmlBody: props.htmlBodyCode,
-          base: props.base,
-          scripts: props.scripts,
-          instanceMode: props.jsCode.includes('new p5'),
-        }) : ""}
+        srcDoc={
+          mounted
+            ? wrapInMarkup({
+                js: props.jsCode,
+                css: props.cssCode,
+                htmlBody: props.htmlBodyCode,
+                base: props.base,
+                scripts: props.scripts,
+                instanceMode: props.jsCode.includes("new p5"),
+                parentOrigin: window.location.origin,
+              })
+            : ""
+        }
         sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
         aria-label="Code Preview"
         title="Code Preview"
         loading={props.lazyLoad ? "lazy" : "eager"}
-        style={{width: "100%", height: "100%"}}
+        style={{ width: "100%", height: "100%" }}
       />
     </div>
   );
