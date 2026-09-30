@@ -99,7 +99,6 @@ We can use p5.js built-in functions like [`color()`](/reference/p5/color) to pai
 <Column>
 
 #### sketch with GLSL
-{/* Make this sketch scrollable matching the p5.strands sketch (left column) height */}
 <EditableSketch code={`
   let shaderCanvas;
   let shaderPrimitive;
@@ -107,7 +106,7 @@ We can use p5.js built-in functions like [`color()`](/reference/p5/color) to pai
   function setup() {
     createCanvas(300, 300, WEBGL);
     // Make the shader run faster 
-    // reducing the number of pixels 
+    // reducing number of pixels 
     pixelDensity(1);
 
     // Custom shaders using GLSL
@@ -185,10 +184,10 @@ We can use p5.js built-in functions like [`color()`](/reference/p5/color) to pai
   function setup() {
     createCanvas(300, 300, WEBGL);
     // Make the shader run faster 
-    // reducing the number of pixels 
+    // reducing number of pixels 
     pixelDensity(1);
 
-    // Custom shaders using p5.strands
+    // Custom p5.strands shaders
     shaderCanvas = buildColorShader(
       colorCanvas
     );
@@ -303,10 +302,10 @@ Experiment with different inputs for the cloud texture:
   function setup() {
     createCanvas(300, 300, WEBGL);
     // Make the shader run faster 
-    // reducing the number of pixels 
+    // reducing number of pixels 
     pixelDensity(1);
 
-    // Custom shaders using GLSL
+    // Custom GLSL shaders
     shaderCanvas = createShader(
       vertex, fragmentCanvas
     );
@@ -487,8 +486,8 @@ Experiment with different inputs for the cloud texture:
 #### sketch with p5.strands
 <EditableSketch scrollable={true} code={`
   // Using p5.strands requires
-  // about 80 lines, as it provides a
-  // built-in noise function
+  // about 80 lines, as a built-in
+  // noise function is provided
 
   let shaderCanvas;
   let shaderPrimitive;
@@ -496,16 +495,18 @@ Experiment with different inputs for the cloud texture:
   function setup() {
     createCanvas(300, 300, WEBGL);
     // Make the shader run faster 
-    // reducing the number of pixels 
+    // reducing number of pixels 
     pixelDensity(1);
 
-    // Custom shaders using p5.strands
-    shaderCanvas = buildMaterialShader(
-      colorCanvas
-    );
-    shaderPrimitive = buildMaterialShader(
-      colorPrimitive
-    );
+    // Custom p5.strands Shaders
+    shaderCanvas =
+      buildMaterialShader(
+        colorCanvas
+      );
+    shaderPrimitive =
+      buildMaterialShader(
+        colorPrimitive
+      );
   }
 
   function colorCanvas() {
@@ -519,14 +520,15 @@ Experiment with different inputs for the cloud texture:
     // (X and Y)
     const uv = pixelInputs.texCoord;
 
-    const cloudTexture = noise(uv + time);
+    const cloudTexture = noise(
+      uv + time
+    );
 
     const r = mouseX / width;
     const g = 0;
     const b = cloudTexture * 1.5;
 
     const cloudColor = [r, g, b, 1];
-
     pixelInputs.color = cloudColor;
 
     pixelInputs.end();
@@ -559,7 +561,7 @@ Experiment with different inputs for the cloud texture:
     // Apply color shader in canvas
     filter(shaderCanvas);
 
-    // Apply color shader in 3D primitive
+    // Apply color shader to box
     shader(shaderPrimitive);
 
     // Rotate 3D primitive
@@ -625,7 +627,9 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
 #### sketch with GLSL
 <EditableSketch scrollable={true} code={`
   // Using GLSL requires
-  // about 180 lines of code
+  // about 180 lines of code,
+  // as uniforms must be defined
+  // manually
 
   let img;
   let shaderCanvas;
@@ -634,11 +638,10 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
   async function setup() {
     createCanvas(300, 300, WEBGL);
     // Make the shader run faster 
-    // reducing the number of pixels 
+    // reducing number of pixels 
     pixelDensity(1);
 
-    // Image by Mont fotografias
-    // https://www.pexels.com/photo/white-and-purple-cloud-2948636/
+    // Image by Mont fotografias https://www.pexels.com/photo/white-and-purple-cloud-2948636/
     img = await loadImage(
       'mont-photo-low.jpg'
     );
@@ -812,7 +815,9 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
 #### sketch with p5.strands
 <EditableSketch scrollable={true} code={`
   // Using p5.strands requires
-  // just over 130 lines
+  // just over 130 lines, as
+  // p5.js provides built-in
+  // variables
   
   let img;
   let shaderCanvas;
@@ -821,22 +826,23 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
   async function setup() {
     createCanvas(300, 300, WEBGL);
     // Make the shader run faster 
-    // reducing the number of pixels 
+    // reducing number of pixels 
     pixelDensity(1);
 
-    // Image by Mont fotografias
-    // https://www.pexels.com/photo/white-and-purple-cloud-2948636/
+    // Image by Mont fotografias https://www.pexels.com/photo/white-and-purple-cloud-2948636/
     img = await loadImage(
       'mont-photo-low.jpg'
     );
 
-    // Custom shaders using p5.strands
-    shaderCanvas = buildFilterShader(
-      colorCanvas
-    );
-    shaderPrimitive = buildMaterialShader(
-      colorPrimitive
-    );
+    // Custom p5.strands shader
+    shaderCanvas =
+      buildFilterShader(
+        colorCanvas
+      );
+    shaderPrimitive =
+      buildMaterialShader(
+        colorPrimitive
+      );
   }
 
   function colorCanvas() {
@@ -932,7 +938,7 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
 
     push();
 
-    // Apply color shader in 3D primitive
+    // Apply color shader to box
     shader(shaderPrimitive);
 
     // Rotate 3D primitive
