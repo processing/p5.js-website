@@ -28,7 +28,7 @@ A new way of writing shaders using JavaScript in p5.js version 2.
 - [p5.strands: Introduction to Shaders](/tutorials/intro-to-p5-strands), tutorial by Luke Plowden
 </ Callout>
 
-To understand what advantages p5.strands brings to us when dealing with shaders, we'll look at each technique through p5.js examples. One sketch will show an approach in p5.strands, while another will compare it with GLSL, a popular language for writing shaders in the browser.
+To understand what advantages p5.strands brings to us when dealing with shaders, we'll look at each technique through p5.js examples. One sketch will show an approach in p5.strands, while another will compare it with GLSL, a popular language for writing shaders in the browser.  Using p5.strands, instead of GLSL, can be practical in your p5.js sketches if you prefer to use familiar p5.js syntax and type less code.
 
 Each technique will present a few ideas for working with p5.js syntax that you can try in the p5.strands sketches. This can help you learn how to combine them.
 
@@ -74,14 +74,14 @@ These hooks allow us to speak GLSL when we use them with familiar p5.js syntax. 
 <table class="border-collapse border border-gray-400 full-width">
   <thead>
     <tr>
-      <th class="border border-gray-400 bg-(--bg-blue)">p5.strands</th>
       <th class="border border-gray-400 bg-(--bg-blue)">GLSL (fragment)</th>
+      <th class="border border-gray-400 bg-(--bg-blue)">p5.strands</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td class="border border-gray-400"><code>hook.set(val)</code></td>
       <td class="border border-gray-400"><code>gl_FragColor = val</code></td>
+      <td class="border border-gray-400"><code>hook.set(val)</code></td>
     </tr>
   </tbody>
 </table>
@@ -95,66 +95,6 @@ We can use p5.js built-in functions like [`color()`](/reference/p5/color) to pai
 </ Callout>
 
 <Columns>
-<Column>
-
-#### sketch with p5.strands
-<EditableSketch code={`
-  let shaderCanvas;
-  let shaderPrimitive;
-
-  function setup() {
-    createCanvas(300, 300, WEBGL);
-    // Make the shader run faster 
-    // reducing the number of pixels 
-    pixelDensity(1);
-
-    // Custom shaders using p5.strands
-    shaderCanvas = buildColorShader(
-      colorCanvas
-    );
-    shaderPrimitive = buildMaterialShader(
-      colorPrimitive
-    );
-  }
-
-  function colorCanvas() {
-    // p5.strands hook 
-    // connects p5.js with GLSL
-    finalColor.begin();
-
-    const solidColor = color('blue');
-    finalColor.set(solidColor);
-
-    finalColor.end();
-  } 
-
-  function colorPrimitive() {
-    // p5.strands hook 
-    // connects p5.js with GLSL
-    finalColor.begin();
-
-    const solidColor = color('#ff0000');
-    finalColor.set(solidColor);
-
-    finalColor.end();
-  } 
-
-  function draw() {
-    // Apply color shader in canvas
-    filter(shaderCanvas);
-
-    // Apply color shader in 3D primitive
-    shader(shaderPrimitive);
-
-    // Rotate 3D primitive
-    const anim = millis() * 0.00025;
-    rotateY(anim);
-
-    box(120);
-  }
-`} />
-
-</Column>
 
 <Column>
 
@@ -233,6 +173,68 @@ We can use p5.js built-in functions like [`color()`](/reference/p5/color) to pai
 `} />
 
 </Column>
+
+
+<Column>
+
+#### sketch with p5.strands
+<EditableSketch code={`
+  let shaderCanvas;
+  let shaderPrimitive;
+
+  function setup() {
+    createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
+    pixelDensity(1);
+
+    // Custom shaders using p5.strands
+    shaderCanvas = buildColorShader(
+      colorCanvas
+    );
+    shaderPrimitive = buildMaterialShader(
+      colorPrimitive
+    );
+  }
+
+  function colorCanvas() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    finalColor.begin();
+
+    const solidColor = color('blue');
+    finalColor.set(solidColor);
+
+    finalColor.end();
+  } 
+
+  function colorPrimitive() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    finalColor.begin();
+
+    const solidColor = color('#ff0000');
+    finalColor.set(solidColor);
+
+    finalColor.end();
+  } 
+
+  function draw() {
+    // Apply color shader in canvas
+    filter(shaderCanvas);
+
+    // Apply color shader in 3D primitive
+    shader(shaderPrimitive);
+
+    // Rotate 3D primitive
+    const anim = millis() * 0.00025;
+    rotateY(anim);
+
+    box(120);
+  }
+`} />
+
+</Column>
 </Columns>
 
 ### 2. Textured Colors
@@ -240,7 +242,7 @@ We'll continue evolving our canvas and 3D primitive sketch as we learn more tech
 
 <Callout title="What is a p5.strands hook?">
 An access point into a shader that connects p5.js with GLSL to modify its behavior.
-- `Cheat sheet link?`
+- This [interactive p5.strands reference sheet](https://xnze.ro/p5.strands/) lists all hooks, as well as all the p5.js and GLSL functions or variable you can use in p5.strands
 </ Callout>
 
 With p5.strands we can apply randomness to a color equation, creating visually smooth organic textures like clouds, as well as rougher textures found in crystals, by using the [`noise()`](/reference/p5/noise) p5.js built-in function with a hook (e.g. [`pixelInputs`](/reference/p5/pixelInputs/)) instead of implementing GLSL algorithms from scratch.
@@ -260,18 +262,18 @@ Here are other p5.strands syntax examples we'll use, and their GLSL translations
 <table class="border-collapse border border-gray-400 full-width">
   <thead>
     <tr>
-      <th class="border border-gray-400 bg-(--bg-blue)">p5.strands</th>
       <th class="border border-gray-400 bg-(--bg-blue)">GLSL (fragment)</th>
+      <th class="border border-gray-400 bg-(--bg-blue)">p5.strands</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td class="border border-gray-400"><code>hook.texCoord </code></td>
       <td class="border border-gray-400"><code>varying vec2 uv</code></td>
+      <td class="border border-gray-400"><code>hook.texCoord </code></td>
     </tr>
     <tr>
-      <td class="border border-gray-400"><code>hook.color</code></td>
       <td class="border border-gray-400"><code>gl_FragColor</code></td>
+      <td class="border border-gray-400"><code>hook.color</code></td>
     </tr>
   </tbody>
 </table>
@@ -285,98 +287,16 @@ Experiment with different inputs for the cloud texture:
 </ Callout>
 
 <Columns>
-<Column>
-
-#### sketch with p5.strands
-<EditableSketch code={`
-  let shaderCanvas;
-  let shaderPrimitive;
-
-  function setup() {
-    createCanvas(300, 300, WEBGL);
-    // Make the shader run faster 
-    // reducing the number of pixels 
-    pixelDensity(1);
-
-    // Custom shaders using p5.strands
-    shaderCanvas = buildMaterialShader(
-      colorCanvas
-    );
-    shaderPrimitive = buildMaterialShader(
-      colorPrimitive
-    );
-  }
-
-  function colorCanvas() {
-    const time = millis() * 0.00015;
-
-    // p5.strands hook 
-    // connects p5.js with GLSL
-    pixelInputs.begin();
-
-    // Coordinates of rendered space 
-    // (X and Y)
-    const uv = pixelInputs.texCoord;
-
-    const cloudTexture = noise(uv + time);
-
-    const r = mouseX / width;
-    const g = 0;
-    const b = cloudTexture * 1.5;
-
-    const cloudColor = [r, g, b, 1];
-
-    pixelInputs.color = cloudColor;
-
-    pixelInputs.end();
-  } 
-
-  function colorPrimitive() {
-    // p5.strands hook 
-    // connects p5.js with GLSL
-    pixelInputs.begin();
-
-    // Coordinates of rendered space 
-    // (X and Y)
-    const uv = pixelInputs.texCoord;
-
-    const grainTexture = noise(uv * 50.0);
-    
-    const crystalColor = [
-      grainTexture, 
-      grainTexture, 
-      grainTexture, 
-      grainTexture
-    ];
-
-    pixelInputs.color = crystalColor;
-
-    pixelInputs.end();
-  } 
-
-  function draw() {
-    // Apply color shader in canvas
-    filter(shaderCanvas);
-
-    // Apply color shader in 3D primitive
-    shader(shaderPrimitive);
-
-    // Rotate 3D primitive
-    const anim = millis() * 0.00015;
-    rotateY(anim);
-
-    stroke(120);
-    box(120);
-  }
-`} />
-
-</Column>
 
 <Column>
 
 #### sketch with GLSL
-{/* Make this sketch scrollable matching the p5.strands sketch (left column) height */}
-<EditableSketch code={`
+<EditableSketch scrollable={true} code={`
+  // Using GLSL requires
+  // over 180 lines of code,
+  // as a noise function must
+  // be defined manually
+
   let shaderCanvas;
   let shaderPrimitive;
 
@@ -561,6 +481,97 @@ Experiment with different inputs for the cloud texture:
 `} />
 
 </Column>
+
+<Column>
+
+#### sketch with p5.strands
+<EditableSketch scrollable={true} code={`
+  // Using p5.strands requires
+  // about 80 lines, as it provides a
+  // built-in noise function
+
+  let shaderCanvas;
+  let shaderPrimitive;
+
+  function setup() {
+    createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
+    pixelDensity(1);
+
+    // Custom shaders using p5.strands
+    shaderCanvas = buildMaterialShader(
+      colorCanvas
+    );
+    shaderPrimitive = buildMaterialShader(
+      colorPrimitive
+    );
+  }
+
+  function colorCanvas() {
+    const time = millis() * 0.00015;
+
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    pixelInputs.begin();
+
+    // Coordinates of rendered space 
+    // (X and Y)
+    const uv = pixelInputs.texCoord;
+
+    const cloudTexture = noise(uv + time);
+
+    const r = mouseX / width;
+    const g = 0;
+    const b = cloudTexture * 1.5;
+
+    const cloudColor = [r, g, b, 1];
+
+    pixelInputs.color = cloudColor;
+
+    pixelInputs.end();
+  } 
+
+  function colorPrimitive() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    pixelInputs.begin();
+
+    // Coordinates of rendered space 
+    // (X and Y)
+    const uv = pixelInputs.texCoord;
+
+    const grainTexture = noise(uv * 50.0);
+    
+    const crystalColor = [
+      grainTexture, 
+      grainTexture, 
+      grainTexture, 
+      grainTexture
+    ];
+
+    pixelInputs.color = crystalColor;
+
+    pixelInputs.end();
+  } 
+
+  function draw() {
+    // Apply color shader in canvas
+    filter(shaderCanvas);
+
+    // Apply color shader in 3D primitive
+    shader(shaderPrimitive);
+
+    // Rotate 3D primitive
+    const anim = millis() * 0.00015;
+    rotateY(anim);
+
+    stroke(120);
+    box(120);
+  }
+`} />
+
+</Column>
 </Columns>
 
 ### 3. Image Color Filters
@@ -580,22 +591,22 @@ We'll add these p5.strands vs. GLSL translations to our knowledge base:
 <table class="border-collapse border border-gray-400 full-width">
   <thead>
     <tr>
-      <th class="border border-gray-400 bg-(--bg-blue)">p5.strands</th>
       <th class="border border-gray-400 bg-(--bg-blue)">GLSL (fragment)</th>
+      <th class="border border-gray-400 bg-(--bg-blue)">p5.strands</th>
     </tr>
   </thead>
   <tbody>
     <tr>
+      <td class="border border-gray-400"><code>uniform sampler2D u_texture</code></td>
       <td class="border border-gray-400"><code>hook.canvasContent</code></td>
-      <td class="border border-gray-400"><code>uniform sampler2D u_texture</code></td>
     </tr>
     <tr>
+      <td class="border border-gray-400"><code>uniform sampler2D u_texture</code></td>
       <td class="border border-gray-400"><code>uniformTexture(texture)</code></td>
-      <td class="border border-gray-400"><code>uniform sampler2D u_texture</code></td>
     </tr>
     <tr>
-      <td class="border border-gray-400"><code>getTexture(texture, uv)</code></td>
       <td class="border border-gray-400"><code>texture2D(u_texture, uv)</code></td>
+      <td class="border border-gray-400"><code>getTexture(texture, uv)</code></td>
     </tr>
   </tbody>
 </table>
@@ -611,147 +622,11 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
 <Columns>
 <Column>
 
-#### sketch with p5.strands
-<EditableSketch code={`
-  let img;
-  let shaderCanvas;
-  let shaderPrimitive;
-
-  async function setup() {
-    createCanvas(300, 300, WEBGL);
-    // Make the shader run faster 
-    // reducing the number of pixels 
-    pixelDensity(1);
-
-    // Image by Mont fotografias
-    // https://www.pexels.com/photo/white-and-purple-cloud-2948636/
-    img = await loadImage(
-      'mont-photo-low.jpg'
-    );
-
-    // Custom shaders using p5.strands
-    shaderCanvas = buildFilterShader(
-      colorCanvas
-    );
-    shaderPrimitive = buildMaterialShader(
-      colorPrimitive
-    );
-  }
-
-  function colorCanvas() {
-    // p5.strands hook 
-    // connects p5.js with GLSL
-    filterColor.begin();
-
-    // Coordinates of rendered space 
-    // (X and Y)
-    const uv = filterColor.texCoord;
-
-    // Canvas texture
-    const imgTexture = filterColor.canvasContent;
-
-    // Amount of color displacement
-    const offsetX = (
-      0.5 - mouseX / width
-    ) * 0.5;
-    const offsetY = (
-      0.5 - mouseY / height
-    ) * 0.5;
-
-    const r = getTexture(
-      imgTexture, 
-      uv + [offsetX, 0]
-    ).r;
-    const g = getTexture(
-      imgTexture, 
-      uv
-    ).g;
-    const b = getTexture(
-      imgTexture, 
-      uv + [offsetX, offsetY]
-    ).b + 0.2;
-
-    const imgEffect = [r, g, b, 1];
-
-    filterColor.set(imgEffect);
-
-    filterColor.end();
-  } 
-
-  function colorPrimitive() {
-    const time = millis() * 0.001;
-
-    // Image texture
-    const imgTexture = uniformTexture(img);
-
-    // p5.strands hook 
-    // connects p5.js with GLSL
-    pixelInputs.begin();
-
-    // Coordinates of rendered space 
-    // (X and Y)
-    const uv = pixelInputs.texCoord;
-
-    // Amount of color displacement
-    const offsetX = sin(time) * 0.5;
-    const offsetY = cos(time) * 0.5;
-
-    const r = getTexture(
-      imgTexture, 
-      uv + [offsetX, 0]
-    ).r;
-    const g = getTexture(
-      imgTexture, 
-      uv
-    ).g;
-    const b = getTexture(
-      imgTexture, 
-      uv + [offsetX, offsetY]
-    ).b;
-
-    const imgEffect = [r, g, b, 1];
-
-    pixelInputs.color = imgEffect;
-
-    pixelInputs.end();
-  }
-
-  function draw() {
-    // Add image to canvas
-    image(
-      img, 
-      width/-2, 
-      height/-2, 
-      width, 
-      height
-    );
-
-    // Apply color shader in canvas
-    filter(shaderCanvas);
-
-    push();
-
-    // Apply color shader in 3D primitive
-    shader(shaderPrimitive);
-
-    // Rotate 3D primitive
-    const anim = millis() * 0.00015;
-    rotateY(anim);
-
-    stroke(120);
-    box(120);
-
-    pop();
-  }
-`} />
-
-</Column>
-
-<Column>
-
 #### sketch with GLSL
-{/* Make this sketch scrollable matching the p5.strands sketch (left column) height */}
-<EditableSketch code={`
+<EditableSketch scrollable={true} code={`
+  // Using GLSL requires
+  // about 180 lines of code
+
   let img;
   let shaderCanvas;
   let shaderPrimitive;
@@ -931,22 +806,155 @@ Explore different offsets in both axes `(x, y)` for the image displacement:
 `} />
 
 </Column>
+
+<Column>
+
+#### sketch with p5.strands
+<EditableSketch scrollable={true} code={`
+  // Using p5.strands requires
+  // just over 130 lines
+  
+  let img;
+  let shaderCanvas;
+  let shaderPrimitive;
+
+  async function setup() {
+    createCanvas(300, 300, WEBGL);
+    // Make the shader run faster 
+    // reducing the number of pixels 
+    pixelDensity(1);
+
+    // Image by Mont fotografias
+    // https://www.pexels.com/photo/white-and-purple-cloud-2948636/
+    img = await loadImage(
+      'mont-photo-low.jpg'
+    );
+
+    // Custom shaders using p5.strands
+    shaderCanvas = buildFilterShader(
+      colorCanvas
+    );
+    shaderPrimitive = buildMaterialShader(
+      colorPrimitive
+    );
+  }
+
+  function colorCanvas() {
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    filterColor.begin();
+
+    // Coordinates of rendered space 
+    // (X and Y)
+    const uv = filterColor.texCoord;
+
+    // Canvas texture
+    const imgTexture = filterColor.canvasContent;
+
+    // Amount of color displacement
+    const offsetX = (
+      0.5 - mouseX / width
+    ) * 0.5;
+    const offsetY = (
+      0.5 - mouseY / height
+    ) * 0.5;
+
+    const r = getTexture(
+      imgTexture, 
+      uv + [offsetX, 0]
+    ).r;
+    const g = getTexture(
+      imgTexture, 
+      uv
+    ).g;
+    const b = getTexture(
+      imgTexture, 
+      uv + [offsetX, offsetY]
+    ).b + 0.2;
+
+    const imgEffect = [r, g, b, 1];
+
+    filterColor.set(imgEffect);
+
+    filterColor.end();
+  } 
+
+  function colorPrimitive() {
+    const time = millis() * 0.001;
+
+    // Image texture
+    const imgTexture = uniformTexture(img);
+
+    // p5.strands hook 
+    // connects p5.js with GLSL
+    pixelInputs.begin();
+
+    // Coordinates of rendered space 
+    // (X and Y)
+    const uv = pixelInputs.texCoord;
+
+    // Amount of color displacement
+    const offsetX = sin(time) * 0.5;
+    const offsetY = cos(time) * 0.5;
+
+    const r = getTexture(
+      imgTexture, 
+      uv + [offsetX, 0]
+    ).r;
+    const g = getTexture(
+      imgTexture, 
+      uv
+    ).g;
+    const b = getTexture(
+      imgTexture, 
+      uv + [offsetX, offsetY]
+    ).b;
+
+    const imgEffect = [r, g, b, 1];
+
+    pixelInputs.color = imgEffect;
+
+    pixelInputs.end();
+  }
+
+  function draw() {
+    // Add image to canvas
+    image(
+      img, 
+      width/-2, 
+      height/-2, 
+      width, 
+      height
+    );
+
+    // Apply color shader in canvas
+    filter(shaderCanvas);
+
+    push();
+
+    // Apply color shader in 3D primitive
+    shader(shaderPrimitive);
+
+    // Rotate 3D primitive
+    const anim = millis() * 0.00015;
+    rotateY(anim);
+
+    stroke(120);
+    box(120);
+
+    pop();
+  }
+`} />
+
+</Column>
+
 </Columns>
 
 ### Wrapping Up
+
 We learned three ways to work with color in fragment shaders with p5.strands, which can be practical in your p5.js sketches, as you can keep on writing JavaScript using familiar p5.js syntax and type less code.
 
-We can do this:
-```js
-// p5.js with p5.strands
-function fragmentColor() {
-  finalColor.begin();
 
-  finalColor.set(color('blue'));
-
-  finalColor.end();
-} 
-```
 
 Instead of this:
 ```js
@@ -975,13 +983,25 @@ void main() {
 `;
 ```
 
+We can do this:
+```js
+// p5.js with p5.strands
+function fragmentColor() {
+  finalColor.begin();
+
+  finalColor.set(color('blue'));
+
+  finalColor.end();
+} 
+```
+
 <Callout title="When should I use p5.strands?">
 It might be ideal for certain shader techniques or features where you want to avoid writing the GLSL needed from scratch, and instead use p5.strands hooks alongside p5.js built-in functions and variables.
 - [p5.strands Overview](/contribute/p5.strands/), technical contributor documentation
 - [p5.js Reference](/reference/), easy explanations for every piece of p5.js code
 </ Callout>
 
-If instead of being comfortable with p5.js, you come from GLSL, p5.strands also enables you to use GLSL built-in functions, as for example `step()` and `mix()`. Check out our list of supported [GLSL built-ins](https://github.com/processing/p5.js/blob/main/src/strands/strands_builtins.js).
+If instead of being comfortable with p5.js, you come from GLSL, p5.strands also enables you to use GLSL built-in functions, as for example `step()` and `mix()`. Check out our list of supported [GLSL built-ins](https://github.com/processing/p5.js/blob/main/src/strands/strands_builtins.js). This list is also part of the [interactive p5.strands reference](https://ksen0.github.io/p5.strands).
 
 Even when we're in the p5.js ecosystem, learning some GLSL fundamentals might unlock future possibilities to additionally work with other web-based creative coding tools that offer more advanced shader capabilities with equally friendly communities, including [Three.js](https://threejs.org) and [shadertoy](https://www.shadertoy.com).
 
