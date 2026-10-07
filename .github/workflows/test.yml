@@ -3,6 +3,10 @@ name: Test, typecheck, and lint
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -48,6 +52,7 @@ jobs:
         run: npm run check
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v6
@@ -62,3 +67,17 @@ jobs:
           SKIP_BUILD_COMPRESS: 1
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: npm run build
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Run accessibility tests
+        continue-on-error: true
+        run: npm run test:a11y
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

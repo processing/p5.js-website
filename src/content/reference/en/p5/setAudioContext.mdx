@@ -4,9 +4,14 @@ module: p5.sound
 submodule: p5.sound
 file: src/core/Utils.js
 description: >-
-  Sets the AudioContext to a specified context to enable cross library
+  Sets the audio context to a specified context to enable cross library
   compatibility.
-line: 62
+
+
+  Accepts an AudioContext, an OfflineAudioContext, or a Tone.js Context.
+
+  A raw AudioContext supplied here gets the same Firefox fixes
+line: 105
 isConstructor: false
 itemtype: method
 example:
@@ -14,20 +19,15 @@ example:
 
     <div>
     <code>
-    let synth, ctx
+    let osc, ctx
 
     function setup() {
       createCanvas(400, 400);
-      //get the p5.sound.js Audio Context
-      ctx = getAudioContext()
-      //set the Tone.js Audio Context to match the p5.sound.js context
-      Tone.setContext(ctx)
-      //create a new MembraneSynth from the Tone.js library
-      synth = new Tone.MembraneSynth();
-      //create a new p5.sound.js Reverb effect
-      rev = new p5.Reverb(3)
-      //connect the MembraneSynth to the Reverb
-      rev.setInput(synth)
+      //route p5.sound.js through an audio context the sketch owns
+      ctx = new AudioContext();
+      setAudioContext(ctx);
+      //nodes created from here on play through that context
+      osc = new p5.Oscillator();
     }
 
     function draw() {
@@ -35,15 +35,15 @@ example:
     }
 
     function mousePressed() {
-      synth.triggerAttackRelease("C2", "8n");
+      osc.start();
     }
     </code>
     </div>
 class: p5
 params:
-  - name: the
-    description: desired AudioContext.
-    type: AudioContext
+  - name: context
+    description: the desired audio context.
+    type: AudioContext|OfflineAudioContext|Context
 chainable: false
 ---
 
