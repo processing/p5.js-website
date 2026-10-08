@@ -18,6 +18,7 @@ interface Props {
 
 const { entry, title } = Astro.props;
 const { Content } = await render(entry);
+Astro.locals.jumpToState = null;
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
@@ -50,7 +51,7 @@ const { showBanner, englishUrl } = checkTranslationBanner(
   featuredImageSrc={entry.data.featuredImage.src}
 />
 
-<BaseLayout title={title} subtitle={dayString} variant="item" topic="community" jumpToState={null}>
+<BaseLayout title={title} subtitle={dayString} variant="item" topic="community">
   {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   {
     entry.data.featuredImage && entry.data.featuredImageAlt && (
