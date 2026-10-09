@@ -267,22 +267,24 @@ export const ReferenceDirectoryWithFilter = ({
     }
     return filteredEntries.map((category) => (
       <section key={category.name}>
-        <h2
-          class={
-            subcatShouldHaveHeading(category.subcats[0], category)
-              ? "mb-0"
-              : "mb-[var(--gutter-md)]"
-          }
-          id={category.name}
-        >
+        <h2 class="mb-0" id={category.name}>
           {category.name}
         </h2>
-        {category.subcats.map((subcat) => (
-          <div key={subcat.name}>
-            {getSubcatHeading(subcat, category)}
-            {renderEntries(subcat.entries)}
-          </div>
-        ))}
+        {category.subcats.map((subcat) => {
+          const hasHeading = subcatShouldHaveHeading(subcat, category);
+          if (!hasHeading && subcat.entries.length === 0) {
+            return null;
+          }
+          return (
+            <div
+              key={subcat.name}
+              class={!hasHeading ? "mt-[var(--gutter-md)]" : undefined}
+            >
+              {getSubcatHeading(subcat, category)}
+              {renderEntries(subcat.entries)}
+            </div>
+          );
+        })}
       </section>
     ));
   };
