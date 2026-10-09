@@ -1,17 +1,23 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
+
+import EditableSketch from "@components/EditableSketch/index.astro";
 import Head from "@components/Head/index.astro";
+import RelatedItems from "@components/RelatedItems/index.astro";
+
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import {
   generateJumpToState,
+  getFallbackRemixData,
   getRelatedEntriesinCollection,
 } from "../pages/_utils";
-import BaseLayout from "./BaseLayout.astro";
-import EditableSketch from "@components/EditableSketch/index.astro";
-import RelatedItems from "@components/RelatedItems/index.astro";
+import {
+  EXAMPLE_ATTRIBUTION,
+  getExampleAttributionData,
+} from "../utils/exampleAttribution";
 
-import { getFallbackRemixData } from "../pages/_utils";
+import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
   example: CollectionEntry<"examples">;
@@ -43,29 +49,17 @@ const relatedReferences =
 
 const { Content } = await render(example);
 
-// Use the fallback function to retrieve English remix data if the current locale doesn't have any
-let remixData = (await getFallbackRemixData(
+// Use the fallback function to retrieve English remix data if the current
+// locale doesn't have any.
+const remixData = (await getFallbackRemixData(
   example.id,
   currentLocale,
   example.data.remix
 )) as typeof example.data.remix;
 
-// Extract the collective attribution year. If multiple provided, uses last shown.
-const collectivelyAttributedSince = remixData?.reduce(
-  (acc: number | null, item) => {
-    if (item.collectivelyAttributedSince) {
-      return item.collectivelyAttributedSince;
-    }
-    return acc;
-  },
-  null
-);
-
-// Boolean value on whether the remix history contains links to code
-const remixHistoryHasCodeLinks = remixData?.some(
-  (item) => Array.isArray(item.code) && item.code.length > 0
-);
-
+// Shared attribution rules used by both the website layout and
+// OpenProcessing synchronization.
+const attributionData = getExampleAttributionData(remixData ?? []);
 ---
 
 <Head
@@ -88,88 +82,107 @@ const remixHistoryHasCodeLinks = remixData?.some(
     <div class="rendered-markdown">
       <Content />
     </div>
+
     <div class="rendered-markdown">
-      <img src="/images/by-nc-sa.svg" alt="Creative Commons BY-NC-SA license badge" />
+      <img
+        src="/images/by-nc-sa.svg"
+        alt="Creative Commons BY-NC-SA license badge"
+      />
 
       <p>
+        <a href={Astro.url.pathname}>{example.data.title}</a>:{" "}
 
-      <a href={Astro.url.pathname}>{example.data.title}</a>:{" "}
-
-      {remixData?.map((item, i) => {
-        const parts = [];
-
-        // Each remix entry requires at least one attribution
-        // If a remix entry contains a collective attribution starting year, it is ignored here
-
-        if (!item.collectivelyAttributedSince && item.attribution) {
-          parts.push(<>{t("attribution", item.description)}</>);
-
-          if (item.attribution?.length) {
-            parts.push(
-              <>
-                {" "}
-                {item.attribution.map((a, j) => (
-                  <>
-                    {a.URL ? <a href={a.URL}>{t(a.name)}</a> : t(a.name)}
-                    {
-                      item.attribution?.length
-                      ? j < item.attribution.length - 1 ? ", " : "."
-                      : ""
-                    }
-                  </>
-                ))}
-              </>
-            );
-          }
+        {
+          attributionData.remixes.map((item, i) => (
+            <span>
+              {i > 0 && " "}
+              {t("attribution", item.description)}{" "}
+              {item.attribution.map((author, j) => (
+                <>
+                  {author.URL ? (
+                    <a href={author.URL}>{t(author.name)}</a>
+                  ) : (
+                    t(author.name)
+                  )}
+                  {j < item.attribution.length - 1 ? ", " : "."}
+                </>
+              ))}
+            </span>
+          ))
         }
 
-        return <span>{i > 0 && " "}{parts}</span>;
-      })}
+        {
+          attributionData.collectivelyAttributedSince ? (
+            <>
+              {t(
+                "attribution",
+                `From ${attributionData.collectivelyAttributedSince} onwards, edited and maintained by`
+              )}{" "}
+            </>
+          ) : (
+            <>
+              {t("attribution", "Edited and maintained by")}{" "}
+            </>
+          )
+        }
 
-      {collectivelyAttributedSince ? (
-        <>{t("attribution", `From ${collectivelyAttributedSince} onwards, edited and maintained by`)}{" "}</>
-      ) : (
-        <>{t("attribution", "Edited and maintained by")}{" "}</>
-      )}
-      <span>
-        <a href="https://github.com/processing/p5.js?tab=readme-ov-file#contributors">p5.js Contributors</a>{" "}
-        {t("attribution", "and")}{" "}
-        <a href="https://processingfoundation.org/people">Processing Foundation</a>.
-        Licensed under{" "}
-        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
-      </span>
-    </p>
+        <span>
+          <a href={EXAMPLE_ATTRIBUTION.contributors.URL}>
+            {EXAMPLE_ATTRIBUTION.contributors.name}
+          </a>{" "}
+          {t("attribution", "and")}{" "}
+          <a href={EXAMPLE_ATTRIBUTION.foundation.URL}>
+            {EXAMPLE_ATTRIBUTION.foundation.name}
+          </a>.
+          {" "}Licensed under{" "}
+          <a href={EXAMPLE_ATTRIBUTION.license.URL}>
+            {EXAMPLE_ATTRIBUTION.license.name}
+          </a>.
+        </span>
+      </p>
 
-    <p>
-      {remixHistoryHasCodeLinks ? (
-        <>
-          {t("attribution", "You can find the code history of these examples here")}{": "}
-          {remixData
-            .map(item => item?.code)
-            .flat()
-            .filter(codeItem => codeItem && codeItem.URL)
-            .map((codeItem, i, codeItemsList) => (
-              <>
-                <a href={codeItem?.URL}>{codeItem?.label}</a>{
-                  i < (codeItemsList?.length ?? 0) - 1 ? ", " : ". "
-                }
-              </>
-            ))}
-          {t("attribution", "You can suggest improvements by")}{" "}
-          <a href="https://github.com/processing/p5.js-website">{t("attribution", "contributing to the current website")}</a>!
-        </>
-      ) : (
-        <></>
-      )}
-    </p>
+      <p>
+        {
+          attributionData.codeLinks.length > 0 ? (
+            <>
+              {t(
+                "attribution",
+                "You can find the code history of these examples here"
+              )}
+              {": "}
 
+              {attributionData.codeLinks.map(
+                (codeItem, i, codeItemsList) => (
+                  <>
+                    <a href={codeItem.URL}>{codeItem.label}</a>
+                    {i < codeItemsList.length - 1 ? ", " : ". "}
+                  </>
+                )
+              )}
 
+              {t(
+                "attribution",
+                "You can suggest improvements by"
+              )}{" "}
+              <a href="https://github.com/processing/p5.js-website">
+                {t(
+                  "attribution",
+                  "contributing to the current website"
+                )}
+              </a>
+              !
+            </>
+          ) : (
+            <></>
+          )
+        }
+      </p>
+    </div>
+
+    <EditableSketch code={code} />
+    <p>{example.data.arialabel}</p>
   </div>
 
-  <EditableSketch code={code} />
-  <p>{example.data.arialabel}</p>
-
-  </div>
   <div class="grid gap-y-4xl lg:gap-y-mb-3xl mt-2xl">
     {
       relatedReferences.length > 0 ? (
@@ -179,6 +192,7 @@ const remixHistoryHasCodeLinks = remixData?.some(
         />
       ) : null
     }
+
     <RelatedItems
       title={t("Related Examples") as string}
       items={relatedExamples}
