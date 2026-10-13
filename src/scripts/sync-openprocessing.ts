@@ -6,7 +6,7 @@ import {
   addAttributionToCode,
   type RemixEntry,
 } from "../utils/exampleAttribution";
-import { getExampleCodePath } from "../utils/examplePaths";
+import { getExampleCodePath, getExampleId } from "../utils/examplePaths";
 
 import { getCurationSketches } from "./openprocessing";
 
@@ -89,9 +89,7 @@ async function prepareExample(
     data.remix ?? []
   );
 
-  const id = descriptionPath
-    .replace(`${EXAMPLES_DIRECTORY}/`, "")
-    .replace("/description.mdx", "");
+  const id = getExampleId(descriptionPath, EXAMPLES_DIRECTORY);
 
   return {
     id,
