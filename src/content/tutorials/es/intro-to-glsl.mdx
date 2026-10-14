@@ -1,0 +1,862 @@
+---
+title: "Introducción a GLSL"
+description: Una introducción a las diferentes formas en que puedes crear efectos visuales interesantes con la GPU de tu computadora usando GLSL.
+category: webgl
+categoryIndex: 3
+featuredImage: ../images/featured/intro-to-shaders.jpg
+featuredImageAlt: Una calle de ciudad distorsionada y ondulante
+relatedContent:
+  examples:
+    - en/11_3d/04_filter_shader/description
+    - en/11_3d/05_adjusting_positions_with_a_shader/description
+    - en/11_3d/06_framebuffer_blur/description
+  references:
+    - en/p5/createfiltershader
+    - en/p5/loadshader
+    - en/p5/p5shader
+authors:
+  - Dave Pagurek
+  - Austin Lee Slominski
+  - Adam Ferriss
+---
+
+import EditableSketch from "../../../components/EditableSketch/index.astro";
+import Callout from "../../../components/Callout/index.astro";
+import AnnotatedCode from "../../../components/AnnotatedCode/index.astro";
+import { Image } from "astro:assets";
+import uv from "../images/webgl/uv_example.png";
+
+Las computadoras modernas vienen con una pieza especial de hardware llamada unidad de procesamiento gráfico, o GPU. Los shaders son programas especiales que se ejecutan en ella y pueden hacer cosas increíbles. Aprovechan la GPU para procesar muchos píxeles a la vez en paralelo, lo que los hace rápidos y especialmente adecuados para ciertas tareas de gráficos por computadora, como generar ruido, aplicar filtros como el desenfoque, o sombrear polígonos.
+
+Programar shaders puede parecer intimidante al principio, ya que requiere un enfoque distinto al del dibujo 2D de p5.js. Este tutorial cubrirá los fundamentos de la programación de shaders y te señalará otros recursos.
+
+
+## Preparación
+
+La forma de programar la GPU en tu navegador es mediante una API llamada [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API). p5.js es una gran herramienta para trabajar con shaders porque se encarga de gran parte de la configuración repetitiva de WebGL, permitiéndote concentrarte en el código del shader. Antes de empezar con los shaders, tenemos que configurar nuestro lienzo de p5.js para que use el modo WebGL. Esto se hace agregando la constante `WEBGL` como tercer parámetro de `createCanvas()`.
+
+```javascript
+...
+
+function setup() {
+  createCanvas(200, 200, WEBGL);
+}
+
+...
+```
+
+Un programa de shader consta de dos partes: un **shader de vértices** y un **shader de fragmentos**. El shader de vértices es un programa que se ejecuta una vez por cada vértice de una pieza de geometría y determina dónde se dibuja en la pantalla. El shader de fragmentos es un programa que se ejecuta una vez por cada píxel de esa geometría y determina su color.
+
+<table>
+
+<tr>
+
+<td>
+
+![Una esfera roja](../images/webgl/sphere.png)
+
+</td>
+
+<td>
+
+![Una esfera roja que oscila y se distorsiona con el tiempo](../images/webgl/vertshader.gif)
+
+</td>
+
+<td>
+
+![La silueta de una esfera ondulante, coloreada con franjas rojas y azules](../images/webgl/fragshader.gif)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+*Forma original*
+
+</td>
+
+<td>
+
+*Un shader de vértices personalizado puede ajustar las posiciones de los vértices de una forma*
+
+</td>
+
+<td>
+
+*Un shader de fragmentos personalizado puede ajustar los colores dentro de una forma*
+
+</td>
+
+</tr>
+
+</table>
+
+{/* Note for contributors: Images/gifs generated from https://editor.p5js.org/davepagurek/sketches/gs-DbLzqV */}
+
+Cada uno vive en un archivo separado y se carga en p5.js usando la función `loadShader()`. Una vez cargado, el shader puede usarse dentro de `setup()` o `draw()`. El siguiente ejemplo muestra cómo configurar un shader básico en p5.js:
+
+```javascript
+let myShader;
+async function setup() {
+  // carga cada archivo de shader
+  // (no te preocupes, ¡volveremos a esto!)
+  myShader = await loadShader('shader.vert', 'shader.frag');
+  // el lienzo debe crearse en modo WEBGL
+  createCanvas(windowWidth, windowHeight, WEBGL);
+}
+function draw() {
+  // shader() establece el shader activo,
+  // que se aplicará a lo que se dibuje después
+  shader(myShader);
+  // aplica el shader a un rectángulo
+  // que ocupa todo el lienzo
+  plane(width, height);
+}
+```
+
+También existe una función adicional llamada `createShader()`, que puede usarse para cargar shaders directamente desde cadenas de texto definidas en tu sketch.
+
+
+## Escribir shaders
+
+Ahora veremos qué contienen los archivos del shader de vértices y del shader de fragmentos que mencionamos en `loadShader()`.
+
+
+### Lenguaje de sombreado (GLSL)
+
+Los archivos de shader se escriben en el Graphics Library Shading Language, o GLSL (basado en OpenGL 2.0 y GLSL ES 1.00), y tienen una sintaxis y estructura muy diferentes a las que conocemos. GLSL tiene una sintaxis que se parece a C, lo que significa que trae consigo un puñado de conceptos que no existen en JavaScript.
+
+Para empezar, el lenguaje de sombreado es mucho más estricto con los tipos. Cada variable que creas debe etiquetarse con el tipo de dato que almacena. Aquí hay una lista de algunos de los tipos más comunes:
+
+```glsl
+vec2(x,y)     // un vector de dos floats
+vec3(x,y,z)   // un vector de tres floats
+              // (también puede ser r,g,b)
+vec4(x,y,z,w) // un vector de cuatro floats
+              // (también puede ser r,g,b,a)
+float         // un número con punto decimal
+int           // un número entero sin punto decimal
+sampler2D     // una referencia a una textura
+mat2          // una matriz de 2x2
+mat3          // una matriz de 3x3
+mat4          // una matriz de 4x4
+bool          // true o false
+```
+
+En general, los lenguajes de sombreado son mucho más estrictos que JavaScript. Un punto y coma faltante no está permitido y producirá un mensaje de error. No puedes usar distintos tipos de números, como floats y enteros, de forma intercambiable. También se quejará de los `float` que no estén definidos con un punto decimal, así que te encontrarás escribiendo números como `0.0` o `1.0` con frecuencia.
+
+Estas son algunas cosas que son diferentes en GLSL:
+
+<table class="full-width">
+
+<tr>
+
+<td>
+
+</td>
+
+<th>
+
+Javascript
+
+</th>
+
+<th>
+
+GLSL
+
+</th>
+
+</tr>
+
+<tr>
+
+<td>
+
+Todas las variables necesitan tipos.
+
+</td>
+
+<td>
+
+```javascript
+let a = 1;
+let b = 0.5;
+```
+
+</td>
+
+<td>
+
+```glsl
+int a = 1;
+float b = 0.5;
+```
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+Las funciones deben declarar los tipos de sus parámetros y de su valor de retorno.
+
+</td>
+
+<td>
+
+```javascript
+function isBetween(val, start, end) {
+  return val >= start && val <= end;
+}
+```
+
+</td>
+
+<td>
+
+```glsl
+bool isBetween(float val, float start, float end) {
+  return val >= start && val <= end;
+}
+```
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+Tienes que convertir entre enteros y floats por tu cuenta.
+
+</td>
+
+<td>
+
+```javascript
+let a = 1;
+let b = 0.5;
+let c = b + 2;
+let d = a + b;
+```
+
+</td>
+
+<td>
+
+```glsl
+int a = 1;
+float b = 0.5;
+float c = b + 2.0;
+float d = float(a) + b;
+```
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+Los bucles en GLSL deben detenerse en un valor constante. Si quieres terminar condicionalmente, puedes salir del bucle con `break`.
+
+</td>
+
+<td>
+
+```javascript
+let maxVal = 10;
+if (something) {
+  maxVal = 20;
+}
+for (let i = 0; i < maxVal; i++) {
+  // haz algo
+}
+```
+
+</td>
+
+<td>
+
+```glsl
+int maxVal = 10;
+if (something) {
+  maxVal = 20;
+}
+for (int i = 0; i < 20; i++) {
+  if (i == maxVal) {
+    break;
+  }
+  // haz algo
+}
+```
+
+</td>
+
+</tr>
+
+</table>
+
+Aunque tiene muchas restricciones, ¡en algunos aspectos GLSL puede ser más agradable de usar! Al trabajar con vectores, GLSL incluye varios atajos útiles:
+
+<table class="full-width">
+
+<tr>
+
+<td>
+
+Si tienes un `vec4`, puedes referirte a sus datos como si fueran un color o una coordenada. Ambos son equivalentes, así que puedes usar el que haga tu código más fácil de leer.
+
+</td>
+
+<td>
+
+```glsl
+//Cada par es equivalente:
+myVec.x
+myVec.r
+
+myVec.y
+myVec.g
+
+myVec.z
+myVec.b
+
+myVec.w
+myVec.a
+```
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+Si quieres crear un vector donde todos sus valores sean iguales, no necesitas repetir el mismo valor varias veces: con una vez basta.
+
+</td>
+
+<td>
+
+```glsl
+// Estos son equivalentes
+myVec = vec3(0.5, 0.5, 0.5);
+myVec = vec3(0.5);
+```
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+Puedes obtener vectores más pequeños a partir de un vector más grande usando una operación denominada *swizzling*, que encadena componentes después de un `.` en el orden en que los quieras en el nuevo vector.
+
+</td>
+
+<td>
+
+```glsl
+vec4 bigVec = vec4(1.0, 2.0, 3.0, 4.0);
+// Equivalente a vec2(bigVec.z, bigVec.y)
+vec2 smallVec = bigVec.zy;
+```
+
+</td>
+
+</tr>
+
+</table>
+
+
+### Shaders de vértices
+
+Aquí hay un shader de vértices sencillo que aplica las transformaciones y la perspectiva de cámara proporcionadas por p5.js:
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`
+  ${begin('precision')}
+  precision highp float;
+  ${end('precision')}
+  ${begin('attributes')}
+  attribute vec3 aPosition;
+  ${end('attributes')}
+  ${begin('uniforms')}
+  // La transformación del objeto que se dibuja
+  uniform mat4 uModelViewMatrix;
+  // Transforma coordenadas 3D en
+  // coordenadas 2D de pantalla
+  uniform mat4 uProjectionMatrix;
+  ${end('uniforms')}
+  ${begin('main')}
+  void main() {
+    // Aplica la transformación de la cámara
+    vec4 viewModelPosition =
+      uModelViewMatrix * vec4(aPosition, 1.0);
+    // Indica a WebGL dónde va el vértice
+    gl_Position =
+      uProjectionMatrix * viewModelPosition;  
+  }
+  ${end('main')}
+`}>
+  <Fragment slot="precision">
+   El shader comienza con una línea de `precision`. Puede ser `lowp`, `mediump` o `highp`. Usar la calidad más alta es un buen punto de partida para asegurar que tus shaders se vean igual en todas partes. En computadoras de escritorio y portátiles, tu GPU probablemente usará la calidad más alta sin importar lo que escribas. En teléfonos, usar una calidad más baja puede ser más rápido, pero puede hacer que tus shaders se rendericen de forma diferente.
+  </Fragment>
+  <Fragment slot="attributes">
+    Los *atributos* del shader contienen valores que cambian por vértice, y p5.js los usa para compartir información como la posición de cada vértice. El atributo de este shader es un `vec3`, lo que significa que contiene un valor para x, y y z. Los atributos son tipos de variables especiales que solo se usan en el shader de vértices y normalmente los proporciona p5.js. Cuando usas métodos de p5.js como `rect()` o `vertex()`, p5.js pasa la información de los vértices al shader automáticamente.
+  </Fragment>
+  <Fragment slot="uniforms">
+    Los *uniforms* de un shader son valores constantes para toda la forma que se está dibujando. Cada uno en este shader resulta ser un `mat4`, un tipo que se usa a menudo para representar transformaciones como traslaciones, escalas y rotaciones. Multiplicar un punto por un `mat4` le aplica la transformación que representa. Los de este shader los proporciona automáticamente p5.js, pero más adelante veremos cómo puedes proporcionar tus propios uniforms personalizados. Ten en cuenta que el orden de multiplicación con matrices importa. En la mayoría de los casos escribirás primero la matriz y después el valor que se multiplica por ella.
+  </Fragment>
+  <Fragment slot="main">
+    Todos los shaders de vértices requieren una función, `main()`, dentro de la cual posicionamos nuestros vértices asignando un valor a `gl_Position`. Este valor está en el *espacio de recorte* (clip space), donde los valores de x, y y z van de -1 a 1 conforme van de un lado al otro. Multiplicar un punto 3D por `uProjectionMatrix` hace esta conversión por nosotros usando la configuración de cámara de p5.js. Antes de eso, este shader también multiplica por `uModelViewMatrix` para aplicar las transformaciones acumuladas que se establecieron antes de dibujar la forma.
+  </Fragment>
+</AnnotatedCode>
+
+No te preocupes si esto todavía no tiene mucho sentido. El shader de vértices juega un papel importante, pero a menudo solo se encarga de asegurar que lo que creamos en nuestro shader de fragmentos se muestre correctamente sobre la geometría. Probablemente reutilizarás los mismos shaders de vértices en muchos de tus proyectos. Abajo hay un shader de vértices estándar que puedes usar y que también maneja información como colores por vértice y coordenadas de textura.
+
+```glsl
+precision highp float;
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
+attribute vec4 aVertexColor;
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+varying vec2 vTexCoord;
+varying vec4 vVertexColor;
+void main() {
+  // Aplica la transformación de la cámara
+  vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+  // Indica a WebGL dónde va el vértice
+  gl_Position = uProjectionMatrix * viewModelPosition;  
+  // Pasa los datos al shader de fragmentos
+  vTexCoord = aTexCoord;
+  vVertexColor = aVertexColor;
+}
+```
+
+### Shaders de fragmentos
+
+El shader de fragmentos es responsable del color que produce nuestro shader y es donde haremos gran parte de nuestra programación de shaders. Aquí hay un shader de fragmentos muy simple que solo muestra el color rojo:
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`
+  ${begin('precision')}
+  precision highp float;
+  ${end('precision')}
+  ${begin('main')}
+  void main() {
+    vec4 myColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = myColor;
+  }
+  ${end('main')}
+`}>
+<Fragment slot="precision">
+  El shader de fragmentos comienza de nuevo con una línea que especifica la `precision` de los floats. Debe coincidir con la `precision` de tu shader de vértices.
+</Fragment>
+<Fragment slot="main">
+
+De forma similar al shader de vértices, nuestro shader de fragmentos también requiere una función `main()`, pero en lugar de asignar un valor a `gl_Position`, asignaremos un color a una variable especial definida por GLSL llamada `gl_FragColor`.
+
+La variable `myColor` está definida como un `vec4`, lo que significa que almacena cuatro valores. Como estamos trabajando con color, esos cuatro valores son rojo, verde, azul y alfa. Los shaders no usan 0-255 para los colores como lo hacen por defecto nuestros sketches de p5.js. En su lugar, usan valores entre 0.0 y 1.0.
+
+</Fragment>
+</AnnotatedCode>
+
+Ahora que tenemos un shader de vértices y un shader de fragmentos, podemos guardarlos en archivos separados (`shader.vert` y `shader.frag`, respectivamente) y cargarlos en nuestro sketch usando `loadShader()`.
+
+
+## Uniforms: pasar datos del sketch al shader
+
+Un shader simple como este puede ser útil por sí solo, pero hay ocasiones en que es necesario comunicar variables desde el sketch de p5.js hacia un shader. Aquí es donde entran los uniforms. Los uniforms son un tipo de variable que puede enviarse desde un sketch a un shader. Hacen posible tener mucho más control sobre un shader desde JavaScript.
+
+Los uniforms se definen en la parte superior del archivo, fuera de `main()`. Puedes acceder a ellos tanto en tu shader de vértices como en el de fragmentos. En el ejemplo de abajo, el valor que devuelve el método `millis()` de p5.js se pasa a un uniform `time` para introducir movimiento en el shader de vértices.
+
+<EditableSketch code={`
+  let myShader;
+
+  // El código fuente de nuestro shader de vértices como cadena de texto
+  let vert = \`
+  precision highp float;
+
+  attribute vec3 aPosition;
+
+  // La transformación del objeto que se dibuja
+  uniform mat4 uModelViewMatrix;
+
+  // Transforma coordenadas 3D en coordenadas 2D de pantalla
+  uniform mat4 uProjectionMatrix;
+
+  // Un uniform personalizado con el tiempo en milisegundos
+  uniform float time;
+
+  void main() {
+    // Aplica la transformación de la cámara
+    vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+
+    // Usa el tiempo para ajustar la posición de los vértices
+    viewModelPosition.x += 10.0 * sin(time * 0.01 + viewModelPosition.y * 0.1);
+
+    // Indica a WebGL dónde va el vértice
+    gl_Position = uProjectionMatrix * viewModelPosition;  
+  }
+  \`;
+
+  let frag = \`
+  precision highp float;
+
+  void main() {
+    vec4 myColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = myColor;
+  }
+  \`
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = createShader(vert, frag);
+  }
+
+  function draw() {
+    background(255);
+    noStroke();
+    
+    // Usa nuestro shader personalizado
+    shader(myShader);
+    
+    // Pasa el tiempo de p5 al shader
+    myShader.setUniform('time', millis());
+    
+    // Dibuja una forma usando el shader
+    circle(0, 0, 100);
+  }
+`} />
+
+También funciona en el shader de fragmentos. En el siguiente ejemplo creamos un uniform de color, `myColor`, que nos permitirá cambiar el color desde la parte de JavaScript de nuestro sketch. Solo recuerda que en los shaders los valores de los canales de color van de 0 a 1 en lugar de 0 a 255.
+
+
+<EditableSketch code={`
+  let myShader;
+
+  // El código fuente de nuestro shader de vértices como cadena de texto
+  let vert = \`
+  precision highp float;
+
+  attribute vec3 aPosition;
+
+  // La transformación del objeto que se dibuja
+  uniform mat4 uModelViewMatrix;
+
+  // Transforma coordenadas 3D en coordenadas 2D de pantalla
+  uniform mat4 uProjectionMatrix;
+
+  void main() {
+    // Aplica la transformación de la cámara
+    vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+
+    // Indica a WebGL dónde va el vértice
+    gl_Position = uProjectionMatrix * viewModelPosition;  
+  }
+  \`;
+
+  let frag = \`
+  precision highp float;
+
+  // Un uniform personalizado para controlar el color
+  uniform vec4 myColor;
+
+  void main() {
+    gl_FragColor = myColor;
+  }
+  \`
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = createShader(vert, frag);
+  }
+
+  function draw() {
+    background(255);
+    noStroke();
+    
+    // Usa nuestro shader personalizado
+    shader(myShader);
+    
+    // Crea un color usando la posición x del puntero como rojo y
+    // su posición y como verde, y pásalo al shader
+    myShader.setUniform('myColor', [
+      map(mouseX, 0, width, 0, 1, true), // Rojo
+      map(mouseY, 0, width, 0, 1, true), // Verde
+      0, // Azul
+      1 // Alfa
+    ]);
+    
+    // Dibuja una forma usando el shader
+    circle(0, 0, 100);
+  }
+`} />
+
+Puedes ver la lista completa de uniforms que p5.js te proporciona en el documento [p5.js WebGL Mode Architecture](https://github.com/processing/p5.js/blob/main/contributor_docs/webgl_mode_architecture.md).
+
+
+## Varyings: pasar datos del shader de vértices al de fragmentos
+
+Las variables *varying* comparten datos entre el shader de vértices y el shader de fragmentos. Esto hace posible usar la posición u otros datos de la geometría dentro de nuestros shaders de fragmentos.
+
+Por ejemplo, quizá quieras usar las coordenadas de textura de una forma en el shader de fragmentos. Estas vienen en forma de un `vec2`, con coordenadas que van entre 0 y 1. Inicialmente esto llega en un `attribute` de p5.js, y estos solo son accesibles en el shader de vértices. Veamos qué hace nuestro shader de vértices estándar para pasarlo a los shaders de fragmentos:
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`precision highp float;
+
+  attribute vec3 aPosition;
+  ${begin('texcoord')}
+  attribute vec2 aTexCoord;
+  ${end('texcoord')}
+  uniform mat4 uModelViewMatrix;
+  uniform mat4 uProjectionMatrix;
+  ${begin('varying')}
+  varying vec2 vTexCoord;
+  ${end('varying')}
+  void main() {
+    // Aplica la transformación de la cámara
+    vec4 viewModelPosition = uModelViewMatrix * vec4(aPosition, 1.0);
+    // Indica a WebGL dónde va el vértice
+    gl_Position = uProjectionMatrix * viewModelPosition;
+  ${begin('assign')}
+    vTexCoord = aTexCoord;
+  ${end('assign')}
+  }
+`}>
+  <Fragment slot="texcoord">
+    Las coordenadas de textura llegan inicialmente en forma de un `attribute` llamado `aTexCoord`. p5.js lo rellena automáticamente.
+  </Fragment>
+  <Fragment slot="varying">
+    Aquí declaramos una variable `varying`. Cualquier variable `varying` que declares en un shader de vértices puedes volver a declararla en el shader de fragmentos, donde podrás acceder al valor que le asignó el shader de vértices.
+  </Fragment>
+  <Fragment slot="assign">
+    Al asignar el valor del *atributo* a la variable *varying*, copiamos el dato a un lugar donde el shader de fragmentos puede leerlo.
+  </Fragment>
+</AnnotatedCode>
+
+Como definimos una `varying` llamada `vTexCoord` en el shader de vértices, ahora también podemos usarla en el shader de fragmentos. Aquí hay un shader de fragmentos sencillo que mapea el valor de x al canal rojo y el valor de y al canal verde. Observa que aunque `vTexCoord` se define *por vértice* en el shader de vértices, su valor se define *por píxel* en el shader de fragmentos. Para obtener el valor por píxel, WebGL interpola suavemente entre los valores por vértice de cada cara.
+
+<AnnotatedCode lang="glsl" code={({ begin, end }) =>
+`
+  ${begin('shader')}
+  precision highp float;
+  varying vec2 vTexCoord;
+  void main() {
+    // Asigna las coordenadas a la salida de color del shader
+    gl_FragColor = vec4(vTexCoord.x, vTexCoord.y, 1.0, 1.0);
+  }
+  ${end('shader')}
+`}>
+  <Fragment slot="shader">
+
+    El resultado de usar este shader en un `plane(width, height)`:
+
+    <Image alt="Un gradiente rectangular con negro en la esquina superior izquierda, magenta en la superior derecha, blanco en la inferior derecha y cian en la inferior izquierda." width="100" src={uv} />
+
+  </Fragment>
+</AnnotatedCode>
+
+
+## Shaders de filtro
+
+En p5.js, un filtro examina todos los píxeles del lienzo y luego los reemplaza por otra cosa. Hay muchos filtros integrados que hacen cosas como invertir los colores del lienzo o aplicar un desenfoque a su contenido. Puedes crear tu propio filtro escribiendo un shader de fragmentos para ello.
+
+Los shaders de filtro solo necesitan un shader de fragmentos. Los shaders de vértices se encargan principalmente de posicionar las formas, y los filtros siempre se aplican a todo el lienzo, así que p5.js te proporciona un shader de vértices por defecto. En lugar de usar `loadShader`, usas `createFilterShader(src)`, pasándole una cadena de texto con el código fuente de tu shader.
+
+Hay varios `uniform`s que estarán disponibles en un shader de filtro, y puedes leer sobre todos ellos [en la documentación de `createFilterShader`.](https://p5js.org/reference/p5/createFilterShader) Hay dos principales que debes conocer para empezar:
+
+- `uniform sampler2D tex0` es una textura que contiene el contenido del lienzo.
+- `varying vec2 vTexCoord` contiene las coordenadas en el lienzo del píxel actual, en un rango de 0 a 1.
+
+Combinándolos, `texture2D(tex0, vTexCoord)` devuelve el color del píxel actual del lienzo, que luego puedes modificar. En este ejemplo creamos un filtro personalizado de blanco y negro reemplazando los canales rojo y verde por el canal azul:
+
+<EditableSketch code={`
+  let video;
+  let bw;
+
+  let bwSrc = \`
+  precision highp float;
+
+  uniform sampler2D tex0;
+  varying vec2 vTexCoord;
+
+  void main() {
+    // Obtén el color original de este píxel
+    vec4 color = texture2D(tex0, vTexCoord);
+
+    // Conviértelo a blanco y negro reemplazando todos los canales por el azul
+    color.r = color.b;
+    color.g = color.b;
+
+    // Establece el nuevo color
+    gl_FragColor = color;
+  }
+  \`;
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    video = createVideo(
+      'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
+    );
+    video.volume(0);
+    video.hide();
+    video.loop();
+    
+    bw = createFilterShader(bwSrc);
+    
+    describe('Un video de un cruce peatonal de ciudad en blanco y negro');
+  }
+
+  function draw() {
+    background(255);
+    push();
+    imageMode(CENTER);
+    image(video, 0, 0, width, height, 0, 0, video.width, video.height, COVER);
+    pop();
+    filter(bw);
+  }
+`} />
+
+Otra cosa que podrías probar es modificar la *entrada* de `texture2D` en lugar de modificar su salida. Ajustar la coordenada de textura usada puede crear un desplazamiento respecto al original, o un efecto de distorsión si el desplazamiento es diferente por píxel:
+
+<EditableSketch code={`
+  let video;
+  let warp;
+
+  let warpSrc = \`
+  precision highp float;
+
+  uniform sampler2D tex0;
+  varying vec2 vTexCoord;
+
+  void main() {
+    // Desplaza la coordenada de entrada
+    vec2 warpedCoord = vTexCoord;
+    warpedCoord.x += 0.05 * sin(vTexCoord.y * 10.0);
+    warpedCoord.y += 0.05 * sin(vTexCoord.x * 10.0);
+
+    // Establece el nuevo color consultando la coordenada distorsionada
+    gl_FragColor = texture2D(tex0, warpedCoord);
+  }
+  \`;
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    video = createVideo(
+      'https://upload.wikimedia.org/wikipedia/commons/d/d2/DiagonalCrosswalkYongeDundas.webm'
+    );
+    video.volume(0);
+    video.hide();
+    video.loop();
+    
+    warp = createFilterShader(warpSrc);
+    
+    describe('Un video distorsionado de un cruce peatonal de ciudad');
+  }
+
+  function draw() {
+    background(255);
+    push();
+    imageMode(CENTER);
+    image(video, 0, 0, width, height, 0, 0, video.width, video.height, COVER);
+    pop();
+    filter(warp);
+  }
+`} />
+
+## Conclusión
+
+Con estas habilidades puedes crear algunos shaders básicos, pero la programación de shaders puede llegar mucho más lejos, y muchos temas de shaders van más allá de este tutorial. Los shaders en p5.js pueden ser una herramienta poderosa para crear elementos visuales, efectos y texturas que pueden mapearse sobre tu geometría 3D.
+
+¿Quieres seguir aprendiendo sobre shaders? Consulta algunos de estos sitios.
+
+- [The Book of Shaders](https://thebookofshaders.com/), una guía de shaders de Patricio Gonzalez Vivo y Jen Lowe.
+- [p5.js shaders](https://itp-xstory.github.io/p5js-shaders/#/), una guía de shaders de Casey Conchinha y Louise Lessél.
+- [Shadertoy](https://www.shadertoy.com/), una enorme colección en línea de shaders escritos en un editor en el navegador.
+- [p5js Shader Examples](https://github.com/aferriss/p5jsShaderExamples), una colección de recursos de Adam Ferriss.
+- [OpenGL ES 2.0 Specification](https://registry.khronos.org/OpenGL/specs/es/2.0/es_cm_spec_2.0.pdf), la especificación, muy técnica, de GLSL
+- [WebGL Quick Reference card](https://www.khronos.org/files/webgl/webgl-reference-card-1_0.pdf), otra referencia técnica algo densa, pero contiene muchas joyas sobre las funciones de GLSL
+- [Shaderific GLSL ES reference](https://shaderific.com/glsl.html), una referencia algo más ligera de las funciones y tipos de datos integrados de GLSL
+
+
+## Glosario
+
+#### Shader
+
+Un programa especial de la tarjeta gráfica que puede producir eficientemente muchos efectos visuales y filtros.
+
+
+#### GLSL
+
+El Graphics Library Shader Language (GLSL) es un lenguaje de programación que se usa para escribir shaders.
+
+
+#### Uniform
+
+Una variable que se pasa desde tu sketch a un shader.
+
+
+#### Varying
+
+Una variable que se pasa del shader de vértices al shader de fragmentos
+
+
+#### Vector (`vec2` / `vec3` / `vec4`)
+
+Un tipo de dato que almacena un grupo de números, normalmente dos, tres o cuatro, para representar colores, posiciones y más.
+
+
+#### Float
+
+Un tipo de dato que almacena números de punto flotante, que pueden tener un punto decimal.
+
+
+#### Int
+
+Un tipo de dato que almacena enteros, que son números sin punto decimal.
+
+
+#### Sampler
+
+Un tipo de dato que representa una textura que se pasa al shader. Normalmente se expresa como un `sampler2D` en GLSL.
+
+
+#### Attribute
+
+Una variable de GLSL que se genera en el sketch de p5.js y queda disponible en el shader de vértices. En la mayoría de los casos las proporciona p5.js.
+
+
+#### Textura
+
+Una imagen que se pasa a un programa de shader. Puede muestrearse usando la función `texture2D()`.
+
+
+#### Tipo
+
+Una etiqueta que describe el formato de un dato, como un int, un float, un vector, etc.
+
+
+#### Shader de vértices
+
+La parte de un programa de shader que se encarga de posicionar la geometría en el espacio 3D.
+
+
+#### Shader de fragmentos
+
+La parte de un programa de shader que se encarga del color y la apariencia de cada píxel generado por el shader.
