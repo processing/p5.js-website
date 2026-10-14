@@ -99,7 +99,7 @@ class Particle {
     let ySpeed = randomGaussian() * 0.3 - 1.0;
 
     this.velocity = createVector(xSpeed, ySpeed);
-    this.acceleration = createVector();
+    this.acceleration = createVector(0,0);
     this.lifespan = 100.0;
     this.texture = imageTexture;
     this.color = color(frameCount % 256, 255, 255);

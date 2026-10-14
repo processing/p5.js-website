@@ -256,6 +256,7 @@ export const generateSearchIndex = async (
         if (!data.description) {
           continue;
         }
+        description = data.description;
         break;
       case "libraries":
         title = data.name;

@@ -10,6 +10,7 @@ import { homepageCollection } from "./content/homepage/config";
 import { pagesCollection } from "./content/pages/config";
 import { bannerCollection } from "./content/banner/config";
 import { arenaResourcesCollection } from "./content/arena-resources/config";
+import { topBannerCollection } from "./content/top-banner/config";
 
 /**
  * All content collections defined in subfolders of /src/content/
@@ -30,4 +31,5 @@ export const collections = {
   pages: pagesCollection,
   banner: bannerCollection,
   "arena-resources": arenaResourcesCollection,
+  "top-banner": topBannerCollection,
 };

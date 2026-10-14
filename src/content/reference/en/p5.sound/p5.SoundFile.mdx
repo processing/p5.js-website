@@ -4,7 +4,7 @@ module: p5.sound
 submodule: SoundFile
 file: src/sources/SoundFile.js
 description: Load and play sound files.
-line: 73
+line: 67
 isConstructor: true
 example:
   - |-
@@ -13,16 +13,11 @@ example:
     <code>
     let sound, amp, delay, cnv;
 
-    function preload() {
-      //replace this sound with something local with rights to distribute
-      //need to fix local asset loading first though :) 
-      sound = loadSound('/assets/doorbell.mp3');
-    }
-
-    function setup() {
-      cnv = createCanvas(100, 100);
+    async function setup() {
+      describe("a sketch that plays a soundfile through a delay effect");
+      createCanvas(100, 100);
+      sound = await loadSound('/assets/doorbell.mp3');
       textAlign(CENTER);
-      cnv.mousePressed(playSound);
       amp = new p5.Amplitude();
       delay = new p5.Delay();
       sound.disconnect();
@@ -30,7 +25,7 @@ example:
       delay.connect(amp);
     }
 
-    function playSound() {
+    function mousePressed() {
       sound.play();
     }
 

@@ -80,3 +80,20 @@ describe("Search Index Event Description Generation", () => {
     expect(eventEntry?.description).not.toContain("undefined");
   });
 });
+
+describe("Search Index Reference Description Generation", () => {
+  test("includes the expected description in reference search index entries", async () => {
+    mockedGetContentFilePaths.mockResolvedValue([
+      "src/content/reference/en/p5/mouseX.mdx",
+    ]);
+
+    const result = await generateSearchIndex("reference", "en");
+
+    expect(result).toBeDefined();
+    expect(result?.["mouseX"]).toBeDefined();
+    expect(result?.["mouseX"].description).toContain(
+      "A <code>Number</code> system variable that tracks the mouse's horizontal position.",
+    );
+  });
+});
+

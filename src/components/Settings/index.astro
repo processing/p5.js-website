@@ -11,6 +11,8 @@ import SearchForm from "@components/SearchForm/index.astro";
 import { LocaleSelect } from "@components/LocaleSelect";
 import styles from "./styles.module.scss";
 import type { DropdownOption } from "../Dropdown";
+import TopBanner from "@components/TopBanner/index.astro";
+import { getEntry } from "astro:content";
 
 interface Props {
   hideSearch?: boolean;
@@ -73,11 +75,16 @@ const a11ySettingsProps = [
 ] as DropdownOption[];
 
 const { hideSearch } = Astro.props;
+
+const bannerEntry = await getEntry("top-banner", currentLocale);
+
 ---
 
 <aside class={`${styles.container} ${jumpToState ? "" : "noJumpTo"}`} aria-label="Settings">
   <div id="settings-placeholder" class={styles.placeholder}></div>
   <div id="settings-hitbox" class={styles.hitbox}></div>
+  {bannerEntry && !bannerEntry.data.hidden && (<TopBanner entry={bannerEntry} />)}
+
   <div id="settings-container" class={`${styles.wrapper} settings`}>
     <div class={styles.localeselect}>
       <LocaleSelect

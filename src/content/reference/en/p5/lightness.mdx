@@ -3,7 +3,7 @@ title: lightness
 module: Color
 submodule: Creating & Reading
 file: src/color/creating_reading.js
-description: >
+description: >-
   <p>Gets the lightness value of a color.</p>
 
   <p><code>lightness()</code> extracts the HSL lightness value from a
@@ -20,114 +20,138 @@ description: >
   HSL, it
 
   returns the lightness value in the given range.</p>
-line: 1372
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(50);
+
+    // Use HSL color.
+    colorMode(HSL);
+
+    // Create a p5.Color object using HSL values.
+    let c = color(0, 100, 75);
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(c);
+    rect(15, 15, 35, 70);
+
+    // Set 'lightValue' to 75.
+    let lightValue = lightness(c);
+
+    // Draw the right rectangle.
+    fill(lightValue);
+    rect(50, 15, 35, 70);
+
+    describe('Two rectangles. The left one is salmon pink and the right one is gray.');
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(50);
+
+    // Use HSL color.
+    colorMode(HSL);
+
+    // Create a color array.
+    let c = [0, 100, 75];
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(c);
+    rect(15, 15, 35, 70);
+
+    // Set 'lightValue' to 75.
+    let lightValue = lightness(c);
+
+    // Draw the right rectangle.
+    fill(lightValue);
+    rect(50, 15, 35, 70);
+
+    describe('Two rectangles. The left one is salmon pink and the right one is gray.');
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(50);
+
+    // Use HSL color.
+    colorMode(HSL);
+
+    // Create a CSS color string.
+    let c = 'rgb(255, 128, 128)';
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(c);
+    rect(15, 15, 35, 70);
+
+    // Set 'lightValue' to 75.
+    let lightValue = lightness(c);
+
+    // Draw the right rectangle.
+    fill(lightValue);
+    rect(50, 15, 35, 70);
+
+    describe('Two rectangles. The left one is salmon pink and the right one is gray.');
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(50);
+
+    // Use HSL color with values in the range 0-255.
+    colorMode(HSL, 255);
+
+    // Create a p5.Color object using HSL values.
+    let c = color(0, 255, 191.5);
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(c);
+    rect(15, 15, 35, 70);
+
+    // Set 'lightValue' to 191.5.
+    let lightValue = lightness(c);
+
+    // Draw the right rectangle.
+    fill(lightValue);
+    rect(50, 15, 35, 70);
+
+    describe('Two rectangles. The left one is salmon pink and the right one is gray.');
+  }</code></pre><p>In p5.strands shader callbacks, <code>lightness()</code>
+  operates on <code>vec4</code> values
+
+  and returns the lightness as a normalized value in the 0–1 range.
+
+  <code>colorMode()</code> has no effect inside shader callbacks.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+    myShader = buildMaterialShader(myShaderBuilder);
+  }
+
+
+  function myShaderBuilder() {
+    finalColor.begin();
+    let c = color(0, 100, 75);
+    let l = lightness(c);
+    finalColor.set(vec4(l, l, l, 1.0));
+    finalColor.end();
+  }
+
+
+  function draw() {
+    shader(myShader);
+    noStroke();
+    sphere(40);
+
+    describe('A sphere shaded in grayscale based on lightness.');
+  }</code></pre>
+line: 1669
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(50);
-
-      // Use HSL color.
-      colorMode(HSL);
-
-      // Create a p5.Color object using HSL values.
-      let c = color(0, 100, 75);
-
-      // Draw the left rectangle.
-      noStroke();
-      fill(c);
-      rect(15, 15, 35, 70);
-
-      // Set 'lightValue' to 75.
-      let lightValue = lightness(c);
-
-      // Draw the right rectangle.
-      fill(lightValue);
-      rect(50, 15, 35, 70);
-
-      describe('Two rectangles. The left one is salmon pink and the right one is gray.');
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(50);
-
-      // Use HSL color.
-      colorMode(HSL);
-
-      // Create a color array.
-      let c = [0, 100, 75];
-
-      // Draw the left rectangle.
-      noStroke();
-      fill(c);
-      rect(15, 15, 35, 70);
-
-      // Set 'lightValue' to 75.
-      let lightValue = lightness(c);
-
-      // Draw the right rectangle.
-      fill(lightValue);
-      rect(50, 15, 35, 70);
-
-      describe('Two rectangles. The left one is salmon pink and the right one is gray.');
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(50);
-
-      // Use HSL color.
-      colorMode(HSL);
-
-      // Create a CSS color string.
-      let c = 'rgb(255, 128, 128)';
-
-      // Draw the left rectangle.
-      noStroke();
-      fill(c);
-      rect(15, 15, 35, 70);
-
-      // Set 'lightValue' to 75.
-      let lightValue = lightness(c);
-
-      // Draw the right rectangle.
-      fill(lightValue);
-      rect(50, 15, 35, 70);
-
-      describe('Two rectangles. The left one is salmon pink and the right one is gray.');
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      background(50);
-
-      // Use HSL color with values in the range 0-255.
-      colorMode(HSL, 255);
-
-      // Create a p5.Color object using HSL values.
-      let c = color(0, 255, 191.5);
-
-      // Draw the left rectangle.
-      noStroke();
-      fill(c);
-      rect(15, 15, 35, 70);
-
-      // Set 'lightValue' to 191.5.
-      let lightValue = lightness(c);
-
-      // Draw the right rectangle.
-      fill(lightValue);
-      rect(50, 15, 35, 70);
-
-      describe('Two rectangles. The left one is salmon pink and the right one is gray.');
-    }
+example: []
 class: p5
 return:
   description: the lightness value.
