@@ -27,8 +27,8 @@ uniform sampler2D img;
 uniform sampler2D depth;
 float getBlurriness(float d) {
   // Blur more the farther away we go from the
-  // focal point at depth=0.9
-  return abs(d - 0.9) * 40.;
+  // focal point at depth=0.909
+  return min(abs(d - 0.909) * 200., 4.);
 }
 float maxBlurDistance(float blurriness) {
   return blurriness * 0.01;
@@ -103,7 +103,7 @@ function draw() {
   for (let x = -width / 2; x <= width / 2; x += sphereDistance) {
     push();
     translate(x, 0, 0);
-    sphere();
+    sphere(width / 16);
     pop();
   }
 
@@ -116,6 +116,8 @@ function draw() {
   blur.setUniform('depth', layer.depth);
 
   // Render the scene captured by framebuffer with depth of field blur
+  push();
   shader(blur);
   plane(width, height);
+  pop();
 }
