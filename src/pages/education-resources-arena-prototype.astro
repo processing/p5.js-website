@@ -1,0 +1,39 @@
+---
+/**
+ * Prototype for issue #1547: rendering Education Resources sourced from
+ * Are.na (see src/scripts/builders/arena-resources.ts) instead of the
+ * hand-maintained MDX list. Not linked from nav — for evaluation only.
+ */
+import { getCollection } from "astro:content";
+import Head from "@components/Head/index.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import GridItemArenaResource from "@components/GridItem/ArenaResource.astro";
+import { getCurrentLocale } from "@i18n/utils";
+
+const currentLocale = getCurrentLocale(Astro.url.pathname);
+const entries = await getCollection("arena-resources");
+---
+
+<Head title="Education Resources (Are.na prototype)" locale={currentLocale} />
+
+<BaseLayout
+  title="Education Resources (Are.na prototype)"
+  variant="item"
+  topic="community"
+  jumpToState={null}
+>
+  <section>
+    <p class="text-body-caption">
+      {entries.length} resources loaded from Are.na
+    </p>
+    <ul class="content-grid-simple">
+      {
+        entries.map((entry) => (
+          <li>
+            <GridItemArenaResource item={entry} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

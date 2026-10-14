@@ -1,0 +1,29 @@
+---
+import Image from "@components/Image/index.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  item: CollectionEntry<"arena-resources">;
+}
+
+const { item } = Astro.props;
+const { title, description, sourceUrl, imageUrl, author } = item.data;
+---
+
+<a
+  class="group w-full h-full block hover:no-underline"
+  href={sourceUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  {
+    imageUrl && (
+      <Image src={imageUrl} alt={title} width="440" inferSize />
+    )
+  }
+  <p class="text-body mt-xs text-wrap break-words break-keep group-hover:underline">
+    {title}
+  </p>
+  {author && <p class="text-body-caption mt-xxs">Shared by {author}</p>}
+  {description && <p class="text-body-caption mt-xxs line-clamp-3">{description}</p>}
+</a>
