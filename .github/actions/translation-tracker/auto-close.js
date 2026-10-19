@@ -170,11 +170,14 @@ async function main() {
   }
 
   const changedFiles = await listPullRequestFiles(tracker.octokit, owner, repo, prNumber);
-  const languages = identifyLanguagesFromFiles(changedFiles);
+  const eligibleChangedFiles = changedFiles.filter(
+    (file) => file.status === 'added' || file.status === 'modified'
+  );
+  const languages = identifyLanguagesFromFiles(eligibleChangedFiles);
 
   if (languages.length === 0) {
     core.info(
-      `PR #${prNumber} references issue(s) but no translation-language paths were found in changed files. Skipping...`
+      `PR #${prNumber} references issue(s) but no added or modified translation-language paths were found. Skipping...`
     );
     return;
   }
@@ -221,7 +224,7 @@ async function main() {
 
       // Narrow languages to those whose expected file actually appears in this PR.
       const expectedPaths = extractExpectedPaths(issue.body);
-      const changedFileNames = changedFiles.map((f) => f.filename || f);
+      const changedFileNames = eligibleChangedFiles.map((file) => file.filename);
 
       const verifiedLanguages = languages.filter((lang) => {
         const paths = expectedPaths.get(lang);
