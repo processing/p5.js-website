@@ -1,0 +1,65 @@
+name: Translation Coverage
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/content/**/en/**'
+      - 'src/content/**/es/**'
+      - 'src/content/**/hi/**'
+      - 'src/content/**/ko/**'
+      - 'src/content/**/zh-Hans/**'
+  workflow_dispatch:
+    inputs:
+      languages:
+        description: 'Comma-separated language codes (default: all supported)'
+        required: false
+        default: 'es,hi,ko,zh-Hans'
+        type: string
+      content_types:
+        description: 'Comma-separated content types (default: all tracked)'
+        required: false
+        default: 'examples,reference,tutorials,text-detail,events,libraries'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-translation-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install translation tracker dependencies
+        run: cd .github/actions/translation-tracker && npm install
+
+      - name: Generate translation coverage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          COVERAGE_LANGUAGES: ${{ github.event.inputs.languages || 'es,hi,ko,zh-Hans' }}
+          COVERAGE_CONTENT_TYPES: ${{ github.event.inputs.content_types || 'examples,reference,tutorials,text-detail,events,libraries' }}
+        run: node .github/actions/translation-tracker/coverage.js
+
+      - name: Commit coverage report
+        run: |
+          git add public/translation-status/coverage.json
+          if git diff --cached --quiet; then
+            echo "Coverage report is unchanged."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: update translation coverage"
+            git push
+          fi
