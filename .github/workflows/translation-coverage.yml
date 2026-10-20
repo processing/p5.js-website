@@ -18,9 +18,9 @@ on:
         default: 'es,hi,ko,zh-Hans'
         type: string
       content_types:
-        description: 'Comma-separated content types (default: all tracked)'
+        description: 'Comma-separated content types (default: all except reference)'
         required: false
-        default: 'examples,reference,tutorials,text-detail,events,libraries'
+        default: 'examples,tutorials,text-detail,events,libraries'
         type: string
 
 permissions:
@@ -33,8 +33,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -46,10 +44,8 @@ jobs:
 
       - name: Generate translation coverage
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
           COVERAGE_LANGUAGES: ${{ github.event.inputs.languages || 'es,hi,ko,zh-Hans' }}
-          COVERAGE_CONTENT_TYPES: ${{ github.event.inputs.content_types || 'examples,reference,tutorials,text-detail,events,libraries' }}
+          COVERAGE_CONTENT_TYPES: ${{ github.event.inputs.content_types || 'examples,tutorials,text-detail,events,libraries' }}
         run: node .github/actions/translation-tracker/coverage.js
 
       - name: Commit coverage report
