@@ -34,19 +34,34 @@ export default defineConfig({
     fast(),
     serviceWorker({
       workbox: {
-        globPatterns: [
-          "**/*.{css,js,jpg,json,png,svg,ico,woff,woff2}", // Cache all assets accept HTML
-        ],
+        // Only precache the shared styles, scripts and fonts. Images and search
+        // indices are left out so a first visit doesn't download the whole site.
+        globPatterns: ["**/*.{css,js,woff,woff2}"],
         clientsClaim: true,
+        navigationPreload: true, // Don't wait for the service worker to start before fetching a page
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.endsWith(".html"), // Caches HTML pages
-            handler: "CacheFirst", // Tries the cache first, then falls back to network if offline
+            urlPattern: ({ request }) => request.mode === "navigate", // Caches visited pages
+            handler: "NetworkFirst", // Always tries the network first, uses the cached copy when offline
             options: {
               cacheName: "html-pages-cache",
+              cacheableResponse: {
+                statuses: [200],
+              },
               expiration: {
                 maxEntries: 50, // Limits the number of HTML pages cached
                 maxAgeSeconds: 24 * 60 * 60 * 7, // Cache for 1 week
+              },
+            },
+          },
+          {
+            // Only the search index for the language being searched gets cached
+            urlPattern: ({ url }) => url.pathname.startsWith("/search-indices/"),
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "search-indices-cache",
+              cacheableResponse: {
+                statuses: [200],
               },
             },
           },
