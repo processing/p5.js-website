@@ -21,6 +21,7 @@ function bodyField() {
   const green = uniformFloat("u_green");
   filterColor.begin();
   const coord = filterColor.texCoord;
+
   // Find the distance from this pixel to the nearest body point.
   let minDist = 1.0;
   for (let i = 0; i < 100; i++) {
@@ -36,6 +37,7 @@ function bodyField() {
 
 async function setup() {
   await createCanvas(640, 640, WEBGPU);
+
   // Share a fixed-size array of body points with the GPU.
   dataStorage = createStorage(emptyPoints());
   bodyFieldShader = buildFilterShader(bodyField);
@@ -57,9 +59,11 @@ function draw() {
       const pointA = pose.keypoints[a];
       const pointB = pose.keypoints[b];
       if (pointA.confidence <= 0.1 || pointB.confidence <= 0.1) continue;
+
       // Use each skeleton segment's midpoint as a point in the field.
       const x = (pointA.x + pointB.x) / 2;
       const y = (pointA.y + pointB.y) / 2;
+
       // Normalize to shader coordinates and mirror the webcam horizontally.
       points[count++] = { x: 1 - x / width, y: y / height };
     }
@@ -97,6 +101,7 @@ function gotPoses(results) {
       }),
     };
   });
+
   // Merge facial landmarks so the head contributes a single location.
   for (const pose of poses) {
     const leftEye = pose.keypoints.find((p) => p.name === "left_eye");
