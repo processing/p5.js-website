@@ -21,6 +21,9 @@ export const examplesCollection = defineCollection({
       // Aria label used for the live example code
       arialabel: z.string().optional(),
       featured: z.boolean().optional(),
+      // Additional libraries required by the embedded sketch.
+      scripts: z.array(z.string().url()).optional(),
+      webgpu: z.boolean().optional(),
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
