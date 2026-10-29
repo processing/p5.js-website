@@ -65,6 +65,21 @@ export default defineConfig({
               },
             },
           },
+          {
+            // Images are cached as they're viewed so visited pages still look right offline
+            urlPattern: ({ request }) => request.destination === "image",
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "images-cache",
+              cacheableResponse: {
+                statuses: [200], // Skip cross-origin (opaque) responses, which count as ~7 MB each against storage
+              },
+              expiration: {
+                maxEntries: 60, // Limits the number of images cached
+                maxAgeSeconds: 24 * 60 * 60 * 7, // Cache for 1 week
+              },
+            },
+          },
         ],
       },
     }),
