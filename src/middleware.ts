@@ -64,14 +64,12 @@ export const ensureCorrectLocalePrefixesInHtmlLinks = (
   // have to worry about locale prefixes
   $("a").each(function () {
     let href = $(this).attr("href");
-    // Skip if href is undefined, an external link, or written with a dot slash
-    if (
-      !href ||
-      href.startsWith("http") ||
-      href.startsWith("./") ||
-      href.startsWith("#")
-    )
-      return;
+    // Only root-relative links (e.g. "/reference/") need a locale prefix.
+    // Skip everything else: a missing href, "#anchors", "./" and "../"
+    // relative links (the browser resolves those from the already localized
+    // page URL), protocol-relative "//host" links, and links with a scheme
+    // such as "https:", "mailto:" or "tel:".
+    if (!href || !href.startsWith("/") || href.startsWith("//")) return;
 
     const startsWithLocale = nonDefaultSupportedLocales.some(
       (locale) => href && href.startsWith(`/${locale}/`),
@@ -80,7 +78,7 @@ export const ensureCorrectLocalePrefixesInHtmlLinks = (
     // Only prepend currentLocale if it's not empty and href doesn't
     // already start with a locale
     if (currentLocale && !startsWithLocale) {
-      href = `/${currentLocale}${href.startsWith("/") ? "" : "/"}${href}`;
+      href = `/${currentLocale}${href}`;
       $(this).attr("href", href);
     }
   });
