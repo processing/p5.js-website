@@ -56,6 +56,20 @@ When you're done, you can run this command to reset your changes:
 npm run custom:cleanup
 ```
 
+## Building the reference from a pre-built data.json
+
+`npm run build:reference` normally clones p5.js and runs its docs build to produce the YUIDoc `data.json` it works from. If you already have that file — for example from running `npm run docs` in a p5.js checkout, or from a CI artifact — you can hand it over directly with the `P5_DATA_JSON_PATH` environment variable, which skips the clone and the docs build entirely:
+
+```sh
+P5_DATA_JSON_PATH=../p5.js/docs/reference/data.json npm run build:reference
+```
+
+This is mainly useful in CI, where the p5.js build that produced the `data.json` has already run.
+
+## Reference-only site build
+
+`npm run build:reference-only` builds only the English reference pages (`/reference/**`); every other page 404s. It works by temporarily moving the non-reference routes out of `src/pages`, running `astro build`, and restoring them afterwards. Setting `REFERENCE_SKIP_LOWERCASE=1` additionally skips the lowercase alias of each reference route (for example `/reference/p5/loadimage/` alongside `/reference/p5/loadImage/`), which nearly halves the page count. This build is what the p5.js PR preview uses; combined with `P5_DATA_JSON_PATH` above it produces a reference preview without cloning or building p5.js.
+
 ## After a p5.js release
 
 To update the content on the p5.js website following a new release of p5.js, you should run all of these commands to pull in the latest content. **Be sure to run the search indices script last as it depends on the results of the other scripts to be accurate.**
