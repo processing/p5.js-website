@@ -10,8 +10,8 @@ function gradient() {
   // filterColor is an example of a *hook* in a strands shader, which
   // lets you control different parts of the shader's job
   filterColor.begin();
-  // Texture coordinates go from [0,0] in the top left
-  // to [1,1] in the bottom right
+  // Texture coordinates like filterColor.texCoord go from [0,0] in the
+  // top left to [1,1] in the bottom right
   let start = [0.1, 0.1];
   // Convert mouse coords to texture coordinate range by dividing
   // by canvas size
