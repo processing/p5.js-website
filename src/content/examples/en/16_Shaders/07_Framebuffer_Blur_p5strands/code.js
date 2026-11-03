@@ -15,11 +15,15 @@ function setup() {
   );
 }
 
+// This function is p5.strands code: it's like JavaScript, but
+// where you can write vectors as arrays and use math oeprators on them
 function blurCallback() {
   // In draw, the depth info is passed in with setUniform
   let depth = uniformTexture('depth');
 
-  function getBlurriness(d) {
+  // A helper function to tell us how blurry something a given
+  // distance away should be
+  function howBlurry(d) {
     // Blur more the farther away we go from the
     // focal point at depth=0.909
     return min(abs(d - 0.909) * 200, 4);
@@ -29,12 +33,14 @@ function blurCallback() {
     return blurriness * 0.01;
   }
 
+  // filterColor is an example of a *hook* in a strands shader, which
+  // lets you control different parts of the shader's job
   filterColor.begin();
   let coord = filterColor.texCoord;
   let color = getTexture(filterColor.canvasContent, coord);
   let samples = 1;
   let centerDepth = getTexture(depth, coord).r;
-  let blurriness = getBlurriness(centerDepth);
+  let blurriness = howBlurry(centerDepth);
 
   for (let i = 0; i < 20; i++) {
     // Sample nearby pixels in a spiral going out from the
