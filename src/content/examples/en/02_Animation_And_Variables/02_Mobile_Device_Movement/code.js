@@ -1,17 +1,39 @@
+let permissionGranted = false;
+
 function setup() {
   describe(
     'Available on mobile devices only: a white circle on a black background that moves and changes size based on the movement of the device.'
   );
-
-  // Make the canvas the full width and height of the
-  // device's viewport.
   createCanvas(displayWidth, displayHeight);
   background(0);
+
+  // iOS 13+ requires explicit user permission for device motion.
+  // Create a button so the user can grant access via a tap gesture.
+  if (
+    typeof DeviceMotionEvent !== 'undefined' &&
+    typeof DeviceMotionEvent.requestPermission === 'function'
+  ) {
+    let btn = createButton('Enable Motion');
+    btn.position(width / 2 - 60, height / 2 - 20);
+    btn.mousePressed(() => {
+      DeviceMotionEvent.requestPermission()
+        .then((response) => {
+          if (response === 'granted') {
+            permissionGranted = true;
+            btn.remove();
+            background(0);
+          }
+        })
+        .catch(console.error);
+    });
+  } else {
+    // Non-iOS devices — permission not required
+    permissionGranted = true;
+  }
 }
 
 function deviceMoved() {
-  // When the device is moved, draw a circle with its position and size
-  // based on the direction in which the device is moved.
+  if (!permissionGranted) return;
 
   // Map acceleration along x axis to position along canvas width
   let x = map(accelerationX, -10, 10, 0, width);
