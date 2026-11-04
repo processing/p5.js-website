@@ -8,6 +8,8 @@ import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
 import { getRelatedEntriesinCollection } from "../pages/_utils";
+import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
+import { checkTranslationBanner } from "../utils/translationBanner";
 
 interface Props {
   entry: CollectionEntry<"events">;
@@ -29,9 +31,17 @@ const relatedEvents =
     ? await getRelatedEntriesinCollection(
         "events",
         currentLocale,
-        entry.data.relatedPastEvents.map((r: any) => r.id)
+        entry.data.relatedPastEvents.map((r: any) => r.slug)
       )
     : [];
+
+const { showBanner, englishUrl } = checkTranslationBanner(
+  'events',
+  entry.id,
+  currentLocale,
+  Astro.url.pathname,
+  Astro.url.origin
+);
 ---
 
 <Head
@@ -41,6 +51,8 @@ const relatedEvents =
 />
 
 <BaseLayout title={title} subtitle={dayString} variant="item" topic="community" jumpToState={null}>
+
+  {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   {
     entry.data.featuredImage && entry.data.featuredImageAlt && (
       <Image

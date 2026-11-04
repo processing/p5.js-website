@@ -22,6 +22,8 @@ import flask from "@src/content/ui/images/icons/flask.svg?raw";
 import warning from "@src/content/ui/images/icons/warning.svg?raw";
 import _ from 'lodash';
 import { Code } from 'astro:components';
+import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
+import { checkTranslationBanner } from "../utils/translationBanner";
 
 const { entry, relatedEntries } = Astro.props;
 const currentLocale = getCurrentLocale(Astro.url.pathname);
@@ -96,6 +98,13 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
     'href="/reference/p5/$1/"'
   );
 }
+const { showBanner, englishUrl } = checkTranslationBanner(
+  'reference',
+  entry.id,
+  currentLocale,
+  Astro.url.pathname,
+  Astro.url.origin
+);
 ---
 
 <Head title={entry.data.title} locale={currentLocale} />
@@ -109,6 +118,7 @@ function normalizeP5ReferenceLinks(html: string | undefined): string | undefined
   className="reference-item"
   jumpToState={jumpToState}
 >
+  {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   <div class="content-grid mt-0 max-w-[770px]">
     <div class="col-span-9 xl:min-w-[1000px]">
       {entry.data.webgpuOnly && (
