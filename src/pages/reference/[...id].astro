@@ -9,7 +9,7 @@ import {
 export async function getStaticPaths() {
   const referenceEntries = await getCollectionInDefaultLocale("reference");
 
-  return referenceEntries
+  const paths = referenceEntries
     // @ts-expect-error - Casting to the reference item schema
     .filter((entry) => entry.module !== 'Constants')
     .map((entry) => ({
@@ -22,7 +22,16 @@ export async function getStaticPaths() {
           return relatedEntry.data.submodule === entry.data.submodule;
         }),
       },
-    }))
+    }));
+
+  // The lowercase alias of every route nearly doubles the reference page
+  // count; preview builds (processing/p5.js#9303) skip them to keep the
+  // output small.
+  if (process.env.REFERENCE_SKIP_LOWERCASE) {
+    return paths;
+  }
+
+  return paths
     .reduce<GetStaticPathsResult>((acc, entry) => {
       acc.push(entry);
       acc.push(Object.assign({}, entry, {
