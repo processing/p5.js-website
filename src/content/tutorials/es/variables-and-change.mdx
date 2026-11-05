@@ -1,0 +1,920 @@
+---
+title: "Variables y cambio"
+description: Aprende sobre las variables y cómo se pueden usar para crear sketches animados.
+category: introduction
+categoryIndex: 2
+featuredImage: ../images/featured/VarThumb.jpg
+featuredImageAlt: Una persona hace malabares con tres pelotas mientras un auto pasa detrás. En el fondo cuelga una pintura de un paisaje nocturno con un árbol, una nube y una luna creciente.
+relatedContent:
+  examples:
+    - en/02_animation_and_variables/00_drawing_lines/description
+  references:
+    - en/p5/mousex
+    - en/p5/mousey
+    - en/p5/types/number
+    - en/p5/let
+    - en/p5/random
+    - en/p5/line
+    - en/p5/triangle
+    - en/p5/framecount
+    - en/p5/framerate
+authors:
+  - Layla Quiñones
+  - Joanne Amarisa
+---
+
+import Video from "../../../components/Video/index.astro"
+import Callout from "../../../components/Callout/index.astro";
+import EditableSketch from "../../../components/EditableSketch/index.astro";
+
+Sigue este tutorial para crear un [paisaje animado](https://editor.p5js.org/Msqcoding/sketches/WQWNKZppu) mientras aprendes los conceptos básicos de las variables y cómo crear movimiento en p5.js.
+
+<Video src="/videos/tutorials/landscape.mp4" alt="Un paisaje animado con una luna creciente y una cadena de montañas en el fondo, y pasto con árboles que crecen en primer plano. Aparecen estrellas al azar mientras las nubes se mueven por el lienzo." />
+
+En este tutorial vas a:
+
+- Declarar, inicializar y actualizar variables en un sketch de p5.js
+- Usar variables, operadores y random() en funciones de formas de p5.js para crear movimiento en el lienzo
+- Agregar movimiento lineal y aleatorio en un proyecto de p5.js
+
+
+## Requisitos previos:
+
+- [Configurar tu entorno](/tutorials/setting-up-your-environment)
+- [Comenzar](/tutorials/get-started)
+- (opcional) [Guía de depuración](/tutorials/field-guide-to-debugging)
+
+Antes de comenzar, deberías poder:
+
+- Iniciar sesión en el [Editor Web de p5.js](https://editor.p5js.org/) y guardar un proyecto nuevo
+- Cambiar el tamaño del lienzo y el color de fondo
+  - [`background()`](/reference/p5/background), [`createCanvas()`](/reference/p5/createCanvas), [`setup()`](/reference/p5/setup), [`draw()`](/reference/p5/draw)
+- Agregar y personalizar formas y texto
+  - Formas primitivas 2D como [`circle()`](/reference/p5/circle) y [`rect()`](/reference/p5/rect)
+  - [`text()`](/reference/p5/text), [`fill()`](/reference/p5/fill), [`stroke()`](/reference/p5/stroke), [`textSize()`](/reference/p5/textSize)
+- Agregar interactividad simple usando [`mouseX`](/reference/p5/mouseX) y [`mouseY`](/reference/p5/mouseY)
+- [Comentar código](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript#comments)
+- Leer y resolver [mensajes de error](/tutorials/field-guide-to-debugging)
+
+
+## Paso 1: Elige dónde comenzar<a id="step-1"></a>
+
+Inicia sesión en el [Editor Web de p5.js](https://editor.p5js.org/) y elige una de las siguientes opciones:
+
+- Si seguiste nuestro tutorial anterior, [Comenzar](/tutorials/get-started):
+  - Duplica tu [paisaje interactivo](https://editor.p5js.org/p5Master718/sketches/aDwxcxCbV) y ponle un nombre nuevo.
+    - Abre tu [paisaje interactivo](https://editor.p5js.org/p5Master718/sketches/aDwxcxCbV), haz clic en *File* y luego en *Duplicate*.
+    - Cambia su nombre a algo como "Paisaje animado".
+  - Salta al [Paso 3](#step-3).
+- Si comienzas desde cero:
+  - Usa [esta plantilla](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6), que contiene código para ayudarte a ubicar formas y texto en el lienzo:
+  - Duplica la [plantilla](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6) y ponle un nombre nuevo.
+    - Abre este [enlace de la plantilla](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6), haz clic en *File* y luego en *Duplicate*.
+    - Cambia su nombre a algo como "Paisaje animado".
+  - También puedes abrir un proyecto nuevo de p5.js sin la plantilla, llamarlo "Paisaje animado" y guardarlo.
+    - Copia las siguientes líneas dentro de la función [`draw()`](/reference/p5/draw) si quieres usar el código auxiliar:
+
+      ```js
+      //displays the x and y position of the mouse on the canvas
+      fill(255) //white text
+      text(`${mouseX}, ${mouseY}`, 20, 20);
+      ```
+
+<Callout title="Consejo">
+Haz clic en *Play* y marca la casilla junto a "Auto-refresh" en el [Editor Web de p5.js](https://editor.p5js.org/) para actualizar el lienzo de forma continua mientras agregas más código a tu proyecto. Con esta casilla marcada, no tendrás que presionar el botón *Play* cada vez que hagas cambios en tu sketch.
+</Callout>
+
+Si duplicaste la [plantilla](https://editor.p5js.org/Msqcoding/sketches/nHyx0xDG6), tu código debería verse así:
+
+<EditableSketch code={`
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+  //Place code here
+
+  // places the x and y position of the mouse on the canvas
+  fill(0)
+  text(\`\${mouseX}, \${mouseY}\`, 20, 20);
+}
+`} />
+
+La línea de código ``text(`${mouseX}, ${mouseY}`, 20, 20);`` muestra las coordenadas x e y del puntero del mouse como un par de coordenadas x, y. El primer número, el valor de la variable [mouseX](/reference/p5/mouseX), representa la coordenada x del puntero del mouse mientras se mueve por el lienzo. El segundo número, el valor de la variable [mouseY](/reference/p5/mouseY), representa la coordenada y del puntero del mouse.
+
+
+<Callout title="Consejo">
+Para mantener visible este texto, asegúrate de que este código aparezca en las últimas líneas de [`draw()`](/reference/p5/draw). Es posible que necesites cambiar el color del texto modificando el valor de [`fill()`](/reference/p5/fill) si se mezcla con el fondo. Cuando ya no necesites las coordenadas, escribe `//` antes de las funciones [`fill()`](/reference/p5/fill) y [`text()`](/reference/p5/text). Esto le indica al programa que omita esas líneas de código al ocultarlas como comentarios.
+
+**No olvides:** La última línea de código de tu programa debe ser `}` (una llave de cierre), que cierra el bloque de la función [`draw()`](/reference/p5/draw).
+</Callout>
+
+Visita esta [referencia](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript#comments) o mira [este video](https://www.youtube.com/watch?v=xJcrPJuem5Q) para aprender más sobre los comentarios.
+
+
+### Variables
+
+Las variables almacenan valores que podemos usar en nuestro sketch. **Las variables son muy útiles cuando agregas elementos a tu sketch que cambiarán con el tiempo.** Se pueden usar en cálculos, mensajes, como argumentos de funciones y mucho más.
+
+[`mouseX`](/reference/p5/mouseX) y [`mouseY`](/reference/p5/mouseY) son variables integradas en la biblioteca p5.js. Almacenan las coordenadas x e y del puntero del mouse cuando se arrastra sobre el lienzo. En el tutorial [Comenzar](/tutorials/get-started), creaste un [paisaje interactivo](https://editor.p5js.org/p5Master718/sketches/aDwxcxCbV) donde [`mouseX`](/reference/p5/mouseX) y [`mouseY`](/reference/p5/mouseY) se usaron como coordenadas x e y de una mariquita u otro emoji. Esto permitió que el emoji siguiera al puntero del mouse mientras se arrastraba por el lienzo, haciendo que tu obra fuera interactiva.
+
+En la plantilla anterior, usas [`mouseX`](/reference/p5/mouseX) y [`mouseY`](/reference/p5/mouseY) para imprimir las coordenadas x e y del mouse en el lienzo mediante la función [`text()`](/reference/p5/text). Las variables pueden mostrarse en el lienzo junto con texto usando la función [`text()`](/reference/p5/text) y la [interpolación de cadenas](https://www.geeksforgeeks.org/string-interpolation-in-javascript/) (ejemplo 2).
+
+
+### Interpolación de cadenas
+
+En [Comenzar,](/tutorials/get-started) aprendiste que las cadenas de texto son [tipos de datos](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures) que siempre van rodeados por comillas (`""`). Para usar variables y cadenas de texto juntas, podemos usar [plantillas literales](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). Las plantillas literales empiezan y terminan con acentos graves (`` ` ``) en lugar de comillas (`""`). Puedes escribir cualquier carácter entre los acentos graves para generar una cadena de texto, como en [este ejemplo](https://editor.p5js.org/Msqcoding/sketches/pfSJLvxOB). Puedes incluir una variable en la cadena usando el marcador `${}` y colocando el nombre de la variable dentro de las llaves, como en [este ejemplo](https://editor.p5js.org/Msqcoding/sketches/8sM-h5Hd9).
+
+Visita [interpolación de cadenas](https://www.geeksforgeeks.org/string-interpolation-in-javascript/) (ejemplo 2), [plantillas literales](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) o la página de referencia de p5.js para [string](/reference/p5/String) para aprender más.
+
+<Callout title="Nota">
+Las variables que contienen [números](/reference/p5/number) pueden usarse como argumentos donde se requieren números. Si se usa una variable que almacena una [cadena de texto](/reference/p5/String) donde debería ir un número, la consola mostrará un mensaje de error como `“...was expecting Number for the first parameter, received string instead.”` Visita la sección Mensajes de error en la [Guía de depuración](/tutorials/field-guide-to-debugging) para conocer algunos errores comunes y cómo corregirlos.
+</Callout>
+
+
+## Paso 2: Crea un paisaje de fondo<a id="step-2"></a>
+
+- Colorea el fondo.
+- Agrega y colorea formas del paisaje (un sol o una luna, montañas, edificios, casas, árboles, etc.).
+- Agrega comentarios que describan cada sección de código.
+
+Consulta los [Pasos 4 a 6 de Comenzar](/tutorials/get-started) para obtener más información sobre cómo usar colores y formas en el lienzo.
+
+Tu código podría verse así:
+
+<EditableSketch code={`
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlapping navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);  
+}
+`} />
+
+El código anterior usa las formas [`circle()`](/reference/p5/circle) y [`triangle()`](/reference/p5/triangle) para crear objetos en el paisaje, y [`fill()`](/reference/p5/fill) y [`stroke()`](/reference/p5/stroke) para colorear formas y contornos.
+
+- [`background()`](/reference/p5/background) se usa para cambiar el color del fondo del lienzo.
+- [`draw()`](/reference/p5/draw) ejecuta el código una y otra vez. Esto permite que las formas que aparecen al final de [`draw()`](/reference/p5/draw) se superpongan a las formas que aparecen primero si están colocadas cerca.
+  - La luna creciente se creó superponiendo dos formas [`circle()`](/reference/p5/circle).
+    - [Este ejemplo](https://editor.p5js.org/Msqcoding/sketches/eHkwP3yBC) usa dos círculos superpuestos para crear una luna creciente.
+  - Las montañas se crearon usando dos formas [`triangle()`](/reference/p5/triangle) superpuestas (consulta el diagrama de abajo).
+    - [Este ejemplo](https://editor.p5js.org/p5Master718/sketches/CxuLJszOL) muestra cómo puedes usar triángulos superpuestos para crear una montaña con más detalle.
+- [`triangle()`](/reference/p5/triangle) necesita la ubicación de 3 puntos en el lienzo para aparecer. Cada punto tiene un valor de coordenada x y un valor de coordenada y. Los primeros dos números son las coordenadas x e y del primer punto (x<sub>1, </sub>y<sub>1</sub>), los segundos dos números son las coordenadas del siguiente punto (x<sub>2, </sub>y<sub>2</sub>) y los últimos dos son las coordenadas del último punto (x<sub>3, </sub>y<sub>3</sub>).
+
+![Un diagrama etiquetado que muestra un triángulo con coordenadas en sus tres esquinas: (x1, y1), (x2, y2) y (x3, y3). La sintaxis de la función triangle se muestra sobre el diagrama como: "triangle(x1, y1, x2, y2, x3, y3);"](../images/introduction/triangle-diagram.png)
+
+Tu paisaje puede verse muy diferente del ejemplo de código anterior. Puedes usar cualquiera de las siguientes formas en tu sketch (haz clic en los enlaces para aprender más): [`rect()`](/reference/p5/rect)  |  [`triangle()`](/reference/p5/triangle)  |  [`ellipse()`](/reference/p5/ellipse)  |  [`circle()`](/reference/p5/circle)  |  [`line()`](/reference/p5/line)  |  [`square()`](/reference/p5/square)  |  [`quad()`](/reference/p5/quad)  |  [`point()`](/reference/p5/point)  |  [`arc()`](/reference/p5/arc)
+
+Visita los siguientes recursos para aprender más sobre el uso de formas y colores en tus proyectos: [`fill()`](/reference/p5/fill)  |  [`stroke()`](/reference/p5/stroke)  |  [`background()`](/reference/p5/background)  |  [`draw()`](/reference/p5/draw)
+
+Asegúrate de evitar los errores comunes destacados en la [Guía de depuración](/tutorials/field-guide-to-debugging) y en [este video](https://www.youtube.com/watch?v=LuGsp5KeJMM\&list=PLRqwX-V7Uu6Zy51Q-x9tMWIv9cueOFTFA\&index=6) de The Coding Train.
+
+
+## Paso 3: Dibuja formas usando variables personalizadas<a id="step-3"></a>
+
+- Coloca una nube blanca en el cielo de tu lienzo usando el método [`ellipse()`](/reference/p5/ellipse)` `.
+  - Agrega estas líneas de texto directamente debajo del código del pasto:
+
+    ```js
+    //cloud
+    fill(255);
+    ellipse(50, 50, 80, 40);
+    ```
+
+- Crea una variable personalizada llamada `cloudOneX` y almacena el número 50 en ella. Esta variable guardará el valor de la coordenada x de la nube blanca durante todo el programa.
+  - Agrega estas líneas de texto antes de [`setup()`](/reference/p5/setup):
+
+    ```js
+    //custom variable for x coordinate of cloud
+    let cloudOneX = 50;
+    ```
+
+- Reemplaza la coordenada x en `ellipse(50, 50, 80, 40);` con la variable `cloudOneX`.
+  - Esta línea de código ahora debería verse así:
+
+    ```js
+    ellipse(cloudOneX, 50, 80, 40);
+    ```
+
+Tu código puede verse así:
+
+<EditableSketch code={`
+//custom variable for x coordinate of cloud
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlapping navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+  
+  //cloud
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
+} 
+`} />
+
+[`ellipse()`](/reference/p5/ellipse) necesita 4 números para aparecer en el lienzo. Los primeros dos números (x, y) son las coordenadas x e y del punto central. Los últimos dos números describen el ancho y la altura de la elipse en píxeles.
+
+![Un diagrama de una elipse con etiquetas para ancho, alto y un punto central en (x,y). La sintaxis de la función ellipse se muestra sobre el diagrama como: “ellipse(x, y, width, height);”.](../images/introduction/ellipse-diagram.png)
+
+En el código anterior, la nube se dibuja usando [`ellipse()`](/reference/p5/ellipse) con `cloudOneX` (que almacena el número 50) como coordenada x, 50 como coordenada y, un ancho de 80 píxeles y una altura de 40 píxeles.
+
+
+### Variables personalizadas
+
+Las variables personalizadas almacenan valores, como [números](/reference/p5/number) o [cadenas de texto](/reference/p5/String), que pueden cambiar más adelante. Como las variables personalizadas almacenan valores que pueden cambiar, podemos usarlas para cambiar las coordenadas x o y y el tamaño de las formas en el lienzo. Cuando cambia la coordenada x o y de una forma, parece que se mueve. En este paso:
+
+- colocaste una nube blanca en el lienzo usando [`ellipse()`](/reference/p5/ellipse) con el número 50 como coordenada x;
+- *declaraste* una variable personalizada llamada `cloudOneX` antes de [`setup();`](/reference/p5/setup)
+  - Cuando quieres crear variables personalizadas para usarlas en tu programa, debes darles un nombre y *declararlas* usando la palabra clave [`let`](/reference/p5/let).
+  - Puedes *declarar* una variable con cualquier nombre; sin embargo, es mejor usar un nombre que te ayude a recordar para qué se usa.
+- *inicializaste* `cloudOneX` al asignarle el número 50.
+  - Un valor puede almacenarse en una variable usando el *operador de asignación* (`=`): este asigna un valor a una variable específica.
+  - Cuando un valor se almacena en una variable personalizada por primera vez, se dice que se está *inicializando* la variable.
+
+![Un diagrama que etiqueta partes de la sintaxis de JavaScript para inicializar y declarar una variable: “let” se etiqueta como la “palabra clave que declara variables personalizadas”, “variable name” se etiqueta como “nombre”, “=” se etiqueta como un “operador de asignación” que “asigna un valor al nombre de la variable”, y “value” se etiqueta como “Cualquier tipo de dato, como un número o una cadena”.](../images/introduction/assignment-diagram.png)
+
+Finalmente, puedes usar el nombre de la variable `cloudOneX` como argumento para la coordenada x en [`ellipse()`](/reference/p5/ellipse). Como la variable `cloudOneX` tiene almacenado el número 50, podemos usar `cloudOneX` como argumento en cualquier función que requiera un número. Aquí la usaste como la coordenada x de la nube blanca al reemplazar el número 50 con el nombre de la variable `cloudOneX`: `ellipse(cloudOneX, 50, 80, 40);`.
+
+
+### Alcance de las variables
+
+El *alcance de una variable* describe dónde puede usarse esa variable en un programa. A menudo es útil declarar variables personalizadas fuera de [`setup()`](/reference/p5/setup) y [`draw()`](/reference/p5/draw) porque eso permite que las variables tengan *alcance global*. Una variable con *alcance global* puede usarse en cualquier parte del programa. Las variables globales suelen declararse en las primeras líneas de código. Esto ayuda a quienes programan a entender qué está cambiando, facilita el mantenimiento del código y evita confusiones más adelante. Las variables integradas como [`mouseX`](/reference/p5/mouseX), [`mouseY`](/reference/p5/mouseY), [`width`](/reference/p5/width) y [`height`](/reference/p5/height) no tienen que declararse porque están integradas en la biblioteca p5.js, y puedes usarlas en cualquier parte de tu código porque tienen alcance global.
+
+Las variables declaradas dentro de otras funciones (como [`draw()`](/reference/p5/draw) y [`setup()`](/reference/p5/setup)) tienen *alcance local*, lo que significa que solo pueden usarse dentro del bloque o la función donde se declararon. Las variables declaradas en [`setup()`](/reference/p5/setup) no pueden usarse en [`draw()`](/reference/p5/draw) ni en ninguna otra función, y las variables definidas en [`draw()`](/reference/p5/draw) no pueden usarse en [`setup()`](/reference/p5/setup). Mira [este ejemplo](https://editor.p5js.org/p5Master718/sketches/aa8bBwGHb) sobre el alcance global y local de las variables.
+
+Visita estas páginas de referencia de p5.js para aprender más sobre declarar, inicializar y usar variables personalizadas: [`let`](/reference/p5/let), [números](/reference/p5/number) y [cadenas de texto](/reference/p5/String).
+
+
+### Usar variables para animación
+
+Una forma en el lienzo parece moverse cuando cambian sus coordenadas x o y. Podemos usar variables en lugar de las coordenadas x o y de cualquier cosa que aparezca en el lienzo. En el ejemplo:
+
+- Cambia el valor almacenado en `cloudOneX` reemplazando el valor con el que se inicializó y observa los cambios en la nube blanca del lienzo.
+  - Si el valor de `cloudOneX` aumenta, la nube blanca parece moverse hacia la derecha.
+  - Si el valor de `cloudOneX` disminuye, la nube blanca parece moverse hacia la izquierda.
+
+En el siguiente paso, cambiaremos el valor de `cloudOneX` para que la nube parezca moverse horizontalmente en el lienzo.
+
+
+## Paso 4: Agrega movimiento horizontal<a id="step-4"></a>
+
+- En la línea debajo de la nube blanca, agrega estas líneas de código:
+
+  ```js
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+  ```
+
+Tu código puede verse así:
+
+<EditableSketch code={`
+//custom variable for x coordinate of cloud
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+  
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+  
+  //cloud
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);  
+}
+`} />
+
+
+En el paso anterior, asignaste a `cloudOneX` el valor de `frameCount % width`. Recuerda que [`draw()`](/reference/p5/draw) se ejecuta una y otra vez, en un bucle:
+
+- [`frameCount`](/reference/p5/frameCount) es una variable integrada que guarda la cantidad de veces que se ejecuta [`draw()`](/reference/p5/draw). Este valor sigue aumentando mientras el programa esté en ejecución.
+  - Consulta [este ejemplo](https://editor.p5js.org/p5Master718/sketches/hT1KJ-RF4) para ver los valores almacenados en [`frameCount`](/reference/p5/frameCount).
+- [`width`](/reference/p5/width) es una variable integrada que almacena el ancho del lienzo definido en [`createCanvas()`](/reference/p5/createCanvas). En este ejemplo, podemos ver que [`width`](/reference/p5/width) es 400 y [`height`](/reference/p5/height) es 400.
+- [`%`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) es el operador de residuo (también llamado módulo): divide un número a la izquierda ([`frameCount`](/reference/p5/frameCount)) entre un número a la derecha (400) y devuelve el residuo. Consulta la tabla de abajo, que muestra cómo cambian [`frameCount`](/reference/p5/frameCount) y `frameCount % width` mientras el programa se ejecuta (**cuando [`width`](/reference/p5/width) es 400**):
+
+<table>
+
+<tr>
+
+<th>
+
+`frameCount`
+
+</th>
+
+<th>
+
+`frameCount % width`
+
+</th>
+
+</tr>
+
+<tr>
+
+<td>
+
+0
+
+</td>
+
+<td>
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+100
+
+</td>
+
+<td>
+
+100
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+300
+
+</td>
+
+<td>
+
+300
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+400
+
+</td>
+
+<td>
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+500
+
+</td>
+
+<td>
+
+100
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+700
+
+</td>
+
+<td>
+
+300
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+800
+
+</td>
+
+<td>
+
+0
+
+</td>
+
+</tr>
+
+</table>
+
+- Para `cloudOneX = frameCount % width`:
+  - Si [`frameCount`](/reference/p5/frameCount) es menor que 400, `frameCount % width` devolverá el valor de [`frameCount`](/reference/p5/frameCount).
+    - Por ejemplo: cuando [`frameCount`](/reference/p5/frameCount) es 40, `frameCount % width` devolverá 40 y lo almacenará en `cloudOneX`.` `Esto mueve la nube blanca a la coordenada x 40.
+  - A medida que [`frameCount`](/reference/p5/frameCount) aumenta, se almacenarán nuevos valores en `cloudOneX` y la nube blanca parecerá moverse hacia la derecha (una coordenada x mayor).
+  - Cuando [`frameCount`](/reference/p5/frameCount) es igual a [`width`](/reference/p5/width), `frameCount % width` devolverá 0. Esto reiniciará la posición de la nube en la coordenada x 0, el borde izquierdo del lienzo.
+  - Cuando [`frameCount`](/reference/p5/frameCount) es mayor que [`width`](/reference/p5/width), `frameCount % width` volverá a devolver valores de [`frameCount`](/reference/p5/frameCount).
+    - Por ejemplo: cuando [`frameCount`](/reference/p5/frameCount) es 440, `frameCount % width` devolverá 40 y lo almacenará en `cloudOneX`.
+  - Cuando [`frameCount`](/reference/p5/frameCount) llega a cualquier múltiplo de [`width`](/reference/p5/width), `frameCount % width` será 0 y parecerá que la nube reinició su posición de vuelta al borde izquierdo del lienzo (donde la coordenada x es 0).
+
+Cuando el programa se ejecuta:
+
+- `cloudOneX` se declara e inicializa con un valor de 50.
+- [`setup()`](/reference/p5/setup) se ejecuta y crea un lienzo con un [`width`](/reference/p5/width) de 400 píxeles.
+- La primera vez que [`draw()`](/reference/p5/draw) se ejecuta:
+  - se dibujan el fondo y todas las formas del paisaje en el lienzo;
+  - la nube se dibuja con una coordenada x `cloudOneX` (que almacena el número 50);
+  - `cloudOneX` almacena el residuo de la operación `frameCount % width`.
+- La segunda vez que [`draw()`](/reference/p5/draw) se ejecuta:
+  - todas las formas quedan cubiertas cuando el fondo y el paisaje se dibujan de nuevo en el lienzo;
+  - una nueva nube se dibuja encima con el nuevo valor de `cloudOneX`, creando la ilusión de que se movió desde una coordenada x de 0 a 400 y luego se reinicia;
+  - este patrón continúa hasta que [`draw()`](/reference/p5/draw) se detiene.
+
+Consulta [este ejemplo](https://editor.p5js.org/p5Master718/sketches/wpAhQK9WN), que muestra valores de [`frameCount`](/reference/p5/frameCount) y `frameCount % width` mientras las formas se mueven por el lienzo. Visita la [referencia de residuo en MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder) para aprender más.
+
+
+### Animación y draw()
+
+La función [`draw()`](/reference/p5/draw) ejecuta código repetidamente y se comporta de manera muy parecida a un folioscopio cuando anima una serie de dibujos fijos.
+
+- Ejemplo de una [animación tipo folioscopio](https://www.youtube.com/watch?v=J2xrN5WQuxw)
+
+Cada vez que [`draw()`](/reference/p5/draw) lee las líneas de código del fondo y las formas del paisaje, cubre cualquier cosa que se haya dibujado en el lienzo la vez anterior que [`draw()`](/reference/p5/draw) se ejecutó. Esto hace que parezca que pasamos a la siguiente página de nuestro folioscopio cuando las cosas del lienzo cambian cada vez que [`draw()`](/reference/p5/draw) se ejecuta.
+
+- [Este ejemplo](https://editor.p5js.org/p5Master718/sketches/H3dfPaKaN) muestra los cambios en la coordenada x de un círculo mientras se mueve horizontalmente en el lienzo.
+- [Este ejemplo](https://editor.p5js.org/p5Master718/sketches/CHPMI1xBJ) muestra los cambios en la coordenada y de un círculo mientras se mueve verticalmente en el lienzo.
+- [Este ejemplo](https://editor.p5js.org/p5Master718/full/vEDfXfXBJ) muestra cambios en el tamaño de un círculo mientras el programa se ejecuta.
+- Estos ejemplos muestran cómo se dibujan nuevas formas en una ubicación nueva cada vez que se ejecuta la función [`draw()`](/reference/p5/draw): [movimiento horizontal](https://editor.p5js.org/p5Master718/sketches/hSv6uLFvv) | [movimiento vertical](https://editor.p5js.org/p5Master718/sketches/Xk_MUZ9yT) | [movimiento aleatorio](https://editor.p5js.org/Msqcoding/sketches/yLtbuqPIG)
+  - En estos ejemplos, se elimina [`background()`](/reference/p5/background) para quitar la ilusión de "folioscopio" que proporciona [`draw()`](/reference/p5/draw). Ahora podemos ver cada nueva forma dibujada porque el fondo no está ahí para cubrirla.
+
+Visita la referencia de p5.js para [`draw()`](/reference/p5/draw) para obtener más información.
+
+
+### `frameRate()`, `frameCount` y `console.log()`
+
+La cantidad de veces que se ejecuta [`draw()`](/reference/p5/draw) se almacena en la variable [`frameCount`](/reference/p5/frameCount), y la cantidad de veces que [`draw()`](/reference/p5/draw) se ejecuta en 1 segundo se conoce como *velocidad de fotogramas*. De forma predeterminada, tu computadora establece la velocidad de fotogramas, que es de alrededor de 60 en la mayoría de las computadoras. Esto indica que el código que aparece en [`draw()`](/reference/p5/draw) se ejecutará unas 60 veces por segundo.
+
+Podemos establecer y mostrar el valor de la *velocidad de fotogramas* de [`draw()`](/reference/p5/draw) usando la función [`frameRate()`](/reference/p5/frameRate). Podemos ver el valor de la velocidad de fotogramas y de [`frameCount`](/reference/p5/frameCount) usando [`console.log()`](/reference/console/log) para mostrar valores y mensajes en la consola.
+
+- [Este ejemplo](https://editor.p5js.org/p5Master718/sketches/7j0u_pljk) muestra una animación de círculos aleatorios e imprime la velocidad de fotogramas en la consola.
+- [Este ejemplo](https://editor.p5js.org/p5Master718/sketches/CH2Nmbzwz) muestra una animación de círculos aleatorios, establece la velocidad de fotogramas en un valor nuevo y la muestra en la consola.
+
+Para obtener más información, visita las siguientes páginas de referencia de p5.js: [`frameRate()`](/reference/p5/frameRate)  |  [`frameCount`](/reference/p5/frameCount)  |  [`console.log()`](/reference/console/log)
+
+
+## Paso 5: Agrega más nubes en movimiento y cambia la velocidad de fotogramas<a id="step-5"></a>
+
+- Haz más lenta la animación estableciendo la velocidad de fotogramas en 15:
+  - Agrega esto en la línea debajo de [`background()`](/reference/p5/background): `frameRate(15); //set frame rate to 15`
+- Repite el [Paso 4](#step-4) para agregar más nubes a tu paisaje con distintos valores de x e y.
+  - Puedes agregar este texto debajo de la primera nube:
+
+    ```js
+    ellipse(cloudOneX - 40, 100, 60, 20);
+    ellipse(cloudOneX + 20, 150, 40, 10);
+    ```
+
+Tu código puede verse así:
+
+<EditableSketch code={`
+//custom variable for x coordinate of clouds
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  frameRate(15); //set frame rate to 15
+  
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //clouds
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+  ellipse(cloudOneX - 40, 100, 60, 20);
+  ellipse(cloudOneX + 20, 150, 40, 10);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
+}
+`} />
+
+En el paso anterior, agregaste:
+
+- Una segunda nube en una coordenada x `cloudOneX - 40` y una coordenada y `100`
+  - Esto dibuja una segunda nube 40 píxeles a la izquierda y 20 píxeles debajo de la primera nube.
+- Una tercera nube en una coordenada x `cloudOneX + 20` y una coordenada y `150`
+  - Esto dibuja una tercera nube 20 píxeles a la derecha y 70 píxeles debajo de la primera nube.
+
+Aquí usamos `cloudOneX` como *punto de referencia*: el punto que se usa como guía al colocar formas en el lienzo que se mueven juntas.
+
+- [Este ejemplo](https://editor.p5js.org/p5Master718/sketches/FiePhOrbF) ilustra cómo se puede usar un punto de referencia (x, y) para cambiar la ubicación de varias formas a la vez.
+
+
+## Paso 6: Agrega movimiento vertical
+
+Agrega un árbol (u otro objeto) al paisaje que se mueva verticalmente (hacia arriba o hacia abajo).
+
+- Dibuja un árbol en el lienzo.
+  - Agrega este texto entre el código donde se dibujan las nubes y el código donde aumentan las variables:
+
+    ```js
+    //growing tree
+    //trunk
+    fill("rgb(118,80,72)");
+    rect(40, 270, 15, 50);
+    //leaves
+    fill("green");
+    triangle(25, 270, 45, 240, 70, 270);
+    ```
+
+- Resta `frameCount % 290` al ángulo superior de un triángulo que dibuja hojas (240):
+  - Modifica el valor de y<sub>2</sub> en el triángulo anterior restándole `frameCount % 290`:
+
+    ```js
+    //leaves
+    fill("green");
+    triangle(25, 270, 45, 240 - frameCount % 290, 70, 270);
+    ```
+
+- Agrega más árboles que crezcan de la misma manera.
+  - Agrega esta línea de texto debajo del primer árbol:
+
+    ```js
+    //trunk
+    fill("rgb(118,80,72)");
+    rect(340, 330, 15, 50);
+    //leaves
+    fill("green");
+    triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
+    ```
+
+Tu código puede verse así:
+
+<EditableSketch code={`
+//custom variable for x coordinate of clouds
+let cloudOneX = 50;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  frameRate(15); //set frame rate to 15
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //clouds
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+  ellipse(cloudOneX - 40, 100, 60, 20);
+  ellipse(cloudOneX + 20, 150, 40, 10);
+
+  //growing trees
+
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(40, 270, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(25, 270, 45, 240 - frameCount % 2900,70, 270);
+
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(340, 330, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+
+  cloudOneX = frameCount % width
+
+  //displays the x and y position of the mouse on the canvas
+  fill(255) //white text
+  text(\`mouseX: \${mouseX}, mouseY: \${mouseY}\`, 20, 20);
+}
+`} />
+
+En este paso:
+
+- agregaste un árbol hecho con un rectángulo (tronco) y un triángulo (hojas);
+- modificaste el valor de la coordenada y de la esquina superior del triángulo (`y2`) restándole `frameCount % 290` (consulta el diagrama de [`triangle()`](/reference/p5/triangle) para recordar qué es `y2`):
+  - Como quieres que las hojas del árbol crezcan, la esquina superior del triángulo debe moverse hacia arriba en el lienzo cada vez que [`draw()`](/reference/p5/draw) se ejecuta. Como se ve en [este ejemplo](https://editor.p5js.org/p5Master718/sketches/605MEWNxh), la coordenada y (`y2`) del punto que se mueve hacia arriba en el lienzo disminuye.
+  - Para lograr este movimiento, modificaste el valor de `y2` restando `240 - frameCount % 290`. Esto disminuye `y2` según el residuo cuando [`frameCount`](/reference/p5/frameCount) se divide entre 290.
+  - Como viste en el [Paso 5](#step-5), cada vez que la función [`draw()`](/reference/p5/draw) se ejecuta, el valor devuelto por `frameCount % 290` aumenta en `1`, de modo que `y2` también cambia.
+    - Antes de que [`draw()`](/reference/p5/draw) se ejecute, `y2` es `240`.
+    - La primera vez que [`draw()`](/reference/p5/draw) se ejecuta, el valor de `frameCount % 290` es `1` y `y2` se convierte en `239`.
+    - La segunda vez que [`draw()`](/reference/p5/draw) se ejecuta, el valor de `frameCount % 290` es `2` y `y2` se convierte en `238`.
+    - La tercera vez que [`draw()`](/reference/p5/draw) se ejecuta, el valor de `frameCount % 290` es `3` y `y2` se convierte en `237`.
+    - Una vez que [`frameCount`](/reference/p5/frameCount) se convierte en un número que es múltiplo de `290`, el valor de `frameCount % 290` es `0` y `y2` vuelve a su valor original de `240`.
+    - Este patrón continúa hasta que [`draw()`](/reference/p5/draw) se detiene.
+
+Visita las siguientes páginas de referencia de p5.js para obtener más información: [`frameRate()`](/reference/p5/frameRate)  |  [`frameCount`](/reference/p5/frameCount) | [`triangle()`](/reference/p5/triangle)
+
+
+## Paso 7: Agrega movimiento aleatorio<a id="step-7"></a>
+
+- Agrega estrellas fugaces que aparezcan en lugares aleatorios del cielo.
+  - Declara dos variables, `lineXone` y `lineYone`, e inicialízalas con `0` agregando estas líneas de texto antes de [`setup()`](/reference/p5/setup):
+
+    ```js
+    //custom variable for shooting stars
+    let lineXone = 0;
+    let lineYone = 0;
+    ```
+
+- Dibuja una línea que representará una estrella fugaz agregando este texto debajo de `frameRate(15)`:
+
+  ```js
+  //shooting star
+  stroke("yellow");
+  line(lineXone, lineYone, lineXone + 30, lineYone - 30);
+  ```
+
+- Asigna valores aleatorios a `lineXone` y `lineYone` agregando este texto después de la línea de código donde `cloudOneX` se asigna a `frameCount % width`:
+
+  ```js
+  //set shooting star to random location
+  lineXone = random(0, width);
+  lineYone = random(0, height/2);
+  ```
+
+- Borra las líneas de código al final de `draw()` que muestran las coordenadas x e y del puntero del mouse para ver tu proyecto final.
+- Compártelo con tus amistades.
+
+Tu código debería verse así:
+
+<EditableSketch code={`
+//custom variable for x coordinate of clouds
+let cloudOneX = 50;
+
+//custom variable for shooting stars
+let lineXone = 0;
+let lineYone = 0;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background('navy'); //navy background
+  frameRate(15); //set frame rate to 15
+
+  //shooting star
+  stroke("yellow");
+  line(lineXone, lineYone, lineXone + 30, lineYone - 30);
+
+  //moon
+  fill(255);
+  stroke(0);
+  circle(350, 50, 100);
+
+  //overlap by navy circle for crescent moon
+  stroke("navy");   
+  fill("navy");
+  circle(320,50,100);
+
+  //big gray mountains
+  stroke(0);
+  fill(80);
+  triangle(-40,300,75,100, 250,300);
+  triangle(100,300,300,100, 500,300);
+
+  //grass
+  fill('rgb(50,76,50)');
+  rect(0,300, 400, 100);
+
+  //clouds
+  fill(255);
+  ellipse(cloudOneX, 50, 80, 40);
+  ellipse(cloudOneX - 40, 100, 60, 20);
+  ellipse(cloudOneX + 20, 150, 40, 10);
+
+  //growing trees
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(40, 270, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(25, 270, 45, 240 - frameCount % 2900,70, 270);
+
+  //trunk
+  fill("rgb(118,80,72)");
+  rect(340, 330, 15, 50);
+
+  //leaves
+  fill("green");
+  triangle(325, 330, 345, 240 - frameCount % 290, 370, 330);
+
+  //sets the x coordinate to the frame count
+  //resets at left edge
+  cloudOneX = frameCount % width
+
+  //set shooting star to random location
+  lineXone = random(0, width);
+  lineYone = random(0, height/2); 
+}
+`} />
+
+En el paso anterior, creaste dos variables nuevas, `lineXone` y `lineYone`, que se usan para dibujar una línea que representa una estrella fugaz en el cielo. La línea se dibuja usando la función [`line()`](/reference/p5/line) (consulta el diagrama de abajo).
+
+![Un diagrama de una línea con extremos (x1,y1) y (x2, y2). La sintaxis de la función line se muestra sobre el diagrama como: “line(x1, y1, x2, y2);”.](../images/introduction/line-diagram.png)
+
+[`line()`](/reference/p5/line) necesita 4 números para aparecer en el lienzo. Los primeros dos números son las coordenadas del primer punto (x<sub>1</sub>,y<sub>1</sub>): x<sub>1 </sub>es la coordenada x y y<sub>1 </sub>es la coordenada y. Los últimos dos números son las coordenadas del segundo punto (x<sub>2</sub>,y<sub>2</sub>), donde x<sub>2 </sub>es la coordenada x y y<sub>2</sub> es la coordenada y.
+
+Visita la página de referencia de p5.js para [`line()`](/reference/p5/line) para aprender más.
+
+En este proyecto, dibujaste una línea que empieza en un punto (`lineXone`, `lineYone`), donde x<sub>1 </sub>es el valor almacenado en `lineXone` y y<sub>1 </sub>es el valor almacenado en `lineYone`. La línea termina en un punto (`30`, `lineXone + 30`), donde x<sub>2 </sub>está `30` píxeles a la derecha de x<sub>1</sub> y y<sub>2</sub> está 30 píxeles por encima de y<sub>1</sub>.
+
+Al usar x<sub>1</sub>,y<sub>1 </sub> para modificar los valores de x<sub>2</sub>,y<sub>2</sub>, ambos extremos de la línea pueden moverse de la misma manera. Esto permite que la línea se mueva por el lienzo sin cambiar su forma a medida que `lineXone` y `lineYone` cambian.
+
+- Mira [este ejemplo](https://editor.p5js.org/p5Master718/sketches/IqEQilUij) para ver cómo la línea se mueve por el lienzo a medida que x<sub>1</sub>,y<sub>1 </sub> cambia.
+- Mira [este ejemplo](https://editor.p5js.org/p5Master718/sketches/iBKcrJGwi) para ver cómo la línea cambia cuando cambia la distancia entre los puntos.
+
+[`random()`](/reference/p5/random) se usa para generar números aleatorios entre un valor mínimo y un valor máximo. La usaste para reasignar `lineXone `y `lineYone` a números aleatorios, colocándolas en posiciones aleatorias dentro del cielo de tu paisaje.
+
+Ejemplos que usan [`random()`](/reference/p5/random):
+
+- [Cambiar la posición de una línea con random](https://editor.p5js.org/Msqcoding/sketches/9OI5Y0uDk)
+- [Cambiar el color con random](https://editor.p5js.org/Msqcoding/sketches/mcfTlMLQX)
+
+Visita la página de referencia de p5.js para [`random()`](/reference/p5/random) para aprender más sobre cómo se generan números aleatorios.
+
+Cuando [`draw()`](/reference/p5/draw) se ejecuta:
+
+- Se establece el fondo.
+- La estrella fugaz se coloca en el lienzo junto con el resto del paisaje, y `cloudOneX` cambia.
+- `lineXone` cambia a un número aleatorio entre `0` y [`width`](/reference/p5/width) (para que siempre aparezca en el lienzo).
+- `lineYone` cambia a un número aleatorio entre `0` y [`height`](/reference/p5/height)`/2`.
+  - [`height`](/reference/p5/height)`/2` indica que la estrella fugaz solo puede aparecer en la mitad superior del lienzo.
+
+Cuando [`draw()`](/reference/p5/draw) se ejecuta de nuevo, ocurre el mismo proceso y la estrella fugaz se coloca en una nueva ubicación aleatoria dentro de la mitad superior del lienzo. Esto continúa hasta que [`draw()`](/reference/p5/draw) se detiene.
+
+
+### Mensajes de error
+
+p5.js usa la consola para comunicarse con quienes programan sobre las líneas de código que no entiende. Estos se llaman [mensajes de error.](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors) Quienes programan los usan para localizar y corregir "*bugs*" en su código. Lee la [Guía de depuración](/tutorials/field-guide-to-debugging) o mira [este video](https://www.youtube.com/watch?v=LuGsp5KeJMM\&list=PLRqwX-V7Uu6Zy51Q-x9tMWIv9cueOFTFA\&index=6) para aprender más.
+
+
+## Siguiente paso
+
+- [Condiciones e interactividad](/tutorials/conditionals-and-interactivity)
+
+
+## Pasos anteriores
+
+- [Comenzar](/tutorials/get-started)
+- [Configurar tu entorno](/tutorials/setting-up-your-environment)
+
+
+## Recursos
+
+- [Tutoriales en video de Coding Train:](https://thecodingtrain.com/tracks/code-programming-with-p5-js)
+  - [1.5 - Errores](https://www.youtube.com/watch?v=LuGsp5KeJMM)
+  - [1.6 - Comentarios](https://www.youtube.com/watch?v=xJcrPJuem5Q)
