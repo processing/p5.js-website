@@ -91,11 +91,11 @@ export const CodeEmbed = (props) => {
 
   return (
     <div
-      className={`my-md flex w-full flex-col gap-[20px] overflow-hidden ${props.allowSideBySide ? "lg:flex-row" : ""} ${props.fullWidth ? "full-width" : ""}`}
+      className={`my-md flex w-full flex-col gap-[20px] ${props.allowSideBySide ? "lg:flex-row" : ""} ${props.fullWidth ? "full-width" : ""}`}
     >
       {props.previewable ? (
         <div
-          className={`ml-0 flex w-fit gap-[20px] ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
+          className={`sticky top-20 right-0 ml-0 flex w-fit gap-[20px] self-start ${largeSketch ? "flex-col" : (props.allowSideBySide ? "" : "flex-col lg:flex-row")}`}
         >
           <div>
             <CodeFrame
