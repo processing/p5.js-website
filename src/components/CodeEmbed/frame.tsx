@@ -176,7 +176,7 @@ export const CodeFrame = (props: CodeFrameProps) => {
               })
             : ""
         }
-        sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin"
+        sandbox="allow-scripts allow-popups allow-modals allow-forms allow-same-origin allow-pointer-lock allow-downloads"
         aria-label="Code Preview"
         title="Code Preview"
         loading={props.lazyLoad ? "lazy" : "eager"}
