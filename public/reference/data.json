@@ -585,7 +585,7 @@
       "module": "p5.sound",
       "file": "src/sources/SoundFile.js",
       "line": 67,
-      "description": "Get the current amplitude or 'loudness' of a sound.\n\nUseful for audio-reactive visualizations or analysis."
+      "description": "Get the current amplitude or 'loudness' of a sound.\n\nUseful for audio-responsive visualizations or analysis."
     },
     "SoundFile": {
       "name": "SoundFile",
@@ -1035,7 +1035,7 @@
       "namespace": "",
       "file": "src/analysis/Amplitude.js",
       "line": 10,
-      "description": "Get the current amplitude or 'loudness' of a sound.\n\nUseful for audio-reactive visualizations or analysis.",
+      "description": "Get the current amplitude or 'loudness' of a sound.\n\nUseful for audio-responsive visualizations or analysis.",
       "is_constructor": 1,
       "extends": "p5soundNode",
       "params": [
@@ -1141,7 +1141,7 @@
       "namespace": "",
       "file": "src/effects/Biquad.js",
       "line": 11,
-      "description": "Filter the frequency range of a sound.",
+      "description": "Filter the frequency range of a sound. \n\nPreviously called p5.Filter, this class can be used to create lowpass, highpass, and bandpass filters. It can also be used to create more complex filters like notch, allpass, and peaking filters.\n\nAdditionally, you can create a lowpass, highpass, or bandpass filter using the LowPass, HighPass, and BandPass classes directly.",
       "is_constructor": 1,
       "extends": "p5soundNode",
       "params": [
@@ -1159,7 +1159,7 @@
         }
       ],
       "example": [
-        "\n<div>\n<code>\nlet fft, noise, filterEffect;\n\nfunction setup() {\n  let cnv = createCanvas(100,100);\n  cnv.mousePressed(makeNoise);\n  fill(255, 0, 255);\n\n  filterEffect = new p5.BandPass();\n  noise = new p5.Noise();\n  noise.disconnect();\n  noise.connect(filterEffect);\n  \n  fft = new p5.FFT(128);\n  filterEffect.connect(fft);\n}\n\nfunction draw() {\n  background(220);\n\n  // set the BandPass frequency based on mouseX\n  let freq = map(mouseX, 0, width, 20, 10000);\n  freq = constrain(freq, 0, 22050);\n  filterEffect.freq(freq);\n  // give the filter a narrow band (lower res = wider bandpass)\n  filterEffect.res(20);\n\n  // draw filtered spectrum\n  let spectrum = fft.analyze();\n  \n  noStroke();\n  fill(0, 0, 0);\n  for (let i = 0; i < spectrum.length; i++) {\n    let x = map(i, 0, spectrum.length, 0, width);     \n    let h = -height + map(spectrum[i], 0, 0.02, height, 0);\n    rect(x, height, width / spectrum.length, h )\n  }\n  if (!noise.started) {\n    text('click and drag to change filter\\'s center frequency', 10, 20, width - 20);\n  } else {\n    text('Frequency: ' + round(freq)+'Hz', 20, 20, width - 20);\n  }\n}\n\nfunction makeNoise() {\n  noise.start();\n  noise.amp(0.9, 0.1);\n}\n\nfunction mouseReleased() {\n  noise.amp(0, 0.1);\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet fft, noise, filterEffect;\n\nfunction setup() {\n  let cnv = createCanvas(100,100);\n  cnv.mousePressed(makeNoise);\n  fill(255, 0, 255);\n\n  filterEffect = new p5.Biquad(8000, 'bandpass');\n  noise = new p5.Noise();\n  noise.disconnect();\n  noise.connect(filterEffect);\n  \n  fft = new p5.FFT(128);\n  filterEffect.connect(fft);\n}\n\nfunction draw() {\n  background(220);\n\n  // set the BandPass frequency based on mouseX\n  let freq = map(mouseX, 0, width, 20, 10000);\n  freq = constrain(freq, 0, 22050);\n  filterEffect.freq(freq);\n  // give the filter a narrow band (lower res = wider bandpass)\n  filterEffect.res(20);\n\n  // draw filtered spectrum\n  let spectrum = fft.analyze();\n  \n  noStroke();\n  fill(0, 0, 0);\n  for (let i = 0; i < spectrum.length; i++) {\n    let x = map(i, 0, spectrum.length, 0, width);     \n    let h = -height + map(spectrum[i], 0, 0.02, height, 0);\n    rect(x, height, width / spectrum.length, h )\n  }\n  if (!noise.started) {\n    text('click and drag to change filter\\'s center frequency', 10, 20, width - 20);\n  } else {\n    text('Frequency: ' + round(freq)+'Hz', 20, 20, width - 20);\n  }\n}\n\nfunction makeNoise() {\n  noise.start();\n  noise.amp(0.9, 0.1);\n}\n\nfunction mouseReleased() {\n  noise.amp(0, 0.1);\n}\n</code>\n</div>"
       ]
     },
     "p5.LowPass": {
@@ -1174,7 +1174,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/effects/Biquad.js",
-      "line": 359,
+      "line": 363,
       "description": "Creates a Lowpass Biquad filter. A shorthand or explicit way of defining a lowpass audio filter.",
       "is_constructor": 1,
       "extends": "Biquad",
@@ -1202,7 +1202,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/effects/Biquad.js",
-      "line": 429,
+      "line": 433,
       "description": "Creates a Highpass Biquad filter. A shorthand or explicit way of defining a highpass audio filter.",
       "is_constructor": 1,
       "extends": "Biquad",
@@ -1230,7 +1230,7 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/effects/Biquad.js",
-      "line": 499,
+      "line": 503,
       "description": "Creates a Bandpass Biquad filter. A shorthand or explicit way of defining a bandpass audio filter.",
       "is_constructor": 1,
       "extends": "Biquad",
@@ -1338,8 +1338,8 @@
       "submodule": "p5.sound",
       "namespace": "",
       "file": "src/effects/Gain.js",
-      "line": 10,
-      "description": "Generate a gain node to use for mixing and main volume.",
+      "line": 11,
+      "description": "Generate a gain node to use for mixing and adjusting volume levels.",
       "is_constructor": 1,
       "extends": "p5soundNode",
       "example": [
@@ -1411,7 +1411,7 @@
       "is_constructor": 1,
       "extends": "p5soundNode",
       "example": [
-        "\n<div>\n<code>\nlet cnv, pitchShifter;\n \nasync function setup() {\n  describe('a sketch that pitches the microphone input up an octave');\n  createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  textWrap(WORD)\n  text('click to play sound', width/2, height/2);\n  mic = new p5.AudioIn();\n  pitchShifter = new p5.PitchShifter(12);\n  mic.disconnect();\n  mic.connect(pitchShifter);\n}\n\nfunction mousePressed () {\n  mic.start();\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet pitchShifter;\n \nasync function setup() {\n  describe('a sketch that pitches the microphone input up an octave');\n  createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  textWrap(WORD)\n  text('click to play sound', width/2, height/2);\n  mic = new p5.AudioIn();\n  pitchShifter = new p5.PitchShifter(12);\n  mic.disconnect();\n  mic.connect(pitchShifter);\n}\n\nfunction mousePressed () {\n  mic.start();\n}\n</code>\n</div>"
       ]
     },
     "p5.Reverb": {
@@ -28366,7 +28366,7 @@
         }
       ],
       "example": [
-        "\n<div>\n<code>\nlet amplitude = 0;\n\nasync function setup() {\n  sample = await loadSound(\"assets/drums.mp3\");\n  sample.loop(true);\n\n  createCanvas(100, 100);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(8);\n  describe(\"a sketch that demonstrates setting the input for amplitude analysis\");\n\n  analyze = new p5.Amplitude();\n  //sample.connect(analyze);\n  analyze.setInput(sample);\n}\n\nfunction draw() {\n  background(amplitude * 512, 0, 0);\n  \n  amplitude = analyze.getLevel();\n  \n  fill(255);\n  if (!sample.isPlaying()) {\n    text(\"click to play the sound, move your mouse to adjust smoothing\", 0, 20, width);\n  }\n  else {\n    text(\"Amplitude: \" + amplitude.toFixed(2), 0, 20, width);\n  }\n}\n\nfunction mousePressed() {\n  if(!sample.isPlaying()) {\n    sample.play();\n  }\n  else {\n    sample.stop();\n  }\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet amplitude = 0;\n\nasync function setup() {\n  sample = await loadSound(\"assets/drum.mp3\");\n  sample.loop(true);\n\n  createCanvas(100, 100);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(8);\n  describe(\"a sketch that demonstrates setting the input for amplitude analysis\");\n\n  analyze = new p5.Amplitude();\n  //sample.connect(analyze);\n  analyze.setInput(sample);\n}\n\nfunction draw() {\n  background(amplitude * 512, 0, 0);\n  \n  amplitude = analyze.getLevel();\n  \n  fill(255);\n  if (!sample.isPlaying()) {\n    text(\"click to play the sound, move your mouse to adjust smoothing\", 0, 20, width);\n  }\n  else {\n    text(\"Amplitude: \" + amplitude.toFixed(2), 0, 20, width);\n  }\n}\n\nfunction mousePressed() {\n  if(!sample.isPlaying()) {\n    sample.play();\n  }\n  else {\n    sample.stop();\n  }\n}\n</code>\n</div>"
       ],
       "class": "p5.Amplitude",
       "module": "p5.sound",
@@ -28383,7 +28383,7 @@
         "type": "Number"
       },
       "example": [
-        "\n<div>\n<code>\nlet amplitude = 0;\n\nasync function setup() {\n  sample = await loadSound(\"assets/drums.mp3\");\n  sample.loop(true);\n\n  createCanvas(100, 100);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(8);\n  describe(\"a sketch that visualizes the loudness of a soundfile\");\n\n  analyze = new p5.Amplitude();\n  sample.connect(analyze);\n}\n\nfunction draw() {\n  background(amplitude * 512, 0, 0);\n  amplitude = analyze.getLevel();\n  fill(255);\n  if (!sample.isPlaying()) {\n    text(\"click to play the sound\", 0, 20, width);\n  }\n  else {\n    text(\"Amplitude: \" + amplitude.toFixed(2), 0, 20, width);\n  }\n}\n\nfunction mousePressed() {\n  if(!sample.isPlaying()) {\n    sample.play();\n  }\n  else {\n    sample.stop();\n  }\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet amplitude = 0;\n\nasync function setup() {\n  sample = await loadSound(\"assets/drum.mp3\");\n  sample.loop(true);\n\n  createCanvas(100, 100);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(8);\n  describe(\"a sketch that visualizes the loudness of a soundfile\");\n\n  analyze = new p5.Amplitude();\n  sample.connect(analyze);\n}\n\nfunction draw() {\n  background(amplitude * 512, 0, 0);\n  amplitude = analyze.getLevel();\n  fill(255);\n  if (!sample.isPlaying()) {\n    text(\"click to play the sound\", 0, 20, width);\n  }\n  else {\n    text(\"Amplitude: \" + amplitude.toFixed(2), 0, 20, width);\n  }\n}\n\nfunction mousePressed() {\n  if(!sample.isPlaying()) {\n    sample.play();\n  }\n  else {\n    sample.stop();\n  }\n}\n</code>\n</div>"
       ],
       "class": "p5.Amplitude",
       "module": "p5.sound",
@@ -28392,18 +28392,18 @@
     {
       "file": "src/analysis/Amplitude.js",
       "line": 160,
-      "description": "Get the current amplitude value of a sound.",
+      "description": "Averages values in the analysis to get less jumpy output.\n\nA value closer to 1 will be more smooth but will also introduce a slight delay.",
       "itemtype": "method",
       "name": "smooth",
       "params": [
         {
           "name": "Smooth",
-          "description": "Amplitude analysis by averaging with the last analysis frame. Off by default.",
+          "description": "amplitude analysis by averaging with the last analysis frame. Off by default.",
           "type": "Number"
         }
       ],
       "example": [
-        "\n<div>\n<code>\nlet amplitude = 0;\n\nasync function setup() {\n  sample = await loadSound(\"assets/drums.mp3\");\n  sample.loop(true);\n\n  createCanvas(100, 100);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(8);\n  describe(\"a sketch that visualizes the loudness of a soundfile with smoothing control\");\n\n  analyze = new p5.Amplitude();\n  sample.connect(analyze);\n}\n\nfunction draw() {\n  background(amplitude * 512, 0, 0);\n  \n  amplitude = analyze.getLevel();\n  \n  fill(255);\n  if (!sample.isPlaying()) {\n    text(\"click to play the sound, move your mouse to adjust smoothing\", 0, 20, width);\n  }\n  else {\n    text(\"Amplitude: \" + amplitude.toFixed(2), 0, 20, width);\n  }\n  smoothing = map(mouseX, 0, width, 0, 1);\n  analyze.smooth(smoothing);\n  text(\"Smoothing: \" + smoothing.toFixed(2), 0, 60, width);\n}\n\nfunction mousePressed() {\n  if(!sample.isPlaying()) {\n    sample.play();\n  }\n  else {\n    sample.stop();\n  }\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet amplitude = 0;\n\nasync function setup() {\n  sample = await loadSound(\"assets/drum.mp3\");\n  sample.loop(true);\n\n  createCanvas(100, 100);\n  textAlign(CENTER);\n  textWrap(WORD);\n  textSize(8);\n  describe(\"a sketch that visualizes the loudness of a soundfile with smoothing control\");\n\n  analyze = new p5.Amplitude();\n  sample.connect(analyze);\n}\n\nfunction draw() {\n  background(amplitude * 512, 0, 0);\n  \n  amplitude = analyze.getLevel();\n  \n  fill(255);\n  if (!sample.isPlaying()) {\n    text(\"click to play the sound, move your mouse to adjust smoothing\", 0, 20, width);\n  }\n  else {\n    text(\"Amplitude: \" + amplitude.toFixed(2), 0, 20, width);\n  }\n  smoothing = map(mouseX, 0, width, 0, 1);\n  analyze.smooth(smoothing);\n  text(\"Smoothing: \" + smoothing.toFixed(2), 0, 60, width);\n}\n\nfunction mousePressed() {\n  if(!sample.isPlaying()) {\n    sample.play();\n  }\n  else {\n    sample.stop();\n  }\n}\n</code>\n</div>"
       ],
       "class": "p5.Amplitude",
       "module": "p5.sound",
@@ -28419,20 +28419,26 @@
         "description": "Array of amplitude values from 0 to 1.",
         "type": "Array"
       },
+      "example": [
+        "\n<div>\n<code>\nlet soundfile, fft; \n\nasync function setup() {\n createCanvas(100, 100);\n soundfile = await loadSound('assets/chime.mp3');\n textAlign(CENTER);\n textSize(10);\n\n fft = new p5.FFT();\n soundfile.connect(fft);\n soundfile.loop();\n}\n\nfunction mousePressed() {\n if(!soundfile.isPlaying()) {\n   soundfile.play();\n }\n else {\n   soundfile.stop();\n }\n}\n\nfunction draw() {\n background(220);\n \n text('tap to play', width/2, height/2 - 20);\n let spectrum = fft.analyze();\n \n noStroke();\n fill(0);\n\n for (let i = 0; i < spectrum.length; i++) {\n   let x = map(i, 0, spectrum.length, 0, width);     \n   let h = -height + map(spectrum[i], 0, 0.1, height, 0);\n   rect(x, height, width / spectrum.length, h * 4)\n }\n}\n</code>\n</div>"
+      ],
       "class": "p5.FFT",
       "module": "p5.sound",
       "submodule": "p5.sound"
     },
     {
       "file": "src/analysis/FFT.js",
-      "line": 93,
+      "line": 135,
       "description": "Returns an array of sample values from the input audio.",
       "itemtype": "method",
       "name": "waveform",
       "return": {
-        "description": "Array of sample values from -1 to -1.",
+        "description": "Array of sample values from -1 to 1.",
         "type": "Array"
       },
+      "example": [
+        "\n<div>\n<code>\nlet soundfile, fft; \nasync function setup() {\n createCanvas(100, 100);\n soundfile = await loadSound('assets/chime.mp3');\n textAlign(CENTER);\n textSize(10);\n\n fft = new p5.FFT();\n soundfile.connect(fft);\n soundfile.loop();\n}\n\nfunction mousePressed() {\n if(!soundfile.isPlaying()) {\n   soundfile.play();\n }\n else {\n   soundfile.stop();\n }\n}\n\nfunction draw() {\n background(220);\n  \n text('tap to play', width/2, height/2 - 20);\n let waveform = fft.waveform();\n noFill();\n beginShape();\n stroke(20);\n for (let i = 0; i < waveform.length; i++){\n   let x = map(i, 0, waveform.length, 0, width);\n   let y = map( waveform[i], -1, 1, 0, height);\n   vertex(x,y);\n }\n endShape();\n}\n</code>\n</div>"
+      ],
       "class": "p5.FFT",
       "module": "p5.sound",
       "submodule": "p5.sound"
@@ -28692,7 +28698,7 @@
     {
       "file": "src/core/p5soundSource.js",
       "line": 20,
-      "description": "Starts the p5 sound source.\n\nShould be called from a user interaction such as MousePressed() in order to adhere to the browser's autoplay policy.",
+      "description": "Starts a p5 sound source.\n\nMust be called from a user interaction such as mousePressed() in order to adhere to the browser's autoplay policy.",
       "itemtype": "method",
       "name": "start",
       "example": [
@@ -28705,7 +28711,7 @@
     {
       "file": "src/core/p5soundSource.js",
       "line": 67,
-      "description": "Stops the p5 sound source.",
+      "description": "Stops a p5 sound source.",
       "itemtype": "method",
       "name": "stop",
       "example": [
@@ -28717,7 +28723,7 @@
     },
     {
       "file": "src/effects/Biquad.js",
-      "line": 88,
+      "line": 92,
       "description": "Controls either width of a bandpass frequency, or the resonance of a low/highpass cutoff frequency.",
       "itemtype": "method",
       "name": "res",
@@ -28737,7 +28743,7 @@
     },
     {
       "file": "src/effects/Biquad.js",
-      "line": 155,
+      "line": 159,
       "description": "The gain of the filter in dB units. p5.Filter.gain() controls the gain parameter of a Biquad Filter node",
       "itemtype": "method",
       "name": "gain",
@@ -28757,7 +28763,7 @@
     },
     {
       "file": "src/effects/Biquad.js",
-      "line": 226,
+      "line": 230,
       "description": "Set the type of the filter.",
       "itemtype": "method",
       "name": "setType",
@@ -28777,7 +28783,7 @@
     },
     {
       "file": "src/effects/Biquad.js",
-      "line": 292,
+      "line": 296,
       "description": "Set the cutoff frequency of the filter.",
       "itemtype": "method",
       "name": "freq",
@@ -28866,6 +28872,9 @@
           "optional": true
         }
       ],
+      "example": [
+        "\n<div>\n<code>\nlet delay, osc;\n\nfunction setup() {\n createCanvas(100, 100);\n textAlign(CENTER);\n text('tap to play', width/2, height/2);\n   \n osc = new p5.Oscillator('sine');\n osc.disconnect();\n delay = new p5.Delay();\n //use the delay effect to process the oscillator with a delay time of 0.240 seconds and a feedback amount of 0.7\n delay.process(osc, 0.240, 0.7);\n}\n    \nfunction mousePressed() {\n osc.start();\n}\n   \nfunction mouseReleased() {\n osc.stop();\n}\n\nfunction draw() {\n background(220)\n let dtime = map(mouseX, 0, width, 0.1, 0.5);\n delay.delayTime(dtime);\n let feedback = map(mouseY, 0, height, 0.1, 0.99);\n delay.feedback(feedback);\n if(!osc.started) {\n  text('tap to play', width/2, height/2);\n }\n else {\n  text('delay time: ' + dtime.toFixed(2), width/2, height/2);\n  text('feedback: ' + feedback.toFixed(2), width/2, height/2 + 20);\n } \n}\n</div>\n</code>"
+      ],
       "class": "p5.Delay",
       "module": "p5.sound",
       "submodule": "p5.sound"
@@ -28899,7 +28908,7 @@
     {
       "file": "src/effects/Envelope.js",
       "line": 142,
-      "description": "Trigger the Release of the envelope. Similar to releasing the key on \na piano and letting the sound fade according to the release level and \nrelease time.",
+      "description": "Triggers the \"release\" of an envelope. Akin to letting go of a key on \nthe piano after striking its.",
       "itemtype": "method",
       "name": "triggerRelease",
       "example": [
@@ -28911,7 +28920,7 @@
     },
     {
       "file": "src/effects/Envelope.js",
-      "line": 189,
+      "line": 188,
       "description": "Sets the attack, decay, sustain, and release times of the envelope.",
       "itemtype": "method",
       "name": "setADSR",
@@ -28946,7 +28955,7 @@
     },
     {
       "file": "src/effects/Envelope.js",
-      "line": 249,
+      "line": 248,
       "description": "Sets the release time of the envelope.",
       "itemtype": "method",
       "name": "releaseTime",
@@ -28966,7 +28975,7 @@
     },
     {
       "file": "src/effects/Envelope.js",
-      "line": 305,
+      "line": 304,
       "description": "Sets the attack time of the envelope.",
       "itemtype": "method",
       "name": "attackTime",
@@ -29169,7 +29178,7 @@
         }
       ],
       "example": [
-        "\n<div>\n<code>\nlet cnv, pitchShifter;\n\nasync function setup() {\n  describe('a sketch that pitches the microphone input up an octave');\n  createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  textWrap(WORD)\n  text('click to play sound', width/2, height/2);\n  mic = new p5.AudioIn();\n  pitchShifter = new p5.PitchShifter(12);\n  mic.disconnect();\n  mic.connect(pitchShifter);\n}\n\nfunction mousePressed () {\n  mic.start();\n  //shift the input audio up a random number of semitones\n  pitchShifter.shift(round(random(1, 12)));\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nlet pitchShifter;\n\nasync function setup() {\n  describe('a sketch that pitches the microphone input up an octave');\n  createCanvas(100, 100);\n  background(220);\n  textAlign(CENTER);\n  textSize(9);\n  textWrap(WORD)\n  text('click to play sound', width/2, height/2);\n  mic = new p5.AudioIn();\n  pitchShifter = new p5.PitchShifter(12);\n  mic.disconnect();\n  mic.connect(pitchShifter);\n}\n\nfunction mousePressed () {\n  mic.start();\n  //shift the input audio up a random number of semitones\n  pitchShifter.shift(round(random(1, 12)));\n}\n</code>\n</div>"
       ],
       "class": "p5.PitchShifter",
       "module": "p5.sound",
@@ -29198,7 +29207,7 @@
     {
       "file": "src/sources/AudioIn.js",
       "line": 58,
-      "description": "Start the audio input.",
+      "description": "Start the audio input device.",
       "itemtype": "method",
       "name": "start",
       "example": [
@@ -29210,8 +29219,8 @@
     },
     {
       "file": "src/sources/AudioIn.js",
-      "line": 110,
-      "description": "Stop the audio input.",
+      "line": 111,
+      "description": "Stop the audio input device.",
       "itemtype": "method",
       "name": "stop",
       "example": [
@@ -29224,7 +29233,7 @@
     {
       "file": "src/sources/Noise.js",
       "line": 54,
-      "description": "Changes the type of noise function.\n\nWhite noise is brighter and more \"full spectrum\" while 'pink' and 'brown' noise is a bit darker.",
+      "description": "Changes the type of noise function.\n\nWhite noise is brighter and has a wider spectrum while 'pink' and 'brown' noise sound warmer.",
       "itemtype": "method",
       "name": "type",
       "params": [
@@ -29333,8 +29342,25 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 115,
-      "description": "Start the soundfile.",
+      "line": 116,
+      "description": "Set the play mode for the soundfile.",
+      "itemtype": "method",
+      "name": "playMode",
+      "params": [
+        {
+          "name": "mode",
+          "description": "'sustain', 'restart', or 'untilDone'",
+          "type": "String"
+        }
+      ],
+      "class": "p5.SoundFile",
+      "module": "p5.sound",
+      "submodule": "SoundFile"
+    },
+    {
+      "file": "src/sources/SoundFile.js",
+      "line": 125,
+      "description": "Start the soundfile. Same as the play() method.",
       "itemtype": "method",
       "name": "start",
       "example": [
@@ -29346,7 +29372,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 150,
+      "line": 156,
       "description": "Start the soundfile. Same as the start() method.",
       "itemtype": "method",
       "name": "play",
@@ -29359,7 +29385,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 185,
+      "line": 215,
       "description": "Stop the soundfile.",
       "itemtype": "method",
       "name": "stop",
@@ -29372,7 +29398,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 228,
+      "line": 261,
       "description": "Pause the soundfile.",
       "itemtype": "method",
       "name": "pause",
@@ -29385,7 +29411,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 272,
+      "line": 305,
       "description": "Loop the soundfile.",
       "itemtype": "method",
       "name": "loop",
@@ -29405,7 +29431,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 325,
+      "line": 359,
       "description": "Set a loop region. The loop() method must be set to true for this to work.",
       "itemtype": "method",
       "name": "setLoop",
@@ -29432,7 +29458,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 370,
+      "line": 408,
       "description": "Change the path for the soundfile.",
       "itemtype": "method",
       "name": "setPath",
@@ -29458,7 +29484,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 421,
+      "line": 459,
       "description": "Set the playback rate of the soundfile.",
       "itemtype": "method",
       "name": "rate",
@@ -29478,7 +29504,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 470,
+      "line": 511,
       "description": "Returns the duration of a sound file in seconds.",
       "itemtype": "method",
       "name": "duration",
@@ -29495,7 +29521,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 499,
+      "line": 540,
       "description": "Return the sample rate of the sound file.",
       "itemtype": "method",
       "name": "sampleRate",
@@ -29512,7 +29538,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 528,
+      "line": 569,
       "description": "Move the playhead of a soundfile that is currently playing to a new position.",
       "itemtype": "method",
       "name": "jump",
@@ -29524,7 +29550,7 @@
         }
       ],
       "example": [
-        "\n<div>\n<code>\nasync function setup() {\n sample = await loadSound(\"assets/drums.mp3\");\n duration = sample.duration();\n sample.loop(true);\n createCanvas(100, 100);\n textAlign(CENTER);\n textWrap(WORD);\n textSize(10);\n describe(\"a sketch that jumps to a specific point in a soundfile\");\n}\n\nfunction draw() {\n background(220);\n text(\"Duration: \" + duration + \" s\", 0, 20, width);\n if (sample.isPlaying()) {\n   text(\"jump to: \" + (mouseX / width * duration).toFixed(2) + \" s on next click\", 0, 40, width);\n }\n}\n\nfunction mousePressed() {\n if(!sample.isPlaying()) {\n   sample.play();\n }\n else {\n   sample.jump(mouseX / width * duration);\n }\n}\n</code>\n</div>"
+        "\n<div>\n<code>\nasync function setup() {\n sample = await loadSound(\"assets/drum.mp3\");\n duration = sample.duration();\n sample.loop(true);\n createCanvas(100, 100);\n textAlign(CENTER);\n textWrap(WORD);\n textSize(10);\n describe(\"a sketch that jumps to a specific point in a soundfile\");\n}\n\nfunction draw() {\n background(220);\n text(\"Duration: \" + duration + \" s\", 0, 20, width);\n if (sample.isPlaying()) {\n   text(\"jump to: \" + (mouseX / width * duration).toFixed(2) + \" s on next click\", 0, 40, width);\n }\n}\n\nfunction mousePressed() {\n if(!sample.isPlaying()) {\n   sample.play();\n }\n else {\n   sample.jump(mouseX / width * duration);\n }\n}\n</code>\n</div>"
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
@@ -29532,7 +29558,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 570,
+      "line": 611,
       "description": "Return the playback state of the soundfile.",
       "itemtype": "method",
       "name": "isPlaying",
@@ -29541,7 +29567,7 @@
         "type": "Boolean"
       },
       "example": [
-        "\nasync function setup() {\n sample = await loadSound(\"assets/chime.mp3\");\n createCanvas(100, 100);\n textAlign(CENTER);\n textWrap(WORD);\n textSize(8);\n describe(\"a sketch that plays a soundfile\");\n}\n\nfunction draw() {\n background(220);\n //check if sample is playing or not\n if (!sample.playing) {\n   text(\"click to play the sound, demonstrating the start() method\", 0, 20, width);\n }\n else {\n   text(\"click to stop the sound, demonstrating the stop() method\", 0, 20, width);\n }\n}\n\nfunction mousePressed() {\n //check if sample is playing or not\n if (!sample.playing) {\n   sample.start();\n }\n else {\n   sample.stop();\n }\n}\n</code>\n</div>"
+        "\nasync function setup() {\n sample = await loadSound(\"assets/chime.mp3\");\n createCanvas(100, 100);\n textAlign(CENTER);\n textWrap(WORD);\n textSize(8);\n describe(\"a sketch that plays a soundfile\");\n}\n\nfunction draw() {\n background(220);\n //check if sample is playing or not\n if (!sample.isPlaying()) {\n   text(\"click to play the sound, demonstrating the start() method\", 0, 20, width);\n }\n else {\n   text(\"click to stop the sound, demonstrating the stop() method\", 0, 20, width);\n }\n}\n\nfunction mousePressed() {\n //check if sample is playing or not\n if (!sample.isPlaying()) {\n   sample.start();\n }\n else {\n   sample.stop();\n }\n}\n</code>\n</div>"
       ],
       "class": "p5.SoundFile",
       "module": "p5.sound",
@@ -29549,7 +29575,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 612,
+      "line": 653,
       "description": "Return the playback state of the soundfile.",
       "itemtype": "method",
       "name": "isLooping",
@@ -29566,7 +29592,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 643,
+      "line": 684,
       "description": "Define a function to call when the soundfile is done playing.",
       "itemtype": "method",
       "name": "onended",
@@ -29586,7 +29612,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 682,
+      "line": 723,
       "description": "Return the number of samples in a sound file.",
       "itemtype": "method",
       "name": "frames",
@@ -29603,7 +29629,7 @@
     },
     {
       "file": "src/sources/SoundFile.js",
-      "line": 713,
+      "line": 754,
       "description": "Gets the number of channels in the sound file.",
       "itemtype": "method",
       "name": "channels",
