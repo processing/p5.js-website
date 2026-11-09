@@ -41,17 +41,16 @@ FES는 네 종류의 오류를 감지하고 메시지를 출력할 수 있습니
 let myFont;
 function preload() {
   myFont = loadFont('assets/OpenSans-Regular.ttf');
-};
+}
 function setup() {
   fill('#ED225D');
   textFont(myFont);
   textSize(36);
   text('p5*js', 10, 50);
-};
-function draw() {};
+}
+function draw() {}
 /// 콘솔에 다음의 메시지가 생성됩니다.:
 /// > p5.js: 폰트를 로드하는 데 문제가 있는 것 같습니다. 파일 경로 [assets / OpenSans-Regular.ttf]가 올바른지, 폰트를 온라인 호스팅하는지, 또는 로컬 서버가 실행 중인지 확인하십시오.
-
 ```
 
 * 현재 버전에는 `image`, `XML`, `table`, `text`, `json`, `font`에 대한 오류 메시지를 생성하는 템플릿이 포함되어 있습니다.
@@ -69,7 +68,6 @@ arc(1, 1, 10.5, 10);
 /// 콘솔에 다음의 메시지가 생성됩니다.:
 /// > pt.js: arc() 함수의 입력 파라미터 중 4번째 자리(인덱스는 0부터 시작)에 빈 값이 들어온 것 같습니다. 의도한 것이 아니라면, 이것은 종종 범위의 문제입니다.: [https://p5js.org/examples/data-variable-scope.html]. [https://p5js.org/reference/#p5/arc]
 /// > pt.js: arc() 함수의 입력 파라미터 중 5번째 자리(인덱스는 0부터 시작)에 빈 값이 들어온 것 같습니다. 의도한 것이 아니라면, 이것은 종종 범위의 문제입니다.: [https://p5js.org/examples/data-variable-scope.html]. [https://p5js.org/reference/#p5/arc]
-
 ```
 
 * 자료형 오류 예시:
@@ -93,9 +91,9 @@ arc('1', 1, 10.5, 10, 0, Math.PI, 'pie');
 * p5.js 객체를 생성할 때: 파라미터로 사용될 모든 p5.js 객체는 클래스 선언부에서 `name` 파라미터(오브젝트의 이름) 값을 지정해야 합니다. 예를 들면 다음과 같습니다.:
 
 ```javascript
-p5.newObject = function(parameter) {
-   this.parameter = '파라미터';
-   this.name = 'p5.newObject';
+p5.newObject = function (parameter) {
+  this.parameter = '파라미터';
+  this.name = 'p5.newObject';
 };
 ```
 
@@ -151,16 +149,14 @@ line(0, 0, 100, 100, x3, Math.PI);
 // 이 코드 조각은 window.console 메소드를 그 기능을 수정하는 새 함수로 감싼다.
 // 이것은 현재 구현되어 있지 않지만, 더 잘 형식을 갖춘 오류 메시지를 제공할 수 있을 것이다.
 const original = window.console;
-const original_functions  = {
+const original_functions = {
   log: original.log,
-  warn:  original.warn,
+  warn: original.warn,
   error: original.error
-}
-
-["log", "warn", "error"].forEach(function(func){
-window.console[func] = function(msg) {
-// 래퍼 함수에서 잡아낸 'msg'로 무엇인가 처리한 다음 원래 함수를 호출하라.
-original_functions[func].apply(original, arguments)
-};
+}[('log', 'warn', 'error')].forEach(function (func) {
+  window.console[func] = function (msg) {
+    // 래퍼 함수에서 잡아낸 'msg'로 무엇인가 처리한 다음 원래 함수를 호출하라.
+    original_functions[func].apply(original, arguments);
+  };
 });
 ```

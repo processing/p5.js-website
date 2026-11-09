@@ -21,13 +21,17 @@ export const examplesCollection = defineCollection({
       // Aria label used for the live example code
       arialabel: z.string().optional(),
       featured: z.boolean().optional(),
-      // Additional libraries required by the embedded sketch.
-      scripts: z.array(z.url()).optional(),
-      webgpu: z.boolean().optional(),
       relatedReference: z.array(reference("reference")).optional(),
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
 
+      // Named libraries, or a full script URL such as ml5.js.
+      scripts: z
+        .array(z.union([z.enum(["p5.sound.js", "Tone.js"]), z.string().url()]))
+        .optional(),
+      // Load the p5 WebGPU addon for sketches that call createCanvas(..., WEBGPU).
+      webgpu: z.boolean().optional(),
+      
       // Optional list of remixes to add to license
       remix: z
         .array(

@@ -80,7 +80,7 @@ p5._validateParameters('circle', arguments);
 通常在方法中首先调用此函数，以避免在提供的参数不符合预期时继续执行。例如，它在`circle()`方法的第一行被调用：
 
 ```js
-p5.prototype.circle = function() {
+p5.prototype.circle = function () {
   p5._validateParameters('circle', arguments);
   const args = Array.prototype.slice.call(arguments, 0, 2);
   args.push(arguments[2]);
@@ -194,12 +194,12 @@ p5.prototype.httpDo.call(
   data => {
     // [... 省略的代码 ...]
   },
-  function(err) {
+  function (err) {
     // 错误处理
     p5._friendlyFileLoadError(3, args[0]);
     // [... 省略的代码 ...]
   }
- );
+);
 ```
 
 我们可以看到错误回调函数如何调用`p5._friendlyFileLoadError(3, [the first argument, which is a file path])`来生成以下FE信息：
@@ -228,16 +228,13 @@ p5.prototype.httpDo.call(
 例如，以下代码将为`bezierVertex()`生成FE信息：
 
 ```js
-p5._friendlyError(
-  '在调用bezierVertex()之前必须先使用vertex()',
-  'bezierVertex'
-);
+p5._friendlyError('在调用bezierVertex()之前必须先使用vertex()', 'bezierVertex');
 ```
 
 这应该生成以下FE信息：
 
 ```
-🌸 p5.js says: [sketch.js, line 19] 当调用bezierVertex时，p5js库内部发生了一个错误，错误信息为"在调用bezierVertex()之前必须先使用vertex()"。如果没有特别说明，可能是传递给bezierVertex的参数有问题。 (https://p5js.org/reference/p5/bezierVertex) 
+🌸 p5.js says: [sketch.js, line 19] 当调用bezierVertex时，p5js库内部发生了一个错误，错误信息为"在调用bezierVertex()之前必须先使用vertex()"。如果没有特别说明，可能是传递给bezierVertex的参数有问题。 (https://p5js.org/reference/p5/bezierVertex)
 ```
 
 恭喜🎈！您现在已经完成了为您的方法添加库错误信息。
@@ -253,7 +250,7 @@ FES信息编写者应优先降低理解错误信息的障碍，提高调试过�
 如果浏览器设置为`ko-KR`（韩语）区域设置，上述参数验证信息将以韩语显示：
 
 ```
-🌸 p5.js says: [sketch.js, 줄7] 최소 3개의 인수(argument)를 받는 함수 circle()에 인수가 1개만 입력되었습니다. (https://p5js.org/reference/p5/circle) 
+🌸 p5.js says: [sketch.js, 줄7] 최소 3개의 인수(argument)를 받는 함수 circle()에 인수가 1개만 입력되었습니다. (https://p5js.org/reference/p5/circle)
 ```
 
 [友好错误i18n指南](https://almchung.github.io/p5-fes-i18n-book/)讨论了在跨文化i18n上下文中编写友好错误信息的挑战和最佳实践。以下是该指南的主要观点：
