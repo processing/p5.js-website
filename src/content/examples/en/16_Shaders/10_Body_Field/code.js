@@ -17,18 +17,18 @@ const pointN = 100;
 // Adapted from https://openprocessing.org/@golan/2405195
 function bodyField() {
   const points = uniformStorage(dataStorage);
-  const progress = uniformFloat("u_progress");
-  const green = uniformFloat("u_green");
+  const progress = uniformFloat();
+  const green = uniformFloat();
   filterColor.begin();
   const coord = filterColor.texCoord;
 
   // Find the distance from this pixel to the nearest body point.
-  let minDist = 1.0;
+  let minDist = 1;
   for (let i = 0; i < 100; i++) {
     const point = [points[i].x, points[i].y];
     minDist = min(minDist, length(coord - point));
   }
-  const r = 6.0 * minDist;
+  const r = 6 * minDist;
   const g = green * coord.y;
   const b = 0.5 + 0.5 * cos(TWO_PI * progress);
   filterColor.set([r, g, b, 1]);
@@ -71,8 +71,8 @@ function draw() {
   dataStorage.update(points);
   const t = millis() / 1000;
   const progress = (frameCount % loopN) / loopN;
-  bodyFieldShader.setUniform("u_progress", progress);
-  bodyFieldShader.setUniform("u_green", noise(t + 1));
+  bodyFieldShader.setUniform("progress", progress);
+  bodyFieldShader.setUniform("green", noise(t + 1));
   filter(bodyFieldShader);
 }
 
