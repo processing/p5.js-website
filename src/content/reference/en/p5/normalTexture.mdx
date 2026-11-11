@@ -1,0 +1,132 @@
+---
+title: normalTexture
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Sets a normal map to add surface detail to shapes under lighting.</p>
+
+  <p><code>normalTexture()</code> works like <a
+  href="/reference/p5/texture/"><code>texture()</code></a>, but for a
+
+  tangent-space normal map: an image whose red, green, and blue channels
+
+  encode the direction of the surface normal (not brightness). Call it before
+
+  drawing a shape and its surface normals get perturbed by the map, so lights
+
+  react to detail that isn't actually in the geometry. This is the same kind
+
+  of map glTF models use. Pass an optional <code>scale</code> to tune the
+  strength.</p>
+
+  <p>Call <code>normalTexture(null)</code> to turn it off, or scope it between
+
+  <a href="/reference/p5/push/"><code>push()</code></a> and <a
+  href="/reference/p5/pop/"><code>pop()</code></a>.</p>
+
+  <p><a href="/reference/p5/bumpTexture/"><code>bumpTexture()</code></a> creates
+  a similar effect from
+
+  a grayscale height map instead. The two are easy to mix up because they
+
+  produce similar results, but they expect different images: a normal map is
+
+  the blue-tinted kind that stores directions, while a bump map is grayscale
+
+  and stores height. Only one can be active at a time, so setting one
+
+  replaces the other.</p>
+
+  <p>A light source is needed to see the effect. Models loaded with
+
+  <a href="/reference/p5/loadModel/"><code>loadModel()</code></a> apply their
+  own normal map from
+
+  the <code>.mtl</code> file's <code>map_Bump</code>.</p>
+
+  <p>Note: On a shape whose texture coordinates wrap all the way around, such as
+
+  <a href="/reference/p5/sphere/"><code>sphere()</code></a>, the two edges of
+  the image meet. The
+
+  image has to tile for them to line up, otherwise a seam shows where they
+
+  join.</p>
+
+  <p>Note: <code>normalTexture()</code> can only be used in WebGL mode.</p>
+line: 2663
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    // Click and drag the mouse to view the scene from different angles.
+
+    let normalMap;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Build a normal map with diagonal ridges running across it.
+      normalMap = createImage(32, 32);
+      normalMap.loadPixels();
+      for (let y = 0; y < normalMap.height; y += 1) {
+        for (let x = 0; x < normalMap.width; x += 1) {
+          // Slope of the ridge at this point. The pattern repeats a whole
+          // number of times across the image so it tiles, which keeps it from
+          // showing a seam where the sphere's texture coordinates wrap around.
+          let s = sin(((x + y) / normalMap.width) * TWO_PI * 3) * 0.8;
+          let inv = 1 / sqrt(s * s + s * s + 1);
+          let i = (x + y * normalMap.width) * 4;
+
+          // Pack the normal direction into the color channels.
+          normalMap.pixels[i] = (s * inv * 0.5 + 0.5) * 255;
+          normalMap.pixels[i + 1] = (s * inv * 0.5 + 0.5) * 255;
+          normalMap.pixels[i + 2] = (inv * 0.5 + 0.5) * 255;
+          normalMap.pixels[i + 3] = 255;
+        }
+      }
+      normalMap.updatePixels();
+
+      describe('A gray sphere lit from the upper left. Diagonal ridges cover its surface.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rock the shape so the lighting shifts across it.
+      rotateY(sin(millis() * 0.002) * PI * 0.1);
+
+      // Light the sphere from the upper left.
+      ambientLight(60);
+      pointLight(255, 255, 255, -80, -80, 150);
+      noStroke();
+      fill(200);
+
+      // Tile the map so it wraps around the sphere without a seam.
+      textureWrap(REPEAT);
+
+      // Add the ridges without changing the geometry.
+      normalTexture(normalMap);
+      sphere(40);
+    }
+class: p5
+overloads:
+  - params:
+      - name: tex
+        description: 'normal map, or <code>null</code> to clear it.'
+        type: >-
+          p5.Image|p5.MediaElement|p5.Graphics|p5.Texture|p5.Framebuffer|p5.FramebufferTexture
+      - name: scale
+        description: strength multiplier for the surface detail.
+        optional: 1
+        type: Number
+    chainable: 1
+chainable: false
+---
+
+
+# normalTexture

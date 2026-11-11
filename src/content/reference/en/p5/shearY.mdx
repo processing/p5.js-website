@@ -3,7 +3,7 @@ title: shearY
 module: Transform
 submodule: Transform
 file: src/core/transform.js
-description: >
+description: >-
   <p>Shears the y-axis so that shapes appear skewed.</p>
 
   <p>By default, the x- and y-axes are perpendicular. The <code>shearY()</code>
@@ -40,46 +40,103 @@ description: >
   function won't
 
   cause shapes to shear continuously.</p>
-line: 1099
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('A white quadrilateral on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Shear the coordinate system along the y-axis.
+    shearY(QUARTER_PI);
+
+    // Draw the square.
+    square(0, 0, 50);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    // Use degrees.
+    angleMode(DEGREES);
+
+    describe('A white quadrilateral on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Shear the coordinate system along the y-axis.
+    shearY(45);
+
+    // Draw the square.
+    square(0, 0, 50);
+  }</code></pre><p><code>shearY()</code> can also be used in shaders with
+  p5.strands. Inside a shader
+
+  callback, it takes a transform created with
+
+  <a href="/reference/p5/transform2D/">transform2D()</a> or
+
+  <a href="/reference/p5/transform3D/">transform3D()</a> as its first parameter,
+  as in
+
+  <code>shearY(myTransform, PI / 8)</code>. Instead of shearing the coordinate
+  system,
+
+  it returns a new transform with the shear added on and leaves the one
+
+  passed in untouched, so the result has to be assigned back. Angles are
+
+  always in radians inside a shader. The finished transform is applied to a
+
+  position with <a href="/reference/p5/transformPoint/">transformPoint()</a>.
+  See its
+
+  reference for a more in-depth explanation of how that works. The following
+
+  example uses <code>shearY()</code> in a filter shader to shear the canvas.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildFilterShader(lean);
+
+    describe('A yellow square tilted up on one side on a gray background.');
+  }
+
+
+  function lean() {
+    filterColor.begin();
+    let t = transform2D();
+    t = translate(t, 0.5, 0.5);
+    t = shearY(t, PI / 8);
+    t = translate(t, -0.5, -0.5);
+    let uv = transformPoint(t, filterColor.texCoord);
+    filterColor.set(getTexture(filterColor.canvasContent, uv));
+    filterColor.end();
+  }
+
+
+  function draw() {
+    background(180);
+    noStroke();
+    fill('yellow');
+    rect(-30, -30, 60, 60);
+    filter(myShader);
+  }</code></pre>
+line: 1495
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('A white quadrilateral on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Shear the coordinate system along the y-axis.
-      shearY(QUARTER_PI);
-
-      // Draw the square.
-      square(0, 0, 50);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      // Use degrees.
-      angleMode(DEGREES);
-
-      describe('A white quadrilateral on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Shear the coordinate system along the y-axis.
-      shearY(45);
-
-      // Draw the square.
-      square(0, 0, 50);
-    }
+example: []
 class: p5
+return:
+  description: a new transform with the shear applied.
 overloads:
   - params:
       - name: angle
@@ -88,6 +145,18 @@ overloads:
           href="#/p5/angleMode">angleMode()</a>.
         type: Number
     chainable: 1
+  - params:
+      - name: transform
+        description: |-
+          a transform created with
+          <a href="#/p5/transform2D">transform2D()</a> or
+          <a href="#/p5/transform3D">transform3D()</a>, inside
+          a p5.strands shader callback.
+      - name: angle
+        description: 'angle to shear by, in radians.'
+        type: Number
+    return:
+      description: a new transform with the shear applied.
 chainable: false
 ---
 

@@ -42,7 +42,10 @@ description: >-
   array of
 
   numbers or objects. Use <a
-  href="/reference/p5/createStorage/"><code>createStorage</code></a> to
+  href="/reference/p5/createStorage/"><code>createStorage</code></a>
+
+  or <a
+  href="/reference/p5/createStorageList/"><code>createStorageList</code></a> to
   construct
 
   initial data. Connect your iteration function to the storage by passing the
@@ -52,20 +55,18 @@ description: >-
   href="/reference/p5/uniformStorage/"><code>uniformStorage</code></a>.</p>
 
   <p>Often, compute shaders are paired with <a
-  href="/reference/p5/model/"><code>model(myGeometry, count)</code></a>
+  href="/reference/p5/instances/"><code>instances(count)</code></a>
 
   to draw one instance per object in the storage, and a shader that uses
 
-  <a href="/reference/p5/instanceID/"><code>instanceID()</code></a> to position
-  each instance.</p>
+  <a href="/reference/p5/instanceIndex/"><code>instanceIndex</code></a> to
+  position each instance.</p>
 
   <pre><code class="language-js example">let particles;
 
   let computeShader;
 
   let displayShader;
-
-  let instance;
 
   const numParticles = 100;
 
@@ -75,7 +76,6 @@ description: >-
     particles = createStorage(makeParticles(width / 2, height / 2));
     computeShader = buildComputeShader(simulate);
     displayShader = buildMaterialShader(display);
-    instance = buildGeometry(drawParticle);
     describe('100 orange particles shooting outward.');
   }
 
@@ -94,11 +94,6 @@ description: >-
   }
 
 
-  function drawParticle() {
-    sphere(2);
-  }
-
-
   function simulate() {
     let data = uniformStorage(particles);
     let idx = index.x;
@@ -109,7 +104,7 @@ description: >-
   function display() {
     let data = uniformStorage(particles);
     worldInputs.begin();
-    let pos = data[instanceID()].position;
+    let pos = data[instanceIndex].position;
     worldInputs.position.xy += pos - [width / 2, height / 2];
     worldInputs.end();
   }
@@ -124,14 +119,12 @@ description: >-
     noStroke();
     fill(255, 200, 50);
     shader(displayShader);
-    model(instance, numParticles);
+    instances(numParticles).sphere(2);
   }</code></pre><pre><code class="language-js example">let particles;
 
   let computeShader;
 
   let displayShader;
-
-  let instance;
 
   const numParticles = 50;
 
@@ -156,13 +149,7 @@ description: >-
 
     computeShader = buildComputeShader(simulate);
     displayShader = buildMaterialShader(display);
-    instance = buildGeometry(drawParticle);
     describe('50 white spheres bouncing around the canvas.');
-  }
-
-
-  function drawParticle() {
-    sphere(3);
   }
 
 
@@ -189,7 +176,7 @@ description: >-
   function display() {
     let data = uniformStorage(particles);
     worldInputs.begin();
-    let pos = data[instanceID()].position;
+    let pos = data[instanceIndex].position;
     worldInputs.position.xy += pos;
     worldInputs.end();
   }
@@ -202,9 +189,9 @@ description: >-
     fill(255);
     lights();
     shader(displayShader);
-    model(instance, numParticles);
+    instances(numParticles).sphere(3);
   }</code></pre>
-line: 2390
+line: 2730
 isConstructor: false
 itemtype: method
 example: []
@@ -220,6 +207,21 @@ overloads:
       - name: callback
         description: A function building a p5.strands compute shader.
         type: Function
+      - name: scope
+        description: An optional scope object passed to .modify().
+        optional: 1
+        type: Object
+    return:
+      description: The compute shader.
+      type: p5.Shader
+  - params:
+      - name: hooks
+        description: An object specifying p5.strands hooks in WGSL.
+        type: Object
+      - name: scope
+        description: An optional scope object passed to .modify().
+        optional: 1
+        type: Object
     return:
       description: The compute shader.
       type: p5.Shader

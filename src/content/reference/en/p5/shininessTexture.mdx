@@ -1,0 +1,107 @@
+---
+title: shininessTexture
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Sets an image that controls how tight a shape's highlights are.</p>
+
+  <p>A shininess map varies the value set by
+
+  <a href="/reference/p5/shininess/"><code>shininess()</code></a> across a
+  surface. Only the map's
+
+  red channel is read, and it scales the base shininess, so bright areas get
+
+  a small, sharp highlight and dark areas get a broad, soft one. This lets a
+
+  single shape look polished in some places and dull in others.</p>
+
+  <p>The parameter, <code>tex</code>, is the image to use as the shininess map.
+  Passing
+
+  <code>null</code> clears it, as in <code>shininessTexture(null)</code>. The
+  map can also be scoped
+
+  between <a href="/reference/p5/push/"><code>push()</code></a> and <a
+  href="/reference/p5/pop/"><code>pop()</code></a>.</p>
+
+  <p>A light source and
+
+  <a href="/reference/p5/specularMaterial/"><code>specularMaterial()</code></a>
+  are needed to see the
+
+  effect. Models loaded with <a
+  href="/reference/p5/loadModel/"><code>loadModel()</code></a> apply
+
+  their own shininess map from the <code>.mtl</code> file's
+  <code>map_Ns</code>.</p>
+
+  <p>Note: <code>shininessTexture()</code> can only be used in WebGL mode.</p>
+line: 3001
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    // Click and drag the mouse to view the scene from different angles.
+
+    let shininessMap;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Build a checkered map of bright and dark squares.
+      shininessMap = createImage(64, 64);
+      shininessMap.loadPixels();
+      for (let y = 0; y < shininessMap.height; y += 1) {
+        for (let x = 0; x < shininessMap.width; x += 1) {
+          // Only the red channel is read. Bright squares keep the full
+          // shininess, dark ones drop it so their highlight spreads out.
+          let isBright = (floor(x / 8) + floor(y / 8)) % 2 === 0;
+          let v = isBright ? 255 : 40;
+          let i = (x + y * shininessMap.width) * 4;
+          shininessMap.pixels[i] = v;
+          shininessMap.pixels[i + 1] = v;
+          shininessMap.pixels[i + 2] = v;
+          shininessMap.pixels[i + 3] = 255;
+        }
+      }
+      shininessMap.updatePixels();
+
+      describe('A blue square lit from the upper left. Its surface alternates between squares with tight highlights and squares with broader, softer ones.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rock the shape so the lighting shifts across it.
+      rotateY(sin(millis() * 0.002) * PI * 0.1);
+
+      // Light the surface from the upper left.
+      ambientLight(40);
+      pointLight(255, 255, 255, -60, -60, 180);
+      noStroke();
+      fill(60, 80, 160);
+
+      // Vary the size of the highlight across the surface.
+      specularMaterial(200);
+      shininess(120);
+      shininessTexture(shininessMap);
+      plane(80, 80);
+    }
+class: p5
+overloads:
+  - params:
+      - name: tex
+        description: 'image to use as the shininess map, or <code>null</code> to clear it.'
+        type: >-
+          p5.Image|p5.MediaElement|p5.Graphics|p5.Texture|p5.Framebuffer|p5.FramebufferTexture
+    chainable: 1
+chainable: false
+---
+
+
+# shininessTexture

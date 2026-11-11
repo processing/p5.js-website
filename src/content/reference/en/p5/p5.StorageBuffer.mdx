@@ -13,7 +13,7 @@ description: >
   recommended
 
   way to create an instance of this class.</p>
-line: 373
+line: 452
 isConstructor: true
 params: []
 example: []
@@ -33,8 +33,6 @@ methods:
 
       let displayShader;
 
-      let instance;
-
       const numParticles = 100;
 
 
@@ -43,7 +41,6 @@ methods:
         particles = createStorage(makeParticles(width / 2, height / 2));
         computeShader = buildComputeShader(simulate);
         displayShader = buildMaterialShader(display);
-        instance = buildGeometry(drawParticle);
         describe('100 orange particles shooting outward.');
       }
 
@@ -62,11 +59,6 @@ methods:
       }
 
 
-      function drawParticle() {
-        sphere(2);
-      }
-
-
       function simulate() {
         let data = uniformStorage(particles);
         let idx = index.x;
@@ -77,7 +69,7 @@ methods:
       function display() {
         let data = uniformStorage(particles);
         worldInputs.begin();
-        let pos = data[instanceID()].position;
+        let pos = data[instanceIndex].position;
         worldInputs.position.xy += pos - [width / 2, height / 2];
         worldInputs.end();
       }
@@ -92,19 +84,31 @@ methods:
         noStroke();
         fill(255, 200, 50);
         shader(displayShader);
-        model(instance, numParticles);
+        instances(numParticles).sphere(2);
       }</code></pre>
     path: p5.StorageBuffer/update
   read:
-    description: |-
+    description: >-
       <p>Reads data from a storage buffer back into JavaScript.</p>
+
       <p>Copies data from the GPU to the CPU using a temporary buffer,
-      so it must be awaited. Returns a <code>Float32Array</code> for number
-      buffers, or an array of plain objects for struct buffers.</p>
+
+      so it must be awaited. Returns a typed array (such as
+      <code>Float32Array</code> or
+
+      <code>Uint32Array</code>) for number buffers, or an array of plain objects
+      for
+
+      struct buffers.</p>
+
       <p>Note: This is a GPU -> CPU read, so calling it often (like every frame)
+
       can be slow.</p>
+
       <pre><code class="language-js example">let data;
+
       let computeShader;
+
 
       async function setup() {
         await createCanvas(100, 100, WEBGPU);
@@ -121,11 +125,35 @@ methods:
         describe('Prints the values 2, 4, 6, 8 to the console.');
       }
 
+
       function doubleValues() {
         let d = uniformStorage(data);
         let idx = index.x;
         d[idx] = d[idx] * 2;
-      }</code></pre>
+      }</code></pre><p>While p5.strands is still growing, there may be WGSL
+      features it doesn't
+
+      cover yet. You can still reach for them by writing WGSL directly, and the
+
+      buffer will read back as the right kind of typed array. Atomics are one
+
+      example: WGSL only allows them on <code>u32</code> and <code>i32</code>,
+      so a buffer used as
+
+      <code>array<atomic<u32>></atomic<u32></code> should be created with a
+      <code>Uint32Array</code>.</p>
+
+      <pre><code class="language-js example">let data;
+
+      let computeShader;
+
+
+      async function setup() {
+        await createCanvas(100, 100, WEBGPU);
+
+        data = createStorage(new Uint32Array([10, 20, 30, 40]));
+        computeShader = buildComputeShader({
+          computeDeclarations: `</code></pre>
     path: p5.StorageBuffer/read
   set:
     description: >-

@@ -1,0 +1,62 @@
+---
+title: revoke
+module: DOM
+submodule: DOM
+file: src/dom/p5.File.js
+description: >
+  <p>Revokes the Blob URL associated with this file, if one was created.</p>
+
+  <p>When video or audio files are loaded via
+
+  <a href="/reference/p5/createFileInput/">createFileInput()</a> or
+
+  <a href="/reference/p5.Element/drop/">myElement.drop()</a>, p5 creates a Blob
+  URL
+
+  pointing to the media in browser memory. p5 normally releases this
+
+  resource when the sketch is removed. Call <code>revoke()</code> sooner when
+  the media
+
+  is no longer needed while the sketch continues running, such as when
+
+  replacing a video with a new one. Do not revoke the URL while a media
+
+  element still needs it: after revocation, the URL cannot be used to load,
+
+  play, or seek the media.</p>
+line: 64
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    // Load a video file and release its URL when replacing it.
+    let video;
+    let previousFile;
+
+    function setup() {
+      createCanvas(100, 100);
+      createFileInput(handleFile);
+    }
+
+    function handleFile(file) {
+      if (file.type === 'video') {
+        if (video) {
+          // The old video no longer needs its URL, so release it before
+          // replacing the video while the sketch is still running.
+          video.remove();
+          previousFile.revoke();
+        }
+
+        video = createVideo(file.data);
+        previousFile = file;
+      }
+    }
+class: p5.File
+overloads:
+  - params: []
+chainable: false
+---
+
+
+# revoke
