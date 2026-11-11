@@ -56,7 +56,7 @@ export const AccessibilitySettings = ({
       dropdownLabel={dropdownLabel}
       onChange={(option) => toggleSetting(option.value as PossibleA11ySettings)}
       iconKind="settings"
-      variant="radio"
+      variant="checkbox"
       initialSelected={selectedSettings}
     />
   );
