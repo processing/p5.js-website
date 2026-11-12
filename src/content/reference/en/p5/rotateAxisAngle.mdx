@@ -1,0 +1,93 @@
+---
+title: rotateAxisAngle
+module: 3D
+submodule: p5.strands
+file: src/strands/strands_transform.js
+description: >
+  <p>Turns a 3D p5.strands transform about any axis.</p>
+
+  <p><a href="/reference/p5/rotateX/">rotateX()</a>,
+
+  <a href="/reference/p5/rotateY/">rotateY()</a>, and
+
+  <a href="/reference/p5/rotateZ/">rotateZ()</a> only turn about the three main
+  axes.
+
+  <code>rotateAxisAngle()</code> turns about a line pointing in any direction,
+  given as
+
+  a three-component vector. The axis doesn't need to be a unit vector; it is
+
+  normalized before use.</p>
+
+  <p>A new transform is returned and the one passed in is left untouched, so the
+
+  result has to be assigned back, as in
+
+  <code>t = rotateAxisAngle(t, [1, 1, 0], PI / 4)</code>.</p>
+
+  <p>Angles are always measured in radians here, since
+
+  <a href="/reference/p5/angleMode/">angleMode()</a> doesn't reach inside a
+  shader.</p>
+
+  <p>Note: <code>rotateAxisAngle()</code> only works on a transform created with
+
+  <a href="/reference/p5/transform3D/">transform3D()</a>, and can only be used
+  inside a
+
+  p5.strands shader callback.</p>
+line: 490
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(tumble);
+    }
+
+    function tumble() {
+      worldInputs.begin();
+      let t = transform3D();
+      // Turn about a diagonal axis instead of x, y, or z.
+      t = rotateAxisAngle(t, [1, 1, 0], millis() * 0.001);
+      worldInputs.position = transformPoint(t, worldInputs.position);
+      worldInputs.normal = transformNormal(t, worldInputs.normal);
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(180);
+      lights();
+      noStroke();
+      fill('purple');
+      shader(myShader);
+      box(60);
+    }
+class: p5
+beta: true
+return:
+  description: a new transform with the turn applied.
+overloads:
+  - params:
+      - name: transform
+        description: |-
+          a transform created with
+          <a href="#/p5/transform3D">transform3D()</a>.
+      - name: axis
+        description: |-
+          a three-component vector pointing along the line to turn
+          about.
+      - name: angle
+        description: 'angle to turn by, in radians.'
+        type: Number
+    return:
+      description: a new transform with the turn applied.
+chainable: false
+---
+
+
+# rotateAxisAngle

@@ -3,7 +3,7 @@ title: rotateY
 module: Transform
 submodule: Transform
 file: src/core/transform.js
-description: >
+description: >-
   <p>Rotates the coordinate system about the y-axis in WebGL mode.</p>
 
   <p>The parameter, <code>angle</code>, is the amount to rotate. For example,
@@ -32,102 +32,168 @@ description: >
   function won't cause
 
   shapes to spin.</p>
-line: 662
+
+  <pre><code class="language-js example">// Click and drag the mouse to view the
+  scene from different angles.
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+
+    describe('A white cube on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Enable orbiting with the mouse.
+    orbitControl();
+
+    // Rotate the coordinate system 1/8 turn.
+    rotateY(QUARTER_PI);
+
+    // Draw a box.
+    box();
+  }</code></pre><pre><code class="language-js example">// Click and drag the
+  mouse to view the scene from different angles.
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+
+    describe('A white cube on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Enable orbiting with the mouse.
+    orbitControl();
+
+    // Rotate the coordinate system 1/16 turn.
+    rotateY(QUARTER_PI / 2);
+
+    // Rotate the coordinate system 1/16 turn.
+    rotateY(QUARTER_PI / 2);
+
+    // Draw a box.
+    box();
+  }</code></pre><pre><code class="language-js example">// Click and drag the
+  mouse to view the scene from different angles.
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+
+    // Use degrees.
+    angleMode(DEGREES);
+
+    describe('A white cube on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Enable orbiting with the mouse.
+    orbitControl();
+
+    // Rotate the coordinate system 1/8 turn.
+    rotateY(45);
+
+    // Draw a box.
+    box();
+  }</code></pre><pre><code class="language-js example">// Click and drag the
+  mouse to view the scene from different angles.
+
+
+  function setup() {
+    createCanvas(100, 100, WEBGL);
+
+    describe('A white cube rotates slowly against a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Enable orbiting with the mouse.
+    orbitControl();
+
+    // Rotate the coordinate system a little more each frame.
+    let angle = frameCount * 0.01;
+    rotateY(angle);
+
+    // Draw a box.
+    box();
+  }</code></pre><p><code>rotateY()</code> can also be used in shaders with
+  p5.strands. Inside a shader
+
+  callback, it takes a transform created with
+
+  <a href="/reference/p5/transform3D/">transform3D()</a> as its first parameter,
+  as in
+
+  <code>rotateY(myTransform, PI / 4)</code>. Instead of turning the coordinate
+  system,
+
+  it returns a new transform with the turn added on and leaves the one passed
+
+  in untouched, so the result has to be assigned back. Angles are always in
+
+  radians inside a shader. The finished transform is applied to a position
+
+  with <a href="/reference/p5/transformPoint/">transformPoint()</a>. See its
+  reference
+
+  for a more in-depth explanation of how that works. The following example
+
+  gives each instance of a box its own turn to arrange them in a ring.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+  let count = 10;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildMaterialShader(placeOnRing);
+
+    describe('Ten red cubes in a tilted ring, turning like a carousel.');
+  }
+
+
+  function placeOnRing() {
+    worldInputs.begin();
+    // Each cube gets its own spot on the ring, which turns over time.
+    let angle = instanceIndex * TWO_PI / count + millis() * 0.001;
+    let t = transform3D();
+    t = rotateX(t, 0.7);         // tilt the whole ring toward the viewer
+    t = rotateY(t, angle);       // turn to this cube's spot on the ring...
+    t = translate(t, 65, 0, 0);  // ...and step out to the ring's edge
+    worldInputs.position = transformPoint(t, worldInputs.position);
+    worldInputs.normal = transformNormal(t, worldInputs.normal);
+    worldInputs.end();
+  }
+
+
+  function draw() {
+    background(220);
+    lights();
+    noStroke();
+    fill('red');
+    shader(myShader);
+    instances(count).box(18);
+  }</code></pre>
+line: 831
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    // Click and drag the mouse to view the scene from different angles.
-
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      describe('A white cube on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Enable orbiting with the mouse.
-      orbitControl();
-
-      // Rotate the coordinate system 1/8 turn.
-      rotateY(QUARTER_PI);
-
-      // Draw a box.
-      box();
-    }
-  - |-
-    // Click and drag the mouse to view the scene from different angles.
-
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      describe('A white cube on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Enable orbiting with the mouse.
-      orbitControl();
-
-      // Rotate the coordinate system 1/16 turn.
-      rotateY(QUARTER_PI / 2);
-
-      // Rotate the coordinate system 1/16 turn.
-      rotateY(QUARTER_PI / 2);
-
-      // Draw a box.
-      box();
-    }
-  - |-
-    // Click and drag the mouse to view the scene from different angles.
-
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      // Use degrees.
-      angleMode(DEGREES);
-
-      describe('A white cube on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Enable orbiting with the mouse.
-      orbitControl();
-
-      // Rotate the coordinate system 1/8 turn.
-      rotateY(45);
-
-      // Draw a box.
-      box();
-    }
-  - |-
-    // Click and drag the mouse to view the scene from different angles.
-
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      describe('A white cube rotates slowly against a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Enable orbiting with the mouse.
-      orbitControl();
-
-      // Rotate the coordinate system a little more each frame.
-      let angle = frameCount * 0.01;
-      rotateY(angle);
-
-      // Draw a box.
-      box();
-    }
+example: []
 class: p5
+return:
+  description: a new transform with the turn applied.
 overloads:
   - params:
       - name: angle
@@ -136,6 +202,17 @@ overloads:
           href="#/p5/angleMode">angleMode()</a>.
         type: Number
     chainable: 1
+  - params:
+      - name: transform
+        description: |-
+          a transform created with
+          <a href="#/p5/transform3D">transform3D()</a>, inside
+          a p5.strands shader callback.
+      - name: angle
+        description: 'angle to turn by, in radians.'
+        type: Number
+    return:
+      description: a new transform with the turn applied.
 chainable: false
 ---
 

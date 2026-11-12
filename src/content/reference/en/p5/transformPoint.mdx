@@ -1,0 +1,88 @@
+---
+title: transformPoint
+module: 3D
+submodule: p5.strands
+file: src/strands/strands_transform.js
+description: >
+  <p>Applies a p5.strands transform to a position.</p>
+
+  <p>A transform is a matrix, and moving a point with it means multiplying the
+
+  two together. Doing that by hand needs an extra <code>1</code> tacked onto the
+  end of
+
+  the position first, and the extra component stripped off the answer.
+
+  <code>transformPoint()</code> takes care of both steps.</p>
+
+  <p>With a 2D transform from <a
+  href="/reference/p5/transform2D/">transform2D()</a>, pass
+
+  a two-component position and a two-component position comes back. With a 3D
+
+  transform from <a href="/reference/p5/transform3D/">transform3D()</a>, pass a
+
+  three-component position and a three-component position comes back.</p>
+
+  <p>Use <a href="/reference/p5/transformNormal/">transformNormal()</a> for
+  surface
+
+  directions instead, since those must ignore the move part of a transform.</p>
+
+  <p>Note: <code>transformPoint()</code> can only be used inside a p5.strands
+  shader
+
+  callback.</p>
+line: 615
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(place);
+    }
+
+    function place() {
+      worldInputs.begin();
+      let t = transform3D();
+      t = translate(t, 0, -30, 0);
+      t = rotateY(t, millis() * 0.001);
+      worldInputs.position = transformPoint(t, worldInputs.position);
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(180);
+      lights();
+      noStroke();
+      fill('cyan');
+      shader(myShader);
+      box(50);
+    }
+class: p5
+beta: true
+return:
+  description: |-
+    the moved position, with as many components as the one passed
+    in.
+overloads:
+  - params:
+      - name: transform
+        description: |-
+          a transform created with
+          <a href="#/p5/transform2D">transform2D()</a> or
+          <a href="#/p5/transform3D">transform3D()</a>.
+      - name: point
+        description: the position to move.
+    return:
+      description: |-
+        the moved position, with as many components as the one passed
+        in.
+chainable: false
+---
+
+
+# transformPoint
