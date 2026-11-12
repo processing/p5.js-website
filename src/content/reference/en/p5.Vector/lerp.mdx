@@ -4,17 +4,40 @@ module: Math
 submodule: ''
 file: src/math/p5.Vector.js
 description: >
-  <p>Calculates new <code>x</code>, <code>y</code>, and <code>z</code>
-  components that are proportionally the
+  <p>Calculates new vector components that are proportionally the
 
   same distance between two vectors.</p>
+
+  <p><code>lerp()</code> can use separate numbers, as in <code>v.lerp(3, 3,
+  0.5)</code>, another
+
+  <a href="/reference/p5/p5.Vector">p5.Vector</a> object, as in <code>v.lerp(v2,
+  0.5)</code>, or an
+
+  array of numbers, as in <code>v.lerp([3, 3], 0.5)</code>. When using numbers,
+  the last
+
+  argument is always the interpolation amount.</p>
 
   <p>The <code>amt</code> parameter is the amount to interpolate between the old
   vector and
 
   the new vector. 0.0 keeps all components equal to the old vector's, 0.5 is
 
-  halfway between, and 1.0 sets all components equal to the new vector's.</p>
+  halfway between, and 1.0 sets all components equal to the new vector's.
+
+  Values of <code>amt</code> outside the range 0 to 1 are allowed and
+  extrapolate beyond
+
+  the target.</p>
+
+  <p>This method supports N-dimensional vectors. You should interpolate vectors
+
+  only when they are the same size. When two vectors of different sizes are
+
+  used, the smaller dimension will be used, and any additional values of the
+
+  longer vector will be ignored.</p>
 
   <p>The static version of <code>lerp()</code>, as in <code>p5.Vector.lerp(v0,
   v1, 0.5)</code>,
@@ -22,14 +45,17 @@ description: >
   returns a new <a href="/reference/p5/p5.Vector">p5.Vector</a> object and
   doesn't change
 
-  the original.</p>
-line: 2423
+  the originals.</p>
+line: 2512
 isConstructor: false
 itemtype: method
 example:
   - |-
-    // META:norender
     function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
       // Create a p5.Vector object.
       let v0 = createVector(1, 1, 1);
       let v1 = createVector(3, 3, 3);
@@ -37,24 +63,72 @@ example:
       // Interpolate.
       v0.lerp(v1, 0.5);
 
-      // Prints "p5.Vector Object : [2, 2, 2]" to the console.
-      print(v0.toString());
+      // Display the result.
+      textAlign(CENTER, CENTER);
+      text(v0.toString(), 0, 0, width, height);
+
+      describe('The text "p5.Vector Object : [2, 2, 2]" written on a gray square.');
     }
   - |-
-    // META:norender
     function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Vector object.
+      let v = createVector(1, 1);
+
+      // Interpolate with numbers. The last argument is the amount.
+      v.lerp(3, 3, 0.5);
+
+      // Display the result.
+      textAlign(CENTER, CENTER);
+      text(v.toString(), 0, 0, width, height);
+
+      describe('The text "p5.Vector Object : [2, 2]" written on a gray square.');
+    }
+  - |-
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create a p5.Vector object.
+      let v = createVector(1, 1, 1);
+
+      // Interpolate with an array.
+      v.lerp([3, 3, 3], 0.5);
+
+      // Display the result.
+      textAlign(CENTER, CENTER);
+      text(v.toString(), 0, 0, width, height);
+
+      describe('The text "p5.Vector Object : [2, 2, 2]" written on a gray square.');
+    }
+  - |-
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
       // Create a p5.Vector object.
       let v = createVector(1, 1, 1);
 
       // Interpolate.
       v.lerp(3, 3, 3, 0.5);
 
-      // Prints "p5.Vector Object : [2, 2, 2]" to the console.
-      print(v.toString());
+      // Display the result.
+      textAlign(CENTER, CENTER);
+      text(v.toString(), 0, 0, width, height);
+
+      describe('The text "p5.Vector Object : [2, 2, 2]" written on a gray square.');
     }
   - |-
-    // META:norender
     function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
       // Create p5.Vector objects.
       let v0 = createVector(1, 1, 1);
       let v1 = createVector(3, 3, 3);
@@ -62,8 +136,30 @@ example:
       // Interpolate.
       let v2 = p5.Vector.lerp(v0, v1, 0.5);
 
-      // Prints "p5.Vector Object : [2, 2, 2]" to the console.
-      print(v2.toString());
+      // Display the result.
+      textAlign(CENTER, CENTER);
+      text(v2.toString(), 0, 0, width, height);
+
+      describe('The text "p5.Vector Object : [2, 2, 2]" written on a gray square.');
+    }
+  - |-
+    function setup() {
+      createCanvas(100, 100);
+
+      background(200);
+
+      // Create p5.Vector objects.
+      let v0 = createVector(0, 1, 0, 1);
+      let v1 = createVector(1, 0, 1, 0);
+
+      // Interpolate.
+      v0.lerp(v1, 0.5);
+
+      // Display the result.
+      textAlign(CENTER, CENTER);
+      text(v0.toString(), 0, 0, width, height);
+
+      describe('The text "p5.Vector Object : [0.5, 0.5, 0.5, 0.5]" written on a gray square.');
     }
   - |-
     function setup() {
@@ -109,19 +205,21 @@ example:
 class: p5.Vector
 overloads:
   - params:
-      - name: x
-        description: x component.
-        type: Number
-      - name: 'y'
-        description: y component.
-        type: Number
-      - name: z
-        description: z component.
-        type: Number
-      - name: amt
+      - name: args
         description: |-
-          amount of interpolation between 0.0 (old vector)
-          and 1.0 (new vector). 0.5 is halfway between.
+          target vector components followed by the
+          interpolation amount. The last argument is always
+          <code>amt</code> (0.0 keeps the old vector, 1.0 the new
+          vector, 0.5 is halfway between).
+        type: Number
+        rest: true
+    chainable: 1
+  - params:
+      - name: arr
+        description: array to lerp towards.
+        type: 'Number[]'
+      - name: amt
+        description: ''
         type: Number
     chainable: 1
   - params:

@@ -1,0 +1,102 @@
+---
+title: buildShape
+module: Shape
+submodule: p5.svg
+file: src/shape/svg/svg_export.js
+description: >-
+  <p>Records drawing commands executed inside <code>callback</code> into a
+
+  <a href="/reference/p5/p5.ShapeCollection/">p5.ShapeCollection</a> and returns
+  it.</p>
+
+  <p><code>buildShape</code> is the easiest way to record a self-contained
+  drawing block.
+
+  It intercepts p5.js drawing commands within the callback and stores them.
+
+  <code>begin()</code> and <code>end()</code> are called automatically.</p>
+
+  <p>Options:</p>
+
+  <ul><li><code>draw</code> (Boolean, optional): If <code>true</code>, the
+  drawing commands will be drawn
+
+  onto the canvas in addition to being recorded. If <code>false</code>
+  (default), they
+
+  are only recorded silently without rendering.</li></ul><pre><code
+  class="language-js example">let drawing;
+
+
+  function setup() {
+    createCanvas(300, 300);
+
+    // Record drawing commands silently
+    drawing = buildShape(() => {
+      fill('#ed225d');
+      rect(40, 40, 80, 80);
+      fill('#302dd9');
+      circle(200, 200, 70);
+    });
+  }
+
+
+  function draw() {
+    background(240);
+    shape(drawing);
+  }
+
+
+  function keyPressed() {
+    if (key === 's') {
+      // Save the SVG file
+      saveSVG(drawing, 'my-drawing.svg');
+    }
+  }</code></pre><pre><code class="language-js example">let drawing;
+
+
+  function setup() {
+    createCanvas(300, 300);
+
+    // Record drawing commands and render them on the screen canvas simultaneously
+    drawing = buildShape(() => {
+      background(240);
+      strokeWeight(4);
+      stroke(0);
+      line(0, 0, width, height);
+    }, { draw: true });
+  }
+
+
+  function keyPressed() {
+    if (key === 's') {
+      // Save the SVG file
+      saveSVG(drawing, 'diagonal-line.svg');
+    }
+  }</code></pre>
+line: 1119
+isConstructor: false
+itemtype: method
+example: []
+class: p5
+beta: true
+return:
+  description: the recorded shape.
+  type: p5.ShapeCollection
+overloads:
+  - params:
+      - name: callback
+        description: a function containing the drawing instructions.
+        type: Function
+      - name: options
+        description: recording options.
+        optional: 1
+        type: Object
+    return:
+      description: the recorded shape.
+      type: p5.ShapeCollection
+chainable: false
+---
+
+
+# buildShape

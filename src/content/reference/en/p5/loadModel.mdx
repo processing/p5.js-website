@@ -6,14 +6,14 @@ file: src/webgl/loading.js
 description: >
   <p>Loads a 3D model to create a
 
-  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object.</p>
+  <a href="/reference/p5/p5.Geometry"><code>p5.Geometry</code></a> object.</p>
 
   <p><code>loadModel()</code> can load 3D models from OBJ and STL files. Once
   the model is
 
   loaded, it can be displayed with the
 
-  <a href="/reference/p5/model/">model()</a> function, as in
+  <a href="/reference/p5/model/"><code>model()</code></a> function, as in
   <code>model(shape)</code>.</p>
 
   <p>There are three ways to call <code>loadModel()</code> with optional
@@ -35,15 +35,28 @@ description: >
 
   object for more advanced usage.
 
-  Note: When loading a <code>.obj</code> file that references materials stored
-  in
+  Note: When a <code>.obj</code> file references materials stored in a
+  <code>.mtl</code> file,
 
-  <code>.mtl</code> files, p5.js will attempt to load and apply those materials.
+  p5.js loads and applies them, so a model with several materials appears the
 
-  To ensure that the <code>.obj</code> file reads the <code>.mtl</code> file
-  correctly include the
+  way it was exported. Each material can use diffuse (<code>map_Kd</code>),
+  specular
 
-  <code>.mtl</code> file alongside it.</p>
+  (<code>map_Ks</code>), ambient (<code>map_Ka</code>), shininess
+  (<code>map_Ns</code>), bump (<code>map_Bump</code>),
+
+  and normal (<code>norm</code>) texture maps. A bump map is read as a height
+  map, while
+
+  <code>norm</code> is read as a tangent-space normal map. Keep the
+  <code>.mtl</code> file and its
+
+  images alongside the <code>.obj</code> file so their paths resolve. A texture
+  that
+
+  fails to load is skipped with a warning instead of failing the whole
+  model.</p>
 
   <p>The first way to call <code>loadModel()</code> has three optional
   parameters after the
@@ -133,7 +146,7 @@ description: >
   <p>Note: There’s no support for colored STL files. STL files with color will
 
   be rendered without color.</p>
-line: 320
+line: 561
 isConstructor: false
 itemtype: method
 example:
@@ -327,7 +340,7 @@ example:
     }
 class: p5
 return:
-  description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+  description: the <a href="#/p5.Geometry"><code>p5.Geometry</code></a> object
   type: Promise<p5.Geometry>
 overloads:
   - params:
@@ -347,7 +360,7 @@ overloads:
       - name: successCallback
         description: |-
           function to call once the model is loaded. Will be passed
-          the <a href="#/p5.Geometry">p5.Geometry</a> object.
+          the <a href="#/p5.Geometry"><code>p5.Geometry</code></a> object.
         optional: 1
         type: function(p5.Geometry)
       - name: failureCallback
@@ -357,7 +370,7 @@ overloads:
         optional: 1
         type: function(Event)
     return:
-      description: the <a href="#/p5.Geometry">p5.Geometry</a> object
+      description: the <a href="#/p5.Geometry"><code>p5.Geometry</code></a> object
       type: Promise<p5.Geometry>
   - params:
       - name: path
@@ -367,6 +380,24 @@ overloads:
         description: ''
         optional: 1
         type: String
+      - name: successCallback
+        description: ''
+        optional: 1
+        type: function(p5.Geometry)
+      - name: failureCallback
+        description: ''
+        optional: 1
+        type: function(Event)
+    return:
+      description: new <a href="#/p5.Geometry">p5.Geometry</a> object.
+      type: Promise<p5.Geometry>
+  - params:
+      - name: path
+        description: ''
+        type: String|Request
+      - name: normalize
+        description: ''
+        type: Boolean
       - name: successCallback
         description: ''
         optional: 1

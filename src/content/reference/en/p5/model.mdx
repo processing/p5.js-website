@@ -4,21 +4,35 @@ module: Shape
 submodule: 3D Models
 file: src/webgl/loading.js
 description: >-
-  <p>Draws a <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object to the
-  canvas.</p>
+  <p>Draws a <a href="/reference/p5/p5.Geometry"><code>p5.Geometry</code></a>
+  object to the canvas.</p>
 
   <p>The first parameter, <code>model</code>, is the
 
-  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> object to draw.
+  <a href="/reference/p5/p5.Geometry"><code>p5.Geometry</code></a> object to
+  draw.
 
-  <a href="/reference/p5/p5.Geometry">p5.Geometry</a> objects can be built with
+  <a href="/reference/p5/p5.Geometry"><code>p5.Geometry</code></a> objects can
+  be built with
 
-  <a href="/reference/p5/buildGeometry/">buildGeometry()</a>. They can also be
-  loaded from
+  <a href="/reference/p5/buildGeometry/"><code>buildGeometry()</code></a>. They
+  can also be loaded from
 
-  a file with <a href="/reference/p5/loadGeometry/">loadGeometry()</a>.</p>
+  a file with <a
+  href="/reference/p5/loadGeometry/"><code>loadGeometry()</code></a>.</p>
 
   <p>Note: <code>model()</code> can only be used in WebGL mode.</p>
+
+  <p>A model with several materials, such as a character with separate skin,
+
+  shirt, and shoe materials, keeps each material's own colors and textures.
+
+  The call to <code>model()</code> is the same whether the model has one
+  material or
+
+  many, so a model made in software such as Blender appears the way it was
+
+  exported.</p>
 
   <pre><code class="language-js example">// Click and drag the mouse to view the
   scene from different angles.
@@ -126,31 +140,23 @@ description: >-
     // Draw the shape.
     model(shape);
   }</code></pre><p>Multiple instances can be drawn at once with
-  <code>model(geometry, count)</code>. On its own,
+  <code>instances(count)</code>. On its own,
 
   all the instances get drawn to the same spot, but you can use
 
-  <a href="/reference/p5/instanceID/"><code>instanceID()</code></a> inside of a
-  shader to handle each instance.
+  <a href="/reference/p5/instanceIndex/"><code>instanceIndex</code></a> inside
+  of a shader to handle each instance.
 
   At large counts, this often runs faster than using a <code>for</code>
   loop.</p>
 
   <pre><code class="language-js example">let instancesShader;
 
-  let instance;
-
   let count = 5;
-
-
-  function drawInstance() {
-    sphere(15);
-  }
 
 
   function setup() {
     createCanvas(200, 200, WEBGL);
-    instance = buildGeometry(drawInstance);
     instancesShader = buildMaterialShader(drawSpaced);
   }
 
@@ -160,7 +166,7 @@ description: >-
     // Spread spheres evenly across the canvas based on their index
     let spacing = width / count;
     worldInputs.position.x +=
-      (instanceID() - (count - 1) / 2) * spacing;
+      (instanceIndex - (count - 1) / 2) * spacing;
     worldInputs.end();
   }
 
@@ -171,9 +177,9 @@ description: >-
     noStroke();
     fill('red');
     shader(instancesShader);
-    model(instance, count);
+    instances(count).sphere(15);
   }</code></pre>
-line: 1124
+line: 1353
 isConstructor: false
 itemtype: method
 example: []

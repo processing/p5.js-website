@@ -1,0 +1,215 @@
+---
+title: shape
+module: Shape
+submodule: p5.svg
+file: src/shape/svg/svg_export.js
+description: >-
+  <p>Draws a <a href="/reference/p5/p5.ShapeCollection/">p5.ShapeCollection</a>
+  onto the canvas.</p>
+
+  <p>You can draw/replay a previously recorded shape object onto the screen
+  canvas
+
+  using the <code>shape()</code> function. This enables a retained graphics
+  pipeline
+
+  similar to Processing <code>PShape</code>.</p>
+
+  <p>When rendering an imported SVG or recorded shape with <code>shape()</code>,
+  you can
+
+  also pass position coordinates <code>(x, y)</code> and an <code>options</code>
+  configuration object
+
+  to control alignment and scaling directly without manually wrapping calls
+
+  in <code>push()</code>, <code>translate()</code>, <code>scale()</code>, and
+  <code>pop()</code>.</p>
+
+  <p>Options include:</p>
+
+  <ul><li><p><code>align</code>: Alignment mode for positioning:</p>
+
+  <ul><li><code>CORNER</code> (default): Aligns the top-left corner of the
+  shape's coordinate
+
+  bounds to <code>(x, y)</code>. Normalizes any non-zero viewBox
+  offsets.</li><li><code>CENTER</code>: Centers the shape's bounding box
+  precisely at <code>(x, y)</code>.</li><li><code>VIEWBOX</code>: Preserves raw
+  SVG coordinates without bounding box offset
+
+  normalization, translating the origin <code>(0, 0)</code> directly to
+  <code>(x, y)</code>.</li></ul></li><li><p><code>scale</code>: Scaling factor
+  to apply:</p>
+
+  <ul><li>Uniform scaling: A single number (e.g. <code>{ scale: 0.5 }</code> or
+  <code>{ scale: 2 }</code>).</li><li>Non-uniform scaling: An object with
+  independent axes
+
+  (e.g. <code>{ scale: { x: 1.5, y: 0.8 } }</code>).</li></ul></li></ul><p>When
+  <code>x</code>, <code>y</code>, <code>scale</code>, or non-zero alignment
+  offsets are applied, <code>shape()</code>
+
+  automatically wraps transformations inside <code>push()</code> and
+  <code>pop()</code>. Subsequent
+
+  drawing operations on the canvas remain completely unaffected.</p>
+
+  <pre><code class="language-js example">let starShape;
+
+
+  function setup() {
+    createCanvas(300, 300);
+
+    // Record the star shape once
+    starShape = buildShape(() => {
+      beginShape();
+      vertex(0, -50);
+      vertex(14, -20);
+      vertex(47, -15);
+      vertex(23, 7);
+      vertex(29, 40);
+      vertex(0, 25);
+      vertex(-29, 40);
+      vertex(-23, 7);
+      vertex(-47, -15);
+      vertex(-14, -20);
+      endShape(CLOSE);
+    });
+  }
+
+
+  function draw() {
+    background(250);
+
+    // Replay the shape at different positions with scaling
+    push();
+    translate(80, 80);
+    shape(starShape);
+    pop();
+
+    push();
+    translate(200, 200);
+    scale(1.2);
+    shape(starShape);
+    pop();
+  }</code></pre><pre><code class="language-js example">let icon;
+
+
+  async function setup() {
+    createCanvas(300, 300);
+    icon = await loadSVG('/assets/img/p5js.svg');
+  }
+
+
+  function draw() {
+    background(240);
+
+    if (icon) {
+      // Aligns the center of the SVG icon to (width / 2, height / 2)
+      shape(icon, width / 2, height / 2, {
+        align: CENTER,
+        scale: 0.5
+      });
+
+      // Blue dot marks the anchor position at the shape center
+      fill('blue');
+      noStroke();
+      circle(width / 2, height / 2, 8);
+    }
+  }</code></pre><pre><code class="language-js example">let icon;
+
+
+  async function setup() {
+    createCanvas(300, 300);
+    icon = await loadSVG('/assets/img/p5js.svg');
+  }
+
+
+  function draw() {
+    background(240);
+
+    if (icon) {
+      // Aligns the top-left corner of the shape to (width / 2, height / 2)
+      shape(icon, width / 2, height / 2, {
+        align: CORNER,
+        scale: 0.5
+      });
+
+      // Blue dot marks the anchor position at the top-left corner
+      fill('blue');
+      noStroke();
+      circle(width / 2, height / 2, 8);
+    }
+  }</code></pre><pre><code class="language-js example">let icon;
+
+
+  async function setup() {
+    createCanvas(300, 300);
+    icon = await loadSVG('/assets/img/p5js.svg');
+  }
+
+
+  function draw() {
+    background(240);
+
+    if (icon) {
+      // VIEWBOX alignment: places the SVG origin (0, 0) at (width / 2, height / 2)
+      shape(icon, width / 2, height / 2, {
+        align: VIEWBOX,
+        scale: 0.5
+      });
+
+      // Blue dot marks the anchor position at the SVG origin (0, 0)
+      fill('blue');
+      noStroke();
+      circle(width / 2, height / 2, 8);
+    }
+  }</code></pre><pre><code class="language-js example">let flower;
+
+
+  async function setup() {
+    createCanvas(300, 300);
+    flower = await loadSVG('/assets/img/p5js.svg');
+  }
+
+
+  function draw() {
+    background(255);
+
+    if (flower) {
+      // Non-uniform scaling: stretches independently along x and y axes
+      shape(flower, width / 2, height / 2, {
+        align: CENTER,
+        scale: { x: 0.5, y: 0.8 }
+      });
+    }
+  }</code></pre>
+line: 1559
+isConstructor: false
+itemtype: method
+example: []
+class: p5
+beta: true
+overloads:
+  - params:
+      - name: record
+        description: the imported or recorded shape object to render.
+        type: p5.ShapeCollection
+      - name: x
+        description: x-coordinate to anchor the shape.
+        optional: 1
+        type: Number
+      - name: 'y'
+        description: y-coordinate to anchor the shape.
+        optional: 1
+        type: Number
+      - name: options
+        description: placement options.
+        optional: 1
+        type: Object
+chainable: false
+---
+
+
+# shape

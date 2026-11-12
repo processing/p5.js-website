@@ -25,8 +25,6 @@ description: >-
 
   let displayShader;
 
-  let instance;
-
   const numParticles = 50;
 
 
@@ -50,13 +48,7 @@ description: >-
 
     computeShader = buildComputeShader(simulate);
     displayShader = buildMaterialShader(display);
-    instance = buildGeometry(drawParticle);
     describe('50 white spheres bouncing around the canvas.');
-  }
-
-
-  function drawParticle() {
-    sphere(3);
   }
 
 
@@ -83,7 +75,7 @@ description: >-
   function display() {
     let data = uniformStorage(particles);
     worldInputs.begin();
-    let pos = data[instanceID()].position;
+    let pos = data[instanceIndex].position;
     worldInputs.position.xy += pos;
     worldInputs.end();
   }
@@ -96,7 +88,7 @@ description: >-
     fill(255);
     lights();
     shader(displayShader);
-    model(instance, numParticles);
+    instances(numParticles).sphere(3);
   }</code></pre><p>You can also pass <code>y</code> and <code>z</code> to loop
   in up to three dimensions, using
 
@@ -187,7 +179,7 @@ description: >-
     [nextCells, cells] = [cells, nextCells];
     filter(displayShader);
   }</code></pre>
-line: 2574
+line: 2907
 isConstructor: false
 itemtype: method
 example: []
