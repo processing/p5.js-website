@@ -30,28 +30,7 @@ export const parseLibraryReference =
     const useExternalP5Sound = !!process.env.P5_REPO_BRANCH ||
       latestRelease.startsWith('v2');
 
-    // Clone p5.js
-    await cloneLibraryRepo(
-      localPath,
-      process.env.P5_REPO_URL || p5RepoUrl,
-      process.env.P5_BRANCH || latestRelease,
-      { shouldFixAbsolutePathInPreprocessor: false },
-    );
-
-    // Install dependencies and build docs in the p5 repo
-    await createP5Docs('p5.js', 'data-p5');
-
-    // If we're using a custom build of p5 instead of a public release, create
-    // a build and copy it to the specified path
-    if (process.env.PUBLIC_P5_LIBRARY_PATH) {
-      await createP5Build('p5.js', `../../../public${process.env.PUBLIC_P5_LIBRARY_PATH}`);
-    }
-    if (process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH) {
-      await fs.cp(
-        path.join(__dirname, 'in', 'p5.js', 'lib', 'p5.webgpu.js'),
-        path.join(__dirname, `../../../public${process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH}`),
-      );
-    }
+    await prepareP5Data(latestRelease);
 
     // Copy the reference output so we can process it
     const p5Data = await getYuidocOutput('data-p5');
@@ -144,6 +123,66 @@ export const parseLibraryReference =
     await cleanUpDirectory(parsersOutPath );
     return result;
   };
+
+/**
+ * Puts the p5.js YUIDoc data where getYuidocOutput('data-p5') reads it.
+ *
+ * If P5_DATA_JSON_PATH is set, that file is used directly and the p5.js
+ * clone, `npm install`, and `npm run docs` are all skipped. This lets a CI
+ * job that already built p5.js docs (e.g. a p5.js PR build) hand its
+ * data.json over instead of this script rebuilding it from a fresh clone.
+ *
+ * Otherwise p5.js is cloned (honoring P5_REPO_URL / P5_BRANCH) and its docs
+ * are built in the clone, exactly as before.
+ */
+export const prepareP5Data = async (latestRelease: string): Promise<void> => {
+  const prebuiltDataPath = process.env.P5_DATA_JSON_PATH;
+  if (prebuiltDataPath) {
+    let stats;
+    try {
+      stats = await fs.stat(prebuiltDataPath);
+    } catch {
+      throw new Error(
+        `P5_DATA_JSON_PATH is set to "${prebuiltDataPath}" but no file exists there`,
+      );
+    }
+    if (!stats.isFile()) {
+      throw new Error(
+        `P5_DATA_JSON_PATH is set to "${prebuiltDataPath}" but that path is not a file`,
+      );
+    }
+    console.log(
+      `Skipping p5.js clone and docs build; using pre-built data.json from ${prebuiltDataPath}`,
+    );
+    const dataP5Dir = path.join(yuidocOutputPath, 'data-p5');
+    await fs.mkdir(dataP5Dir, { recursive: true });
+    await fs.copyFile(prebuiltDataPath, path.join(dataP5Dir, 'data.json'));
+    return;
+  }
+
+  // Clone p5.js
+  await cloneLibraryRepo(
+    localPath,
+    process.env.P5_REPO_URL || p5RepoUrl,
+    process.env.P5_BRANCH || latestRelease,
+    { shouldFixAbsolutePathInPreprocessor: false },
+  );
+
+  // Install dependencies and build docs in the p5 repo
+  await createP5Docs('p5.js', 'data-p5');
+
+  // If we're using a custom build of p5 instead of a public release, create
+  // a build and copy it to the specified path
+  if (process.env.PUBLIC_P5_LIBRARY_PATH) {
+    await createP5Build('p5.js', `../../../public${process.env.PUBLIC_P5_LIBRARY_PATH}`);
+  }
+  if (process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH) {
+    await fs.cp(
+      path.join(__dirname, 'in', 'p5.js', 'lib', 'p5.webgpu.js'),
+      path.join(__dirname, `../../../public${process.env.PUBLIC_P5_WEBGPU_LIBRARY_PATH}`),
+    );
+  }
+};
 
 /**
  * Gets the parsed YUIDoc output from the saved file and parses it as JSON

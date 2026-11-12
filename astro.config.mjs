@@ -18,6 +18,10 @@ if (shouldSkipCompress) {
 
 const isA11yTest = Boolean(process.env.A11Y_TEST);
 
+// Reference-only preview builds (processing/p5.js#9303) skip the service
+// worker: it globs and precaches the whole dist, which a preview doesn't need.
+const isReferenceOnly = Boolean(process.env.REFERENCE_ONLY);
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://p5js.org',
@@ -32,27 +36,31 @@ export default defineConfig({
     }),
     mdx(),
     fast(),
-    serviceWorker({
-      workbox: {
-        globPatterns: [
-          "**/*.{css,js,jpg,json,png,svg,ico,woff,woff2}", // Cache all assets accept HTML
-        ],
-        clientsClaim: true,
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.pathname.endsWith(".html"), // Caches HTML pages
-            handler: "CacheFirst", // Tries the cache first, then falls back to network if offline
-            options: {
-              cacheName: "html-pages-cache",
-              expiration: {
-                maxEntries: 50, // Limits the number of HTML pages cached
-                maxAgeSeconds: 24 * 60 * 60 * 7, // Cache for 1 week
-              },
+    ...(isReferenceOnly
+      ? []
+      : [
+          serviceWorker({
+            workbox: {
+              globPatterns: [
+                "**/*.{css,js,jpg,json,png,svg,ico,woff,woff2}", // Cache all assets accept HTML
+              ],
+              clientsClaim: true,
+              runtimeCaching: [
+                {
+                  urlPattern: ({ url }) => url.pathname.endsWith(".html"), // Caches HTML pages
+                  handler: "CacheFirst", // Tries the cache first, then falls back to network if offline
+                  options: {
+                    cacheName: "html-pages-cache",
+                    expiration: {
+                      maxEntries: 50, // Limits the number of HTML pages cached
+                      maxAgeSeconds: 24 * 60 * 60 * 7, // Cache for 1 week
+                    },
+                  },
+                },
+              ],
             },
-          },
-        ],
-      },
-    }),
+          }),
+        ]),
   ],
   prefetch: {
     defaultStrategy: "viewport",
