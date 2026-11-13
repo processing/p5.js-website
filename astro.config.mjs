@@ -55,7 +55,9 @@ export default defineConfig({
     }),
   ],
   prefetch: {
-    defaultStrategy: "viewport",
+    // Only prefetch a page when the visitor hovers or focuses its link.
+    // "viewport" downloaded every link on screen, ~10 MB on the Reference page.
+    defaultStrategy: "hover",
     prefetchAll: true,
   },
   trailingSlash: "always",
