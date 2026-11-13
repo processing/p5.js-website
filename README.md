@@ -1,6 +1,6 @@
 # p5.js Website
 
-## About This Repository 
+## About This Repository
 
 Hi there! Welcome to the p5.js-website repository! Here are a few things to know:
 
@@ -16,43 +16,83 @@ Please make sure you are posting to the correct repository. See [this section](h
 
 Please be sure to review our [community statement](https://p5js.org/about/#community-statement) and [code of conduct](https://github.com/processing/p5.js/blob/main/CODE_OF_CONDUCT.md). These things are very important to us. Check out the [contributor docs](https://p5js.org/contribute/) for more in-depth details about contributing code, bug fixes, and documentation.
 
-### p5.js-website and p5.js
-If you are seeing an issue about unclear wording, missing explanations, outdated examples, or reference structure, please open an issue in this repository. If the issue appears to be a bug or behavior change in the p5.js library itself, please open an issue in the [core p5.js repository](https://github.com/processing/p5.js). If you’re unsure where an issue belongs, feel free to open it here with as much context as possible, and a maintainer can help route it.
+**This repo vs. the core p5.js repo, quick check before you file:**
 
-## How To Contribute
-Known bugs and intended new features are tracked using [GitHub issues](https://github.com/processing/p5.js-website/issues). If you'd like to start working on an existing issue, comment on the issue that you plan to work on it so other contributors know it's being handled and can offer help. Once you have completed your work on this issue, [submit a pull request (PR)](https://github.com/processing/p5.js/blob/main/contributor_docs/contributor_guidelines.md#pull-requests) to the p5.js main branch. In the description field of the PR, include "resolves #XXXX" tagging the issue you are fixing. If the PR addresses the issue but doesn't completely resolve it (ie the issue should remain open after your PR is merged), write "addresses #XXXX".
+- **Open it here** if it's about unclear wording, a missing explanation, an outdated example, or how the reference is structured.
+- **Open it in the [core p5.js repository](https://github.com/processing/p5.js)** if it looks like a bug or behavior change in the p5.js library itself.
+- **Not sure which?** Open it here with as much context as you can, a maintainer can help route it.
 
-If you discover a bug or have an idea for a new feature you'd like to add, begin by submitting an issue. Please do not simply submit a pull request containing the fix or new feature without making an issue first, we will probably not be able to accept it. Once you have gotten some feedback on the issue and a go ahead to address it, you can follow the process above to add the fix or feature.
+> ### Before you start working on something
+>
+> - **Wait for the "Help wanted" label.** A new issue may start out labeled "Awaiting Maintainer Approval," meaning it's still being reviewed and isn't ready for work yet. Once it's reviewed, it gets relabeled "Help wanted", that's your signal it's actually open for contribution.
+> - **Comment before you start**, so other contributors know it's being handled. Once a maintainer sets you as "Assignee," you're clear to begin.
+> - **A PR for an unapproved issue, or one someone else is already assigned to, may be closed.** This mirrors the same "approved issue first" rule the core p5.js repo uses; see the [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/) for the full version.
 
-If you’ve been assigned to an issue and are working on it, the p5.js stewards or maintainers (you can check who this is in the [p5.js stewards table](https://github.com/processing/p5.js/blob/main/README.md#stewards)) might comment and tag you in that comment to check in. Please reply within 1 week with any questions or updates; if you don’t respond in a week, stewards or maintainers may reassign the issue. This doesn’t mean you need to finish the work in 1 week: only to confirm you’re still on it.
+## Table of Contents
+
+- [How to Contribute](#how-to-contribute)
+  - [Content Changes](#content-changes)
+  - [Code Changes](#code-changes)
+  - [Adding Libraries](#adding-libraries)
+  - [Get Assigned Before Working on an Issue](#get-assigned-before-working-on-an-issue)
+  - [Opening a Pull Request](#opening-a-pull-request)
+- [Add Yourself to p5.js Contributors](#add-yourself-to-p5js-contributors)
+
+## How to Contribute
+
+Known bugs and intended new features are tracked using [GitHub issues](https://github.com/processing/p5.js-website/issues). The short version of the flow:
+
+```
+Find or file an issue → get it approved and labeled "Help wanted" → comment to claim it,
+get set as Assignee → do the work on its own branch → open a PR referencing the issue → review → merge
+```
+
+If you'd like to work on an existing issue, comment on it first so other contributors know it's being handled and can offer help. If you've discovered a bug or have an idea for a new feature, start by filing an issue rather than jumping straight to a PR; a PR with no corresponding issue will probably not be accepted. Once you've gotten feedback on the issue and a go-ahead to address it, follow the steps below.
+
+When you're ready to open a pull request, [submit it](https://github.com/processing/p5.js/blob/main/contributor_docs/contributor_guidelines.md#pull-requests) against the p5.js-website main branch. In the PR description, write "resolves #XXXX" for the issue you're fixing, or "addresses #XXXX" if the PR doesn't fully resolve it and the issue should stay open afterward.
+
+If you've been assigned an issue and a steward or maintainer comments to check in, please reply within a week with any questions or an update. You don't need to have finished the work in a week, just confirm you're still on it, if a week goes by with no response, the issue may be reassigned.
 
 ### Content Changes
-If you are here to edit or translate content, please do so inside [the `src/content/` folder](/src/content).
-The English reference files in `src/content/reference/en/` are auto-generated from JSDoc comments in the p5.js library source code and should not be edited directly in this repository. Any changes made here will be overwritten the next time the reference is generated.
-To fix or improve English reference content, make your changes in the p5.js library repository instead. [See the Contributing to the p5.js Reference guide](https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/).
-Exception: Translation files such as `src/content/reference/es/`  are stored directly in this repository and can be edited here directly.
+
+If you're here to edit or translate content, make your changes inside [the `src/content/` folder](/src/content).
+
+The English reference files in `src/content/reference/en/` are auto-generated from JSDoc comments in the p5.js library source code, so don't edit them directly here; any change will be overwritten the next time the reference is generated. To fix or improve English reference content, make your changes in the p5.js library repository instead, see the [Contributing to the p5.js Reference guide](https://beta.p5js.org/contribute/contributing_to_the_p5js_reference/).
+
+**Exception:** translation files such as `src/content/reference/es/` are stored directly in this repository and can be edited here.
 
 ### Code Changes
-For making code changes, please check out the [technical overview](./docs/technical_overview.md) to get started.
+
+For making code changes, check out the [technical overview](./docs/technical_overview.md) to get started.
 
 ### Adding Libraries
-Follow the steps in the <a href="./docs/contributing_libraries.md">Contributing Libraries</a> doc if you would like to add your library to the collection!
+
+Follow the steps in the [Contributing Libraries](./docs/contributing_libraries.md) doc if you'd like to add your library to the collection.
 
 ### Get Assigned Before Working on an Issue
-Please read the [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/) before contributing.
 
-When an issue is first created, it may be labeled "Awaiting Maintainer Approval", which means it is still being reviewed by maintainers and is not yet ready for work. Please do not start work on these issues. Once an issue has been reviewed and approved, it will be labeled "Help wanted". Only issues with this label should be requested for assignment. When a contributor is set as "Assignee", they can start working on it. If you file a PR for an issue that has not been approved for contribution, or while someone else is already working on it, your PR may be closed.
+Please read the [contributor guidelines](https://p5js.org/contribute/contributor_guidelines/) before contributing, the rule below is the website-repo-specific version of the same policy.
 
-When working on multiple issues, please create a separate branch for each one. This ensures each PR only contains the files related to that specific issue. Opening a PR from a branch that contains work from multiple issues makes it difficult to review and merge cleanly.
+When an issue is first created, it may be labeled "Awaiting Maintainer Approval," meaning it's still being reviewed by maintainers and isn't yet ready for work. Please don't start work on these. Once reviewed and approved, it's relabeled "Help wanted", only issues with this label should be requested for assignment. Once a contributor is set as "Assignee," they can start.
 
-When you are ready to open a PR, please keep the following in mind:
-- Link the issue your PR fixes using "Fixes #" followed by the issue number in your PR description
-- Only include files related to the issue you are working on
-- Do not include `package-lock.json` unless your PR is specifically about updating dependencies
-- Test your changes locally before opening a PR
-- Test against the correct branch, either `main`, `2.0`, or both depending on the issue
+> ⚠️ **If you file a PR for an issue that hasn't been approved for contribution, or while someone else is already working on it, your PR may be closed.**
+
+When working on multiple issues, create a separate branch for each one, so each PR only contains the files related to that specific issue. A PR opened from a branch that mixes work from multiple issues is difficult to review and merge cleanly.
+
+### Opening a Pull Request
+
+When you're ready to open a PR, keep the following in mind:
+
+- Link the issue your PR fixes using "Fixes #" followed by the issue number, in your PR description.
+- Only include files related to the issue you're working on.
+- Don't include `package-lock.json` unless your PR is specifically about updating dependencies.
+- Test your changes locally before opening a PR.
+- Test against the correct branch: `main`, `2.0`, or both, depending on the issue.
 
 ## Add Yourself to p5.js Contributors
-We recognize all types of contributions. This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Add yourself to the [p5.js repository readme](https://github.com/processing/p5.js/blob/main/README.md#contributors) by following the [instructions here](https://github.com/processing/p5.js/issues/2309)!
 
-If you've contributed to this website (or any other part of the p5.js project), add yourself [here](https://github.com/processing/p5.js#contributors). Instructions to do this can be found at the bottom of the section.
+We recognize all types of contributions. This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification.
+
+If you've contributed to this website (or any other part of the p5.js project), add yourself to the [p5.js repository readme](https://github.com/processing/p5.js/blob/main/README.md#contributors), instructions for doing this are linked from [this issue](https://github.com/processing/p5.js/issues/2309), and also live at the bottom of the contributors section in that readme.
+
+[**⬆ back to top**](#p5js-website)
