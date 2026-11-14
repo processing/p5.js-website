@@ -39,6 +39,19 @@ suite("CodeFrame", () => {
     cleanup();
   });
 
+  it("lets sketches use pointer lock and download files", async () => {
+    act(() => {
+      render(<CodeFrame jsCode="" />);
+    });
+    const frame = screen.getByTitle("Code Preview");
+    const sandbox = frame.getAttribute("sandbox")?.split(" ") ?? [];
+
+    expect(sandbox).toContain("allow-pointer-lock");
+    expect(sandbox).toContain("allow-downloads");
+
+    cleanup();
+  });
+
   it("only sends the p5 script to its own iframe origin", async () => {
     const postMessage = vi.fn();
     const contentWindowSpy = vi
