@@ -3,10 +3,12 @@ import { render } from 'astro:content';
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Head from "@components/Head/index.astro";
 import { getCurrentLocale, getUiTranslator } from "../i18n/utils";
+import OutdatedTranslationBanner from "@components/OutdatedTranslationBanner/index.astro";
 import FreeRatioImage from "@components/Image/FreeRatioImage.astro";
 import PreProxy from "@components/PreProxy/index.astro";
 import LinkWrapper from "@components/LinkWrapper/index.astro";
 import RelatedItems from "@components/RelatedItems/index.astro";
+import { checkTranslationBanner } from "../utils/translationBanner";
 import {
   generateJumpToState,
   getRelatedEntriesinCollection,
@@ -17,6 +19,9 @@ const { Content } = await render(entry);
 
 const currentLocale = getCurrentLocale(Astro.url.pathname);
 const t = await getUiTranslator(currentLocale);
+const { showBanner, englishUrl } = await checkTranslationBanner(
+  'tutorials', entry.id, currentLocale, Astro.url.pathname, Astro.url.origin
+);
 
 const jumpToState = await generateJumpToState(
   "tutorials",
@@ -60,6 +65,7 @@ const relatedExamples =
   className="tutorials"
   jumpToState={jumpToState}
 >
+  {showBanner && <OutdatedTranslationBanner englishUrl={englishUrl} locale={currentLocale} />}
   {entry.data.authors && <section role="group" aria-label="authors">By {entry.data.authors?.join(", ")}</section>}
   {entry.data.authorsNote && <h7>{entry.data.authorsNote}</h7>}
   <div class="rendered-markdown">
