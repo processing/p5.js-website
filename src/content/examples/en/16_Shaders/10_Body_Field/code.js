@@ -10,6 +10,7 @@ let poses = [];
 let connections;
 let dataStorage;
 let bodyFieldShader;
+let webgpuUnavailable = false;
 
 const loopN = 100;
 const pointN = 100;
@@ -36,6 +37,14 @@ function bodyField() {
 }
 
 async function setup() {
+  if (!(await hasWebGPU())) {
+    createCanvas(640, 640);
+    webgpuUnavailable = true;
+    showWebGPUMessage();
+    noLoop();
+    return;
+  }
+
   await createCanvas(640, 640, WEBGPU);
 
   // Share a fixed-size array of body points with the GPU.
@@ -50,6 +59,7 @@ async function setup() {
 }
 
 function draw() {
+  if (webgpuUnavailable) return;
   if (!connections || !dataStorage) return;
   const points = emptyPoints();
   let count = 0;
@@ -74,6 +84,32 @@ function draw() {
   bodyFieldShader.setUniform("progress", progress);
   bodyFieldShader.setUniform("green", noise(t + 1));
   filter(bodyFieldShader);
+}
+
+// navigator.gpu is missing in browsers without WebGPU. An adapter can also
+// be missing when the browser has the API but no usable GPU.
+async function hasWebGPU() {
+  if (!navigator.gpu) return false;
+  try {
+    return (await navigator.gpu.requestAdapter()) !== null;
+  } catch {
+    return false;
+  }
+}
+
+function showWebGPUMessage() {
+  background(255);
+  fill(30);
+  noStroke();
+  textFont('sans-serif');
+  textAlign(CENTER, CENTER);
+  textSize(18);
+  textLeading(28);
+  text(
+    'This browser does not support WebGPU,\nso this example cannot run.\nThat is expected, not a bug.',
+    width / 2,
+    height / 2
+  );
 }
 
 function emptyPoints() {
