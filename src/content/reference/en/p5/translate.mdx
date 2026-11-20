@@ -3,7 +3,7 @@ title: translate
 module: Transform
 submodule: Transform
 file: src/core/transform.js
-description: >
+description: >-
   <p>Translates the coordinate system.</p>
 
   <p>By default, the origin <code>(0, 0)</code> is at the sketch's top-left
@@ -72,120 +72,173 @@ description: >
   href="/reference/p5/draw/">draw()</a> function won't
 
   cause shapes to move continuously.</p>
-line: 1266
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('A white circle on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Translate the origin to the center.
+    translate(50, 50);
+
+    // Draw a circle at coordinates (0, 0).
+    circle(0, 0, 40);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe(
+      'Two circles drawn on a gray background. The blue circle on the right overlaps the red circle at the center.'
+    );
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Translate the origin to the center.
+    translate(50, 50);
+
+    // Draw the red circle.
+    fill('red');
+    circle(0, 0, 40);
+
+    // Translate the origin to the right.
+    translate(25, 0);
+
+    // Draw the blue circle.
+    fill('blue');
+    circle(0, 0, 40);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('A white circle moves slowly from left to right on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Calculate the x-coordinate.
+    let x = frameCount * 0.2;
+
+    // Translate the origin.
+    translate(x, 50);
+
+    // Draw a circle at coordinates (0, 0).
+    circle(0, 0, 40);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    describe('A white circle on a gray background.');
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Create a p5.Vector object.
+    let v = createVector(50, 50);
+
+    // Translate the origin by the vector.
+    translate(v);
+
+    // Draw a circle at coordinates (0, 0).
+    circle(0, 0, 40);
+  }</code></pre><pre><code class="language-js example">function setup() {
+    createCanvas(100, 100, WEBGL);
+
+    describe(
+      'Two spheres sitting side-by-side on gray background. The sphere at the center is red. The sphere on the right is blue.'
+    );
+  }
+
+
+  function draw() {
+    background(200);
+
+    // Turn on the lights.
+    lights();
+
+    // Style the spheres.
+    noStroke();
+
+    // Draw the red sphere.
+    fill('red');
+    sphere(10);
+
+    // Translate the origin to the right.
+    translate(30, 0, 0);
+
+    // Draw the blue sphere.
+    fill('blue');
+    sphere(10);
+  }</code></pre><p><code>translate()</code> can also be used in shaders with
+  p5.strands. Inside a shader
+
+  callback, it takes a transform created with
+
+  <a href="/reference/p5/transform2D/">transform2D()</a> or
+
+  <a href="/reference/p5/transform3D/">transform3D()</a> as its first parameter,
+  as in
+
+  <code>translate(myTransform, 20, 0, 0)</code>. Instead of moving the
+  coordinate
+
+  system, it returns a new transform with the move added on and leaves the
+
+  one passed in untouched, so the result has to be assigned back. The
+
+  finished transform is applied to a position with
+
+  <a href="/reference/p5/transformPoint/">transformPoint()</a>. See its
+  reference for
+
+  a more in-depth explanation of how that works. The following example uses
+
+  <code>translate()</code> to slide a sphere back and forth.</p>
+
+  <pre><code class="language-js example">let myShader;
+
+
+  function setup() {
+    createCanvas(200, 200, WEBGL);
+    myShader = buildMaterialShader(slide);
+
+    describe('A red sphere sliding left and right on a gray background.');
+  }
+
+
+  function slide() {
+    worldInputs.begin();
+    // translate() returns a new transform, so assign the result back.
+    let t = transform3D();
+    t = translate(t, 40 * sin(millis() * 0.001), 0, 0);
+    worldInputs.position = transformPoint(t, worldInputs.position);
+    worldInputs.end();
+  }
+
+
+  function draw() {
+    background(180);
+    lights();
+    noStroke();
+    fill('red');
+    shader(myShader);
+    sphere(30);
+  }</code></pre>
+line: 1721
 isConstructor: false
 itemtype: method
-example:
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('A white circle on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Translate the origin to the center.
-      translate(50, 50);
-
-      // Draw a circle at coordinates (0, 0).
-      circle(0, 0, 40);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe(
-        'Two circles drawn on a gray background. The blue circle on the right overlaps the red circle at the center.'
-      );
-    }
-
-    function draw() {
-      background(200);
-
-      // Translate the origin to the center.
-      translate(50, 50);
-
-      // Draw the red circle.
-      fill('red');
-      circle(0, 0, 40);
-
-      // Translate the origin to the right.
-      translate(25, 0);
-
-      // Draw the blue circle.
-      fill('blue');
-      circle(0, 0, 40);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('A white circle moves slowly from left to right on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Calculate the x-coordinate.
-      let x = frameCount * 0.2;
-
-      // Translate the origin.
-      translate(x, 50);
-
-      // Draw a circle at coordinates (0, 0).
-      circle(0, 0, 40);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100);
-
-      describe('A white circle on a gray background.');
-    }
-
-    function draw() {
-      background(200);
-
-      // Create a p5.Vector object.
-      let v = createVector(50, 50);
-
-      // Translate the origin by the vector.
-      translate(v);
-
-      // Draw a circle at coordinates (0, 0).
-      circle(0, 0, 40);
-    }
-  - |-
-    function setup() {
-      createCanvas(100, 100, WEBGL);
-
-      describe(
-        'Two spheres sitting side-by-side on gray background. The sphere at the center is red. The sphere on the right is blue.'
-      );
-    }
-
-    function draw() {
-      background(200);
-
-      // Turn on the lights.
-      lights();
-
-      // Style the spheres.
-      noStroke();
-
-      // Draw the red sphere.
-      fill('red');
-      sphere(10);
-
-      // Translate the origin to the right.
-      translate(30, 0, 0);
-
-      // Draw the blue sphere.
-      fill('blue');
-      sphere(10);
-    }
+example: []
 class: p5
+return:
+  description: a new transform with the move applied.
 overloads:
   - params:
       - name: x
@@ -204,6 +257,28 @@ overloads:
         description: vector by which to translate.
         type: p5.Vector
     chainable: 1
+  - params:
+      - name: transform
+        description: |-
+          a transform created with
+          <a href="#/p5/transform2D">transform2D()</a> or
+          <a href="#/p5/transform3D">transform3D()</a>, inside
+          a p5.strands shader callback.
+      - name: x
+        description: amount to move along the x-axis.
+        type: Number
+      - name: 'y'
+        description: amount to move along the y-axis.
+        optional: 1
+        type: Number
+      - name: z
+        description: |-
+          amount to move along the z-axis. Ignored by a 2D
+          transform.
+        optional: 1
+        type: Number
+    return:
+      description: a new transform with the move applied.
 chainable: false
 ---
 

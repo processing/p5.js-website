@@ -1,0 +1,148 @@
+---
+title: transform3D
+module: 3D
+submodule: p5.strands
+file: src/strands/strands_transform.js
+description: >
+  <p>Creates a 3D transform inside a p5.strands shader callback.</p>
+
+  <p>A transform is a 4x4 matrix that stores a combination of moves, turns, and
+
+  scales in three dimensions. Calling <code>transform3D()</code> without
+  arguments
+
+  returns the identity transform, which leaves points exactly where they
+  are.</p>
+
+  <p>A transform is built up by passing it to
+
+  <a href="/reference/p5/translate/">translate()</a>,
+
+  <a href="/reference/p5/rotate/">rotate()</a>,
+
+  <a href="/reference/p5/rotateX/">rotateX()</a>,
+
+  <a href="/reference/p5/rotateY/">rotateY()</a>,
+
+  <a href="/reference/p5/rotateZ/">rotateZ()</a>,
+
+  <a href="/reference/p5/rotateAxisAngle/">rotateAxisAngle()</a>, and
+
+  <a href="/reference/p5/scale/">scale()</a>. Each of those returns a new
+  transform
+
+  instead of changing the one passed in, so the result has to be assigned
+
+  back, as in <code>t = translate(t, 20, 0, 0)</code>.</p>
+
+  <p>The finished transform is applied to a position with
+
+  <a href="/reference/p5/transformPoint/">transformPoint()</a>, and to a surface
+
+  direction with <a href="/reference/p5/transformNormal/">transformNormal()</a>.
+  This
+
+  is the usual way to place each copy of a shape when drawing many instances
+
+  at once with <a href="/reference/p5/instances/">instances()</a> or
+
+  <a href="/reference/p5/model/">model()</a>.</p>
+
+  <p><code>transform3D()</code> is the same function as <a
+  href="/reference/p5/mat4/">mat4()</a>.
+
+  Use <code>transform3D()</code> when describing a transformation, and
+  <code>mat4()</code> when
+
+  thinking of the value as a plain 4x4 matrix.</p>
+
+  <p>It can also be called with a single number, which fills the diagonal of the
+
+  matrix; a single matrix, which is resized (a 3x3 is extended with the
+
+  identity matrix); 4 column vectors; or 16 values in column-major order.</p>
+
+  <p>Note: <code>transform3D()</code> can only be used inside a p5.strands
+  shader callback.</p>
+line: 334
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(wobble);
+    }
+
+    function wobble() {
+      worldInputs.begin();
+      let t = transform3D();
+      t = rotate(t, millis() * 0.001);
+      t = scale(t, 1.2);
+      worldInputs.position = transformPoint(t, worldInputs.position);
+      worldInputs.normal = transformNormal(t, worldInputs.normal);
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(180);
+      lights();
+      noStroke();
+      fill('red');
+      shader(myShader);
+      box(60);
+    }
+  - |-
+    // Place each instance of a shape with its own transform.
+    let myShader;
+    let count = 5;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(placeEach);
+      describe('Five red spheres in a row, growing from small to large.');
+    }
+
+    function placeEach() {
+      worldInputs.begin();
+      // Give every instance its own spot and size.
+      let spacing = width / count;
+      let t = transform3D();
+      t = translate(t, (instanceIndex - (count - 1) / 2) * spacing, 0, 0);
+      t = scale(t, 0.4 + instanceIndex * 0.15);
+      worldInputs.position = transformPoint(t, worldInputs.position);
+      worldInputs.normal = transformNormal(t, worldInputs.normal);
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(220);
+      lights();
+      noStroke();
+      fill('red');
+      shader(myShader);
+      instances(count).sphere(20);
+    }
+class: p5
+beta: true
+return:
+  description: a 4x4 transform.
+overloads:
+  - params:
+      - name: values
+        description: |-
+          nothing for the identity transform, one number,
+          one matrix, 4 column vectors, or 16 values in
+          column-major order.
+        optional: 1
+        type: Number
+        rest: true
+    return:
+      description: a 4x4 transform.
+chainable: false
+---
+
+
+# transform3D

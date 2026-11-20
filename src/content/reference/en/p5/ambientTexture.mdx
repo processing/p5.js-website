@@ -1,0 +1,99 @@
+---
+title: ambientTexture
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Sets an image that controls the color a shape reflects from ambient
+  light.</p>
+
+  <p>An ambient map varies the color set by
+
+  <a href="/reference/p5/ambientMaterial/"><code>ambientMaterial()</code></a>
+  across a surface, so
+
+  different parts of one shape can pick up ambient light differently. It works
+
+  like <a href="/reference/p5/texture/"><code>texture()</code></a>, but the
+  map's color is applied to
+
+  the ambient term rather than the base color.</p>
+
+  <p>The parameter, <code>tex</code>, is the image to use as the ambient map.
+  Passing <code>null</code>
+
+  clears it, as in <code>ambientTexture(null)</code>. The map can also be scoped
+  between
+
+  <a href="/reference/p5/push/"><code>push()</code></a> and <a
+  href="/reference/p5/pop/"><code>pop()</code></a>.</p>
+
+  <p>An <a href="/reference/p5/ambientLight/"><code>ambientLight()</code></a> is
+  needed to see the
+
+  effect. Models loaded with <a
+  href="/reference/p5/loadModel/"><code>loadModel()</code></a> apply
+
+  their own ambient map from the <code>.mtl</code> file's
+  <code>map_Ka</code>.</p>
+
+  <p>Note: <code>ambientTexture()</code> can only be used in WebGL mode.</p>
+line: 2919
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    // Click and drag the mouse to view the scene from different angles.
+
+    let ambientMap;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Build a map that fades from blue at the top to orange at the bottom.
+      ambientMap = createImage(32, 32);
+      ambientMap.loadPixels();
+      for (let y = 0; y < ambientMap.height; y += 1) {
+        for (let x = 0; x < ambientMap.width; x += 1) {
+          let t = y / (ambientMap.height - 1);
+          let i = (x + y * ambientMap.width) * 4;
+          ambientMap.pixels[i] = 60 + t * 195;
+          ambientMap.pixels[i + 1] = 90;
+          ambientMap.pixels[i + 2] = 255 - t * 195;
+          ambientMap.pixels[i + 3] = 255;
+        }
+      }
+      ambientMap.updatePixels();
+
+      describe('A sphere on a black background. Its color fades from blue at the top to orange at the bottom.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rock the shape so the lighting shifts across it.
+      rotateY(sin(millis() * 0.002) * PI * 0.1);
+
+      // Ambient light reveals the map's colors.
+      ambientLight(200);
+      noStroke();
+      fill(255);
+      ambientTexture(ambientMap);
+      sphere(40);
+    }
+class: p5
+overloads:
+  - params:
+      - name: tex
+        description: 'image to use as the ambient map, or <code>null</code> to clear it.'
+        type: >-
+          p5.Image|p5.MediaElement|p5.Graphics|p5.Texture|p5.Framebuffer|p5.FramebufferTexture
+    chainable: 1
+chainable: false
+---
+
+
+# ambientTexture

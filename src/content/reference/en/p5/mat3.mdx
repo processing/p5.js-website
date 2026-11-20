@@ -1,0 +1,79 @@
+---
+title: mat3
+module: 3D
+submodule: p5.strands
+file: src/strands/strands_transform.js
+description: >
+  <p>Creates a 3x3 matrix inside a p5.strands shader callback.</p>
+
+  <p><code>mat3()</code> is the same function as
+
+  <a href="/reference/p5/transform2D/">transform2D()</a>, named the way it is in
+  GLSL.</p>
+
+  <p>Passing a 4x4 matrix to <code>mat3()</code> keeps only its upper-left 3x3
+  block, which
+
+  drops the move part of a 3D transform and leaves the rotation and scale.
+
+  That block is what lighting calculations need, so this is a handy way to
+
+  turn a <a href="/reference/p5/transform3D/">transform3D()</a> into a matrix
+  for
+
+  surface directions.</p>
+
+  <p>Note: <code>mat3()</code> can only be used inside a p5.strands shader
+  callback.</p>
+line: 334
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(shrink);
+    }
+
+    function shrink() {
+      worldInputs.begin();
+      let t = transform3D();
+      t = translate(t, 30, 0, 0);
+      t = rotateY(t, PI / 4);
+      // mat3() drops the move, so only the turn is left.
+      let turnOnly = mat3(t);
+      worldInputs.position = turnOnly * worldInputs.position;
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(180);
+      lights();
+      noStroke();
+      fill('blue');
+      shader(myShader);
+      box(60);
+    }
+class: p5
+beta: true
+return:
+  description: a 3x3 matrix.
+overloads:
+  - params:
+      - name: values
+        description: |-
+          nothing for the identity matrix, one number,
+          one matrix, 3 column vectors, or 9 values in
+          column-major order.
+        optional: 1
+        type: Number
+        rest: true
+    return:
+      description: a 3x3 matrix.
+chainable: false
+---
+
+
+# mat3

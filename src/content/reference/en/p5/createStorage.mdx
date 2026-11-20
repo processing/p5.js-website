@@ -38,8 +38,6 @@ description: >-
 
   let instancesShader;
 
-  let instance;
-
   let count = 5;
 
 
@@ -62,14 +60,8 @@ description: >-
       });
     }
     instanceData = createStorage(data);
-    instance = buildGeometry(drawInstance);
     instancesShader = buildMaterialShader(drawInstances);
     describe('Five spheres at random positions, each a different random color.');
-  }
-
-
-  function drawInstance() {
-    sphere(15);
   }
 
 
@@ -78,7 +70,7 @@ description: >-
     let itemColor = sharedVec4();
 
     worldInputs.begin();
-    let item = data[instanceID()];
+    let item = data[instanceIndex];
     itemColor = item.color;
     worldInputs.position += item.position;
     worldInputs.end();
@@ -94,7 +86,7 @@ description: >-
     lights();
     noStroke();
     shader(instancesShader);
-    model(instance, count);
+    instances(count).sphere(15);
   }</code></pre><p>You can also store a plain list of numbers by passing an
   array of numbers.
 
@@ -184,7 +176,7 @@ description: >-
     [nextCells, cells] = [cells, nextCells];
     filter(displayShader);
   }</code></pre>
-line: 2183
+line: 2352
 isConstructor: false
 itemtype: method
 example: []
@@ -199,11 +191,11 @@ overloads:
   - params:
       - name: dataOrCount
         description: >-
-          Either a number specifying the count of floats,
+          Either a number specifying the count of elements,
 
-          an array/Float32Array of floats, or an array of objects describing
+          an array/TypedArray of values, or an array of objects describing
           struct elements.
-        type: 'Number|Array|Float32Array|Object[]'
+        type: 'Number|Array|Float32Array|Uint32Array|Int32Array|Object[]'
     return:
       description: A storage buffer.
       type: p5.StorageBuffer

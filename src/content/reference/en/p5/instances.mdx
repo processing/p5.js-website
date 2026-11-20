@@ -1,0 +1,98 @@
+---
+title: instances
+module: Shape
+submodule: 3D Primitives
+file: src/webgl/3d_primitives.js
+description: >
+  <p>Draws <code>count</code> instances of the next 3D primitive or model using
+  WebGL
+
+  instanced rendering.</p>
+
+  <p>Call a draw method on the returned object to render that primitive
+
+  <code>count</code> times in a single draw call. Instance-specific transforms
+  and
+
+  attributes (position, color, etc.) are supplied through a custom shader
+
+  that reads per-instance data from an instanced attribute buffer.</p>
+line: 2699
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    <div>
+    <code>
+    let myShader;
+    let count = 5;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(drawSpaced);
+      describe('Five red spheres arranged in a horizontal line.');
+    }
+
+    function drawSpaced() {
+      worldInputs.begin();
+      // Spread spheres evenly across the canvas based on their index
+      let spacing = width / count;
+      worldInputs.position.x +=
+        (instanceIndex - (count - 1) / 2) * spacing;
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(220);
+      lights();
+      noStroke();
+      fill('red');
+      shader(myShader);
+      instances(count).sphere(15);
+    }
+    </code>
+    </div>
+class: p5
+return:
+  description: >-
+    an object with methods <code>sphere</code>, <code>box</code>,
+    <code>plane</code>,
+
+    <code>ellipsoid</code>, <code>cylinder</code>, <code>cone</code>,
+    <code>torus</code>, <code>triangle</code>, <code>rect</code>,
+    <code>quad</code>,
+
+    <code>ellipse</code>, <code>arc</code>, <code>model</code>,
+    <code>line</code>, <code>point</code>, <code>bezier</code>, and
+    <code>spline</code>. Call one of
+
+    these to draw <code>count</code> instances of that primitive.
+  type: p5.InstancesWrapper
+overloads:
+  - params:
+      - name: count
+        description: |-
+          number of instances
+          to draw, or a storage buffer/list whose element count is used. A plain
+          number must be a positive integer.
+        type: Number|p5.StorageBuffer|p5.StorageList
+    return:
+      description: >-
+        an object with methods <code>sphere</code>, <code>box</code>,
+        <code>plane</code>,
+
+        <code>ellipsoid</code>, <code>cylinder</code>, <code>cone</code>,
+        <code>torus</code>, <code>triangle</code>, <code>rect</code>,
+        <code>quad</code>,
+
+        <code>ellipse</code>, <code>arc</code>, <code>model</code>,
+        <code>line</code>, <code>point</code>, <code>bezier</code>, and
+        <code>spline</code>. Call one of
+
+        these to draw <code>count</code> instances of that primitive.
+      type: p5.InstancesWrapper
+chainable: false
+---
+
+
+# instances

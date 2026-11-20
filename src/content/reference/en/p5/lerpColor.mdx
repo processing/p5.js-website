@@ -22,7 +22,8 @@ description: >-
 
   <p>The way that colors are interpolated depends on the current
 
-  <a href="/reference/p5/colorMode/">colorMode()</a>.</p>
+  <a href="/reference/p5/colorMode/">colorMode()</a> or on the passed
+  <code>options</code> object.</p>
 
   <pre><code class="language-js example">function setup() {
     createCanvas(100, 100);
@@ -56,6 +57,63 @@ description: >-
 
     describe(
       'Four rectangles. From left to right, the rectangles are tan, brown, brownish purple, and purple.'
+    );
+  }</code></pre><p>Normally, colors are interpolated according to the current
+  <code>colorMode()</code>. But you can override this by
+
+  specifying a different color space to perform the interpolation in. Different
+  color spaces will blend
+
+  colors differently.</p>
+
+  <pre><code class="language-js example">function setup() {
+    createCanvas(100, 100);
+
+    background(200);
+
+    // Create p5.Color objects to interpolate between.
+    colorMode(HSL);
+    let from = color(240, 100, 25);
+    let to = color('white');
+
+    // Create intermediate colors
+    let interA = lerpColor(from, to, 0.33);
+    let interB = lerpColor(from, to, 0.66);
+
+    let inter1 = lerpColor(from, to, {
+      amount: 0.33,
+      lerpMode: HSB // interpolate in the HSB color space
+    });
+    let inter2 = lerpColor(from, to, {
+      amount: 0.66,
+      lerpMode: HSB
+    });
+
+    // Draw the left rectangle.
+    noStroke();
+    fill(from);
+    rect(10, 20, 20, 60);
+
+    // Draw the left-center rectangles.
+    fill(interA);
+    rect(30, 20, 20, 30);
+
+    fill(inter1);
+    rect(30, 50, 20, 30);
+
+    // Draw the right-center rectangles.
+    fill(interB);
+    rect(50, 20, 20, 30);
+
+    fill(inter2);
+    rect(50, 50, 20, 30);
+
+    // Draw the right rectangle.
+    fill(to);
+    rect(70, 20, 20, 60);
+
+    describe(
+      'Two strips of four colors each. From left to right, the top strip begins with dark blue, followed by a lighter blue, a light blue and finally white. Meanwhile, the bottom strip begins with a dark blue, followed by purple, then pink and finally white.'
     );
   }</code></pre><p>In p5.strands shader callbacks, <code>lerpColor()</code>
   interpolates between
@@ -91,7 +149,7 @@ description: >-
 
     describe('A purple sphere, a blend of red and blue.');
   }</code></pre>
-line: 1760
+line: 1825
 isConstructor: false
 itemtype: method
 example: []
@@ -110,6 +168,19 @@ overloads:
       - name: amt
         description: number between 0 and 1.
         type: Number
+    return:
+      description: interpolated color.
+      type: p5.Color
+  - params:
+      - name: c1
+        description: interpolate from this color.
+        type: p5.Color
+      - name: c2
+        description: interpolate to this color.
+        type: p5.Color
+      - name: options
+        description: interpolation options.
+        type: Object
     return:
       description: interpolated color.
       type: p5.Color

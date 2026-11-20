@@ -1,0 +1,103 @@
+---
+title: specularTexture
+module: 3D
+submodule: Material
+file: src/webgl/material.js
+description: >
+  <p>Sets an image that controls where a shape looks glossy.</p>
+
+  <p>A specular map lets one shape mix polished and worn surfaces. It works like
+
+  <a href="/reference/p5/texture/"><code>texture()</code></a>, but instead of
+  setting the base color,
+
+  the map's color at each point scales the highlight set by
+
+  <a href="/reference/p5/specularMaterial/"><code>specularMaterial()</code></a>.
+  Bright parts of the
+
+  map stay shiny and dark parts look matte.</p>
+
+  <p>The parameter, <code>tex</code>, is the image to use as the specular map.
+  Passing
+
+  <code>null</code> clears it, as in <code>specularTexture(null)</code>. The map
+  can also be scoped
+
+  between <a href="/reference/p5/push/"><code>push()</code></a> and <a
+  href="/reference/p5/pop/"><code>pop()</code></a>.</p>
+
+  <p>A light source is needed to see the effect. Models loaded with
+
+  <a href="/reference/p5/loadModel/"><code>loadModel()</code></a> apply their
+  own specular map from
+
+  the <code>.mtl</code> file's <code>map_Ks</code>.</p>
+
+  <p>Note: <code>specularTexture()</code> can only be used in WebGL mode.</p>
+line: 2846
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    // Click and drag the mouse to view the scene from different angles.
+
+    let specularMap;
+
+    function setup() {
+      createCanvas(100, 100, WEBGL);
+
+      // Build a checkered map of white and black squares.
+      specularMap = createImage(64, 64);
+      specularMap.loadPixels();
+      for (let y = 0; y < specularMap.height; y += 1) {
+        for (let x = 0; x < specularMap.width; x += 1) {
+          // White squares stay glossy, black squares turn matte.
+          let isWhite = (floor(x / 8) + floor(y / 8)) % 2 === 0;
+          let v = isWhite ? 255 : 0;
+          let i = (x + y * specularMap.width) * 4;
+          specularMap.pixels[i] = v;
+          specularMap.pixels[i + 1] = v;
+          specularMap.pixels[i + 2] = v;
+          specularMap.pixels[i + 3] = 255;
+        }
+      }
+      specularMap.updatePixels();
+
+      describe('A dark red square lit from the front. Its surface alternates between glossy white squares and matte red ones, like a checkerboard.');
+    }
+
+    function draw() {
+      background(0);
+
+      // Enable orbiting with the mouse.
+      orbitControl();
+
+      // Rock the shape so the lighting shifts across it.
+      rotateY(sin(millis() * 0.002) * PI * 0.1);
+
+      // Light the surface head on so the highlight spreads across it.
+      ambientLight(50);
+      pointLight(255, 255, 255, 0, 0, 300);
+      noStroke();
+      fill(120, 40, 40);
+
+      // Turn on highlights, then vary them across the surface.
+      specularMaterial(255);
+      shininess(5);
+      specularTexture(specularMap);
+      plane(80, 80);
+    }
+class: p5
+overloads:
+  - params:
+      - name: tex
+        description: 'image to use as the specular map, or <code>null</code> to clear it.'
+        type: >-
+          p5.Image|p5.MediaElement|p5.Graphics|p5.Texture|p5.Framebuffer|p5.FramebufferTexture
+    chainable: 1
+chainable: false
+---
+
+
+# specularTexture

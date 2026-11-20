@@ -44,7 +44,7 @@ description: >
   once to add
 
   vertices to the new 3D shape.</p>
-line: 2102
+line: 2260
 isConstructor: true
 params:
   - name: detailX
@@ -470,12 +470,12 @@ methods:
       <code>myGeometry.computeNormals()</code> first calculates each face's
       normal vector.
 
-      Then it calculates the normal vector for each vertex by averaging the
+      It then calculates vertex normals according to the selected shading mode.
 
-      normal vectors of the faces surrounding the vertex. The vertex normals
+      The vertex normals are stored as <a
+      href="/reference/p5/p5.Vector">p5.Vector</a>
 
-      are stored as <a href="/reference/p5/p5.Vector">p5.Vector</a> objects in
-      the
+      objects in the
 
       <a
       href="/reference/p5.Geometry/vertexNormals/">myGeometry.vertexNormals</a>
@@ -484,19 +484,44 @@ methods:
       <p>The first parameter, <code>shadingType</code>, is optional. Passing the
       constant
 
-      <code>FLAT</code>, as in <code>myGeometry.computeNormals(FLAT)</code>,
-      provides neighboring
+      <code>KEEP_CONNECTIONS</code>, as in
+      <code>myGeometry.computeNormals(KEEP_CONNECTIONS)</code>,
 
-      faces with their own copies of the vertices they share. Surfaces appear
+      preserves the geometry's existing vertex connections. Each vertex normal
 
-      tiled with flat shading. Passing the constant <code>SMOOTH</code>, as in
+      is calculated by averaging the face normals of its connected faces.
 
-      <code>myGeometry.computeNormals(SMOOTH)</code>, makes neighboring faces
-      reuse their
+      This may produce smooth transitions between connected faces rather
 
-      shared vertices. Surfaces appear smoother with smooth shading. By
+      than true flat shading.</p>
 
-      default, <code>shadingType</code> is <code>FLAT</code>.</p>
+      <p>Passing the constant <code>SMOOTH</code>, as in
+
+      <code>myGeometry.computeNormals(SMOOTH)</code>, calculates smooth normals
+      by
+
+      grouping vertices with approximately matching positions, without
+
+      modifying the original vertices or their attributes.</p>
+
+      <p>Passing the constant <code>SEGMENTED</code>, as in
+
+      <code>myGeometry.computeNormals(SEGMENTED)</code>, produces true flat
+      shading
+
+      by assigning each triangle its own face normal. Shared vertices
+
+      are duplicated as needed while preserving the original vertex
+
+      indices and their connections. Associated vertex attributes,
+
+      such as UV coordinates and colors, are preserved.</p>
+
+      <p>The constant <code>FLAT</code> is deprecated and behaves identically to
+
+      <code>KEEP_CONNECTIONS</code>. It is retained for backward compatibility.
+
+      By default, <code>shadingType</code> is <code>KEEP_CONNECTIONS</code>.</p>
 
       <p>The second parameter, <code>options</code>, is also optional. If an
       object with a

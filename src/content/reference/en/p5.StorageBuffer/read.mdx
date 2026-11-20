@@ -3,15 +3,26 @@ title: read
 module: 3D
 submodule: p5.strands
 file: src/webgpu/p5.RendererWebGPU.js
-description: |-
+description: >-
   <p>Reads data from a storage buffer back into JavaScript.</p>
+
   <p>Copies data from the GPU to the CPU using a temporary buffer,
-  so it must be awaited. Returns a <code>Float32Array</code> for number
-  buffers, or an array of plain objects for struct buffers.</p>
+
+  so it must be awaited. Returns a typed array (such as
+  <code>Float32Array</code> or
+
+  <code>Uint32Array</code>) for number buffers, or an array of plain objects for
+
+  struct buffers.</p>
+
   <p>Note: This is a GPU -> CPU read, so calling it often (like every frame)
+
   can be slow.</p>
+
   <pre><code class="language-js example">let data;
+
   let computeShader;
+
 
   async function setup() {
     await createCanvas(100, 100, WEBGPU);
@@ -28,12 +39,36 @@ description: |-
     describe('Prints the values 2, 4, 6, 8 to the console.');
   }
 
+
   function doubleValues() {
     let d = uniformStorage(data);
     let idx = index.x;
     d[idx] = d[idx] * 2;
-  }</code></pre>
-line: 221
+  }</code></pre><p>While p5.strands is still growing, there may be WGSL features
+  it doesn't
+
+  cover yet. You can still reach for them by writing WGSL directly, and the
+
+  buffer will read back as the right kind of typed array. Atomics are one
+
+  example: WGSL only allows them on <code>u32</code> and <code>i32</code>, so a
+  buffer used as
+
+  <code>array<atomic<u32>></atomic<u32></code> should be created with a
+  <code>Uint32Array</code>.</p>
+
+  <pre><code class="language-js example">let data;
+
+  let computeShader;
+
+
+  async function setup() {
+    await createCanvas(100, 100, WEBGPU);
+
+    data = createStorage(new Uint32Array([10, 20, 30, 40]));
+    computeShader = buildComputeShader({
+      computeDeclarations: `</code></pre>
+line: 279
 isConstructor: false
 itemtype: method
 example: []
@@ -43,12 +78,12 @@ webgpu: true
 webgpuOnly: true
 return:
   description: ''
-  type: 'Promise<Float32Array|Object[]>'
+  type: 'Promise<Float32Array|Uint32Array|Int32Array|Object[]>'
 overloads:
   - params: []
     return:
       description: ''
-      type: 'Promise<Float32Array|Object[]>'
+      type: 'Promise<Float32Array|Uint32Array|Int32Array|Object[]>'
 chainable: false
 ---
 

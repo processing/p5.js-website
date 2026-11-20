@@ -1,0 +1,87 @@
+---
+title: loadSVG
+module: Shape
+submodule: p5.svg
+file: src/shape/svg/svg_import.js
+description: >-
+  <p>Asynchronously loads an SVG file from <code>path</code> and returns a
+
+  <a href="/reference/p5/p5.ShapeCollection/">p5.ShapeCollection</a>.</p>
+
+  <p>The recommended approach is <code>async/await</code> in
+  <code>setup()</code>. For SVG content
+
+  already in memory, use <a href="/reference/p5/createSVG/">createSVG()</a>
+  instead.</p>
+
+  <p>Once loaded, you can inspect and edit the underlying SVG elements using
+
+  standard DOM methods via the <code>sourceSVG</code> property (e.g.
+  <code>querySelector()</code>
+
+  and <code>setAttribute()</code>), and re-parse the modified element using
+
+  <a href="/reference/p5/createSVG/">createSVG()</a>.</p>
+
+  <pre><code class="language-js example">let botLogo;
+
+
+  async function setup() {
+    createCanvas(300, 300);
+
+    try {
+      // loadSVG returns a promise; await the resolved ShapeCollection
+      botLogo = await loadSVG('/assets/img/p5js.svg');
+      console.log('SVG Loaded successfully!');
+    } catch (err) {
+      console.error('Failed to load SVG:', err);
+    }
+  }
+
+
+  function draw() {
+    background(255);
+
+    // Render the SVG once it is fully loaded
+    if (botLogo) {
+      shape(botLogo, 25, 93);
+    } else {
+      fill(100);
+      text('Loading SVG...', 20, 30);
+    }
+  }</code></pre>
+line: 1611
+isConstructor: false
+itemtype: method
+example: []
+class: p5
+beta: true
+return:
+  description: a Promise resolving to the parsed shape.
+  type: Promise<p5.ShapeCollection>
+overloads:
+  - params:
+      - name: path
+        description: path or URL of the SVG file.
+        type: String
+      - name: successCallback
+        description: |-
+          function called with the
+          <a href="#/p5/p5.ShapeCollection/">p5.ShapeCollection</a>
+          on success.
+        optional: 1
+        type: Function
+      - name: failureCallback
+        description: |-
+          function called with the error if
+          loading fails.
+        optional: 1
+        type: Function
+    return:
+      description: a Promise resolving to the parsed shape.
+      type: Promise<p5.ShapeCollection>
+chainable: false
+---
+
+
+# loadSVG

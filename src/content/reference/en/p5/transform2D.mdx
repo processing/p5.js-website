@@ -1,0 +1,104 @@
+---
+title: transform2D
+module: 3D
+submodule: p5.strands
+file: src/strands/strands_transform.js
+description: >
+  <p>Creates a 2D transform inside a p5.strands shader callback.</p>
+
+  <p>A transform is a 3x3 matrix that stores a combination of moves, turns,
+
+  scales, and slants. Calling <code>transform2D()</code> without arguments
+  returns the
+
+  identity transform, which leaves points exactly where they are.</p>
+
+  <p>A transform is built up by passing it to
+
+  <a href="/reference/p5/translate/">translate()</a>,
+
+  <a href="/reference/p5/rotate/">rotate()</a>,
+
+  <a href="/reference/p5/scale/">scale()</a>,
+
+  <a href="/reference/p5/shearX/">shearX()</a>, and
+
+  <a href="/reference/p5/shearY/">shearY()</a>. Each of those returns a new
+  transform
+
+  instead of changing the one passed in, so the result has to be assigned
+
+  back, as in <code>t = translate(t, 20, 0)</code>.</p>
+
+  <p>The finished transform is applied to a position with
+
+  <a href="/reference/p5/transformPoint/">transformPoint()</a>.</p>
+
+  <p><code>transform2D()</code> is the same function as <a
+  href="/reference/p5/mat3/">mat3()</a>.
+
+  Use <code>transform2D()</code> when describing a transformation, and
+  <code>mat3()</code> when
+
+  thinking of the value as a plain 3x3 matrix.</p>
+
+  <p>It can also be called with a single number, which fills the diagonal of the
+
+  matrix; a single matrix, which is resized (a 4x4 keeps its upper-left 3x3
+
+  block); 3 column vectors; or 9 values in column-major order.</p>
+
+  <p>Note: <code>transform2D()</code> can only be used inside a p5.strands
+  shader callback.</p>
+line: 334
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildFilterShader(spin);
+    }
+
+    function spin() {
+      filterColor.begin();
+      // Turn the texture coordinates around the middle of the canvas.
+      let t = transform2D();
+      t = translate(t, 0.5, 0.5);
+      t = rotate(t, PI / 6);
+      t = translate(t, -0.5, -0.5);
+      let uv = transformPoint(t, filterColor.texCoord);
+      filterColor.set(getTexture(filterColor.canvasContent, uv));
+      filterColor.end();
+    }
+
+    function draw() {
+      background(180);
+      noStroke();
+      fill('yellow');
+      rect(-50, -20, 100, 40);
+      filter(myShader);
+    }
+class: p5
+beta: true
+return:
+  description: a 3x3 transform.
+overloads:
+  - params:
+      - name: values
+        description: |-
+          nothing for the identity transform, one number,
+          one matrix, 3 column vectors, or 9 values in
+          column-major order.
+        optional: 1
+        type: Number
+        rest: true
+    return:
+      description: a 3x3 transform.
+chainable: false
+---
+
+
+# transform2D

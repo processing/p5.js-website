@@ -1,0 +1,83 @@
+---
+title: transformNormal
+module: 3D
+submodule: p5.strands
+file: src/strands/strands_transform.js
+description: >
+  <p>Applies a p5.strands transform to a surface direction.</p>
+
+  <p>A normal describes which way a surface faces, and lighting uses it to work
+
+  out how bright each spot should be. Normals can't be moved the way
+
+  positions are: a move must be ignored, and an uneven resize like
+
+  <code>scale(t, 2, 1, 1)</code> would tilt them the wrong way if the transform
+  were
+
+  applied directly. <code>transformNormal()</code> handles both cases and
+  returns a
+
+  normalized result, so lighting stays correct.</p>
+
+  <p>Pass the same transform used with
+
+  <a href="/reference/p5/transformPoint/">transformPoint()</a> for the position,
+  so the
+
+  shape and its lighting stay in step.</p>
+
+  <p>Note: <code>transformNormal()</code> can only be used inside a p5.strands
+  shader
+
+  callback.</p>
+line: 685
+isConstructor: false
+itemtype: method
+example:
+  - |-
+    let myShader;
+
+    function setup() {
+      createCanvas(200, 200, WEBGL);
+      myShader = buildMaterialShader(stretch);
+    }
+
+    function stretch() {
+      worldInputs.begin();
+      let t = transform3D();
+      // An uneven resize, so the normals need fixing up too.
+      t = scale(t, 2, 0.5, 1);
+      worldInputs.position = transformPoint(t, worldInputs.position);
+      worldInputs.normal = transformNormal(t, worldInputs.normal);
+      worldInputs.end();
+    }
+
+    function draw() {
+      background(180);
+      lights();
+      noStroke();
+      fill('white');
+      shader(myShader);
+      sphere(40);
+    }
+class: p5
+beta: true
+return:
+  description: 'the transformed surface direction, normalized.'
+overloads:
+  - params:
+      - name: transform
+        description: |-
+          a transform created with
+          <a href="#/p5/transform2D">transform2D()</a> or
+          <a href="#/p5/transform3D">transform3D()</a>.
+      - name: normal
+        description: the surface direction to transform.
+    return:
+      description: 'the transformed surface direction, normalized.'
+chainable: false
+---
+
+
+# transformNormal
