@@ -25,8 +25,12 @@ export const examplesCollection = defineCollection({
       featuredImage: image(),
       featuredImageAlt: z.string().optional().default(""),
 
-      // Optional list of scripts
-      scripts: z.array(z.enum(["p5.sound.js", "Tone.js"])).optional(),
+      // Named libraries, or a full script URL such as ml5.js.
+      scripts: z
+        .array(z.union([z.enum(["p5.sound.js", "Tone.js"]), z.string().url()]))
+        .optional(),
+      // Load the p5 WebGPU addon for sketches that call createCanvas(..., WEBGPU).
+      webgpu: z.boolean().optional(),
       
       // Optional list of remixes to add to license
       remix: z
