@@ -306,11 +306,42 @@ const convertToMDX = async (
 
 const getMethodFrontmatter = (doc: ReferenceClassItemMethod) => {
   const { params, return: returns, example, overloads, itemtype } = doc;
+  
+  // Process params to handle nested object properties
+  const processedParams = params?.map(param => {
+    // If this is a nested property (contains a dot), skip it
+    if (param.name.includes('.')) {
+      return null;
+    }
+    
+    // If this is an object parameter, collect its nested properties
+    if (param.type === 'Object' && params) {
+      const nestedProps = params
+        .filter(p => p.name.startsWith(`${param.name}.`))
+        .map(p => {
+          const propName = p.name.split('.')[1];
+          return `• ${propName}: ${p.description}`;
+        });
+        
+      if (nestedProps.length > 0) {
+        param.description = `${param.description || ''}\n\nProperties:\n${nestedProps.join('\n')}`;
+      }
+    }
+    
+    return param;
+  }).filter(Boolean); 
+
   return {
-    params,
+    params: processedParams,
     return: returns,
     example,
-    overloads,
+    overloads: overloads?.map(overload => ({
+      ...overload,
+      params: overload.params?.map(param => {
+        if (param.name.includes('.')) return null;
+        return param;
+      }).filter(Boolean)
+    })),
     itemtype,
     chainable: doc.chainable === 1,
     beta: doc.beta ? !!doc.beta : undefined,
