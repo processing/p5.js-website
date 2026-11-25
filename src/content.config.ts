@@ -9,6 +9,7 @@ import { contributorDocsCollection } from "./content/contributor-docs/config";
 import { homepageCollection } from "./content/homepage/config";
 import { pagesCollection } from "./content/pages/config";
 import { bannerCollection } from "./content/banner/config";
+import { arenaResourcesCollection } from "./content/arena-resources/config";
 import { topBannerCollection } from "./content/top-banner/config";
 
 /**
@@ -29,5 +30,6 @@ export const collections = {
   homepage: homepageCollection,
   pages: pagesCollection,
   banner: bannerCollection,
+  "arena-resources": arenaResourcesCollection,
   "top-banner": topBannerCollection,
 };
