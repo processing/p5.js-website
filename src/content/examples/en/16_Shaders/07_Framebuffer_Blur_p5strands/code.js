@@ -53,7 +53,7 @@ function blurCallback() {
     let sampleDepth = getTexture(depth, coord + offset).r;
 
     // How far should its blur reach?
-    let sampleBlurDistance = maxBlurDistance(getBlurriness(sampleDepth));
+    let sampleBlurDistance = maxBlurDistance(howBlurry(sampleDepth));
 
     // If it's in front of the current pixel, or its blur overlaps
     // with the current pixel, add its color to the average
